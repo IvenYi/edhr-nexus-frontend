@@ -1,0 +1,73 @@
+{
+  "candidate": "63456e143063c13558db362d28cde83f8e0cdb9b",
+  "target": "ccedd56453c02c5d3acd60aa4351809a3928e83e",
+  "testDatabases": [
+    "edhr_record_control_test_integrate_quality_20261031",
+    "edhr_baseline_test_integrate_quality_20261031",
+    "edhr_document_category_test"
+  ],
+  "classes": [
+    {
+      "name": "com.zencas.edhr.masterdata.controller.DocumentCategoryAuditPostgresTest",
+      "tests": "17",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.864"
+    },
+    {
+      "name": "com.zencas.edhr.recordcontrol.service.RecordControlPostgresIntegrationTest",
+      "tests": "25",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "14.268"
+    },
+    {
+      "name": "com.zencas.edhr.production.service.DhrReviewServiceTest",
+      "tests": "12",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.196"
+    },
+    {
+      "name": "com.zencas.edhr.production.service.DhrSummaryPersistenceTest",
+      "tests": "24",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.532"
+    },
+    {
+      "name": "com.zencas.edhr.common.config.CurrentDatabaseBaselineTest",
+      "tests": "1",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.002"
+    },
+    {
+      "name": "com.zencas.edhr.common.config.CurrentDatabaseBaselinePostgresTest",
+      "tests": "3",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.834"
+    },
+    {
+      "name": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "tests": "89",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "4.805"
+    }
+  ],
+  "totals": {
+    "tests": 171,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  }
+}

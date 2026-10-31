@@ -27,7 +27,7 @@ public class SignatureController {
             @RequestParam(defaultValue = "desc") String order) {
         Sort.Direction direction = "asc".equalsIgnoreCase(order) ? Sort.Direction.ASC : Sort.Direction.DESC;
         PageRequest pageable = PageRequest.of(page - 1, size, Sort.by(direction, sort));
-        Page<Signature> result = signatureRepository.findNonDhr(pageable);
+        Page<Signature> result = signatureRepository.findGeneric(pageable);
         return ApiResponse.success(PageResult.of(
                 result.getContent(), page, size, result.getTotalElements()));
     }
@@ -36,8 +36,7 @@ public class SignatureController {
     public ApiResponse<Signature> getById(@PathVariable Long id) {
         return signatureRepository.findById(id)
                 .map(signature -> {
-                    if ("DHR_SUMMARY".equals(signature.getTargetType())) throw new com.zencas.edhr.common.exception.BusinessException(
-                            com.zencas.edhr.common.exception.ErrorCode.GENERAL_003, "请通过 DHR 审核查看签署证据");
+                    protectExecutionSignature(signature);
                     return ApiResponse.success(signature);
                 })
                 .orElseThrow(() -> new com.zencas.edhr.common.exception.BusinessException(
@@ -67,6 +66,9 @@ public class SignatureController {
     }
 
     private void protectExecutionSignature(Signature signature) {
+        if ("WORKFLOW_INTERVENTION".equals(signature.getTargetType()))
+            throw new com.zencas.edhr.common.exception.BusinessException(
+                com.zencas.edhr.common.exception.ErrorCode.GENERAL_003, "流程干预签名只能由专用动作生成，且不可通过通用接口查看、修改或删除");
         if ("DHR_SUMMARY".equals(signature.getTargetType()))
             throw new com.zencas.edhr.common.exception.BusinessException(
                 com.zencas.edhr.common.exception.ErrorCode.GENERAL_003, "DHR 签名只能由审核动作生成，且不可修改或删除");
@@ -76,5 +78,8 @@ public class SignatureController {
         if ("USER_PROFILE".equals(signature.getTargetType()))
             throw new com.zencas.edhr.common.exception.BusinessException(
                 com.zencas.edhr.common.exception.ErrorCode.GENERAL_003, "个人电子签名只能通过认证流程生成，且不可修改或删除");
+        if ("RECORD_CONTROL_REQUEST".equals(signature.getTargetType()))
+            throw new com.zencas.edhr.common.exception.BusinessException(
+                com.zencas.edhr.common.exception.ErrorCode.GENERAL_003, "记录变更或作废签名只能由专用业务动作生成，且不可通过通用接口查看、修改或删除");
     }
 }

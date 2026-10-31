@@ -1,0 +1,108 @@
+{
+  "sourceCommit": "a4cb9a9fa4f3f88ed801d47463158495990b0308",
+  "command": "mvn -q -Dtest=DhrReviewServiceTest,DhrReviewLifecycleIntegrationTest,DhrWorkbenchPermissionsTest,DhrSummaryServiceTest test",
+  "exitCode": 0,
+  "environment": "H2 in-memory and mock fixtures; lifecycle test stubs DHR metadata projection; no developer PostgreSQL or browser execution",
+  "tests": [
+    {
+      "class": "com.zencas.edhr.production.service.DhrReviewServiceTest",
+      "tests": 10,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        "personalListAndDetailCannotLeakAnotherUsersTask",
+        "frozenButtonVisibilityOpinionAndSignatureAreEnforcedOnServer",
+        "approvalRequiresUnchangedEvidenceAndCurrentHashButDoesNotAutoReturn",
+        "approvalSeparatesRuntimeOutcomeFromFrozenEvidenceAndRejectsSecondAction",
+        "signedReviewChecksNamedSignerAndRecordsBothIdentities",
+        "missingFrozenFormOriginalBlocksApprovalButNotReturn",
+        "intermediateApprovalKeepsPendingAndAuditFailureRollsBackOutcome",
+        "humanReturnAllowsChangedEvidenceAndCreatesNextDraftOnlyExplicitly",
+        "missingAndNewRecordsBothAffectCompleteEvidenceScope",
+        "unreadableLiveValuesAreReportedAsImpactAndBlockApproval"
+      ]
+    },
+    {
+      "class": "com.zencas.edhr.production.service.DhrReviewLifecycleIntegrationTest",
+      "tests": 6,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        "incompleteFrozenManualReviewBlocksApprovalButAllowsReturn",
+        "realWorkflowReturnResubmitSignAndApprovedImpactPreserveHistory",
+        "concurrentApprovalCreatesOnlyOneOutcomeAndSignature",
+        "reviewDetailCurrentlyComparesTheSameFrozenVersionTwice",
+        "newlyAppearingRecordAndAttachmentBlockApprovalWithoutChangingFrozenVersion",
+        "legacyPendingReviewCannotApproveUnfinishedUnincludedCustomCopyButCanReturn"
+      ]
+    },
+    {
+      "class": "com.zencas.edhr.production.controller.DhrWorkbenchPermissionsTest",
+      "tests": 8,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        "reviewAttachmentDownloadRequiresReviewMenuPermission",
+        "reviewAuditChecksTaskThenUsesOnlyServerResolvedVersion",
+        "reorganizingDoesNotInheritOrdinaryEditOrSubmitPermission",
+        "summaryDetailAndAuditKeepExistingReadBoundary",
+        "reviewRequiresBothMenuAndActionPermission",
+        "fillingDetailAndAuditUseMenuReadPermissionWithoutGlobalViewOrWrite",
+        "fillingAndSupplementPermissionsAreIndependent",
+        "reviewOfficeDownloadKeepsOriginalNameAndTaskFrozenVersion"
+      ]
+    },
+    {
+      "class": "com.zencas.edhr.production.service.DhrSummaryServiceTest",
+      "tests": 8,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        "placementsAutoIncludeEveryActualInstanceWithoutManualSelection",
+        "sameInstanceCannotBePlacedTwiceAndIncompleteEvidenceRemainsVisible",
+        "requiredBaseDirectoryItemMustContainACompletedDirectInstance",
+        "submitRequiresTheExactSavedDraftRevision",
+        "overlaySupportsArbitraryDepthButRejectsCycles",
+        "existingDraftRequiresExplicitMatchingRevision",
+        "sourceGroupingDoesNotRestrictIndividualPlacementOrOrder",
+        "placementOrderIsPreservedAndInsertionAnchorMustBelongToTargetDirectory"
+      ]
+    }
+  ],
+  "archives": [
+    {
+      "path": "docs/reference-assets/research/crown-dhr-change-downstream-20261029/capability-tests/focused-tests.log.gz",
+      "originalPath": "gmp-platform/backend/target/dhr-capability-research-20261029/focused-tests.log",
+      "bytes": 255553,
+      "sha256": "55ad800b3b87ac68344fbda42742c0c3ef0d421a8c998fd83064ee42d69fbf1a"
+    },
+    {
+      "path": "docs/reference-assets/research/crown-dhr-change-downstream-20261029/capability-tests/TEST-com.zencas.edhr.production.service.DhrReviewServiceTest.xml.gz",
+      "originalPath": "gmp-platform/backend/target/surefire-reports/TEST-com.zencas.edhr.production.service.DhrReviewServiceTest.xml",
+      "bytes": 39490,
+      "sha256": "a7d2abbe101f490cf4768688e448b81a99303b14955639a6d47ffcc3d58eb8bb"
+    },
+    {
+      "path": "docs/reference-assets/research/crown-dhr-change-downstream-20261029/capability-tests/TEST-com.zencas.edhr.production.service.DhrReviewLifecycleIntegrationTest.xml.gz",
+      "originalPath": "gmp-platform/backend/target/surefire-reports/TEST-com.zencas.edhr.production.service.DhrReviewLifecycleIntegrationTest.xml",
+      "bytes": 293770,
+      "sha256": "50f14504d78205bff1dbbe406b5dd9e16bb6bdddfa46176501059d0f8d430b43"
+    },
+    {
+      "path": "docs/reference-assets/research/crown-dhr-change-downstream-20261029/capability-tests/TEST-com.zencas.edhr.production.controller.DhrWorkbenchPermissionsTest.xml.gz",
+      "originalPath": "gmp-platform/backend/target/surefire-reports/TEST-com.zencas.edhr.production.controller.DhrWorkbenchPermissionsTest.xml",
+      "bytes": 39519,
+      "sha256": "a0e1d7fa50bd33af9b266f4862671a94e9b9abc5449bc8386e73d979341540bd"
+    },
+    {
+      "path": "docs/reference-assets/research/crown-dhr-change-downstream-20261029/capability-tests/TEST-com.zencas.edhr.production.service.DhrSummaryServiceTest.xml.gz",
+      "originalPath": "gmp-platform/backend/target/surefire-reports/TEST-com.zencas.edhr.production.service.DhrSummaryServiceTest.xml",
+      "bytes": 38756,
+      "sha256": "8c1c0a8298d734db930c23f9c429fb8baf1e7bf3363459121a94c9fb620fd19f"
+    }
+  ]
+}

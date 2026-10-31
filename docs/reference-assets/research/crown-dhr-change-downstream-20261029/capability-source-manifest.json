@@ -1,0 +1,204 @@
+{
+  "sourceCommit": "a4cb9a9fa4f3f88ed801d47463158495990b0308",
+  "targetCommit": "635711f97e9b794f4af02e1e5d1939bb2ecf920f",
+  "date": "2026-10-29",
+  "boundary": "eDHR implementation and product goals distinguished; supplied Crown code snapshot without Git/deployed-version guarantee",
+  "sources": [
+    {
+      "kind": "edhr-implementation",
+      "path": "/Users/ivenwang/.codex/worktrees/record-control-integration/edhr-nexus/gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrInstanceService.java",
+      "sha256": "463f68177e64d9c69a4d02a2a5b165ac9cfcb5bb621ef900bffb9d4a8b7fb89e",
+      "bytes": 33825,
+      "lines": 512
+    },
+    {
+      "kind": "edhr-implementation",
+      "path": "/Users/ivenwang/.codex/worktrees/record-control-integration/edhr-nexus/gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrSummaryService.java",
+      "sha256": "362f27fd9c84fccda347a312916ce790f32a6b99c1cf0ba53038c14ee4d03b13",
+      "bytes": 44291,
+      "lines": 648
+    },
+    {
+      "kind": "edhr-implementation",
+      "path": "/Users/ivenwang/.codex/worktrees/record-control-integration/edhr-nexus/gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrReviewService.java",
+      "sha256": "42cf405959931f1ab74b046a32267cf4041723257dfd7a7f4d9a9bbcf30fb932",
+      "bytes": 15710,
+      "lines": 217
+    },
+    {
+      "kind": "edhr-implementation",
+      "path": "/Users/ivenwang/.codex/worktrees/record-control-integration/edhr-nexus/gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrArchiveService.java",
+      "sha256": "bf1d938746ebd3d4c4df7f94b54c0892647639cedefcc85633d6fa28cf402e08",
+      "bytes": 24562,
+      "lines": 331
+    },
+    {
+      "kind": "edhr-implementation",
+      "path": "/Users/ivenwang/.codex/worktrees/record-control-integration/edhr-nexus/gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrReviewController.java",
+      "sha256": "37f6af83e063e1593e15ac28e021ec719888c21fe45d314916c9f20975e2417e",
+      "bytes": 3309,
+      "lines": 57
+    },
+    {
+      "kind": "edhr-implementation",
+      "path": "/Users/ivenwang/.codex/worktrees/record-control-integration/edhr-nexus/gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrArchiveController.java",
+      "sha256": "61d4e871153607b9af9bdc26882418d77fe8599e93b04c5e09be546872bd9108",
+      "bytes": 2401,
+      "lines": 51
+    },
+    {
+      "kind": "edhr-implementation",
+      "path": "/Users/ivenwang/.codex/worktrees/record-control-integration/edhr-nexus/gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrSummaryController.java",
+      "sha256": "5ce62999330203581417a182a68621658ade5a8f5f264293d9e810e394c8292f",
+      "bytes": 3419,
+      "lines": 74
+    },
+    {
+      "kind": "edhr-implementation",
+      "path": "/Users/ivenwang/.codex/worktrees/record-control-integration/edhr-nexus/gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/DhrStatusMachine.java",
+      "sha256": "44f5a6b87e486e41871b7b234688ced01f2fa4fdb0c94a40b34c68c5b82b697c",
+      "bytes": 421,
+      "lines": 17
+    },
+    {
+      "kind": "edhr-implementation",
+      "path": "/Users/ivenwang/.codex/worktrees/record-control-integration/edhr-nexus/gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/StateMachineService.java",
+      "sha256": "3f61fc4f3eb3cff4fd572037f33e5dec4f3629da2921f9b128e84b3c430ecec8",
+      "bytes": 2617,
+      "lines": 63
+    },
+    {
+      "kind": "edhr-implementation",
+      "path": "/Users/ivenwang/.codex/worktrees/record-control-integration/edhr-nexus/gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java",
+      "sha256": "6f5d4180f3ae60758d8c0b84aee308105d9fd5eb2e6cd0582da5b5c77268f151",
+      "bytes": 50659,
+      "lines": 963
+    },
+    {
+      "kind": "edhr-implementation",
+      "path": "/Users/ivenwang/.codex/worktrees/record-control-integration/edhr-nexus/gmp-platform/backend/src/main/java/com/zencas/edhr/recordcontrol/service/RecordControlService.java",
+      "sha256": "98965b422386c056caf5c85e8a613c50f6aab52da5d246898c0f175b2efc48b2",
+      "bytes": 35398,
+      "lines": 519
+    },
+    {
+      "kind": "edhr-implementation",
+      "path": "/Users/ivenwang/.codex/worktrees/record-control-integration/edhr-nexus/gmp-platform/backend/src/main/java/com/zencas/edhr/recordcontrol/controller/RecordControlController.java",
+      "sha256": "7bac9eda8269697a02c172877a47d96666159cbadf89422196dec58c20632d8b",
+      "bytes": 5048,
+      "lines": 91
+    },
+    {
+      "kind": "edhr-implementation",
+      "path": "/Users/ivenwang/.codex/worktrees/record-control-integration/edhr-nexus/gmp-platform/frontend/src/pages/dhr-management/DhrReviewPage.tsx",
+      "sha256": "a4a20170d02d2baf2f2bd4520acb524d7a691fece2b104889cb31af74099300b",
+      "bytes": 16015,
+      "lines": 130
+    },
+    {
+      "kind": "edhr-implementation",
+      "path": "/Users/ivenwang/.codex/worktrees/record-control-integration/edhr-nexus/gmp-platform/frontend/src/pages/dhr-management/DhrSummaryPage.tsx",
+      "sha256": "bf9802a89f0b4a08c370ddf4514855023a6ea6ce6b791650f60009dac34de579",
+      "bytes": 106046,
+      "lines": 1277
+    },
+    {
+      "kind": "edhr-implementation",
+      "path": "/Users/ivenwang/.codex/worktrees/record-control-integration/edhr-nexus/gmp-platform/frontend/src/pages/dhr-management/DhrManagementPage.tsx",
+      "sha256": "b8bea9ea921aac1de288aa2eef4a40836007a6dbfa9039dd85f54e8c3a05de8e",
+      "bytes": 38565,
+      "lines": 668
+    },
+    {
+      "kind": "edhr-implementation",
+      "path": "/Users/ivenwang/.codex/worktrees/record-control-integration/edhr-nexus/gmp-platform/frontend/src/pages/record-control/RecordChangePage.tsx",
+      "sha256": "061d4feb16b7f4f357f89105b4e4a4b943f4c738e75ffbcc47495ba8b74c5b2e",
+      "bytes": 18252,
+      "lines": 264
+    },
+    {
+      "kind": "edhr-implementation",
+      "path": "/Users/ivenwang/.codex/worktrees/record-control-integration/edhr-nexus/gmp-platform/frontend/src/api/dhr-workbenches.ts",
+      "sha256": "a713994ffa638d38253718c3f40f22ed5f57379adfbac62c13044d85fab117a0",
+      "bytes": 4194,
+      "lines": 35
+    },
+    {
+      "kind": "edhr-implementation",
+      "path": "/Users/ivenwang/.codex/worktrees/record-control-integration/edhr-nexus/gmp-platform/frontend/src/router/index.tsx",
+      "sha256": "775c4fc828751e1da55e5383a2e3f63e37a6f5c00ed885d454081ecec10263f2",
+      "bytes": 13058,
+      "lines": 174
+    },
+    {
+      "kind": "edhr-design",
+      "path": "/Users/ivenwang/.codex/worktrees/record-control-integration/edhr-nexus/docs/prd/edhr-mvp-prd.md",
+      "sha256": "8bd4bc6e18464fe14944eb58a5c949b2364a5aebb3b329c05d05d8d1a0cf79c7",
+      "bytes": 58708,
+      "lines": 802
+    },
+    {
+      "kind": "edhr-design",
+      "path": "/Users/ivenwang/.codex/worktrees/record-control-integration/edhr-nexus/docs/prd/edhr-commercial-prd.md",
+      "sha256": "43508e90b61e697eb4f27f97d6c80c5ba5c4d4c5739c246e1ea87e7895255cc4",
+      "bytes": 51025,
+      "lines": 821
+    },
+    {
+      "kind": "edhr-design",
+      "path": "/Users/ivenwang/.codex/worktrees/record-control-integration/edhr-nexus/docs/superpowers/specs/2026-09-11-record-correction-and-void-design.md",
+      "sha256": "2a92e375a5e190639ac1a176882b3fcfa00d0eb95059ef11c68324022f9ae090",
+      "bytes": 26906,
+      "lines": 481
+    },
+    {
+      "kind": "crown-front",
+      "path": "/Users/ivenwang/Documents/iven space/paas-main-front/src/projects/web-render/src/views/edhr-application/render/record-change/edhr-change.vue",
+      "sha256": "0c181bf0046beeb8269534b5f4993bf2ebaca57e4213a2a4ee9850e7535f3efb",
+      "bytes": 198,
+      "lines": 9
+    },
+    {
+      "kind": "crown-front",
+      "path": "/Users/ivenwang/Documents/iven space/paas-main-front/src/projects/web-render/src/views/edhr-application/render/record-change/record-change-container.vue",
+      "sha256": "29d38a0bdc9f3bab5183230402497a526f45f03e405700fd1cb03c8358e57121",
+      "bytes": 3736,
+      "lines": 125
+    },
+    {
+      "kind": "crown-front",
+      "path": "/Users/ivenwang/Documents/iven space/paas-main-front/src/projects/online-form/src/views/integration/apaas_ebr/hooks/useEbrWikiFactory.ts",
+      "sha256": "7fec1c9c4cd3906e4bb9b69150e1207d5e0199c3e771e2c3b92d0279903dd0d7",
+      "bytes": 8509,
+      "lines": 300
+    },
+    {
+      "kind": "crown-front",
+      "path": "/Users/ivenwang/Documents/iven space/paas-main-front/src/projects/online-form/src/views/integration/apaas_ebr/utils/instance-status/useInstanceStatus.ts",
+      "sha256": "4ded4c26c0371c61881385b808fbd837c77aa2a2611c3b7a42940b44c6dc6349",
+      "bytes": 8325,
+      "lines": 265
+    },
+    {
+      "kind": "crown-back",
+      "path": "/Users/ivenwang/Documents/iven space/gct-edhr-bed/gct-edhr-bed/src/main/java/com/gct/apaas/edhr/edhr/biz/UpdateEdhrArchivedStatus.java",
+      "sha256": "0878ff5bc8cf6aa458171cc6ac4719ad1bbfe085c672060b415e1d29f5fc7908",
+      "bytes": 1464,
+      "lines": 49
+    },
+    {
+      "kind": "crown-back",
+      "path": "/Users/ivenwang/Documents/iven space/gct-edhr-bed/gct-edhr-bed/src/main/java/com/gct/apaas/edhr/approve/factory/ProcessHandlerFactory.java",
+      "sha256": "e6368c13c07712fafb7f53b72ad9f9c1863d8c258604df3218928ca470fff7e8",
+      "bytes": 1792,
+      "lines": 48
+    },
+    {
+      "kind": "crown-back",
+      "path": "/Users/ivenwang/Documents/iven space/gct-edhr-bed/gct-edhr-bed/src/main/java/com/gct/apaas/edhr/approve/handler/business/OnlineFormChangeProcessHandler.java",
+      "sha256": "d284cee884d23fa66a5f416a838f9520a5e3d147b291665ef7f5ac23e1895240",
+      "bytes": 10940,
+      "lines": 222
+    }
+  ]
+}

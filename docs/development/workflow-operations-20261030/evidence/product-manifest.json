@@ -1,0 +1,126 @@
+[
+  {
+    "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/controller/SignatureController.java",
+    "sha256": "08ff51c53802c7cfed638c8a600882de8fce2b686b3db795e7dcebebcd55d2d4"
+  },
+  {
+    "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/repository/SignatureRepository.java",
+    "sha256": "331c096776bdaad908b90680dc00a063ae4ec42eafa11fdae0f3187de24c136e"
+  },
+  {
+    "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/recordcontrol/controller/RecordControlController.java",
+    "sha256": "aa61685b41e7afc7f0c59c0dfcec4a4cd27afc68627d063dae0010c2d3cf8882"
+  },
+  {
+    "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/recordcontrol/service/RecordControlService.java",
+    "sha256": "93507a91197f9a58dacfdb9b853d71c2cc0e4883babb5ad378ce7b153a672d44"
+  },
+  {
+    "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowInstanceController.java",
+    "sha256": "e89de86acf457546ca95c818c6fae2832fffa2f752f61b419d5a92f25e58f30f"
+  },
+  {
+    "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowLogController.java",
+    "sha256": "9fc62dc3f50aedcafe4c7421f50081223050399d139ad79afdfe9da42c38023f"
+  },
+  {
+    "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowOperationsController.java",
+    "sha256": "32d64ce843114b2b0b2544d6d9e4566b0b99fa99df0ce4c1c84e0d00e7356607"
+  },
+  {
+    "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowTaskController.java",
+    "sha256": "b34d71c6f28b310df0593236f15af120df681cfb5a79009c7e1432ef35577c8c"
+  },
+  {
+    "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java",
+    "sha256": "7b29f2a1d4f5d3997ddbc952ae256cda66fad7d5ce02b61558e72d6bb16a24fd"
+  },
+  {
+    "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/WorkflowOperationsQuery.java",
+    "sha256": "70a65712ac4ec562c86f2f00debaf7be762351b0b1b49bfe135667ef070641f8"
+  },
+  {
+    "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/WorkflowResponsibilityService.java",
+    "sha256": "6abb3e1e7e1e1d0895657cce80e0954bc2320b5772c22778a767fffdf011f671"
+  },
+  {
+    "path": "gmp-platform/backend/src/main/resources/db/changelog/0090-workflow-operations.sql",
+    "sha256": "d34253299bda6825681a02eaa7e30827b1a8df6c2cea3cd9fb4dec805984ed87"
+  },
+  {
+    "path": "gmp-platform/backend/src/main/resources/db/changelog/db.changelog-master.yaml",
+    "sha256": "f62eac5c7a6fd200e454d0c73778872f2accf8f6a67a324ef55e50e1c332d2ab"
+  },
+  {
+    "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/DhrGenericAccessTest.java",
+    "sha256": "ac0ce8bc44ec5805bc5cac049c50cb28f2f239b2bfc1af46ca31b0866e62a1f9"
+  },
+  {
+    "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/recordcontrol/service/RecordControlAccessTest.java",
+    "sha256": "11609da143336cd79f2cf5a72e249594648fbaa580ec731592444db2bdec8792"
+  },
+  {
+    "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/recordcontrol/service/RecordControlPostgresIntegrationTest.java",
+    "sha256": "9472248f98ab5f5a15158137cbb893dc0d1bc0fe719fc81ea886bc1b870f1d7c"
+  },
+  {
+    "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/WorkflowInstanceAuthorizationIntegrationTest.java",
+    "sha256": "5ea0be215ac8e55e8cc871cc99178c6ad592f1c628ddfd12e412c45ecee5fe84"
+  },
+  {
+    "path": "gmp-platform/frontend/scripts/verify-list-table-style-contract.mjs",
+    "sha256": "ffea9f2d34e3fbed8ceaf58e2a2f6473158f48ae3809e182dc6219cb89691284"
+  },
+  {
+    "path": "gmp-platform/frontend/src/api/record-control.ts",
+    "sha256": "04c2fea49445e1871f0db6845d29a90469aa12e5ae45920a030a2c12ad901c19"
+  },
+  {
+    "path": "gmp-platform/frontend/src/api/workflow-operations.ts",
+    "sha256": "8a542628ac3c0f0c1453d79f67211d32a759572d036a00d40f36c56b67fd5f95"
+  },
+  {
+    "path": "gmp-platform/frontend/src/components/ConfirmDialog.tsx",
+    "sha256": "b2a357f8abc840bd4dafa58e770819046983a0ba81e95e6927607e28970fdcfa"
+  },
+  {
+    "path": "gmp-platform/frontend/src/components/workflow/WorkflowResponsibilityDialog.tsx",
+    "sha256": "d85ea9343c0bd76d0f7b1329ed8bf6e96009ccb60d9226c91d0cfe8f63f1adf0"
+  },
+  {
+    "path": "gmp-platform/frontend/src/pages/record-control/RecordApprovalDetailPage.tsx",
+    "sha256": "16649a42548b597ffea107c4925f517e05033bf46843620150d154309f309f56"
+  },
+  {
+    "path": "gmp-platform/frontend/src/pages/record-control/RecordRequestDetailPage.tsx",
+    "sha256": "7b6b396f658bfa0aab1c0c1edc03fed4b463aeb1ed4e19d0d8c19c98c4ea5c2e"
+  },
+  {
+    "path": "gmp-platform/frontend/src/pages/workflow-center/InstanceDetail.tsx",
+    "sha256": "d1efd2bd9ac14355002a1c44b45d360f9962cfc7e673d38bb265b12b062181bb"
+  },
+  {
+    "path": "gmp-platform/frontend/src/pages/workflow-center/InstanceList.tsx",
+    "sha256": "79d108485367ec6bd5c0b3aa4002ab3bb5c02d4b28a6902727715d6c15f7c14f"
+  },
+  {
+    "path": "gmp-platform/frontend/src/pages/workflow-center/InstanceLogs.tsx",
+    "sha256": "d8a4e4c47c13a81f43e5550470aef40426af45c5a45076bbfb8fb3ff33bd7278"
+  },
+  {
+    "path": "gmp-platform/frontend/src/pages/workflow-center/WorkflowInstancePanel.tsx",
+    "sha256": "038acc4183187b8c7f4e87e9824a57365836c714b4ca60f8297ec7a00bf97f88"
+  },
+  {
+    "path": "gmp-platform/frontend/src/router/index.tsx",
+    "sha256": "180d4c7081b4ea4c157311eaa23282138ef9b2cf175ecf7af49fd44f584d756e"
+  },
+  {
+    "path": "gmp-platform/frontend/src/utils/constants.ts",
+    "sha256": "ed62b18ea43c1581d1892b4611a4e664f1670bcc95c1bebab7f21adbd682e60b"
+  },
+  {
+    "path": "gmp-platform/frontend/src/utils/menuManagement.ts",
+    "sha256": "417ea86a92f39fcfbcf592e4d8e7a12c249a076704fc3db31000f2c74065410e"
+  }
+]

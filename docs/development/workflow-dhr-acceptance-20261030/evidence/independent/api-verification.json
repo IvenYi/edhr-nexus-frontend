@@ -1,0 +1,292 @@
+{
+  "database": "edhr_acceptance_quality_20261030",
+  "baseUrl": "http://127.0.0.1:8108/api/v1",
+  "checks": [
+    {
+      "name": "reassign-missing-signature",
+      "passed": true,
+      "evidence": "/workflow/operations/tasks/391515361681543168/reassign: {\"code\":400,\"message\":\"电子签名密码错误\",\"timestamp\":\"2026-10-30T07:25:28.253058Z\",\"traceId\":\"78b5f331-68bf-4c36-8f2d-ca767aa4265d\"}"
+    },
+    {
+      "name": "reassign-wrong-signature",
+      "passed": true,
+      "evidence": "/workflow/operations/tasks/391515361681543168/reassign: {\"code\":400,\"message\":\"电子签名密码错误\",\"timestamp\":\"2026-10-30T07:25:28.326263Z\",\"traceId\":\"b8f3d863-4dd0-4a24-b08b-de40ae8260c7\"}"
+    },
+    {
+      "name": "reassign-login-password-is-not-sign-password",
+      "passed": true,
+      "evidence": "/workflow/operations/tasks/391515361681543168/reassign: {\"code\":400,\"message\":\"电子签名密码错误\",\"timestamp\":\"2026-10-30T07:25:28.401704Z\",\"traceId\":\"90a43ec6-35d6-4649-bf47-9256ca56e63c\"}"
+    },
+    {
+      "name": "reassign-signer-needs-intervention-permission",
+      "passed": true,
+      "evidence": "/workflow/operations/tasks/391515361681543168/reassign: {\"code\":403,\"message\":\"签署人没有流程干预权限\",\"timestamp\":\"2026-10-30T07:25:28.478187Z\",\"traceId\":\"81f11546-2b33-42dd-a437-cee2ec13c4b5\"}"
+    },
+    {
+      "name": "reassign-session-needs-intervention-permission",
+      "passed": true,
+      "evidence": "/workflow/operations/tasks/391515361681543168/reassign: {\"code\":403,\"message\":\"无操作权限\",\"timestamp\":\"2026-10-30T07:25:28.482514Z\",\"traceId\":\"dbc07f16-55f1-4e80-b500-65d01ef0793c\"}"
+    },
+    {
+      "name": "reassign-cannot-select-applicant",
+      "passed": true,
+      "evidence": "/workflow/operations/tasks/391515361681543168/reassign: {\"code\":400,\"message\":\"目标不在该任务授权候选范围内，或为申请人\",\"timestamp\":\"2026-10-30T07:25:28.556096Z\",\"traceId\":\"389be20d-d7dc-44b0-9c81-ffdf7748ff69\"}"
+    },
+    {
+      "name": "reassign-negative-cases-have-no-side-effects",
+      "passed": true,
+      "evidence": "Task/state/logs unchanged"
+    },
+    {
+      "name": "signed-reassignment-only-changes-responsibility",
+      "passed": true,
+      "evidence": {
+        "id": "391515361681543168",
+        "nodeId": "883010000203",
+        "status": "PENDING",
+        "assigneeId": "883010000003",
+        "taskState": "257e15bf1f1c8beef946b3b8e669f1855c8387e1af0765c7c0b93021d2e9fa2f",
+        "signatureId": null,
+        "opinion": null,
+        "action": null,
+        "assigneeName": "验收·审批乙"
+      }
+    },
+    {
+      "name": "reassignment-has-log-signature-and-original-candidates",
+      "passed": true,
+      "evidence": "Original snapshot, TASK_REASSIGN, protected signature"
+    },
+    {
+      "name": "stale-reassignment-replay-refused",
+      "passed": true,
+      "evidence": "/workflow/operations/tasks/391515361681543168/reassign: {\"code\":400,\"message\":\"任务处理人或状态已变化，请刷新后重新操作\",\"timestamp\":\"2026-10-30T07:25:28.691922Z\",\"traceId\":\"886f4628-15d7-4436-9a4e-4d1258b106b8\"}"
+    },
+    {
+      "name": "transfer-config-requires-signature-and-excludes-applicant",
+      "passed": true,
+      "evidence": [
+        {
+          "name": "验收·审批乙",
+          "username": "uat_target",
+          "id": "883010000003"
+        }
+      ]
+    },
+    {
+      "name": "transfer-signature-required-by-frozen-node",
+      "passed": true,
+      "evidence": "/record-control/workflow-tasks/391515362180665344/transfer: {\"code\":400,\"message\":\"电子签名密码错误\",\"timestamp\":\"2026-10-30T07:25:28.714951Z\",\"traceId\":\"b248cf13-e634-4a7b-a5aa-2321b2027910\"}"
+    },
+    {
+      "name": "signed-transfer-does-not-approve",
+      "passed": true,
+      "evidence": "IN_REVIEW/RUNNING; withdrawal still allowed"
+    },
+    {
+      "name": "old-transfer-operator-cannot-approve",
+      "passed": true,
+      "evidence": "/record-control/workflow-tasks/391515362180665344/approve: {\"code\":400,\"message\":\"当前用户不是该任务的待处理人\",\"timestamp\":\"2026-10-30T07:25:28.883462Z\",\"traceId\":\"0ee9a27e-1993-4c0d-b473-c5015b561868\"}"
+    },
+    {
+      "name": "new-transfer-target-has-current-responsibility",
+      "passed": true,
+      "evidence": {
+        "taskState": "6d804635105728f3a4383906b44f2f44e45055fe563523178dbab98fc7d982a3",
+        "canTransfer": true,
+        "signatureRequired": true
+      }
+    },
+    {
+      "name": "only-applicant-can-withdraw",
+      "passed": true,
+      "evidence": "/record-control/requests/391515362579124224/withdraw: {\"code\":403,\"message\":\"仅申请人可以撤回本人的申请\",\"timestamp\":\"2026-10-30T07:25:28.894608Z\",\"traceId\":\"733200d5-9004-411d-8a57-1ddc27882470\"}"
+    },
+    {
+      "name": "withdrawal-closes-request-workflow-all-tasks",
+      "passed": true,
+      "evidence": "All runtime/application states WITHDRAWN"
+    },
+    {
+      "name": "withdrawal-keeps-effective-revision-and-values",
+      "passed": true,
+      "evidence": "883010003002"
+    },
+    {
+      "name": "prior-decision-case-is-still-pending-with-no-withdrawal",
+      "passed": true,
+      "evidence": "One APPROVE decision, second node pending"
+    },
+    {
+      "name": "prior-decision-blocks-withdrawal",
+      "passed": true,
+      "evidence": "/record-control/requests/391515363027914752/withdraw: {\"code\":400,\"message\":\"本轮已有审批决定，不能撤回\",\"timestamp\":\"2026-10-30T07:25:28.939367Z\",\"traceId\":\"787cd11b-28fb-415d-9313-e033db19495f\"}"
+    },
+    {
+      "name": "pending-dhr-blocks-source-change",
+      "passed": true,
+      "evidence": "/record-control/requests: {\"code\":400,\"message\":\"关联 DHR 正在审批，请先由有权审批人退回整理，再申请表单变更或作废\",\"timestamp\":\"2026-10-30T07:25:29.059007Z\",\"traceId\":\"88475f21-3ce3-4a0f-886a-55f61e762c20\"}"
+    },
+    {
+      "name": "pending-dhr-blocks-source-obsolete",
+      "passed": true,
+      "evidence": "/record-control/requests: {\"code\":400,\"message\":\"关联 DHR 正在审批，请先由有权审批人退回整理，再申请表单变更或作废\",\"timestamp\":\"2026-10-30T07:25:29.143185Z\",\"traceId\":\"9410d7d4-6ff7-4239-8e5f-a852fa6ae44f\"}"
+    },
+    {
+      "name": "dhr-block-does-not-change-frozen-evidence",
+      "passed": true,
+      "evidence": "cad897b7fe25768d6b2ea3141e24c462"
+    },
+    {
+      "name": "dhr-human-return-reopens-controlled-source-application",
+      "passed": true,
+      "evidence": "DHR DRAFT; new source application IN_REVIEW"
+    },
+    {
+      "name": "pending-source-blocks-dhr-submission",
+      "passed": true,
+      "evidence": "/dhr-instances/883010004005/summary/submit: {\"code\":400,\"message\":\"来源表单有审批中的变更或作废申请，暂不能提交汇总或审批通过；原有效修订仍可查看\",\"timestamp\":\"2026-10-30T07:25:29.449220Z\",\"traceId\":\"fe4a9c32-1a6d-4129-871e-fab95afca8de\"}"
+    },
+    {
+      "name": "after-source-request-ends-dhr-can-submit",
+      "passed": true,
+      "evidence": "391517849927225344"
+    },
+    {
+      "name": "DHR-CHANGE-effective-application-approved",
+      "passed": true,
+      "evidence": "APPROVED"
+    },
+    {
+      "name": "change-effective-current-revision-updated",
+      "passed": true,
+      "evidence": {
+        "value": "UAT-LOT-NEW",
+        "qty": 120,
+        "unit": "件",
+        "note": "合成验收：更正后的内容"
+      }
+    },
+    {
+      "name": "DHR-CHANGE-keeps-frozen-version-approval-signature",
+      "passed": true,
+      "evidence": {
+        "frozen": "c4489974bbcbbbba5d46ad12e72fb97c",
+        "approval": "f7044e216a6df4b52167aaf958a55d84",
+        "signature": "10e9fea5b3aee57b2eaba96200bf48b5"
+      }
+    },
+    {
+      "name": "DHR-CHANGE-records-evidence-impact",
+      "passed": true,
+      "evidence": [
+        {
+          "recordId": "883010002006",
+          "instanceNo": "FR-UAT-1030-DHR-CHANGE",
+          "message": "来源记录与提交时冻结证据不一致，请核对表单变更或作废记录"
+        }
+      ]
+    },
+    {
+      "name": "DHR-CHANGE-notifies-actual-summary-submitter",
+      "passed": true,
+      "evidence": {
+        "unreadCount": 1,
+        "total": 1,
+        "content": [
+          {
+            "id": "1",
+            "dhrNo": "DHR-UAT-1030-DHR-CHANGE",
+            "versionNo": 1,
+            "instanceNo": "FR-UAT-1030-DHR-CHANGE",
+            "action": "CHANGE",
+            "occurredAt": "2026-10-30 15:25:29.607877",
+            "read": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "DHR-CHANGE-no-invented-current-reviewer",
+      "passed": true,
+      "evidence": "Only actual submitter; no current pending review task"
+    },
+    {
+      "name": "DHR-VOID-effective-application-approved",
+      "passed": true,
+      "evidence": "APPROVED"
+    },
+    {
+      "name": "void-effective-current-record-obsolete",
+      "passed": true,
+      "evidence": "OBSOLETE"
+    },
+    {
+      "name": "DHR-VOID-keeps-frozen-version-approval-signature",
+      "passed": true,
+      "evidence": {
+        "frozen": "63d20a0ef3558ce6ef2cb8ee207b4c52",
+        "approval": "72290a0525ef50ac07b8b6251edc0ece",
+        "signature": "c35d7d439041f347c88055fb5f88f3e1"
+      }
+    },
+    {
+      "name": "DHR-VOID-records-evidence-impact",
+      "passed": true,
+      "evidence": [
+        {
+          "recordId": "883010002007",
+          "instanceNo": "FR-UAT-1030-DHR-VOID",
+          "message": "来源记录与提交时冻结证据不一致，请核对表单变更或作废记录"
+        }
+      ]
+    },
+    {
+      "name": "DHR-VOID-notifies-actual-summary-submitter",
+      "passed": true,
+      "evidence": {
+        "unreadCount": 2,
+        "total": 2,
+        "content": [
+          {
+            "id": "2",
+            "dhrNo": "DHR-UAT-1030-DHR-VOID",
+            "versionNo": 1,
+            "instanceNo": "FR-UAT-1030-DHR-VOID",
+            "action": "OBSOLETE",
+            "occurredAt": "2026-10-30 15:25:29.848751",
+            "read": false
+          },
+          {
+            "id": "1",
+            "dhrNo": "DHR-UAT-1030-DHR-CHANGE",
+            "versionNo": 1,
+            "instanceNo": "FR-UAT-1030-DHR-CHANGE",
+            "action": "CHANGE",
+            "occurredAt": "2026-10-30 15:25:29.607877",
+            "read": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "DHR-VOID-no-invented-current-reviewer",
+      "passed": true,
+      "evidence": "Only actual submitter; no current pending review task"
+    },
+    {
+      "name": "old-frozen-evidence-keeps-original-completed-status",
+      "passed": true,
+      "evidence": "Old candidate retains original status/value"
+    },
+    {
+      "name": "original-acceptance-data-not-consumed",
+      "passed": true,
+      "evidence": "Retained acceptance database still has 7 active applications"
+    }
+  ],
+  "summary": {
+    "passed": 40,
+    "failed": 0
+  }
+}

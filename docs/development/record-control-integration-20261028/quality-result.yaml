@@ -1,0 +1,146 @@
+qualityResult:
+  result: failed
+  baseCommit: 8784ba87166addae9cb9659d6120aa84f993c7ef
+  headCommit: 40e39a17ee1ca775695b7af42f31393fb76b6df4
+  contractBaseline:
+    sourceCommit: 40e39a17ee1ca775695b7af42f31393fb76b6df4
+    targetBranch: edhr-dev
+    targetCommit: 8784ba87166addae9cb9659d6120aa84f993c7ef
+    contractReadCommit: 40e39a17ee1ca775695b7af42f31393fb76b6df4
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: dirty
+    includedPaths: []
+    excludedPaths:
+      - gmp-platform/frontend/node_modules
+      - docs/development/record-control-integration-20261028/evidence/independent
+      - docs/development/record-control-integration-20261028/quality-result.yaml
+    untrackedPaths:
+      - gmp-platform/frontend/node_modules
+      - docs/development/record-control-integration-20261028/evidence/independent
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+    - id: check.rc-integration-fixed-candidate
+      required: true
+      category: requirements
+      description: Independently read project/role/handoff contracts and the decision package; pin both inputs and the tested merge candidate. Product working-tree diff was empty during execution.
+      method: command
+      command: git rev-parse HEAD; git log -3 --format='%H %P %s'; git merge-base --is-ancestor for both fixed inputs; git diff --name-only
+      outcome: passed
+      evidence:
+        - 'Target base 8784ba87166addae9cb9659d6120aa84f993c7ef; functional head aef427c524bd7270b3775fbd7c599c72a545e21b; actually tested candidate 40e39a17ee1ca775695b7af42f31393fb76b6df4.'
+        - evidence/independent/candidate-parents.txt
+        - evidence/independent/contract-delta.txt
+        - evidence/independent/initial-working-tree.txt
+        - evidence/independent/final-working-tree.txt
+    - id: check.rc-integration-independent-backend
+      required: true
+      category: regression
+      description: Independently run the 14 focused classes plus current-baseline static/PostgreSQL and record-control full application PostgreSQL tests. The aggregate includes the knowledge and database checks listed separately below; counts must not be added twice.
+      method: automated-test
+      command: RECORD_CONTROL_TEST_DATABASE_URL=jdbc:postgresql://localhost:5432/edhr_record_control_test_quality_20261028_a BASELINE_TEST_DATABASE_URL=jdbc:postgresql://localhost:5432/edhr_baseline_test_quality_rc_20261028_a PGUSER=<current-os-user> mvn -q -Dexec.skip=true -Dtest=RecordControlAccessTest,RecordControlDiffTest,RecordControlMigrationTest,RecordControlTaskActionServiceTest,RecordControlWorkflowServiceTest,RecordControlWorkflowControllerTest,WorkflowEngineTest,WorkflowTaskControllerTest,ExecutionAccessTest,DhrGenericAccessTest,ProductionExecutionIntegrationTest,AuthControllerTest,AuthorizationNoticeFontTest,BusinessKnowledgeModelTest,CurrentDatabaseBaselineTest,CurrentDatabaseBaselinePostgresTest,RecordControlPostgresIntegrationTest test
+      outcome: passed
+      evidence:
+        - evidence/independent/backend-tests.log
+        - evidence/independent/test-summary.json
+        - 'Exit 0; 290 tests, 287 passed, 3 existing conditional skips, 0 failures, 0 errors. This does not cover the additional failed subtable probe.'
+    - id: check.rc-integration-independent-postgresql
+      required: true
+      category: database
+      description: Verify fresh installation, repeat installation, current-baseline upgrade without invented historical evidence, initial revision, signed approval/void/return, duplicate confirmation, concurrent requests, and atomic failure rollback on separate disposable PostgreSQL databases.
+      method: automated-test
+      command: CurrentDatabaseBaselinePostgresTest and RecordControlPostgresIntegrationTest in the independent Maven invocation
+      outcome: passed
+      evidence:
+        - evidence/independent/backend-tests.log
+        - evidence/independent/test-summary.json
+        - '3 baseline PostgreSQL tests and 6 full-application record-control PostgreSQL tests passed; these 9 tests are included in the 290 aggregate.'
+        - 'Only edhr_record_control_test_quality_20261028_a and edhr_baseline_test_quality_rc_20261028_a were created/used by this instance. No edhr_dev or primary browser database was reset.'
+    - id: check.rc-integration-independent-knowledge
+      required: true
+      category: ontology
+      description: Run formal knowledge validation and independently inspect the incoming ID remapping, explicit replacement scope, original target decisions and deferred maturity boundaries.
+      method: automated-test
+      command: BusinessKnowledgeModelTest; git diff --exit-code target..candidate -- original DEC-0075/76/77/78 files
+      outcome: passed
+      evidence:
+        - evidence/independent/test-summary.json
+        - evidence/independent/retained-target-decisions.txt
+        - ontology-result.yaml
+        - '89 knowledge checks passed, included in the 290 aggregate. Target DEC-0075 through DEC-0078 have no diff; imported decisions map to DEC-0086 through DEC-0089. This is scoped reconciliation, not a full semantic audit.'
+    - id: check.rc-integration-navigation
+      required: true
+      category: integration
+      description: Verify record-control routes, canonical navigation, retained custom entries and projection report navigation.
+      method: automated-test
+      command: node --test scripts/test-records-menu.mjs scripts/test-projection-report-navigation.mjs
+      outcome: passed
+      evidence:
+        - evidence/independent/navigation-tests.log
+        - '9 passed; 0 failed; 0 skipped.'
+    - id: check.rc-integration-build
+      required: true
+      category: integration
+      description: Build the frontend on the fixed integrated candidate, including the latest target designer-entry removal.
+      method: command
+      command: npm run build
+      outcome: passed
+      evidence: [evidence/independent/frontend-build.log, 'Exit 0.']
+    - id: check.rc-integration-subtable-production-identity
+      required: true
+      category: integration
+      description: Additional independent probe of the actual RecordControlDiff class with the stable row metadata emitted by the current production renderer.
+      method: command
+      command: java -cp <actual-surefire-runtime-classpath> docs/development/record-control-integration-20261028/evidence/independent/SubtableRowIdentityProbe.java
+      outcome: failed
+      evidence:
+        - evidence/independent/SubtableRowIdentityProbe.java
+        - evidence/independent/subtable-row-identity-probe.log
+        - 'The same business-field change fails with a production __rowId and succeeds with one difference when only that metadata key is removed.'
+    - id: check.rc-integration-whitespace
+      required: true
+      category: documentation
+      description: Check the full fixed candidate diff for whitespace errors.
+      method: command
+      command: git diff --check 8784ba87166addae9cb9659d6120aa84f993c7ef..40e39a17ee1ca775695b7af42f31393fb76b6df4
+      outcome: passed
+      evidence: [evidence/independent/whitespace.txt, 'Exit 0.']
+  findings:
+    - id: QF-RC-INTEGRATION-001
+      severity: high
+      scope: Current production subtable records submitted for controlled change
+      summary: RecordControlDiff rejects the __rowId produced by the current form renderer, so ordinary completed forms with subtable rows cannot submit a change.
+      reproductionSteps:
+        - Use a subTable field named rows with a text column named value, as in the independent probe.
+        - Supply a saved row containing the current production metadata __rowId and value original; newSubTableRow.ts line 5 creates this metadata for normal rows.
+        - Call the actual RecordControlDiff.identifyRows with source revision 123, clone the result, and change value to changed.
+        - Call the actual RecordControlDiff.prepare. Compare with the identical source/proposal after removing only __rowId.
+      expectedResult: Production row identity metadata is supported and preserved while the legitimate business-field change yields one stable row/field difference.
+      actualResult: normalizeSubtable accepts only __recordRowId and configured column IDs, treating __rowId as an unknown field and throwing 子表包含未知字段. The control without __rowId produces one valid field difference. Keeping a normal subtable while modifying a main field also reaches this rejection path.
+      evidence:
+        - gmp-platform/backend/src/main/java/com/zencas/edhr/recordcontrol/service/RecordControlDiff.java:107
+        - gmp-platform/frontend/src/components/form-renderer/newSubTableRow.ts:5
+        - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormTraceIndexService.java:70
+        - evidence/independent/SubtableRowIdentityProbe.java
+        - evidence/independent/subtable-row-identity-probe.log
+        - 'DEC-0087-04 requires stable field/row identities; the defect is in the current application path, not the deferred A12 consumer.'
+      resolutionStatus: open
+      resolutionEvidence: []
+  residualRisks:
+    - id: residual.rc-integration-dhr-a12
+      description: The two existing DHR high discrepancies, effective revision consumption, impact notifications, projection reversal/rebuild and A12 remain explicitly outside this integration-preparation candidate.
+      impact: Passing the tested core scenarios cannot establish complete DHR lifecycle, report correctness after revision/void, or production release readiness.
+      mitigation: Preserve their open status and test actual effective-source integration in the following functional slice.
+    - id: residual.rc-integration-remaining-actions-and-permissions
+      description: Withdrawal, record-control transfer/reassignment and the ordinary-user candidate permission alignment remain recorded gaps.
+      impact: The submitted application/approval capability is not the full historical P0 action set, and menu access alone does not establish candidate API access.
+      mitigation: Keep their implementation and real non-admin permission matrix as explicit follow-up scope; do not broaden permissions by inference.
+    - id: residual.rc-integration-browser
+      description: This independent instance did not run a browser interaction. The primary agent was performing browser checks on its own database during this review.
+      impact: This result makes no independent visual or browser end-to-end pass claim.
+      mitigation: Preserve actual primary browser evidence separately and include suitable interaction checks in the new candidate's final independent verification.
+    - id: residual.rc-integration-fixed-scope
+      description: The semantic/source inspection covers the changed integration paths, three primary fixes and the reproduced identity mismatch; it is not a full repository or whole-file semantic audit.
+      impact: Unreviewed unrelated behavior cannot be inferred correct from these results.
+      mitigation: Preserve the fixed base/head and rerun the affected checks after any correction. L2 high remediation requires a fresh independent quality instance.
+  blockingConditions: []

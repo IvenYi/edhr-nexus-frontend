@@ -1,0 +1,45 @@
+knowledgeModelVersion: 0.3.25
+decisions:
+  - id: DEC-0086
+    title: 记录变更首版检索范围
+    status: specified
+    visibility: internal
+    context: "user-confirmed；用户初始确认记录变更首版考虑按表单流水号和按批次/SN两种检索方式，随后为保证交期用最新决策覆盖当前交付范围：本次只做按表单流水号检索并发起变更，按批次/SN检索延期到后续版本而非永久取消，仍不单独提供DHR或记录本检索入口。既有规划文档曾把表单变更、DHR变更和记录本变更分开描述，本决策只收敛本次交付入口，不删除表单与生产批次/SN、DHR上下文的业务关联，也不修改变更资格状态、审批、签名、作废、前后对比或审计语义。来支已提供记录变更运行源码与测试断言；本决策保持specified/internal，当前集成候选验收另取证。 original-evidence；本记录从 feat/record-change@aef427c524bd7270b3775fbd7c599c72a545e21b 的 DEC-0075 重分配为 DEC-0086，避免覆盖 edhr-dev 当前同号不同义决策；原始证据及Git历史保留，映射见 evidence.record-control-integration-20261028。"
+    decisionStatements:
+      - id: DEC-0086-01
+        statement: 历史首版范围曾计划同时提供按表单流水号和按批次/SN两种检索方式；该交付范围已由DEC-0086-03和DEC-0086-04的最新用户确认取代。
+        status: deprecated
+        visibility: internal
+      - id: DEC-0086-02
+        statement: 记录变更首版不单独提供DHR或记录本检索入口。
+        status: specified
+        visibility: internal
+      - id: DEC-0086-03
+        statement: 为保证交期，记录变更本次首版只提供按表单流水号检索并发起变更。
+        status: specified
+        visibility: internal
+      - id: DEC-0086-04
+        statement: 按批次/SN检索延期到后续版本，不属于永久取消的能力。
+        status: specified
+        visibility: internal
+    supersedes: [DEC-0050]
+    evidenceIds: [evidence.record-change-search-scope-user-confirmed, evidence.record-change-existing-prd]
+    acceptanceScenarios:
+      - id: scenario.record-change-search-by-form-serial
+        given: 用户进入首版记录变更页面
+        when: 使用有效表单流水号检索
+        then: 系统定位对应的表单实例
+        evidenceIds: [evidence.record-change-search-scope-user-confirmed]
+        evidenceRequirements: [后续接口测试, 后续页面交互验证]
+      - id: scenario.record-change-batch-or-sn-deferred-v1
+        given: 当前交付范围为记录变更首版
+        when: 用户查看可用检索方式
+        then: 本次不提供按批次/SN检索，产品范围记录该能力延期到后续版本而非永久取消
+        evidenceIds: [evidence.record-change-search-scope-user-confirmed]
+        evidenceRequirements: [后续页面视觉验证, 后续版本范围复核]
+      - id: scenario.record-change-no-dedicated-dhr-or-notebook-search-v1
+        given: 当前发布范围为记录变更首版
+        when: 用户查看可用检索方式
+        then: 只显示按表单流水号检索，不显示按批次/SN或独立DHR、记录本检索入口
+        evidenceIds: [evidence.record-change-search-scope-user-confirmed]
+        evidenceRequirements: [后续页面视觉验证]

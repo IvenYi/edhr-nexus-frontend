@@ -19,6 +19,9 @@ import org.springframework.data.jpa.repository.support.JpaRepositoryFactory;
 import org.springframework.orm.jpa.SharedEntityManagerCreator;
 import org.springframework.orm.jpa.persistenceunit.PersistenceManagedTypes;
 import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import java.util.List;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -38,22 +41,31 @@ class DhrGenericAccessTest {
         instances.saveAndFlush(WorkflowInstance.builder().id(1L).businessType("DHR_SUMMARY").build());
         instances.saveAndFlush(WorkflowInstance.builder().id(2L).businessType("CHANGE").build());
         tasks.saveAndFlush(WorkflowTask.builder().id(10L).instanceId(1L).build());
-        tasks.saveAndFlush(WorkflowTask.builder().id(20L).instanceId(2L).build());
+        tasks.saveAndFlush(WorkflowTask.builder().id(20L).instanceId(2L).assigneeId("user-a").build());
         logs.saveAndFlush(WorkflowActionLog.builder().id(100L).instanceId(1L).taskId(10L).comment("DHR original").build());
         logs.saveAndFlush(WorkflowActionLog.builder().id(200L).instanceId(2L).taskId(20L).build());
         signatures.saveAndFlush(Signature.builder().id(1000L).targetType("DHR_SUMMARY").targetId("3").build());
         signatures.saveAndFlush(Signature.builder().id(2000L).targetType("OTHER").targetId("4").build());
+        signatures.saveAndFlush(Signature.builder().id(3000L).targetType("RECORD_CONTROL_REQUEST").targetId("5").build());
+        signatures.saveAndFlush(Signature.builder().id(4000L).targetType("WORKFLOW_INTERVENTION").targetId("20").build());
         engine = mock(WorkflowEngine.class, CALLS_REAL_METHODS);
         ReflectionTestUtils.setField(engine, "instanceRepository", instances);
         ReflectionTestUtils.setField(engine, "taskRepository", tasks);
+        SecurityContextHolder.getContext().setAuthentication(
+                new UsernamePasswordAuthenticationToken("user-a", null, List.of()));
     }
+    @AfterEach void clearSecurityContext() { SecurityContextHolder.clearContext(); }
     @Test void databasePaginationExcludesDhrBeforeComputingCounts() {
         var page = PageRequest.of(0, 20);
         assertThat(instances.findNonDhr(page).getContent()).extracting(WorkflowInstance::getId).containsExactly(2L);
         assertThat(instances.findNonDhr(page).getTotalElements()).isEqualTo(1);
         assertThat(tasks.findNonDhr(page).getContent()).extracting(WorkflowTask::getId).containsExactly(20L);
         assertThat(logs.findNonDhr(page).getContent()).extracting(WorkflowActionLog::getId).containsExactly(200L);
-        assertThat(signatures.findNonDhr(page).getContent()).extracting(Signature::getId).containsExactly(2000L);
+        assertThat(signatures.findNonDhr(page).getContent()).extracting(Signature::getId).containsExactly(2000L, 3000L, 4000L);
+        assertThat(signatures.findGeneric(page).getContent()).extracting(Signature::getId).containsExactly(2000L);
+        assertThat(instances.findGeneric(page).getContent()).isEmpty();
+        assertThat(tasks.findGeneric(page).getContent()).isEmpty();
+        assertThat(logs.findGeneric(page).getContent()).isEmpty();
     }
     @Test void allGenericSingleObjectReadsRejectDhrBeforeReturningEvidence() {
         var taskController = new WorkflowTaskController(tasks, engine);
@@ -65,17 +77,27 @@ class DhrGenericAccessTest {
         assertThatThrownBy(() -> instanceController.logs(1L)).hasMessageContaining("DHR");
         assertThatThrownBy(() -> logController.getById(100L)).hasMessageContaining("DHR");
         assertThatThrownBy(() -> new SignatureController(signatures).getById(1000L)).hasMessageContaining("DHR");
+        assertThatThrownBy(() -> new SignatureController(signatures).getById(3000L)).hasMessageContaining("记录变更或作废");
         assertThat(taskController.getById(20L).getData().getId()).isEqualTo(20L);
     }
     @Test void cannotForgeReparentOverwriteOrDeleteDhrAuditLogs() {
         var controller = new WorkflowLogController(logs, engine);
         assertThatThrownBy(() -> controller.create(WorkflowActionLog.builder().id(101L).instanceId(1L).build())).hasMessageContaining("DHR");
-        assertThatThrownBy(() -> controller.create(WorkflowActionLog.builder().id(101L).instanceId(2L).taskId(10L).build())).hasMessageContaining("DHR");
-        assertThatThrownBy(() -> controller.create(WorkflowActionLog.builder().id(100L).instanceId(2L).build())).hasMessageContaining("DHR");
-        assertThatThrownBy(() -> controller.update(100L, WorkflowActionLog.builder().instanceId(2L).build())).hasMessageContaining("DHR");
+        assertThatThrownBy(() -> controller.create(WorkflowActionLog.builder().id(101L).instanceId(2L).taskId(10L).build())).hasMessageContaining("记录变更/作废");
+        assertThatThrownBy(() -> controller.create(WorkflowActionLog.builder().id(100L).instanceId(2L).build())).hasMessageContaining("记录变更/作废");
+        assertThatThrownBy(() -> controller.update(100L, WorkflowActionLog.builder().instanceId(2L).build())).hasMessageContaining("记录变更/作废");
         assertThatThrownBy(() -> controller.delete(100L)).hasMessageContaining("DHR");
         assertThat(logs.findById(100L).orElseThrow().getComment()).isEqualTo("DHR original");
         assertThat(logs.count()).isEqualTo(2);
+    }
+
+    @Test void interventionSignaturesCannotBeForgedReadOverwrittenOrDeletedThroughGenericEndpoints() {
+        var controller = new SignatureController(signatures);
+        assertThatThrownBy(() -> controller.getById(4000L)).hasMessageContaining("流程干预");
+        assertThatThrownBy(() -> controller.create(Signature.builder().id(2000L).targetType("WORKFLOW_INTERVENTION").build())).hasMessageContaining("流程干预");
+        assertThatThrownBy(() -> controller.update(4000L, Signature.builder().targetType("OTHER").build())).hasMessageContaining("流程干预");
+        assertThatThrownBy(() -> controller.delete(4000L)).hasMessageContaining("流程干预");
+        assertThat(signatures.findById(4000L).orElseThrow().getTargetType()).isEqualTo("WORKFLOW_INTERVENTION");
     }
     @Configuration(proxyBeanMethods=false) @EnableAutoConfiguration(exclude=JpaRepositoriesAutoConfiguration.class)
     static class Config {

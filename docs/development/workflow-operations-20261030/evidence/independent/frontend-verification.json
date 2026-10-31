@@ -1,0 +1,23 @@
+{
+  "buildExit": 0,
+  "menuCheckExit": 0,
+  "listStyleCheckExit": 0,
+  "genericUi": {
+    "tests": 14,
+    "pass": 13,
+    "fail": 1,
+    "baselineSameFailure": true,
+    "actual": "FactCheck",
+    "expected": "asset:456",
+    "baselineCommit": "40497474da006dfd52ea38070036a6e350eaab8e",
+    "baselineSourceFiles": [
+      "src/utils/menuManagement.ts",
+      "src/utils/constants.ts"
+    ]
+  },
+  "premium": {
+    "exitCode": 2,
+    "totalFindings": 28,
+    "changedFileFindings": []
+  }
+}

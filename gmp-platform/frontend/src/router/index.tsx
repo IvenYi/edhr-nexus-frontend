@@ -27,6 +27,11 @@ const FormProjectionReportPage = lazy(() => import('@/pages/reports/FormProjecti
 const DhrTraceReportPage = lazy(() => import('@/pages/reports/DhrTraceReportPage'));
 const FormFillingPage = lazy(() => import('@/pages/form-management/FormFillingPage'));
 const FormReviewPage = lazy(() => import('@/pages/form-management/FormReviewPage'));
+const RecordChangePage = lazy(() => import('@/pages/record-control/RecordChangePage'));
+const RecordRequestListPage = lazy(() => import('@/pages/record-control/RecordRequestListPage'));
+const RecordRequestDetailPage = lazy(() => import('@/pages/record-control/RecordRequestDetailPage'));
+const RecordApprovalPage = lazy(() => import('@/pages/record-control/RecordApprovalPage'));
+const RecordApprovalDetailPage = lazy(() => import('@/pages/record-control/RecordApprovalDetailPage'));
 const DhrManagementPage = lazy(() => import('@/pages/dhr-management/DhrManagementPage'));
 const DhrSummaryPage = lazy(() => import('@/pages/dhr-management/DhrSummaryPage'));
 const DhrFillingPage = lazy(() => import('@/pages/dhr-management/DhrFillingPage'));
@@ -99,6 +104,7 @@ const AppRouter = () => {
           <Route path="form-processes/:id" element={<Suspense fallback={<Loading />}><FormProcessEditor /></Suspense>} />
           <Route path="binding-rules" element={<Suspense fallback={<Loading />}><BindingRuleList /></Suspense>} />
           <Route path="instances" element={<Suspense fallback={<Loading />}><InstanceList /></Suspense>} />
+          <Route path="interventions" element={<Suspense fallback={<Loading />}><InstanceList intervention /></Suspense>} />
           <Route path="instances/:id" element={<Suspense fallback={<Loading />}><InstanceDetail /></Suspense>} />
           <Route path="instances/:id/logs" element={<Suspense fallback={<Loading />}><InstanceLogs /></Suspense>} />
           <Route path="tasks/:id" element={<Suspense fallback={<Loading />}><TaskDetail /></Suspense>} />
@@ -110,6 +116,14 @@ const AppRouter = () => {
         </Route>
         <Route path="reports/form-projections" element={<Navigate to="/reports/form-trace" replace />} />
         {PROJECTION_REPORT_PAGES.map(page => <Route key={page.path} path={page.path.slice(1)} element={<Suspense fallback={<Loading />}>{page.modelId === 'dhrTrace' ? <DhrTraceReportPage /> : <FormProjectionReportPage key={page.modelId} modelId={page.modelId} />}</Suspense>} />)}
+        <Route path="records">
+          <Route path="change" element={<Suspense fallback={<Loading />}><RecordChangePage /></Suspense>} />
+          <Route path="mine" element={<Suspense fallback={<Loading />}><RecordRequestListPage scope="mine" /></Suspense>} />
+          <Route path="approvals" element={<Suspense fallback={<Loading />}><RecordApprovalPage /></Suspense>} />
+          <Route path="approvals/:taskId/:requestId" element={<Suspense fallback={<Loading />}><RecordApprovalDetailPage /></Suspense>} />
+          <Route path="history" element={<Suspense fallback={<Loading />}><RecordRequestListPage scope="all" /></Suspense>} />
+          <Route path="requests/:requestId" element={<Suspense fallback={<Loading />}><RecordRequestDetailPage /></Suspense>} />
+        </Route>
         <Route path="dhr-management">
           <Route path="list" element={<Suspense fallback={<Loading />}><DhrManagementPage /></Suspense>} />
           <Route path="summary" element={<Suspense fallback={<Loading />}><DhrSummaryPage /></Suspense>} />

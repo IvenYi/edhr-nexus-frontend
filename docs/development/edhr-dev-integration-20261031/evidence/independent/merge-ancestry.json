@@ -1,0 +1,85 @@
+{
+  "candidate": "310e01046d684888b8bdc0915c5f9eb0abe52319",
+  "target": "d10590bd3fe8f3da4e68bcc087b2102d2c211934",
+  "feature": "84995f7efab3abdf0012b974cb0a11e04920fe77",
+  "commonBase": "635711f97e9b794f4af02e1e5d1939bb2ecf920f",
+  "mergeParents": [
+    "d1891f97288043569343bdf6a0555fe69b0cdc09",
+    "d10590bd3fe8f3da4e68bcc087b2102d2c211934"
+  ],
+  "ancestors": {
+    "d10590bd3fe8f3da4e68bcc087b2102d2c211934": true,
+    "84995f7efab3abdf0012b974cb0a11e04920fe77": true,
+    "aef427c524bd7270b3775fbd7c599c72a545e21b": true,
+    "bbd2ff88886ade456aac8d7d73f8af4f5c1575e2": true,
+    "d1891f97288043569343bdf6a0555fe69b0cdc09": true
+  },
+  "targetFiles": [
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/DocumentManagementController.java",
+      "targetBlob": "62d69dc173b66cde90d57e32568ac2ff753b6c40",
+      "candidateBlob": "62d69dc173b66cde90d57e32568ac2ff753b6c40"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java",
+      "targetBlob": "ef911c4b19d249cd80b68a6a51050b6daf94ca89",
+      "candidateBlob": "ef911c4b19d249cd80b68a6a51050b6daf94ca89"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/entity/SopDocument.java",
+      "targetBlob": "738aebab2ae697d2cdf47e90e5ffc1698774e485",
+      "candidateBlob": "738aebab2ae697d2cdf47e90e5ffc1698774e485"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/repository/SopDocumentRepository.java",
+      "targetBlob": "682bc9ad2c3926d208e10dd32288f138bbaf118b",
+      "candidateBlob": "682bc9ad2c3926d208e10dd32288f138bbaf118b"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/DocumentListReadService.java",
+      "targetBlob": "9cf981295a65022bb8b104918f544715792e1b4f",
+      "candidateBlob": "9cf981295a65022bb8b104918f544715792e1b4f"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/DocumentManagementControllerTest.java",
+      "targetBlob": "dfc58cf3b913c8ecc9894d4e06c0eb6b6200dd46",
+      "candidateBlob": "dfc58cf3b913c8ecc9894d4e06c0eb6b6200dd46"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/DocumentOrmSchemaIntegrationTest.java",
+      "targetBlob": "1ba1ba0e1a6f579952b37a7928e3282239e70572",
+      "candidateBlob": "1ba1ba0e1a6f579952b37a7928e3282239e70572"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/DocumentReadBoundaryIntegrationTest.java",
+      "targetBlob": "dddaff93514133b6f1d27e3736d852cdf14799b2",
+      "candidateBlob": "dddaff93514133b6f1d27e3736d852cdf14799b2"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/DocumentReadPerformancePostgresTest.java",
+      "targetBlob": "832f11902b34f683bb3c1de7e363486607de9ec2",
+      "candidateBlob": "832f11902b34f683bb3c1de7e363486607de9ec2"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/DocumentWriteBoundaryIntegrationTest.java",
+      "targetBlob": "baf46924f287bee22ebd72fe1db1ad5c34c0209b",
+      "candidateBlob": "baf46924f287bee22ebd72fe1db1ad5c34c0209b"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/DocumentWriteBoundaryPostgresTest.java",
+      "targetBlob": "1abab824ba312ba920cbc44a6d836f3851d92152",
+      "candidateBlob": "1abab824ba312ba920cbc44a6d836f3851d92152"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/MasterDataBoundaryIntegrationTest.java",
+      "targetBlob": "6337e66e6c099a375e8c93d2c890ce6172ead245",
+      "candidateBlob": "6337e66e6c099a375e8c93d2c890ce6172ead245"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/ProcessModelingControllerTest.java",
+      "targetBlob": "8a637251c3cea7efdf4ab5facd811b891fbff90f",
+      "candidateBlob": "8a637251c3cea7efdf4ab5facd811b891fbff90f"
+    }
+  ],
+  "contractDiff": ""
+}

@@ -28,7 +28,7 @@ public class WorkflowLogController {
             @RequestParam(defaultValue = "desc") String order) {
         Sort.Direction direction = "asc".equalsIgnoreCase(order) ? Sort.Direction.ASC : Sort.Direction.DESC;
         PageRequest pageable = PageRequest.of(page - 1, size, Sort.by(direction, sort));
-        Page<WorkflowActionLog> result = workflowActionLogRepository.findNonDhr(pageable);
+        Page<WorkflowActionLog> result = workflowActionLogRepository.findGeneric(pageable);
         return ApiResponse.success(PageResult.of(
                 result.getContent(), page, size, result.getTotalElements()));
     }
@@ -46,7 +46,7 @@ public class WorkflowLogController {
     public ApiResponse<WorkflowActionLog> create(@RequestBody WorkflowActionLog entity) {
         protect(entity);
         if (entity.getId() != null) workflowActionLogRepository.findById(entity.getId()).ifPresent(this::protect);
-        return ApiResponse.success(workflowActionLogRepository.save(entity));
+        throw readOnly();
     }
 
     @PutMapping("/{id}")
@@ -54,20 +54,22 @@ public class WorkflowLogController {
     public ApiResponse<WorkflowActionLog> update(@PathVariable Long id, @RequestBody WorkflowActionLog entity) {
         protect(entity);
         workflowActionLogRepository.findById(id).ifPresent(this::protect);
-        entity.setId(id);
-        return ApiResponse.success(workflowActionLogRepository.save(entity));
+        throw readOnly();
     }
 
     @DeleteMapping("/{id}")
     @org.springframework.security.access.prepost.PreAuthorize("hasAuthority('workflow.intervene')")
     public ApiResponse<Void> delete(@PathVariable Long id) {
         workflowActionLogRepository.findById(id).ifPresent(this::protect);
-        workflowActionLogRepository.deleteById(id);
-        return ApiResponse.success(null);
+        throw readOnly();
+    }
+
+    private com.zencas.edhr.common.exception.BusinessException readOnly() {
+        return new com.zencas.edhr.common.exception.BusinessException(com.zencas.edhr.common.exception.ErrorCode.AUTH_003, "流程运行日志只读，只能由运行时写入");
     }
 
     private void protect(WorkflowActionLog log) {
-        workflowEngine.assertNotDhrInstance(log.getInstanceId());
-        workflowEngine.assertNotDhrTask(log.getTaskId());
+        workflowEngine.assertGenericInstanceAccessAllowed(log.getInstanceId());
+        workflowEngine.assertGenericTaskIfPresent(log.getTaskId());
     }
 }

@@ -1,0 +1,19 @@
+WARNING: A Java agent has been loaded dynamically (/Users/ivenwang/.m2/repository/net/bytebuddy/byte-buddy-agent/1.14.16/byte-buddy-agent-1.14.16.jar)
+WARNING: If a serviceability tool is in use, please run with -XX:+EnableDynamicAgentLoading to hide this warning
+WARNING: If a serviceability tool is not in use, please run with -Djdk.instrument.traceUsage for more information
+WARNING: Dynamic loading of agents will be disallowed by default in a future release
+OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+PASS: original production-row business change is accepted
+PASS: native identity survives effective-value projection and private comparison identity is removed
+PASS: main-only change keeps an omitted production subtable
+PASS: omitted native identity is restored without a content difference
+PASS: native identity resolves omitted comparison identity to the existing row
+PASS: existing native identity cannot be replaced -> 已有子表来源行标识不可修改
+PASS: existing native identity cannot claim a different comparison identity -> 已有子表来源行标识不可修改
+PASS: a new row cannot reuse a source identity -> 子表行标识重复
+PASS: unknown business columns remain rejected -> 子表包含未知字段
+PASS: native row reordering is not a content change
+PASS: new native row yields one row-added difference
+PASS: removed native row yields one row-removed difference
+PASS: legacy row without native metadata remains supported
+Independent probe completed: 13 checked outcomes, actual RecordControlDiff; engine/evidence validation are mocked and separately covered by PostgreSQL application tests.

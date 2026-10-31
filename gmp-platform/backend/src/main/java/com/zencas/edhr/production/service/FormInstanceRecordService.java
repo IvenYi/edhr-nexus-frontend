@@ -11,10 +11,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.HexFormat;
 import static com.zencas.edhr.production.service.ExecutionSnapshotBuilder.invalid;
 
 @Service
@@ -91,8 +95,26 @@ public class FormInstanceRecordService {
         ((ObjectNode) formState).put("instanceNo", instanceNo);
         new FormTraceIndexService(jdbc, mapper).refresh(recordId, tenantId, form, formState.path("values"));
         if ("COMPLETED".equals(formState.path("status").asText())) {
+            createInitialRevision(recordId, tenantId, formState.path("values"), actor, now);
             projection.completed(recordId, tenantId, form, formState.path("values"), snapshot.path("context"), operationId);
         }
+    }
+
+    private void createInitialRevision(Long recordId, String tenantId, JsonNode values, String actor, LocalDateTime now) {
+        Long current = jdbc.queryForObject("SELECT current_revision_id FROM form_instance_record WHERE id=? AND tenant_id=?",
+                Long.class, recordId, tenantId);
+        if (current != null) return;
+        String payload = values.toString();
+        String hash;
+        try {
+            hash = HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(payload.getBytes(StandardCharsets.UTF_8)));
+        } catch (NoSuchAlgorithmException impossible) {
+            throw new IllegalStateException(impossible);
+        }
+        Long revisionId = jdbc.queryForObject("SELECT nextval('hibernate_sequence')", Long.class);
+        jdbc.update("INSERT INTO form_instance_revision(id,tenant_id,record_id,revision_no,status,values_json,content_hash,created_by,created_at) VALUES(?,?,?,1,'EFFECTIVE',?,?,?,?)",
+                revisionId, tenantId, recordId, payload, hash, actor, now);
+        jdbc.update("UPDATE form_instance_record SET current_revision_id=? WHERE id=? AND tenant_id=?", revisionId, recordId, tenantId);
     }
 
     // Display metadata for the saved content; this does not change the execution lifecycle or frozen form.

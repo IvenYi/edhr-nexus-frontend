@@ -1,0 +1,100 @@
+ontologyResult:
+  result: updated
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: 2f46b5f66af44ea5973b9ead93f6eb85e62dbcc7
+    targetBranch: edhr-dev
+    targetCommit: 635711f97e9b794f4af02e1e5d1939bb2ecf920f
+    contractReadCommit: 2f46b5f66af44ea5973b9ead93f6eb85e62dbcc7
+    uncommittedContractPaths: []
+  reason: 本轮人类明确选择站内提醒当前审批人和该版本汇总提交人；已在既有DEC-0068补充对象与渠道，未将冠骋行为写成产品规则。独立核对目标增量未修改项目契约或知识，目标未合并。
+  changedArtifacts:
+    - path: docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml
+      changeType: update
+      ids: [DEC-0068-12, scenario.dhr-effective-form-impact-in-app-recipients]
+    - path: docs/knowledge/evidence/dhr-filling-review-confirmed.md
+      changeType: update
+      ids: [evidence.dhr-filling-review-confirmed]
+    - path: docs/knowledge/README.md
+      changeType: update
+      ids: []
+  knowledgeSync:
+    - id: DEC-0068-12
+      disposition: updated
+      scope: 仅补充表单变更或作废正式生效影响DHR时的站内渠道及当前审批人、该受影响冻结汇总版本提交人；不增加历史批准人或邮件范围，不宣称已经实现。
+      sourceReferences:
+        - 本轮用户明确回答“站内提醒当前审批人和该版本汇总提交人（推荐）”
+        - docs/reference-assets/research/crown-dhr-change-downstream-20261029/handoff.yaml
+        - docs/knowledge/evidence/dhr-filling-review-confirmed.md
+    - id: scenario.dhr-effective-form-impact-in-app-recipients
+      disposition: updated
+      scope: 新增后续接收人矩阵、待审申请对照、无当前审批任务及历史和生产放行无副作用的验收要求；本次只完成规则文本校验，不计为运行通知通过。
+      sourceReferences: [docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml]
+    - id: evidence.dhr-filling-review-confirmed
+      disposition: updated
+      scope: 在新日期章节保留原问题和用户选择，区分工程解释与直接确认；历史记录原文未改写。
+      sourceReferences: [docs/knowledge/evidence/dhr-filling-review-confirmed.md]
+    - id: DEC-0068-04
+      disposition: retained
+      scope: 申请待审不等于生效，记录控制域仍负责变更作废及判定生效。
+      sourceReferences: [docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml]
+    - id: DEC-0068-05
+      disposition: retained
+      scope: 有效变化标识、过时批准阻断与人工退回保持；附件等其他来源变化的既有要求保持，不外推本次通知对象确认。
+      sourceReferences: [docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml]
+    - id: DEC-0068-06
+      disposition: retained
+      scope: 保留旧批准和冻结正文，按人工发起草稿及重新核查提交形成新版。
+      sourceReferences: [docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml]
+    - id: DEC-0068-08
+      disposition: retained
+      scope: 通知、退回及重审不自动改变生产完成或放行状态。
+      sourceReferences: [docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml]
+    - id: discrepancy.dhr-review-complete-evidence-impact-gap
+      disposition: deferred
+      scope: 保持high/open；对象及渠道确认不替代通知实现、完整影响比较和并发验收。
+      sourceReferences: [docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml]
+    - id: discrepancy.dhr-review-effective-source-integration
+      disposition: deferred
+      scope: 保持high/open；真实生效消费和发布级联调尚待后续实现与验证，A12亦未关闭。
+      sourceReferences: [docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml]
+  conflicts: []
+  questions: []
+  validationEvidence:
+    - id: validation.notification-knowledge-model
+      checkType: schema
+      command: cd gmp-platform/backend && mvn -q -Dtest=BusinessKnowledgeModelTest test
+      outcome: passed
+      evidence:
+        - 退出码0；89项，0失败、0错误、0跳过
+        - gmp-platform/backend/target/crown-dhr-notification-ontology-20261029.log
+        - 日志SHA256为06d63b30137db27f7d44dedc772ed67e86c7da0c0e535da7eb93da41f46d97a8
+        - gmp-platform/backend/target/surefire-reports/TEST-com.zencas.edhr.knowledge.BusinessKnowledgeModelTest.xml
+        - JUnit SHA256为e273b00bae4ecb11a680420c5853c79c0d096c7be0c4a22622e03fb281162861
+        - docs/reference-assets/research/crown-dhr-change-downstream-20261029/ontology-knowledge.log 为上述日志原样副本
+        - docs/reference-assets/research/crown-dhr-change-downstream-20261029/ontology-knowledge-junit.xml 为上述JUnit原样副本
+    - id: validation.notification-yaml-baseline
+      checkType: schema
+      command: Ruby YAML解析全部docs/knowledge/**/*.yaml并检查knowledgeModelVersion
+      outcome: passed
+      evidence: [237份YAML解析通过，知识版本0.3.25，schema未修改]
+    - id: validation.notification-boundary
+      checkType: reference
+      command: 定向检查DEC-0068-12成熟度、两项实施差异及当前DHR服务
+      outcome: passed
+      evidence:
+        - DEC-0068-12保持specified/internal
+        - 两项既有差异保持high/open
+        - DhrEvidenceImpactService.changes及DhrReviewService仅作静态核对，未声明通知运行证据
+        - 未新增事实、可执行规则或执行契约；未改产品代码、测试或迁移
+    - id: validation.notification-whitespace
+      checkType: evidence-path
+      command: git diff --check -- docs/knowledge
+      outcome: passed
+      evidence: [退出码0；范围仅3个知识文件、22行新增]
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages: [P1, P2, P3]

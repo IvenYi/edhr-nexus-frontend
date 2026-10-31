@@ -1,0 +1,397 @@
+{
+  "capturedAt": "2026-10-29T15:28:38.605743+00:00",
+  "referenceFrontRoot": "/Users/ivenwang/Documents/iven space/paas-main-front/src",
+  "referenceBackendRoot": "/Users/ivenwang/Documents/iven space/gct-edhr-bed/gct-edhr-bed/src/main/java/com/gct/apaas/edhr",
+  "sourceFiles": [
+    {
+      "id": "C01",
+      "evidenceType": "original-evidence",
+      "source": "/Users/ivenwang/Documents/iven space/paas-main-front/src/projects/web-render/src/views/edhr-application/render/approval-process-intervention/useDocumentTask.ts",
+      "sha256": "8a0bc4ed3ad008af2fa467a2380836fcfb9d5cea10da681370cd15ebb24c9e29",
+      "bytes": 5112,
+      "lineCount": 168,
+      "ranges": [
+        {
+          "start": 70,
+          "end": 162
+        }
+      ],
+      "purpose": "按业务类型/权限/功能开关组织干预标签",
+      "sourceVersion": "local-export-no-git"
+    },
+    {
+      "id": "C02",
+      "evidenceType": "original-evidence",
+      "source": "/Users/ivenwang/Documents/iven space/paas-main-front/src/projects/web-render/src/views/edhr-application/render/approval-process-intervention/change-tab/todo.vue",
+      "sha256": "c381fb9290c838893cf87eecf3868eec5e7415f06c28e12b24d4f81f3a71f041",
+      "bytes": 5634,
+      "lineCount": 185,
+      "ranges": [
+        {
+          "start": 15,
+          "end": 31
+        },
+        {
+          "start": 66,
+          "end": 95
+        },
+        {
+          "start": 105,
+          "end": 121
+        },
+        {
+          "start": 150,
+          "end": 185
+        }
+      ],
+      "purpose": "变更干预任务列表及普通转办/退回接口调用",
+      "sourceVersion": "local-export-no-git"
+    },
+    {
+      "id": "C03",
+      "evidenceType": "original-evidence",
+      "source": "/Users/ivenwang/Documents/iven space/paas-main-front/src/projects/web-render/src/views/edhr-application/render/approval-process-intervention/reassign-modal.vue",
+      "sha256": "2c82370c460886edfa0019d7de81d4dd0d3cd1c0727bbfbc520ee07f92f76d51",
+      "bytes": 2017,
+      "lineCount": 78,
+      "ranges": [
+        {
+          "start": 1,
+          "end": 78
+        }
+      ],
+      "purpose": "可见管理转交弹窗只提供原处理人和新处理人",
+      "sourceVersion": "local-export-no-git"
+    },
+    {
+      "id": "C04",
+      "evidenceType": "original-evidence",
+      "source": "/Users/ivenwang/Documents/iven space/paas-main-front/src/projects/web-render/src/views/edhr-application/render/process-intervention/reassign-modal.vue",
+      "sha256": "cfa46e536884a99a451957fdfdd9afe70648bec04c318641b212d9cdeffd5e58",
+      "bytes": 2454,
+      "lineCount": 83,
+      "ranges": [
+        {
+          "start": 1,
+          "end": 83
+        }
+      ],
+      "purpose": "另一表单干预弹窗显示业务上下文并调用interfere接口",
+      "sourceVersion": "local-export-no-git"
+    },
+    {
+      "id": "C05",
+      "evidenceType": "original-evidence",
+      "source": "/Users/ivenwang/Documents/iven space/paas-main-front/src/projects/web-render/src/views/edhr-application/render/user-granted/components/grant-user-select.vue",
+      "sha256": "4d33af32422878814391d5834205c418c07fc0c32198734c48d3aedfeb0abb2c",
+      "bytes": 3686,
+      "lineCount": 134,
+      "ranges": [
+        {
+          "start": 30,
+          "end": 43
+        },
+        {
+          "start": 68,
+          "end": 98
+        }
+      ],
+      "purpose": "选择已授权用户的前端场景，不等同已证明后端资格",
+      "sourceVersion": "local-export-no-git"
+    },
+    {
+      "id": "C06",
+      "evidenceType": "original-evidence",
+      "source": "/Users/ivenwang/Documents/iven space/gct-edhr-bed/gct-edhr-bed/src/main/java/com/gct/apaas/edhr/controller/ApproveProcessController.java",
+      "sha256": "0fbd77aaf13a7a840820ca26c5d6931281c390b5bac9d8530d7378912ff99c62",
+      "bytes": 3887,
+      "lineCount": 110,
+      "ranges": [
+        {
+          "start": 35,
+          "end": 105
+        }
+      ],
+      "purpose": "普通转办与干预转办/退回的分离接口和业务锁",
+      "sourceVersion": "local-export-no-git"
+    },
+    {
+      "id": "C07",
+      "evidenceType": "original-evidence",
+      "source": "/Users/ivenwang/Documents/iven space/gct-edhr-bed/gct-edhr-bed/src/main/java/com/gct/apaas/edhr/approve/service/ApproveProcessService.java",
+      "sha256": "c7c62611e55c09ab89f668611934a21227d520a244086f739fc721051ddf2cd0",
+      "bytes": 19913,
+      "lineCount": 437,
+      "ranges": [
+        {
+          "start": 136,
+          "end": 184
+        },
+        {
+          "start": 187,
+          "end": 242
+        },
+        {
+          "start": 246,
+          "end": 262
+        }
+      ],
+      "purpose": "转交变处理人，普通/管理退回到开始及结束审批历史",
+      "sourceVersion": "local-export-no-git"
+    },
+    {
+      "id": "C08",
+      "evidenceType": "original-evidence",
+      "source": "/Users/ivenwang/Documents/iven space/gct-edhr-bed/gct-edhr-bed/src/main/java/com/gct/apaas/edhr/approve/entity/ProcessReassign4InterfereRequest.java",
+      "sha256": "635edc9e24331490befb95d81645a753f8c781a4ca7a072441140b0183ffb038",
+      "bytes": 754,
+      "lineCount": 31,
+      "ranges": [
+        {
+          "start": 1,
+          "end": 31
+        }
+      ],
+      "purpose": "干预请求含意见、未展示签名字段",
+      "sourceVersion": "local-export-no-git"
+    },
+    {
+      "id": "C09",
+      "evidenceType": "original-evidence",
+      "source": "/Users/ivenwang/Documents/iven space/gct-edhr-bed/gct-edhr-bed/src/main/java/com/gct/apaas/edhr/approve/entity/ProcessReassignRequest.java",
+      "sha256": "c403b3854c5eb91bf5ba559749a25570ba1a5fad5c0a30ce3a9c1b783a2d03ac",
+      "bytes": 666,
+      "lineCount": 28,
+      "ranges": [
+        {
+          "start": 1,
+          "end": 28
+        }
+      ],
+      "purpose": "普通请求有签名字段，不证明此干预页面传签名",
+      "sourceVersion": "local-export-no-git"
+    },
+    {
+      "id": "C10",
+      "evidenceType": "original-evidence",
+      "source": "/Users/ivenwang/Documents/iven space/gct-edhr-bed/gct-edhr-bed/src/main/java/com/gct/apaas/edhr/approve/listener/ProcessTaskEventListener.java",
+      "sha256": "4526a772aa390e1499e541a0b36f257cfebffdc4f189166d027ea34fd1da83f4",
+      "bytes": 19016,
+      "lineCount": 411,
+      "ranges": [
+        {
+          "start": 190,
+          "end": 245
+        }
+      ],
+      "purpose": "转交移除原待办、创建新待办和原办理历史",
+      "sourceVersion": "local-export-no-git"
+    },
+    {
+      "id": "C11",
+      "evidenceType": "original-evidence",
+      "source": "/Users/ivenwang/Documents/iven space/gct-edhr-bed/gct-edhr-bed/src/main/java/com/gct/apaas/edhr/approve/handler/process/ProcessPathHandler.java",
+      "sha256": "c1fc5892f288d219cb2be0870e4e0071dcd24840b9ce168c2b7018c4c55e70a3",
+      "bytes": 8573,
+      "lineCount": 199,
+      "ranges": [
+        {
+          "start": 72,
+          "end": 118
+        }
+      ],
+      "purpose": "流程图处理人投影更新；底层父类在导出仓外",
+      "sourceVersion": "local-export-no-git"
+    },
+    {
+      "id": "C12",
+      "evidenceType": "original-evidence",
+      "source": "/Users/ivenwang/Documents/iven space/paas-main-front/src/projects/web-render/src/views/edhr-application/components/approval-process-temp/process.vue",
+      "sha256": "95deee93daedef3a0182c53b5423eb7746a3e6457277308af365a0083de77a43",
+      "bytes": 3062,
+      "lineCount": 106,
+      "ranges": [
+        {
+          "start": 1,
+          "end": 76
+        }
+      ],
+      "purpose": "流程元信息与路径图复用组件",
+      "sourceVersion": "local-export-no-git"
+    },
+    {
+      "id": "C13",
+      "evidenceType": "original-evidence",
+      "source": "/Users/ivenwang/Documents/iven space/paas-main-front/src/apis/gct-apaas/ProcessPathController.ts",
+      "sha256": "2fe7888bfc4653caf6af3b15c0fd221e6ced076b0efd3c164678f9b220a88711",
+      "bytes": 2120,
+      "lineCount": 62,
+      "ranges": [
+        {
+          "start": 1,
+          "end": 55
+        }
+      ],
+      "purpose": "按精确流程实例查询路径API客户端，后端平台实现未获得",
+      "sourceVersion": "local-export-no-git"
+    },
+    {
+      "id": "C14",
+      "evidenceType": "original-evidence",
+      "source": "/Users/ivenwang/Documents/iven space/paas-main-front/src/apis/gct-apaas/ProcessApprovalLogController.ts",
+      "sha256": "ffc4bac2fdc26197757a3b343d6cfdb81a32c2c634b64e01bf925cd7058586a9",
+      "bytes": 4012,
+      "lineCount": 137,
+      "ranges": [
+        {
+          "start": 1,
+          "end": 85
+        }
+      ],
+      "purpose": "客户端有保存/删除/查询声明，不能外推普通用户可写或与截图同一日志",
+      "sourceVersion": "local-export-no-git"
+    },
+    {
+      "id": "C15",
+      "evidenceType": "original-evidence",
+      "source": "/Users/ivenwang/Documents/iven space/paas-main-front/src/locales/lang/zh-CN/sys/bpmn.ts",
+      "sha256": "0b4edf74ab31f0a5c779160f21bfc9c2626129f8af0e65d215576da1ab96ef4b",
+      "bytes": 2988,
+      "lineCount": 112,
+      "ranges": [
+        {
+          "start": 25,
+          "end": 42
+        }
+      ],
+      "purpose": "Reassign本地翻译为转办",
+      "sourceVersion": "local-export-no-git"
+    },
+    {
+      "id": "O01",
+      "evidenceType": "original-evidence",
+      "source": "/Users/ivenwang/.codex/worktrees/record-control-integration/edhr-nexus/gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/contract/RecordControlWorkflowWithdrawalPort.java",
+      "sha256": "e9da2e5b52c471297f045edf39586bef9c07142e1c9dcac33c9803d6416f4203",
+      "bytes": 608,
+      "lineCount": 14,
+      "ranges": [
+        {
+          "start": 1,
+          "end": 14
+        }
+      ],
+      "purpose": "我们撤回仍为端口声明",
+      "sourceVersion": "8cf4df66d60e8f16677442197a9fc0defcd3ef8c"
+    },
+    {
+      "id": "O02",
+      "evidenceType": "original-evidence",
+      "source": "/Users/ivenwang/.codex/worktrees/record-control-integration/edhr-nexus/gmp-platform/backend/src/main/java/com/zencas/edhr/recordcontrol/service/RecordControlTaskActionService.java",
+      "sha256": "bcca77215bed6379acbdd42a38ee25ecbae53ef88eb1f17b9884f0ee38c8e9a3",
+      "bytes": 4289,
+      "lineCount": 80,
+      "ranges": [
+        {
+          "start": 20,
+          "end": 45
+        },
+        {
+          "start": 60,
+          "end": 80
+        }
+      ],
+      "purpose": "现记录控制处理审批通过和退回并同步消费最终结果",
+      "sourceVersion": "8cf4df66d60e8f16677442197a9fc0defcd3ef8c"
+    },
+    {
+      "id": "O03",
+      "evidenceType": "original-evidence",
+      "source": "/Users/ivenwang/.codex/worktrees/record-control-integration/edhr-nexus/gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java",
+      "sha256": "6f5d4180f3ae60758d8c0b84aee308105d9fd5eb2e6cd0582da5b5c77268f151",
+      "bytes": 50659,
+      "lineCount": 963,
+      "ranges": [
+        {
+          "start": 727,
+          "end": 779
+        }
+      ],
+      "purpose": "通用转办已具备原因/锁/授权/日志审计，记录控制任务显式拒绝",
+      "sourceVersion": "8cf4df66d60e8f16677442197a9fc0defcd3ef8c"
+    },
+    {
+      "id": "O04",
+      "evidenceType": "original-evidence",
+      "source": "/Users/ivenwang/.codex/worktrees/record-control-integration/edhr-nexus/gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowLogController.java",
+      "sha256": "941e4bb6725641cb05186c6fc643446c722b49301bb90f3f0cd8e74521cb4152",
+      "bytes": 3444,
+      "lineCount": 73,
+      "ranges": [
+        {
+          "start": 15,
+          "end": 73
+        }
+      ],
+      "purpose": "当前通用日志仍保留有干预权限的增改删入口，不能把加权限等同只读",
+      "sourceVersion": "8cf4df66d60e8f16677442197a9fc0defcd3ef8c"
+    },
+    {
+      "id": "O05",
+      "evidenceType": "original-evidence",
+      "source": "/Users/ivenwang/.codex/worktrees/record-control-integration/edhr-nexus/gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/entity/WorkflowIntervention.java",
+      "sha256": "dcbed6cf026c2c11a64fc218ffa98db3252172a03681f91d354f4fa1802ca61c",
+      "bytes": 777,
+      "lineCount": 23,
+      "ranges": [
+        {
+          "start": 1,
+          "end": 23
+        }
+      ],
+      "purpose": "只有实体不代表重新分配运行链",
+      "sourceVersion": "8cf4df66d60e8f16677442197a9fc0defcd3ef8c"
+    },
+    {
+      "id": "O06",
+      "evidenceType": "original-evidence",
+      "source": "/Users/ivenwang/.codex/worktrees/record-control-integration/edhr-nexus/gmp-platform/frontend/src/pages/workflow-center/InstanceDetail.tsx",
+      "sha256": "87f6b29b46625a3bca9281c0344762c8c98cda23e8dace5d75ba97e125a180fd",
+      "bytes": 6461,
+      "lineCount": 163,
+      "ranges": [
+        {
+          "start": 12,
+          "end": 61
+        },
+        {
+          "start": 70,
+          "end": 101
+        }
+      ],
+      "purpose": "实例前端部分元数据投影与图API待对齐；本轮只静态核对",
+      "sourceVersion": "8cf4df66d60e8f16677442197a9fc0defcd3ef8c"
+    },
+    {
+      "id": "O07",
+      "evidenceType": "original-evidence",
+      "source": "/Users/ivenwang/.codex/worktrees/record-control-integration/edhr-nexus/gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowInstanceController.java",
+      "sha256": "47fa225e082174d326f2f8f49244ab311ebc4b8d35f8ea8462eb5afd33add5f8",
+      "bytes": 9664,
+      "lineCount": 244,
+      "ranges": [
+        {
+          "start": 43,
+          "end": 87
+        },
+        {
+          "start": 94,
+          "end": 135
+        }
+      ],
+      "purpose": "实例返回实体/图独立端点与通用写接口",
+      "sourceVersion": "8cf4df66d60e8f16677442197a9fc0defcd3ef8c"
+    }
+  ],
+  "deploymentVersionKnown": false,
+  "liveRuntimeTested": false
+}

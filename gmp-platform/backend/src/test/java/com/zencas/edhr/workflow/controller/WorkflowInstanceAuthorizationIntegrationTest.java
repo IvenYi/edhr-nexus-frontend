@@ -72,6 +72,7 @@ class WorkflowInstanceAuthorizationIntegrationTest {
             registry.add("spring.datasource.url", () -> "jdbc:h2:mem:workflow-command-auth;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE;DB_CLOSE_DELAY=-1");
             registry.add("spring.datasource.driver-class-name", () -> "org.h2.Driver");
             registry.add("spring.jpa.database-platform", () -> "org.hibernate.dialect.H2Dialect");
+            registry.add("spring.jpa.properties.hibernate.dialect", () -> "org.hibernate.dialect.H2Dialect");
         } else {
             if (!url.matches("jdbc:postgresql://(?:localhost|127\\.0\\.0\\.1):[0-9]+/edhr_w3_command_test"))
                 throw new IllegalArgumentException("Use only the owned loopback edhr_w3_command_test database");
@@ -126,18 +127,12 @@ class WorkflowInstanceAuthorizationIntegrationTest {
     }
 
     @ParameterizedTest @ValueSource(strings = {"CREATE", "UPDATE", "DELETE"})
-    void existingAuthorizedAdministrativeWritesRemainAvailable(String command) throws Exception {
-        if ("DELETE".equals(command)) instances.save(WorkflowInstance.builder().id(30L).businessType("SYNTHETIC_CASE").status("RUNNING").build());
-        mvc.perform(write(command, "DELETE".equals(command) ? 30 : 10)
+    void interventionPermissionCannotBypassSignedStandardActionsWithCrud(String command) throws Exception {
+        JsonNode before = rows();
+        mvc.perform(write(command, 10)
                         .header("Authorization", bearer("9", List.of("workflow.intervene"))))
-                .andExpect(status().isOk());
-        if ("DELETE".equals(command)) assertThat(instances.findById(30L)).isEmpty();
-        else {
-            WorkflowInstance saved = instances.findById("CREATE".equals(command) ? 30L : 10L).orElseThrow();
-            assertThat(saved.getStatus()).isEqualTo("TERMINATED");
-            assertThat(saved.getCurrentNodeIds()).isEqualTo("999");
-        }
-        assertThat(instances.findById(20L).orElseThrow().getStatus()).isEqualTo("RUNNING");
+                .andExpect(status().isForbidden());
+        assertThat(rows()).isEqualTo(before);
     }
 
     @ParameterizedTest @ValueSource(strings = {"CREATE", "UPDATE", "DELETE"})

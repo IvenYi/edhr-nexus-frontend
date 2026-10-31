@@ -46,6 +46,7 @@ function FillingWorkspace({ dhr, onClose }: { dhr: DhrInstanceSummary; onClose: 
   const [action, setAction] = useState<SelectedAction | null>(null);
   const [instancesOpen, setInstancesOpen] = useState(false), [adding, setAdding] = useState(false);
   const [navigationView, setNavigationView] = useState<DhrNavigationView>('SOURCE'), [archiveKey, setArchiveKey] = useState('');
+  const [showObsolete, setShowObsolete] = useState(false);
   const [reason, setReason] = useState(''), [occurredAt, setOccurredAt] = useState('');
   const allEntries = useMemo(() => view?.snapshot.operations.flatMap(op => op.forms.map(form => ({ op, form, key: `${op.id}/${form.id}` }))) ?? [], [view]);
   const entries = useMemo(() => allEntries.filter(e => origin(e.form) === source), [allEntries, source]);
@@ -58,7 +59,7 @@ function FillingWorkspace({ dhr, onClose }: { dhr: DhrInstanceSummary; onClose: 
       templateId: form.versionId, templateVersionId: form.versionId, templateCode: null, templateName: form.name, templateVersion: form.version,
       updatedBy: null, updatedAt: '', fieldValues: current?.values ?? {} };
   })), [allEntries, view]);
-  const archiveNodes = useMemo(() => archiveNavigation(view?.directorySnapshot.directories ?? [], navigationRecords, view?.archiveLayout?.overlayDirectories, view?.archiveLayout?.placements), [view, navigationRecords]);
+  const archiveNodes = useMemo(() => archiveNavigation(view?.directorySnapshot.directories ?? [], navigationRecords, view?.archiveLayout?.overlayDirectories, view?.archiveLayout?.placements, showObsolete), [view, navigationRecords, showObsolete]);
   const entryForNode = (node?: DhrNavigationNode) => {
     const first = navigationRecords.find(r => r.id === node?.recordIds[0]);
     return first ? allEntries.find(e => e.op.id === first.operationId && e.form.id === first.formId)
@@ -85,14 +86,15 @@ function FillingWorkspace({ dhr, onClose }: { dhr: DhrInstanceSummary; onClose: 
   }, [entries, source, view?.directorySnapshot]);
   const navigationNodes = navigation.map(node => {
     const entry = node.entry;
-    const ids = entry ? view?.availability[entry.op.id]?.formCopies?.[entry.form.id]?.instanceIds ?? [] : [];
+    const ids = entry ? (view?.availability[entry.op.id]?.formCopies?.[entry.form.id]?.instanceIds ?? []).filter(id => showObsolete || view?.state.operations[entry.op.id]?.forms[id]?.status !== 'OBSOLETE') : [];
     const completed = entry ? ids.filter(id => view?.state.operations[entry.op.id]?.forms[id]?.status === 'COMPLETED').length : 0;
     return { key: node.key, label: node.name, depth: node.depth, folder: !entry, recordIds: ids,
       secondary: entry ? `${entry.op.name} · ${ids.length ? `已完成 ${completed}/${ids.length}` : '尚无实例'}` : undefined };
   });
   const entry = navigationView === 'ARCHIVE' ? entryForNode(archiveNode) : entries.find(e => e.key === formKey) ?? entries[0];
   const group = entry ? view?.availability[entry.op.id]?.formCopies?.[entry.form.id] : undefined;
-  const visibleCopyIds = navigationView === 'ARCHIVE' ? (archiveNode?.recordIds ?? []).map(id => navigationRecords.find(r => r.id === id)?.copyId).filter((id): id is string => Boolean(id)) : group?.instanceIds ?? [];
+  const visibleCopyIds = (navigationView === 'ARCHIVE' ? (archiveNode?.recordIds ?? []).map(id => navigationRecords.find(r => r.id === id)?.copyId).filter((id): id is string => Boolean(id)) : group?.instanceIds ?? [])
+    .filter(id => showObsolete || view?.state.operations[entry?.op.id ?? '']?.forms[id]?.status !== 'OBSOLETE');
   const selectedCopy = visibleCopyIds.includes(copyId) ? copyId : visibleCopyIds[0] ?? '';
   const previewRecord = navigationRecords.find(r => r.operationId === entry?.op.id && r.formId === entry?.form.id && r.copyId === selectedCopy);
   const previewTitle = (navigationView === 'ARCHIVE' && view?.archiveLayout?.placements.find(p => p.recordId === previewRecord?.id)?.displayName) || entry?.form.name;
@@ -169,11 +171,12 @@ function FillingWorkspace({ dhr, onClose }: { dhr: DhrInstanceSummary; onClose: 
       <DialogContent dividers sx={{ ...workspaceBodySx, p: 1.5, bgcolor: '#f3f5f8' }}>
         {!view ? <Box sx={{ m: 'auto', p: 3 }}>{query.isError ? <><Typography color="error">{errorText(query.error)}</Typography><Button onClick={() => query.refetch()}>重新加载</Button></> : '加载中…'}</Box> : <>
           <DhrWorkspaceNavigation view={navigationView} onViewChange={changeView} source={source} onSourceChange={s => guarded(() => { setSource(s); setFormKey(''); setCopyId(''); setInstancesOpen(false); })}
+            obsoleteView={{ count: navigationRecords.filter(record => record.status === 'OBSOLETE').length, show: showObsolete, onToggle: () => guarded(() => setShowObsolete(value => !value)) }}
             selectedKey={navigationView === 'ARCHIVE' ? archiveNode?.key ?? '' : entry?.key ?? ''} nodes={navigationView === 'ARCHIVE' ? archiveNodes : navigationNodes}
             instancesOpen={instancesOpen} onSelect={node => selectNode(node, false)} onInstances={node => selectNode(node, true)} />
           <DhrInstancePanel open={instancesOpen} title={navigationView === 'ARCHIVE' ? archiveNode?.label ?? '表单' : entry?.form.name ?? '表单'} selectedId={selectedCopy} onClose={() => setInstancesOpen(false)}
             onSelect={id => { if (id !== selectedCopy) guarded(() => setCopyId(id)); }}
-            items={visibleCopyIds.map((id, index) => { const instance = entry && view.state.operations[entry.op.id]?.forms[id]; return { id, label: instance?.instanceNo || `第 ${index + 1} 份（待生成实例号）`, secondary: instance?.status === 'COMPLETED' ? '已完成' : '填报中' }; })} />
+            items={visibleCopyIds.map((id, index) => { const instance = entry && view.state.operations[entry.op.id]?.forms[id]; return { id, label: instance?.instanceNo || `第 ${index + 1} 份（待生成实例号）`, secondary: instance?.status === 'COMPLETED' ? '已完成' : instance?.status === 'OBSOLETE' ? '已作废' : '填报中' }; })} />
           <Box sx={{ minWidth: 0, flex: 1, display: 'flex', flexDirection: 'column' }}>
             <Stack direction="row" alignItems="center" spacing={1} sx={{ minHeight: 56, px: 2, borderBottom: '1px solid #e4e7ed' }}><Box sx={{ flex: 1, minWidth: 0 }}><Typography variant="body2" noWrap>{entry?.form.name || '请选择表单'}</Typography><Typography variant="caption" color="text.secondary">{current?.instanceNo || (selectedCopy ? '首次保存后生成实例号' : '尚未到达填报节点')} · {controls?.nodeName || ''}</Typography></Box>
               {mayAdd && view.objectStatus === 'COMPLETED' && ['NOT_STARTED', 'DRAFT'].includes(view.dhrSummaryStatus) && group?.instanceIds.length ? <Button size="small" onClick={() => guarded(() => { setReason(''); setOccurredAt(''); setAdding(true); })}>追加补录</Button> : null}

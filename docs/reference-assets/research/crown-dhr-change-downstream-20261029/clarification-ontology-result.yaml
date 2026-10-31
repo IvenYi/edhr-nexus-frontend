@@ -1,0 +1,136 @@
+ontologyResult:
+  result: updated
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: 2453124919a1532fdd9bbde292e2d7dbb92e04b2
+    targetBranch: edhr-dev
+    targetCommit: 635711f97e9b794f4af02e1e5d1939bb2ecf920f
+    contractReadCommit: 2453124919a1532fdd9bbde292e2d7dbb92e04b2
+    uncommittedContractPaths: []
+  reason: 用户确认的活动申请阻断DHR收尾、作废默认隐藏且低频可达已同步既有决策；保留全量证据、冻结、权限及历史，打印延期，不将冠骋入口限制变为我方政策。
+  changedArtifacts:
+    - path: docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml
+      changeType: update
+      ids: [DEC-0063-04, DEC-0063-16, scenario.dhr-obsolete-default-hidden-evidence-retained]
+    - path: docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml
+      changeType: update
+      ids: [DEC-0068-02, DEC-0068-04, DEC-0068-13, scenario.dhr-pending-record-control-blocks-finalization, discrepancy.dhr-review-complete-evidence-impact-gap]
+    - path: docs/knowledge/rules/production.yaml
+      changeType: update
+      ids: [rule.record-control.source-record-remains-completed-during-review]
+    - path: docs/knowledge/evidence/dhr-filling-review-confirmed.md
+      changeType: update
+      ids: [evidence.dhr-filling-review-confirmed]
+    - path: docs/knowledge/README.md
+      changeType: update
+      ids: []
+    - path: docs/architecture/transaction-traceability-dhr-business-rules.md
+      changeType: update
+      ids: []
+  knowledgeSync:
+    - id: DEC-0063-16
+      disposition: updated
+      scope: 作废默认隐藏及低频可达，只局部替代0063-04和0068-02的常规展示解释，保留归集冻结核查权限及其他状态，打印不变。
+      sourceReferences: [本轮用户第2项批注, docs/reference-assets/research/crown-dhr-change-downstream-20261029/clarification-round.md]
+    - id: DEC-0063-04
+      disposition: updated
+      scope: 证据归集保留追溯不由手选或完成状态决定，作废展示引用0063-16，不缩小核查范围。
+      sourceReferences: [docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml]
+    - id: DEC-0068-02
+      disposition: updated
+      scope: 全部记录可达，作废默认隐藏但低频可查，实例身份、来源及冻结隔离保持。
+      sourceReferences: [docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml]
+    - id: DEC-0068-13
+      disposition: updated
+      scope: 活动申请暂缓相关DHR提交和批准；原修订可查，申请结束按结果复核，不自动批准或退回，不新增DHR审批期间禁止发起申请的入口政策。
+      sourceReferences: [本轮用户明确选择暂缓DHR汇总提交和审批通过, docs/reference-assets/research/crown-dhr-change-downstream-20261029/handoff.yaml]
+    - id: DEC-0068-04
+      disposition: updated
+      scope: 生效影响与活动申请阻断分开，记录控制域负责来源生效判定。
+      sourceReferences: [docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml]
+    - id: rule.record-control.source-record-remains-completed-during-review
+      disposition: updated
+      scope: 仅补解释和证据引用，原条件结果不变，不从来源COMPLETED推定DHR可收尾，不新增运行事实或执行契约。
+      sourceReferences: [docs/knowledge/rules/production.yaml]
+    - id: scenario.dhr-obsolete-default-hidden-evidence-retained
+      disposition: updated
+      scope: 登记后续展示、入口权限、隐藏不绕过核查及冻结状态隔离验收，不计为已运行。
+      sourceReferences: [docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml]
+    - id: scenario.dhr-pending-record-control-blocks-finalization
+      disposition: updated
+      scope: 登记提交前和审批中活动申请、不同结束结果及并发验收，不计为已实现。
+      sourceReferences: [docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml]
+    - id: evidence.dhr-filling-review-confirmed
+      disposition: updated
+      scope: 新日期保留两项原话及工程解释，历史原件不改写，竞品事实和我方确认分开。
+      sourceReferences: [docs/knowledge/evidence/dhr-filling-review-confirmed.md]
+    - id: DEC-0063-05
+      disposition: retained
+      scope: 同版全量冻结及实时历史隔离，后来作废不改旧版。
+      sourceReferences: [docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml]
+    - id: DEC-0063-11
+      disposition: retained
+      scope: 当前打印ZIP契约不改，作废过滤方向留待打印设计，不代定历史输出政策。
+      sourceReferences: [docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml]
+    - id: DEC-0068-05
+      disposition: retained
+      scope: 生效影响、过时批准阻断及人工退回保持，活动申请不冒充生效。
+      sourceReferences: [docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml]
+    - id: DEC-0068-06
+      disposition: retained
+      scope: 保留旧批准和冻结正文，人工发起草稿重新提交形成新版。
+      sourceReferences: [docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml]
+    - id: DEC-0068-08
+      disposition: retained
+      scope: 不自动改变生产放行，不重开生产，不新增整份DHR作废许可。
+      sourceReferences: [docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml]
+    - id: DEC-0068-12
+      disposition: retained
+      scope: 生效后站内提醒当前审批人和受影响版本提交人，待审提示不冒充生效通知。
+      sourceReferences: [docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml]
+    - id: discrepancy.dhr-review-complete-evidence-impact-gap
+      disposition: updated
+      scope: 保持high/open，新增活动申请阻断尚未见当前DHR服务消费在审申请，不声明已实现。
+      sourceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrSummaryService.java, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrReviewService.java, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrEvidenceImpactService.java]
+    - id: discrepancy.dhr-review-effective-source-integration
+      disposition: deferred
+      scope: 保持high/open，真实生效消费、发布联调、A12及撤回运行入口仍待后续。
+      sourceReferences: [docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml]
+  conflicts: []
+  questions: []
+  validationEvidence:
+    - id: validation.clarification-formal-knowledge
+      checkType: schema
+      command: cd gmp-platform/backend && mvn -q -Dtest=BusinessKnowledgeModelTest test
+      outcome: passed
+      evidence:
+        - 退出码0；89项、0失败、0错误、0跳过
+        - gmp-platform/backend/target/dhr-clarification-ontology-20261029.log
+        - 日志SHA256为9e0be90f6c76cdd501dad292f7689489c082eace5ec78f760046d216d500a98d
+        - gmp-platform/backend/target/surefire-reports/TEST-com.zencas.edhr.knowledge.BusinessKnowledgeModelTest.xml
+        - JUnit SHA256为c758629f44981d112d1ded4087f3a4d3197d2edc2883620d35360f2e585d5f2d
+        - 本研究目录clarification-ontology-knowledge.txt和clarification-ontology-junit.xml是上述原字节归档
+    - id: validation.clarification-yaml-baseline
+      checkType: schema
+      command: Ruby YAML解析全部docs/knowledge/**/*.yaml并检查knowledgeModelVersion
+      outcome: passed
+      evidence: [237份YAML解析通过且均为0.3.25, schema1.2.0未修改]
+    - id: validation.clarification-contract-and-scope
+      checkType: reference
+      command: git diff目标增量及定向源码和声明核对
+      outcome: passed
+      evidence:
+        - 项目和角色契约及知识无目标增量，来源与读取契约为2453124919a1532fdd9bbde292e2d7dbb92e04b2
+        - 新声明specified/internal，两项high及A12开放，无新增事实或执行注册
+        - 产品代码测试迁移及契约零修改
+    - id: validation.clarification-whitespace
+      checkType: evidence-path
+      command: git diff --check -- docs/knowledge docs/architecture
+      outcome: passed
+      evidence: [退出码0, 6个知识或架构文件40行新增6行删除]
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages: [P1, P2, P3]

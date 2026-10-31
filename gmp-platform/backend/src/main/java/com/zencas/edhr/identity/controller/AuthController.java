@@ -98,6 +98,13 @@ public class AuthController {
     private static final float PDF_LABEL_COLUMN_WIDTH = 134F;
     private static final float PDF_LINE_HEIGHT = 15F;
     private static final List<String> PDF_FONT_CANDIDATES = List.of(
+            "C:/Windows/Fonts/simhei.ttf",
+            "C:/Windows/Fonts/Deng.ttf",
+            "C:/Windows/Fonts/Noto Sans SC (TrueType).otf",
+            "C:/Windows/Fonts/NotoSansSC-VF.ttf",
+            "/usr/share/fonts/opentype/noto/NotoSansCJKsc-Regular.otf",
+            "/usr/share/fonts/truetype/noto/NotoSansSC-Regular.ttf",
+            "/usr/share/fonts/truetype/wqy/wqy-zenhei.ttc",
             "/System/Library/Fonts/Supplemental/Arial Unicode.ttf",
             "/Library/Fonts/Arial Unicode.ttf",
             "/System/Library/Fonts/Supplemental/Songti.ttc");
@@ -122,6 +129,9 @@ public class AuthController {
 
     @Value("${edhr.file.storage-path:#{systemProperties['user.home'] + '/.edhr/files'}}")
     private String storagePath;
+
+    @Value("${edhr.signature.authorization-notice-font-path:}")
+    private String authorizationNoticeFontPath;
 
     @PostMapping("/login")
     @Transactional(dontRollbackOn = FailedLoginException.class)
@@ -748,6 +758,7 @@ public class AuthController {
     private PDType0Font loadAuthorizationNoticeFont(PDDocument document) throws IOException {
         String configured = System.getProperty("edhr.authorization-notice.font");
         if (!StringUtils.hasText(configured)) configured = System.getenv("EDHR_AUTHORIZATION_NOTICE_FONT");
+        if (!StringUtils.hasText(configured)) configured = authorizationNoticeFontPath;
         return loadAuthorizationNoticeFont(document, configured);
     }
 

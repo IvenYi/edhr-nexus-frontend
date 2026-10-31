@@ -1,5 +1,71 @@
 # DHR 填报与审批设计确认及证据边界
 
+## 合并候选收尾证据的精确范围（2026-10-29）
+
+本轮来源基线现为 `e0b416a12507cd15e411d4becdd4d75b47ed77d9`，已包含目标 `635711f97e9b794f4af02e1e5d1939bb2ecf920f`；本体重读项目、交接与角色契约并核对无差异，知识仍0.3.25/schema1.2.0。以下补足本文件较早同轮观察中的待验范围，不回写先前原件或追认旧阶段通过。
+
+`original-evidence`：本体读取 `docs/development/record-control-dhr-linkage-20261029/evidence/backend-verification.json`，逐项解压核对48个归档的字节数及SHA-256均一致，再解析38个原JUnit，合计**360项，322通过、38条件跳过、0失败／错误**。其中记录控制真实PostgreSQL14项（8新6原）、知识89项、当前基线PostgreSQL3项均无失败或跳过；还包含证据批量容量等适用检查。当前基线PG原件覆盖新装、已有当前基线升级、重复执行及拒绝猜测清理未知业务库，不能再泛述为尚无PG迁移证据，亦不外推为全部部署或未执行的迁移回滚。
+
+长期核对以该manifest及同目录 `.gz` 为准，不使用可被浏览器夹具或后续回归覆盖的target单例XML。manifest读取时SHA-256为 `1ff3c9fdfaa184f0a1a61ae3a2883c39d5ac55ae562a97ba2fd46beabd84fa28`；其中归档RC14项原JUnit SHA-256为 `0df46ebfbe6739a63ba290c44f38d62ec75622f01764e6e95bdb9843ac915126`，知识89项为 `3a88af41c687e0aba56b1c85b842aebb84827dde2ca33c724ba2f3a0a46fe1bd`。下节先前读取的14项单例及third日志仅按原记录分别索引，不由后来归档反填为同次运行。
+
+`original-evidence`：前端 `evidence/frontend-archives.json` 的原压缩件哈希与字节数一致，构建、8项目标导航及12项回归脚本通过；`app-shell-final.log.gz` 原件仍是既有权限精确字符串检查失败，不能概括为所有脚本通过。初轮独立 `quality-result.yaml` 原件仍为**failed**，独立后端197项中196通过、1条件跳过，前端12项通过；浏览器发现既有作废状态误标medium，静态审计检查也没有完成基线比较。主侧已局部修正两页的作废标签，后续全新质量实例正在收尾，本体不把初轮结果改为passed，也不提前宣布最终独立质量通过。
+
+`original-evidence`：主侧真实Chromium现场观察及六张原始PNG已固定在 `evidence/browser/observations.md` 与同目录 `manifest.json`。本体直接查看了通知窄屏、草稿默认隐藏、修正后“已作废”和V1仍“已完成”的截图：当前草稿默认不列作废，概览仍1份真实证据，低频入口可查看原记录；旧冻结V1保留COMPLETED及old/100/件并提示来源已变。原现场记录还覆盖本人通知/已读、Escape焦点恢复、390×844浮层在视口内、通过原“发起修订”形成DRAFT但未提交V2；本体未亲自重做这些浏览器交互，不把截图单独用作焦点或事务证明。首轮独立的实际观察另存 `evidence/independent/browser-observations.md`，只解释修复前范围。
+
+已取得聚焦控制器／服务权限负例，浏览器则使用专用库的合成ADMIN账号；两者不能拼成完整普通权限UI矩阵。其余全面矩阵、四工作区全部窄屏及复杂表单画布并未由本节验收，控制台也并非零错误；这些范围的最新实际覆盖应取最终结果。质量检查结果变化的完整比较、未覆盖的全面矩阵、归档执行、A12历史检索UI及规则重建仍是实质剩余；本轮最终独立结论另取 `docs/development/record-control-dhr-linkage-20261029/quality-final-result.yaml`，不由本节或初轮failed代替。已有后端及部分UI路径具有局部implemented/internal证据；整体规范、完整事实成熟度、两项high/open及旧冻结／批准／生产放行边界保持。
+
+## 提交人账号身份及真实PG证据补充（2026-10-29）
+
+本节补充记录时间为2026-10-29 21:43 +08:00；沿用 `e63ed8dd2c3f63e5efb334b523efc7f3d9c32843` 基础的当前未提交实现。没有改变此前直接确认或创建新业务许可。
+
+`original-evidence`：本轮直接读取发现并修正的实现边界是：`DhrSummaryService` 原 `submitted_by` 保存显示姓名，不能拿它当站内收件人账号ID。追加 `0089-record-control-dhr-linkage.sql` 新增独立 `dhr_summary_version.submitted_by_id`；新提交按 `AuditContext.getOperatorId()` 保存，原显示名仍用于展示。`DhrEvidenceImpactService.sourceEffective` 优先读取该账号ID；旧版本只从原 `dhr_summary_review.submitted_by_id` 或唯一原SUBMIT审计 `operator_id` 恢复，无法可靠定位时不按姓名匹配。该工程落实保留同名不同人的身份隔离，不重写旧冻结正文、摘要或显示名，不增加历史审批人、外部通知或额外DHR权限。
+
+`original-evidence`：主侧报告已在专用PostgreSQL完成本轮应用链。本体随后独立读取当前 `RecordControlPostgresIntegrationTest` 源码及原JUnit：**合计14项（8项联动新增、6项原有），0失败、0错误、0跳过**，覆盖DHR在审阻断变更和作废、专属人工退回、申请在审阻断DHR提交、来源退回后恢复普通核查、当前报表与产出100换为90及作废退出贡献且旧结果保留、通知失败整体回滚、DHR提交与申请并发、异常双在审下生效与DHR批准并发、仅当前42和提交41收件而非历史43、原审计账号回退与重名隔离、重投不新增影响和提醒。通知列表及已读的他人隔离由同一服务级测试核对，不能扩大为完整HTTP授权或UI验收。
+
+本体实际读到的JUnit原件为 `gmp-platform/backend/target/surefire-reports/TEST-com.zencas.edhr.recordcontrol.service.RecordControlPostgresIntegrationTest.xml`，读取时SHA-256为 `8327ca8e8846797d3e22adf6a84c95d1e59bc73c66b4a704f1e40fdd98e9ce65`；其读取记录与内容摘要支持上述14项结果。主侧给出的第三轮原日志为 `gmp-platform/backend/target/dhr-linkage-postgres-third.log`，919283字节，SHA-256为 `fce37ca095debc0e12273423a01d37fac7d16d180b1fa9a5ed50ba6161fe9171`。同名JUnit可能被后续批量回归覆盖，本体没有独立证明这份已读JUnit与third日志一定属于同一次运行；两者分别索引，最终固定实现与JUnit及日志的对应归档由主侧完成，不把当前路径永久绑定为第三轮原件。本体未重跑Maven或数据库业务测试。
+
+后端上述受测路径可作为局部implemented/internal依据；完整规则声明及有效变化事实的成熟度保持，两个DHR high、质量结论变化全范围、普通权限剩余矩阵、HTTP/UI和收尾独立质量仍未由本节关闭。归档执行、完整A12历史检索及规则重建继续保留TODO。下节“尚待提供”的静态观察只解释较早的同轮时点，由本节补足所列PG路径，不追改其历史原件。
+
+## 记录控制与DHR联动实施的知识边界（2026-10-29）
+
+`user-confirmed`：用户最新确认统一称归档、MVP按所述最小范围先记录决策和TODO，再继续推进表单变更、作废与DHR联动，并明确保持现有功能及页面呈现规范。归档本身按DEC-0090记录为待交付范围，原话见 `dhr-archive-minimum-20261029.md`；本节不把归档确认解释为当前已经归档或顺带实现放行。
+
+`original-evidence`：本体在 `e63ed8dd2c3f63e5efb334b523efc7f3d9c32843` 基础的本轮未提交实现中，直接读取 `RecordControlService.submit/handle`、`DhrEvidenceImpactService`、`DhrSummaryService.submit`、`DhrReviewService.act`、`DhrInstanceService`、`FormProjectionService.revised`、`DhrImpactNotificationService` 和追加 `0089-record-control-dhr-linkage.sql`。当前源代码已把两向在审检查接入最终服务，真实批准生效后同事务调用当前索引刷新、投影切换和DHR影响消费，新冻结包含当前修订身份，个人提醒读写按认证收件人限定。它们只支持“接入代码已出现”的静态结论，不是完整迁移、业务、并发或浏览器验收。
+
+`inference`：锁序、结果事件去重、影响与通知存储、当前投影失效后生成新批次及顶栏浮层接入是工程实现选择，不能提升为用户逐字确认。原有效修订可读、在审非生效、通知既定两类收件人、人工退回／新版本重审、旧证据与批准保留和生产／放行无自动副作用保持。通知不授予其他DHR或任务权限，作废默认隐藏不减少完整证据和核查；指定冻结版继续按冻结当时状态解释，打印另定。
+
+`evidenceGaps`：主开发仍在同一切片实施，真实PostgreSQL结果、接收人矩阵、事务失败与并发、普通权限及UI保持证据尚待提供。两项DHR high保持open；当前统计修订切换不等于完整A12，失效历史检索UI及规则重建仍延期。不以本体知识校验或前轮32项既有测试替代本轮业务验收，不改变0.3.25/schema1.2.0和阶段。本节补充现在的源码观察，下面前轮静态缺口及历史原话按其当时基线保留，不回填旧验收。
+
+## DHR 审批期间新申请发起资格确认（2026-10-29）
+
+`user-confirmed`：用户随后明确要求：“那我们也按冠骋这样，DHR审批中先禁止发起表单变更或作废，需要修改就先退回”。DEC-0068-14 据此补充关联 DHR 正在审批时禁止新发起其来源表单变更或作废，先由有权人员通过 DHR 专属审批路径人工退回，再按来源原有资格申请。该确认仅替代 DEC-0068-13 对这一独立发起规则尚未确认的说明，不改写下面前一轮原话及其当时边界；已有活动申请阻断 DHR 汇总提交和审批通过仍保持，两向保护分别成立。
+
+`inference`：禁令须覆盖按流水号及未来目录等发起入口，在最终提交服务复核，避免仅隐藏按钮或已打开页面绕过；这沿用既有后端资格、事务及权限边界，并不授权现在增加目录入口。原记录和修订仍按原权限可读，人工退回不由系统代办，也不授予其他人员退回或申请权限。申请待审非生效、原有效修订保留、真实生效时站内提醒当前审批人和该版本汇总提交人、旧冻结与批准及生产／放行无自动副作用的规则保持。
+
+`original-evidence`：本角色在 `a4cb9a9fa4f3f88ed801d47463158495990b0308` 静态读取 `RecordControlService.submit`，当前代码复核来源完成状态、当前有效修订及单活动申请，未检查关联 DHR 的 `PENDING_REVIEW`；新发起阻断尚未实现。主智能体本轮归档的32项既有审核、汇总和权限 H2／mock 测试见同研究包 `capability-tests/manifest.json`，只能说明所覆盖的既有能力，不验证 DEC-0068-13／14 新阻断，本角色未把这些测试写成自己的运行证据。新增声明及验收场景保持 specified/internal，两项 DHR high 和 A12 继续开放；知识0.3.25/schema1.2.0不变，目标仍为 `edhr-dev@635711f97e9b794f4af02e1e5d1939bb2ecf920f`，未合并目标。
+
+`user-confirmed` 的调研范围：用户同句另问“我们有封存的这个操作吗？现在有规划吗？我们的dhr审核有做吗？还有冠骋有dhr变更，我们是否现在也缺这个dhr变更？需要调研一下”。这些问题不代表确认新增封存、解封、封存／已放行后可修改政策或 DHR 目录发起入口；原始代码及设计核对、能力与缺口分别见同研究包 `capability-inventory.md` 和 `capability-source-manifest.json`。DEC-0086 的首版流水号范围和延期入口保持；下述历史调研结论只解释其当时范围，不替代本节直接确认。
+
+## 待审收尾阻断与作废默认展示澄清（2026-10-29）
+
+`user-confirmed`：用户对“保留原有效修订”的说明要求举例和比较利弊；主智能体区分了来源修订有效性与 DHR 能否收尾，并询问“如果 DHR 引用的表单正在申请变更或作废，你更倾向哪种处理？两种方案都保留原有效修订，区别在 DHR 能否继续提交或批准。”用户明确选择：“原版可查看，暂缓 DHR 汇总提交和审批通过，等申请结束（推荐）”。DEC-0068-13 据此补充相关 DHR 的活动申请阻断；不改变原来源主状态，不把待审当生效，也不把该选择外推为禁止在 DHR 审批期间发起表单变更。
+
+`user-confirmed`：用户对历史证据展示的原话是：“保留，但我觉得不应该常规展示出来，而是可以通过某个按钮触发查看作废表单的视图，但这个按钮并不需要放在显眼的位置。然后我们打印的时候，应该也是需要过滤掉作废表单的，等做打印的时候再说吧”。DEC-0063-16 仅收敛作废表单默认隐藏与低频入口可达，局部替代 DEC-0063-04／DEC-0068-02 对常规展示的旧解释；原始记录、历史、作废原因、签署、关联、冻结证据、完整性核查与权限保留，不将失败、未完成或已替代记录一并隐藏。打印过滤的方向记录为后续打印设计范围，本轮不改当前 PDF／ZIP 或既有冻结导出契约，按钮具体位置和名称尚未定稿。
+
+`inference`：按既有冻结规则，实时视图按当前状态、指定冻结版按当时状态解释；后来作废不把旧版原有效记录改成“当时已作废”。活动申请结束不自动恢复批准资格：退回／撤回且来源未变时恢复普通检查，批准生效则继续核对过时证据，沿原人工退回／发起修订处理；已确认的来源、签署、旧批准、通知对象及生产／放行边界不变。以上是既有规则与本次选择的组合解释，不冒充用户新增逐字原话或已验证运行行为，撤回入口仍未完成。
+
+`original-evidence`：本角色在 `2453124919a1532fdd9bbde292e2d7dbb92e04b2` 定向读取当前 DhrSummaryService、DhrReviewService 和 DhrEvidenceImpactService：已有读时来源比较及过时批准阻断，未见 record_control_request／IN_REVIEW 的活动申请消费。新增阻断和默认隐藏维持 specified/internal，源码未改；两项 DHR high 与 A12 继续开放。目标仍为 `edhr-dev@635711f97e9b794f4af02e1e5d1939bb2ecf920f`，本轮未合并目标，知识0.3.25/schema1.2.0不变。直接用户输入及原始冠骋入口核对见 `docs/reference-assets/research/crown-dhr-change-downstream-20261029/clarification-round.md` 与同包 `clarificationRound`；冠骋入口限制不升级为本产品政策。
+
+## 表单生效影响的站内提醒对象确认（2026-10-29）
+
+`user-confirmed`：本轮在冠骋参考调研后，主智能体询问：“表单变更／作废生效并影响 DHR 后，提醒先采用哪种范围？此前已确认需要提醒，但未明确接收人和渠道。”用户明确选择：“站内提醒当前审批人和该版本汇总提交人（推荐）”。原问答随本轮对话保留，交接记录见 `docs/reference-assets/research/crown-dhr-change-downstream-20261029/handoff.yaml` 的 `confirmedNotificationReply`；这里记录直接人类确认，不将冠骋表单待办消息当作本项目通知规则。
+
+当前含义由 DEC-0068-12 补充：表单变更或作废正式生效并影响 DHR 后，使用站内渠道提醒当前审批人和受影响冻结汇总版本的汇总提交人；本次范围不增加历史批准人或邮件等外部渠道。没有当前审批任务时不虚构当前审批人是对“当前”的工程解释，不是另行赋予历史批准人任务资格。投递去重、账号状态和存储等实现细节仍须在后续切片核对，不由本次记录补造人员或赋予读取／处理权限。
+
+确认只补齐上述表单生效场景的通知对象和渠道，保留 DEC-0068-04／05／06／08 的申请待审不等于生效、人工退回、旧批准与冻结不改写、新草稿重审及生产／放行无自动副作用；不据此扩大表单作废资格、通知场景或权限。不修改附件变化等其他既有有效来源变化的要求，也不将本条对象选择外推为全部未来通知政策。
+
+`original-evidence`：本次在 `2f46b5f66af44ea5973b9ead93f6eb85e62dbcc7` 静态核对 `DhrEvidenceImpactService.changes` 的读时来源比较和 `DhrReviewService` 的批准阻断；它们没有构成本次新站内提醒投递的实现或运行证据。本轮目标为 `edhr-dev@635711f97e9b794f4af02e1e5d1939bb2ecf920f`，契约与知识相对原目标无增量，目标未合并。新增声明与验收场景保持 `specified/internal`、知识 `0.3.25`，没有新增运行事实、可执行规则或执行契约；两项 DHR high 与 A12 保持开放，正式通知实现及独立运行验收后续完成。
+
 ## 同切片最新四条 UI 补正（2026-09-27）
 
 `user-confirmed`：DEC-PACKAGE-20260927-DHR-WORKSPACE-NAVIGATION 的 `confirmedUiRefinements` 当前前四条，L2、知识基线 0.3.24、specified/internal；原位纠正而非新增迭代。

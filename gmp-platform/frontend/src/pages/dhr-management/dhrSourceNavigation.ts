@@ -22,7 +22,8 @@ export function defaultEvidencePlacements(directories: DhrDirectory[], records: 
 }
 
 /** Reading projection of the same placement order used by the editor; never changes evidence identity. */
-export function archiveNavigation(directories: DhrDirectory[], records: DhrEvidenceRecord[], overlay: DhrSummaryDirectoryOverlay[] = [], overrides: DhrSummaryPlacement[] = []): DhrNavigationNode[] {
+export function archiveNavigation(directories: DhrDirectory[], records: DhrEvidenceRecord[], overlay: DhrSummaryDirectoryOverlay[] = [], overrides: DhrSummaryPlacement[] = [], includeObsolete = true): DhrNavigationNode[] {
+  records = records.filter(record => includeObsolete || record.status !== 'OBSOLETE');
   const byId = new Map(records.map(record => [record.id, record]));
   const placements = [...defaultEvidencePlacements(directories, records).filter(p => !overrides.some(o => o.recordId === p.recordId)), ...overrides.filter(p => byId.has(p.recordId))];
   const names = new Map(placements.map(p => [p.recordId, p.displayName]));
@@ -76,8 +77,8 @@ export function archiveNavigation(directories: DhrDirectory[], records: DhrEvide
 }
 
 /** Source navigation follows original identity, never the summary placements. */
-export function evidenceNavigation(source: DhrSource, directories: DhrDirectory[], records: DhrEvidenceRecord[]): DhrNavigationNode[] {
-  const candidates = records.filter(record => record.originKind === source);
+export function evidenceNavigation(source: DhrSource, directories: DhrDirectory[], records: DhrEvidenceRecord[], includeObsolete = true): DhrNavigationNode[] {
+  const candidates = records.filter(record => record.originKind === source && (includeObsolete || record.status !== 'OBSOLETE'));
   if (source !== 'DIRECTORY') return groupSummarySources(candidates).map(group => ({
     key: group.key, label: group.records[0].templateName || group.records[0].snapshot.name || '未命名表单',
     depth: 0, recordIds: group.records.map(record => record.id), secondary: [group.records[0].operationName,

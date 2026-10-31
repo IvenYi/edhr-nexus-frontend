@@ -49,6 +49,7 @@ class DhrSummaryPersistenceTest {
         jdbc.execute("CREATE TABLE dhr_summary_version(id BIGINT PRIMARY KEY,tenant_id VARCHAR(64),dhr_instance_id BIGINT,version_no INT,status VARCHAR(32),review_mode VARCHAR(32),review_workflow_definition_id BIGINT,review_workflow_version_id BIGINT,base_directory_snapshot TEXT,overlay_directory_snapshot TEXT,candidate_snapshot TEXT,attachment_snapshot TEXT DEFAULT '[]',snapshot_hash VARCHAR(64),submitted_by VARCHAR(128),submitted_at TIMESTAMP,created_at TIMESTAMP,check_result_snapshot TEXT,UNIQUE(dhr_instance_id,version_no))");
         jdbc.execute("CREATE TABLE dhr_summary_evidence(id BIGINT PRIMARY KEY,tenant_id VARCHAR(64),summary_version_id BIGINT,source_record_id BIGINT,target_node_key VARCHAR(128),before_node_key VARCHAR(128),display_order INT,display_name VARCHAR(120),origin_kind VARCHAR(32),source_snapshot TEXT,source_hash VARCHAR(64),created_at TIMESTAMP,UNIQUE(summary_version_id,source_record_id))");
         jdbc.execute("CREATE TABLE dhr_summary_review(summary_version_id BIGINT PRIMARY KEY,workflow_instance_id BIGINT,status VARCHAR(32),submitted_by_id VARCHAR(64),updated_at TIMESTAMP)");
+        jdbc.execute("ALTER TABLE dhr_summary_version ADD COLUMN submitted_by_id VARCHAR(64)");
         // Numeric IDs model an already frozen snapshot. Reads must not rewrite it.
         base = (ObjectNode) mapper.readTree("{\"directories\":[{\"id\":" + DIRECTORY_ID + ",\"parentId\":null,\"name\":\"生产\",\"items\":[{\"id\":20,\"required\":true,\"displayName\":\"必填记录\",\"records\":[]}]}]}");
         jdbc.update("INSERT INTO dhr_instance(id,tenant_id,status,summary_status,dhr_review_mode,directory_snapshot) VALUES(1,'default','COMPLETED','NOT_STARTED','NONE',?)", base.toString());
@@ -474,7 +475,7 @@ class DhrSummaryPersistenceTest {
         return record;
     }
 
-    @Configuration @EnableTransactionManagement
+    @Configuration @EnableTransactionManagement(proxyTargetClass = true)
     static class Config {
         @Bean DataSource dataSource() { return new DriverManagerDataSource("jdbc:h2:mem:dhr-summary-persistence;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE;DB_CLOSE_DELAY=-1", "sa", ""); }
         @Bean JdbcTemplate jdbc(DataSource source) { return new JdbcTemplate(source); }

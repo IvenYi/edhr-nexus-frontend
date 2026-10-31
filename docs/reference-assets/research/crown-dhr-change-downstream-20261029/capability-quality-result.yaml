@@ -1,0 +1,159 @@
+qualityResult:
+  result: passed
+  baseCommit: a4cb9a9fa4f3f88ed801d47463158495990b0308
+  headCommit: a4cb9a9fa4f3f88ed801d47463158495990b0308
+  contractBaseline:
+    sourceCommit: a4cb9a9fa4f3f88ed801d47463158495990b0308
+    targetBranch: edhr-dev
+    targetCommit: 635711f97e9b794f4af02e1e5d1939bb2ecf920f
+    contractReadCommit: a4cb9a9fa4f3f88ed801d47463158495990b0308
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: dirty
+    includedPaths:
+      - docs/architecture/transaction-traceability-dhr-business-rules.md
+      - docs/knowledge/README.md
+      - docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml
+      - docs/knowledge/evidence/dhr-filling-review-confirmed.md
+      - docs/reference-assets/research/crown-dhr-change-downstream-20261029/handoff.yaml
+      - docs/reference-assets/research/crown-dhr-change-downstream-20261029/README.md
+      - docs/reference-assets/research/crown-dhr-change-downstream-20261029/capability-inventory.md
+      - docs/reference-assets/research/crown-dhr-change-downstream-20261029/capability-source-manifest.json
+      - docs/reference-assets/research/crown-dhr-change-downstream-20261029/capability-ontology-result.yaml
+      - docs/reference-assets/research/crown-dhr-change-downstream-20261029/capability-ontology-archives.json
+      - docs/reference-assets/research/crown-dhr-change-downstream-20261029/capability-ontology-knowledge.txt
+      - docs/reference-assets/research/crown-dhr-change-downstream-20261029/capability-ontology-junit.xml.gz
+      - docs/reference-assets/research/crown-dhr-change-downstream-20261029/capability-tests/
+      - docs/reference-assets/research/crown-dhr-change-downstream-20261029/capability-independent-evidence.json
+      - docs/reference-assets/research/crown-dhr-change-downstream-20261029/capability-quality-result.yaml
+    excludedPaths:
+      - gmp-platform/frontend/node_modules
+      - output/playwright/record-control-integration-20261028/
+    untrackedPaths:
+      - docs/reference-assets/research/crown-dhr-change-downstream-20261029/capability-independent-evidence.json
+      - docs/reference-assets/research/crown-dhr-change-downstream-20261029/capability-inventory.md
+      - docs/reference-assets/research/crown-dhr-change-downstream-20261029/capability-ontology-archives.json
+      - docs/reference-assets/research/crown-dhr-change-downstream-20261029/capability-ontology-junit.xml.gz
+      - docs/reference-assets/research/crown-dhr-change-downstream-20261029/capability-ontology-knowledge.txt
+      - docs/reference-assets/research/crown-dhr-change-downstream-20261029/capability-ontology-result.yaml
+      - docs/reference-assets/research/crown-dhr-change-downstream-20261029/capability-quality-result.yaml
+      - docs/reference-assets/research/crown-dhr-change-downstream-20261029/capability-source-manifest.json
+      - docs/reference-assets/research/crown-dhr-change-downstream-20261029/capability-tests/
+      - gmp-platform/frontend/node_modules
+      - output/playwright/record-control-integration-20261028/
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+    - id: check.capability-contract-and-scope
+      required: true
+      category: documentation
+      description: 独立读取项目和质量契约并核对实际来源、目标与工作树范围
+      method: command
+      command: git rev-parse HEAD origin/edhr-dev; git diff --name-only HEAD origin/edhr-dev -- AGENTS.md codeplzreadme.md docs/agents; git status --short; git diff --check
+      outcome: passed
+      evidence:
+        - 来源与目标分别为a4cb9a9fa4f3f88ed801d47463158495990b0308和635711f97e9b794f4af02e1e5d1939bb2ecf920f，契约无增量，空白检查通过
+        - 目标未合并；本结果只覆盖当前未提交L1知识及能力调研，不作为合并候选或产品发布验收
+        - capability-independent-evidence.json记录实际状态及受审内容哈希；旧质量结果未改写，旧研究正文保留，README顶部单行索引同步最新能力盘点和14
+    - id: check.capability-confirmed-policy-and-replacement
+      required: true
+      category: requirements
+      description: 对照用户原话、决策包、0063/0068/0086/0087及当前知识投影
+      method: inspection
+      command: 逐声明核对DEC-0068-14、13、12及DEC-0063-16和replacementScopes
+      outcome: passed
+      evidence:
+        - 14只替代13先前未确认发起资格的说明；保留已有活动申请阻断DHR提交批准的另一方向
+        - 新申请覆盖流水号及未来目录入口和最终提交复核，先有权人员经专属路径人工退回；原权限读取、不自动退回及不增权保持
+        - 作废默认隐藏但证据可达和核查保持；打印延期；未将封存/解封/已放行修改/新增目录入口的研究提问写成新许可
+        - 4个知识架构文件与研究包同步；新增规则specified/internal，当前未实现，原话历史和知识版本保持
+        - 研究README第3行链接最新capability-inventory.md，当前规则同时列出13和14，仅更新历史索引，不回写此前验收正文
+    - id: check.capability-primary-source-integrity
+      required: true
+      category: documentation
+      description: 核验全部本轮原始来源清单及独立补读源
+      method: command
+      command: Python逐文件计算SHA256和字节数，与capability-source-manifest.json核对
+      outcome: passed
+      evidence:
+        - 28个原始文件全部与清单一致；补读Crown目录检索组件、当前影响服务及生命周期测试夹具
+        - capability-independent-evidence.json记录各文件实际哈希、大小和核对结果
+    - id: check.capability-review-and-new-guard-gap
+      required: true
+      category: api
+      description: 原始前后端审核入口、冻结版本、流程签署退回、汇总修订与新门禁缺口
+      method: inspection
+      command: 读取DhrReviewPage/API/controller/service、DhrSummaryService、WorkflowEngine及RecordControlService.submit/lockSource
+      outcome: passed
+      evidence:
+        - 真实审核链及专属动作存在；冻结REQUIRED启审、NONE直接FORMALIZED；人工RETURN准备草稿，最终APPROVE定稿；reorganize保留旧版并新建草稿
+        - RecordControlService.submit及其锁源方法未检查关联DHR的PENDING_REVIEW；DHR提交批准服务未消费record_control_request在审状态，报告明确双向阻断尚未实现
+        - 两项DHR high保持open；既有能力检查不关闭真实生效联动、通知或A12缺口
+    - id: check.capability-seal-and-change-semantics
+      required: true
+      category: audit
+      description: 独立核对归档导出、状态机及规划，区分Crown单表入口和我方汇总修订
+      method: inspection
+      command: 读取DhrArchiveController/Service、DhrInstanceService、DhrStatusMachine、StateMachineService、PRD及Crown实际V1调用链和ProcessHandlerFactory
+      outcome: passed
+      evidence:
+        - 当前export仅产包及导出审计；DHR状态机ARCHIVED为声明，transit只校验和日志，实际生产代码未调用DHR转换链；封存规划不冒充已实现
+        - Crown实际目录入口调用canEnterChangeProcess拦IN_AUDIT/ABANDON，ARCHIVED关闭变更作废；DHR_CHANGE复用FORM_CHANGE处理器
+        - 按流水号单表修订核心、已定稿汇总发起修订和封存分别解释；DEC-0086延期入口未被本轮擅自实现
+        - Crown平台服务部分缺源，页面门禁不外推为全部后端或最新线上部署事实
+    - id: check.capability-knowledge-and-ontology-evidence
+      required: true
+      category: ontology
+      description: 独立结构解析、成熟度及本体结果和原始日志核验
+      method: command
+      command: Ruby/Psych解析237份知识YAML；Python校验本体日志/JUnit原字节SHA256并解析JUnit；核对本体结果4文件哈希及更正ID
+      outcome: passed
+      evidence:
+        - 237份知识YAML均可解析且knowledgeModelVersion为0.3.25；12/13/14 specified/internal，两项high/open保持
+        - 本体角色原运行BusinessKnowledgeModelTest为89项0失败错误跳过；质量角色未重跑，以独立解析原始JUnit和日志为证
+        - 2个本体归档与清单和当前target原件逐字节相同；4个知识文件哈希与本体结果相同
+        - 结果中的A12引用已更正为实际question.form-projection-trace-index-effective-scope；错误旧ID只保留于结果纠错元数据，知识中不存在
+    - id: check.capability-existing-test-evidence-and-limitations
+      required: true
+      category: integration
+      description: 独立核对主侧本轮既有测试原件及夹具覆盖，不冒称质量重跑或新门禁验收
+      method: command
+      command: Python解压5个业务归档，核对SHA256/字节数及原target文件，逐项解析JUnit类名/用例/结果；定向复读生命周期测试Config
+      outcome: passed
+      evidence:
+        - DhrReviewServiceTest 10、DhrReviewLifecycleIntegrationTest 6、DhrWorkbenchPermissionsTest 8、DhrSummaryServiceTest 8，共32项通过，0失败错误跳过，5归档与清单及原件一致
+        - H2与mock夹具；真实汇总/审批/工作流/签署/审计组合不包含完整元数据、文件、附件、主体解析、通用状态机和绑定仓储集成
+        - 主侧已据独立发现修正capability-inventory.md第39行，去除仅元数据stub的过度表述，质量角色定向复核通过
+        - 未运行PostgreSQL、浏览器、冠骋部署系统或全产品验收，不据32项通过认定新双向阻断、生效通知或封存完成
+  findings:
+    - id: QF-CAPABILITY-001
+      severity: low
+      scope: research-test-coverage-wording
+      summary: 原报告把生命周期测试描述为仅DHR元数据stub，低估其他mock边界
+      reproductionSteps:
+        - 对照capability-inventory.md原第39行与DhrReviewLifecycleIntegrationTest.Config第232至243行
+        - 可见除DhrInstanceService外还mock文件、附件、主体解析、状态机和绑定规则仓储
+      expectedResult: 报告准确说明真实组合链及关键mock范围
+      actualResult: 主智能体已删除仅元数据stub表述并明确列出关键mock；独立定向复核与源码一致
+      evidence:
+        - gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrReviewLifecycleIntegrationTest.java:232
+        - docs/reference-assets/research/crown-dhr-change-downstream-20261029/capability-inventory.md:39
+      resolutionStatus: resolved
+      resolutionEvidence:
+        - type: document
+          reference: docs/reference-assets/research/crown-dhr-change-downstream-20261029/capability-inventory.md:39
+        - type: document
+          reference: docs/reference-assets/research/crown-dhr-change-downstream-20261029/capability-independent-evidence.json
+  residualRisks:
+    - id: risk.capability-runtime-not-delivered
+      description: 本轮通过仅覆盖知识及调研；双向门禁、真实来源生效联动、提醒、作废显示及A12未由本轮实现验收
+      impact: 不能作为产品上线或两项DHR high关闭依据
+      mitigation: 后续L2实现按真实事务、权限、有效修订与并发验收，两项high/A12继续开放
+    - id: risk.capability-seal-lifecycle-unclosed
+      description: 有封存归档规划但未落实完整生产DHR封存生命周期
+      impact: 不能把定稿或ZIP导出视为已受控封存或由此开放解封和已放行修改
+      mitigation: 另定封存时点、责任、签署、锁定和后续更正范围，本轮不新增政策
+    - id: risk.capability-source-and-environment-boundary
+      description: Crown为可用本地快照且平台层部分缺源；既有服务测试为H2/mocks；目标未合并
+      impact: 不证明竞品线上全路径、PostgreSQL/浏览器、完整发布或合并候选通过
+      mitigation: 报告保留原始/二手/确认/推断标签，真正实现集成发布时重新取相应证据
+  blockingConditions: []

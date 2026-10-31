@@ -1,0 +1,36 @@
+
+> edhr-frontend@0.0.1 build:dhr-print
+> vite build --config vite.dhr-print.config.ts
+
+vite v5.4.21 building for production...
+transforming...
+✓ 11665 modules transformed.
+rendering chunks...
+computing gzip size...
+../backend/target/generated-resources/dhr-print/renderer.js  662.41 kB │ gzip: 210.32 kB
+✓ built in 2.75s
+[ERROR] COMPILATION ERROR : 
+[ERROR] /Users/ivenwang/.codex/worktrees/record-control-integration/edhr-nexus/gmp-platform/backend/src/test/java/com/zencas/edhr/recordcontrol/service/RecordControlAccessTest.java:[83,39] 无法将接口 com.zencas.edhr.workflow.repository.WorkflowTaskRepository中的方法 findTodoForUser应用到给定类型;
+  需要: java.lang.String,java.lang.String,int,long
+  找到:    java.lang.String,java.lang.String
+  原因: 实际参数列表和形式参数列表长度不同
+[ERROR] /Users/ivenwang/.codex/worktrees/record-control-integration/edhr-nexus/gmp-platform/backend/src/test/java/com/zencas/edhr/recordcontrol/service/RecordControlAccessTest.java:[98,39] 无法将接口 com.zencas.edhr.workflow.repository.WorkflowTaskRepository中的方法 findDoneForUser应用到给定类型;
+  需要: java.lang.String,int,long
+  找到:    java.lang.String
+  原因: 实际参数列表和形式参数列表长度不同
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-compiler-plugin:3.13.0:testCompile (default-testCompile) on project edhr: Compilation failure: Compilation failure: 
+[ERROR] /Users/ivenwang/.codex/worktrees/record-control-integration/edhr-nexus/gmp-platform/backend/src/test/java/com/zencas/edhr/recordcontrol/service/RecordControlAccessTest.java:[83,39] 无法将接口 com.zencas.edhr.workflow.repository.WorkflowTaskRepository中的方法 findTodoForUser应用到给定类型;
+[ERROR]   需要: java.lang.String,java.lang.String,int,long
+[ERROR]   找到:    java.lang.String,java.lang.String
+[ERROR]   原因: 实际参数列表和形式参数列表长度不同
+[ERROR] /Users/ivenwang/.codex/worktrees/record-control-integration/edhr-nexus/gmp-platform/backend/src/test/java/com/zencas/edhr/recordcontrol/service/RecordControlAccessTest.java:[98,39] 无法将接口 com.zencas.edhr.workflow.repository.WorkflowTaskRepository中的方法 findDoneForUser应用到给定类型;
+[ERROR]   需要: java.lang.String,int,long
+[ERROR]   找到:    java.lang.String
+[ERROR]   原因: 实际参数列表和形式参数列表长度不同
+[ERROR] -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException

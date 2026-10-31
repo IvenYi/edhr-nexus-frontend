@@ -9,7 +9,7 @@ export default defineConfig({
   resolve: { alias: { '@': path.resolve(root, 'src') } },
   define: { 'process.env.NODE_ENV': '"production"' },
   build: {
-    outDir: '../backend/target/generated-resources/dhr-print', emptyOutDir: true,
+    outDir: process.env.DHR_PRINT_OUTPUT_DIR || '../backend/target/generated-resources/dhr-print', emptyOutDir: true,
     lib: { entry: 'src/dhr-print/main.tsx', name: 'DhrPrint', formats: ['iife'], fileName: () => 'renderer.js' },
   },
 });

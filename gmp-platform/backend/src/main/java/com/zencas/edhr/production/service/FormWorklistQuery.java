@@ -28,7 +28,7 @@ final class FormWorklistQuery {
         page = number("page", 0, 0, Integer.MAX_VALUE); size = number("size", 20, 1, 200);
         for (String id : List.of("templateId", "templateVersionId", "productionObjectId", "workOrderId"))
             if (values.containsKey(id)) FormInstanceQueryService.positiveId(values.get(id));
-        if (values.containsKey("instanceNo") && values.containsKey("instanceNoContains")) throw invalid("实例号精确与模糊条件互斥");
+        if (values.containsKey("instanceNo") && values.containsKey("instanceNoContains")) throw invalid("表单实例编号精确与模糊条件互斥");
         if (values.containsKey("saved") && !Set.of("true", "false").contains(values.get("saved"))) throw invalid("saved 必须为 true 或 false");
         if (values.containsKey("productionObjectType") && !Set.of("BATCH", "SN").contains(values.get("productionObjectType"))) throw invalid("生产对象类型必须为 BATCH 或 SN");
         if (values.containsKey("reviewResult") && (!view.equals("REVIEW_DONE") || !Set.of("APPROVE", "RETURN").contains(values.get("reviewResult")))) throw invalid("审批结果仅适用于 REVIEW_DONE，取 APPROVE 或 RETURN");

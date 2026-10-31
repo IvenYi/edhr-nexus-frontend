@@ -1,0 +1,24 @@
+{
+  "buildExit": 0,
+  "menuVerificationExit": 0,
+  "listStyleVerificationExit": 0,
+  "genericUi": {
+    "tests": 14,
+    "passed": 13,
+    "failed": 1,
+    "failure": "normalization preserves configured module and required-menu icons on repeated saves",
+    "baselineCommit": "40497474da006dfd52ea38070036a6e350eaab8e",
+    "baselineSameFailure": true,
+    "baselineFiles": [
+      "src/utils/menuManagement.ts",
+      "src/utils/constants.ts"
+    ],
+    "expected": "asset:456",
+    "actual": "FactCheck"
+  },
+  "premiumAudit": {
+    "errors": 28,
+    "changedPageFindings": 0,
+    "scope": "historical whole-frontend findings; not passed"
+  }
+}

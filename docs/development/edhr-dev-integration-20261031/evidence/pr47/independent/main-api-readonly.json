@@ -1,0 +1,256 @@
+{
+  "candidate": "6edb5411ef10f22320e00b737a13d56b84f4e848",
+  "base": "http://localhost:3000/api/v1",
+  "businessActionsSubmitted": false,
+  "proxyDisabledForLoopback": true,
+  "checks": [
+    {
+      "name": "login-applicant",
+      "passed": true,
+      "details": {
+        "username": "uat_applicant"
+      }
+    },
+    {
+      "name": "login-reviewer",
+      "passed": true,
+      "details": {
+        "username": "uat_reviewer"
+      }
+    },
+    {
+      "name": "login-target",
+      "passed": true,
+      "details": {
+        "username": "uat_target"
+      }
+    },
+    {
+      "name": "login-manager",
+      "passed": true,
+      "details": {
+        "username": "uat_manager"
+      }
+    },
+    {
+      "name": "source-REASSIGN",
+      "passed": true,
+      "details": {
+        "recordId": "883010002000",
+        "status": "COMPLETED"
+      }
+    },
+    {
+      "name": "request-REASSIGN",
+      "passed": true,
+      "details": {
+        "status": "IN_REVIEW",
+        "canWithdraw": true
+      }
+    },
+    {
+      "name": "source-TRANSFER",
+      "passed": true,
+      "details": {
+        "recordId": "883010002001",
+        "status": "COMPLETED"
+      }
+    },
+    {
+      "name": "request-TRANSFER",
+      "passed": true,
+      "details": {
+        "status": "IN_REVIEW",
+        "canWithdraw": true
+      }
+    },
+    {
+      "name": "source-WITHDRAW",
+      "passed": true,
+      "details": {
+        "recordId": "883010002002",
+        "status": "COMPLETED"
+      }
+    },
+    {
+      "name": "request-WITHDRAW",
+      "passed": true,
+      "details": {
+        "status": "IN_REVIEW",
+        "canWithdraw": true
+      }
+    },
+    {
+      "name": "withdraw-rule-WITHDRAW",
+      "passed": true,
+      "details": {
+        "canWithdraw": true
+      }
+    },
+    {
+      "name": "source-DECIDED",
+      "passed": true,
+      "details": {
+        "recordId": "883010002003",
+        "status": "COMPLETED"
+      }
+    },
+    {
+      "name": "request-DECIDED",
+      "passed": true,
+      "details": {
+        "status": "IN_REVIEW",
+        "canWithdraw": false
+      }
+    },
+    {
+      "name": "withdraw-rule-DECIDED",
+      "passed": true,
+      "details": {
+        "canWithdraw": false
+      }
+    },
+    {
+      "name": "source-DHR-REVIEW",
+      "passed": true,
+      "details": {
+        "recordId": "883010002004",
+        "status": "COMPLETED"
+      }
+    },
+    {
+      "name": "source-DHR-PENDING",
+      "passed": true,
+      "details": {
+        "recordId": "883010002005",
+        "status": "COMPLETED"
+      }
+    },
+    {
+      "name": "request-DHR-PENDING",
+      "passed": true,
+      "details": {
+        "status": "IN_REVIEW",
+        "canWithdraw": true
+      }
+    },
+    {
+      "name": "source-DHR-CHANGE",
+      "passed": true,
+      "details": {
+        "recordId": "883010002006",
+        "status": "COMPLETED"
+      }
+    },
+    {
+      "name": "request-DHR-CHANGE",
+      "passed": true,
+      "details": {
+        "status": "IN_REVIEW",
+        "canWithdraw": true
+      }
+    },
+    {
+      "name": "source-DHR-VOID",
+      "passed": true,
+      "details": {
+        "recordId": "883010002007",
+        "status": "COMPLETED"
+      }
+    },
+    {
+      "name": "request-DHR-VOID",
+      "passed": true,
+      "details": {
+        "status": "IN_REVIEW",
+        "canWithdraw": true
+      }
+    },
+    {
+      "name": "manager-instance-running",
+      "passed": true,
+      "details": {
+        "status": "RUNNING",
+        "taskCount": 1
+      }
+    },
+    {
+      "name": "reassign-candidate-boundary",
+      "passed": true,
+      "details": {
+        "ids": [
+          "883010000003"
+        ]
+      }
+    },
+    {
+      "name": "transfer-context-readable",
+      "passed": true,
+      "details": {
+        "canTransfer": true,
+        "signatureRequired": true
+      }
+    },
+    {
+      "name": "dhr-workspace-DHR-REVIEW",
+      "passed": true,
+      "details": {
+        "dhrId": "883010004004",
+        "topLevelKeys": [
+          "attachments",
+          "candidates",
+          "dhr",
+          "draft",
+          "sourceScopeHash",
+          "versions"
+        ]
+      }
+    },
+    {
+      "name": "dhr-workspace-DHR-PENDING",
+      "passed": true,
+      "details": {
+        "dhrId": "883010004005",
+        "topLevelKeys": [
+          "attachments",
+          "candidates",
+          "dhr",
+          "draft",
+          "sourceScopeHash",
+          "versions"
+        ]
+      }
+    },
+    {
+      "name": "dhr-workspace-DHR-CHANGE",
+      "passed": true,
+      "details": {
+        "dhrId": "883010004006",
+        "topLevelKeys": [
+          "attachments",
+          "candidates",
+          "dhr",
+          "draft",
+          "sourceScopeHash",
+          "versions"
+        ]
+      }
+    },
+    {
+      "name": "dhr-workspace-DHR-VOID",
+      "passed": true,
+      "details": {
+        "dhrId": "883010004007",
+        "topLevelKeys": [
+          "attachments",
+          "candidates",
+          "dhr",
+          "draft",
+          "sourceScopeHash",
+          "versions"
+        ]
+      }
+    }
+  ],
+  "passed": true
+}

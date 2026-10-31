@@ -1,0 +1,7 @@
+knowledgeModelVersion: 0.3.25
+evidence:
+  - id: evidence.workflow-reassignment-signature-user-confirmed
+    type: document
+    path: docs/knowledge/evidence/workflow-reassignment-signature-confirmed.md
+    description: user-confirmed；2026-10-29用户直接确认重新分配需要签名，关闭原question.record-control-managerial-reassignment-signature的是否额外签名选择；原权限、目标、原因、路径和审计边界保留，不扩散其他动作或DHR通用干预，也不证明运行实现。原问题逐项内容和Git读取基线保留以区分当前确认与历史未决。
+    visibility: internal

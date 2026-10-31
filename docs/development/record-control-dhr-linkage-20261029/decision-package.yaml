@@ -1,0 +1,120 @@
+decisionPackage:
+  id: DEC-PACKAGE-20261029-RECORD-CONTROL-DHR-LINKAGE
+  scope: 记录归档最小范围，并接通记录控制真实生效与DHR及当前投影；保持既有页面规范和冻结历史。
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: e0b416a12507cd15e411d4becdd4d75b47ed77d9
+    targetBranch: edhr-dev
+    targetCommit: 635711f97e9b794f4af02e1e5d1939bb2ecf920f
+    contractReadCommit: e63ed8dd2c3f63e5efb334b523efc7f3d9c32843
+    uncommittedContractPaths: []
+  summary: 归档只登记决策和TODO；本轮实现DHR双向在审保护、有效修订识别、生效影响及站内提醒，刷新当前追溯和正式统计，作废默认隐藏但证据可达。
+  integrationContext:
+    originalSourceCommit: e63ed8dd2c3f63e5efb334b523efc7f3d9c32843
+    mergeCommit: e0b416a12507cd15e411d4becdd4d75b47ed77d9
+    targetIncluded: 635711f97e9b794f4af02e1e5d1939bb2ecf920f
+    contractDelta: 目标和合并均无项目角色交接契约变化，原实际读取基线保持；新候选重新执行适用检查，不沿用旧候选通过。
+  confirmed:
+    concepts:
+      - id: concept.dhr-archive
+        name: DHR归档
+        definition: 统一称归档，结束日常办理并受控保存具体正式版本及证据，区别于汇总版本冻结和下载归档包；本项为待实施范围确认。
+        status: specified
+        sourceReferences: [本轮用户直接确认, docs/prd/edhr-mvp-prd.md]
+    relationships: []
+    rules: []
+    executionContracts: []
+  confirmedBusinessDecisions:
+    - 用户原话：好的，那就统一叫归档，MVP按你说的最小范围做，先把这些决策和todo记录好。接下来继续推进表单变更、作废和DHR的联动。不要改坏现有的功能，并且也不要因为增加功能破坏了现有页面的呈现与规范。
+    - 归档MVP按上轮建议：最终放行后，绑定正式DHR具体版本及表单修订、附件、签名、审计；限制普通修改，保留按权检索、追溯、导出及归档主体和时间。备份恢复为保存保障，不能由下载ZIP代替。
+    - 本轮只记录归档，不实现归档、解封、独立归档审批或放行后变更；P1放行后变更与现有放行责任边界保持。
+    - DEC-0068-14：DHR审批中禁止新发起其来源表单变更或作废，先由有权人员专属人工退回；全入口及最终提交一致。
+    - DEC-0068-13：来源已有在审申请时暂缓DHR汇总提交和审批通过，原有效修订可查看，申请结束按结果复核，不自动批准或退回。
+    - DEC-0068-05/06/12：来源真实生效才识别受影响冻结版本并站内提醒当前审批人和该版本提交人；旧冻结和旧批准保留，人工退回或发起修订。
+    - DEC-0063-16：常规DHR视图默认隐藏作废表单，低频可发现入口可查看；不删除证据、不绕过核查，冻结版按当时状态解释，打印另定。
+    - 沿DEC-0077/0078/0079及既有A12接续范围，真实生效后切换当前正式统计贡献并刷新当前内容索引，不改生产生命周期或历史原件；历史检索UI及规则重建不在本轮。
+    - 连续UI反馈：底部独立作废查看按钮突兀且占左侧目录空间，用户要求换位置或形式并指定design-taste-frontend，随后明确竖向三个点及更小浮层；保留业务规则，收敛低频入口。
+  inferred:
+    - id: inference.linkage-transaction
+      statement: 在记录控制最终结果事务内同步处理追溯、当前投影和DHR影响及持久提醒，复用结果事件身份去重；失败整体回滚。
+      rationale: 避免来源已生效但下游仍读旧贡献，同时保留既有事务和幂等边界。
+      relatedIds: [DEC-0068, DEC-0077, DEC-0087]
+    - id: inference.linkage-ui
+      statement: 复用现有顶栏通知图标与MUI浮层接入真实提醒；作废查看收进DHR导航标题的查看选项菜单，移除底部独立行，保留现有页骨架、表格、目录布局和组件，不新建通知中心或改变导航。
+      rationale: 当前顶栏已有静态通知占位，最小接入可保持既有呈现。
+      relatedIds: [DEC-0068-12, DEC-0063-16]
+  unresolved: []
+  replacementScopes: []
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - area: record-control-and-dhr
+        change: 最终提交检查关联DHR审批；汇总提交和审批通过检查在审申请；冻结修订身份，真实生效持久影响与提醒。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/recordcontrol/service/RecordControlService.java, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrSummaryService.java, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrReviewService.java]
+      - area: current-trace-and-projection
+        change: 同事务刷新最新内容索引，保留旧投影并使其失效；新修订重新生成当前统计，作废退出当前统计。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormProjectionService.java, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormTraceIndexService.java]
+    transitiveImpacts:
+      - area: production-output-and-reports
+        change: 确保最终产出、报工、报废及物耗只读当前贡献，不重算生产生命周期。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionOutputService.java, gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/FormProjectionController.java]
+      - area: ui
+        change: 真实提醒复用顶栏通知入口，作废显示开关复用DHR导航工具区；保留冻结时状态和原选择保护。
+        evidenceReferences: [DESIGN.md, docs/frontend/list-page-guidelines.md]
+    potentialImpacts:
+      - area: workflow-locking
+        concern: 已通过真实PG并发验证汇总提交与申请发起只能一方成功，以及源生效后过时DHR批准被阻断；后续增加其他流程或锁顺序时仍需重验。
+        evidenceReferences: [docs/development/record-control-dhr-linkage-20261029/evidence/backend-verification.json, gmp-platform/backend/src/test/java/com/zencas/edhr/recordcontrol/service/RecordControlPostgresIntegrationTest.java]
+    unaffectedAreas:
+      - area: archive-release-and-future-entries
+        reason: 本轮仅登记归档TODO，不实现放行或归档操作、解封、DHR目录变更入口、活动表单作废、转办撤回或历史检索UI。
+    compatibilityAndMigration:
+      - concern: 追加影响及提醒表，不改已安装基线或历史冻结数据；验证新装、升级和重复运行。无修订身份旧冻结不补造身份，后续真实生效影响仍应可识别。
+      - concern: 新汇总版本单独保存提交人账号ID，既有姓名展示及冻结摘要保持；旧版仅从原审核提交人ID或唯一原提交审计恢复，不按姓名匹配。
+    snapshotImpacts:
+      - concern: 新冻结包含当前修订身份；旧证据正文、哈希、签署、目录及导出不可回写，后续状态不改变旧版默认展示依据。
+    auditImpacts:
+      - concern: 生效结果关联申请、事件、来源前后修订和受影响DHR版本；提醒去重不替代正式审计，失败必须回滚。
+    permissionImpacts:
+      - concern: 提醒只返回当前认证用户收件内容，不授予DHR操作或数据权限；接收当前处理人或候选，不通知历史审批人；现有签署和普通用户资格保持。
+    testImpacts:
+      - scope: linkage
+        scenarios: [变更作废与退回, 双向阻断, 人工DHR退回后申请, 同值不同修订, 冻结与导出不变, 提醒接收人和幂等及隔离, 事务回滚, 并发生效和批准, 当前统计不重计, 作废默认隐藏可查看, 原布局及普通用户权限]
+        evidenceReferences: [docs/development/record-control-dhr-linkage-20261029/evidence/backend-verification.json, docs/development/record-control-dhr-linkage-20261029/evidence/frontend-archives.json, docs/development/record-control-dhr-linkage-20261029/evidence/browser/observations.md, docs/development/record-control-dhr-linkage-20261029/evidence/independent/backend-independent.json]
+    evidenceGaps:
+      - 原H2与mock不足的缺口已补14项真实PostgreSQL记录控制应用链及聚焦浏览器交互，原件固定于本目录evidence；仍不据此宣称完整普通权限或四工作区交互矩阵全部覆盖。
+      - 完整失效历史查询UI、规则重建及归档执行不在本轮验收范围，不关闭这些TODO。
+      - 导出回归发现离线打印空白页来源不可用导致共享预览依赖读取localStorage失败；仅将初始文档改为固定内存来源并保持其他网络请求拦截，重新验收既有PDF和ZIP，不改打印过滤规则。
+  extensionStrategy:
+    selectedPaths: [product-core, transaction-orchestration]
+    rationale: 复用既有记录控制和DHR专属流程，在所属生产领域处理影响，复用当前统计解释器及页面组件，无客户条件分支或第二套审批。
+    ownershipBoundaries:
+      - owner: primary-agent
+        responsibility: 业务实现、迁移、UI与聚焦测试及TODO维护。
+      - owner: ontology-agent
+        responsibility: 同步归档确认及受影响知识与历史边界，不改产品代码或测试。
+      - owner: quality-agent
+        responsibility: 收尾独立验证实际候选和记录结果，不参与修复。
+  affectedFiles:
+    - {path: docs/knowledge, changeType: update, reason: 归档决策与联动实施证据同步}
+    - {path: docs/development/record-control-dhr-linkage-20261029, changeType: create, reason: 同一功能切片的决策包TODO和验证证据}
+    - {path: gmp-platform/backend/src/main/java/com/zencas/edhr/recordcontrol, changeType: update, reason: 最终入口门禁与真实生效联动}
+    - {path: gmp-platform/backend/src/main/java/com/zencas/edhr/production, changeType: update, reason: DHR和当前投影及个人提醒}
+    - {path: gmp-platform/backend/src/main/resources/db/changelog, changeType: update, reason: 追加提交人账号身份、持久影响和提醒，不改历史基线}
+    - {path: gmp-platform/frontend/src, changeType: update, reason: 复用顶栏通知和DHR导航组件}
+  acceptanceScenarios:
+    - id: scenario.linkage-double-guard
+      given: 已完成来源表单与关联DHR
+      when: 一方进入审批且另一方尝试提交或批准
+      then: 按两个方向分别阻断；原版可读且有权人员仍可人工退回
+      evidenceRequirements: [聚焦服务测试, PostgreSQL并发证据]
+    - id: scenario.linkage-effective-source
+      given: 已有冻结汇总和当前统计
+      when: 表单申请批准真实生效或退回，或结果重投及下游失败
+      then: 仅真实生效更新当前索引统计并记录影响和定向提醒；重投不重复；失败整体回滚；旧冻结不改
+      evidenceRequirements: [真实PostgreSQL应用服务链, 原始冻结与当前贡献读回]
+    - id: scenario.linkage-existing-ui
+      given: 现有DHR与记录控制页面规范
+      when: 查看通知、常规DHR及作废视图，执行原汇总审批和导出
+      then: 原页面布局及授权保持，作废默认隐藏但可达，反馈和浮层沿用现有组件
+      evidenceRequirements: [前端构建, 浏览器交互及对照截图, 独立质量结果]

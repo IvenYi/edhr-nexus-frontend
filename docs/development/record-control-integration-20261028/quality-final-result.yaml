@@ -1,0 +1,206 @@
+qualityResult:
+  result: passed
+  baseCommit: 8784ba87166addae9cb9659d6120aa84f993c7ef
+  headCommit: 1437f73b5172310e073f8dd8e8011b6f2017f1c9
+  contractBaseline:
+    sourceCommit: 1437f73b5172310e073f8dd8e8011b6f2017f1c9
+    targetBranch: edhr-dev
+    targetCommit: 8784ba87166addae9cb9659d6120aa84f993c7ef
+    contractReadCommit: 1437f73b5172310e073f8dd8e8011b6f2017f1c9
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: dirty
+    includedPaths: []
+    excludedPaths:
+      - gmp-platform/frontend/node_modules
+      - output/playwright/record-control-integration-20261028
+      - docs/development/record-control-integration-20261028/evidence/existing-dev-baseline-readonly.csv
+      - docs/development/record-control-integration-20261028/evidence/existing-dev-revision-readonly.csv
+      - docs/development/record-control-integration-20261028/evidence/final-independent
+      - docs/development/record-control-integration-20261028/quality-final-result.yaml
+    untrackedPaths:
+      - gmp-platform/frontend/node_modules
+      - output/playwright/record-control-integration-20261028
+      - docs/development/record-control-integration-20261028/evidence/existing-dev-baseline-readonly.csv
+      - docs/development/record-control-integration-20261028/evidence/existing-dev-revision-readonly.csv
+      - docs/development/record-control-integration-20261028/evidence/final-independent
+      - docs/development/record-control-integration-20261028/quality-final-result.yaml
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+    - id: check.rc-final-fixed-inputs-and-independence
+      required: true
+      category: requirements
+      description: A new quality instance independently read the project, role and handoff contracts and fixed the actual integrated candidate. No product, test, migration or knowledge edits were made by this instance.
+      method: command
+      command: git rev-parse HEAD; git log -5 --format='%H %P %s'; git merge-base --is-ancestor for both fixed inputs; git diff --exit-code -- gmp-platform docs/knowledge docs/architecture
+      outcome: passed
+      evidence:
+        - 'Target 8784ba87166addae9cb9659d6120aa84f993c7ef and functional head aef427c524bd7270b3775fbd7c599c72a545e21b are ancestors of tested candidate 1437f73b5172310e073f8dd8e8011b6f2017f1c9.'
+        - 'Product working-tree diff was empty throughout validation; untracked runtime and result artifacts were excluded.'
+        - evidence/final-independent/candidate-parents.txt
+        - evidence/final-independent/contract-delta.txt
+        - evidence/final-independent/source-review.json
+        - evidence/final-independent/final-working-tree.txt
+    - id: check.rc-final-independent-backend
+      required: true
+      category: regression
+      description: Independently execute 17 focused classes on the fixed candidate. Database and knowledge counts below are subsets of this aggregate and must not be added again.
+      method: automated-test
+      command: RECORD_CONTROL_TEST_DATABASE_URL=jdbc:postgresql://localhost:5432/edhr_record_control_test_finalqa_20261028 BASELINE_TEST_DATABASE_URL=jdbc:postgresql://localhost:5432/edhr_baseline_test_finalqa_rc_20261028 PGUSER=<current-os-user> PGPASSWORD='' mvn -q -Dexec.skip=true -Dtest=RecordControlAccessTest,RecordControlDiffTest,RecordControlMigrationTest,RecordControlTaskActionServiceTest,RecordControlWorkflowServiceTest,RecordControlWorkflowControllerTest,WorkflowEngineTest,WorkflowTaskControllerTest,ExecutionAccessTest,DhrGenericAccessTest,ProductionExecutionIntegrationTest,AuthControllerTest,AuthorizationNoticeFontTest,BusinessKnowledgeModelTest,CurrentDatabaseBaselineTest,CurrentDatabaseBaselinePostgresTest,RecordControlPostgresIntegrationTest test
+      outcome: passed
+      evidence:
+        - evidence/final-independent/backend-tests.log.gz
+        - evidence/final-independent/test-summary.json
+        - 'Exit 0; 293 tests, 290 passed, 0 failures, 0 errors, 3 existing opt-in skips.'
+        - 'Skipped ProductionExecutionIntegrationTest cases: formRecordsBrowserFixture, firstStartFreezesOneCommittedConfigurationDuringProcessRebinding, browserEvidenceFixture. No new skip or weakened assertion was introduced by this instance.'
+    - id: check.rc-final-postgresql-source-and-migrations
+      required: true
+      category: database
+      description: Verify current-schema fresh install, repeated install, current-baseline upgrade, legitimate first completion, real signing and workflow services, approval/void/return, duplicate confirmation, concurrent active-request exclusion and atomic failure rollback. The application fixture now contains a valid production UUID row identity.
+      method: automated-test
+      command: CurrentDatabaseBaselinePostgresTest and RecordControlPostgresIntegrationTest in the independent Maven invocation
+      outcome: passed
+      evidence:
+        - evidence/final-independent/backend-tests.log.gz
+        - evidence/final-independent/test-summary.json
+        - '3 baseline PostgreSQL tests and 6 full-application PostgreSQL tests passed; all 9 are included in the 293 aggregate.'
+        - 'The effective revision retains the production __rowId; Rev.1 and its source values remain historical after approval.'
+        - 'Only edhr_record_control_test_finalqa_20261028 and edhr_baseline_test_finalqa_rc_20261028 were created, used and dropped by this instance. No developer or primary browser database was modified.'
+    - id: check.rc-final-row-identity-differential
+      required: true
+      category: integration
+      description: Independently replay the original failure using the actual RecordControlDiff class from 40e39a17 and test the current actual class with production UUID identities and identity-preservation negative boundaries.
+      method: command
+      command: javac original 40e39a17 RecordControlDiff into isolated evidence classes; run original SubtableRowIdentityProbe against old class; java -cp <current-surefire-classpath> evidence/final-independent/RowIdentityFinalProbe.java
+      outcome: passed
+      evidence:
+        - evidence/final-independent/original-source/RecordControlDiff.java
+        - evidence/final-independent/old-class-compile.txt
+        - evidence/final-independent/row-identity-old-replay.txt
+        - evidence/final-independent/RowIdentityFinalProbe.java
+        - evidence/final-independent/row-identity-current.txt
+        - 'Old-class replay still rejects __rowId with 子表包含未知字段 and accepts the metadata-free control; the historical failed result was not rewritten.'
+        - 'Current-class probe has 13 successful outcomes: original business-field edit, strip/preserve identities, main-only edit with omitted subtable, missing native/comparison identity recovery, native/comparison forgery rejection, duplicate source rejection, unknown-column rejection, reorder, add, remove and legacy rows.'
+        - 'The independent direct probe mocks engine/evidence validation; actual service/engine/signature/database composition is separately exercised by the 6 PostgreSQL application tests.'
+    - id: check.rc-final-primary-fixes-and-public-integration
+      required: true
+      category: audit
+      description: Inspect the migration registration, same-transaction Rev.1 initialization, local signature flush before JDBC foreign-key insertion, final result transaction, immutable history and retained public workflow/authentication boundaries against their focused regressions.
+      method: inspection
+      command: Read FormInstanceRecordService, RecordControlService, RecordControlTaskActionService, master changelog and changed public workflow/authentication integration paths; compare with focused test assertions and the candidate diff
+      outcome: passed
+      evidence:
+        - evidence/final-independent/source-review.json
+        - evidence/final-independent/test-summary.json
+        - 'The original source SQL migrations are included after the unchanged current schema/seed baseline. Existing completed records gain only real value history, and active records are not assigned a fabricated effective revision.'
+        - 'SignatureRepository.flush precedes the JDBC request insertion inside the existing submit transaction; failure rollback is checked on real PostgreSQL.'
+        - 'The target lockInstance path is retained alongside the record-control generic-action guard. The focused workflow, controller, signing, authentication and production tests pass.'
+    - id: check.rc-final-knowledge-reconciliation
+      required: true
+      category: ontology
+      description: Independently execute formal knowledge checks and inspect the scoped ID mapping, declaration-level replacements and retained source/projection boundaries. This is not a whole-repository semantic audit.
+      method: automated-test
+      command: BusinessKnowledgeModelTest; compare target DEC-0075/76/77/78 files; inspect DEC-0086/87/88/89, replacementScopes, ontologyResult and relevant open questions
+      outcome: passed
+      evidence:
+        - evidence/final-independent/test-summary.json
+        - evidence/final-independent/retained-target-decisions.txt
+        - ontology-result.yaml
+        - '89 formal checks passed, included in the 293 aggregate; target DEC-0075 through DEC-0078 remain unchanged. Imported decision/statement references use DEC-0086 through DEC-0089.'
+        - 'The old no-DHR premise is historical; current definitions retain actual DHR capabilities and explicitly defer effective-source consumption/A12. Unverified incoming runtime execution contracts were not admitted to the verified registry.'
+    - id: check.rc-final-navigation-and-build
+      required: true
+      category: integration
+      description: Independently verify canonical record-control routes and preserved projection/custom reports, then build the candidate frontend including the latest target designer-entry changes.
+      method: automated-test
+      command: node --test scripts/test-records-menu.mjs scripts/test-projection-report-navigation.mjs; npm run build
+      outcome: passed
+      evidence:
+        - evidence/final-independent/navigation-tests.log.gz
+        - evidence/final-independent/frontend-build.log.gz
+        - 'Navigation exit 0, 9 passed, 0 failed, 0 skipped; frontend build exit 0.'
+    - id: check.rc-final-primary-browser-evidence-boundary
+      required: true
+      category: e2e
+      description: Review actual primary browser evidence and database readbacks, and assess the unaffected main-field path. This quality instance did not run the browser and does not claim an independent live UI or complete subtable visual matrix.
+      method: inspection
+      command: Inspect browser-verification.md, submitted.png, approved.png, browser-result.csv, browser-old-revision.csv and 40e39a17..1437f73b product delta
+      outcome: passed
+      evidence:
+        - evidence/browser-verification.md
+        - evidence/submitted.png
+        - evidence/approved.png
+        - evidence/browser-result.csv
+        - evidence/browser-old-revision.csv
+        - 'Primary evidence uses separate synthetic authenticated users 41/42 with temporary ADMIN role, real page submission and signing, then approval signing. Database readback has Rev.2 EFFECTIVE, old Rev.1 SUPERSEDED, task COMPLETED and assignee_id=signer_id=42.'
+        - 'Subsequent product delta changes subtable normalization and tests; the primary main-field browser path is unaffected, while new row behavior is verified by current-candidate direct probes and PostgreSQL tests.'
+    - id: check.rc-final-log-archive-integrity
+      required: true
+      category: documentation
+      description: Verify original evidence survives archival without changing raw bytes or rewriting the first failed quality result.
+      method: command
+      command: Decompress every archive in evidence/log-archives.json; recompute SHA-256 and byte lengths
+      outcome: passed
+      evidence:
+        - evidence/final-independent/archive-validation.json
+        - evidence/final-independent/final-log-archives.json
+        - 'All 15 primary/initial-independent archives match their recorded raw byte count and SHA-256. Final independent verbose logs are also archived with their own byte manifest.'
+    - id: check.rc-final-non-original-whitespace
+      required: true
+      category: documentation
+      description: Check source, knowledge and authored documentation while retaining original diagnostic bytes unchanged.
+      method: command
+      command: git diff --check base..head -- . excluding only ontology-knowledge-test.txt and evidence/independent/whitespace.txt
+      outcome: passed
+      evidence: [evidence/final-independent/non-original-whitespace.txt, 'Exit 0.']
+    - id: check.rc-final-all-diff-whitespace
+      required: false
+      category: documentation
+      description: The unfiltered whitespace check remains non-green solely because preserved original diagnostic text includes trailing whitespace; this is disclosed rather than rewriting historical evidence.
+      method: command
+      command: git diff --check 8784ba87166addae9cb9659d6120aa84f993c7ef..1437f73b5172310e073f8dd8e8011b6f2017f1c9
+      outcome: failed
+      evidence:
+        - evidence/final-independent/whitespace.txt
+        - 'Exit 2; only ontology-knowledge-test.txt and the original evidence/independent/whitespace.txt are reported. No product, test, migration or authored knowledge whitespace failure remains.'
+  findings:
+    - id: QF-RC-INTEGRATION-001
+      severity: high
+      scope: Controlled change of production records containing subtable rows
+      summary: The first candidate rejected production __rowId metadata; the corrected candidate preserves native identity and accepts legitimate changes without relaxing row identity or unknown-column boundaries.
+      reproductionSteps:
+        - Compile the actual RecordControlDiff source from 40e39a17 in an isolated evidence output directory and rerun the unchanged original independent probe.
+        - Reproduce 子表包含未知字段 for a valid production UUID row and its successful metadata-free control.
+        - Run RowIdentityFinalProbe against the current compiled candidate, followed by the current RecordControlDiffTest and PostgreSQL application tests.
+      expectedResult: Valid production subtable rows support normal changes, retain source identity, and reject identity replacement/reuse and unknown business columns.
+      actualResult: The old-class control reproduces the original failure; current-class 13 independent outcomes, 8 focused Diff tests and 6 full-application PostgreSQL tests pass. The source __rowId is retained in effective values and private comparison metadata is removed before production execution values are applied.
+      evidence:
+        - evidence/final-independent/row-identity-old-replay.txt
+        - evidence/final-independent/row-identity-current.txt
+        - evidence/final-independent/test-summary.json
+      resolutionStatus: resolved
+      resolutionEvidence:
+        - type: commit
+          reference: 0e782e3d16f7aa07c1e07b34ebec6785fff3cc1a
+        - type: command
+          reference: docs/development/record-control-integration-20261028/evidence/final-independent/row-identity-current.txt
+        - type: document
+          reference: docs/development/record-control-integration-20261028/evidence/final-independent/test-summary.json
+  residualRisks:
+    - id: residual.rc-final-dhr-a12-and-release
+      description: The two inherited DHR high discrepancies, actual effective-source consumption and impact notification, projection reversal/rebuild and A12 remain open outside this integration-preparation slice.
+      impact: This passed result does not establish complete DHR lifecycle, correct downstream report results after revision/void, or production release readiness.
+      mitigation: Preserve their open status and verify the real effective-source contract, downstream idempotence and approval concurrency in the following functional slice.
+    - id: residual.rc-final-actions-and-ordinary-user-permissions
+      description: Withdrawal, record-control transfer/reassignment, active-form future policy and ordinary-user candidate permission alignment remain explicit follow-up boundaries.
+      impact: This result does not certify the full historical P0 action set or every ordinary menu-authorized user's ability to query candidate workflows.
+      mitigation: Continue the agreed implementation/policy work and a real non-admin permission matrix; do not infer new policy or broaden authorization merely to make the test path green.
+    - id: residual.rc-final-browser-and-opt-in-coverage
+      description: Browser evidence was executed by the primary on 40e39a17 with privileged synthetic accounts; this instance reviewed evidence rather than running a fresh browser. Three existing opt-in production tests remain skipped.
+      impact: There is no independent live browser, complete subtable UI/resolution, ordinary-user or full HTTP concurrency certification in this result.
+      mitigation: Keep the primary browser provenance and skips explicit. Run the appropriate interaction and concurrency matrix when the subsequent functional or release scope requires it.
+    - id: residual.rc-final-fixed-scope-and-raw-text
+      description: Validation covers the fixed integrated candidate and changed methods/relationships, not all repository semantics. Preserved raw diagnostics retain trailing whitespace, and GitHub required-check/ruleset enforcement was not inspected.
+      impact: No full-repository audit, unfiltered whitespace-green or enforced remote-merge-gate claim follows from the passed local checks.
+      mitigation: Retain fixed input/candidate hashes and original evidence; re-evaluate changed paths after new commits and verify repository enforcement separately if release integration is requested.
+  blockingConditions: []

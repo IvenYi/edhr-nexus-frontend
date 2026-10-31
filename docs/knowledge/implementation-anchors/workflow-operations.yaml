@@ -1,0 +1,42 @@
+knowledgeModelVersion: 0.3.25
+implementationAnchors:
+  - id: anchor.workflow-operations.responsibility
+    targetId: rule.record-control.intervention-preserves-path
+    targetType: rule
+    codeReferences:
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/WorkflowResponsibilityService.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowOperationsController.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/controller/SignatureController.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/repository/SignatureRepository.java
+    apiReferences: ['POST /api/v1/workflow/operations/tasks/{id}/reassign', 'POST /api/v1/record-control/workflow-tasks/{taskId}/transfer']
+    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql]
+    uiReferences:
+      - gmp-platform/frontend/src/components/workflow/WorkflowResponsibilityDialog.tsx
+      - gmp-platform/frontend/src/pages/workflow-center/WorkflowInstancePanel.tsx
+      - gmp-platform/frontend/src/pages/record-control/RecordApprovalDetailPage.tsx
+    testReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/recordcontrol/service/RecordControlPostgresIntegrationTest.java]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.workflow-operations-responsibility-source, evidence.workflow-operations-postgres-tests, evidence.workflow-operations-main-verification]
+    sourceRevision: working-tree
+    sourceLocator: WorkflowResponsibilityService.change/eligible/taskState；基于40497474的本轮未提交工作树，具体核对来源与主侧执行证据见workflow-operations-20261030.md，不虚构新提交或发布。
+    capturedAt: '2026-10-30'
+    reviewStatus: reviewed
+  - id: anchor.workflow-operations.withdrawal-result
+    targetId: fact.record-control-workflow-result
+    targetType: fact
+    codeReferences:
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/contract/RecordControlWorkflowWithdrawalPort.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/recordcontrol/service/RecordControlService.java
+    apiReferences: ['POST /api/v1/record-control/requests/{requestId}/withdraw']
+    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/0087-record-control.sql]
+    uiReferences: [gmp-platform/frontend/src/pages/record-control/RecordRequestDetailPage.tsx]
+    testReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/recordcontrol/service/RecordControlPostgresIntegrationTest.java]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.workflow-operations-withdrawal-source, evidence.workflow-operations-postgres-tests, evidence.workflow-operations-main-verification]
+    sourceRevision: working-tree
+    sourceLocator: WorkflowEngine.withdraw与RecordControlService.withdraw/applyResult；本轮工作树基于40497474，结果幂等、全部待办失效、来源不变、竞争及回滚证据分列，不把端口声明当执行证据。
+    capturedAt: '2026-10-30'
+    reviewStatus: reviewed

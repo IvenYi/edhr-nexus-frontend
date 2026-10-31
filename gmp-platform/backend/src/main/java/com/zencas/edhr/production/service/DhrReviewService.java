@@ -104,6 +104,7 @@ public class DhrReviewService {
         if (button == null) throw invalid("当前节点不支持该审批动作");
         String opinion = command.path("opinion").asText("").strip();
         if (("RETURN".equals(action) || button.path("requireOpinion").asBoolean()) && opinion.isBlank()) throw invalid("请填写审批意见");
+        if ("APPROVE".equals(action)) impacts.requireNoPendingApplications(dhrId);
         if ("APPROVE".equals(action) && !hasCompleteManualReview(row)) throw invalid("汇总提交核查结果不完整，不能批准；请退回整理");
         if ("APPROVE".equals(action) && dhr.get("production_object_id") != null) {
             for (var execution : jdbc.queryForList("SELECT snapshot_json,state_json FROM production_execution WHERE object_id=?", dhr.get("production_object_id"))) {

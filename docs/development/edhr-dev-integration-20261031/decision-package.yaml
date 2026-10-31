@@ -1,0 +1,71 @@
+decisionPackage:
+  id: DEC-PACKAGE-20261031-EDHR-DEV-INTEGRATION
+  scope: 将已完成记录控制、DHR联动与流程操作集成到主目录edhr-dev，新增迁入独立验收样例，验收后移除旧工作树。
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: 84995f7efab3abdf0012b974cb0a11e04920fe77
+    targetBranch: edhr-dev
+    targetCommit: 032b83e9d5b8a25bee6d5b59c45d86892f672d00
+    contractReadCommit: 943dc9fed4ffde482fa3eff3dc10f8a157ce5134
+    uncommittedContractPaths: []
+  localTargetBefore: bbd2ff88
+  candidateCommit: 6edb5411ef10f22320e00b737a13d56b84f4e848
+  remoteFreshness: 收尾合并PR46后首次非强制push因并行PR47被拒绝，未覆盖远端；已fetch并保留双亲合并032b83e9至6edb5411。PR47仅FileController资源关闭、读失败传播与空公开目标拒绝及2个测试；契约/知识/迁移/前端/流程DHR无增量，追加文件边界回归。原契约读取仍适用。
+  summary: 保留双方提交与现有数据，用默认3000/8081及edhr_dev运行；不再依赖独立工作树或数据库切换。
+  confirmed:
+    concepts: []
+    relationships: []
+    rules: []
+    executionContracts: []
+  confirmedBusinessDecisions:
+    - user-confirmed：将这些功能合并到edhr-dev，正常启动可见；保留朋友修改，不影响现有功能和数据；迁移验收通过后删除本独立工作树。
+    - user-confirmed：此前创建的验收数据也一并迁移到正常环境，供用户人工验收；保留4账号8场景及其业务和签署证据。
+    - existing-policy：沿用DEC-0086至0092及DEC-0063/0068现行定义，无新增业务语义；归档与独立DHR变更申请仍暂缓。
+    - existing-evidence：功能包含朋友aef427c5记录控制闭环及后续表单修订、DHR联动、重新分配/转办/受限撤回；目标新增文档权限/读边界与版本排序修复必须保留。
+  inferred: []
+  unresolved: []
+  replacementScopes: []
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - {area: integration, change: 保留双亲历史合并目标和功能分支，迁入本地记录页面侧栏修复, evidenceReferences: [943dc9fe, d1891f97]}
+      - {area: development-runtime, change: 主目录默认端口和edhr_dev运行新功能, evidenceReferences: [gmp-platform/frontend/vite.config.ts, gmp-platform/backend/src/main/resources/application-dev.yml]}
+      - {area: acceptance-data, change: 只插入专用UAT样例和依赖；目标原有行禁止更新或删除, evidenceReferences: [docs/development/workflow-dhr-acceptance-20261030/manifest.json]}
+      - {area: latest-target-document-category, change: 保留PR46文档分类排序审计及并发锁、删除反馈修复；无迁移或流程/DHR代码差异, evidenceReferences: [ccedd56453c02c5d3acd60aa4351809a3928e83e, gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/DocumentManagementController.java]}
+      - {area: latest-target-file-boundary, change: 保留PR47上传资源关闭及读取失败不登记成功、空公开目标按原白名单拒绝；无现有数据变更, evidenceReferences: [032b83e9d5b8a25bee6d5b59c45d86892f672d00, gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/controller/FileController.java]}
+    transitiveImpacts:
+      - {area: workflow-and-dhr, change: 验证现行签名/权限/修订/冻结/提醒及投影相邻行为, evidenceReferences: [docs/development/workflow-operations-20261030/decision-package.yaml, docs/development/record-control-dhr-linkage-20261029/decision-package.yaml]}
+    potentialImpacts:
+      - {area: sample-id-collision, concern: 需核对既有ID、唯一键、外键和序列，先在开发库副本演练并逐行验证保留, evidenceReferences: []}
+    unaffectedAreas:
+      - {area: product-scope, reason: 不增加归档、独立DHR变更申请、打印过滤或通用DHR干预。}
+      - {area: other-worktrees, reason: 仅删除用户指定record-control-integration工作树，其他工作树与历史文件不清理。}
+    compatibilityAndMigration:
+      - concern: edhr_dev已有0087至0090，启动不得重置数据库；迁入前两库完整备份，副本演练后再以单事务插入。
+      - concern: 主目录886个未跟踪文件按SHA256保留；旧工作树完整备份排除.git/node_modules/target，可恢复用户文件、输出和未提交代码。
+    snapshotImpacts:
+      - concern: 原冻结JSON、有效修订、批准与签名保持字节语义；样例冻结版本及真实测试签署证据按原ID迁入。
+    auditImpacts:
+      - concern: 原审计不改写；仅迁入明确归属UAT的原始审计链，保留其原时间和主体，不伪造成生产记录。
+    permissionImpacts:
+      - concern: 仅新增uat四账号及两专用角色的既有授权；不修改原管理员或任何原用户/角色/授权。
+    testImpacts:
+      - scope: merged-candidate
+        scenarios: [后端聚焦与真实PG, 新装/升级迁移, 知识唯一性/引用/语义, 前端构建与导航, 主目录实际3000页面, 三动作与DHR双向阻断/冻结证据, 朋友功能及目标文档权限回归, 原数据逐行保留, 未跟踪文件保留]
+        evidenceReferences: []
+    evidenceGaps:
+      - 旧验收目录部分脚本/决策包缺失，保留现存原件，不以缺失文件冒称可重跑；本轮重新生成可核对的迁移与验证记录。
+  extensionStrategy:
+    selectedPaths: [configuration, product-core]
+    rationale: 复用现有产品能力及默认开发配置，迁移工具仅服务本次开发样例集成，不新增产品运行分支。
+    ownershipBoundaries:
+      - {owner: primary-agent, responsibility: 合并、数据备份迁移、运行验证及主目录交付}
+      - {owner: ontology-agent, responsibility: 核对当前知识与合并结果，必要时只同步受影响知识}
+      - {owner: quality-agent, responsibility: 收尾独立验证，不修改实现}
+  affectedFiles:
+    - {path: docs/development/edhr-dev-integration-20261031, changeType: create, reason: 记录候选/迁移/验证及交付证据}
+    - {path: docs/development/workflow-dhr-acceptance-20261030/README.md, changeType: update, reason: 改为正常主目录启动说明}
+  acceptanceScenarios:
+    - {id: scenario.normal-startup, given: 主目录edhr-dev已集成, when: 默认方式启动前后端, then: 3000显示新功能并连接edhr_dev, evidenceRequirements: [实际进程与页面, 数据库读回]}
+    - {id: scenario.preserve-data, given: 两库及原文件备份存在, when: 迁入UAT样例, then: 全部原行和主目录原文件保留且样例可验收, evidenceRequirements: [迁移前后逐行比较, 原文件哈希, 主目录验收]}
+    - {id: scenario.retire-worktree, given: 本体和独立质量门禁通过, when: 删除指定工作树, then: 主目录功能及资料完整，原提交和备份可追溯, evidenceRequirements: [门禁报告, 归档回执, 最终默认端口检查]}

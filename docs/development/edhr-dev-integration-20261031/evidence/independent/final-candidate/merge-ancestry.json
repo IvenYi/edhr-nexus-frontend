@@ -1,0 +1,94 @@
+{
+  "candidate": "63456e143063c13558db362d28cde83f8e0cdb9b",
+  "target": "ccedd56453c02c5d3acd60aa4351809a3928e83e",
+  "feature": "84995f7efab3abdf0012b974cb0a11e04920fe77",
+  "commonBase": "635711f97e9b794f4af02e1e5d1939bb2ecf920f",
+  "mergeParents": [
+    "d6f383d1571df1b84d5919976176ac9de7118627",
+    "ccedd56453c02c5d3acd60aa4351809a3928e83e"
+  ],
+  "ancestors": {
+    "ccedd56453c02c5d3acd60aa4351809a3928e83e": true,
+    "d10590bd3fe8f3da4e68bcc087b2102d2c211934": true,
+    "84995f7efab3abdf0012b974cb0a11e04920fe77": true,
+    "aef427c524bd7270b3775fbd7c599c72a545e21b": true,
+    "bbd2ff88886ade456aac8d7d73f8af4f5c1575e2": true,
+    "d1891f97288043569343bdf6a0555fe69b0cdc09": true,
+    "310e01046d684888b8bdc0915c5f9eb0abe52319": true
+  },
+  "targetFiles": [
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/DocumentManagementController.java",
+      "preserved": true
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java",
+      "preserved": true
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/entity/SopDocument.java",
+      "preserved": true
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/repository/DocumentCategoryRepository.java",
+      "preserved": true
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/repository/SopDocumentRepository.java",
+      "preserved": true
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/DocumentListReadService.java",
+      "preserved": true
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/DocumentCategoryAuditPostgresTest.java",
+      "preserved": true
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/DocumentManagementControllerTest.java",
+      "preserved": true
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/DocumentOrmSchemaIntegrationTest.java",
+      "preserved": true
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/DocumentReadBoundaryIntegrationTest.java",
+      "preserved": true
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/DocumentReadPerformancePostgresTest.java",
+      "preserved": true
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/DocumentWriteBoundaryIntegrationTest.java",
+      "preserved": true
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/DocumentWriteBoundaryPostgresTest.java",
+      "preserved": true
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/MasterDataBoundaryIntegrationTest.java",
+      "preserved": true
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/ProcessModelingControllerTest.java",
+      "preserved": true
+    },
+    {
+      "path": "gmp-platform/frontend/scripts/test-document-category-delete-browser.mjs",
+      "preserved": true
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/master-data/DocumentManagementPage.tsx",
+      "preserved": true
+    }
+  ],
+  "unchangedPathsComparedTo310": {
+    "contractAndKnowledge": "",
+    "migrations": "",
+    "recordControlWorkflowDhr": ""
+  }
+}

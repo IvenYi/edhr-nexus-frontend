@@ -1,0 +1,110 @@
+ontologyResult:
+  result: updated
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: a4cb9a9fa4f3f88ed801d47463158495990b0308
+    targetBranch: edhr-dev
+    targetCommit: 635711f97e9b794f4af02e1e5d1939bb2ecf920f
+    contractReadCommit: a4cb9a9fa4f3f88ed801d47463158495990b0308
+    uncommittedContractPaths: []
+  reason: L1知识同步完成；DEC-0068-14记录DHR审批期间新申请禁令，仅替代0068-13中该资格未确认的说明，已有活动申请阻断DHR收尾保留。新增内容specified/internal，知识和schema不变，无业务代码修改。
+  changedArtifacts:
+    - path: docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml
+      changeType: update
+      ids: [DEC-0068-04, DEC-0068-13, DEC-0068-14, scenario.dhr-pending-record-control-blocks-finalization, scenario.dhr-review-blocks-new-record-control, discrepancy.dhr-review-complete-evidence-impact-gap]
+    - path: docs/knowledge/evidence/dhr-filling-review-confirmed.md
+      changeType: update
+      ids: [evidence.dhr-filling-review-confirmed]
+    - path: docs/knowledge/README.md
+      changeType: update
+      ids: [DEC-0068-13, DEC-0068-14]
+    - path: docs/architecture/transaction-traceability-dhr-business-rules.md
+      changeType: update
+      ids: [DEC-0068-13, DEC-0068-14]
+  knowledgeSync:
+    - id: DEC-0068-14
+      disposition: updated
+      scope: DHR审批中禁止新发起其来源表单变更或作废，先有权人员经DHR专属人工退回，再按原资格权限签署申请；最终服务及全部入口同约束，查询按原权限，不自动退回或赋权。
+      sourceReferences: [本轮用户直接原话, docs/reference-assets/research/crown-dhr-change-downstream-20261029/handoff.yaml, docs/knowledge/evidence/dhr-filling-review-confirmed.md]
+    - id: DEC-0068-13
+      disposition: updated
+      scope: 保留已有申请暂缓DHR收尾、申请结束按结果重核及原版可读；发起资格改引14，场景按前存申请或并发历史数据解释，不再误读为审批中仍允许新申请。
+      sourceReferences: [docs/knowledge/evidence/dhr-filling-review-confirmed.md]
+    - id: DEC-0068-04
+      disposition: updated
+      scope: 补指14，真实生效判定及模块所有权不变。
+      sourceReferences: [docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml]
+    - id: discrepancy.dhr-review-complete-evidence-impact-gap
+      disposition: updated
+      scope: 保持high/open，记录当前提交服务缺关联DHR审批中检查，双向门禁均待实现，既有审核测试不替代新门禁验收。
+      sourceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/recordcontrol/service/RecordControlService.java, docs/knowledge/evidence/dhr-filling-review-confirmed.md]
+    - id: evidence.dhr-filling-review-confirmed
+      disposition: updated
+      scope: 新日期记录人类确认、工程解释、源码及研究提问边界，保留前轮当时原话和基线，不追改历史。
+      sourceReferences: [本轮用户直接原话, docs/reference-assets/research/crown-dhr-change-downstream-20261029/capability-inventory.md]
+    - id: DEC-0068-12
+      disposition: retained
+      scope: 生效后站内提醒当前审批人及受影响版本提交人，待审不冒充生效。
+      sourceReferences: [docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml]
+    - id: DEC-0063-16
+      disposition: retained
+      scope: 作废默认隐藏且低频可达，证据保留，打印延期。
+      sourceReferences: [docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml]
+    - id: DEC-0086
+      disposition: retained
+      scope: 首版仍按流水号，不因研究提问新增DHR目录入口。
+      sourceReferences: [docs/knowledge/decisions/DEC-0086-record-change-search-scope.yaml]
+    - id: discrepancy.dhr-review-effective-source-integration
+      disposition: retained
+      scope: high/open保持，不以知识或既有32项审核测试关闭。
+      sourceReferences: [docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml]
+    - id: question.form-projection-trace-index-effective-scope
+      disposition: deferred
+      scope: A12相关失效历史和受控修订作废视图边界维持开放，本轮不实现或关闭。
+      sourceReferences: [docs/knowledge/open-questions.yaml]
+  conflicts: []
+  questions: []
+  validationEvidence:
+    - id: validation.dhr-review-entry-knowledge-tests
+      checkType: schema
+      command: mvn -q -Dtest=BusinessKnowledgeModelTest test
+      outcome: passed
+      evidence:
+        - 89项，0失败、0错误、0跳过，退出0
+        - gmp-platform/backend/target/dhr-review-entry-ontology-20261029.log
+        - 日志SHA256为2c2a259f1a20bf921b17d46fae40296b7091795638ed200cc138f2a40e968c41
+        - gmp-platform/backend/target/surefire-reports/TEST-com.zencas.edhr.knowledge.BusinessKnowledgeModelTest.xml
+        - JUnit SHA256为7fe6dec74a584cb55358628944370744d8bdfb43ad50e694400a06f436053da0
+        - 原字节归档见capability-ontology-archives.json
+    - id: validation.dhr-review-entry-yaml
+      checkType: reference
+      command: Ruby解析全部知识YAML及定向声明场景成熟度差异检查
+      outcome: passed
+      evidence: [237份YAML均为0.3.25, 新声明和场景唯一且specified/internal, 两项high保持open]
+    - id: validation.dhr-review-entry-scope
+      checkType: evidence-path
+      command: git diff --check及受控路径检查和原始源码读取
+      outcome: passed
+      evidence:
+        - 仅四个知识架构文件，无产品代码迁移配置及研究目录修改，空白检查通过
+        - 原始提交服务缺DHR审批检查，记录为实现缺口
+        - 未运行新门禁浏览器PostgreSQL或全产品验收
+    - id: validation.dhr-review-entry-artifact-hashes
+      checkType: evidence-path
+      command: SHA256 of changed artifacts
+      outcome: passed
+      evidence:
+        - docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml SHA256=1c389b56e86f17f899ab4ab0fa92b656d0e94cf5f03fd5e548ef85009469a5c3
+        - docs/knowledge/evidence/dhr-filling-review-confirmed.md SHA256=940b83995f81be21d6391fd071db22cbcffc7507c67918115c9d99434f3d7349
+        - docs/knowledge/README.md SHA256=2e8f57cbd35a9f793546c5d1cd02709df3f23bcf6d3635a7ec8fa89ec51e6532
+        - docs/architecture/transaction-traceability-dhr-business-rules.md SHA256=746196b3497902b45aaa389141ee0813eb9f4ab1813af5a59b243eed3cc6c759
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages: [P1, P2, P3]
+resultRecordCorrection:
+  originalResultReference: question.form-trace-scope-and-timing
+  correctedReference: question.form-projection-trace-index-effective-scope
+  reason: 专业角色在主侧复核后确认仅最终结果ID误写，知识文件未写入错ID；结果仍updated且无需重跑已过检查

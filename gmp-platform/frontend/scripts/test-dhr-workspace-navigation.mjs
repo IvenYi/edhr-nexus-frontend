@@ -11,6 +11,19 @@ const { exportSelectionNodes } = await load('dhrExportSelection');
 const { groupSummarySources, placeSummarySourceGroup } = await load('summarySourceGroups');
 const record = (id, originKind, formId) => ({ id, originKind, formId, operationId: 'op', operationName: '包装', templateId: 'same-template', templateName: '记录', instanceNo: `FR-${id}`, status: 'COMPLETED', snapshot: {} });
 
+test('ordinary visibility hides only obsolete records and never changes evidence or export scope', () => {
+  const rows = ['COMPLETED', 'OBSOLETE', 'FAILED', 'IN_PROGRESS', 'SUPERSEDED'].map((status, index) => ({ ...record(String(index), 'WORK', 'a'), status }));
+  const original = JSON.stringify(rows);
+  assert.deepEqual(evidenceNavigation('WORK', [], rows, false).flatMap(node => node.recordIds), ['0', '2', '3', '4']);
+  assert.deepEqual(archiveNavigation([], rows, [], [], false).flatMap(node => node.recordIds), ['0', '2', '3', '4']);
+  assert.deepEqual(evidenceNavigation('WORK', [], rows, true).flatMap(node => node.recordIds), ['0', '1', '2', '3', '4']);
+  const exported = exportSelectionNodes(archiveNavigation([], rows), rows, '');
+  assert.ok(exported.some(node => node.recordIds.includes('1')), 'existing export selection retains void evidence until print policy is designed');
+  assert.equal(JSON.stringify(rows), original);
+  const frozen = [{ ...rows[1], status: 'COMPLETED' }];
+  assert.deepEqual(archiveNavigation([], frozen, [], [], false).flatMap(node => node.recordIds), ['1'], 'later void does not reinterpret a frozen completed record');
+});
+
 test('export tree keeps ancestor chain, grouped instance identity and folder search scope', () => {
   const rows = [record('1', 'WORK', 'a'), record('2', 'WORK', 'a'), record('3', 'CUSTOM', 'c')];
   const dirs = [{ id: '10', name: '生产记录', items: [] }, { id: '11', parentId: '10', name: '包装', items: [] }];

@@ -1,0 +1,42 @@
+knowledgeModelVersion: 0.3.25
+evidence:
+  - id: evidence.record-control-dhr-effective-orchestration
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/recordcontrol/service/RecordControlService.java
+    description: original-evidence；2026-10-29当前实现最终申请在生产对象锁内检查DHR在审；APPROVED真实落地后，同事务刷新当前索引、切换正式投影并消费DHR影响。合入目标的e0b416a候选归档原件backend-verification.json包含14项真实PG记录控制测试（8新6原），支持回滚、去重、双向阻断、人工退回及两类并发；本轮另有聚焦控制器/服务权限负例和部分真实UI证据，不再表述为完全无PG或UI。完整权限UI等全面矩阵及质量变化全范围仍是实质剩余；本轮最终独立结论另取同切片quality-final-result.yaml，不由本索引或初轮failed代替。
+    visibility: internal
+  - id: evidence.dhr-record-control-linkage-source
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrEvidenceImpactService.java
+    description: original-evidence；当前两向门禁和按版本引用的前后修订影响已有真实PG原件，收件人按submitted_by_id或原审核/唯一SUBMIT审计账号恢复，不按姓名匹配，当前42和提交41而非历史43、重名隔离及并发阻断均有受测路径。当前冻结版本变化提示、V1仍COMPLETED及草稿作废低频查看也有原始截图和交互记录；质量结论变化的完整比较和未覆盖的全面矩阵仍保留，本轮最终独立结论另取同切片quality-final-result.yaml，不由本索引或初轮failed代替，旧冻结和批准不改写。
+    visibility: internal
+  - id: evidence.dhr-impact-notification-personal-source
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrImpactNotificationService.java
+    description: original-evidence；个人提醒查询和已读按认证收件人限定，PG覆盖版本提交人、当前审批人、历史人及重名隔离，他人已读不影响收件人；本轮控制器/服务权限负例、合成ADMIN浏览器本人提醒和已读、Escape焦点与390窄屏浮层均有聚焦证据。接收提醒不授予原DHR或任务读取处理权；未覆盖的完整普通权限UI矩阵、全部接收人/账号切换和错误状态矩阵仍保留，不把聚焦证据称为全权限验收。
+    visibility: internal
+  - id: evidence.dhr-impact-linkage-migration
+    type: database
+    path: gmp-platform/backend/src/main/resources/db/changelog/0089-record-control-dhr-linkage.sql
+    description: original-evidence；追加0089保存独立submitted_by_id、影响与个人提醒表及去重约束，显示姓名和旧冻结正文摘要不改，旧提交人只依原审核或唯一SUBMIT审计恢复。固定backend-verification.json的CurrentDatabaseBaselinePostgresTest三项原JUnit提供新装、现有基线升级和重复运行及不猜测清理旧业务库证据；独立初轮也执行相关PG检查，完整交付仍取最终质量。已有真实迁移证据，不外推为所有部署或未执行的迁移回滚验证。
+    visibility: internal
+  - id: evidence.dhr-linkage-backend-verification
+    type: document
+    path: docs/development/record-control-dhr-linkage-20261029/evidence/backend-verification.json
+    description: original-evidence；固定e0b416a合并候选工作树的主侧原命令、逐用例及48个无损归档manifest。本体逐项解压核对SHA256/字节数一致，38个原JUnit合计360项，322通过、38条件跳过、0失败错误，含RC真实PG14、知识89、基线PG3及容量检查；条件跳过不算通过。后续target单例XML可覆盖，以本归档索引为准，不拿先前14项单例与另次日志强绑定。
+    visibility: internal
+  - id: evidence.dhr-linkage-browser-verification
+    type: document
+    path: docs/development/record-control-dhr-linkage-20261029/evidence/browser/observations.md
+    description: original-evidence；主侧真实Chromium现场记录及同目录manifest固定六张原始PNG。通知本人已读/焦点和390浮层、草稿默认隐藏作废而全量计数仍1、低频查看及修正后已作废、旧V1仍COMPLETED，以及真实发起修订创建DRAFT均有聚焦记录；合成ADMIN账号不等于普通权限UI矩阵，本体查看原图但未亲自重做交互，不宣称控制台零错误、完整画布或全部窄屏通过。
+    visibility: internal
+  - id: evidence.dhr-linkage-frontend-verification
+    type: document
+    path: docs/development/record-control-dhr-linkage-20261029/evidence/frontend-archives.json
+    description: original-evidence；本体核对压缩原件SHA256和字节数，构建、8项目标导航与12项回归脚本通过；app-shell-final原件为既有权限精确字符串检查失败，不能笼统称所有脚本通过。当前两页面作废误标修正不改变布局，最终独立复核另取结果。
+    visibility: internal
+  - id: evidence.dhr-linkage-initial-quality-result
+    type: document
+    path: docs/development/record-control-dhr-linkage-20261029/quality-result.yaml
+    description: original-evidence；初次独立结果保持failed，原后端197项中196通过1条件跳过、12项前端通过，浏览器发现既有作废状态误标medium，静态审计条目未完成基线比较；不覆盖或追改为passed。主侧随后局部修正并由全新质量实例收尾，本索引不代表最终质量已通过。
+    visibility: internal

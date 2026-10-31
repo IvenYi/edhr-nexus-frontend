@@ -1,0 +1,59 @@
+knowledgeModelVersion: 0.3.25
+decisions:
+  - id: DEC-0092
+    title: 流程日志与流程干预入口及标准动作补齐
+    status: implemented
+    visibility: internal
+    context: user-confirmed-and-existing-policy；2026-10-30用户在澄清转办与重新分配及当前页面后，明确授权把既有流程实例入口显示名称改为流程日志、新增流程干预，并补齐重新分配、转办和受限撤回。保留DEC-0037/0042的领域所有权、动作主体、资格、路径和结果边界及DEC-0074身份凭证规则；DEC-0091的重新分配必签继续适用。本轮规范与实际实现证据按声明分开：01至05保留specified/internal规范，06记录经源码及主侧聚焦测试核对的implemented/internal，不将旧调研、知识校验或工程测试冒充独立质量、CSV或生产发布。
+    decisionStatements:
+      - id: DEC-0092-01
+        statement: user-confirmed；流程中心既有流程实例入口显示名称改为流程日志，继续承载实例查询、详情、流程进度与运行日志；新增流程干预入口，承载运行实例和当前任务查询及重新分配。不另建重复的流程日志列表菜单，保留实例身份及既有技术路由，历史证据不因显示名称调整而改写。
+        status: specified
+        visibility: internal
+      - id: DEC-0092-02
+        statement: user-confirmed-and-existing-policy；转办由当前有处理权的人员在任务详情发起，原因必填；记录控制变更或作废仍按本身授权候选范围处理并禁止申请人自审，不把DEC-0081对通用任务及普通生产表单的租户内集合外委托政策扩展到记录控制。两类范围分别保留原候选依据，转办只改变当前处理责任，不推进节点或产生审批结果。
+        status: specified
+        visibility: internal
+      - id: DEC-0092-03
+        statement: user-confirmed-and-existing-policy；本轮授权内的流程干预重新分配必须完成电子签名，缺少有效签名不得执行。实际操作者须具备专门干预权限，目标资格合法且原因必填；签名不替代权限、原因或不可变审计，也不改变节点、路径或业务结果。共享终端的实际签署人资格及admin精确用户名凭证例外继续按DEC-0074处理，不外推普通转办或撤回同样必须签名。
+        status: specified
+        visibility: internal
+      - id: DEC-0092-04
+        statement: existing-policy-and-user-authorized-implementation；受限撤回由申请人在申请详情发起，只允许当前审批轮次尚无批准或退回决定时执行，并原子失效该轮全部待办。公共流程域校验运行资格并输出确定性WITHDRAWN结果，记录控制域在同一事务消费结果、更新申请及释放冲突申请约束；不落地拟变更或作废业务效果，来源有效修订及历史签名保持。
+        status: specified
+        visibility: internal
+      - id: DEC-0092-05
+        statement: existing-policy-and-scope-boundary；运行日志由运行时写入并向业务页面只读，合规动作另保留不可变审计；转办、重新分配和撤回不代表审批通过。DHR继续专属审批和退回整理，不开放通用转办、重新分配或撤回；本轮不增加终止、跳过、强制跳转、加签、管理员直接批准或归档。
+        status: specified
+        visibility: internal
+      - id: DEC-0092-06
+        statement: original-and-test-evidence；本轮工作树已由WorkflowResponsibilityService实现签署和授权约束的重新分配及记录控制转办，并保留原候选来源、同一逻辑任务、节点路径和结果；WorkflowEngine实现受限撤回端口，RecordControlService同事务消费WITHDRAWN而不落地来源内容。流程日志和流程干预使用同源查询与只读详情，普通日志读取保留活动申请关联范围；DHR排除、旧任务/实例/日志CRUD写入关闭及WORKFLOW_INTERVENTION通用签名读写保护已接入。主侧198项聚焦检查含25项真实PG集成通过，源码与断言已核对；本条不代表独立质量收尾、完整权限矩阵、CSV或生产部署通过。
+        status: implemented
+        visibility: internal
+    supersedes: []
+    evidenceIds: [evidence.workflow-operations-20261030-user-confirmed, evidence.workflow-reassignment-signature-user-confirmed, evidence.record-correction-void-design, evidence.record-control-workflow-stage1-integration-contract, evidence.workflow-operations-responsibility-source, evidence.workflow-operations-withdrawal-source, evidence.workflow-operations-query-source, evidence.workflow-operations-ui-source, evidence.workflow-operations-postgres-tests, evidence.workflow-operations-main-verification]
+    acceptanceScenarios:
+      - id: scenario.workflow-operations-entry-names
+        given: 用户进入流程中心
+        when: 查看流程查询及管理入口
+        then: 既有流程实例入口显示为流程日志并保留实例和日志详情，流程干预提供运行任务查询及重新分配；不重复增加同用途列表
+        evidenceIds: [evidence.workflow-operations-20261030-user-confirmed]
+        evidenceRequirements: [菜单与路由兼容检查, 页面及详情实际交互]
+      - id: scenario.workflow-operations-action-identity
+        given: 当前处理人、具备干预权限人员或申请人发起各自操作
+        when: 执行转办、重新分配或受限撤回
+        then: 服务端分别校验动作主体、目标资格、原因、状态与相应签名，不因登录身份或菜单可见而取得他人处理权；重新分配缺少有效电子签名拒绝
+        evidenceIds: [evidence.workflow-operations-20261030-user-confirmed, evidence.workflow-reassignment-signature-user-confirmed, evidence.record-correction-void-design]
+        evidenceRequirements: [权限及签名负向测试, 记录控制候选边界与禁止自审, 实际签署人及会话审计]
+      - id: scenario.workflow-operations-withdraw-before-decision
+        given: 当前申请处于审批中且当前轮次没有批准或退回决定
+        when: 申请人执行受限撤回
+        then: 本轮全部待办失效，申请与流程结果同步终结，来源业务内容和当前有效修订不变；已有决定或并发失效请求被拒绝，失败无部分落地
+        evidenceIds: [evidence.workflow-operations-20261030-user-confirmed, evidence.record-correction-void-design, evidence.record-control-workflow-stage1-integration-contract]
+        evidenceRequirements: [顺序与并行撤回, 已有决定阻断, 并发和失败回滚, 来源及待办读回]
+      - id: scenario.workflow-operations-history-and-boundaries
+        given: 转办或重新分配成功且原候选及流程版本证据存在
+        when: 查询当前处理权与历史日志
+        then: 仅当前目标继续处理，原候选及责任变化和签名审计可追溯，节点路径及业务结果不变；运行日志不可由业务CRUD改写，DHR通用绕过继续拒绝
+        evidenceIds: [evidence.workflow-operations-20261030-user-confirmed, evidence.record-correction-void-design]
+        evidenceRequirements: [原候选及单逻辑任务保留, 当前及旧处理人权限回归, 日志只读, DHR隔离回归]

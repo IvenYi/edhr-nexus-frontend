@@ -11,5 +11,7 @@ import java.util.List;
 public interface WorkflowActionLogRepository extends JpaRepository<WorkflowActionLog, Long>, JpaSpecificationExecutor<WorkflowActionLog> {
     @org.springframework.data.jpa.repository.Query("select l from WorkflowActionLog l where not exists (select i.id from WorkflowInstance i where i.id=l.instanceId and i.businessType='DHR_SUMMARY')")
     org.springframework.data.domain.Page<WorkflowActionLog> findNonDhr(org.springframework.data.domain.Pageable pageable);
+    @org.springframework.data.jpa.repository.Query("select l from WorkflowActionLog l where not exists (select i.id from WorkflowInstance i where i.id=l.instanceId and i.businessType in ('DHR_SUMMARY','CHANGE','OBSOLETE'))")
+    org.springframework.data.domain.Page<WorkflowActionLog> findGeneric(org.springframework.data.domain.Pageable pageable);
     List<WorkflowActionLog> findByInstanceIdOrderByCreatedAtAsc(Long instanceId);
 }

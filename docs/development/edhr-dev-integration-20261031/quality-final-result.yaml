@@ -1,0 +1,159 @@
+qualityResult:
+  result: passed
+  baseCommit: ccedd56453c02c5d3acd60aa4351809a3928e83e
+  headCommit: 63456e143063c13558db362d28cde83f8e0cdb9b
+  contractBaseline:
+    sourceCommit: 63456e143063c13558db362d28cde83f8e0cdb9b
+    targetBranch: edhr-dev
+    targetCommit: ccedd56453c02c5d3acd60aa4351809a3928e83e
+    contractReadCommit: 63456e143063c13558db362d28cde83f8e0cdb9b
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: dirty
+    includedPaths:
+      - docs/development/edhr-dev-integration-20261031/README.md
+      - docs/development/edhr-dev-integration-20261031/decision-package.yaml
+      - docs/development/edhr-dev-integration-20261031/ontology-result.yaml
+      - docs/development/edhr-dev-integration-20261031/quality-final-result.yaml
+      - docs/development/edhr-dev-integration-20261031/evidence/
+    excludedPaths:
+      - gmp-platform/frontend/output/
+      - output/
+    untrackedPaths:
+      - docs/development/edhr-dev-integration-20261031/evidence/independent/
+      - docs/development/edhr-dev-integration-20261031/evidence/pr46/
+      - docs/development/edhr-dev-integration-20261031/evidence/main-transfer-stable.png
+      - docs/development/edhr-dev-integration-20261031/quality-final-result.yaml
+      - gmp-platform/frontend/output/
+      - output/
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+    - id: check.final-baseline-and-merge
+      required: true
+      category: integration
+      description: L2最终集成候选保留当前目标、原功能、朋友提交及原本地主分支历史。
+      method: command
+      command: git merge-base --is-ancestor; git show -s --format=%P; git rev-parse <commit>:<path>; git diff --name-only
+      outcome: passed
+      evidence:
+        - original-evidence；最终target为ccedd56453c02c5d3acd60aa4351809a3928e83e，feature为84995f7efab3abdf0012b974cb0a11e04920fe77，tested candidate为63456e143063c13558db362d28cde83f8e0cdb9b。
+        - evidence/independent/final-candidate/merge-ancestry.json：目标、朋友aef427c5、原本地bbd2ff88、侧栏修复d1891f97及原集成310e0104均为最终候选祖先；目标17个产品/测试文件Git blob完全保留。
+        - 最终合并双亲为d6f383d1571df1b84d5919976176ac9de7118627与ccedd56453c02c5d3acd60aa4351809a3928e83e；没有强制改写共享历史。
+        - 新目标相对310e0104仅新增3个产品文件、3个测试和1个浏览器脚本；记录控制、workflow、production/DHR、相关前端、迁移及当前知识无变化。已在最终候选重新执行下述关键回归。
+        - evidence/independent/final-candidate/working-tree.json保存审查时完整状态清单；未提交范围只含本轮交付文档和证据，既有输出文件不作为产品修改。
+    - id: check.requirements-and-knowledge
+      required: true
+      category: ontology
+      description: 核对决策包、知识时点纠正和PR46现行删除保护/审计含义，保持暂缓边界。
+      method: inspection
+      command: 阅读AGENTS.md、质量角色/统一交接契约、知识README/open-questions、DEC-0068/0087/0092/0053/0065、影响分析、原始源码及ontology-result.yaml；比较契约和知识Git差异。
+      outcome: passed
+      evidence:
+        - user-confirmed范围为集成现有记录控制、DHR联动及流程操作、保留朋友/现有数据、迁入八组人工样例，门禁通过后才移除指定工作树；没有新增归档或独立DHR变更申请政策。
+        - original-evidence；DEC-0068-13及DEC-0087-08/暂缓场景仅纠正历史时点，原ID、知识版本、status及visibility保持；WITHDRAWN仅释放活动申请约束，不落地拟变更或作废，源码和真实PG断言一致。
+        - ontology-result.yaml的updated及追加validation.integration-pr46-*已核对；分类引用继续阻断删除、改名及排序持久化前值在行锁后读取，现有页面权限和AuditEvent不变。
+        - 最终契约/当前知识与310e0104无差异，已增量重读适用契约和更新的决策包；知识仍0.3.25，schema仍1.2.0，P0仍in-progress。
+        - evidence/independent/static-review.yaml保留首次候选静态核对；本轮不是全量知识语义审计，也不关闭完整A12、DHR完整变化比较/矩阵、放行判断与归档暂缓。
+    - id: check.test-fix-legitimacy
+      required: true
+      category: regression
+      description: 四个原失败测试的适配保持原断言强度，最终候选实际运行通过。
+      method: inspection
+      command: git diff 943dc9fe..310e0104 -- gmp-platform/backend/src/test; 核对本地Spring Boot默认代理配置、WorkflowEngine接口及Liquibase主清单。
+      outcome: passed
+      evidence:
+        - 两DHR测试只开启proxyTargetClass=true，匹配Spring Boot默认类代理；WorkflowEngine实现WithdrawalPort后的JDK代理不能满足原具体类型注入，业务断言、输入和跳过条件均未改变。
+        - CurrentDatabaseBaselineTest保留精确文件清单，加入真实存在的0090；PG计数精确改为9，并新增流程日志名称和流程干预PAGE断言，其他新装/重复迁移/签署原文断言保留。
+        - 最终候选这四类40项均实际通过，无跳过；旧失败原件仍保留在evidence/initial，未用跳过或放宽断言消除失败。
+    - id: check.final-focused-backend
+      required: true
+      category: integration
+      description: 独立执行最终候选的记录控制/DHR/新装升级/知识及新增分类PG回归。
+      method: automated-test
+      command: JAVA_HOME=/opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home PGUSER=ivenwang PGPASSWORD='' RECORD_CONTROL_TEST_DATABASE_URL=jdbc:postgresql://localhost:5432/edhr_record_control_test_integrate_quality_20261031 BASELINE_TEST_DATABASE_URL=jdbc:postgresql://localhost:5432/edhr_baseline_test_integrate_quality_20261031 EDHR_DOCUMENT_CATEGORY_DATABASE_URL=jdbc:postgresql://localhost:5432/edhr_document_category_test EDHR_DOCUMENT_CATEGORY_DATABASE_USER=ivenwang EDHR_DOCUMENT_CATEGORY_DATABASE_PASSWORD='' mvn --batch-mode --no-transfer-progress -Dtest=DocumentCategoryAuditPostgresTest,RecordControlPostgresIntegrationTest,DhrReviewServiceTest,DhrSummaryPersistenceTest,CurrentDatabaseBaselineTest,CurrentDatabaseBaselinePostgresTest,BusinessKnowledgeModelTest test
+      outcome: passed
+      evidence:
+        - original-evidence；在已按授权快进至63456e14的原功能工作树执行，避免主目录backend/target冲突。171项通过，0失败、0错误、0跳过。
+        - evidence/independent/final-candidate/backend-summary.json及7份TEST-*.xml.gz、backend.log.gz保留原始结果；原310e0104的154项结果另外保留，不冒称覆盖最终候选。
+        - 25项记录控制真实PG覆盖重新分配强制签名/权限/候选边界、记录控制候选内转办、申请人受限撤回、并发胜者唯一、审计和结果失败回滚、DHR双向阻断、真实生效索引/贡献及提醒、冻结旧版和签署保留。
+        - 新分类17项真实PG覆盖引用阻断、空分类删除审计、预检后新增引用、权限、幂等/NULL/部分请求、排序与改名并发真实前值、审计失败全事务回滚。
+        - 新装/升级/重复迁移3项、DHR审核12项、汇总持久化24项、精确基线1项、知识89项全部执行通过。三个测试库均由本实例创建，未连接edhr_dev或源验收库进行写测试。
+    - id: check.schema-and-migration
+      required: true
+      category: database
+      description: 独立核对迁移范围、原开发数据、签名原文、冻结快照和新装/既有数据库结构一致性。
+      method: query
+      command: python3 docs/development/edhr-dev-integration-20261031/evidence/independent/verify-preservation.py; PG只读查询information_schema/pg_constraint/pg_indexes/pg_trigger/databasechangelog。
+      outcome: passed
+      evidence:
+        - evidence/independent/preservation.json：最终服务重启后再次验证104表原2120行的完整JSON SHA256均保留，未丢失或修改；主库查询强制default_transaction_read_only。
+        - 所有迁入行与源manifest一致，只有四个新增UAT账号last_login_at因已授权登录改变；逐字段比较排除其他变化。8完成来源、7在审申请、4DHR、8当前修订引用保持，业务样例未消费。
+        - 14条迁入签名原件保留；10条有snapshot_hash的原始snapshot_data逐字SHA256一致，4条初始账号认证行原本无摘要，未将其算作摘要验签通过。冻结汇总、审核与来源原件包含在全行哈希核对中。
+        - evidence/independent/fresh-vs-existing-schema.json：主库与独立新装库1137列、267约束、265索引、2业务触发器、9条Liquibase变更及checksum完全相同；后续PR46无迁移差异。
+        - migrate-acceptance.py静态核对为限定UAT来源、显式INSERT、单事务及目标白名单；只补刚插入八行的当前修订引用，生成列/删除引用由既有数据库机制处理，无覆盖既有行、禁用约束或触发器逻辑。
+        - 主侧迁前即刻迁后evidence/migration-main.json和副本演练证据保留；本实例未再次迁入或执行整库恢复。
+    - id: check.normal-runtime-readonly
+      required: true
+      category: api
+      description: 在最终主目录服务重启后独立验证正常3000代理、账号、样例与权限上下文。
+      method: command
+      command: python3 docs/development/edhr-dev-integration-20261031/evidence/independent/verify-main-readonly.py; ps/lsof检查服务工作目录。
+      outcome: passed
+      evidence:
+        - evidence/independent/main-api-readonly.json：最终63456e14上28项全部通过，包含四UAT账号、八来源、七在审申请、可撤回/已有决定不可撤回、改派候选排除申请人、转办上下文及四DHR工作区。
+        - 仅POST /auth/login及GET，无批准、转办、重新分配、撤回、草稿保存、重置或删除业务动作。令牌未写入证据。
+        - evidence/independent/final-candidate/runtime.json：前端PID9731、后端PID13028均从主目录启动，后端dev profile/8081及默认edhr_dev配置；没有依赖旧3010/8091服务。
+        - 初次使用系统HTTP代理访问127.0.0.1返回502；改用localhost及ProxyHandler({})后正常，不改产品实现。
+    - id: check.visual-and-interactions
+      required: true
+      category: visual
+      description: 独立核对正常入口稳定截图并执行新增分类浏览器场景。
+      method: browser
+      command: NODE_PATH=/Users/ivenwang/.npm/_npx/31e32ef8478fbf80/node_modules CHROME_PATH='/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' CATEGORY_ARTIFACTS=<本轮evidence/independent/final-candidate/category-browser> node scripts/test-document-category-delete-browser.mjs; view_image逐张查看主侧7个稳定场景原件。
+      outcome: passed
+      evidence:
+        - original-evidence；本实例实际运行分类页面及共享确认/保护/提示组件，在390和1440窗口各执行确认取消、成功、引用阻断、预检错误、慢响应取消，共10项全部通过；evidence/independent/final-candidate/category-browser/result.json及截图保留。
+        - 浏览器使用受控API，不表述为主数据库端到端；真实数据库业务边界由独立PG测试覆盖。首次运行因未找到本地playwright模块失败，使用已安装模块的NODE_PATH重跑通过，未改依赖/代码/测试。
+        - 主侧实际浏览器原件经本实例逐张查看：7条流程干预、重新分配和转办完整签名弹窗、撤回按钮有/无、四UAT DHR与原记录同列、冻结V1显示UAT-LOT-OLD和100；evidence/main-browser.json及对应PNG。
+        - 两张初始弹窗截图为动画过渡帧，未用作通过依据；稳定态main-reassign-stable.png和main-transfer-stable.png无层级遮挡。主侧实际点击后activeElement验证4个改派字段和2个转办字段，并取消未提交。
+        - 主入口截图拍摄时产品为310e0104；最终候选相关流程/DHR/布局产品内容无差异，最终API/数据库已重跑。没有冒称再次执行最终候选主库业务动作。
+    - id: check.primary-evidence-and-frontend
+      required: true
+      category: regression
+      description: 独立核对主侧基础检查原件和最终增量构建。
+      method: inspection
+      command: Python解析47份主侧JUnit压缩原件及最终PR46两份JUnit原件，核对前端测试/构建日志。
+      outcome: passed
+      evidence:
+        - evidence/independent/primary-test-evidence-review.json：主侧原723项去重结果与47份原件一致，702通过、21跳过；跳过项未算作通过，未声明全系统回归。
+        - 原目标文档写边界PG55项全部通过，读取性能PG64项其中3跳过；保留的目标文件已逐blob核对，新增分类相邻风险另以本实例PG与页面测试覆盖。
+        - 最终63456e14的evidence/pr46/main-result.json及两份JUnit原件为DocumentManagementControllerTest 11项、DocumentWriteBoundaryIntegrationTest 55项均通过；最终TypeScript/生产构建通过。
+        - 初轮导航及DHR工作区28项和前端构建原件保留；不以历史审计目录或旧PR通过代替最终候选所需检查。
+    - id: check.local-preservation-and-cleanup
+      required: true
+      category: documentation
+      description: 核对原文件、工作树备份、交付说明和本质量实例临时资源清理。
+      method: command
+      command: SHA256逐文件比较迁前清单；tarfile读取归档并核对37个未跟踪文件；dropdb仅删除本实例三个自建QA库；git diff --check。
+      outcome: passed
+      evidence:
+        - evidence/independent/preservation.json：原主目录886个未跟踪文件SHA256全部保持。
+        - evidence/independent/worktree-archive-verification.json：归档5025个文件可读，其中原37个未跟踪文件与迁前hash全相同；备份在/Users/ivenwang/.codex/backups/edhr/integration-20261031。
+        - evidence/independent/final-candidate/cleanup.json：已删除仅本实例创建的edhr_document_category_test、edhr_record_control_test_integrate_quality_20261031、edhr_baseline_test_integrate_quality_20261031，查询确认不存在；浏览器脚本已关闭自建浏览器/临时服务器。
+        - 交付README/manifest指向主目录3000/8081/edhr_dev；decisionPackage已采用create合法枚举，并更新当前target/candidate和影响分析；git diff --check通过。
+        - 本实例未停止主服务、未删除旧工作树、未推送远端。后续仅交付证据提交、非强制push和指定工作树移除由主侧执行并记录回执，不计作本报告已完成项。
+  findings: []
+  residualRisks:
+    - id: risk.scope-and-deferred-capabilities
+      description: 本结论为开发环境集成与人工验收准备；完整DHR变化比较/未覆盖矩阵、放行判断、完整A12、归档、独立DHR变更申请及打印作废过滤仍按既有范围暂缓。
+      impact: 不得解释为完整业务链路、生产发布、法规CSV或全部历史知识语义审计通过。
+      mitigation: 保持现行知识成熟度与未决项；后续相关功能另行确定范围并验收。
+    - id: risk.destructive-main-flow-not-executed
+      description: 为保留用户人工样例，本轮没有在edhr_dev执行批准、改派、转办、撤回、保存草稿或重置；分类浏览器使用受控API。
+      impact: 主环境证明正常读取与入口可用，业务变更正确性由独立真实PG和其他已核对测试证明，不能声称主库八场景均已消费式E2E通过。
+      mitigation: 用户按验收README进行人工动作；动作会改变样例状态，必要恢复前先保存验收结果，禁止用源库整库覆盖主库。
+    - id: risk.post-gate-delivery
+      description: 远端push及指定旧工作树移除在本报告时尚未发生；分支保护/ruleset必需检查未由本实例核验。
+      impact: 本报告不能证明远端已更新、清理已完成或仓库具强制服务端门禁。
+      mitigation: 主侧在通过后只提交交付文档/证据、重新确认目标并非强制推送，随后通过授权工具移除指定工作树并保留回执；目标或产品变动须重新评估检查范围。
+  blockingConditions: []

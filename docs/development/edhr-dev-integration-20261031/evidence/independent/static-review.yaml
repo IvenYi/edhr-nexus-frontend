@@ -1,0 +1,45 @@
+staticReview:
+  candidate: 310e01046d684888b8bdc0915c5f9eb0abe52319
+  target: d10590bd3fe8f3da4e68bcc087b2102d2c211934
+  feature: 84995f7efab3abdf0012b974cb0a11e04920fe77
+  knowledgeBaselineVersion: 0.3.25
+  independence: 本实例及只读复核子实例均未修改业务代码、测试、迁移、知识或主库；仅生成验证证据。
+  result: passed
+  checks:
+    - id: merge-content
+      evidenceType: original-evidence
+      evidence:
+        - merge-ancestry.json记录目标、功能、朋友aef427c5、原本地主分支和侧栏修复均为候选祖先。
+        - 共同祖先至目标的13个gmp-platform改动文件在候选中的Git blob逐个完全相同。
+        - 原功能至候选recordcontrol、workflow后端及record-control前端无差异；候选943dc9fe之后无产品主源码变化。
+        - 项目、编码、角色及交接契约与目标无差异。
+    - id: fixture-fix-legitimacy
+      evidenceType: original-evidence
+      evidence:
+        - CurrentDatabaseBaselineTest仍保留containsExactlyInAnyOrder，只加入实际存在的0090；PG精确计数改为9，并增加流程日志与流程干预PAGE断言。
+        - 两DHR测试只开启proxyTargetClass=true；WorkflowEngine新增WithdrawalPort接口后，JDK代理不满足具体类型注入，类代理与本地Spring Boot3.3.0默认一致。
+        - 测试输入、业务断言、跳过条件未被放宽；本质量实例实际重跑全部四类受影响测试，40项通过无跳过。
+    - id: current-knowledge-time-corrections
+      evidenceType: original-evidence
+      evidence:
+        - DEC-0068-13限定2026-10-29尚未实现为历史时点，当前受限撤回与DEC-0092、WorkflowEngine.withdraw及RecordControlService.withdraw/applyResult一致。
+        - DEC-0087-08及其验收场景区分已接入局部联动与未交付完整矩阵、放行判断和A12；没有扩大政策、关闭历史差异或提升成熟度。
+        - 两文件知识版本、ID、status和visibility保持；本实例89项BusinessKnowledgeModelTest全部通过。
+    - id: migration-scope-and-byte-preservation
+      evidenceType: original-evidence
+      evidence:
+        - migrate-acceptance.py按专用UAT标识限定来源；生成SQL使用显式INSERT、BEGIN/COMMIT及目标库白名单，没有ON CONFLICT覆盖，也没有禁用约束或触发器。
+        - 仅为刚插入八个来源补当前修订引用；生成列由数据库计算，删除引用由原触发器重建。
+        - 现有全部104表2120行独立逐行哈希保留；新增行只有四个账号last_login_at因登录正常变化。
+        - 14条签名原始行保留；10条具摘要的签署原文SHA256正确，4条账号认证原始行无摘要，不冒称已验签。
+        - 独立新装库与主库1137列、267约束、265索引、2业务触发器和9条Liquibase变更及checksum完全一致。
+    - id: preservation-and-backup
+      evidenceType: original-evidence
+      evidence:
+        - 主目录原886个未跟踪文件逐个SHA256保持。
+        - 旧工作树归档5025个文件可读取，其中37个原未跟踪文件逐个SHA256与迁前清单一致。
+        - 仅验证备份可读及指定文件完整性，没有执行整库恢复，也没有删除旧工作树。
+  limitations:
+    - 该文件仅记录310e0104候选检查；后续目标ccedd564出现，最终门禁须补合并候选增量结果。
+    - 弹窗第一批截图处于过渡状态，不计作稳定态视觉验收；等待补充原件。
+    - 本轮未执行生产发布、远端推送或工作树删除。

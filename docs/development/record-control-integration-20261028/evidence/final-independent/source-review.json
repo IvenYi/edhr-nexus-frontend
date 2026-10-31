@@ -1,0 +1,33 @@
+{
+  "candidate": "1437f73b5172310e073f8dd8e8011b6f2017f1c9",
+  "target": "8784ba87166addae9cb9659d6120aa84f993c7ef",
+  "feature": "aef427c524bd7270b3775fbd7c599c72a545e21b",
+  "checkedAt": "2026-10-29T00:03:31.103550+08:00",
+  "sourceReviewBoundary": "Changed integration methods, subtable remediation, schema registration/upgrade, revision initialization, signature flush, public workflow guards and scoped knowledge reconciliation; not whole-repository or full-file semantic certification.",
+  "files": [
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/recordcontrol/service/RecordControlDiff.java",
+      "sha256": "9218d11f012b7dbed8f03260c55b940f3fb57f0bdc562dcd67512e8b77a9a0d2"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/recordcontrol/service/RecordControlService.java",
+      "sha256": "98965b422386c056caf5c85e8a613c50f6aab52da5d246898c0f175b2efc48b2"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormInstanceRecordService.java",
+      "sha256": "4b8a5891b5b5a2d09972dc870e89fd7e791665cef1b5fc499efb83449dc910a4"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/resources/db/changelog/db.changelog-master.yaml",
+      "sha256": "e5738488839b5b5fb45b1aa9b2ed51ac3490d4aaf65efc134ca9b6df12b2f3b8"
+    }
+  ],
+  "productWorkingTreeDiff": [],
+  "browserEvidenceReviewOnly": [
+    "docs/development/record-control-integration-20261028/evidence/browser-verification.md",
+    "docs/development/record-control-integration-20261028/evidence/submitted.png",
+    "docs/development/record-control-integration-20261028/evidence/approved.png",
+    "docs/development/record-control-integration-20261028/evidence/browser-result.csv",
+    "docs/development/record-control-integration-20261028/evidence/browser-old-revision.csv"
+  ]
+}

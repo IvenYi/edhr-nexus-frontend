@@ -1,0 +1,188 @@
+qualityResult:
+  result: passed
+  baseCommit: 40497474da006dfd52ea38070036a6e350eaab8e
+  headCommit: 40497474da006dfd52ea38070036a6e350eaab8e
+  contractBaseline:
+    sourceCommit: 40497474da006dfd52ea38070036a6e350eaab8e
+    targetBranch: edhr-dev
+    targetCommit: 635711f97e9b794f4af02e1e5d1939bb2ecf920f
+    contractReadCommit: 40497474da006dfd52ea38070036a6e350eaab8e
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: dirty
+    includedPaths:
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/workflow
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/recordcontrol
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/controller/SignatureController.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/repository/SignatureRepository.java
+      - gmp-platform/backend/src/main/resources/db/changelog/0090-workflow-operations.sql
+      - gmp-platform/backend/src/main/resources/db/changelog/db.changelog-master.yaml
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/recordcontrol
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/WorkflowInstanceAuthorizationIntegrationTest.java
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/DhrGenericAccessTest.java
+      - gmp-platform/frontend/src/api/record-control.ts
+      - gmp-platform/frontend/src/api/workflow-operations.ts
+      - gmp-platform/frontend/src/components/ConfirmDialog.tsx
+      - gmp-platform/frontend/src/components/workflow/WorkflowResponsibilityDialog.tsx
+      - gmp-platform/frontend/src/pages/workflow-center
+      - gmp-platform/frontend/src/pages/record-control/RecordApprovalDetailPage.tsx
+      - gmp-platform/frontend/src/pages/record-control/RecordRequestDetailPage.tsx
+      - gmp-platform/frontend/src/router/index.tsx
+      - gmp-platform/frontend/src/utils/constants.ts
+      - gmp-platform/frontend/src/utils/menuManagement.ts
+      - gmp-platform/frontend/scripts/verify-list-table-style-contract.mjs
+      - docs/knowledge
+      - docs/architecture/business-knowledge-model.md
+      - docs/development/workflow-operations-20261030
+    excludedPaths:
+      - gmp-platform/frontend/node_modules
+      - output/playwright/record-control-integration-20261028
+      - .playwright-cli
+    untrackedPaths:
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowOperationsController.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/WorkflowOperationsQuery.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/WorkflowResponsibilityService.java
+      - gmp-platform/backend/src/main/resources/db/changelog/0090-workflow-operations.sql
+      - gmp-platform/frontend/src/api/workflow-operations.ts
+      - gmp-platform/frontend/src/components/workflow/WorkflowResponsibilityDialog.tsx
+      - gmp-platform/frontend/src/pages/workflow-center/WorkflowInstancePanel.tsx
+      - docs/knowledge/decisions/DEC-0092-workflow-operations-entry-and-actions.yaml
+      - docs/knowledge/evidence/workflow-operations-20261030.md
+      - docs/knowledge/evidence/workflow-operations-20261030.yaml
+      - docs/knowledge/implementation-anchors/workflow-operations.yaml
+      - docs/development/workflow-operations-20261030
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+    - id: check.operations-contract-and-candidate
+      required: true
+      category: documentation
+      description: 核对项目、编码、交接及质量角色契约、实际Git基线和最终31文件产品候选；只审本切片差异。
+      method: command
+      command: git rev-parse HEAD origin/edhr-dev; git diff origin/edhr-dev -- AGENTS.md codeplzreadme.md docs/agents; SHA256核对最终product-manifest.json
+      outcome: passed
+      evidence:
+        - evidence/independent/candidate-manifest.json：source40497474、target635711f9及31个最终产品/测试/迁移文件逐一摘要匹配，mismatches为空。
+        - 复核了主侧两处展示修复后的最终SHA；远端刷新记录及本地引用一致，契约本身无增量。
+    - id: check.operations-requirements-and-domain-boundaries
+      required: true
+      category: requirements
+      description: 核对用户范围、原候选资格、实际签署身份、受限撤回、DHR隔离及运行数据写入所有权。
+      method: inspection
+      command: 阅读本轮decisionPackage、用户原话、DEC0037/0042/0043/0074/0081/0091/0092与全部受影响实现
+      outcome: passed
+      evidence:
+        - 转办、专门权限重新分配和申请人撤回分开；重新分配不借用会话权限替代实际签署人资格，必签不外推到全部转办/撤回。
+        - 原候选来源、单逻辑任务、节点/路径/业务结果保持；冻结节点按钮可见性及签署事件在服务端重核。
+        - DHR不进入通用日志/干预动作；归档、跳过、强制批准及完整多租户未扩入交付。
+    - id: check.operations-ontology
+      required: true
+      category: ontology
+      description: 独立核对当前知识、实现锚点、声明级替代、历史保留与本体正式结果。
+      method: inspection
+      command: 核对ontology-result.yaml、DEC0092、相关规则/事实/术语及implementation-anchors/workflow-operations.yaml
+      outcome: passed
+      evidence:
+        - ontology-result.yaml为updated，知识0.3.25及P0阶段不变；已实现工程事实最多implemented/internal，没有冒充verified、知识运行、CSV或部署。
+        - DEC0091保留10-29调研时点；0092承接后续授权与菜单呈现；实例与运行日志概念未混同，普通租户内转办未扩给记录控制。
+        - 本角色独立198项复跑包含89项知识检查，全部通过。
+    - id: check.operations-independent-backend
+      required: true
+      category: integration
+      description: 使用独立新建可丢弃PostgreSQL数据库复跑聚焦单元、集成、权限、DHR与知识回归。
+      method: automated-test
+      command: RECORD_CONTROL_TEST_DATABASE_URL=jdbc:postgresql://localhost:5432/edhr_record_control_test_ops_quality_20261030 PGUSER=ivenwang mvn -q '-Dtest=RecordControl*,WorkflowEngineTest,WorkflowTaskControllerTest,WorkflowInstanceAuthorizationIntegrationTest,DhrGenericAccessTest,BusinessKnowledgeModelTest' test
+      outcome: passed
+      evidence:
+        - evidence/independent/backend-verification.json及原JUnit/log.gz：198项，0失败、0错误、0跳过。
+        - 25项真实PG用例覆盖签名、资格、陈旧请求、两个改派单胜、撤回与批准单胜、签名/审计/结果失败原子回滚、待办失效、原来源保留、撤回重提与已有批准/退回/DHR联动。
+    - id: check.operations-independent-http
+      required: true
+      category: api
+      description: 独立启动8108服务，以真实JWT会话和数据库读回检查完整转办、重新分配、撤回及旁路防护。
+      method: automated-test
+      command: python3 docs/development/workflow-operations-20261030/evidence/independent/api-verification.py
+      outcome: passed
+      evidence:
+        - evidence/independent/api-verification.json：29项HTTP及DB检查全部通过，使用独立DB与合成账号，未使用主侧浏览器库。
+        - 实测无干预权限会话即使携带有效干预人凭证仍403；无关日志查看人不能计数/读取活动申请；错误签名不产生签名或任务变化。
+        - 实测冻结配置要求签名的转办成功且签名绑定申请/TRANSFER；待办仅移到新处理人，旧状态重放被拒；必签重新分配成功但申请仍IN_REVIEW。
+        - 运行CRUD不能改派/伪造日志，干预签名不能通过通用列表/单条/覆盖写/删除访问；DHR通用详情与目标查询拒绝。
+        - 申请人撤回使申请、流程、任务同时WITHDRAWN，原有效表单仍COMPLETED且值不变，重复撤回拒绝。
+        - api-fixture.sql记录实际合成夹具；脚本只允许固定loopback QA服务与具名可丢弃QA库。
+    - id: check.operations-signature-bytes-and-audit
+      required: true
+      category: audit
+      description: 核对签署内容绑定、双身份追溯、不可变审计和存储后原字节摘要。
+      method: query
+      command: 查询独立测试库TRANSFER/REASSIGN签名TEXT载荷并重新计算UTF-8 SHA256
+      outcome: passed
+      evidence:
+        - evidence/independent/signature-hash-verification.json：两份动作签名的实际存储载荷SHA256均与snapshot_hash完全相同。
+        - 签名包含动作、任务、节点/版本、原新处理人、原因、锁内任务状态；ExecutionAccess保留会话与真实签署人身份，任务/日志/干预/审计同事务。
+    - id: check.operations-migration
+      required: true
+      category: database
+      description: 在全新独立数据库实际执行当前Liquibase链，核对0090不回填历史证据或扩大角色授权。
+      method: query
+      command: 查询独立QA库databasechangelog及workflow.instances/workflow.intervene权限；审查0090 SQL
+      outcome: passed
+      evidence:
+        - 全新独立数据库0090-workflow-operations状态EXECUTED；workflow.instances名称为流程日志，workflow.intervene为流程干预/PAGE/workflow。
+        - SQL仅两项既有权限UPDATE，代码与路由标识保持，没有新增角色授权或历史任务/签名迁移。
+    - id: check.operations-independent-frontend-build
+      required: true
+      category: regression
+      description: 独立运行TypeScript及生产构建，并复核菜单和公共列表规范。
+      method: command
+      command: npm run build; node scripts/verify-menu-management.mjs; node scripts/verify-list-table-style-contract.mjs
+      outcome: passed
+      evidence:
+        - evidence/independent/frontend-build.log.gz：TypeScript和Vite生产构建退出0。
+        - 菜单验证通过；列表样式验证通过，33个公共列表、15个样式入口、9个可调列列表及5个RDO页面。
+        - InstanceList使用公共表壳实际tableWidth、详情使用公共Drawer；InstanceLogs成为只读时间线，已相应移出表格/操作列专用静态清单，未降低仍存在表格的断言。
+    - id: check.operations-visual-and-browser-evidence
+      required: true
+      category: visual
+      description: 独立查看原始桌面与390px截图，并核对主侧真实浏览器交互和DOM测量记录；不冒称本角色重放了浏览器。
+      method: inspection
+      command: view_image查看原始browser PNG；核对browser-verification.json及最新组件源码
+      outcome: passed
+      evidence:
+        - 原始transfer-dialog、withdraw-confirmation、workflow-log-list、reassignment-popup-narrow及workflow-detail-narrow已逐张查看，沿既有蓝色主题、表格、分组、弹窗与详情规范，无主要遮挡或额外左栏占位。
+        - browser-verification.json记录主侧实际三动作、错误签名重试、必填原因反馈、中文分页、Esc/Enter、两条流程图连线、48px表头/40px行高及390px页内横滚测量；最终源码句柄与表壳适配已核对。
+        - 本角色的独立业务端到端验证为29项真实HTTP/DB链路，浏览器操作证据来自主侧，个人未重新执行所有UI状态矩阵。
+    - id: check.operations-global-generic-ui-known-failure
+      required: false
+      category: regression
+      description: 全局公共UI套件的既有图标保留断言仍失败；已独立复现基线同一失败，不计为本轮通过。
+      method: command
+      command: node --test scripts/test-generic-ui.mjs；使用40497474原menuManagement/constants源码重跑normalization preserves用例
+      outcome: failed
+      evidence:
+        - evidence/independent/generic-ui.log.gz及baseline.log.gz：当前14项13通过1失败；旧基线同一断言期望asset:456、实际FactCheck。
+        - 这是本轮前已存在的行为，未修改断言或产品图标归一化逻辑；本轮菜单增加/改名相关专用检查及独立构建通过。
+    - id: check.operations-global-premium-known-findings
+      required: false
+      category: visual
+      description: 全前端premium静态审计仍有既有问题，不能表述为全仓通过。
+      method: command
+      command: audit_project.py gmp-platform/frontend --mode strict
+      outcome: failed
+      evidence:
+        - evidence/independent/premium-audit.json及frontend-verification.json：exit2，28项全局问题；最终31文件候选中的前端文件无命中。
+    - id: check.operations-resources-and-scope
+      required: true
+      category: documentation
+      description: 核对独立环境清理、无产品修复、当前候选无漂移及暂缓边界。
+      method: command
+      command: 终止独立8108服务并删除独立QA数据库；最终SHA与git diff --check
+      outcome: passed
+      evidence:
+        - evidence/independent/resource-cleanup.json：独立服务已终止，edhr_record_control_test_ops_quality_20261030已删除；未修改真实业务库或主侧服务。
+        - 最终31产品文件SHA仍全部匹配；本角色只新增验证脚本、证据及质量回执，没有修改产品、仓库测试、迁移或参与修复。
+  findings: []
+  residualRisks:
+    - 全局公共UI图标保留用例与28项premium静态问题仍存在，均已明确列为可复现的既有范围，不能把本轮passed解释为全仓全部检查变绿。
+    - 独立检查针对当前工作树31文件候选、默认单租户和具名合成环境；不是完整权限/浏览器/设备矩阵、CSV或生产发布验收。
+    - 本轮0090未部署到日常业务数据库；归档、完整多租户、DHR变更及通用DHR干预等明确暂缓项保持。
+  blockingConditions: []

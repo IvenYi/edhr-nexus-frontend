@@ -1,0 +1,13 @@
+{
+  "sourceCommit": "84995f7efab3abdf0012b974cb0a11e04920fe77",
+  "frontend": "http://localhost:3000",
+  "backend": "http://localhost:8081",
+  "database": "edhr_acceptance_20261030",
+  "originalDatabase": "edhr_dev",
+  "backendLog": "/tmp/edhr-acceptance-backend-20261030.log",
+  "backupReady": "/Users/ivenwang/.codex/backups/edhr/edhr-acceptance-ready-20261030.dump",
+  "startupCommand": "JAVA_HOME=/opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home mvn -q spring-boot:run -Dspring-boot.run.arguments='--server.port=8081 --spring.profiles.active=dev --spring.datasource.url=jdbc:postgresql://localhost:5432/edhr_acceptance_20261030'",
+  "servicesLeftRunning": true,
+  "retainedData": true,
+  "pythonSyntaxCheck": "passed"
+}

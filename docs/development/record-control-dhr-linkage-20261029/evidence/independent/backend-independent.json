@@ -1,0 +1,1153 @@
+{
+  "candidateCommit": "e0b416a12507cd15e411d4becdd4d75b47ed77d9",
+  "scope": "QA independently executed named Maven tests against isolated QA b databases",
+  "totals": {
+    "tests": 197,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 1
+  },
+  "suites": [
+    {
+      "suite": "com.zencas.edhr.production.service.DhrReviewLifecycleIntegrationTest",
+      "tests": 6,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "sourceMtime": 1793282121.984983,
+      "evidence": "TEST-com.zencas.edhr.production.service.DhrReviewLifecycleIntegrationTest.xml.gz",
+      "sha256": "040fd0f872e04be6428dd4394b8593e95fa4a8a7d2aaa7a75dd84686d1e03035",
+      "cases": [
+        {
+          "name": "incompleteFrozenManualReviewBlocksApprovalButAllowsReturn",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "realWorkflowReturnResubmitSignAndApprovedImpactPreserveHistory",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "concurrentApprovalCreatesOnlyOneOutcomeAndSignature",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "reviewDetailCurrentlyComparesTheSameFrozenVersionTwice",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "newlyAppearingRecordAndAttachmentBlockApprovalWithoutChangingFrozenVersion",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "legacyPendingReviewCannotApproveUnfinishedUnincludedCustomCopyButCanReturn",
+          "outcome": "passed",
+          "skipReason": ""
+        }
+      ]
+    },
+    {
+      "suite": "com.zencas.edhr.recordcontrol.service.RecordControlAccessTest",
+      "tests": 10,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "sourceMtime": 1793282103.1291533,
+      "evidence": "TEST-com.zencas.edhr.recordcontrol.service.RecordControlAccessTest.xml.gz",
+      "sha256": "afacf0f816a15f1f784d74b03f5a93836009760441d4621680c336819c499dc7",
+      "cases": [
+        {
+          "name": "applicationListFiltersAreAppliedBeforePagination",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "assignedApproverCanReadActiveRequestDetail",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "tenantHistoryIsOpenToAuthenticatedActorButNotAnonymous",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "completedApprovalQueueUsesDedicatedRecordControlProjection",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "myApplicationsAreFilteredByAuthenticatedActor",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "authenticatedTenantUserCanReadResolvedHistoryDetail",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "approvalProjectionRequiresCurrentTaskOwnership",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "approvalQueueFiltersRecordControlTasksBeforePagination",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "unrelatedUserCannotReadActiveRequestDetail",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "applicantCanReadOwnActiveRequestDetail",
+          "outcome": "passed",
+          "skipReason": ""
+        }
+      ]
+    },
+    {
+      "suite": "com.zencas.edhr.production.service.DhrReviewServiceTest",
+      "tests": 12,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "sourceMtime": 1793282140.9354255,
+      "evidence": "TEST-com.zencas.edhr.production.service.DhrReviewServiceTest.xml.gz",
+      "sha256": "9a1678f93d36b31b7958876f23327cbc9f84f118265e6318f034095f40a5ee56",
+      "cases": [
+        {
+          "name": "personalListAndDetailCannotLeakAnotherUsersTask",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "frozenButtonVisibilityOpinionAndSignatureAreEnforcedOnServer",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "approvalRequiresUnchangedEvidenceAndCurrentHashButDoesNotAutoReturn",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "approvalSeparatesRuntimeOutcomeFromFrozenEvidenceAndRejectsSecondAction",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "aDifferentRevisionBlocksApprovalEvenWhenValuesMatch",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "signedReviewChecksNamedSignerAndRecordsBothIdentities",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "missingFrozenFormOriginalBlocksApprovalButNotReturn",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "intermediateApprovalKeepsPendingAndAuditFailureRollsBackOutcome",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "pendingRecordApplicationBlocksApprovalButStillAllowsHumanReturn",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "humanReturnAllowsChangedEvidenceAndCreatesNextDraftOnlyExplicitly",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "missingAndNewRecordsBothAffectCompleteEvidenceScope",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "unreadableLiveValuesAreReportedAsImpactAndBlockApproval",
+          "outcome": "passed",
+          "skipReason": ""
+        }
+      ]
+    },
+    {
+      "suite": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "tests": 89,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "sourceMtime": 1793282116.327303,
+      "evidence": "TEST-com.zencas.edhr.knowledge.BusinessKnowledgeModelTest.xml.gz",
+      "sha256": "249702c47f9db46ba48178ae1de0d14346ebfbb06954b3d06b5ffa50e55f039c",
+      "cases": [
+        {
+          "name": "yamlParserErrorsContainTheRepositoryRelativeFilePath(Path)",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "unknownScalarCollectionsAreRejected",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "explicitFactReferencesCannotBeUsedAsPredicateExpectations",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "factCatalogCannotBeBypassedByOmittingProfile",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "conditionGroupsRejectAdditionalFields",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "schemaRejectsInvalidFieldTypeDescriptors(String, String, String, String)[1]",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "schemaRejectsInvalidFieldTypeDescriptors(String, String, String, String)[2]",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "schemaRejectsInvalidFieldTypeDescriptors(String, String, String, String)[3]",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "repositoryRootCanBeLocatedFromRootBackendAndIdeWorkingDirectories",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "invalidRuleResultTypesAreRejected",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "nestedCollectionsAreDiscoveredFromSchemaMappings",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "currentKnowledgeModelIsValid",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "referencedExecutionContractsMustSatisfySchemaPolicy(String, String, Object, String)[1]",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "referencedExecutionContractsMustSatisfySchemaPolicy(String, String, Object, String)[2]",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "referencedExecutionContractsMustSatisfySchemaPolicy(String, String, Object, String)[3]",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "factsRequireProvenanceFields",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "schemaCollectionMappingsMustCoverEveryRecordType",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "verifiedInternalRecordsRequireExecutionContracts",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "stringOperatorsRejectNonStringFacts",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "malformedTopLevelCollectionsReportTheirDocument",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "executionContractReferencesMustResolveEvenForNonVerifiedRules",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "invalidStatusesAreRejected",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "factCatalogRejectsOperatorNotAllowedByFact",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "schemaRejectsNestedDescriptorMappingMismatch",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "factValueTypesMustComeFromTheControlledVocabulary",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "factNamesInStringsAreNeverImplicitlyDereferenced",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "knownNestedCollectionsCannotAppearOnUndeclaredParentRecordTypes",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "invalidConditionOperatorsAreRejected",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "typedComparisonsPreserveNumericAndPredicateSemantics(String, String, String, Object)[1]",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "typedComparisonsPreserveNumericAndPredicateSemantics(String, String, String, Object)[2]",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "typedComparisonsPreserveNumericAndPredicateSemantics(String, String, String, Object)[3]",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "typedComparisonsPreserveNumericAndPredicateSemantics(String, String, String, Object)[4]",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "typedComparisonsPreserveNumericAndPredicateSemantics(String, String, String, Object)[5]",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "typedComparisonsPreserveNumericAndPredicateSemantics(String, String, String, Object)[6]",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "typedComparisonsPreserveNumericAndPredicateSemantics(String, String, String, Object)[7]",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "typedComparisonsPreserveNumericAndPredicateSemantics(String, String, String, Object)[8]",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "danglingEvidenceIdsAreRejected",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "verifiedRulesCanReferenceValidRegisteredExecutionContracts",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "invalidCardinalitiesAreRejected",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "factCatalogRejectsUnknownSemanticAlias",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "conditionNotGroupsRequireOneExpression",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "enumFactsRequireAnExplicitNonEmptyValueSet",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "numericComparisonRejectsStringFactEvenWhenItsOperatorIsListed",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "schemaIdPrefixesMustCoverEveryRecordType",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "nestedDuplicateIdsAreRejected",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "ruleOperandsMustMatchTheirDeclaredFacts(String, String, String, Object, String)[1]",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "ruleOperandsMustMatchTheirDeclaredFacts(String, String, String, Object, String)[2]",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "ruleOperandsMustMatchTheirDeclaredFacts(String, String, String, Object, String)[3]",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "ruleOperandsMustMatchTheirDeclaredFacts(String, String, String, Object, String)[4]",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "ruleOperandsMustMatchTheirDeclaredFacts(String, String, String, Object, String)[5]",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "ruleOperandsMustMatchTheirDeclaredFacts(String, String, String, Object, String)[6]",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "ruleOperandsMustMatchTheirDeclaredFacts(String, String, String, Object, String)[7]",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "ruleOperandsMustMatchTheirDeclaredFacts(String, String, String, Object, String)[8]",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "ruleOperandsMustMatchTheirDeclaredFacts(String, String, String, Object, String)[9]",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "ruleOperandsMustMatchTheirDeclaredFacts(String, String, String, Object, String)[10]",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "conditionLeavesRejectAdditionalFields",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "absoluteEvidencePathsAreRejectedEvenWhenTheyExist",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "conditionGroupsMustBeNonEmpty",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "unknownEmptyCollectionsAreRejected",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "implementationAnchorsRejectUnknownProvenanceReviewStatus",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "numericOperandsMustBeFinite",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "currentKnowledgeBaselineUsesTheTypedFactSchema",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "factReferenceObjectsMustUseTheExactOperandShape",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "topLevelCollectionsAreDiscoveredFromSchemaMappings",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "danglingTermIdsAreRejected",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "verifiedRuntimeRecordsRequireEvidence",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "schemaCollectionMappingsRejectDuplicateTargetsDeterministically",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "recordIdsMustUseSchemaPrefixes(String, String)[1]",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "recordIdsMustUseSchemaPrefixes(String, String)[2]",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "normalizedEvidencePathsCannotEscapeRepository(Path)",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "duplicateIdsAreRejected",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "explicitFactOperandsMustHaveCompatibleTypes",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "conditionValuesMustUseSchemaValueTypes",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "schemaCollectionMappingsRejectUnknownRecordTypes",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "nestedRecordsUseSchemaRequiredFieldsEnumsAndBasicTypes(String, String, String, Object, boolean, String)[1]",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "nestedRecordsUseSchemaRequiredFieldsEnumsAndBasicTypes(String, String, String, Object, boolean, String)[2]",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "nestedRecordsUseSchemaRequiredFieldsEnumsAndBasicTypes(String, String, String, Object, boolean, String)[3]",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "nestedRecordsUseSchemaRequiredFieldsEnumsAndBasicTypes(String, String, String, Object, boolean, String)[4]",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "nestedRecordsUseSchemaRequiredFieldsEnumsAndBasicTypes(String, String, String, Object, boolean, String)[5]",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "nestedRecordsUseSchemaRequiredFieldsEnumsAndBasicTypes(String, String, String, Object, boolean, String)[6]",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "explicitFactOperandsResolveIdsAndAliasesWithoutBeingTreatedAsClauses",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "unknownNestedRecordCollectionsAreRejected",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "unknownTopLevelCollectionsReportTheirDocumentAndSortedAllowedCollections",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "missingEvidencePathsAreRejected",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "explicitFactOperandsRejectUnknownReferences",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "executionContractIdsUseSchemaPrefixes",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "realEvidencePathsCannotEscapeRepositoryThroughSymlinks(Path)",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "implementedRecordsCannotEnterCustomerProjection",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "aliasesCannotShadowAnotherFactIdInEitherCollectionOrder",
+          "outcome": "passed",
+          "skipReason": ""
+        }
+      ]
+    },
+    {
+      "suite": "com.zencas.edhr.common.config.CurrentDatabaseBaselineTest",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "sourceMtime": 1793282111.090769,
+      "evidence": "TEST-com.zencas.edhr.common.config.CurrentDatabaseBaselineTest.xml.gz",
+      "sha256": "8cd6f7e2b8898a4da72b6891be3667f6f15a24dca9c223e8c9f17cd1004b93e3",
+      "cases": [
+        {
+          "name": "productionResourcesContainOnlyCurrentSchemaAndRequiredSeed",
+          "outcome": "passed",
+          "skipReason": ""
+        }
+      ]
+    },
+    {
+      "suite": "com.zencas.edhr.recordcontrol.service.RecordControlPostgresIntegrationTest",
+      "tests": 14,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "sourceMtime": 1793282111.0881739,
+      "evidence": "TEST-com.zencas.edhr.recordcontrol.service.RecordControlPostgresIntegrationTest.xml.gz",
+      "sha256": "fd84b8b199abcb934f0cf3201fb51a48d3b531b5cf044df7107282ab9b08de60",
+      "cases": [
+        {
+          "name": "concurrentDhrSubmissionAndApplicationHaveOnlyOneWinner",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "returnedRequestLeavesSourceUnchangedAndAllowsANewApplication",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "changeAndVoidSwitchCurrentReportsAndOutputWithoutDeletingHistoricalContributions",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "notificationFailureRollsBackSourceProjectionTraceSignatureAndFinalApproval",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "failedBusinessApplicationRollsBackFinalTaskSignatureAndRevision",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "signedChangeAndDuplicateConfirmationApplyExactlyOneNewRevision",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "approvedVoidPreservesValuesAndHistoricalRevision",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "firstCompletionCreatesOneImmutableInitialRevision",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "dhrReviewBlocksBothNewApplicationKindsUntilHumanReturn",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "activeApplicationBlocksSummaryButReturnRestoresOrdinarySubmissionChecks",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "approvedChangePreservesFrozenVersionAndDeliversOnlyTheAffectedSubmitterInbox",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "legacySubmitterIdentityComesFromOriginalAuditInsteadOfDisplayName",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "legacyConcurrentApplicationAndDhrApprovalCannotApproveStaleEvidenceAndNotifyOnlyCurrentPeople",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "concurrentApplicationsCreateOneWorkflowAndOneActiveRequest",
+          "outcome": "passed",
+          "skipReason": ""
+        }
+      ]
+    },
+    {
+      "suite": "com.zencas.edhr.production.service.DhrAttachmentAndArchiveTest",
+      "tests": 13,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "sourceMtime": 1793282140.810474,
+      "evidence": "TEST-com.zencas.edhr.production.service.DhrAttachmentAndArchiveTest.xml.gz",
+      "sha256": "d4bb2104399a7badbbdb416eec3b0c45a7597d0376ec2c52e15944532a629f53",
+      "cases": [
+        {
+          "name": "rejectsRenamedOfficeTemplatesAndTruncatedZipDirectory(String)[1]",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "rejectsRenamedOfficeTemplatesAndTruncatedZipDirectory(String)[2]",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "rejectsExcessiveOfficeZipExpansionBeforeParsing",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "fullAndSelectedArchivesUseOneFrozenVersionAndFailOnCorruptAttachment(String)[1]",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "fullAndSelectedArchivesUseOneFrozenVersionAndFailOnCorruptAttachment(String)[2]",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "fullAndSelectedArchivesUseOneFrozenVersionAndFailOnCorruptAttachment(String)[3]",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "fullAndSelectedArchivesUseOneFrozenVersionAndFailOnCorruptAttachment(String)[4]",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "fullAndSelectedArchivesUseOneFrozenVersionAndFailOnCorruptAttachment(String)[5]",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "fullAndSelectedArchivesUseOneFrozenVersionAndFailOnCorruptAttachment(String)[6]",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "fullAndSelectedArchivesUseOneFrozenVersionAndFailOnCorruptAttachment(String)[7]",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "acceptsExactly50MiBButRejectsOneByteOverBeforeReading",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "officeRejectsDisguisedUnsupportedCorruptEncryptedAndMacroFiles",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "attachmentRequiresReadableBytesAndPreservesUnlinkedHistory",
+          "outcome": "passed",
+          "skipReason": ""
+        }
+      ]
+    },
+    {
+      "suite": "com.zencas.edhr.production.service.DhrEvidenceBatchPostgresTest",
+      "tests": 7,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "sourceMtime": 1793282122.5552208,
+      "evidence": "TEST-com.zencas.edhr.production.service.DhrEvidenceBatchPostgresTest.xml.gz",
+      "sha256": "f16dd56011cb0c2fd02702041fed71c8eb5b7c7fde8df086dde1eed7bc94f07c",
+      "cases": [
+        {
+          "name": "comparisonQueryCountIsConstantForGrowingEvidence(int)[1]",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "comparisonQueryCountIsConstantForGrowingEvidence(int)[2]",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "comparisonQueryCountIsConstantForGrowingEvidence(int)[3]",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "comparisonQueryCountIsConstantForGrowingEvidence(int)[4]",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "emptyFrozenSetStillReportsNewMembersAndInvalidVersionKeepsExistingBehavior",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "missingForeignChangedAndNewMembersRemainVisibleInOriginalOrder",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "lockedComparisonWaitsForWriterAndUsesCommittedValues",
+          "outcome": "passed",
+          "skipReason": ""
+        }
+      ]
+    },
+    {
+      "suite": "com.zencas.edhr.common.config.CurrentDatabaseBaselinePostgresTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "sourceMtime": 1793282111.702783,
+      "evidence": "TEST-com.zencas.edhr.common.config.CurrentDatabaseBaselinePostgresTest.xml.gz",
+      "sha256": "5814b98715e966356e8144685d2cd9b4b85bbebbdaa60d64b84dd447f3a503b8",
+      "cases": [
+        {
+          "name": "freshInstallIsCurrentCompleteAndRepeatableWithoutBusinessBackfills",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "existingCurrentBaselineGainsOnlyRealCompletedRevisionHistory",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "existingBusinessSchemaIsRejectedWithoutCleaningOrGuessingData",
+          "outcome": "passed",
+          "skipReason": ""
+        }
+      ]
+    },
+    {
+      "suite": "com.zencas.edhr.workflow.controller.RecordControlWorkflowControllerTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "sourceMtime": 1793282116.335145,
+      "evidence": "TEST-com.zencas.edhr.workflow.controller.RecordControlWorkflowControllerTest.xml.gz",
+      "sha256": "69e8cda96b984af85f9c57c07f8bd1273c55902b2cc9d4b0c5ed1206f65d9e87",
+      "cases": [
+        {
+          "name": "mapsChineseApplicationRequestToTypedPublishedCandidates",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "rejectsUnsupportedBusinessType",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "candidateEndpointRequiresMatchingRecordControlCreatePermission",
+          "outcome": "passed",
+          "skipReason": ""
+        }
+      ]
+    },
+    {
+      "suite": "com.zencas.edhr.production.service.DhrSummaryPersistenceTest",
+      "tests": 24,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "sourceMtime": 1793282116.7341769,
+      "evidence": "TEST-com.zencas.edhr.production.service.DhrSummaryPersistenceTest.xml.gz",
+      "sha256": "eb57e210c71fd19dd2c1a9a6d1fef97d2ed26d8390872bc4c3de9b0f83d23aad",
+      "cases": [
+        {
+          "name": "auditFailureRollsBackDraftAndStatus",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "unnumberedOptionalCustomCopyBlocksSummaryEvenWhenNotPlaced",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "partialDisplayPlacementStillFreezesAllActualEvidence",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "missingFormOriginalBlocksSubmitWithoutDiscardingDraft",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "recoveredDraftRequiresFreshScopeSaveAndManualCheckBeforeFreezing",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "failedSubmitRetainsSavedRevisionAndSuccessfulRetryFreezesEvidence",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "directoryProjectionKeepsLongIdsExactWithoutMutatingFrozenData",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "explicitReorganizationPreservesOriginalEvidenceAndChecksVersionAndReason",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "historicalVersionDoesNotRequireReadableLiveFormValues",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "savesRecordBeforeAndAfterAndRejectStaleRevisionWithoutChangingData",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "historicalVersionDoesNotReturnLiveFormValuesOutsideFrozenCandidates",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "sourceCopiesMayFreezeAtSeparateDirectoriesOrInterleavedPositions",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "changedFrozenAttachmentListBlocksHistoricalVersionRead",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "summaryDisplayNameRejectsBlankAndOversizedValues",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "requiredReviewUsesFrozenBindingAndFailedWorkflowRollsBackSubmission",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "changedFrozenCandidateCannotBypassOriginalFileCheck",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "newSourceRecordAfterDraftRequiresFreshCheckAndIsNeverSilentlyOmitted",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "submitRequiresAuditableManualCheckBeforeFreezing",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "directoryDisplayNameSurvivesDraftFreezeAndReorganizationWithoutChangingBase",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "summaryDisplayNameIsFrozenWithoutChangingSourceAndSurvivesReorganization",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "optionalInstanceOrderSurvivesDraftFreezeReadAndReorganization",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "directoryRenameCannotMoveReorderDuplicateOrUseInvalidNames",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "submitAuditFailureRollsBackVersionEvidenceAndDraftDeletion",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "staleScopeAndIncompleteSupplementBlockSubmission",
+          "outcome": "passed",
+          "skipReason": ""
+        }
+      ]
+    },
+    {
+      "suite": "com.zencas.edhr.production.service.DhrPdfRendererTest",
+      "tests": 7,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 1,
+      "sourceMtime": 1793282121.5601137,
+      "evidence": "TEST-com.zencas.edhr.production.service.DhrPdfRendererTest.xml.gz",
+      "sha256": "957b23860877d28c39df06258f0a10afaaf3e123b2a2e60c89f867669b33fb6a",
+      "cases": [
+        {
+          "name": "paginatesLongSheetsAndLandscapeWordWithoutLosingLastRowOrAddingBlankPages",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "refusesClippedFieldValuesInsteadOfReturningIncompletePrintableEvidence",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "usesFrozenPlacementOrderingAndNeverMutatesSourceIdentity",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "rendersAvailableFrozenDatabaseTemplatesReadOnly",
+          "outcome": "skipped",
+          "skipReason": "System property [dhr.pdf.qa.jdbcUrl] does not exist"
+        },
+        {
+          "name": "rendersFrozenValuesAsRealTextAndRetainsTemplateLayout",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "refusesEllipsizedWordSelectValuesToo",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "rejectsMissingLayoutAndExternalImagesInsteadOfSilentIncompletePdf",
+          "outcome": "passed",
+          "skipReason": ""
+        }
+      ]
+    },
+    {
+      "suite": "com.zencas.edhr.recordcontrol.service.RecordControlDiffTest",
+      "tests": 8,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "sourceMtime": 1793282102.9272306,
+      "evidence": "TEST-com.zencas.edhr.recordcontrol.service.RecordControlDiffTest.xml.gz",
+      "sha256": "5cfdb7f6140556e3c5da52fc90f62a7c1fe947f2cdbe7ee5cfd5cb73ec0ead6c",
+      "cases": [
+        {
+          "name": "productionRowReorderingAndNewRowsPreserveNativeIdentities",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "attachmentOrderDoesNotCountAsContentChange",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "nestedHistoricalSignatureIsNotCarriedIntoNewRevisionWhenSubtableIsOmitted",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "subtableDiffUsesRowIdentityAndRejectsUnknownExistingIdentity",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "historicalSubtableRowsGetStableIdentityAndReorderingIsNotAChange",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "productionRowIdentitySurvivesAMainFieldOnlyChange",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "productionRowIdentityCannotBeReplacedOrReusedByANewRow",
+          "outcome": "passed",
+          "skipReason": ""
+        },
+        {
+          "name": "historicalSignatureCannotBeEditedAndIsNotCopiedIntoNewRevision",
+          "outcome": "passed",
+          "skipReason": ""
+        }
+      ]
+    }
+  ]
+}

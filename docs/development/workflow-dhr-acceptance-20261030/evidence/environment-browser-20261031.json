@@ -1,0 +1,17 @@
+{
+  "date": "2026-10-31",
+  "sourceCommit": "84995f7efab3abdf0012b974cb0a11e04920fe77",
+  "frontend": "http://127.0.0.1:3010",
+  "backend": "http://127.0.0.1:8091",
+  "database": "edhr_acceptance_20261030",
+  "checks": [
+    {"name": "actual-manager-login", "passed": true, "evidence": "Playwright uat-recovery-1031 entered uat_manager via login page and reached application"},
+    {"name": "current-menu-labels", "passed": true, "evidence": "Both 流程日志 and 流程干预 are rendered in left navigation"},
+    {"name": "running-samples", "passed": true, "evidence": "Workflow intervention table contains RC-20261030-000001 through 000007, total 7"},
+    {"name": "reassignment-entry", "passed": true, "evidence": "Opened RC-20261030-000001, current task 391515361681543168 belongs to 验收·审批甲; clicked 重新分配"},
+    {"name": "original-runtime-preserved", "passed": true, "evidence": "Original PID2663 on3000 and PID2704 on8081 remain; acceptance PID4045 on3010 and PID4106 on8091"}
+  ],
+  "screenshots": ["environment-3010-ready.png", "environment-3010-reassign.png"],
+  "businessActionsSubmitted": false,
+  "limitations": ["This run validates restored environment access, not a repeat of previous destructive workflow/DHR acceptance probes", "Login page favicon returns404; restored workflow page has no console errors and two existing React Router future warnings"]
+}

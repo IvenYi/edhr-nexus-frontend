@@ -150,6 +150,7 @@ function formatTime(value?: string | null) {
 
 function evidenceStatus(record?: DhrEvidenceRecord | null) {
   if (!record) return { label: '未填报', color: 'default' as const };
+  if (record.status === 'OBSOLETE') return { label: '已作废', color: 'default' as const };
   return record.status === 'COMPLETED'
     ? { label: '已完成', color: 'success' as const }
     : { label: '未完成', color: 'warning' as const };
@@ -212,6 +213,7 @@ export function SummaryWorkspace({ dhr, onClose, initialRevision = false, viewOn
   const [candidateDrawerOpen, setCandidateDrawerOpen] = useState(false);
   const [browserSource, setBrowserSource] = useState<DhrSource>('DIRECTORY');
   const [navigationView, setNavigationView] = useState<DhrNavigationView>('ARCHIVE');
+  const [showObsolete, setShowObsolete] = useState(false);
   const [browserKey, setBrowserKey] = useState('');
   const [browserInstancesOpen, setBrowserInstancesOpen] = useState(false);
   const [candidateOrigin, setCandidateOrigin] = useState<'WORK' | 'CUSTOM'>('WORK');
@@ -335,12 +337,12 @@ export function SummaryWorkspace({ dhr, onClose, initialRevision = false, viewOn
     const groups = new Map<string, DhrEvidenceRecord[]>();
     effectivePlacements.forEach((placement) => {
       const record = candidateById.get(placement.recordId);
-      if (record) groups.set(placement.targetNodeKey, [...(groups.get(placement.targetNodeKey) ?? []), record]);
+      if (record && (showObsolete || record.status !== 'OBSOLETE')) groups.set(placement.targetNodeKey, [...(groups.get(placement.targetNodeKey) ?? []), record]);
     });
     return groups;
-  }, [candidateById, effectivePlacements]);
+  }, [candidateById, effectivePlacements, showObsolete]);
   const adjustedRecordIds = useMemo(() => new Set(placements.filter((placement) => placement.targetNodeKey !== defaultPlacements.find((entry) => entry.recordId === placement.recordId)?.targetNodeKey).map((placement) => placement.recordId)), [defaultPlacements, placements]);
-  const sourceGroups = useMemo(() => groupSummarySources(workspace?.candidates ?? []), [workspace?.candidates]);
+  const sourceGroups = useMemo(() => groupSummarySources((workspace?.candidates ?? []).filter(record => showObsolete || record.status !== 'OBSOLETE')), [workspace?.candidates, showObsolete]);
   const sourceGroupsByKey = useMemo(() => new Map(sourceGroups.map((group) => [group.key, group] as const)), [sourceGroups]);
   const candidateGroups = useMemo(() => ({
     WORK: sourceGroups.filter((group) => group.originKind === 'WORK'),
@@ -374,8 +376,8 @@ export function SummaryWorkspace({ dhr, onClose, initialRevision = false, viewOn
     }
     return keys;
   }, [baseChildren, overlayChildren, selectedNode]);
-  const archiveNodes = useMemo(() => archiveNavigation(baseDirectories, workspace?.candidates ?? [], overlay, effectivePlacements), [baseDirectories, workspace?.candidates, overlay, effectivePlacements]);
-  const browserNodes = useMemo(() => navigationView === 'ARCHIVE' ? archiveNodes : evidenceNavigation(browserSource, baseDirectories, workspace?.candidates ?? []), [navigationView, archiveNodes, browserSource, baseDirectories, workspace?.candidates]);
+  const archiveNodes = useMemo(() => archiveNavigation(baseDirectories, workspace?.candidates ?? [], overlay, effectivePlacements, showObsolete), [baseDirectories, workspace?.candidates, overlay, effectivePlacements, showObsolete]);
+  const browserNodes = useMemo(() => navigationView === 'ARCHIVE' ? archiveNodes : evidenceNavigation(browserSource, baseDirectories, workspace?.candidates ?? [], showObsolete), [navigationView, archiveNodes, browserSource, baseDirectories, workspace?.candidates, showObsolete]);
   const browserForm = browserNodes.find(node => !node.folder && node.key === browserKey) ?? browserNodes.find(node => !node.folder);
   const directoryRecords = useMemo(() => effectivePlacements
     .filter((placement) => {
@@ -386,7 +388,7 @@ export function SummaryWorkspace({ dhr, onClose, initialRevision = false, viewOn
       return selectedNodeKeys.has(placement.targetNodeKey);
     })
     .map((placement) => candidateById.get(placement.recordId))
-    .filter((record): record is DhrEvidenceRecord => Boolean(record)), [candidateById, effectivePlacements, itemDirectoryById, selectedNodeKeys]);
+    .filter((record): record is DhrEvidenceRecord => Boolean(record) && (showObsolete || record?.status !== 'OBSOLETE')), [candidateById, effectivePlacements, itemDirectoryById, selectedNodeKeys, showObsolete]);
   const selectedRecords = candidateDrawerOpen ? directoryRecords : (browserForm?.recordIds ?? []).map(id => candidateById.get(id)).filter((record): record is DhrEvidenceRecord => Boolean(record));
   const selectedRecord = selectedRecords.find((record) => record.id === selectedRecordId) ?? selectedRecords[0] ?? null;
   const selectedNodeLabel = targetLabelByKey.get(selectedNode) ?? '未选择目录';
@@ -437,7 +439,7 @@ export function SummaryWorkspace({ dhr, onClose, initialRevision = false, viewOn
     if (selectedRecord) {
       setSelectedRecordId(selectedRecord.id);
       setBrowserSource(selectedRecord.originKind);
-      const nodes = next === 'ARCHIVE' ? archiveNodes : evidenceNavigation(selectedRecord.originKind, baseDirectories, workspace?.candidates ?? []);
+      const nodes = next === 'ARCHIVE' ? archiveNodes : evidenceNavigation(selectedRecord.originKind, baseDirectories, workspace?.candidates ?? [], showObsolete);
       setBrowserKey(nodes.find(node => node.recordIds.includes(selectedRecord.id))?.key ?? '');
     }
     setNavigationView(next);
@@ -842,7 +844,7 @@ export function SummaryWorkspace({ dhr, onClose, initialRevision = false, viewOn
     const items = [...(base?.items ?? [])].sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0));
     const overlayDirectories = [...(overlayChildren.get(parentKey) ?? [])].sort((a, b) => a.sortOrder - b.sortOrder);
     const staticKeys = [...childDirectories.map((directory) => `base-dir-${directory.id}`), ...items.map((item) => `base-item-${item.id}`), ...overlayDirectories.map((node) => node.key)];
-    const children = orderedSummaryChildren(parentKey, staticKeys, effectivePlacements);
+    const children = orderedSummaryChildren(parentKey, staticKeys, effectivePlacements).filter(key => !key.startsWith('record-') || showObsolete || candidateById.get(key.slice(7))?.status !== 'OBSOLETE');
     return <>{children.map((key, index) => {
       const before = insertionSlot(parentKey, key);
       if (key.startsWith('record-')) {
@@ -930,7 +932,7 @@ export function SummaryWorkspace({ dhr, onClose, initialRevision = false, viewOn
   const panelRecords = instancePanel ? (instancePanel.key.startsWith('base-item-')
     ? recordsByTarget.get(instancePanel.key) ?? []
     : panelChildKeys.filter((key) => key.startsWith('record-') && instancePanel.recordIds.includes(key.slice(7)))
-      .map((key) => candidateById.get(key.slice(7))).filter((record): record is DhrEvidenceRecord => Boolean(record))) : [];
+      .map((key) => candidateById.get(key.slice(7))).filter((record): record is DhrEvidenceRecord => Boolean(record) && (showObsolete || record?.status !== 'OBSOLETE'))) : [];
 
   return <Dialog open fullScreen onClose={requestClose} PaperProps={{ sx: { bgcolor: '#f3f5f8' } }}>
     <DialogTitle sx={{ px: 2.5, py: 1.25, bgcolor: '#fff', borderBottom: '1px solid #e4e7ed' }}>
@@ -973,7 +975,7 @@ export function SummaryWorkspace({ dhr, onClose, initialRevision = false, viewOn
               {[
                 { label: '表单实例', value: actualRecordCount, note: '生产对象关联的实际记录', color: '#1677c8' },
                 { label: '已完成', value: actualRecordCount - incompleteCount, note: '不代表检验结论合格', color: '#20a365' },
-                { label: '待核查状态', value: incompleteCount, note: '未完成记录仍保留在证据中', color: '#c57b14' },
+                { label: '待核查状态', value: incompleteCount, note: '非完成状态记录仍保留在证据中', color: '#c57b14' },
                 { label: '附件证据', value: workspace.attachments.length, note: `${workspace.attachments.filter((attachment) => attachment.verificationStatus !== 'VERIFIED').length} 个待核验`, color: '#596577' },
               ].map((stat) => <Box key={stat.label} sx={{ border: '1px solid #e6eaf0', borderRadius: 1, px: 1.5, py: 0.75, minWidth: 0, borderLeft: `3px solid ${stat.color}` }}><Stack direction="row" alignItems="baseline" spacing={0.75}><Typography variant="h6" sx={{ color: stat.color, fontVariantNumeric: 'tabular-nums', lineHeight: 1.25 }}>{stat.value}</Typography><Typography variant="body2" fontWeight={600} noWrap>{stat.label}</Typography></Stack><Typography variant="caption" color="text.secondary" noWrap display="block">{stat.note}</Typography></Box>)}
             </Box>
@@ -981,6 +983,7 @@ export function SummaryWorkspace({ dhr, onClose, initialRevision = false, viewOn
         </Box>
         <Box sx={{ ...workspaceBodySx, overflowX: candidateDrawerOpen ? 'auto' : 'hidden' }}>
           <DhrWorkspaceNavigation source={browserSource} onSourceChange={source => { setAttachmentsActive(false); setCandidateDrawerOpen(false); setBrowserSource(source); setBrowserKey(''); setSelectedRecordId(''); setBrowserInstancesOpen(false); }}
+            obsoleteView={{ count: workspace.candidates.filter(record => record.status === 'OBSOLETE').length, show: showObsolete, onToggle: () => setShowObsolete(value => !value) }}
             view={navigationView} onViewChange={changeNavigationView}
             nodes={browserNodes} selectedKey={attachmentsActive ? '' : browserForm?.key ?? ''} instancesOpen={!attachmentsActive && !candidateDrawerOpen && browserInstancesOpen}
             contentKey={candidateDrawerOpen ? instancePanel ? 'archive-instances' : 'archive-sources' : 'browse'}
@@ -1018,7 +1021,7 @@ export function SummaryWorkspace({ dhr, onClose, initialRevision = false, viewOn
                   <Typography variant="caption" color="text.secondary">已完成 {completedCount}/{group.records.length}</Typography>
                   <Typography variant="caption" color={adjustedCount ? 'primary.main' : 'text.secondary'}>{adjustedCount ? `已调整展示位置 ${adjustedCount}/${group.records.length}` : '默认来源位置'}</Typography>
                 </Stack>
-                {completedCount < group.records.length && <Typography variant="caption" color="warning.main" display="block" sx={{ mt: 0.5 }}>存在未完成实例；证据保留，提交是否阻断由核查规则决定。</Typography>}
+                {completedCount < group.records.length && <Typography variant="caption" color="warning.main" display="block" sx={{ mt: 0.5 }}>存在非完成状态实例；证据保留，提交是否阻断由核查规则决定。</Typography>}
                 {editable ? <TextField select size="small" fullWidth label={group.records.length > 1 ? '整组展示位置' : '展示位置'} value={currentTarget} disabled={isWriting} onChange={(event) => assignSource(group, event.target.value)} sx={{ mt: 1, ...fieldSx }}><MenuItem value="">默认来源位置</MenuItem>{currentTarget === '__PARTIAL__' && <MenuItem value="__PARTIAL__" disabled>实例展示位置不同</MenuItem>}{targetOptions.filter((target) => !target.key.startsWith('source-')).map((target) => <MenuItem key={target.key} value={target.key}>{target.label}</MenuItem>)}</TextField> : <Typography variant="caption" sx={{ display: 'block', mt: 1, color: 'text.secondary' }}>{currentTarget === '__PARTIAL__' ? '展开查看各实例展示位置' : currentTarget ? `展示于：${placementLabel(first.id)}` : '默认来源位置'}</Typography>}
                 <Button size="small" aria-label={`${expanded ? '收起' : '展开'}实例 ${getRecordTitle(first)}`} aria-expanded={expanded} startIcon={<ViewListOutlined />} endIcon={expanded ? <ExpandMoreRounded /> : <ChevronRightRounded />} onClick={() => setExpandedSourceKeys((current) => expanded ? current.filter((key) => key !== group.key) : [...current, group.key])} sx={{ mt: 1 }}>查看实例（{group.records.length}）</Button>
                 <Collapse in={expanded} timeout={reduceMotion ? 0 : 160} unmountOnExit><Box sx={{ mt: 1, borderTop: '1px solid #ebeef5' }}>{group.records.map((record) => {

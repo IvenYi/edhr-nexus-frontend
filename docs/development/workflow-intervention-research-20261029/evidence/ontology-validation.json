@@ -1,0 +1,26 @@
+{
+  "sourceCommit": "8cf4df66d60e8f16677442197a9fc0defcd3ef8c",
+  "workingTree": true,
+  "command": "mvn -q -Dtest=BusinessKnowledgeModelTest test",
+  "exitCode": 0,
+  "totals": {
+    "tests": 89,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "archives": [
+    {
+      "originalPath": "gmp-platform/backend/target/surefire-reports/TEST-com.zencas.edhr.knowledge.BusinessKnowledgeModelTest.xml",
+      "archive": "ontology-knowledge-junit.xml.gz",
+      "rawBytes": 51472,
+      "rawSha256": "5ac2a0a46976a4c74f0de019253111d8b5c6eb38ca22ef60884737f4fd9d73b5"
+    },
+    {
+      "originalPath": "docs/development/workflow-intervention-research-20261029/ontology-knowledge.log",
+      "archive": "ontology-knowledge.log.gz",
+      "rawBytes": 327,
+      "rawSha256": "2864abc321c05553715875901dc10e2d1b700bbb6a120f69030a3ade92b7c970"
+    }
+  ]
+}

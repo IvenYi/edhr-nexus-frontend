@@ -53,11 +53,18 @@ public class DhrPdfRenderer {
                 if (chromiumPath != null && !chromiumPath.isBlank()) options.setExecutablePath(Path.of(chromiumPath));
                 browser = playwright.chromium().launch(options);
                 var context = browser.newContext(new Browser.NewContextOptions().setLocale("zh-CN").setTimezoneId("Asia/Shanghai").setServiceWorkers(ServiceWorkerPolicy.BLOCK));
-                context.route("**/*", route -> { failures.add("禁止外部资源：" + route.request().url()); route.abort(); });
+                // A fixed in-memory origin lets shared preview dependencies read empty browser storage.
+                // Fulfill only this navigation locally; no page, image or API may reach the network.
+                context.route("**/*", route -> {
+                    if ("http://dhr-print.invalid/".equals(route.request().url()) && route.request().isNavigationRequest())
+                        route.fulfill(new Route.FulfillOptions().setContentType("text/html; charset=utf-8")
+                                .setBody("<!doctype html><html lang='zh-CN'><meta charset='utf-8'><body><div id='root'></div></body></html>"));
+                    else { failures.add("禁止外部资源：" + route.request().url()); route.abort(); }
+                });
                 page = context.newPage();
                 page.onPageError(failures::add);
                 page.setDefaultTimeout(60_000);
-                page.setContent("<!doctype html><html lang='zh-CN'><meta charset='utf-8'><body><div id='root'></div></body></html>");
+                page.navigate("http://dhr-print.invalid/");
                 page.addScriptTag(new Page.AddScriptTagOptions().setContent(bundle));
             } catch (Exception ex) { if (browser != null) browser.close(); playwright.close(); throw ex; }
         }

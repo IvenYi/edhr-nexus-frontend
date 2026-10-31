@@ -87,7 +87,8 @@ const REQUIRED_PRODUCTION_WORKFLOW_CENTER_MENU: SidebarMenu = {
   children: [
     { label: '审批流程', path: '/workflow/review-templates' },
     { label: '表单流程', path: '/workflow/form-processes' },
-    { label: '流程实例', path: '/workflow/instances' },
+    { label: '流程日志', path: '/workflow/instances' },
+    { label: '流程干预', path: '/workflow/interventions' },
   ],
 };
 
@@ -120,11 +121,22 @@ const REQUIRED_DHR_MANAGEMENT_MENU: SidebarMenu = {
   ],
 };
 
+const REQUIRED_CHANGE_MANAGEMENT_MENU: SidebarMenu = {
+  label: '变更管理',
+  icon: 'Article',
+  children: [
+    { label: '记录变更', path: '/records/change' },
+    { label: '我的变更', path: '/records/mine' },
+    { label: '变更审批', path: '/records/approvals' },
+    { label: '变更记录', path: '/records/history' },
+  ],
+};
+
 const REQUIRED_RECORDS_MODULE: SidebarModule = {
   id: 'records',
   label: '记录',
   icon: 'FactCheck',
-  menus: [REQUIRED_FORM_MANAGEMENT_MENU, REQUIRED_DHR_MANAGEMENT_MENU, { label: '报表', icon: 'FactCheck', children: PROJECTION_REPORT_PAGES.map(({ label, path }) => ({ label, path })) }],
+  menus: [REQUIRED_FORM_MANAGEMENT_MENU, REQUIRED_DHR_MANAGEMENT_MENU, REQUIRED_CHANGE_MANAGEMENT_MENU, { label: '报表', icon: 'FactCheck', children: PROJECTION_REPORT_PAGES.map(({ label, path }) => ({ label, path })) }],
 };
 
 const REQUIRED_PRODUCTION_PREPARATION_MENU: SidebarMenu = {
@@ -153,6 +165,7 @@ const PRODUCTION_MANAGED_PATHS = new Set([
   '/workflow/review-templates',
   '/workflow/form-processes',
   '/workflow/instances',
+  '/workflow/interventions',
   '/workflow/txn-templates',
   '/workflow/work-templates',
   '/workflow/binding-rules',
@@ -167,6 +180,10 @@ const PRODUCTION_MANAGED_PATHS = new Set([
   '/dhr-management/summary',
   '/dhr-management/filling',
   '/dhr-management/review',
+]);
+const RECORDS_MANAGED_PATHS = new Set([
+  ...PRODUCTION_MANAGED_PATHS,
+  ...REQUIRED_RECORDS_MODULE.menus.flatMap((menu) => menu.children?.map((child) => child.path) ?? []),
 ]);
 const REMOVED_MASTER_DATA_MENU_PATHS = new Set([
   '/master-data/material-types',
@@ -270,12 +287,12 @@ export function normalizeManagedSidebarModules(modules: SidebarModule[]): Sideba
 
 export function ensureRequiredMenus(modules: SidebarModule[]): SidebarModule[] {
   const nextModules = cloneSidebarModules(removeRetiredSidebarModules(modules));
-  const menuIcons = new Map(nextModules.flatMap((module) => module.menus
+  const menuIcons = new Map(nextModules.filter((module) => module.id !== REQUIRED_RECORDS_MODULE.id).flatMap((module) => module.menus
     .filter((menu) => menu.icon)
     .map((menu) => [`${module.id}:${menu.path || menu.label}`, menu.icon] as const)));
   ensureRequiredProcessModeling(nextModules);
-  ensureRequiredRecordsModule(nextModules);
   ensureRequiredProductionMenus(nextModules);
+  ensureRequiredRecordsModule(nextModules);
   ensureRequiredSystemMenus(nextModules);
   for (const module of nextModules) {
     for (const menu of module.menus) {
@@ -375,10 +392,10 @@ function ensureRequiredProductionMenus(modules: SidebarModule[]) {
     module.menus = module.menus
       .map((menu) => {
         if (menu.children) {
-          const children = menu.children.filter((child) => !PRODUCTION_MANAGED_PATHS.has(child.path));
+          const children = menu.children.filter((child) => !RECORDS_MANAGED_PATHS.has(child.path));
           return children.length > 0 ? { ...menu, children } : null;
         }
-        return menu.path && PRODUCTION_MANAGED_PATHS.has(menu.path) ? null : menu;
+        return menu.path && RECORDS_MANAGED_PATHS.has(menu.path) ? null : menu;
       })
       .filter((menu): menu is SidebarMenu => menu !== null);
   }
@@ -397,28 +414,19 @@ function ensureRequiredProductionMenus(modules: SidebarModule[]) {
 }
 
 function ensureRequiredRecordsModule(modules: SidebarModule[]) {
-  for (const module of modules) {
-    module.menus = module.menus
-      .map((menu) => {
-        if (menu.children) {
-          const children = menu.children.filter((child) => !PRODUCTION_MANAGED_PATHS.has(child.path));
-          return children.length > 0 ? { ...menu, children } : null;
-        }
-        return menu.path && PRODUCTION_MANAGED_PATHS.has(menu.path) ? null : menu;
-      })
-      .filter((menu): menu is SidebarMenu => menu !== null);
+  const previous = modules.filter((module) => module.id === REQUIRED_RECORDS_MODULE.id);
+  const recordsModule = previous[0] ?? cloneSidebarModules([REQUIRED_RECORDS_MODULE])[0];
+  recordsModule.menus = previous.length > 0 ? previous.flatMap((module) => module.menus) : recordsModule.menus;
+  for (let index = modules.length - 1; index >= 0; index -= 1) {
+    if (modules[index].id === REQUIRED_RECORDS_MODULE.id) modules.splice(index, 1);
   }
-
-  let recordsModule = modules.find((module) => module.id === REQUIRED_RECORDS_MODULE.id);
-  if (!recordsModule) {
-    modules.push(cloneSidebarModules([REQUIRED_RECORDS_MODULE])[0]);
-    return;
-  }
+  const productionIndex = modules.findIndex((module) => module.id === 'production');
+  modules.splice(productionIndex < 0 ? modules.length : productionIndex + 1, 0, recordsModule);
 
   recordsModule.label = REQUIRED_RECORDS_MODULE.label;
-  recordsModule.icon = recordsModule.icon || REQUIRED_RECORDS_MODULE.icon;
+  recordsModule.icon = REQUIRED_RECORDS_MODULE.icon;
   const reportMenu = recordsModule.menus.find((menu) => menu.label === '报表');
-  recordsModule.menus = recordsModule.menus.filter((menu) => ![REQUIRED_FORM_MANAGEMENT_MENU.label, REQUIRED_DHR_MANAGEMENT_MENU.label, '报表'].includes(menu.label));
+  recordsModule.menus = recordsModule.menus.filter((menu) => ![REQUIRED_FORM_MANAGEMENT_MENU.label, REQUIRED_DHR_MANAGEMENT_MENU.label, REQUIRED_CHANGE_MANAGEMENT_MENU.label, '报表'].includes(menu.label));
   const requiredMenus = cloneSidebarModules([REQUIRED_RECORDS_MODULE])[0].menus;
   const requiredReport = requiredMenus.find((menu) => menu.label === '报表');
   if (reportMenu && requiredReport) {
@@ -534,6 +542,7 @@ export function useManagedSidebarModules(): SidebarModule[] {
 }
 
 export function inferPermissionCode(path: string): string | undefined {
+  if (path === '/workflow/interventions') return 'workflow.intervene';
   if (path === '/master-data/equipment-types') return 'master-data.equipment';
   if (path === '/') return 'dashboard';
   if (path === '/production/work-templates') return 'workflow.work-templates';

@@ -1,0 +1,103 @@
+qualityResult:
+  result: passed
+  baseCommit: 2f46b5f66af44ea5973b9ead93f6eb85e62dbcc7
+  headCommit: 2f46b5f66af44ea5973b9ead93f6eb85e62dbcc7
+  contractBaseline:
+    sourceCommit: 2f46b5f66af44ea5973b9ead93f6eb85e62dbcc7
+    targetBranch: edhr-dev
+    targetCommit: 635711f97e9b794f4af02e1e5d1939bb2ecf920f
+    contractReadCommit: 2f46b5f66af44ea5973b9ead93f6eb85e62dbcc7
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: dirty
+    includedPaths:
+      - docs/reference-assets/research/crown-dhr-change-downstream-20261029/
+      - docs/reference-assets/screenshots/2026-10-29-crown-dhr-change/
+    excludedPaths:
+      - gmp-platform/frontend/node_modules
+      - output/playwright/record-control-integration-20261028/
+    untrackedPaths:
+      - docs/reference-assets/research/crown-dhr-change-downstream-20261029/
+      - docs/reference-assets/screenshots/2026-10-29-crown-dhr-change/
+      - gmp-platform/frontend/node_modules
+      - output/playwright/record-control-integration-20261028/
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+    - id: check.crown-research-contract-and-scope
+      required: true
+      category: documentation
+      description: 独立读取项目、质量角色、交接契约和研究包，核对Git基线与产品零改动边界
+      method: command
+      command: git rev-parse HEAD origin/edhr-dev; git diff --exit-code HEAD -- gmp-platform docs/knowledge docs/architecture AGENTS.md codeplzreadme.md docs/agents
+      outcome: passed
+      evidence:
+        - HEAD为2f46b5f66af44ea5973b9ead93f6eb85e62dbcc7，远端目标为635711f97e9b794f4af02e1e5d1939bb2ecf920f
+        - 产品、结构化知识、架构及契约工作树相对HEAD无差异；本轮研究文件为未提交新增范围
+        - 独立git diff核对8784ba87到目标的契约、知识及直接引用DHR/投影服务无增量；不认证新的合并候选
+    - id: check.crown-research-original-provenance
+      required: true
+      category: documentation
+      description: 独立重算20个原始文件哈希，解析原始DOCX段落与关系，逐字节比对4图，验证研究文档相对链接和空白
+      method: command
+      command: python3（本次工具记录中的标准库内联核对，使用hashlib、zipfile、xml.etree、pathlib与re）
+      outcome: passed
+      evidence:
+        - docs/reference-assets/research/crown-dhr-change-downstream-20261029/independent-evidence.json
+        - 20个源文件SHA-256和字节数全部匹配；4图与原DOCX对应ZIP条目完全一致
+        - 全部抽取段落与原DOCX指定零基段落一致；额外直接核对2691、6261、6265的DHR单表操作和双签说明
+        - README的6个相对文件链接均存在；研究文本无尾空白
+    - id: check.crown-research-ui-and-signatures
+      required: true
+      category: visual
+      description: 查看原始内嵌截图并核对前端DHR容器、单表实例选择、动作分类和签署请求
+      method: inspection
+      command: view_image及原始Vue/TypeScript源码定向读取；未启动浏览器
+      outcome: passed
+      evidence:
+        - 直接查看rId588-image583.png，确认批次/SN、DHR目录、选中表单及变更/作废入口
+        - 直接查看rId743-image738.png，确认该原始示例的提交人/审核人双签弹窗
+        - record-change-container.vue:22/88、useEbrWikiFactory.ts:247/253确认对选中表单开放动作且以DHR_CHANGE区分入口
+        - form-annotation-controller.ts:479/656及form-abandon-v2-modal.vue:195确认当前叠加审批路径申请人签名和既有流程选择；报告未将截图双签强制迁移成现行产品政策
+    - id: check.crown-research-business-and-downstream-claims
+      required: true
+      category: requirements
+      description: 从原始后端核对单表共用处理器、申请状态、批准落地及有限下游监听器，核验报告没有声称完整运行闭环
+      method: inspection
+      command: 原始Java源码定向读取与类定义检索
+      outcome: passed
+      evidence:
+        - OnlineFormChangeBs:98/129/131保存申请、启动BUSINESS_APPROVE、设置IN_AUDIT；额外读取RecordTraceLogService:81确认该调用构造追踪数据而非直接应用正式值
+        - ProcessHandlerFactory:35至37将FORM_CHANGE/DHR_CHANGE/NOTEBOOK_CHANGE映射到同一处理器
+        - OnlineFormChangeProcessHandler:94/171/214确认平台change/submit/abandon调用、状态刷新及退回原状态差异
+        - SummaryReportFinishBs:145至154阻断包含IN_AUDIT来源的完成整理；不据此推导后来变化的主动审核通知
+        - OnlineFormButtonEventListener:352至400确认非放行单作废清理当前报工/汇总关系及仅剩余流程待办受让人的条件通知
+        - OnlineFormDataCatchService:375/587、FormSubmitEventListener:72/85、FormTraceManager:299与打印服务:184支持报告对先删后插、上下文限制、异常日志和作废过滤的描述
+        - 所给套件未找到EdhrInstanceService/OnlineFormBaseService/OnlineFormProcessService类实现；报告准确保留平台事件链与状态传播证据缺口
+    - id: check.crown-research-current-product-comparison
+      required: true
+      category: requirements
+      description: 对照当前确认决策和源码，核对差异及接续建议的事实/推断边界
+      method: inspection
+      command: DEC-0063/0068/0086/0087、open-questions与生产/记录控制服务定向读取
+      outcome: passed
+      evidence:
+        - DEC-0063-04/05、DEC-0068-04/05/06/08、DEC-0086-02/03/04、DEC-0087-02/03/06支持历史保留、真实生效消费、人工重审、无自动放行和首版入口延期的对照
+        - DhrEvidenceImpactService:34至49未读current_revision_id，DhrReviewService:89至115有对象/DHR锁和批准前比较；未将读取时比较写为主动通知完成
+        - FormProjectionService:37至38固定final_revision=1；FormTraceIndexService:30提供刷新；当前RecordControlService批准落地未接这些下游
+        - open-questions中的A12历史检索视图仍未定；报告只建议保留版本来源，不冒充新历史UI已确认
+        - 通知受众/渠道仅作为后续未决问题；研究记录不提高知识成熟度、不关闭原DHR两项high或A12
+  findings: []
+  residualRisks:
+    - id: risk.crown-research-static-snapshot
+      description: 冠骋资料是本地提供的无Git元数据快照，且原文包含不同界面示例
+      impact: 本次通过只支持报告所列静态研究，不能认证最新冠骋部署行为或不同截图与源码的版本等同性
+      mitigation: 已在报告明确区分资料与版本边界；若需运行比较，取得对应部署及平台原始实现后另行验证
+    - id: risk.crown-research-platform-and-runtime-gap
+      description: 未运行冠骋或本产品，平台事件实现、完整跨DHR通知/重审和统计冲销链路未执行
+      impact: 不认证任何完整用户流程、数据库、并发、业务闭环或发布候选
+      mitigation: 下游方案继续依现有确认规则开发，并在L2功能切片取得真实集成与独立验收证据
+    - id: risk.crown-research-future-policy
+      description: 通知受众/渠道及A12历史查询呈现仍有后续业务决策或证据缺口
+      impact: 对应实现须先明确，不能从本次竞品描述推导授权；不阻塞当前研究资料交付
+      mitigation: 仅暂停依赖这些细则的实现，其他已有确认范围可继续分析
+  blockingConditions: []

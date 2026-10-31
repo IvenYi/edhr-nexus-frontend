@@ -180,6 +180,12 @@ terms:
     aliases: [DHR 附件证据, 纸质扫描附件]
     status: specified
     visibility: internal
+  - id: term.dhr-archive
+    name: DHR归档
+    definition: 最终产品放行后，将具体正式DHR汇总版本及来源表单修订、附件、签名、审计和放行依据固定关联并进入受控保存的生命周期能力；限制普通路径继续修改，记录归档主体、时间和版本，保留按权检索、追溯和导出及备份恢复保障。归档区别于汇总版本冻结和下载归档包，当前仅确认MVP最小范围，未交付归档执行；独立归档审批、解封及完整放行后变更不在本轮。
+    aliases: [DHR封存（历史旧称）]
+    status: specified
+    visibility: internal
   - id: term.dhr-summary-archive-display-name
     name: DHR 汇总归档显示名
     definition: 汇总草稿或冻结版本内真实证据的目录展示别名，与完整证据范围解耦；组行限当前范围，相邻折叠行限本段，单份限一份。别名不改变来源内容、实例身份或生产归属；正常冻结版本只读，未设置别名时显示来源名称。旧汇总转换保留可用别名、目录和位置，不表示继承旧核查结果。
@@ -217,9 +223,9 @@ terms:
     status: specified
     visibility: internal
   - id: term.form-instance-number
-    name: 表单实例号
+    name: 表单实例编号
     definition: 由系统为一份具体填报记录生成的不可修改编号；同份记录后续保存、提交、审批和退回修改保持编号不变，新建另一份生成新编号，区别于模板编号、版本号和子表明细行号。
-    aliases: [表单记录号]
+    aliases: [表单实例号, 表单流水号, 表单记录号]
     status: specified
     visibility: internal
   - id: term.form-process-template
@@ -254,19 +260,19 @@ terms:
     visibility: internal
   - id: term.workflow-transfer-action
     name: 转办
-    definition: 当前有处理权的用户显式变更任务处理责任的标准动作，不改变当前节点、流程路径或业务结果。通用工作流及普通生产表单按DEC-0081允许委托给同租户正常可用的其他用户，原候选来源保留而当前受让人单独记录，转后仅目标处理；记录控制仍按自身尚未闭环的动作规则，DHR不开放通用转办。中文产品文案不得使用“普通转办”作为并列正式名称。
+    definition: 当前有处理权的用户从任务详情显式变更任务处理责任的标准动作，原因必填，不改变当前节点、流程路径或业务结果。通用工作流及普通生产表单按DEC-0081允许委托给同租户正常可用的其他用户；记录控制按DEC-0037/0092保留自身授权候选范围并排除申请人自审。原候选依据保留，当前受让人单独记录，转后仅目标处理；DHR不开放通用转办。转交不是第三种独立产品动作名，中文产品文案不得使用“普通转办”作为并列正式名称。
     aliases: [TRANSFER]
     status: implemented
     visibility: internal
   - id: term.workflow-reassignment-action
     name: 重新分配
-    definition: 具备专门权限的管理人员变更当前审批任务处理人的标准干预动作；不改变当前节点、流程路径或业务结果。中文产品文案不得使用“管理重新分配”作为并列正式名称。
+    definition: 具备专门干预权限的人员从流程干预入口变更当前任务处理人的标准动作，不要求其是原处理人；原因必填，保留任务原授权资格，不将普通任务的租户内转办政策外推为管理改派范围，不改变当前节点、流程路径或业务结果。本轮授权内的重新分配按DEC-0091/0092必须完成电子签名，签名不替代权限、原因或审计，不由此扩展普通转办、撤回的签署要求或DHR通用干预。中文产品文案不得使用“管理重新分配”作为并列正式名称。
     aliases: [REASSIGN]
-    status: specified
+    status: implemented
     visibility: internal
   - id: term.workflow-return-action
     name: 退回
-    definition: 审批人对当前审批任务作出不通过并将本轮申请退回申请阶段的标准动作；它不是独立的“拒绝”动作。
+    definition: 审批人对当前审批任务作出不通过决定的标准动作；它不是独立的“拒绝”动作。记录控制首期按 DEC-0087-05 终结旧申请和本轮流程，再发起使用新的申请、编号、签名和流程实例；普通生产表单自身的退回修改规则不因该记录控制范围而改变。
     aliases: [RETURN]
     status: specified
     visibility: internal
@@ -278,7 +284,7 @@ terms:
     visibility: internal
   - id: term.record-control-workflow-integration
     name: 记录控制流程集成边界
-    definition: 记录控制申请域与公共流程域之间的稳定协作边界；记录控制域拥有申请、来源资格、签名和业务落地，公共流程域拥有候选查询、显式版本启动、路由、任务和流程运行日志。阶段一已实现候选查询与显式启动，其他共享类型仍是后续运行时边界。
+    definition: 记录控制申请域与公共流程域之间的稳定协作边界；记录控制域拥有申请、来源资格、签名和业务落地，公共流程域拥有候选查询、显式版本启动、路由、任务和流程运行日志。阶段一已实现候选查询与显式启动，后续接入申请确认、审批/退回及最终结果同步消费；本轮DEC-0092按实际源码和主侧聚焦测试补齐受限撤回、记录控制转办及签署约束的重新分配。每项运行证据与独立验收分别判断，不由接口、合并或本切片推定完整P0、DHR/A12、CSV或生产发布通过。
     aliases: [记录控制审批流程集成边界, RecordControlWorkflowPort]
     status: implemented
     visibility: internal
@@ -746,7 +752,7 @@ terms:
     visibility: internal
   - id: term.record-correction-request
     name: 表单变更申请
-    definition: 针对已完成记录发起的独立受控申请；申请提交新修订，经匹配的已发布审批流程批准后替代当前有效修订。
+    definition: 针对已完成记录发起的独立受控申请；申请保存与正式值隔离的拟变更内容，经匹配的已发布审批流程批准后生成下一内容修订并替代当前有效修订；退回终结旧申请，再发起使用新的申请和流程实例。
     aliases: [变更申请, 变更申请单, RecordCorrectionRequest]
     status: specified
     visibility: internal
@@ -760,6 +766,12 @@ terms:
     name: 变更修订
     definition: 表单变更产生的完整数据修订，保留基于修订、哈希、生效区间和申请引用；历史修订只读且不可覆盖。
     aliases: [记录修订, CorrectionRevision]
+    status: specified
+    visibility: internal
+  - id: term.form-instance-revision
+    name: 表单实例修订
+    definition: 同一表单实例在受控变更中保留的完整内容版本；模板版本与实例修订相互独立，历史修订只读，且同一实例同时最多存在一个当前有效修订。
+    aliases: [实例修订, FormInstanceRevision]
     status: specified
     visibility: internal
   - id: term.record-impact-assessment
@@ -782,9 +794,9 @@ terms:
     visibility: internal
   - id: term.workflow-event-log
     name: 流程事件日志
-    definition: 用于展示和排查记录控制审批时间线的业务运行日志概念；阶段一继续由现有 WorkflowActionLog/workflow_action_log 承载，不新建 WorkflowEventLog 第二套表。合规证据另由不可变审计事件保存。
-    aliases: [审批流程日志, WorkflowEventLog]
-    status: specified
+    definition: 用于展示和排查流程时间线的只读业务运行日志概念；继续由现有 WorkflowActionLog/workflow_action_log 承载，不新建 WorkflowEventLog 第二套表。流程中心按DEC-0092将既有流程实例入口显示为流程日志，保留实例查询、详情和历史身份；菜单显示名不把实例本身与日志记录合并为同一对象。合规证据另由不可变审计事件保存。
+    aliases: [审批流程日志, 流程日志, WorkflowEventLog]
+    status: implemented
     visibility: internal
   - id: term.execution-custom-form
     name: 执行自定义表单

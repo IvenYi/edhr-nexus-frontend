@@ -1,0 +1,158 @@
+{
+  "reviewer": "/root/dhr_clarification_quality",
+  "scope": "L1 static clarification and knowledge delta only; no product runtime/DB/browser/concurrency verification",
+  "sourceCommit": "2453124919a1532fdd9bbde292e2d7dbb92e04b2",
+  "targetCommit": "635711f97e9b794f4af02e1e5d1939bb2ecf920f",
+  "knowledgeYamlParsedIndependently": 237,
+  "ontologyTestEvidence": {
+    "reexecutedByQuality": false,
+    "junitCounts": {
+      "tests": "89",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    "logSha256": "9e0be90f6c76cdd501dad292f7689489c082eace5ec78f760046d216d500a98d",
+    "junitSha256": "c758629f44981d112d1ded4087f3a4d3197d2edc2883620d35360f2e585d5f2d"
+  },
+  "sourceHashes": [
+    {
+      "path": "/Users/ivenwang/Documents/iven space/paas-main-front/src/projects/online-form/src/views/integration/apaas_ebr/hooks/useEbrWikiFactory.ts",
+      "sha256": "7fec1c9c4cd3906e4bb9b69150e1207d5e0199c3e771e2c3b92d0279903dd0d7",
+      "bytes": 8509
+    },
+    {
+      "path": "/Users/ivenwang/Documents/iven space/paas-main-front/src/projects/online-form/src/views/integration/apaas_ebr/utils/instance-status/useInstanceStatus.ts",
+      "sha256": "4ded4c26c0371c61881385b808fbd837c77aa2a2611c3b7a42940b44c6dc6349",
+      "bytes": 8325
+    },
+    {
+      "path": "/Users/ivenwang/Documents/iven space/paas-main-front/src/projects/online-form/src/views/integration/apaas_ebr/utils/instance-status/status.ts",
+      "sha256": "d4af2aa04e23e058c16d2a4ff098cb8f34b04d403a2aed394fcdb2459f5a2103",
+      "bytes": 1551
+    },
+    {
+      "path": "/Users/ivenwang/Documents/iven space/paas-main-front/packages/nocode-base/src/hooks/useEbrWikiFactoryV2.ts",
+      "sha256": "cae43ec657d7a4eb372b7dbeab9d0eab28eaf17fc794a0a89a681951dd1c60dd",
+      "bytes": 18435
+    },
+    {
+      "path": "/Users/ivenwang/Documents/iven space/gct-edhr-bed/gct-edhr-bed/src/main/java/com/gct/apaas/edhr/approve/biz/OnlineFormChangeBs.java",
+      "sha256": "06cb366a881e5aa80064b32425a94a612af92d94ab6d413a55ea3c142b20e9a4",
+      "bytes": 9178
+    },
+    {
+      "path": "/Users/ivenwang/Documents/iven space/gct-edhr-bed/gct-edhr-bed/src/main/java/com/gct/apaas/edhr/approve/biz/OnlineFormAbandonBs.java",
+      "sha256": "d4546d10e74a0d5032a9d16c5799cc006f5aab2f5d1768800105bee65e7a195d",
+      "bytes": 6400
+    },
+    {
+      "path": "/Users/ivenwang/Documents/iven space/gct-edhr-bed/gct-edhr-bed/src/main/java/com/gct/apaas/edhr/approve/service/SummaryApproveHisService.java",
+      "sha256": "578d6c1fa595990ddc2168eedf82578508a0c94bd7133d25897a5c81a7a3e6c7",
+      "bytes": 7610
+    },
+    {
+      "path": "/Users/ivenwang/Documents/iven space/gct-edhr-bed/gct-edhr-bed/src/main/java/com/gct/apaas/edhr/approve/handler/business/EdhrProcessHandler.java",
+      "sha256": "36b4c30f789127ef7c2209ad6c02fccf59ff41d21d718bc2d1bdd7e8d599c4f2",
+      "bytes": 2742
+    },
+    {
+      "path": "/Users/ivenwang/Documents/iven space/gct-edhr-bed/gct-edhr-bed/src/main/java/com/gct/apaas/edhr/edhr/biz/SummaryEdhrRollBackBs.java",
+      "sha256": "68c76ea8b2efc67ab1334c6f17bfb1f1496f8d44ba0632508d0a5832af9fda9a",
+      "bytes": 3450
+    },
+    {
+      "path": "/Users/ivenwang/Documents/iven space/gct-edhr-bed/gct-edhr-bed/src/main/java/com/gct/apaas/edhr/edhr/biz/UpdateEdhrArchivedStatus.java",
+      "sha256": "0878ff5bc8cf6aa458171cc6ac4719ad1bbfe085c672060b415e1d29f5fc7908",
+      "bytes": 1464
+    },
+    {
+      "path": "/Users/ivenwang/Documents/iven space/gct-edhr-bed/gct-edhr-bed/src/main/java/com/gct/apaas/edhr/edhr/biz/AbandonEdhrBs.java",
+      "sha256": "ed41ed7d83484c191e6e43bd977cd64d8f1880c26d8c860c3fdab0a35095269d",
+      "bytes": 4837
+    },
+    {
+      "path": "/Users/ivenwang/Documents/iven space/gct-edhr-bed/gct-edhr-bed/src/main/java/com/gct/apaas/edhr/edhr/biz/EdhrInstanceAbandonBs.java",
+      "sha256": "4890e2d92e1a44a458b8f8688f4be62f279e2ef2a3bfa386fd68d0843e8e802b",
+      "bytes": 2618
+    },
+    {
+      "path": "/Users/ivenwang/Documents/iven space/gct-edhr-bed/gct-edhr-bed/src/main/java/com/gct/apaas/edhr/service/EdhrInstService.java",
+      "sha256": "95564ebb269d06807925334b735091a378fc076e6579c07589d401978cdb84cf",
+      "bytes": 27825
+    }
+  ],
+  "reviewedFiles": [
+    {
+      "path": "docs/architecture/transaction-traceability-dhr-business-rules.md",
+      "sha256": "cfa0e2e426fbb0e329c2abce2ffd15022f52e97d2c4dee056ce9790015fc1e64",
+      "bytes": 14094
+    },
+    {
+      "path": "docs/knowledge/README.md",
+      "sha256": "63d1df7f767f6391088154855b6ec15954f70322cb9f94a064653a4da2d7b1e4",
+      "bytes": 105996
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml",
+      "sha256": "11e70ec27862eb971a2ad01cd928e8c2ecba36be4df70e170bd1f5296c4e0253",
+      "bytes": 23213
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml",
+      "sha256": "47035fe827955465a3f6adcb8916112d250332b8fe14a434de18790b70bdede7",
+      "bytes": 20452
+    },
+    {
+      "path": "docs/knowledge/evidence/dhr-filling-review-confirmed.md",
+      "sha256": "96661ef212053d6d8e3ebced04877f76bb76e1560b4b96d28110fc0d2b9c2460",
+      "bytes": 43011
+    },
+    {
+      "path": "docs/knowledge/rules/production.yaml",
+      "sha256": "62aaac8c54a80842a7889b044896a882f6be9857479b8e3fffdf89f3cafc2c6b",
+      "bytes": 66257
+    },
+    {
+      "path": "docs/reference-assets/research/crown-dhr-change-downstream-20261029/handoff.yaml",
+      "sha256": "b14b83a4fa7c1e90c91e38bee92b2f1274469e2ff84d2ed48cbafa3b32d94fb5",
+      "bytes": 9230
+    },
+    {
+      "path": "docs/reference-assets/research/crown-dhr-change-downstream-20261029/clarification-round.md",
+      "sha256": "ec0a06e6138714dbebfaca3160fca76d00630f296eed279bb272fd1e783dd5c9",
+      "bytes": 8325
+    },
+    {
+      "path": "docs/reference-assets/research/crown-dhr-change-downstream-20261029/clarification-source-manifest.json",
+      "sha256": "5dfe95a7544f628fed419a915e8dcf502c243febc2cfa0634359148e2305305f",
+      "bytes": 4001
+    },
+    {
+      "path": "docs/reference-assets/research/crown-dhr-change-downstream-20261029/clarification-ontology-result.yaml",
+      "sha256": "0ad0d1bce74b1e054368c4ce540fd31d7d131ff0b143e316f90b50f1ee9f43eb",
+      "bytes": 8424
+    },
+    {
+      "path": "docs/reference-assets/research/crown-dhr-change-downstream-20261029/clarification-ontology-knowledge.txt",
+      "sha256": "9e0be90f6c76cdd501dad292f7689489c082eace5ec78f760046d216d500a98d",
+      "bytes": 327
+    },
+    {
+      "path": "docs/reference-assets/research/crown-dhr-change-downstream-20261029/clarification-ontology-junit.xml",
+      "sha256": "c758629f44981d112d1ded4087f3a4d3197d2edc2883620d35360f2e585d5f2d",
+      "bytes": 51472
+    }
+  ],
+  "semanticChecks": [
+    "human-selected default obsolete visibility and low-frequency access preserved without deleting evidence",
+    "pending-application finalization guard is separate from source revision effectiveness",
+    "request ended outcomes rechecked; no automatic approval or return",
+    "Crown IN_AUDIT/ABANDON DHR-entry guard linked through actual EBR V1 import",
+    "SUMMARIZED allowed by that entry guard; ARCHIVED actions false; V2 is separate",
+    "whole-DHR abandon and direct form path not certified as fully safe or globally guarded",
+    "source-rule condition/result unchanged; high/open discrepancies retained",
+    "printing deferred; snapshot semantics preserved; no new authority or runtime execution contract"
+  ],
+  "findings": []
+}

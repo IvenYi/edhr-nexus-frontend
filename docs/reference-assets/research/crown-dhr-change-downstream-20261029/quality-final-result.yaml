@@ -1,0 +1,111 @@
+qualityResult:
+  result: passed
+  baseCommit: 2f46b5f66af44ea5973b9ead93f6eb85e62dbcc7
+  headCommit: 2f46b5f66af44ea5973b9ead93f6eb85e62dbcc7
+  contractBaseline:
+    sourceCommit: 2f46b5f66af44ea5973b9ead93f6eb85e62dbcc7
+    targetBranch: edhr-dev
+    targetCommit: 635711f97e9b794f4af02e1e5d1939bb2ecf920f
+    contractReadCommit: 2f46b5f66af44ea5973b9ead93f6eb85e62dbcc7
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: dirty
+    includedPaths:
+      - docs/knowledge/README.md
+      - docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml
+      - docs/knowledge/evidence/dhr-filling-review-confirmed.md
+      - docs/reference-assets/research/crown-dhr-change-downstream-20261029/
+      - docs/reference-assets/screenshots/2026-10-29-crown-dhr-change/
+    excludedPaths:
+      - gmp-platform/frontend/node_modules
+      - output/playwright/record-control-integration-20261028/
+    untrackedPaths:
+      - docs/reference-assets/research/crown-dhr-change-downstream-20261029/
+      - docs/reference-assets/screenshots/2026-10-29-crown-dhr-change/
+      - gmp-platform/frontend/node_modules
+      - output/playwright/record-control-integration-20261028/
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+    - id: check.crown-research-final-baseline
+      required: true
+      category: documentation
+      description: 对用户新增确认做L1增量复核，核对范围及独立性，不覆盖首轮原始调研结论
+      method: command
+      command: git rev-parse HEAD origin/edhr-dev; git diff --numstat -- docs/knowledge; git diff --exit-code HEAD -- gmp-platform docs/architecture AGENTS.md codeplzreadme.md docs/agents
+      outcome: passed
+      evidence:
+        - 来源与契约基线仍为2f46b5f66af44ea5973b9ead93f6eb85e62dbcc7，目标仍为635711f97e9b794f4af02e1e5d1939bb2ecf920f且未合并
+        - 3个知识文件仅新增22行，无删除；产品代码、测试、迁移、架构及契约无工作树差异
+        - 独立质量仅新增quality-final-result.yaml与independent-final-evidence.json，不参与报告或知识修复
+    - id: check.crown-research-original-evidence-retained
+      required: true
+      category: documentation
+      description: 复用首轮已完成的原始证据审查，重算原始文件与图片哈希并核对报告新增内容没有改写竞品事实
+      method: command
+      command: Python 3标准库内联复算source-manifest.json中20个来源文件与4张原图SHA-256
+      outcome: passed
+      evidence:
+        - quality-result.yaml与independent-evidence.json作为首轮原件保留，当前哈希另录于independent-final-evidence.json
+        - 原始20文件与4图仍与manifest哈希及字节数一致
+        - 当前README仍明确平台调用链、不同界面示例和未运行边界；第6节将新增人类确认与冠骋事实分开
+    - id: check.notification-human-reply-scope
+      required: true
+      category: requirements
+      description: 独立对照主智能体传递的人类原回复与DEC-0068-12、验收场景、证据说明及交接包
+      method: inspection
+      command: 定向读取本轮3知识文件差异、README第6节、handoff.confirmedNotificationReply及ontology-result
+      outcome: passed
+      evidence:
+        - 人类原回复为“站内提醒当前审批人和该版本汇总提交人（推荐）”；渠道与两类对象在各资产中一致
+        - 生效触发限定表单变更或作废正式生效且影响受控DHR冻结版本，未把申请待审视为已生效
+        - 无当前审批任务不虚构当前审批人的表述作为“当前”的工程解释，没有新增历史批准人、邮件或人员访问资格
+        - 证据说明明确不将该对象选择外推为附件等所有来源或全部未来通知政策；投递去重、账号状态等仍留后续实现核对
+    - id: check.notification-preserved-semantics-and-status
+      required: true
+      category: ontology
+      description: 核对本次只补通知对象渠道，原有生效、人工处理、历史和放行边界与成熟度保持
+      method: inspection
+      command: 对照DEC-0068-04/05/06/08与DEC-0068-12、implementationDiscrepancies及本体knowledgeSync
+      outcome: passed
+      evidence:
+        - 人工退回、新草稿与新版本重审、旧批准/冻结正文/签署保留、生产与放行状态无自动副作用均保持
+        - DEC-0068-12为specified/internal，未新增运行事实、规则执行或执行契约，未声明通知投递已实现
+        - 两项DHR实施差异仍为high/open，A12及历史查询呈现未由此次确认关闭
+        - 历史确认证据只在文件开头追加新日期章节，既有历史未改写
+    - id: check.notification-ontology-validation-evidence
+      required: true
+      category: documentation
+      description: 核对本体最终updated及知识测试归档原件；独立执行YAML和状态检查，未重跑产品测试
+      method: command
+      command: Python hashlib/XML核对归档；Ruby YAML解析docs/knowledge/**/*.yaml及定向结果不变量
+      outcome: passed
+      evidence:
+        - ontology-knowledge.log SHA256为06d63b30137db27f7d44dedc772ed67e86c7da0c0e535da7eb93da41f46d97a8，与ontology-result一致
+        - ontology-knowledge-junit.xml SHA256为e273b00bae4ecb11a680420c5853c79c0d096c7be0c4a22622e03fb281162861，与ontology-result一致
+        - 直接解析归档JUnit确认本体所执行BusinessKnowledgeModelTest记录89项、0失败、0错误、0跳过；这是本体执行证据，质量未声称重新运行
+        - 独立解析237份知识YAML均为0.3.25；本体结果updated且全部validationEvidence为passed
+    - id: check.notification-whitespace-and-artifact-integrity
+      required: true
+      category: documentation
+      description: 核对增量差异空白和固定审查文件摘要
+      method: command
+      command: git diff --check -- docs/knowledge/README.md docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml docs/knowledge/evidence/dhr-filling-review-confirmed.md
+      outcome: passed
+      evidence:
+        - 空白检查退出0
+        - docs/reference-assets/research/crown-dhr-change-downstream-20261029/independent-final-evidence.json记录受审3知识文件及README/handoff/ontology-result摘要
+  findings: []
+  residualRisks:
+    - id: risk.notification-implementation-not-delivered
+      description: 本次只完成调研和通知对象/渠道知识同步，未实现或执行通知投递、并发、权限矩阵、统计修订切换或数据库流程
+      impact: 研究和知识检查通过不替代L2业务实现及运行验收，不关闭DHR两项high或A12
+      mitigation: 按已确认对象与渠道继续开发，真实生效及旧证据保护取得后续专项验收
+    - id: risk.reference-snapshot-and-platform-gap-retained
+      description: 本地冠骋快照无Git元数据，平台事件/状态刷新实现和完整通知历史链路仍无原始运行证据
+      impact: 不能把研究通过扩展为最新冠骋部署或全链路行为认证
+      mitigation: 保留报告的原始证据与推断边界，产品按自身已确认规则实现
+    - id: risk.notification-future-engineering-boundaries
+      description: 提醒去重、账号状态、存储和A12历史检索呈现仍需在相应后续切片核对
+      impact: 已确认受众/渠道不自动确认全部工程和历史UI方案，也不授予新增读取/处理权限
+      mitigation: 继续最小影响分析并按真实需求处理，不依据此次确认扩大附件等其他通知政策
+  blockingConditions: []

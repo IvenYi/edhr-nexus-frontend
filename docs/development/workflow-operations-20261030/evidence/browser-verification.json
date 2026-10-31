@@ -1,0 +1,96 @@
+{
+  "environment": {
+    "kind": "owned-disposable-local",
+    "backendPort": 8098,
+    "frontendPort": 3018,
+    "database": "edhr_record_control_test_workflow_browser_20261030",
+    "realBusinessDatabaseChanged": false
+  },
+  "driver": "CUA initial read; Playwright CLI after CUA browser.user unavailable",
+  "checks": [
+    {
+      "name": "record-control-transfer",
+      "outcome": "passed",
+      "evidence": "transfer-dialog.png; browser success returned old actor to empty todo; database new assignee43, same pending task and IN_REVIEW application"
+    },
+    {
+      "name": "signed-reassignment",
+      "outcome": "passed",
+      "evidence": "wrong password produced inline error, cleared password, assignee stayed43, zero intervention signatures; valid retry returned assignee42, exactly1 signature, request IN_REVIEW; timeline shows transfer/reassignment separately"
+    },
+    {
+      "name": "restricted-withdrawal",
+      "outcome": "passed",
+      "evidence": "empty reason produced focused inline error; successful submit displayed withdrawn, hid action; original form value stayedold and current revision intact"
+    },
+    {
+      "name": "menu-and-history",
+      "outcome": "passed",
+      "evidence": "workflow log menu uses same /workflow/instances URL, intervention visible only with its permission; withdrawn instance remains in log list"
+    },
+    {
+      "name": "business-local-time",
+      "outcome": "passed",
+      "evidence": "log start2026-10-30 01:11:03 matches request detail; no8hour UTC truncation"
+    },
+    {
+      "name": "list-density",
+      "outcome": "passed",
+      "measurements": {
+        "headerHeight": 48,
+        "rowHeights": [
+          40,
+          40
+        ],
+        "desktopWidth": 1280,
+        "pageWidth": 1280
+      }
+    },
+    {
+      "name": "narrow-list-and-drawer",
+      "outcome": "passed",
+      "measurements": {
+        "viewport": 390,
+        "pageWidth": 390,
+        "tableClientWidth": 346,
+        "tableScrollWidth": 980,
+        "firstTwoColumnWidths": [
+          200,
+          200
+        ]
+      },
+      "evidence": "workflow-log-narrow.png; workflow-detail-narrow.png; full-width drawer;2 visible edges; no ReactFlow warnings after handle adapter fix"
+    },
+    {
+      "name": "keyboard-and-personnel-popup",
+      "outcome": "passed",
+      "measurements": {
+        "viewport": 390,
+        "triggerWidth": 268,
+        "popupWidth": 268
+      },
+      "evidence": "ArrowDown/Enter selects qualified user; signing stays disabled with missing credentials; popup screenshot"
+    },
+    {
+      "name": "query-empty-reset-url",
+      "outcome": "passed",
+      "evidence": "explicit query writes keyword/page to URL; no-match shows0/single-page disabled arrows; reset restores2 rows"
+    },
+    {
+      "name": "focus-restoration",
+      "outcome": "passed",
+      "evidence": "Escape closed signing dialog then drawer; Enter reopened focused row detail with2 visible graph edges."
+    }
+  ],
+  "limitations": [
+    "No production deployment or CSV performed.",
+    "Whole-frontend static and shared-icon baseline failures are recorded separately, not claimed passed."
+  ],
+  "cleanup": {
+    "browserSession": "workflow-operations closed",
+    "backendPort8098": "stopped",
+    "frontendPort3018": "stopped",
+    "ownedDatabases": "both dropped",
+    "preexistingResources": "node_modules symlink and original output directory preserved"
+  }
+}

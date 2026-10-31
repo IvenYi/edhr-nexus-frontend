@@ -1,0 +1,73 @@
+decisionPackage:
+  id: DEC-PACKAGE-20261030-WORKFLOW-OPERATIONS
+  scope: 流程实例入口改名流程日志，新增流程干预，补齐重新分配、记录控制转办和受限撤回。
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: 40497474da006dfd52ea38070036a6e350eaab8e
+    targetBranch: edhr-dev
+    targetCommit: 635711f97e9b794f4af02e1e5d1939bb2ecf920f
+    contractReadCommit: 40497474da006dfd52ea38070036a6e350eaab8e
+    uncommittedContractPaths: []
+  remoteFreshness: 开始时fetch超时40秒；收尾重试成功，origin/edhr-dev仍为635711f97e9b794f4af02e1e5d1939bb2ecf920f，已包含在当前HEAD祖先中，契约无增量。详见evidence/remote-baseline.json。
+  summary: 复用既有任务引擎、签署身份、业务结果消费和列表规范，补齐授权内标准动作，不扩大DHR干预或归档范围。
+  confirmed:
+    concepts: []
+    relationships: []
+    rules: []
+    executionContracts: []
+  confirmedBusinessDecisions:
+    - user-confirmed：流程实例菜单显示名称改成流程日志，保留原有路由和实例详情能力；新增流程干预菜单。
+    - user-confirmed：补齐重新分配、转办和受限撤回；重新分配必须电子签名，遵守现有功能和页面规范。
+    - existing-policy：转办由当前有处理权人员发起，原因必填；记录控制目标仍为授权候选范围，普通任务沿DEC-0081租户内委托。
+    - existing-policy：重新分配由具备专门权限的人员操作，原因必填、目标资格合法；节点、路径、业务结果不变。
+    - existing-policy：受限撤回仅申请人、本轮尚无批准或退回决定时允许，失效全部并行待办；结果同事务交由记录控制域消费。
+    - existing-policy：只读运行日志与不可变审计并存；DHR专属审批不开放通用转办、重新分配或撤回；归档暂缓。
+  inferred:
+    - id: inference.workflow-operations-transaction
+      statement: 运行实例锁串行化处理权变化、批准和撤回；签名绑定锁内原新处理人、任务和原因，携带原候选快照作为陈旧请求校验。
+      rationale: 保留现有并发锁顺序并防止签署与实际执行对象漂移。
+      relatedIds: [DEC-0037, DEC-0074, DEC-0081, DEC-0091]
+  unresolved: []
+  replacementScopes:
+    - decisionStatementId: DEC-0092-01
+      supersededStatementIds: []
+      scope: 流程实例的菜单展示名称改为流程日志，独立流程日志列表菜单不再重复增加。
+      retainedScope: 保留实例身份、技术路由、详情、流程图与运行日志，不改历史证据。
+      sourceReferences: [docs/development/workflow-operations-20261030/user-confirmed.md]
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - {area: workflow, change: 查询、重新分配及只读日志，权限和签名闭环, evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/workflow, DEC-0091]}
+      - {area: record-control, change: 受限撤回和转办接入公共运行时, evidenceReferences: [docs/development/record-control-work-allocation-and-integration-contract.md]}
+      - {area: navigation, change: 菜单改名并增加干预入口, evidenceReferences: [gmp-platform/frontend/src/utils/menuManagement.ts]}
+    transitiveImpacts:
+      - {area: inbox, change: 仅新处理人可继续处理；撤回任务从待办移除, evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/repository/WorkflowTaskRepository.java]}
+    potentialImpacts: []
+    unaffectedAreas:
+      - {area: production-and-dhr, reason: 不改普通生产表单转办策略、生产数据、DHR证据冻结或放行，不开发归档。}
+    compatibilityAndMigration:
+      - concern: 保留既有路由及权限码，迁移只调整显示名称/干预页面类型及补充必要审计字段；不改历史任务候选。
+    snapshotImpacts:
+      - concern: 原候选依据保留；当前受让人独立计算；冻结流程版本与表单修订不变。
+    auditImpacts:
+      - concern: 签名、任务变化、干预/运行日志、不可变审计同事务；失败全部回滚。
+    permissionImpacts:
+      - concern: 服务端限制当前处理权、申请人及专门干预权限；共享终端沿现行实际签署人凭证规则，不扩大管理员例外。
+    testImpacts:
+      - scope: workflow-operations
+        scenarios: [签名缺失与错误, 越权及不合格目标, 陈旧请求与并发, 无副作用回滚, 原候选保留, 受限撤回与并行任务, 只读日志, 现有批准退回和DHR隔离, 菜单与实际弹窗]
+        evidenceReferences: []
+    evidenceGaps: [不修改真实业务数据库；全量租户隔离、生产部署与CSV不在本轮范围。]
+  extensionStrategy:
+    selectedPaths: [standard-action, transaction-orchestration, product-core]
+    rationale: 公共流程拥有任务动作和日志，记录控制拥有申请与结果；节点签名差异继续使用已冻结配置。
+    ownershipBoundaries:
+      - {owner: primary-agent, responsibility: 产品实现、单元及集成测试、页面与调试}
+      - {owner: ontology-agent, responsibility: docs/knowledge及必要architecture的受影响知识同步}
+      - {owner: quality-agent, responsibility: 收尾独立验证，只报告不修复}
+  affectedFiles:
+    - {path: gmp-platform/backend, changeType: update, reason: 标准动作、查询、权限及审计}
+    - {path: gmp-platform/frontend, changeType: update, reason: 菜单与标准页面动作入口}
+    - {path: docs/knowledge, changeType: update, reason: 本轮确认与实现证据同步}
+  acceptanceScenarios:
+    - {id: scenario.workflow-operations-complete, given: 已确认范围, when: 三动作与入口完成, then: 授权签名及事务保护有效且既有审批回归通过, evidenceRequirements: [聚焦后端测试, 前端构建, 浏览器交互, 本体结果, 独立质量结果]}

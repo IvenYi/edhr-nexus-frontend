@@ -1,0 +1,140 @@
+qualityResult:
+  result: passed
+  baseCommit: "84995f7efab3abdf0012b974cb0a11e04920fe77"
+  headCommit: "84995f7efab3abdf0012b974cb0a11e04920fe77"
+  contractBaseline:
+    sourceCommit: "84995f7efab3abdf0012b974cb0a11e04920fe77"
+    targetBranch: edhr-dev
+    targetCommit: "d10590bd3fe8f3da4e68bcc087b2102d2c211934"
+    contractReadCommit: "84995f7efab3abdf0012b974cb0a11e04920fe77"
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: dirty
+    includedPaths:
+      - docs/development/workflow-dhr-acceptance-20261030/README.md
+      - docs/development/workflow-dhr-acceptance-20261030/environment-recovery-20261031.md
+      - docs/development/workflow-dhr-acceptance-20261030/manifest.json
+      - docs/development/workflow-dhr-acceptance-20261030/environment-quality-20261031.yaml
+      - docs/development/workflow-dhr-acceptance-20261030/evidence/environment-quality-20261031.json
+      - docs/development/workflow-dhr-acceptance-20261030/evidence/environment-browser-20261031.json
+      - docs/development/workflow-dhr-acceptance-20261030/evidence/environment-3010-ready.png
+      - docs/development/workflow-dhr-acceptance-20261030/evidence/environment-3010-reassign.png
+    excludedPaths:
+      - gmp-platform/frontend/scripts/test-report-menu-navigation.mjs
+      - gmp-platform/frontend/src/components/shared/AppLayout.tsx
+      - gmp-platform/frontend/node_modules
+      - output/playwright/record-control-integration-20261028/
+      - output/record-menu-navigation-20261030/
+      - docs/development/workflow-dhr-acceptance-20261030/quality-result.yaml
+      - docs/development/workflow-dhr-acceptance-20261030/evidence/independent/
+    untrackedPaths:
+      - docs/development/workflow-dhr-acceptance-20261030/
+      - gmp-platform/frontend/node_modules
+      - output/playwright/record-control-integration-20261028/
+      - output/record-menu-navigation-20261030/
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+    - id: environment.contract-and-scope
+      required: true
+      category: requirements
+      description: L1 本地运行入口恢复；独立读取项目、质量、交接契约、知识 README、未决问题及 DEC-0091/0092，核对最小影响分析。
+      method: command
+      command: git rev-parse HEAD origin/edhr-dev; git diff --stat HEAD origin/edhr-dev -- AGENTS.md codeplzreadme.md docs/agents/quality-verifier.md docs/agents/agent-handoff-contract.md
+      outcome: passed
+      evidence:
+        - 来源与实际契约读取均为 84995f7efab3abdf0012b974cb0a11e04920fe77；本地目标引用为 d10590bd3fe8f3da4e68bcc087b2102d2c211934；上述契约差异为空，未提交契约差异为空。
+        - 本轮没有提交区间变化或合并候选；baseCommit=headCommit，检查范围为所列本轮工作树说明及正在运行的环境。
+        - configuration 扩展路径仅使用既有 VITE_API_PROXY_TARGET 与后端启动参数；无业务政策更改，本体 not-applicable 合理。
+    - id: environment.processes-and-proxy
+      required: true
+      category: integration
+      description: 核对新旧前后端进程、工作目录、端口、数据源和代理。
+      method: command
+      command: lsof -nP -iTCP:3000 -iTCP:3010 -iTCP:8081 -iTCP:8091 -sTCP:LISTEN; lsof -a -p 2663,2704,4045,4106 -d cwd -Fn; ps selected runtime arguments
+      outcome: passed
+      evidence:
+        - 独立原始证据见 evidence/environment-quality-20261031.json 的 processes、frontendProxyEnv、originalWorktree。
+        - 旧 PID 2663/2704 仍从 /Users/ivenwang/Documents/edhr-nexus 启动，edhr-dev@bbd2ff88886ade456aac8d7d73f8af4f5c1575e2，8081 连接 edhr_dev。
+        - 新 PID 4045/4106 从本工作树启动，3010 代理 http://127.0.0.1:8091，8091 连接 edhr_acceptance_20261030。
+        - 禁用本机 HTTP 代理后，http://127.0.0.1:3010/ 与 http://[::1]:3000/ 均返回 HTTP 200。
+    - id: environment.four-account-login
+      required: true
+      category: api
+      description: 经 3010 代理独立登录四个合成账号，确认没有强制改密或补签设置阻断。
+      method: command
+      command: Python urllib ProxyHandler({}) POST /api/v1/auth/login for uat_manager, uat_reviewer, uat_target, uat_applicant
+      outcome: passed
+      evidence:
+        - evidence/environment-quality-20261031.json accounts：四账号均 HTTP 200，ID 与样例角色一致，forcePasswordChange=false、forceSignatureVerification=false。
+        - 凭证和 token 未写入本轮独立证据；仅登录 POST 会产生认证日志，未提交业务动作。
+    - id: environment.workflow-sample-readiness
+      required: true
+      category: api
+      description: 通过 manifest 精确 ID 核对七条在审申请、运行流程、撤回资格、改派候选和转办上下文。
+      method: command
+      command: GET record-control/requests/{id}; GET workflow/operations/instances?page=1&size=50&runningOnly=true; GET reassignment-targets and transfer-context
+      outcome: passed
+      evidence:
+        - evidence/environment-quality-20261031.json requests/workflowInstances：RC-20261030-000001 至 000007 全部 IN_REVIEW，对应七流程全部 RUNNING。
+        - 000003 canWithdraw=true，000004 canWithdraw=false；其余申请均 canWithdraw=true。
+        - 000001 当前任务仍由审批甲处理，重新分配候选含 uat_target；000002 canTransfer=true、signatureRequired=true。
+        - 首次独立查询误用 page=0 得到 400；核对控制器的一基分页契约后改为 page=1，通过。属于验证命令纠正，不是产品修复。
+    - id: environment.dhr-and-database-preservation
+      required: true
+      category: database
+      description: 独立只读核对四 DHR 当前初始状态、来源记录及迁移启动日志。
+      method: query
+      command: GET /api/v1/dhr-instances/{id}/summary; psql -X -d edhr_acceptance_20261030 SELECT source statuses and active request count; inspect startup log
+      outcome: passed
+      evidence:
+        - evidence/environment-quality-20261031.json dhrs：DHR-REVIEW=PENDING_REVIEW/V1，DHR-PENDING=NOT_STARTED/0版本，DHR-CHANGE 和 DHR-VOID=FORMALIZED/V1且 reviewOutcome=APPROVED。
+        - 四 DHR 来源内容仍为 UAT-LOT-OLD / 100；八个 manifest 来源 ID 均 COMPLETED，数据库当前 IN_REVIEW 申请数为 7。
+        - /tmp/edhr-acceptance-backend-20261031.log 启动摘要 Run=0、Previously run=9；没有本轮迁移执行。
+        - README 所列 edhr-acceptance-ready-20261030.dump 文件存在；本轮没有恢复、重播种、审批、转办、重新分配、撤回或 DHR 修改。
+    - id: environment.menu-delivery-and-browser-evidence
+      required: true
+      category: visual
+      description: 独立检查实际 HTTP 交付的新菜单配置，并查看主侧本轮原始浏览器截图及快照。
+      method: inspection
+      command: GET /src/utils/constants.ts and /src/utils/menuManagement.ts; inspect environment-3010-ready.png, environment-3010-reassign.png and Playwright raw snapshot
+      outcome: passed
+      evidence:
+        - 两份 3010 交付模块均含流程日志、流程干预及 /workflow/instances、/workflow/interventions；响应摘要记录于独立 JSON。
+        - 独立查看 evidence/environment-3010-ready.png：流程干预列表七条，左侧同时显示流程日志与流程干预。
+        - 独立查看 evidence/environment-3010-reassign.png：原处理人审批甲、新处理人、原因、签署人用户名及电子签名密码均可见；未填时提交按钮禁用。
+        - .playwright-cli/page-2026-10-31T06-50-29-830Z.yml 与截图一致；实际浏览器操作由主智能体执行，独立质量仅检查原件，没有冒称自行重放浏览器流程。
+    - id: environment.readme-accuracy
+      required: true
+      category: documentation
+      description: 核对 README 当前入口、启动命令、角色与样例说明同本轮运行证据一致。
+      method: inspection
+      command: Compare README.md and environment-recovery-20261031.md against runtime arguments, manifest.json, DEC-0091/0092 and current API readback
+      outcome: passed
+      evidence:
+        - 3010/8091、工作树、验收库及代理命令与运行参数一致；历史 manifest URL 已明确说明为历史地址。
+        - 四角色、七在审申请、转办签名配置、撤回资格和四 DHR 初始状态与本轮 API 读回一致。
+        - 正式汇总版需发起修订后查看当前草稿、归档与打印过滤延期等边界沿现有业务基线；本轮没有声称重跑上一轮完整业务验收。
+        - 本轮已审说明及 manifest 的 SHA-256 见 evidence/environment-quality-20261031.json reviewedDocuments。
+  findings: []
+  residualRisks:
+    - id: residual.remote-target
+      description: 主侧 fetch 超时；本角色仅核对本地 origin/edhr-dev，未核验远端最新提交、分支保护或必需 CI。
+      impact: 本结果只支持本地验收入口恢复，不能用于跨分支合并或生产发布验收。
+      mitigation: 集成时重新获取目标提交并按实际候选执行适用门禁。
+    - id: residual.business-regression
+      description: 本轮保留人工样例，仅登录与只读核对，没有重新执行上一轮 40 项业务测试、电子签名提交、审批、并发、权限全矩阵或 DHR 变更/作废生效流程。
+      impact: 本结果不替代历史业务验收，也不提升业务成熟度；待用户操作后样例状态会自然变化。
+      mitigation: 按 README 使用独立样例；后续业务变更须针对其范围另行验收。
+    - id: residual.missing-historical-artifacts
+      description: 主侧报告上一轮 README、seed.py、decision-package.yaml 和 ontology-result.yaml 当前缺失，原因未核实；本轮 README 为新建说明。
+      impact: 本轮不认证旧初始化脚本可重复执行或旧本体交付完整性。
+      mitigation: 保留既有数据库、manifest 和旧原始证据；需要重建时先定位真实历史来源，不伪造旧资产。
+    - id: residual.parallel-ui-work
+      description: AppLayout.tsx 和 test-report-menu-navigation.mjs 存在并行修改，未纳入该修改本身的代码审查或回归。
+      impact: 本结果确认当前交付菜单可见，不对并行前端切片的整体正确性作结论。
+      mitigation: 由其所属切片完成自身质量门禁。
+    - id: residual.console-and-runtime-lifetime
+      description: 主侧浏览器报告登录 favicon 404 和既有 React Router future warnings；开发服务需持续运行，重启后端口和状态仍应按 README 核实。
+      impact: 未见本轮业务页面控制台错误；本结果不保证机器重启后服务自动恢复。
+      mitigation: 使用 README 重启命令，保留端口所有者检查；静态资源问题可在对应 UI 维护范围处理。
+  blockingConditions: []

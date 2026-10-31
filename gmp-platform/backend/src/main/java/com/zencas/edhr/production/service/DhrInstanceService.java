@@ -267,7 +267,7 @@ public class DhrInstanceService {
         ArrayNode unmapped = mapper.createArrayNode();
         jdbc.query("""
             SELECT id,instance_no,operation_id,operation_name,form_id,copy_id,template_id,version_id,
-                   template_code,template_name,template_version,snapshot_json,values_json,status,
+                   template_code,template_name,template_version,snapshot_json,values_json,status,current_revision_id,
                    created_by,created_at,updated_by,updated_at
             FROM form_instance_record
             WHERE tenant_id=? AND source_type='PRODUCTION_EXECUTION' AND object_id=?
@@ -455,6 +455,7 @@ public class DhrInstanceService {
                 .put("templateId", rs.getString("template_id")).put("templateVersionId", rs.getString("version_id"))
                 .put("templateCode", rs.getString("template_code")).put("templateName", rs.getString("template_name"))
                 .put("templateVersion", rs.getString("template_version")).put("status", rs.getString("status"))
+                .put("currentRevisionId", rs.getString("current_revision_id"))
                 .put("createdBy", rs.getString("created_by")).put("createdAt", timestamp(rs, "created_at"))
                 .put("updatedBy", rs.getString("updated_by")).put("updatedAt", timestamp(rs, "updated_at"));
         result.set("snapshot", json(rs.getString("snapshot_json"), "表单实例快照"));

@@ -57,7 +57,7 @@ public class FormInstanceQueryService {
         }
         int page = integer(query, "page", 0, 0, Integer.MAX_VALUE);
         int size = integer(query, "size", 20, 1, 200);
-        if (query.containsKey("instanceNo") && query.containsKey("instanceNoContains")) throw invalid("实例号精确与模糊条件不能同时传入");
+        if (query.containsKey("instanceNo") && query.containsKey("instanceNoContains")) throw invalid("表单实例编号精确与模糊条件不能同时传入");
         if (query.containsKey("sourceType") && !"PRODUCTION_EXECUTION".equals(value(query, "sourceType"))) throw invalid("当前仅支持 PRODUCTION_EXECUTION 来源");
         if (query.containsKey("sourceId") && !query.containsKey("sourceType")) throw invalid("sourceId 必须同时指定 sourceType");
         if (query.containsKey("productionObjectType") && !Set.of("BATCH", "SN").contains(value(query, "productionObjectType"))) throw invalid("生产对象类型必须为 BATCH 或 SN");
@@ -104,7 +104,7 @@ public class FormInstanceQueryService {
 
     @Transactional(readOnly = true)
     public ObjectNode byNumber(String number) {
-        if (number == null || number.isBlank() || number.length() > 64) throw invalid("实例号格式不正确");
+        if (number == null || number.isBlank() || number.length() > 64) throw invalid("表单实例编号格式不正确");
         return find("instance_no", number.trim());
     }
 

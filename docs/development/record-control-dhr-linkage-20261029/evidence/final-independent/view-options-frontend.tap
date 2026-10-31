@@ -1,0 +1,20 @@
+✔ snapshot projection localizes system fields without modifying user content (1.150542ms)
+✔ empty, legacy text and timestamps remain readable (0.07825ms)
+✔ audit event names retain business actions (0.075417ms)
+✔ row detail supports pointer and keyboard without intercepting child buttons (0.084ms)
+✔ ordinary visibility hides only obsolete records and never changes evidence or export scope (6.979958ms)
+✔ export tree keeps ancestor chain, grouped instance identity and folder search scope (0.208959ms)
+✔ source groups use node/creation identity, not template; instances have stable order (0.074042ms)
+✔ directory placement never changes source membership or duplicates evidence (0.174708ms)
+✔ directory tree preserves hierarchy and empty definitions without inventing instances (0.150792ms)
+✔ archive shows placements and aliases while source identity and counts remain unchanged (0.099042ms)
+✔ frozen source navigation resolves definition-only items from frozen candidates (0.052917ms)
+✔ archive preserves split placement, interleaved order, and empty default sections (0.531542ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 12
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 94.281208

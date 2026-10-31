@@ -16,10 +16,10 @@ export type PublishedRecordControlWorkflowCandidate = {
  * Public workflow query consumed by the record-control application wizard.
  * Application eligibility and source-record checks remain owned by record-control.
  */
-export const listPublishedRecordControlWorkflowCandidates = (
+export const listPublishedRecordControlWorkflowCandidates = async (
   businessType: RecordControlBusinessType,
 ) =>
-  client.get<PublishedRecordControlWorkflowCandidate[]>(
+  (await client.get<{ data: PublishedRecordControlWorkflowCandidate[] }>(
     '/workflow/record-control/candidates',
     { params: { businessType } },
-  );
+  )).data.data;

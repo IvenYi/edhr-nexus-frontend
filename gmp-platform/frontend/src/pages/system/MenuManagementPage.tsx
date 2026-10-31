@@ -627,6 +627,27 @@ export default function MenuManagementPage() {
         <Stack spacing={2} sx={{ p: 2, flex: 1, minHeight: 0, overflow: 'hidden' }}>
           {selectedModule ? (
             <>
+              {selectedModule.id === 'records' ? (
+                <>
+                  <Alert severity="info">记录模块由系统统一维护，菜单结构和图标不可在此修改。</Alert>
+                  <Box sx={{ border: '1px solid #e4e7ed', borderRadius: 1, p: 2, overflow: 'auto' }}>
+                    <Typography sx={{ fontWeight: 600, color: '#303133', mb: 2 }}>模块菜单</Typography>
+                    <Stack spacing={2}>
+                      {selectedModule.menus.map((menu) => (
+                        <Box key={menu.label}>
+                          <Typography sx={{ fontWeight: 600, color: '#303133' }}>{menu.label}</Typography>
+                          <Stack spacing={0.5} sx={{ mt: 1 }}>
+                            {menu.children?.map((child) => (
+                              <Typography key={child.path} sx={{ color: '#606266', fontSize: 14 }}>{child.label} · {child.path}</Typography>
+                            ))}
+                          </Stack>
+                        </Box>
+                      ))}
+                    </Stack>
+                  </Box>
+                </>
+              ) : (
+                <>
               <Box sx={{ border: '1px solid #e4e7ed', borderRadius: 1, p: 2 }}>
                 <Stack direction={{ xs: 'column', md: 'row' }} spacing={1.5} alignItems={{ xs: 'stretch', md: 'center' }}>
                   <TextField label="模块名称" value={selectedModule.label} onChange={(event) => updateModule({ label: event.target.value })} sx={{ ...fieldSx, flex: 1 }} />
@@ -736,6 +757,8 @@ export default function MenuManagementPage() {
                   })}
                 </Stack>
               </Box>
+                </>
+              )}
             </>
           ) : (
             <Box sx={{ py: 8, textAlign: 'center', color: '#909399' }}>暂无模块</Box>

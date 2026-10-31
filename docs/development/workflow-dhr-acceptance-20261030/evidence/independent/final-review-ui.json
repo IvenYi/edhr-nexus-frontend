@@ -1,0 +1,35 @@
+{
+  "environment": "http://127.0.0.1:3018",
+  "database": "edhr_acceptance_quality_20261030",
+  "browserSession": "uat-quality-final",
+  "checks": [
+    {
+      "name": "reorganize-creates-current-draft-preserving-old-version",
+      "passed": true
+    },
+    {
+      "name": "obsolete-current-source-default-hidden",
+      "passed": true,
+      "screenshot": "void-current-hidden.png"
+    },
+    {
+      "name": "three-dot-option-shows-obsolete-source",
+      "passed": true,
+      "screenshot": "void-current-shown.png"
+    },
+    {
+      "name": "turning-option-off-hides-source-again",
+      "passed": true
+    },
+    {
+      "name": "frozen-V1-still-retains-original-completed-status-and-values",
+      "passed": true,
+      "screenshot": "void-frozen-v1-retained.png"
+    }
+  ],
+  "consoleNotes": [
+    "Existing Emotion nth-child/nth-last-child SSR warnings were logged when workspace opened; no API failure or failed user interaction observed.",
+    "Earlier connection-refused console entries came from stopped QA Vite before it was restarted."
+  ],
+  "passed": true
+}

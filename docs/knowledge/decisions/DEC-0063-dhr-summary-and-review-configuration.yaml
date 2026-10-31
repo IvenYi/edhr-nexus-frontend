@@ -19,7 +19,7 @@ decisions:
         status: specified
         visibility: internal
       - id: DEC-0063-04
-        statement: user-confirmed；实际关联实例不以手选或完成状态决定证据可见；未完成、失败、作废、已替代记录保留真实状态与追溯，不能冒充合格完成。表单 COMPLETED 不等于检验合格，质量结果及失败处置须核查；提交资格由适用完整性、有效性、签署及未完成补录等检查决定，不因选填或目录整理豁免检查。
+        statement: user-confirmed；实际关联实例不以手选或完成状态决定证据归集、保留与追溯；未完成、失败、作废、已替代记录保留真实状态与追溯，不能冒充合格完成。作废记录的常规展示按 DEC-0063-16 默认隐藏并通过低频入口可达，不据此缩小证据或核查范围。表单 COMPLETED 不等于检验合格，质量结果及失败处置须核查；提交资格由适用完整性、有效性、签署及未完成补录等检查决定，不因选填或目录整理豁免检查。
         status: specified
         visibility: internal
       - id: DEC-0063-05
@@ -66,6 +66,10 @@ decisions:
         statement: user-confirmed；整份与选定范围 ZIP 均应携带与该冻结版本关联的来源生产执行审计及签名，连同 DHR 审计和审批签署保持可追溯；选定范围仅改变导出内容，不改变冻结证据或审批对象。导出和审批统一当前模型，不保留旧模型特例；错误旧汇总按 DEC-0063-09 转换或清理，不能靠翻模型标记或补造 checkResult 获得完整档案或合规结论。
         status: specified
         visibility: internal
+      - id: DEC-0063-16
+        statement: user-confirmed；DHR 常规视图默认隐藏作废表单，通过不显眼但可发现的入口查看作废表单；保留原实例、历史、作废原因、签署、关联与冻结证据。此声明仅替代 DEC-0063-04／DEC-0068-02 中将作废记录理解为必须常规展开显示的范围，不改变全量归集、冻结、可达性、核查或权限，也不自动扩展为隐藏失败、未完成或已替代记录。指定冻结版本仍按该版冻结状态解释，后续作废不改写旧版；这是既有冻结语义的工程解释。用户提出打印过滤作废的方向并明确留待打印设计，本轮不变更当前打印／ZIP 实现或既有冻结导出契约，具体按钮位置与名称及历史输出策略另在相应切片确定。
+        status: specified
+        visibility: internal
     supersedes: []
     evidenceIds: [evidence.dhr-summary-user-confirmed, evidence.dhr-summary-compliance-assessment, evidence.dhr-summary-service, evidence.dhr-summary-controller, evidence.dhr-summary-migration, evidence.dhr-summary-ui, evidence.dhr-summary-process-configuration-ui, evidence.dhr-summary-archive-service, evidence.dhr-form-files-source, evidence.dhr-form-files-test-source, evidence.dhr-summary-attachment-archive-tests]
     acceptanceScenarios:
@@ -75,6 +79,12 @@ decisions:
         then: 系统分别显示 DHR列表 和 DHR汇总，两个页面使用独立路由和职责边界
         evidenceIds: [evidence.dhr-summary-user-confirmed, evidence.dhr-summary-ui, evidence.dhr-summary-migration]
         evidenceRequirements: [菜单权限测试, 浏览器路由检查]
+      - id: scenario.dhr-obsolete-default-hidden-evidence-retained
+        given: DHR 实际关联证据包含作废表单，以及未完成、失败或已替代等其他状态记录
+        when: 用户查看常规视图或通过低频入口查看作废记录
+        then: 常规视图默认隐藏作废表单，低频入口仍可按权查看原记录及作废追溯；证据集合与完整性核查不因隐藏而缩小，不自动隐藏其他状态。指定冻结版按冻结状态解释，后来作废不改写旧版内容、成员或批准；本场景不更改打印和 ZIP 规则
+        evidenceIds: [evidence.dhr-filling-review-confirmed]
+        evidenceRequirements: [后续默认展示与低频入口权限测试, 隐藏不绕过完整性核查测试, 当前状态与冻结状态隔离测试, 原内容签署及批准保留回归]
       - id: scenario.dhr-summary-freezes-complete-evidence
         given: 正常完工 DHR 具有三类实际表单实例、不同状态记录及受控附件
         when: 用户保存草稿并提交汇总

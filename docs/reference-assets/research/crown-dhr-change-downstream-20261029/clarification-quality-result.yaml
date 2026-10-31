@@ -1,0 +1,124 @@
+qualityResult:
+  result: passed
+  baseCommit: 2453124919a1532fdd9bbde292e2d7dbb92e04b2
+  headCommit: 2453124919a1532fdd9bbde292e2d7dbb92e04b2
+  contractBaseline:
+    sourceCommit: 2453124919a1532fdd9bbde292e2d7dbb92e04b2
+    targetBranch: edhr-dev
+    targetCommit: 635711f97e9b794f4af02e1e5d1939bb2ecf920f
+    contractReadCommit: 2453124919a1532fdd9bbde292e2d7dbb92e04b2
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: dirty
+    includedPaths:
+      - docs/architecture/transaction-traceability-dhr-business-rules.md
+      - docs/knowledge/README.md
+      - docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml
+      - docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml
+      - docs/knowledge/evidence/dhr-filling-review-confirmed.md
+      - docs/knowledge/rules/production.yaml
+      - docs/reference-assets/research/crown-dhr-change-downstream-20261029/handoff.yaml
+      - docs/reference-assets/research/crown-dhr-change-downstream-20261029/clarification-round.md
+      - docs/reference-assets/research/crown-dhr-change-downstream-20261029/clarification-source-manifest.json
+      - docs/reference-assets/research/crown-dhr-change-downstream-20261029/clarification-ontology-result.yaml
+      - docs/reference-assets/research/crown-dhr-change-downstream-20261029/clarification-ontology-knowledge.txt
+      - docs/reference-assets/research/crown-dhr-change-downstream-20261029/clarification-ontology-junit.xml
+    excludedPaths:
+      - gmp-platform/frontend/node_modules
+      - output/playwright/record-control-integration-20261028/
+    untrackedPaths:
+      - docs/reference-assets/research/crown-dhr-change-downstream-20261029/clarification-ontology-junit.xml
+      - docs/reference-assets/research/crown-dhr-change-downstream-20261029/clarification-ontology-knowledge.txt
+      - docs/reference-assets/research/crown-dhr-change-downstream-20261029/clarification-ontology-result.yaml
+      - docs/reference-assets/research/crown-dhr-change-downstream-20261029/clarification-round.md
+      - docs/reference-assets/research/crown-dhr-change-downstream-20261029/clarification-source-manifest.json
+      - docs/reference-assets/research/crown-dhr-change-downstream-20261029/clarification-independent-evidence.json
+      - docs/reference-assets/research/crown-dhr-change-downstream-20261029/clarification-quality-result.yaml
+      - gmp-platform/frontend/node_modules
+      - output/playwright/record-control-integration-20261028/
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+    - id: check.clarification-contract-and-delta
+      required: true
+      category: documentation
+      description: 独立核对契约基线、目标引用及本轮实际改动范围
+      method: command
+      command: git rev-parse、git diff --name-only及限定路径git diff --exit-code
+      outcome: passed
+      evidence:
+        - HEAD与契约读取提交为2453124919a1532fdd9bbde292e2d7dbb92e04b2，目标引用为635711f97e9b794f4af02e1e5d1939bb2ecf920f
+        - 本轮6个知识或架构文件及研究交接增量；产品代码、测试、迁移及项目角色契约无改动
+        - 目标没有本轮新增契约或知识变化，未形成新合并候选，不宣称集成或发布验收
+    - id: check.clarification-human-confirmation
+      required: true
+      category: requirements
+      description: 对照人类两项明确确认及精确替代范围
+      method: inspection
+      command: 对照原批注、async回答、handoff及DEC-0063-16/DEC-0068-13
+      outcome: passed
+      evidence:
+        - 作废默认隐藏、低频可达与原话一致；全量归集、冻结、历史、核查及权限未缩小，未扩展为隐藏其他状态
+        - 原有效修订保留与活动申请暂缓汇总提交和审批通过分别表达；申请结束仍按结果复核，不自动批准或退回
+        - 来源真实生效、旧批准保留、生产放行无自动变化与站内通知既有范围保持
+        - 打印过滤明确延期，当前PDF/ZIP契约未变；冠骋入口禁令未写成我方新增发起规则
+    - id: check.clarification-crown-original-path
+      required: true
+      category: documentation
+      description: 独立回到原始源码核对状态限制和证据边界
+      method: inspection
+      command: 定向读取Crown V1工厂及实际EBR导入、状态工具、审批完成/回退和整份作废服务
+      outcome: passed
+      evidence:
+        - V1在装载DHR目录前调用canEnterChangeProcess；IN_AUDIT与ABANDON拒绝，SUMMARIZED不被此校验排除
+        - ARCHIVED在后段按钮规则关闭变更和作废；实际V1导入与V2预览规则已区分
+        - doc流水号分支未走该前端门禁，报告未声称所有服务端入口有同等保护
+        - 批准完成设置SUMMARIZED，独立回退仅证明重新整理入口，不证明变更自动回退
+        - 整份DHR作废与单表变更路径区分，未将有限显式代码当成所有阶段完整安全作废证明
+    - id: check.clarification-source-integrity
+      required: true
+      category: documentation
+      description: 核对原始来源哈希、研究引用及受审文件快照
+      method: command
+      command: Python标准库读取manifest并重算SHA256、字节数及相对链接
+      outcome: passed
+      evidence:
+        - 13个原始文件哈希和字节数均匹配，clarification-round相对链接可达
+        - 12个受审文件摘要固定于clarification-independent-evidence.json
+        - 旧报告、原始20源和4图及此前质量结果未改写，也未将其通过当成本轮新增澄清的通过
+    - id: check.clarification-knowledge-and-runtime-boundary
+      required: true
+      category: ontology
+      description: 独立解析知识、核对新增成熟度及本体实际运行证据
+      method: command
+      command: Ruby YAML解析及前后条件结果比对，Python SHA256/XML核对
+      outcome: passed
+      evidence:
+        - 独立解析237份知识YAML均为0.3.25，新声明保持specified/internal
+        - 既有source-record-remains-completed-during-review条件和结果与HEAD相同，仅解释及证据引用变化
+        - 两项DHR实施差异仍为high/open，A12及撤回运行入口未被关闭
+        - 本体原始日志与JUnit归档哈希匹配；JUnit记89项、0失败、0错误、0跳过；本质量角色未声称重新运行
+        - 当前DHR三服务的静态核对不构成活动申请阻断或默认隐藏已经实现的证据
+    - id: check.clarification-whitespace
+      required: true
+      category: documentation
+      description: 检查知识架构增量及本轮研究文本空白
+      method: command
+      command: git diff --check -- docs/knowledge docs/architecture及研究文本逐行检查
+      outcome: passed
+      evidence:
+        - 命令退出0，研究新文本无行尾空白
+  findings: []
+  residualRisks:
+    - id: risk.clarification-runtime-not-delivered
+      description: 本轮仅完成规则和静态研究，活动申请阻断、默认隐藏及站内通知未实施，未运行产品/数据库/浏览器或并发验收
+      impact: 本次通过不能关闭DHR两项high或A12，不能作为运行或发布通过
+      mitigation: 后续L2切片执行真实申请、提交、批准、结果分支、权限、冻结和并发测试
+    - id: risk.clarification-crown-platform-gap
+      description: Crown平台层与低代码菜单权限资料不足，未验证全部入口及整份DHR作废的运行闭环
+      impact: 静态入口限制不等于完整服务端保护，不能保证全部阶段均可安全作废
+      mitigation: 保持original-evidence与inference边界，不直接复制未证实行为
+    - id: risk.clarification-deferred-policy
+      description: 打印历史输出细节、按钮位置名称，以及我方是否禁止DHR审批中发起来源变更未由本轮全部确定
+      impact: 两项已确认规则不自动授权这些后续产品决定
+      mitigation: 保留明确暂缓及未确认范围，按相应切片继续澄清
+  blockingConditions: []

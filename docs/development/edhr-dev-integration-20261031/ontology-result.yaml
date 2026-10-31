@@ -1,0 +1,236 @@
+ontologyResult:
+  result: updated
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: 943dc9fed4ffde482fa3eff3dc10f8a157ce5134
+    targetBranch: edhr-dev
+    targetCommit: d10590bd3fe8f3da4e68bcc087b2102d2c211934
+    contractReadCommit: 943dc9fed4ffde482fa3eff3dc10f8a157ce5134
+    uncommittedContractPaths: []
+  reason: >-
+    按L2集成切片核对原功能84995f7efab3abdf0012b974cb0a11e04920fe77、目标d10590bd及合并候选943dc9fe。
+    目标自共同祖先635711f97e9b794f4af02e1e5d1939bb2ecf920f没有知识文件增量，功能有44个知识文件增量，
+    候选相对原功能没有知识或契约增量，未发现本轮并行ID冲突。
+    对记录控制、DHR联动和流程操作逐项核对时发现两处现行描述仍停留在早期未实现时点；
+    依据现有DEC-0068/0092及原始源码修正DEC-0068-13、DEC-0087-08和其暂缓验收场景，
+    保留历史原件、声明ID、完整矩阵、放行判断、A12与归档暂缓，不新增政策或提高成熟度。
+    本结果覆盖候选加上述两个未提交知识文件修正，不代表全库语义审计、业务运行验收或独立质量通过。
+    以上保留首次核对时点；2026-10-31收尾追加PR46增量核对，当前候选63456e143063c13558db362d28cde83f8e0cdb9b、
+    新目标ccedd56453c02c5d3acd60aa4351809a3928e83e的限定结论见validation.integration-pr46-*。
+    文档分类修复符合现行删除保护、页面权限和审计规则，未发现与本切片知识冲突，本次追加不修改知识定义。
+  changedArtifacts:
+    - path: docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml
+      changeType: update
+      ids: [DEC-0068-13]
+    - path: docs/knowledge/decisions/DEC-0087-record-control-v1-closure.yaml
+      changeType: update
+      ids: [DEC-0087, DEC-0087-08, scenario.record-control-v1-dhr-deferred]
+  knowledgeSync:
+    - id: DEC-0068-13
+      disposition: updated
+      scope: 仅纠正撤回入口尚未完成的当前描述；保留2026-10-29当时时点，并明确后续DEC-0092已接入受限撤回、同事务WITHDRAWN消费及来源不变，不改变双向在审阻断政策或回写历史验收。
+      sourceReferences:
+        - docs/knowledge/decisions/DEC-0092-workflow-operations-entry-and-actions.yaml
+        - gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java
+        - gmp-platform/backend/src/main/java/com/zencas/edhr/recordcontrol/service/RecordControlService.java
+        - gmp-platform/frontend/src/pages/record-control/RecordRequestDetailPage.tsx
+    - id: DEC-0087-08
+      disposition: updated
+      scope: 将首次集成尚未接通联动明确限定为2026-10-28历史状态，引用现行DEC-0068已接入的索引、正式贡献、影响与提醒；放行判断、完整变化比较、未覆盖矩阵和完整A12继续暂缓，禁止自动替代表单或重汇总。
+      sourceReferences:
+        - docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml
+        - docs/knowledge/evidence/record-control-dhr-linkage.yaml
+        - gmp-platform/backend/src/main/java/com/zencas/edhr/recordcontrol/service/RecordControlService.java
+        - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrEvidenceImpactService.java
+    - id: scenario.record-control-v1-dhr-deferred
+      disposition: updated
+      scope: 与DEC-0087-08一致区分已接入局部联动及尚未交付的完整矩阵、放行判断和A12，不再用全部未集成作为当前验收前提。
+      sourceReferences:
+        - docs/knowledge/decisions/DEC-0087-record-control-v1-closure.yaml
+        - docs/knowledge/evidence/record-control-dhr-linkage.yaml
+    - id: DEC-0086
+      disposition: retained
+      scope: 保留来支DEC-0075到0086的既有映射及01被03/04局部替代；首期按实例编号检索、批次/SN延期，目标DEC-0075自定义表单原义与引用不变。
+      sourceReferences:
+        - docs/knowledge/decisions/DEC-0086-record-change-search-scope.yaml
+        - docs/knowledge/evidence/record-control-integration-2026-10-28.md
+    - id: DEC-0087
+      disposition: retained
+      scope: 保留来支DEC-0076到0087的既有映射；除上述时点纠正和追加既有联动证据引用外，批准产生新修订、作废不删原值、来源保持完成直到真实生效、唯一活动申请及签名归属不变。
+      sourceReferences:
+        - docs/knowledge/decisions/DEC-0087-record-control-v1-closure.yaml
+        - docs/knowledge/ontology.yaml
+        - docs/knowledge/rules/record-change.yaml
+        - docs/knowledge/facts/record-control.yaml
+    - id: DEC-0088
+      disposition: retained
+      scope: 保留来支DEC-0077到0088的映射，表单管理与变更管理并列及菜单可见授权仅替代原无入口判断，不覆盖目标DEC-0077投影政策或新增权限。
+      sourceReferences:
+        - docs/knowledge/decisions/DEC-0088-form-and-change-management-menu-boundary.yaml
+        - docs/knowledge/evidence/record-control-integration-2026-10-28.md
+    - id: DEC-0089
+      disposition: retained
+      scope: 保留来支DEC-0078到0089的映射；只替代DEC-0050的现行显示名，实例身份、FR格式、技术字段和历史值不变，目标DEC-0078正式产出原义保持。
+      sourceReferences:
+        - docs/knowledge/decisions/DEC-0089-form-instance-number-display.yaml
+        - docs/knowledge/glossary.yaml
+    - id: DEC-0068-04
+      disposition: retained
+      scope: 记录控制判定真实生效，DHR只消费影响；活动申请不是已生效来源变化，DHR不接管来源审批或活动表单作废资格。
+      sourceReferences:
+        - docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml
+        - gmp-platform/backend/src/main/java/com/zencas/edhr/recordcontrol/service/RecordControlService.java
+    - id: DEC-0068-14
+      disposition: retained
+      scope: 关联DHR在审时最终申请服务阻断新变更或作废，只局部替代13中发起资格原未确认范围；已有活动申请仍阻断DHR提交和批准，人工退回、旧冻结及批准保持。
+      sourceReferences:
+        - docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml
+        - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrEvidenceImpactService.java
+        - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrSummaryService.java
+        - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrReviewService.java
+    - id: DEC-0091
+      disposition: retained
+      scope: 重新分配必须有效电子签名的已确认政策保持，不扩大普通转办、撤回的签署要求；2026-10-29调研原件按当时时点保留。
+      sourceReferences:
+        - docs/knowledge/decisions/DEC-0091-workflow-reassignment-signature.yaml
+        - docs/knowledge/decisions/DEC-0092-workflow-operations-entry-and-actions.yaml
+    - id: DEC-0092
+      disposition: retained
+      scope: 流程日志只读、流程干预重新分配、记录控制候选内转办与申请人受限撤回保持；普通任务DEC-0081集合外委托不外推到记录控制，DHR通用干预继续关闭，运行证据和独立质量分别判断。
+      sourceReferences:
+        - docs/knowledge/decisions/DEC-0092-workflow-operations-entry-and-actions.yaml
+        - docs/knowledge/implementation-anchors/workflow-operations.yaml
+        - gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/WorkflowResponsibilityService.java
+        - gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java
+    - id: DEC-0090
+      disposition: deferred
+      scope: 归档执行、独立归档审批、解封和放行后受控更正不因本次集成完成；归档、汇总冻结和导出副本保持不同含义，此暂缓不阻塞已授权记录控制集成。
+      sourceReferences:
+        - docs/knowledge/decisions/DEC-0090-dhr-archive-minimum-scope.yaml
+        - docs/knowledge/glossary.yaml
+    - id: question.record-control-active-form-void-boundary
+      disposition: deferred
+      scope: 首期仍仅完成且有当前有效修订的来源；未来活动表单扩展仍未决，本次不开放也不解释为永久禁止。
+      sourceReferences: [docs/knowledge/open-questions.yaml]
+    - id: question.form-projection-trace-index-effective-scope
+      disposition: deferred
+      scope: 本次当前有效贡献切换不关闭完整A12失效历史检索与独立历史视图，亦不改冻结配置和来源授权。
+      sourceReferences: [docs/knowledge/open-questions.yaml]
+    - id: DEC-0053-01
+      disposition: retained
+      scope: PR46增量核对；文档分类存在文档引用时仍阻断删除，移除自动解除文档归类的旧控制器逻辑不新增删除政策；不删除文档、版本、生产历史或审计。
+      sourceReferences:
+        - docs/knowledge/decisions/DEC-0053-master-data-deletion-protection.yaml
+        - docs/knowledge/evidence/master-data-deletion-user-confirmed.md
+        - gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/DocumentManagementController.java
+        - gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/deletion/DeletionRelations.java
+        - gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql
+    - id: DEC-0053-04
+      disposition: retained
+      scope: PR46增量核对；删除前预检查和正式删除事务复核继续有效；取消、预检失败和阻断不执行删除，当前页面撤去自动转未分类的错误承诺。
+      sourceReferences:
+        - docs/knowledge/decisions/DEC-0053-master-data-deletion-protection.yaml
+        - docs/architecture/master-data-deletion-protection.md
+        - gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/deletion/DeletionProtectionAspect.java
+        - gmp-platform/frontend/src/pages/master-data/DocumentManagementPage.tsx
+    - id: DEC-0065-01
+      disposition: retained
+      scope: PR46增量核对；文档控制器仍使用master-data.documents页面权限，分类改名和排序查询均限定default租户；未新增权限码或扩大流程、记录控制及DHR权限。
+      sourceReferences:
+        - docs/knowledge/decisions/DEC-0065-master-data-permission-audit-contract.yaml
+        - gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/DocumentManagementController.java
+        - gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/repository/DocumentCategoryRepository.java
+    - id: DEC-0065-03
+      disposition: retained
+      scope: PR46增量核对；分类排序按锁定持久化行的实际前后排序值追加既有AuditEvent，未变化不虚构业务变更；分类改名共用行锁保护前值，不改旧审计模型或历史快照，不把分类排序当作流程路径变化。
+      sourceReferences:
+        - docs/knowledge/decisions/DEC-0065-master-data-permission-audit-contract.yaml
+        - docs/knowledge/rules/master-data-permission-audit.yaml
+        - gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/DocumentManagementController.java
+        - gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/repository/DocumentCategoryRepository.java
+  conflicts: []
+  questions: []
+  validationEvidence:
+    - id: validation.integration-contract-and-knowledge-delta
+      checkType: reference
+      command: git merge-base 84995f7efab3abdf0012b974cb0a11e04920fe77 d10590bd3fe8f3da4e68bcc087b2102d2c211934; git diff --name-only <each compared pair> -- docs/knowledge AGENTS.md codeplzreadme.md docs/agents
+      outcome: passed
+      evidence:
+        - original-evidence；共同祖先635711f97e9b794f4af02e1e5d1939bb2ecf920f；目标知识增量0文件，功能增量44文件，候选相对原功能知识增量0文件。
+        - original-evidence；实际读取AGENTS.md、编码准则、角色与交接契约；目标与候选适用契约无差异，未发现新ID碰撞或新增声明级替代。
+        - secondary-reference；2026-10-28集成记录仅用作旧ID映射与历史范围索引，不作为本候选运行通过证据。
+    - id: validation.integration-bootstrap
+      checkType: schema
+      command: ruby -e 'require "yaml"; doc=File.read("docs/knowledge/README.md"); block=doc.match(/ruby - docs\/knowledge <<\x27RUBY\x27\n(.*?)\nRUBY/m); abort "bootstrap block missing" unless block; ARGV << "docs/knowledge"; eval(block[1], TOPLEVEL_BINDING, "README-bootstrap")'
+      outcome: passed
+      evidence:
+        - 'original-evidence；2026-10-31在两个知识修正后运行，退出0，输出Bootstrap knowledge validation: passed。'
+        - 仅bootstrap结构、基础引用、证据路径和投影检查，不代替正式Maven/JUnit或发布级验收；本角色按主侧要求未运行Maven，避免共享target并发污染。
+    - id: validation.integration-unique-ids-and-references
+      checkType: reference
+      command: Ruby YAML.safe_load遍历docs/knowledge/**/*.yaml，按schema.collectionTypes和nestedCollectionTypes收集ID，检查重复及evidenceIds/termId/conceptId/source/target/targetId/executionContractId/supersedes类型引用。
+      outcome: passed
+      evidence:
+        - original-evidence；245个知识YAML成功解析，2788个顶层和嵌套ID无重复，2168个去重类型引用可解析；数字为当前结构校验计数，不是语义审计覆盖数量。
+        - 原始用户证据中旧DEC编号属于有明确映射的历史记录，未重写历史或新分配ID。
+    - id: validation.integration-current-state-boundaries
+      checkType: status-transition
+      command: 手工核对DEC-0068/0086至0092、相关词典/本体/规则/事实/锚点/open-questions与RecordControlService.withdraw/submit/applyResult、WorkflowEngine.withdraw、WorkflowResponsibilityService、DhrEvidenceImpactService及DHR提交批准调用点。
+      outcome: passed
+      evidence:
+        - original-evidence；RecordControlService.java的withdraw在事务内校验申请人并消费WITHDRAWN；applyResult仅APPROVED进入applyChange/applyObsolete及索引、投影、DHR影响分支。
+        - original-evidence；WorkflowEngine.java的withdraw拒绝非申请人、非运行实例及已有审批决定，失效全部PENDING/PROCESSING任务；RecordControlController及申请详情页面均具有实际撤回入口。
+        - original-evidence；申请最终提交调用requireRecordControlAllowed；DhrSummaryService提交和DhrReviewService批准调用requireNoPendingApplications，未把申请待审变成来源生效。
+        - original-evidence；WorkflowResponsibilityService保持有效签署、权限、候选资格、原因及DHR通用入口排除；当前词典、关系和两项DHR high的剩余范围未因合并扩张。
+        - user-confirmed与existing-policy来自决策包及原决策；本角色未新增业务确认。运行及数据迁移检查由主智能体和独立质量角色取得本候选证据，不引用旧轮通过覆盖本次。
+    - id: validation.integration-maturity-preserved
+      checkType: projection
+      command: Ruby比较两个修正文件与git show 943dc9fed4ffde482fa3eff3dc10f8a157ce5134对应文件的全部knowledgeModelVersion/status/visibility值；git diff --check。
+      outcome: passed
+      evidence:
+        - original-evidence；两个文件全部版本、成熟度、可见性字段保持不变，git diff --check通过。
+        - 记录错误纠正不构成新政策替代；原声明ID保留，因此decisionPackage.replacementScopes无需增加政策替代条目。
+    - id: validation.integration-pr46-baseline-and-knowledge-delta
+      checkType: reference
+      command: git rev-parse HEAD; git rev-parse 310e0104 310e0104:docs/knowledge 63456e143063c13558db362d28cde83f8e0cdb9b:docs/knowledge; git diff --name-only d10590bd3fe8f3da4e68bcc087b2102d2c211934 ccedd56453c02c5d3acd60aa4351809a3928e83e -- AGENTS.md codeplzreadme.md docs/agents docs/knowledge; git diff --name-only 310e0104 63456e143063c13558db362d28cde83f8e0cdb9b -- AGENTS.md codeplzreadme.md docs/agents docs/knowledge docs/architecture
+      outcome: passed
+      evidence:
+        - original-evidence；在/Users/ivenwang/Documents/edhr-nexus核对，当前来源/候选63456e143063c13558db362d28cde83f8e0cdb9b，新目标edhr-dev@ccedd56453c02c5d3acd60aa4351809a3928e83e；旧集成提交310e01046d684888b8bdc0915c5f9eb0abe52319和旧目标d10590bd仅用于限定增量。
+        - original-evidence；两组适用契约/当前知识差异均为空；原contractReadCommit 943dc9fed4ffde482fa3eff3dc10f8a157ce5134的适用契约继续有效，本轮重新查看角色/交接契约并读取更新的decisionPackage和文档分类相关知识。
+        - original-evidence；310e0104与63456e14的docs/knowledge树均为3d7a7bdbf40530d3a10cc31991c4ea3ac5b5a4b9，知识工作树无未提交差异，因此本轮无新ID、引用、声明级替代或成熟度变化；前次两项知识纠正完整保留。
+        - 本项仅重放已有知识结论并检查新目标影响；原报告顶层contractBaseline及原验证时点保留，不将旧目标报告冒称新候选运行验收。
+    - id: validation.integration-pr46-delete-audit-semantics
+      checkType: status-transition
+      command: git diff d10590bd3fe8f3da4e68bcc087b2102d2c211934 ccedd56453c02c5d3acd60aa4351809a3928e83e -- gmp-platform; 逐项读取DocumentManagementController、DocumentCategoryRepository、DeletionProtectionAspect/Service、DeletionRelations、现行schema外键及DEC-0053/0065和对应规则。
+      outcome: passed
+      evidence:
+        - original-evidence；PR46产品范围仅DocumentManagementController、DocumentCategoryRepository、DocumentManagementPage，另含3个测试文件和1个浏览器脚本；本轮核对候选这3个产品文件与新目标逐字无差异。
+        - original-evidence；deleteCategory仍由ProtectDeletion(document_category)包裹，保护切面将关联检查和删除放在同一事务；DeletionRelations保留sop_document.category_id引用，现行fk_delete_guard_035保持ON DELETE RESTRICT，未新增迁移或自动解除归类。
+        - original-evidence；reorderCategories与updateCategory均事务执行，仓储以PESSIMISTIC_WRITE锁定default租户分类；排序锁按分类ID排序，只为实际排序差异调用writeChangedAudit，沿既有身份上下文、前后值与AuditEvent写入，不改旧记录。
+        - original-evidence；页面删除继续使用deletionTarget预检查，仅撤下自动转未分类的错误承诺；控制器master-data.documents权限保持，未触及记录控制来源修订、审批、签名、DHR冻结或流程日志所有权。
+        - user-confirmed依据来自DEC-0053及其原始删除确认；DEC-0065既有权限和统一审计契约保持。未发现本次增量与现行声明冲突，无需新政策或知识成熟度提升。
+    - id: validation.integration-pr46-evidence-scope
+      checkType: evidence-path
+      command: 静态读取DocumentCategoryAuditPostgresTest、DocumentManagementControllerTest、DocumentWriteBoundaryIntegrationTest及test-document-category-delete-browser.mjs，并核对本轮新增产品差异的领域边界。
+      outcome: passed
+      evidence:
+        - original-evidence；新增PG测试源码分别断言关联删除阻断、预检后新增引用重核、空分类合法删除、权限拒绝、精确排序前后值、重复/空请求、NULL前值、审计失败回滚及排序/改名并发；这是断言范围核对，不是本角色执行测试通过。
+        - original-evidence；浏览器脚本覆盖确认文案、取消、成功反馈、有关联、预检失败及慢请求取消，使用拦截API；不将其解释为真实数据库浏览器验收。
+        - 本角色未执行Maven、数据库操作、产品业务动作或浏览器，本轮不修改产品代码、数据迁移或知识文件；新候选运行与独立质量仍由主智能体和质量实例取得。
+        - secondary-reference；PR46随附历史审计证据只作为来源索引，未用其历史通过结论代替63456e14候选验证；此前完整矩阵、放行、归档及A12暂缓保持。
+    - id: validation.integration-pr47-file-boundary
+      checkType: status-transition
+      command: git diff ccedd56453c02c5d3acd60aa4351809a3928e83e 032b83e9d5b8a25bee6d5b59c45d86892f672d00 -- gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/controller/FileController.java; 静态读取上传及公开预览调用链与FileUploadResourceTest/FileHttpBoundaryTest；核对契约、知识及其余领域差异。
+      outcome: passed
+      evidence:
+        - original-evidence；2026-10-31追加核对来源/合并候选6edb5411ef10f22320e00b737a13d56b84f4e848与新目标edhr-dev@032b83e9d5b8a25bee6d5b59c45d86892f672d00，原报告和PR46时点均保留；原contractReadCommit 943dc9fed4ffde482fa3eff3dc10f8a157ce5134仍适用，无项目、编码、角色或交接契约增量。
+        - original-evidence；产品增量仅FileController的两处上传输入流try-with-resources、MD5读取IOException传播和空targetType公开预览拒绝，另有2个测试文件；候选FileController与新目标相同。知识、架构、迁移、前端、记录控制、生产及流程代码无增量，63456e14与6edb5411的知识树同为3d7a7bdbf40530d3a10cc31991c4ea3ac5b5a4b9，知识工作树无修改。
+        - original-evidence；上传保存FileObject位于摘要读取和文件复制成功之后，流读取/关闭失败不再以空摘要登记成功；原MD5算法、允许类型、大小边界和已存内容不变。此处不声称文件系统与数据库完全原子，复制失败残留文件的既有补偿边界未被本增量解决。
+        - original-evidence；publicPreview先由findById或异常取得非空文件，再沿原ICON_ASSET/SYSTEM_LOGO/SYSTEM_FAVICON/USER_AVATAR白名单及实际引用判断；空targetType走既有拒绝分支，不授予文档、表单或DHR附件公开权限，不改变签名、冻结或审计语义。
+        - 本次为现有资源与访问边界的工程修复，无新增政策、ID、声明替代或成熟度变化；DEC-0063等原证据保留及授权边界继续适用，无需修改知识定义。测试仅核对源码断言，未运行Maven、数据库、浏览器或业务动作；新候选运行验证由主智能体及独立质量角色取得。
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages: [P1, P2, P3]

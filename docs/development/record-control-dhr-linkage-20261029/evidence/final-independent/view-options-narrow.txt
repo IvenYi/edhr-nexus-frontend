@@ -1,0 +1,41 @@
+### Result
+{
+  "viewport": {
+    "width": 390,
+    "height": 844
+  },
+  "heading": {
+    "x": 17,
+    "y": 816.140625,
+    "width": 218,
+    "height": 40,
+    "top": 816.140625,
+    "right": 235,
+    "bottom": 856.140625,
+    "left": 17
+  },
+  "trigger": {
+    "x": 195,
+    "y": 822.140625,
+    "width": 28,
+    "height": 28,
+    "top": 822.140625,
+    "right": 223,
+    "bottom": 850.140625,
+    "left": 195
+  },
+  "menu": {
+    "x": 86,
+    "y": 788,
+    "width": 136.8125,
+    "height": 40,
+    "top": 788,
+    "right": 222.8125,
+    "bottom": 828,
+    "left": 86
+  }
+}
+### Ran Playwright code
+```js
+await page.evaluate('() => (({viewport:{width:innerWidth,height:innerHeight},heading:document.querySelector("[data-dhr-navigation-heading]").getBoundingClientRect().toJSON(),trigger:document.querySelector("[aria-label=\\"DHR 查看选项\\"]").getBoundingClientRect().toJSON(),menu:document.querySelector("[role=menu]").parentElement.getBoundingClientRect().toJSON()}))');
+```
