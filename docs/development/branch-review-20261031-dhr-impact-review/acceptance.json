@@ -1,0 +1,153 @@
+{
+  "baseCommit": "1ad6300918bd0059049eab3c415ca31162dd5115",
+  "runtimeTestedCommit": "977287f6da3ba1cb78c4eb2842f3ace69bb1f43b",
+  "reviewedCommit": "977287f6da3ba1cb78c4eb2842f3ace69bb1f43b",
+  "executionLevel": "L2",
+  "status": "passed-limited-test-and-audit-increment",
+  "qualityResult": "passed",
+  "independentReview": "fresh-instance-uninvolved-in-fixes",
+  "requiredPassed": 12,
+  "requiredTotal": 12,
+  "findings": [],
+  "productChangedPaths": [],
+  "testChangedPaths": [
+    "gmp-platform/backend/src/test/java/com/zencas/edhr/recordcontrol/service/RecordControlPostgresIntegrationTest.java"
+  ],
+  "independentRuns": {
+    "backend": {
+      "tests": 52,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "suites": {
+        "RecordControlPostgresIntegrationTest": 34,
+        "DhrReviewServiceTest": 12,
+        "DhrReviewLifecycleIntegrationTest": 6
+      }
+    },
+    "newExecutions": 9,
+    "knowledge": 89,
+    "actualJwtMvcResponses": 39,
+    "responseCounts": {
+      "200": 17,
+      "400": 1,
+      "401": 5,
+      "403": 16
+    }
+  },
+  "countingBoundary": "Primary52 and independent52 are separate reruns, knowledge89 is a separate command, not unique or whole-audit coverage. No product defect/red control claimed.",
+  "ontology": {
+    "result": "not-applicable",
+    "roleState": "FINAL",
+    "knowledgeVersion": "0.3.25",
+    "knowledgeAssets": 330,
+    "limitedIds": 24,
+    "consistentWithinScope": 18,
+    "evidenceGapIds": 6,
+    "uniqueIncrement": null,
+    "knowledgeChangedPaths": []
+  },
+  "sourceCoverage": {
+    "limitedMethodGroups": 9,
+    "wholeFileCompletion": 0,
+    "historicalUniqueIncrement": null
+  },
+  "inventory": {
+    "sourceCommit": "1ad6300918bd0059049eab3c415ca31162dd5115",
+    "tree": "dc84ff3101bf62ef1da098a00e3040c3910a545b",
+    "trackedPaths": 6017,
+    "scopeCount": 6017,
+    "excludedPaths": [],
+    "assetTypes": {
+      "configuration-or-data": 3012,
+      "documentation": 437,
+      "binary-asset": 1034,
+      "source-or-tool": 816,
+      "knowledge": 330,
+      "test": 253,
+      "database-migration": 134,
+      "dependency-lock": 1
+    },
+    "workPackages": {
+      "W5": 711,
+      "W4": 253,
+      "W0-W7": 4481,
+      "W1": 142,
+      "W2": 225,
+      "W3": 205
+    },
+    "entrypointCandidates": {
+      "http-annotation": 464,
+      "state-definition-candidate": 8,
+      "background-candidate": 1,
+      "frontend-route-candidate": 216
+    },
+    "migrationFiles": 134,
+    "semanticReviewComplete": false,
+    "entrypointLimitations": "Static candidate locations include class annotations and dynamic route shapes; URLs, auth and worker activation require source review. No route execution claimed.",
+    "coverageSha256": "7853c44797fac03b93a82b2c4027eb8e29bed9dce58de6484d490dbc2381c888"
+  },
+  "a23": {
+    "limitedMethodJudgments": 5,
+    "historicalLanguageQueue": 856,
+    "previousFeaturePending": 1,
+    "historicalSqlQueue": 130,
+    "newMigrationQueue": 4,
+    "currentChangedPending": 1,
+    "currentAddedPending": 0,
+    "status": "All historical overlays plus current range remain pending W6 whole including previously reviewed and W7 increments"
+  },
+  "scopeReview": {
+    "status": "actually-communicated-after-all-formal-roles-FINAL-before-PR",
+    "document": "scope-review.md",
+    "drift": false,
+    "overallStage": "W3/W4/W5 crossing; W2 remainder and W6/W7 pending"
+  },
+  "evidence": {
+    "quality": "evidence/final-quality/quality-result.yaml",
+    "report": "evidence/final-quality/quality-review.md",
+    "archiveMap": "evidence/final-quality/archive-map.json",
+    "primary": "evidence/primary-verification.json",
+    "ontology": "evidence/ontology/result.yaml",
+    "rawFinalOriginalsIncludingManifest": 31,
+    "locatorNote": "evidence/final-quality/archive-map.json records original whitespace locator typo; unchanged actual raw output and provenance support passed"
+  },
+  "residualRisks": [
+    {
+      "id": "risk.known-dhr-highs-not-closed",
+      "description": "两项既有DHR high仍open：完整质量事实/变化比较及全部普通权限UI、账号状态和收件人矩阵。本批只补有限测试证据。",
+      "impact": "本批通过不能作为DHR全链、合规放行或全项目发布认证。",
+      "mitigation": "按真实权威事实与剩余矩阵继续分批审查；不从人工checkResult发明自动质判。"
+    },
+    {
+      "id": "risk.list-global-scan",
+      "description": "个人DHR页仍遍历全部任务，容量机制独立复现；detail重复影响读取、附件/逐版本投递容量候选继续。",
+      "impact": "历史任务增多使SQL往返、读取和CPU增长；未测生产时延、PG计划或堆峰值。",
+      "mitigation": "先讨论等价DB筛选/计数/分页，明确授权后优化并证明权限、关键词和排序等价；本批不实施。"
+    },
+    {
+      "id": "risk.identity-and-ui-coverage",
+      "description": "新测试用真实JWT claims+MockMvc及ACTIVE账号，不包含登录/RBAC签发、停用锁定撤销、多租户及完整浏览器/所有附件权限。",
+      "impact": "不能外推为完整账号即时状态或UI验收；JWTFilter仅claim验证是后续审查入口，不擅定撤销政策。",
+      "mitigation": "后续定位已确认身份契约并补独立矩阵，保留任务签署页朋友负责范围。"
+    },
+    {
+      "id": "risk.global-audit-and-deferred-work",
+      "description": "6017盘点非已审；wholeFile0/unique未知，666/44/183、W2余项、全部W6/A23旧已审复核及W7增量、ACL三问、DELETE/UNKNOWN/DHR附件回调、A12及四gap仍待审/待决。",
+      "impact": "不能声称整体审计结束或全部业务一致。",
+      "mitigation": "继续版本化台账，每次fetch核新代码增量，已暂缓生产弹窗/朋友任务签署页不私自修改。"
+    }
+  ],
+  "explicitLimits": [
+    "Real JWT/MockMvc and native PG, not browser, socket HTTP, login/RBAC issuance or disabled/locked account certification",
+    "Fresh Liquibase9 changesets;134 historical SQL files only inventory",
+    "H2 shared-version capacity mechanism, not PG plan, production latency, all rows simultaneously resident or heap peak",
+    "Both preexisting DHR high remain open; complete external quality facts and all user/recipient/UI matrix not closed",
+    "666 paths/44 knowledge/183 ID increment remains pending; no whole-file or unique percentage",
+    "No CI queries/triggers, no merge/deploy/history restore, no business policies changed",
+    "File ACL questions and performance optimization remain awaiting explicit answer; friend task page and production dialog remain deferred"
+  ],
+  "blockingConditions": [],
+  "recommendMergeForThisBatch": true,
+  "nextAction": "Fetch actual integration and increments; continue remaining ordinary-account/recipient/UI matrix and file DELETE/DHR attachment callback consistency; optimize query only after explicit decision."
+}

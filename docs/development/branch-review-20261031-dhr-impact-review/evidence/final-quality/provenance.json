@@ -1,0 +1,366 @@
+{
+  "roleState": "FINAL",
+  "result": "passed",
+  "scope": "read-only provenance and fixed inventory checks; auxiliary to independent quality role, not a separate whole-audit or runtime certification",
+  "baseCommit": "1ad6300918bd0059049eab3c415ca31162dd5115",
+  "headCommit": "977287f6da3ba1cb78c4eb2842f3ace69bb1f43b",
+  "contractReadCommit": "977287f6da3ba1cb78c4eb2842f3ace69bb1f43b",
+  "workingTreeClean": true,
+  "productChangedPaths": [],
+  "testChangedPaths": [
+    "gmp-platform/backend/src/test/java/com/zencas/edhr/recordcontrol/service/RecordControlPostgresIntegrationTest.java"
+  ],
+  "primaryOriginals": [
+    {
+      "archived": "docs/development/branch-review-20261031-dhr-impact-review/evidence/primary/DhrReviewLifecycleIntegrationTest.xml",
+      "source": "/tmp/edhr-dhr-main-DhrReviewLifecycleIntegrationTest.xml",
+      "matched": true
+    },
+    {
+      "archived": "docs/development/branch-review-20261031-dhr-impact-review/evidence/primary/DhrReviewServiceTest.xml",
+      "source": "/tmp/edhr-dhr-main-DhrReviewServiceTest.xml",
+      "matched": true
+    },
+    {
+      "archived": "docs/development/branch-review-20261031-dhr-impact-review/evidence/primary/RecordControlPostgresIntegrationTest.xml",
+      "source": "/tmp/edhr-dhr-main-RecordControlPostgresIntegrationTest.xml",
+      "matched": true
+    },
+    {
+      "archived": "docs/development/branch-review-20261031-dhr-impact-review/evidence/primary/cleanup.json",
+      "source": "/tmp/edhr-dhr-main-cleanup.json",
+      "matched": true
+    },
+    {
+      "archived": "docs/development/branch-review-20261031-dhr-impact-review/evidence/primary/db.json",
+      "source": "/tmp/edhr-dhr-main-db.json",
+      "matched": true
+    },
+    {
+      "archived": "docs/development/branch-review-20261031-dhr-impact-review/evidence/primary/http-final.jsonl",
+      "source": "/tmp/edhr-dhr-main-http-final.jsonl",
+      "matched": true
+    },
+    {
+      "archived": "docs/development/branch-review-20261031-dhr-impact-review/evidence/primary/http.jsonl",
+      "source": "/tmp/edhr-dhr-main-http.jsonl",
+      "matched": true
+    },
+    {
+      "archived": "docs/development/branch-review-20261031-dhr-impact-review/evidence/primary/summary.json",
+      "source": "/tmp/edhr-dhr-main-summary.json",
+      "matched": true
+    },
+    {
+      "archived": "docs/development/branch-review-20261031-dhr-impact-review/evidence/primary/test.txt",
+      "source": "/tmp/edhr-dhr-main-test.txt",
+      "matched": true
+    },
+    {
+      "archived": "docs/development/branch-review-20261031-dhr-impact-review/evidence/fixture-attempt1/DhrReviewLifecycleIntegrationTest.xml",
+      "source": "/tmp/edhr-dhr-attempt1-DhrReviewLifecycleIntegrationTest.xml",
+      "matched": true
+    },
+    {
+      "archived": "docs/development/branch-review-20261031-dhr-impact-review/evidence/fixture-attempt1/DhrReviewServiceTest.xml",
+      "source": "/tmp/edhr-dhr-attempt1-DhrReviewServiceTest.xml",
+      "matched": true
+    },
+    {
+      "archived": "docs/development/branch-review-20261031-dhr-impact-review/evidence/fixture-attempt1/RecordControlPostgresIntegrationTest.xml",
+      "source": "/tmp/edhr-dhr-attempt1-RecordControlPostgresIntegrationTest.xml",
+      "matched": true
+    },
+    {
+      "archived": "docs/development/branch-review-20261031-dhr-impact-review/evidence/fixture-attempt1/http.jsonl",
+      "source": "/tmp/edhr-dhr-attempt1-http.jsonl",
+      "matched": true
+    },
+    {
+      "archived": "docs/development/branch-review-20261031-dhr-impact-review/evidence/fixture-attempt1/summary.json",
+      "source": "/tmp/edhr-dhr-attempt1-summary.json",
+      "matched": true
+    },
+    {
+      "archived": "docs/development/branch-review-20261031-dhr-impact-review/evidence/fixture-attempt1/test.txt",
+      "source": "/tmp/edhr-dhr-attempt1-test.txt",
+      "matched": true
+    },
+    {
+      "archived": "docs/development/branch-review-20261031-dhr-impact-review/evidence/capacity/EdhrDhrReviewCapacityProbe.java",
+      "source": "/tmp/EdhrDhrReviewCapacityProbe.java",
+      "matched": true
+    },
+    {
+      "archived": "docs/development/branch-review-20261031-dhr-impact-review/evidence/capacity/edhr-dhr-capacity-probe.txt",
+      "source": "/tmp/edhr-dhr-capacity-probe.txt",
+      "matched": true
+    }
+  ],
+  "sourceSnapshots": [
+    {
+      "path": "/workspace/edhr-nexus-frontend/gmp-platform/backend/src/test/java/com/zencas/edhr/recordcontrol/service/RecordControlPostgresIntegrationTest.java",
+      "bytes": 55446,
+      "sha256": "e9d1c32869967ec7cce6259b4f7435a892ac35be09443b5252de09f02b6a5f0b"
+    },
+    {
+      "path": "/workspace/edhr-nexus-frontend/gmp-platform/backend/src/main/java/com/zencas/edhr/recordcontrol/service/RecordControlService.java",
+      "bytes": 38791,
+      "sha256": "93507a91197f9a58dacfdb9b853d71c2cc0e4883babb5ad378ce7b153a672d44"
+    },
+    {
+      "path": "/workspace/edhr-nexus-frontend/gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrEvidenceImpactService.java",
+      "bytes": 11774,
+      "sha256": "09ae4603a600df3a8cafb00e9e304e7cffbc840a2fab6b8b511f745822649c80"
+    },
+    {
+      "path": "/workspace/edhr-nexus-frontend/gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrReviewService.java",
+      "bytes": 15793,
+      "sha256": "afbf44533270c535188d4c78a7481022ea7cc0126bded081ec86631f181b7282"
+    },
+    {
+      "path": "/workspace/edhr-nexus-frontend/gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrSummaryService.java",
+      "bytes": 44493,
+      "sha256": "20d96b976bd931ccf65c710204a01d8d571d51f8deebaf64bb0aaad8f7e24c3e"
+    },
+    {
+      "path": "/workspace/edhr-nexus-frontend/gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrFrozenEvidenceIntegrity.java",
+      "bytes": 6277,
+      "sha256": "3dcf8632a2049d9a13e8e178e55ff5c24643f50f496410ba2ef3f8f71c054e66"
+    },
+    {
+      "path": "/workspace/edhr-nexus-frontend/gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrImpactNotificationService.java",
+      "bytes": 2842,
+      "sha256": "2ec8ab10285cb55892fbf71ae8a3c7bab2bac9a73510c0d6f855d2102a9c38ce"
+    },
+    {
+      "path": "/workspace/edhr-nexus-frontend/gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrReviewController.java",
+      "bytes": 3309,
+      "sha256": "37f6af83e063e1593e15ac28e021ec719888c21fe45d314916c9f20975e2417e"
+    },
+    {
+      "path": "/workspace/edhr-nexus-frontend/gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrSummaryController.java",
+      "bytes": 3419,
+      "sha256": "5ce62999330203581417a182a68621658ade5a8f5f264293d9e810e394c8292f"
+    },
+    {
+      "path": "/workspace/edhr-nexus-frontend/gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrImpactNotificationController.java",
+      "bytes": 938,
+      "sha256": "637b3d89e50452bddf364a08f4bebde29494ecd91b0fa7833323caedff8a93d7"
+    }
+  ],
+  "ontologyOriginals": [
+    {
+      "archived": "docs/development/branch-review-20261031-dhr-impact-review/evidence/ontology/knowledge-inventory.json",
+      "source": "/tmp/edhr-dhr-impact-ontology-knowledge-inventory.json",
+      "matched": true
+    },
+    {
+      "archived": "docs/development/branch-review-20261031-dhr-impact-review/evidence/ontology/knowledge-test.txt",
+      "source": "/tmp/edhr-dhr-impact-ontology-knowledge-test.txt",
+      "matched": true
+    },
+    {
+      "archived": "docs/development/branch-review-20261031-dhr-impact-review/evidence/ontology/knowledge-test.xml",
+      "source": "/tmp/edhr-dhr-impact-ontology-knowledge-test.xml",
+      "matched": true
+    },
+    {
+      "archived": "docs/development/branch-review-20261031-dhr-impact-review/evidence/ontology/knowledge.diff",
+      "source": "/tmp/edhr-dhr-impact-ontology-knowledge.diff",
+      "matched": true
+    },
+    {
+      "archived": "docs/development/branch-review-20261031-dhr-impact-review/evidence/ontology/result.yaml",
+      "source": "/tmp/edhr-dhr-impact-ontology-result.yaml",
+      "matched": true
+    },
+    {
+      "archived": "docs/development/branch-review-20261031-dhr-impact-review/evidence/ontology/review.md",
+      "source": "/tmp/edhr-dhr-impact-ontology-review.md",
+      "matched": true
+    },
+    {
+      "archived": "docs/development/branch-review-20261031-dhr-impact-review/evidence/ontology/semantic-review.json",
+      "source": "/tmp/edhr-dhr-impact-ontology-semantic-review.json",
+      "matched": true
+    },
+    {
+      "archived": "docs/development/branch-review-20261031-dhr-impact-review/evidence/ontology/source-fingerprints.json",
+      "source": "/tmp/edhr-dhr-impact-ontology-source-fingerprints.json",
+      "matched": true
+    },
+    {
+      "archived": "docs/development/branch-review-20261031-dhr-impact-review/evidence/ontology/source.diff",
+      "source": "/tmp/edhr-dhr-impact-ontology-source.diff",
+      "matched": true
+    },
+    {
+      "archived": "docs/development/branch-review-20261031-dhr-impact-review/evidence/ontology/manifest.json",
+      "source": "/tmp/edhr-dhr-impact-ontology-manifest.json",
+      "matched": true
+    }
+  ],
+  "ontologySourceFingerprints": 22,
+  "knowledgeFingerprints": 330,
+  "knowledgeAllMatchBase": true,
+  "semanticRecords": 24,
+  "semanticConclusions": {
+    "consistent": 18,
+    "evidence-gap": 6
+  },
+  "limitedSourceGroups": 9,
+  "wholeFileCompletion": 0,
+  "historicalUniqueIncrement": null,
+  "a23Records": 5,
+  "a23OldLanguage": 856,
+  "a23OldFeature": 1,
+  "a23OldSql": 130,
+  "a23NewMigrations": 4,
+  "newTestExecutions": 9,
+  "primarySingleRun": {
+    "exit": 0,
+    "suites": [
+      {
+        "suite": "RecordControlPostgresIntegrationTest",
+        "tests": 34,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "DhrReviewServiceTest",
+        "tests": 12,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "DhrReviewLifecycleIntegrationTest",
+        "tests": 6,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    ],
+    "totals": {
+      "tests": 52,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  "fixtureFailureHistory": [
+    {
+      "test": "ordinaryHttpReviewMatrixUsesMenuActionAndTaskIdentitySeparately(String)[1]",
+      "type": "org.springframework.jdbc.BadSqlGrammarException",
+      "message": "StatementCallback; bad SQL grammar [SELECT COALESCE(jsonb_agg(to_jsonb(t) ORDER BY t.id),'[]'::jsonb)::text FROM production_execution t]"
+    },
+    {
+      "test": "ordinaryHttpReviewMatrixUsesMenuActionAndTaskIdentitySeparately(String)[2]",
+      "type": "org.springframework.jdbc.BadSqlGrammarException",
+      "message": "StatementCallback; bad SQL grammar [SELECT COALESCE(jsonb_agg(to_jsonb(t) ORDER BY t.id),'[]'::jsonb)::text FROM production_execution t]"
+    },
+    {
+      "test": "ordinaryHttpReviewMatrixUsesMenuActionAndTaskIdentitySeparately(String)[3]",
+      "type": "org.springframework.jdbc.BadSqlGrammarException",
+      "message": "StatementCallback; bad SQL grammar [SELECT COALESCE(jsonb_agg(to_jsonb(t) ORDER BY t.id),'[]'::jsonb)::text FROM production_execution t]"
+    },
+    {
+      "test": "ordinaryHttpReviewMatrixUsesMenuActionAndTaskIdentitySeparately(String)[4]",
+      "type": "org.springframework.jdbc.BadSqlGrammarException",
+      "message": "StatementCallback; bad SQL grammar [SELECT COALESCE(jsonb_agg(to_jsonb(t) ORDER BY t.id),'[]'::jsonb)::text FROM production_execution t]"
+    },
+    {
+      "test": "ordinaryHttpReviewMatrixUsesMenuActionAndTaskIdentitySeparately(String)[5]",
+      "type": "org.springframework.jdbc.BadSqlGrammarException",
+      "message": "StatementCallback; bad SQL grammar [SELECT COALESCE(jsonb_agg(to_jsonb(t) ORDER BY t.id),'[]'::jsonb)::text FROM production_execution t]"
+    },
+    {
+      "test": "ordinaryHttpReviewMatrixUsesMenuActionAndTaskIdentitySeparately(String)[6]",
+      "type": "org.springframework.jdbc.BadSqlGrammarException",
+      "message": "StatementCallback; bad SQL grammar [SELECT COALESCE(jsonb_agg(to_jsonb(t) ORDER BY t.id),'[]'::jsonb)::text FROM production_execution t]"
+    },
+    {
+      "test": "ordinaryHttpReviewMatrixUsesMenuActionAndTaskIdentitySeparately(String)[7]",
+      "type": "org.springframework.jdbc.BadSqlGrammarException",
+      "message": "StatementCallback; bad SQL grammar [SELECT COALESCE(jsonb_agg(to_jsonb(t) ORDER BY t.id),'[]'::jsonb)::text FROM production_execution t]"
+    },
+    {
+      "test": "ordinaryHandledReviewerReadsFrozenValuesAfterEffectiveChangeWithoutReapproving",
+      "type": "org.springframework.jdbc.BadSqlGrammarException",
+      "message": "StatementCallback; bad SQL grammar [SELECT values_json->>'value' FROM form_instance_record]"
+    }
+  ],
+  "inventory": {
+    "sourceCommit": "1ad6300918bd0059049eab3c415ca31162dd5115",
+    "tree": "dc84ff3101bf62ef1da098a00e3040c3910a545b",
+    "trackedPaths": 6017,
+    "scopeCount": 6017,
+    "excludedPaths": [],
+    "assetTypes": {
+      "configuration-or-data": 3012,
+      "documentation": 437,
+      "binary-asset": 1034,
+      "source-or-tool": 816,
+      "knowledge": 330,
+      "test": 253,
+      "database-migration": 134,
+      "dependency-lock": 1
+    },
+    "workPackages": {
+      "W5": 711,
+      "W4": 253,
+      "W0-W7": 4481,
+      "W1": 142,
+      "W2": 225,
+      "W3": 205
+    },
+    "entrypointCandidates": {
+      "http-annotation": 464,
+      "state-definition-candidate": 8,
+      "background-candidate": 1,
+      "frontend-route-candidate": 216
+    },
+    "migrationFiles": 134,
+    "semanticReviewComplete": false,
+    "entrypointLimitations": "Static candidate locations include class annotations and dynamic route shapes; URLs, auth and worker activation require source review. No route execution claimed.",
+    "coverageSha256": "7853c44797fac03b93a82b2c4027eb8e29bed9dce58de6484d490dbc2381c888"
+  },
+  "inventoryFiles": [
+    {
+      "file": "coverage.csv",
+      "bytes": 1818404,
+      "sha256": "7853c44797fac03b93a82b2c4027eb8e29bed9dce58de6484d490dbc2381c888",
+      "identical": true
+    },
+    {
+      "file": "entrypoints.csv",
+      "bytes": 161809,
+      "sha256": "c4356f335f792499336b523659cc3e78f81eec7beb5338a079308f8f72610df9",
+      "identical": true
+    },
+    {
+      "file": "inventory-summary.json",
+      "bytes": 1044,
+      "sha256": "4991ac9a271b294ae9d4cea9edff2854a871197c121c6cb36e4264bc984db528",
+      "identical": true
+    },
+    {
+      "file": "migrations.csv",
+      "bytes": 34482,
+      "sha256": "f5682fa9e08dfad2afac65905f02f8c7a866610803a083628679c685d0567ab9",
+      "identical": true
+    }
+  ],
+  "authoredWhitespacePaths": [
+    "docs/development/branch-review-20261015/NEXT.md",
+    "docs/development/branch-review-20261031-dhr-impact-review/README.md",
+    "docs/development/branch-review-20261031-dhr-impact-review/decision-package.yaml",
+    "docs/development/branch-review-20261031-dhr-impact-review/review-notes.md",
+    "docs/development/branch-review-20261031-dhr-impact-review/source-review.json",
+    "gmp-platform/backend/src/test/java/com/zencas/edhr/recordcontrol/service/RecordControlPostgresIntegrationTest.java"
+  ],
+  "authoredWhitespaceExit": 0,
+  "findings": []
+}

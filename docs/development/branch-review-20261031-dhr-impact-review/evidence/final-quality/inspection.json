@@ -1,0 +1,218 @@
+{
+  "roleState": "FINAL",
+  "headCommit": "977287f6da3ba1cb78c4eb2842f3ace69bb1f43b",
+  "baseCommit": "1ad6300918bd0059049eab3c415ca31162dd5115",
+  "contractReadCommit": "977287f6da3ba1cb78c4eb2842f3ace69bb1f43b",
+  "workingTreeClean": true,
+  "independence": "No product, test, fixture, knowledge or contract changes; new QA instance. Internal provenance helper read-only and FINAL.",
+  "productChangedPaths": [],
+  "sourceInspection": [
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrReviewService.java",
+      "symbols": [
+        "list",
+        "detail",
+        "act",
+        "eligible",
+        "handled"
+      ],
+      "conclusion": "menu and action controller requirements separate from task identity; handled reader gets frozen version; stale sources/manual checks/locks stay; list batches64 but traverses all tasks"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrReviewController.java",
+      "symbols": [
+        "list",
+        "detail",
+        "audit",
+        "act"
+      ],
+      "conclusion": "class requires menu; act explicitly menu AND action; detail/audit resolve personal task, does not infer privilege from submitter"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrSummaryService.java",
+      "symbols": [
+        "version",
+        "submit",
+        "validateFrozenFormFiles"
+      ],
+      "conclusion": "freeze actual evidence plus manual review; submitted_by_id actual audit identity; version reads frozen values; full digest verified; no automatic quality interpretation"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrFrozenEvidenceIntegrity.java",
+      "symbols": [
+        "verify",
+        "verifyVersionDigest"
+      ],
+      "conclusion": "member/source/hash and full reconstructed version digest includes checkResult"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrEvidenceImpactService.java",
+      "symbols": [
+        "requireRecordControlAllowed",
+        "requireNoPendingApplications",
+        "sourceEffective",
+        "changes"
+      ],
+      "conclusion": "bilateral in-review guard, real result event impact, recipient IDs and frozen source JSON/status/revision/member/attachment comparisons"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrImpactNotificationService.java",
+      "symbols": [
+        "list",
+        "read"
+      ],
+      "conclusion": "actor recipient ID plus default tenant, long offset; notice read does not grant DHR page rights"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/recordcontrol/service/RecordControlService.java",
+      "symbols": [
+        "submit",
+        "applyResult",
+        "applyChange",
+        "applyObsolete",
+        "updateExecution",
+        "lockSource"
+      ],
+      "conclusion": "approved source and current contribution switch plus impact/notice share result transaction, work-order/object/execution/record locks; no history restore"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/identity/security/JwtAuthenticationFilter.java",
+      "symbols": [
+        "doFilterInternal"
+      ],
+      "conclusion": "actual filter validates JWT claims; new tests do not exercise login/RBAC issuance, disabled/locked/revoked-user policy, or current DB-state recheck. No new policy inferred."
+    }
+  ],
+  "semanticAnchorsIndependentlyRead": [
+    "DEC-0063-04",
+    "DEC-0063-05",
+    "DEC-0063-14",
+    "DEC-0068-05",
+    "DEC-0068-06",
+    "DEC-0068-07",
+    "DEC-0068-11",
+    "DEC-0068-12",
+    "DEC-0068-13",
+    "DEC-0068-14",
+    "DEC-0087-02",
+    "DEC-0087-05",
+    "docs/knowledge/evidence/dhr-summary-user-confirmed.md:107-119"
+  ],
+  "ontologyLedgerBoundary": "24 existing IDs =18 consistent +6 evidence-gap in ontology ledger; checked provenance/status and affected policy subset, not 24 new unique semantic audit completions",
+  "runtime": {
+    "exit": 0,
+    "suites": [
+      {
+        "suite": "RecordControlPostgresIntegrationTest",
+        "tests": 34,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "DhrReviewServiceTest",
+        "tests": 12,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "DhrReviewLifecycleIntegrationTest",
+        "tests": 6,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    ],
+    "totals": {
+      "tests": 52,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  "knowledge": {
+    "exit": 0,
+    "suites": [
+      {
+        "suite": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+        "tests": 89,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    ],
+    "totals": {
+      "tests": 89,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  "http": {
+    "databaseQueryExit": 0,
+    "httpResponseCount": 39,
+    "allExpectedStatusesMatched": true,
+    "byStatus": {
+      "200": 17,
+      "400": 1,
+      "401": 5,
+      "403": 16
+    },
+    "head": "977287f6da3ba1cb78c4eb2842f3ace69bb1f43b",
+    "workingTree": ""
+  },
+  "capacity": [
+    {
+      "otherUserTasks": 0,
+      "allTasks": 21,
+      "pageSize": 20,
+      "returned": 20,
+      "personalTotal": 21,
+      "listSqlCallsIncludingEmptyTerminator": 2,
+      "taskRowsLoaded": 21
+    },
+    {
+      "otherUserTasks": 500,
+      "allTasks": 521,
+      "pageSize": 20,
+      "returned": 20,
+      "personalTotal": 21,
+      "listSqlCallsIncludingEmptyTerminator": 10,
+      "taskRowsLoaded": 521
+    },
+    {
+      "otherUserTasks": 5000,
+      "allTasks": 5021,
+      "pageSize": 20,
+      "returned": 20,
+      "personalTotal": 21,
+      "listSqlCallsIncludingEmptyTerminator": 80,
+      "taskRowsLoaded": 5021
+    }
+  ],
+  "migrationBoundary": "Fresh owned PostgreSQL actual application Liquibase applied 9 changesets from canonical schema/seed and 0087-0090. Inventory134 is historical file count, not all134 migration replay.",
+  "a23Boundary": "Five finite method judgments inspected; wholeFile0, unique null; historical856+feature1, SQL130+4new, all overlays and666/44/183 pending; concrete extraction proposals are future boundaries, not implemented refactor.",
+  "knownHighsRemainOpen": [
+    "discrepancy.dhr-review-complete-evidence-impact-gap",
+    "discrepancy.dhr-review-effective-source-integration"
+  ],
+  "cleanup": {
+    "containerId": "371b044fb1731e7a029a55a6164dc46351a8ef6d65790a07a43cbaa3130b6a95",
+    "name": "edhr-dhr-q1-20261031",
+    "stopExit": 0,
+    "removedConfirmed": true,
+    "inspectExit": 1,
+    "temporaryWorktreesCreated": [],
+    "scope": "only this QA owned disposable PostgreSQL container",
+    "finishedAt": "2026-10-31T10:50:11.987584+00:00"
+  },
+  "excluded": [
+    "browser/UI and real socket HTTP",
+    "all account states/recipients/attachment permissions",
+    "independent authoritative external quality facts contract",
+    "production SLA/PG plan/heap peak",
+    "full system release or whole audit completion",
+    "CI/Actions queries and triggers"
+  ]
+}
