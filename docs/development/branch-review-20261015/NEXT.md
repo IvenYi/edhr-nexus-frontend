@@ -1,5 +1,11 @@
 # 持续推进台账
 
+## PR47已合入：上传文件所有权与认证上传者
+
+最新fetch edhr-dev@032b83e9d5b8a25bee6d5b59c45d86892f672d00，PR47人工合入、整树同f730，无外部增量。从最新目标建audit/edhr-dev-file-consistency-20261031；[本批](../branch-review-20261031-file-consistency/README.md)仅一个产品文件修复复制失败自有残片/碰撞保护和上传者system占位。旧同16为6真实红10正，当前5类36/36、0error/skip；当前待正式本体及新最终独立质量，不提前resolved。
+
+共享文件ACL已核文档页权/生产SOP/独立DHR冻结附件差异，三处未定边界已集中问用户，依赖实现pending，不凭targetType制定全局权限。DBsave/commit及delete顺序仍待真实事务/故障验证，本批只关闭复制子项，性能仍先讨论。5173/130仅盘点，六有限源码范围/A23六记录与2改1增不计整文件或unique，W6含旧已审/W7增量及原队列/暂缓/四gap保持。全部正式角色FINAL后实际范围/漂移/阶段复核再PR，不自动merge/deploy/恢复。
+
 ## PR46已合入：文件上传资源与公开预览边界
 
 已交付[PR47](https://github.com/IvenYi/edhr-nexus-frontend/pull/47)，audit/edhr-dev-file-boundaries-20261031→edhr-dev，登记时OPEN/MERGEABLE/CLEAN，建议本批人工合入。受测17f1fad4后d740678d仅L0归档/验收/范围，当前只登记交付，受测保护路径无变。下轮fetch实际合入和外部增量，优先共享文件真实对象权限、DB/磁盘失败一致性；其余候选/原暂缓/整体未完保持，不自动merge/deploy/恢复。

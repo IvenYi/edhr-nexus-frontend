@@ -36,6 +36,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class FileHttpBoundaryTest {
     @Autowired MockMvc mvc;
     @Autowired JwtTokenProvider tokens;
+    @Autowired FileController controller;
     @MockBean FileObjectRepository files;
     @MockBean IconAssetRepository icons;
     @MockBean SystemSettingRepository settings;
@@ -87,5 +88,20 @@ class FileHttpBoundaryTest {
         mvc.perform(get("/api/v1/files")).andExpect(status().isUnauthorized());
         mvc.perform(multipart("/api/v1/files/upload").file("file", new byte[]{1})).andExpect(status().isUnauthorized());
         verifyNoInteractions(files);
+    }
+
+    @ParameterizedTest @ValueSource(strings = {"uploader-A", "uploader-B"})
+    void uploadedByUsesAuthenticatedUserIdRatherThanSystemOrSubmittedIdentity(String userId) throws Exception {
+        org.springframework.test.util.ReflectionTestUtils.setField(controller, "storagePath", directory.toString());
+        when(ids.nextId()).thenReturn(88L);
+        mvc.perform(multipart("/api/v1/files/upload")
+                        .file(new org.springframework.mock.web.MockMultipartFile("file", "evidence.txt", "text/plain", "original".getBytes(java.nio.charset.StandardCharsets.UTF_8)))
+                        .param("uploadedBy", "spoofed-identity")
+                        .header("Authorization", "Bearer " + tokens.generateToken(userId, "display-account")))
+                .andExpect(status().isOk());
+        var saved = org.mockito.ArgumentCaptor.forClass(FileObject.class);
+        verify(files).save(saved.capture());
+        org.assertj.core.api.Assertions.assertThat(saved.getValue().getUploadedBy()).isEqualTo(userId);
+        org.assertj.core.api.Assertions.assertThat(Files.readString(Path.of(saved.getValue().getStoredPath()))).isEqualTo("original");
     }
 }
