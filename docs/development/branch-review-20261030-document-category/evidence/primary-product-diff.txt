@@ -1,0 +1,72 @@
+diff --git a/gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/DocumentManagementController.java b/gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/DocumentManagementController.java
+index 62d69dc1..d75d696d 100644
+--- a/gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/DocumentManagementController.java
++++ b/gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/DocumentManagementController.java
+@@ -39,6 +39,7 @@ import org.springframework.web.bind.annotation.RestController;
+ 
+ import java.time.LocalDateTime;
+ import java.util.Comparator;
++import java.util.Collections;
+ import java.util.LinkedHashMap;
+ import java.util.List;
+ import java.util.Map;
+@@ -129,18 +130,6 @@ public class DocumentManagementController {
+         DocumentCategory category = requireDocumentCategory(categoryId);
+         ensureCustomDocumentCategory(category);
+         Map<String, Object> before = documentCategorySnapshot(category, countDocumentsByCategory(category.getId()));
+-        List<SopDocument> documents = documentRepository.findAll().stream()
+-                .filter(document -> Objects.equals(document.getCategoryId(), category.getId()))
+-                .peek(document -> {
+-                    Map<String, Object> documentBefore = documentSnapshot(document);
+-                    document.setCategoryId(null);
+-                    document.setDocumentType("OTHER");
+-                    document.setUpdatedBy(currentOperatorName());
+-                    document.setUpdatedAt(LocalDateTime.now());
+-                    writeChangedAudit("PROCESS_DOCUMENT", document.getId(), "编辑", documentBefore, documentSnapshot(document));
+-                })
+-                .toList();
+-        documentRepository.saveAll(documents);
+         documentCategoryRepository.delete(category);
+         writeAudit("DOCUMENT_CATEGORY", category.getId(), "DELETE", "删除", before, Map.of());
+         return ApiResponse.success(null);
+@@ -154,6 +143,8 @@ public class DocumentManagementController {
+         Map<String, DocumentCategory> customCategories = documentCategoryRepository.findByTenantIdOrderBySortOrderAscNameAsc(TENANT_ID).stream()
+                 .filter(category -> !category.isSystemCategory())
+                 .collect(Collectors.toMap(category -> String.valueOf(category.getId()), Function.identity(), (left, right) -> left, LinkedHashMap::new));
++        Map<Long, Integer> previousOrder = new LinkedHashMap<>();
++        customCategories.values().forEach(category -> previousOrder.put(category.getId(), category.getSortOrder()));
+         int sortOrder = 30;
+         for (String id : orderedIds) {
+             DocumentCategory category = customCategories.get(String.valueOf(id));
+@@ -164,6 +155,9 @@ public class DocumentManagementController {
+             sortOrder += 10;
+         }
+         documentCategoryRepository.saveAll(new ArrayList<>(customCategories.values()));
++        customCategories.values().forEach(category -> writeChangedAudit("DOCUMENT_CATEGORY", category.getId(), "调整排序",
++                Collections.singletonMap("排序", previousOrder.get(category.getId())),
++                Collections.singletonMap("排序", category.getSortOrder())));
+         return ApiResponse.success(toDocumentCategoryResponses());
+     }
+ 
+diff --git a/gmp-platform/frontend/src/pages/master-data/DocumentManagementPage.tsx b/gmp-platform/frontend/src/pages/master-data/DocumentManagementPage.tsx
+index 107b8aa2..138bd1a4 100644
+--- a/gmp-platform/frontend/src/pages/master-data/DocumentManagementPage.tsx
++++ b/gmp-platform/frontend/src/pages/master-data/DocumentManagementPage.tsx
+@@ -478,7 +478,7 @@ export default function DocumentManagementPage() {
+     mutationFn: () => deleteDocumentCategory(deleteCategoryTarget!.id),
+     onSuccess: () => {
+       if (selectedCategory === deleteCategoryTarget?.id) selectDocumentCategory(DOCUMENT_CATEGORY_UNCATEGORIZED);
+-      invalidate(); setDeleteCategoryTarget(null); showMessage('文档分类已删除，旗下文档已转为未分类');
++      invalidate(); setDeleteCategoryTarget(null); showMessage('文档分类已删除');
+     },
+     onError: (error: Error) => showMessage(error.message, 'error'),
+   });
+@@ -757,7 +757,7 @@ export default function DocumentManagementPage() {
+       <DocumentDetailDrawer open={drawerDocument !== null} document={drawerDocument} version={drawerVersion} tab={drawerTab} onTabChange={setDrawerTab} auditRecords={auditRecords} auditLoading={auditQuery.isLoading} auditError={auditQuery.isError} onClose={closeDetailDrawer} />
+       <ConfirmDialog deletionTarget={deleteTarget && { type: deleteTarget.version ? 'document_version' : 'sop_document', id: deleteTarget.version?.id || deleteTarget.document.id }} open={Boolean(deleteTarget)} title={deleteTarget?.version ? '删除文档版本' : '删除文档'} message={deleteTarget?.version ? `确定删除版本「${deleteTarget.version.version}」吗？` : `确定删除文档「${deleteTarget?.document.title || ''}」及其未被引用版本吗？`} confirmText="删除" destructive loading={deleteMutation.isPending} onCancel={() => setDeleteTarget(null)} onConfirm={() => deleteMutation.mutate()} />
+       <FormDialog open={Boolean(categoryDialog)} onClose={saveCategoryMutation.isPending ? undefined : () => setCategoryDialog(null)} fullWidth maxWidth="xs"><DialogTitle>{categoryDialog?.mode === 'edit' ? '编辑文档分类' : '新增文档分类'}</DialogTitle><DialogContent dividers><FormDialogSection title="基本信息"><TextField autoFocus required fullWidth size="small" label="文档分类名称" value={categoryName} onChange={(event) => setCategoryName(event.target.value)} onKeyDown={(event) => { if (event.key === 'Enter' && categoryName.trim()) saveCategoryMutation.mutate(); }} /></FormDialogSection></DialogContent><DialogActions><Button disabled={saveCategoryMutation.isPending} onClick={() => setCategoryDialog(null)}>取消</Button><Button variant="contained" disabled={!categoryName.trim() || saveCategoryMutation.isPending} onClick={() => saveCategoryMutation.mutate()}>{saveCategoryMutation.isPending ? '保存中...' : '保存'}</Button></DialogActions></FormDialog>
+-      <ConfirmDialog deletionTarget={deleteCategoryTarget && { type: 'document_category', id: deleteCategoryTarget.id }} open={Boolean(deleteCategoryTarget)} title="删除文档分类" message={`确定删除分类「${deleteCategoryTarget?.name || ''}」吗？该分类下的文档将自动转为未分类。`} confirmText="删除" destructive loading={deleteCategoryMutation.isPending} onCancel={() => setDeleteCategoryTarget(null)} onConfirm={() => deleteCategoryMutation.mutate()} />
++      <ConfirmDialog deletionTarget={deleteCategoryTarget && { type: 'document_category', id: deleteCategoryTarget.id }} open={Boolean(deleteCategoryTarget)} title="删除文档分类" message={`确定删除分类「${deleteCategoryTarget?.name || ''}」吗？`} confirmText="删除" destructive loading={deleteCategoryMutation.isPending} onCancel={() => setDeleteCategoryTarget(null)} onConfirm={() => deleteCategoryMutation.mutate()} />
+     </Box>
+   );
+ }

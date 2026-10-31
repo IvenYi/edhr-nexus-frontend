@@ -478,7 +478,7 @@ export default function DocumentManagementPage() {
     mutationFn: () => deleteDocumentCategory(deleteCategoryTarget!.id),
     onSuccess: () => {
       if (selectedCategory === deleteCategoryTarget?.id) selectDocumentCategory(DOCUMENT_CATEGORY_UNCATEGORIZED);
-      invalidate(); setDeleteCategoryTarget(null); showMessage('文档分类已删除，旗下文档已转为未分类');
+      invalidate(); setDeleteCategoryTarget(null); showMessage('文档分类已删除');
     },
     onError: (error: Error) => showMessage(error.message, 'error'),
   });
@@ -757,7 +757,7 @@ export default function DocumentManagementPage() {
       <DocumentDetailDrawer open={drawerDocument !== null} document={drawerDocument} version={drawerVersion} tab={drawerTab} onTabChange={setDrawerTab} auditRecords={auditRecords} auditLoading={auditQuery.isLoading} auditError={auditQuery.isError} onClose={closeDetailDrawer} />
       <ConfirmDialog deletionTarget={deleteTarget && { type: deleteTarget.version ? 'document_version' : 'sop_document', id: deleteTarget.version?.id || deleteTarget.document.id }} open={Boolean(deleteTarget)} title={deleteTarget?.version ? '删除文档版本' : '删除文档'} message={deleteTarget?.version ? `确定删除版本「${deleteTarget.version.version}」吗？` : `确定删除文档「${deleteTarget?.document.title || ''}」及其未被引用版本吗？`} confirmText="删除" destructive loading={deleteMutation.isPending} onCancel={() => setDeleteTarget(null)} onConfirm={() => deleteMutation.mutate()} />
       <FormDialog open={Boolean(categoryDialog)} onClose={saveCategoryMutation.isPending ? undefined : () => setCategoryDialog(null)} fullWidth maxWidth="xs"><DialogTitle>{categoryDialog?.mode === 'edit' ? '编辑文档分类' : '新增文档分类'}</DialogTitle><DialogContent dividers><FormDialogSection title="基本信息"><TextField autoFocus required fullWidth size="small" label="文档分类名称" value={categoryName} onChange={(event) => setCategoryName(event.target.value)} onKeyDown={(event) => { if (event.key === 'Enter' && categoryName.trim()) saveCategoryMutation.mutate(); }} /></FormDialogSection></DialogContent><DialogActions><Button disabled={saveCategoryMutation.isPending} onClick={() => setCategoryDialog(null)}>取消</Button><Button variant="contained" disabled={!categoryName.trim() || saveCategoryMutation.isPending} onClick={() => saveCategoryMutation.mutate()}>{saveCategoryMutation.isPending ? '保存中...' : '保存'}</Button></DialogActions></FormDialog>
-      <ConfirmDialog deletionTarget={deleteCategoryTarget && { type: 'document_category', id: deleteCategoryTarget.id }} open={Boolean(deleteCategoryTarget)} title="删除文档分类" message={`确定删除分类「${deleteCategoryTarget?.name || ''}」吗？该分类下的文档将自动转为未分类。`} confirmText="删除" destructive loading={deleteCategoryMutation.isPending} onCancel={() => setDeleteCategoryTarget(null)} onConfirm={() => deleteCategoryMutation.mutate()} />
+      <ConfirmDialog deletionTarget={deleteCategoryTarget && { type: 'document_category', id: deleteCategoryTarget.id }} open={Boolean(deleteCategoryTarget)} title="删除文档分类" message={`确定删除分类「${deleteCategoryTarget?.name || ''}」吗？`} confirmText="删除" destructive loading={deleteCategoryMutation.isPending} onCancel={() => setDeleteCategoryTarget(null)} onConfirm={() => deleteCategoryMutation.mutate()} />
     </Box>
   );
 }

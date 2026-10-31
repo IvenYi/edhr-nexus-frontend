@@ -1,0 +1,51 @@
+Note: Annotation processing is enabled because one or more processors were found
+  on the class path. A future release of javac may disable annotation processing
+  unless at least one processor is specified by name (-processor), or a search
+  path is specified (--processor-path, --processor-module-path), or annotation
+  processing is enabled explicitly (-proc:only, -proc:full).
+  Use -Xlint:-options to suppress this message.
+  Use -proc:none to disable annotation processing.
+Standard Commons Logging discovery in action with spring-jcl: please remove commons-logging.jar from classpath in order to avoid potential conflicts
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.3.0)
+
+2026-10-30T07:36:12.352Z  INFO 22433 --- [edhr] [           main] EdhrCategoryConcurrencyProbe             : Starting EdhrCategoryConcurrencyProbe using Java 21.0.12.1 with PID 22433 (/tmp started by agent in /workspace/edhr-nexus-frontend)
+2026-10-30T07:36:12.354Z  INFO 22433 --- [edhr] [           main] EdhrCategoryConcurrencyProbe             : The following 1 profile is active: "dev"
+2026-10-30T07:36:13.394Z  INFO 22433 --- [edhr] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-10-30T07:36:13.395Z  INFO 22433 --- [edhr] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.24]
+2026-10-30T07:36:13.435Z  INFO 22433 --- [edhr] [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+Standard Commons Logging discovery in action with spring-jcl: please remove commons-logging.jar from classpath in order to avoid potential conflicts
+2026-10-30T07:36:13.499Z DEBUG 22433 --- [edhr] [           main] c.z.e.i.s.JwtAuthenticationFilter        : Filter 'com.zencas.edhr.identity.security.JwtAuthenticationFilter' configured for use
+2026-10-30T07:36:13.593Z  INFO 22433 --- [edhr] [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-10-30T07:36:13.622Z  INFO 22433 --- [edhr] [           main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.5.2.Final
+2026-10-30T07:36:13.640Z  INFO 22433 --- [edhr] [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-10-30T07:36:13.695Z  INFO 22433 --- [edhr] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-10-30T07:36:13.799Z  INFO 22433 --- [edhr] [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@2335aef2
+2026-10-30T07:36:13.800Z  INFO 22433 --- [edhr] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-10-30T07:36:13.820Z  WARN 22433 --- [edhr] [           main] org.hibernate.orm.deprecation            : HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-10-30T07:36:14.559Z  INFO 22433 --- [edhr] [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+WARNING: A Java agent has been loaded dynamically (/workspace/.pr6-m2/net/bytebuddy/byte-buddy-agent/1.14.16/byte-buddy-agent-1.14.16.jar)
+WARNING: If a serviceability tool is in use, please run with -XX:+EnableDynamicAgentLoading to hide this warning
+WARNING: If a serviceability tool is not in use, please run with -Djdk.instrument.traceUsage for more information
+WARNING: Dynamic loading of agents will be disallowed by default in a future release
+OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+2026-10-30T07:36:16.213Z  INFO 22433 --- [edhr] [           main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+2026-10-30T07:36:16.405Z  INFO 22433 --- [edhr] [           main] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@22125b57, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@1362991d, org.springframework.security.web.context.SecurityContextHolderFilter@62146774, org.springframework.security.web.header.HeaderWriterFilter@5f83aac3, org.springframework.web.filter.CorsFilter@11619ade, org.springframework.security.web.authentication.logout.LogoutFilter@26159658, com.zencas.edhr.identity.security.JwtAuthenticationFilter@7f0766ef, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@3e547264, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@5f93c6ef, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@781f1e38, org.springframework.security.web.session.SessionManagementFilter@7c0514f, org.springframework.security.web.access.ExceptionTranslationFilter@20f6e126, org.springframework.security.web.access.intercept.AuthorizationFilter@2544e8bf]
+2026-10-30T07:36:16.671Z  INFO 22433 --- [edhr] [           main] EdhrCategoryConcurrencyProbe             : Started EdhrCategoryConcurrencyProbe in 4.614 seconds (process running for 4.998)
+2026-10-30T07:36:16.921Z  INFO 22433 --- [edhr] [o-auto-1-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-10-30T07:36:16.933Z DEBUG 22433 --- [edhr] [o-auto-1-exec-1] o.s.security.web.FilterChainProxy        : Securing PUT /api/v1/master-data/documents/categories/order
+2026-10-30T07:36:16.967Z DEBUG 22433 --- [edhr] [o-auto-1-exec-1] o.s.security.web.FilterChainProxy        : Secured PUT /api/v1/master-data/documents/categories/order
+2026-10-30T07:36:17.015Z DEBUG 22433 --- [edhr] [o-auto-1-exec-1] horizationManagerBeforeMethodInterceptor : Authorizing method invocation ReflectiveMethodInvocation: public com.zencas.edhr.common.dto.ApiResponse com.zencas.edhr.masterdata.controller.DocumentManagementController.reorderCategories(com.zencas.edhr.masterdata.controller.DocumentManagementController$DocumentCategoryOrderRequest); target is of class [com.zencas.edhr.masterdata.controller.DocumentManagementController]
+2026-10-30T07:36:17.022Z DEBUG 22433 --- [edhr] [o-auto-1-exec-1] horizationManagerBeforeMethodInterceptor : Authorized method invocation ReflectiveMethodInvocation: public com.zencas.edhr.common.dto.ApiResponse com.zencas.edhr.masterdata.controller.DocumentManagementController.reorderCategories(com.zencas.edhr.masterdata.controller.DocumentManagementController$DocumentCategoryOrderRequest); target is of class [com.zencas.edhr.masterdata.controller.DocumentManagementController]
+2026-10-30T07:36:17.173Z DEBUG 22433 --- [edhr] [o-auto-1-exec-2] o.s.security.web.FilterChainProxy        : Securing PUT /api/v1/master-data/documents/categories/order
+2026-10-30T07:36:17.178Z DEBUG 22433 --- [edhr] [o-auto-1-exec-2] o.s.security.web.FilterChainProxy        : Secured PUT /api/v1/master-data/documents/categories/order
+2026-10-30T07:36:17.180Z DEBUG 22433 --- [edhr] [o-auto-1-exec-2] horizationManagerBeforeMethodInterceptor : Authorizing method invocation ReflectiveMethodInvocation: public com.zencas.edhr.common.dto.ApiResponse com.zencas.edhr.masterdata.controller.DocumentManagementController.reorderCategories(com.zencas.edhr.masterdata.controller.DocumentManagementController$DocumentCategoryOrderRequest); target is of class [com.zencas.edhr.masterdata.controller.DocumentManagementController]
+2026-10-30T07:36:17.181Z DEBUG 22433 --- [edhr] [o-auto-1-exec-2] horizationManagerBeforeMethodInterceptor : Authorized method invocation ReflectiveMethodInvocation: public com.zencas.edhr.common.dto.ApiResponse com.zencas.edhr.masterdata.controller.DocumentManagementController.reorderCategories(com.zencas.edhr.masterdata.controller.DocumentManagementController$DocumentCategoryOrderRequest); target is of class [com.zencas.edhr.masterdata.controller.DocumentManagementController]
+2026-10-30T07:36:17.259Z  INFO 22433 --- [edhr] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2026-10-30T07:36:17.261Z  INFO 22433 --- [edhr] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.

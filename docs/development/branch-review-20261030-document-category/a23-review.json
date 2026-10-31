@@ -1,0 +1,17 @@
+{
+  "baseCommit": "d10590bd3fe8f3da4e68bcc087b2102d2c211934",
+  "wholeFileCompletion": 0,
+  "historicalUniqueIncrement": null,
+  "records": [
+    {"symbol": "category stable-ID write locks and fresh before values", "disposition": "necessary-concurrency-integrity", "evidence": "首轮独立真实并发200恢复顺序却0自身审计；排序锁同租户custom集按ID、改名单行先锁，原事务持锁后读取，三组合真实回归通过。不是可删冗余查询或未经授权性能优化；锁等待代价单列。"},
+    {"symbol": "deleteCategory auto-reclassification branch", "disposition": "obsolete-branch-removed", "evidence": "当前真实Aspect在有文档时409、FK RESTRICT兜底，原确认也无自动迁移例外。删除当前调用图不可达旧分支，无生产历史迁移，不靠缺Aspect夹具认证。"},
+    {"symbol": "reorder previousOrder and singletonMap", "disposition": "necessary-boundary", "evidence": "原生canonical sort_order可NULL；需保留真实null前值，不能用Map.of或0默认改历史。只存原整数，不查不相关文档计数。"},
+    {"symbol": "writeChangedAudit final-value comparison", "disposition": "necessary-no-fake-change", "evidence": "重复请求或重复ID最终同值不造变化事件；仅真实持久化前/后排序差量，第二审计失败全回滚。"},
+    {"symbol": "AppDialog precheck and final deletion check", "disposition": "necessary-freshness", "evidence": "预检查非删除授权；串行新增引用后DELETE仍409，加载失败/取消不放行。不可把两次资格核对当冗余删除。"},
+    {"symbol": "unknown/system/other-tenant/repeated order IDs", "disposition": "retained-compatibility-policy-gap", "evidence": "本轮保留原continue及最终赋值语义，真实回归防意外收紧；不自动确认所有宽容分支是合法长期政策，后续业务核定。"},
+    {"symbol": "same-order updatedAt writes", "disposition": "source-candidate", "evidence": "原算法即使业务值同也更新技术时间；当前只不造业务变化审计，未擅改时间语义或性能机制，W6评估。"}
+  ],
+  "historicalQueues": {"languageRows": 856, "previousFeatureAddedPending": 1, "separateSqlRows": 130, "sqlChecked": 0, "priorBatchOverlaysRetained": true},
+  "currentDelta": {"changedPending": ["DocumentManagementController.java", "DocumentCategoryRepository.java", "DocumentManagementControllerTest.java", "DocumentWriteBoundaryIntegrationTest.java", "DocumentManagementPage.tsx"], "addedPending": ["DocumentCategoryAuditPostgresTest.java", "test-document-category-delete-browser.mjs"]},
+  "remaining": "W6全量含旧已审、W7当前目标增量反查；方法级证据不关闭整文件清单，不把历史分母当永远最新。"
+}

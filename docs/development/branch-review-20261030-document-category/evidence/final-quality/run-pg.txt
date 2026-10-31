@@ -1,0 +1,14 @@
+current {'exit': 0, 'suites': [{'suite': 'DocumentCategoryAuditPostgresTest', 'tests': 17, 'failures': 0, 'errors': 0, 'skipped': 0}, {'suite': 'DocumentReadPerformancePostgresTest', 'tests': 71, 'failures': 0, 'errors': 0, 'skipped': 0}, {'suite': 'DocumentWriteBoundaryPostgresTest', 'tests': 55, 'failures': 0, 'errors': 0, 'skipped': 0}], 'totals': {'tests': 143, 'failures': 0, 'errors': 0, 'skipped': 0}}
+Traceback (most recent call last):
+  File "/tmp/edhr-document-category-q2-run-pg.py", line 47, in <module>
+    code=run(cmd,wt,env,label+'-test.txt');print(label,save_xml(wt,['DocumentCategoryAuditPostgresTest'],label,code),flush=True)
+                                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/edhr-document-category-q2-run-pg.py", line 16, in save_xml
+    t=E.parse(f).getroot();rows.append({'suite':cls,**{k:int(t.attrib[k]) for k in ['tests','failures','errors','skipped']}})
+      ^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/xml/etree/ElementTree.py", line 1204, in parse
+    tree.parse(source, parser)
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/xml/etree/ElementTree.py", line 558, in parse
+    source = open(source, "rb")
+             ^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/tmp/edhr-document-category-q2-worktree-old-base/gmp-platform/backend/target/surefire-reports/TEST-com.zencas.edhr.masterdata.controller.DocumentCategoryAuditPostgresTest.xml'

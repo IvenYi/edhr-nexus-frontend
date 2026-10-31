@@ -1,0 +1,201 @@
+{
+  "role": "business-knowledge-modeler",
+  "roleState": "FINAL",
+  "ontologyResult": "not-applicable",
+  "knowledgeBaselineVersion": "0.3.25",
+  "schemaVersion": "1.2.0",
+  "contractBaseline": {
+    "sourceCommit": "d10590bd3fe8f3da4e68bcc087b2102d2c211934",
+    "targetBranch": "edhr-dev",
+    "targetCommit": "d10590bd3fe8f3da4e68bcc087b2102d2c211934",
+    "contractReadCommit": "d10590bd3fe8f3da4e68bcc087b2102d2c211934",
+    "uncommittedContractPaths": []
+  },
+  "capturedAt": "2026-10-30T15:10:34.614534+08:00",
+  "records": [
+    {
+      "id": "DEC-0053-01",
+      "status": "consistent",
+      "scope": "limited normative/source review; not implementation runtime certification",
+      "source": "docs/knowledge/decisions/DEC-0053-master-data-deletion-protection.yaml",
+      "sourceLocator": "DEC-0053-01",
+      "maturityRetained": "specified",
+      "reason": "现有主数据存在阻断关联不得删除；当前文档分类下文档为明确范围，不因提示仍旧而放宽。"
+    },
+    {
+      "id": "DEC-0053-03",
+      "status": "consistent",
+      "scope": "limited normative/source review; not implementation runtime certification",
+      "source": "docs/knowledge/decisions/DEC-0053-master-data-deletion-protection.yaml",
+      "sourceLocator": "DEC-0053-03",
+      "maturityRetained": "specified",
+      "reason": "所有主数据分模块接入，原始架构关系表已列文档分类，未发现自动迁移例外；不宣称未来模块自动全覆盖。"
+    },
+    {
+      "id": "DEC-0053-04",
+      "status": "consistent",
+      "scope": "limited normative/source review; not implementation runtime certification",
+      "source": "docs/knowledge/decisions/DEC-0053-master-data-deletion-protection.yaml",
+      "sourceLocator": "DEC-0053-04",
+      "maturityRetained": "specified",
+      "reason": "预检查只读，无关联才确认，正式删除实时重核；主侧计划保持实际Aspect/FK并新增原生链验证。"
+    },
+    {
+      "id": "rule.master-data-deletion-dependencies",
+      "status": "consistent",
+      "scope": "limited normative/source review; not implementation runtime certification",
+      "source": "docs/knowledge/rules/master-data-deletion.yaml",
+      "sourceLocator": "rule.master-data-deletion-dependencies",
+      "maturityRetained": "specified",
+      "reason": "保护引用为当前规范，删除有文档分类被阻断合理；删除空分类仍需权限/系统分类及审计等原条件。"
+    },
+    {
+      "id": "rule.master-data-deletion-precheck-order",
+      "status": "consistent",
+      "scope": "limited normative/source review; not implementation runtime certification",
+      "source": "docs/knowledge/rules/master-data-deletion.yaml",
+      "sourceLocator": "rule.master-data-deletion-precheck-order",
+      "maturityRetained": "specified",
+      "reason": "共享AppDialog在检查时隐藏确认，失败可重查，取消不删；改旧提示和反馈不新造预检流程。"
+    },
+    {
+      "id": "fact.master-data-deletion.blocking-reference-count",
+      "status": "consistent",
+      "scope": "limited normative/source review; not implementation runtime certification",
+      "source": "docs/knowledge/facts/master-data-deletion.yaml",
+      "sourceLocator": "fact.master-data-deletion.blocking-reference-count",
+      "maturityRetained": "specified",
+      "reason": "规范性阻断事实维持specified/not-available；现有服务实际查引用不等于知识运行时事实目录/通用引擎已集成，不提升成熟度。"
+    },
+    {
+      "id": "rule.master-data.write-audit-snapshot",
+      "status": "consistent",
+      "scope": "limited normative/source review; not implementation runtime certification",
+      "source": "docs/knowledge/rules/master-data-permission-audit.yaml",
+      "sourceLocator": "rule.master-data.write-audit-snapshot",
+      "maturityRetained": "implemented",
+      "reason": "分类实际排序为UPDATE业务配置，沿统一事件保留真实差量；该类别没有description字段，不伪造description或文档计数。"
+    },
+    {
+      "id": "DEC-0065-03",
+      "status": "consistent",
+      "scope": "limited normative/source review; not implementation runtime certification",
+      "source": "docs/knowledge/decisions/DEC-0065-master-data-permission-audit-contract.yaml",
+      "sourceLocator": "DEC-0065-03",
+      "maturityRetained": "implemented",
+      "reason": "保留通用主数据沿统一AuditEvent前后快照语义；旧产品簇专属实体类型和description声明不扩大为文档分类的新字段义务。"
+    },
+    {
+      "id": "term.audit-change-snapshot",
+      "status": "consistent",
+      "scope": "limited normative/source review; not implementation runtime certification",
+      "source": "docs/knowledge/glossary.yaml",
+      "sourceLocator": "term.audit-change-snapshot",
+      "maturityRetained": "implemented",
+      "reason": "仅排序中文键及真实NULL前值符合真实差量，不重复未变化身份/整配置；重复最终值不得伪造业务变化事件。"
+    },
+    {
+      "id": "concept.audit-change-snapshot",
+      "status": "consistent",
+      "scope": "limited normative/source review; not implementation runtime certification",
+      "source": "docs/knowledge/ontology.yaml",
+      "sourceLocator": "concept.audit-change-snapshot",
+      "maturityRetained": "implemented",
+      "reason": "沿原概念和身份，不创建第二套快照、历史回填或新规则引擎执行承诺。"
+    },
+    {
+      "id": "term.audit-event",
+      "status": "consistent",
+      "scope": "limited normative/source review; not implementation runtime certification",
+      "source": "docs/knowledge/glossary.yaml",
+      "sourceLocator": "term.audit-event",
+      "maturityRetained": "implemented",
+      "reason": "每个实际变化分类可分别有独立不可变事件、对象/操作者/时点；排序保存与事件原子性仍待实现和质量运行验收。"
+    },
+    {
+      "id": "concept.audit-event",
+      "status": "consistent",
+      "scope": "limited normative/source review; not implementation runtime certification",
+      "source": "docs/knowledge/ontology.yaml",
+      "sourceLocator": "concept.audit-event",
+      "maturityRetained": "implemented",
+      "reason": "使用现有AuditEvent实体及sealed hash，不提升为本批运行通过或整域语义完成。"
+    }
+  ],
+  "limitedSemanticIds": 12,
+  "wholeFileCompletion": 0,
+  "newHistoricalUniqueIncrement": null,
+  "authorityAssessment": [
+    {
+      "classification": "versioned-current-policy plus repository-original evidence",
+      "conclusion": "原始ab308 DEC0053和同提交架构表已包含文档分类引用保护。不是按日期选最新，不新增自动迁移例外；没有重新取回外部聊天原话或截图。"
+    },
+    {
+      "classification": "original implementation evidence",
+      "conclusion": "当前Aspect在业务删除前检查document_category→sop_document非owned引用，canonical FK为RESTRICT；旧控制器迁移分支和UI确认/成功提示证明实现漂移，不是新业务政策。"
+    },
+    {
+      "classification": "normative rule plus engineering application",
+      "conclusion": "现有真实差量和统一UPDATE审计规范支持分类排序每对象仅记实际变化的排序；TemplateModeling的同类实现为旁证，不复用其潜在查询开销。"
+    }
+  ],
+  "compatibilityAndScope": [
+    "空/部分/未知/重复排序ID现行为保持，不把它们提升为已确认业务政策。",
+    "NULL排序是canonical允许的真实边界；仅NULL到具体新顺序写真实before/after，未变对象不生成fake业务变化。",
+    "删除保护不因分类展示或旧自动迁移提示放宽。空分类成功删除仍需系统分类/页面权限等原条件，引用完整性和失败回滚待实际运行。",
+    "替换缺Aspect授权正向夹具为删除空分类、增加真实guard测试属于测试与生产有效路径对齐，不应删除原文档保留/引用阻断断言。",
+    "主侧将同时修正旧确认提示及旧成功反馈；本角色仅核对方案，未执行浏览器或产品测试，未认证尚未发生修复。"
+  ],
+  "remaining": [
+    "主侧真实PG/API及浏览器模拟的独立最终质量结果另验；本结果不认证全系统E2E/生产迁移/容量。",
+    "A23当前有限范围不替代W6旧已审全量回查或W7增量，设备物料及其他文档性能仍待讨论。",
+    "premium85工具提示是主侧决策包中的待核候选，本角色未运行该静态工具或认定85真实缺陷。",
+    "TaskDetail友方、生产弹窗设计、记录控制依赖DHRhigh/A12及四知识gap保留；不恢复/重算历史数据。"
+  ],
+  "knowledgeChangedByRole": [],
+  "questions": [],
+  "conflicts": [],
+  "sourceState": "Baseline d105 and confirmed correction plan; product diff empty at this role capture, new native test source untracked. No runtime repair acceptance claimed.",
+  "knowledgeExecution": {
+    "command": "bash /workspace/.edhr-cloud-tools/mvn-edhr -f tools/knowledge-model/pom.xml test",
+    "exit": 0,
+    "tests": 89,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "historyOriginals": [
+    {
+      "revision": "ab308f0c15292ed024a383218419c37ef86820d4",
+      "sourcePath": "docs/knowledge/decisions/DEC-0053-master-data-deletion-protection.yaml",
+      "blob": "90b7f83a259b1caf5e231fe38c2599635b9e43c1",
+      "raw": "/tmp/edhr-document-category-ontology-history-deletion-decision.yaml",
+      "sha256": "8caf2694aae0a4f0f33d9ac6c57fd82dc2447e44b8922d867433447b9a93d89f",
+      "bytes": 7592
+    },
+    {
+      "revision": "ab308f0c15292ed024a383218419c37ef86820d4",
+      "sourcePath": "docs/knowledge/evidence/master-data-deletion-user-confirmed.md",
+      "blob": "694a1695b45fb93141c4780f3243afabd0df74f1",
+      "raw": "/tmp/edhr-document-category-ontology-history-deletion-confirmed.md",
+      "sha256": "209acedbc8422dc1fb4052c3b70db7253fc6e6e0da751a8f305292a1b33329c4",
+      "bytes": 5612
+    },
+    {
+      "revision": "ab308f0c15292ed024a383218419c37ef86820d4",
+      "sourcePath": "docs/architecture/master-data-deletion-protection.md",
+      "blob": "00fbc245a40e1bbe3742c94fc6667a56a46188a9",
+      "raw": "/tmp/edhr-document-category-ontology-history-deletion-architecture.md",
+      "sha256": "c71d09a3150cdca1da81df51a666a6d5187915a9d8893418249117ed2b508f62",
+      "bytes": 5452
+    },
+    {
+      "revision": "1092c0ae09f32c19417629307c59fe94b08acc69",
+      "sourcePath": "docs/knowledge/decisions/DEC-0065-master-data-permission-audit-contract.yaml",
+      "blob": "b5d475ab0a4284cf4f48e582940457b1bfd56dfa",
+      "raw": "/tmp/edhr-document-category-ontology-history-audit-decision.yaml",
+      "sha256": "0e981beb87292e9fff406455c2049a2053015e871f71ba876118b71a3c9c6e5f",
+      "bytes": 4585
+    }
+  ]
+}

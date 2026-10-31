@@ -1,0 +1,136 @@
+decisionPackage:
+  id: DEC-PACKAGE-AUDIT-DOCUMENT-CATEGORY-20261030
+  scope: PR45合入后核对文档分类排序审计及真实删除保护链
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: ac3a421e42529bdb304e2c72145ceb580ec70618
+    targetBranch: edhr-dev
+    targetCommit: d10590bd3fe8f3da4e68bcc087b2102d2c211934
+    contractReadCommit: d10590bd3fe8f3da4e68bcc087b2102d2c211934
+    uncommittedContractPaths: []
+  summary: 按现有主数据写审计补齐分类实际排序变化的不可变差量事件，并修复首轮独立确认的并发旧前值漏审计；按现有删除保护保留有文档分类阻断，纠正旧自动转未分类提示及不可达迁移分支。不改排序负载兼容、权限、删除规则或历史数据。
+  confirmed:
+    concepts: []
+    relationships: []
+    rules:
+      - id: rule.master-data.write-audit-snapshot
+        name: 主数据写操作保留统一审计变更快照
+        status: implemented
+        trigger: master-data.write
+        condition:
+          all:
+            - fact: masterData.writeAction
+              operator: in
+              value: [CREATE, UPDATE, DELETE]
+        result:
+          type: write-audit-record
+          includeBeforeAfter: true
+          snapshotSource: persisted-business-entity
+          descriptionFieldIncluded: true
+        sourceReferences: [docs/knowledge/rules/master-data-permission-audit.yaml, docs/knowledge/decisions/DEC-0065-master-data-permission-audit-contract.yaml]
+      - id: rule.master-data-deletion-dependencies
+        name: 主数据删除关联保护
+        status: specified
+        trigger: master-data.delete
+        condition:
+          fact: fact.master-data-deletion.blocking-reference-count
+          operator: greater-than-or-equal
+          value: 1
+        result:
+          type: block
+          reason: master-data-referenced
+          message: 存在关联数据，请先查看对应模块中的约束关系
+        sourceReferences: [docs/knowledge/decisions/DEC-0053-master-data-deletion-protection.yaml, docs/knowledge/evidence/master-data-deletion-user-confirmed.md, docs/architecture/master-data-deletion-protection.md]
+    executionContracts: []
+  inferred:
+    - id: inference.document-category-concurrent-before-values
+      statement: 首轮独立实际HTTP证明两个200请求都读原始排序时，后请求覆盖顺序却无自身审计；同一排序审计家族的前值新鲜度缺口。
+      rationale: 保留原最后提交结果语义，分类排序在固定ID顺序悲观写锁内读取前值，分类改名单行同样先锁定，避免两条写链相互覆盖名称/排序；不新增版本冲突产品政策。
+      relatedIds: [rule.master-data.write-audit-snapshot]
+    - id: inference.document-category-order-audit-omission
+      statement: 同主数据分类实际排序属于UPDATE，已有模板分类排序审计提供实现对照，文档分类排序漏写审计是实现缺口。
+      rationale: DEC0065写审计规范、既有文档分类快照含排序、共享模板分类同操作有逐对象变化审计；实际后果以真实接口及数据库断言核验。
+      relatedIds: [rule.master-data.write-audit-snapshot]
+    - id: inference.document-category-delete-stale-branch
+      statement: 现行DEC0053和架构表明确文档分类按下属文档保护；旧UI自动转未分类及控制器迁移分支不能成为放宽删除的政策来源。
+      rationale: 当前真实Aspect/引用图/FK均阻断，保留生产有效规则；按真实PG链核验，空分类删除仍审计。有权删除测试改用空分类，不再以缺Aspect夹具认证旧迁移行为。
+      relatedIds: [DEC-0053-01, DEC-0053-03, rule.master-data-deletion-dependencies]
+  unresolved: []
+  replacementScopes: []
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - area: concurrent-category-writes
+        change: 分类排序按同租户自定义分类稳定ID序加锁，改名按同租户目标ID加锁，读取最新行后才计算审计和写入；沿原事务持锁，不锁列表读取或其他租户。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/repository/DocumentCategoryRepository.java]
+      - area: category-reorder-audit
+        change: 保存前记录原始sortOrder，完成原排序语义后每个真实变化分类写一个仅排序差量审计；同一事务失败全回滚，不引入分类文档计数查库。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/DocumentManagementController.java]
+      - area: category-delete-contract
+        change: 保留现有删除Aspect/FK/权限；移除其后不可达的文档自动改分类逻辑，确认提示只陈述删除空分类。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/deletion/DeletionRelations.java, gmp-platform/frontend/src/pages/master-data/DocumentManagementPage.tsx]
+    transitiveImpacts:
+      - area: regression-fixtures
+        change: 缺删除Aspect的旧授权正向改为删除空分类；新增真实canonical PG/Aspect覆盖有引用409、空分类成功及预检后新增引用阻断。
+        evidenceReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/DocumentWriteBoundaryIntegrationTest.java]
+    potentialImpacts:
+      - area: lock-order-and-contention
+        concern: 两排序或排序与改名依次完成、两者仍可成功并完整审计；锁等待为完整性必要代价，固定ID顺序避免随显示排序改变锁顺序。不承诺大分类集时延或所有并发组合认证。
+        evidenceReferences: []
+      - area: payload-compatibility
+        concern: 空/部分/未知/重复ID的现有排序处理保持，不把此批访问和审计验证当兼容政策已完整确认；相同最终值不新增虚假变化审计。
+        evidenceReferences: []
+    unaffectedAreas:
+      - area: original-deferrals
+        change: TaskDetail友方、生产管理弹窗设计、记录控制依赖DHRhigh/A12、四知识gap不恢复；设备物料/其他文档性能仍先讨论。
+        evidenceReferences: [docs/development/branch-review-20261015/NEXT.md]
+    compatibilityAndMigration:
+      - area: schema-history
+        change: 无生产迁移、历史审计回填或文档重新归类。隔离PG仅按当前canonical schema全新初始化；不回放旧迁移或修复历史数据。
+        evidenceReferences: []
+    snapshotImpacts:
+      - area: production
+        change: 不改变DHR/执行快照、文档身份或版本内容。
+        evidenceReferences: []
+    auditImpacts:
+      - area: sorting
+        change: 新增实际排序UPDATE差量使用现有AuditEvent/操作者/哈希，不新建审计模型，不把重复请求记录成新的业务排序变化。
+        evidenceReferences: []
+    permissionImpacts:
+      - area: unchanged-resource
+        change: 继承PR45的master-data.documents，真实预检查沿原服务权限/租户和删除时事务重核。
+        evidenceReferences: []
+    testImpacts:
+      - scope: category-native-and-browser
+        scenarios: [排序真实前后差量, 重复请求/空/部分/未知重复ID兼容, NULL排序值, 第二审计失败原子回滚, 真实删除保护和无引用删除, 匿名与缺权, 预检失败/加载/取消/窄屏/键盘/确认提示, 两排序并发恢复原序仍审计, 排序后改名不恢复旧序, 改名后排序不覆盖名称]
+        evidenceReferences: []
+    evidenceGaps:
+      - 原分类写findAll/重复计数、详情与删除版本增长仍为其他路径性能候选，本轮无新性能优化授权。
+      - 浏览器API模拟与原生PG真实服务分开报告，不冒称浏览器直连生产或全系统E2E。
+      - 现有全仓premium静态85提示为工具候选（含13ownership未决），逐项源码核对/误报区分列后续W5/W6；不以工具绿灯扩大本批改动或声称全前端通过。
+  extensionStrategy:
+    selectedPaths: [product-core]
+    rationale: 复用现有差量审计、删除Aspect及ConfirmDialog/AppDialog，局部修复不新增抽象/权限/弹窗体系。
+    ownershipBoundaries:
+      - owner: DocumentManagementController
+        responsibility: 原分类命令事务和每对象审计；删除资格保持由现有保护及FK负责。
+      - owner: DocumentCategoryRepository
+        responsibility: 明确写锁读取端口与稳定ID锁序；普通列表/分类读取继续使用无写锁查询。
+      - owner: ConfirmDialog/AppDialog
+        responsibility: 现有预检查/阻断/确认及焦点；页面仅给正确业务提示。
+  affectedFiles:
+    - path: gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/repository/DocumentCategoryRepository.java
+      changeType: update
+      reason: 首轮独立并发遗漏的锁内新鲜前值与相邻改名写链同步。
+    - path: gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/DocumentManagementController.java
+      changeType: update
+      reason: 补排序审计，清除不符合当前删除保护的旧不可达分支。
+    - path: gmp-platform/frontend/src/pages/master-data/DocumentManagementPage.tsx
+      changeType: update
+      reason: 删除提示与现行保护一致，不重新设计布局。
+  acceptanceScenarios:
+    - id: scenario.category-current-audit-and-protection
+      given: 有权主体、两个自定义分类与真实引用/FK/删除Aspect
+      when: 改排序或删除分类，以及注入审计失败/预检后新增引用
+      then: 每项真实变化留一个准确不可变差量；失败全回滚；有文档仍409保留原归属，无引用可删除并审计；UI不承诺自动改分类。
+      evidenceRequirements: [旧正常API排序缺审计红与删除正向控制, 真实canonical PG链及失败回滚, 同源浏览器红绿/真实共享弹窗, 新实例最终独立复验]

@@ -1,0 +1,44 @@
+{
+  "tests": 14,
+  "failures": 6,
+  "errors": 0,
+  "skipped": 0,
+  "failureDetails": [
+    {
+      "name": "failureOnTheSecondCategoryAuditRollsBackBothOrdersAndAllAuditRows",
+      "message": "\nexpected: 400\n but was: 200"
+    },
+    {
+      "name": "unknownSystemTenantAndRepeatedIdsKeepTheirExistingFinalValueSemantics",
+      "message": "\nexpected: 1\n but was: 0"
+    },
+    {
+      "name": "repeatingTheSameOrderDoesNotInventAnotherBusinessChange",
+      "message": "\nexpected: 2\n but was: 0"
+    },
+    {
+      "name": "partialOrderAuditsOnlyItsActualChange",
+      "message": "\nexpected: 1\n but was: 0"
+    },
+    {
+      "name": "actualOrderChangesHaveExactPerCategoryDeltaAndActor",
+      "message": "\nExpected size: 1 but was: 0 in:\n[]"
+    },
+    {
+      "name": "aNullableStoredOrderIsPreservedAsNullInTheBeforeSnapshot",
+      "message": "\nexpected: 1\n but was: 0"
+    }
+  ],
+  "command": [
+    "bash",
+    "/workspace/.edhr-cloud-tools/mvn-edhr",
+    "-f",
+    "gmp-platform/backend/pom.xml",
+    "-Dtest=DocumentCategoryAuditPostgresTest",
+    "-Dedhr.audit.categoryOutput=/tmp/edhr-document-category-old-http.jsonl",
+    "test"
+  ],
+  "exit": 1,
+  "sourceCommit": "d10590bd3fe8f3da4e68bcc087b2102d2c211934",
+  "canonicalSchemaSha256": "61560f972ef9eeeb8f69620c947b54b2326ad9341d929b19385653bec81cf99b"
+}

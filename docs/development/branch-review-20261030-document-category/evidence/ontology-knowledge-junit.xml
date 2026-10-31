@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="com.zencas.edhr.knowledge.BusinessKnowledgeModelTest" time="7.586" tests="89" errors="0" skipped="0" failures="0">
+  <properties>
+    <property name="java.specification.version" value="21"/>
+    <property name="sun.jnu.encoding" value="UTF-8"/>
+    <property name="java.class.path" value="/workspace/edhr-nexus-frontend/tools/knowledge-model/target/test-classes:/workspace/edhr-nexus-frontend/tools/knowledge-model/target/classes:/workspace/.pr6-m2/org/yaml/snakeyaml/2.2/snakeyaml-2.2.jar:/workspace/.pr6-m2/org/junit/jupiter/junit-jupiter/5.10.2/junit-jupiter-5.10.2.jar:/workspace/.pr6-m2/org/junit/jupiter/junit-jupiter-api/5.10.2/junit-jupiter-api-5.10.2.jar:/workspace/.pr6-m2/org/opentest4j/opentest4j/1.3.0/opentest4j-1.3.0.jar:/workspace/.pr6-m2/org/junit/platform/junit-platform-commons/1.10.2/junit-platform-commons-1.10.2.jar:/workspace/.pr6-m2/org/apiguardian/apiguardian-api/1.1.2/apiguardian-api-1.1.2.jar:/workspace/.pr6-m2/org/junit/jupiter/junit-jupiter-params/5.10.2/junit-jupiter-params-5.10.2.jar:/workspace/.pr6-m2/org/junit/jupiter/junit-jupiter-engine/5.10.2/junit-jupiter-engine-5.10.2.jar:/workspace/.pr6-m2/org/junit/platform/junit-platform-engine/1.10.2/junit-platform-engine-1.10.2.jar:/workspace/.pr6-m2/org/assertj/assertj-core/3.25.3/assertj-core-3.25.3.jar:/workspace/.pr6-m2/net/bytebuddy/byte-buddy/1.14.16/byte-buddy-1.14.16.jar:"/>
+    <property name="java.vm.vendor" value="Eclipse Adoptium"/>
+    <property name="sun.arch.data.model" value="64"/>
+    <property name="java.vendor.url" value="https://adoptium.net/"/>
+    <property name="os.name" value="Linux"/>
+    <property name="java.vm.specification.version" value="21"/>
+    <property name="sun.java.launcher" value="SUN_STANDARD"/>
+    <property name="sun.boot.library.path" value="/workspace/.edhr-cloud-tools/jdk-21.0.12.1+1/lib"/>
+    <property name="sun.java.command" value="/workspace/edhr-nexus-frontend/tools/knowledge-model/target/surefire/surefirebooter-20261030070611660_3.jar /workspace/edhr-nexus-frontend/tools/knowledge-model/target/surefire 2026-10-30T07-06-11_595-jvmRun1 surefire-20261030070611660_1tmp surefire_0-20261030070611660_2tmp"/>
+    <property name="jdk.debug" value="release"/>
+    <property name="surefire.test.class.path" value="/workspace/edhr-nexus-frontend/tools/knowledge-model/target/test-classes:/workspace/edhr-nexus-frontend/tools/knowledge-model/target/classes:/workspace/.pr6-m2/org/yaml/snakeyaml/2.2/snakeyaml-2.2.jar:/workspace/.pr6-m2/org/junit/jupiter/junit-jupiter/5.10.2/junit-jupiter-5.10.2.jar:/workspace/.pr6-m2/org/junit/jupiter/junit-jupiter-api/5.10.2/junit-jupiter-api-5.10.2.jar:/workspace/.pr6-m2/org/opentest4j/opentest4j/1.3.0/opentest4j-1.3.0.jar:/workspace/.pr6-m2/org/junit/platform/junit-platform-commons/1.10.2/junit-platform-commons-1.10.2.jar:/workspace/.pr6-m2/org/apiguardian/apiguardian-api/1.1.2/apiguardian-api-1.1.2.jar:/workspace/.pr6-m2/org/junit/jupiter/junit-jupiter-params/5.10.2/junit-jupiter-params-5.10.2.jar:/workspace/.pr6-m2/org/junit/jupiter/junit-jupiter-engine/5.10.2/junit-jupiter-engine-5.10.2.jar:/workspace/.pr6-m2/org/junit/platform/junit-platform-engine/1.10.2/junit-platform-engine-1.10.2.jar:/workspace/.pr6-m2/org/assertj/assertj-core/3.25.3/assertj-core-3.25.3.jar:/workspace/.pr6-m2/net/bytebuddy/byte-buddy/1.14.16/byte-buddy-1.14.16.jar:"/>
+    <property name="sun.cpu.endian" value="little"/>
+    <property name="user.home" value="/home/agent"/>
+    <property name="user.language" value="en"/>
+    <property name="java.specification.vendor" value="Oracle Corporation"/>
+    <property name="java.version.date" value="2026-08-18"/>
+    <property name="java.home" value="/workspace/.edhr-cloud-tools/jdk-21.0.12.1+1"/>
+    <property name="file.separator" value="/"/>
+    <property name="basedir" value="/workspace/edhr-nexus-frontend/tools/knowledge-model"/>
+    <property name="java.vm.compressedOopsMode" value="Zero based"/>
+    <property name="line.separator" value="&#10;"/>
+    <property name="java.specification.name" value="Java Platform API Specification"/>
+    <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
+    <property name="surefire.real.class.path" value="/workspace/edhr-nexus-frontend/tools/knowledge-model/target/surefire/surefirebooter-20261030070611660_3.jar"/>
+    <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
+    <property name="java.runtime.version" value="21.0.12.1+1-LTS"/>
+    <property name="user.name" value="agent"/>
+    <property name="stdout.encoding" value="UTF-8"/>
+    <property name="path.separator" value=":"/>
+    <property name="os.version" value="6.18.57"/>
+    <property name="java.runtime.name" value="OpenJDK Runtime Environment"/>
+    <property name="file.encoding" value="UTF-8"/>
+    <property name="java.vm.name" value="OpenJDK 64-Bit Server VM"/>
+    <property name="java.vendor.version" value="Temurin-21.0.12.1+1"/>
+    <property name="localRepository" value="/workspace/.pr6-m2"/>
+    <property name="java.vendor.url.bug" value="https://github.com/adoptium/adoptium-support/issues"/>
+    <property name="java.io.tmpdir" value="/tmp"/>
+    <property name="java.version" value="21.0.12.1"/>
+    <property name="user.dir" value="/workspace/edhr-nexus-frontend/tools/knowledge-model"/>
+    <property name="os.arch" value="amd64"/>
+    <property name="java.vm.specification.name" value="Java Virtual Machine Specification"/>
+    <property name="native.encoding" value="UTF-8"/>
+    <property name="java.library.path" value="/usr/java/packages/lib:/usr/lib64:/lib64:/lib:/usr/lib"/>
+    <property name="java.vm.info" value="mixed mode, sharing"/>
+    <property name="stderr.encoding" value="UTF-8"/>
+    <property name="java.vendor" value="Eclipse Adoptium"/>
+    <property name="java.vm.version" value="21.0.12.1+1-LTS"/>
+    <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
+    <property name="maven.repo.local" value="/workspace/.pr6-m2"/>
+    <property name="java.class.version" value="65.0"/>
+  </properties>
+  <testcase name="yamlParserErrorsContainTheRepositoryRelativeFilePath(Path)" classname="com.zencas.edhr.knowledge.BusinessKnowledgeModelTest" time="0.121"/>
+  <testcase name="unknownScalarCollectionsAreRejected" classname="com.zencas.edhr.knowledge.BusinessKnowledgeModelTest" time="0.349"/>
+  <testcase name="explicitFactReferencesCannotBeUsedAsPredicateExpectations" classname="com.zencas.edhr.knowledge.BusinessKnowledgeModelTest" time="0.271"/>
+  <testcase name="factCatalogCannotBeBypassedByOmittingProfile" classname="com.zencas.edhr.knowledge.BusinessKnowledgeModelTest" time="0.123"/>
+  <testcase name="conditionGroupsRejectAdditionalFields" classname="com.zencas.edhr.knowledge.BusinessKnowledgeModelTest" time="0.118"/>
+  <testcase name="schemaRejectsInvalidFieldTypeDescriptors(String, String, String, String)[1]" classname="com.zencas.edhr.knowledge.BusinessKnowledgeModelTest" time="0.111"/>
+  <testcase name="schemaRejectsInvalidFieldTypeDescriptors(String, String, String, String)[2]" classname="com.zencas.edhr.knowledge.BusinessKnowledgeModelTest" time="0.058"/>
+  <testcase name="schemaRejectsInvalidFieldTypeDescriptors(String, String, String, String)[3]" classname="com.zencas.edhr.knowledge.BusinessKnowledgeModelTest" time="0.061"/>
+  <testcase name="repositoryRootCanBeLocatedFromRootBackendAndIdeWorkingDirectories" classname="com.zencas.edhr.knowledge.BusinessKnowledgeModelTest" time="0.005"/>
+  <testcase name="invalidRuleResultTypesAreRejected" classname="com.zencas.edhr.knowledge.BusinessKnowledgeModelTest" time="0.079"/>
+  <testcase name="nestedCollectionsAreDiscoveredFromSchemaMappings" classname="com.zencas.edhr.knowledge.BusinessKnowledgeModelTest" time="0.116"/>
+  <testcase name="currentKnowledgeModelIsValid" classname="com.zencas.edhr.knowledge.BusinessKnowledgeModelTest" time="0.099"/>
+  <testcase name="referencedExecutionContractsMustSatisfySchemaPolicy(String, String, Object, String)[1]" classname="com.zencas.edhr.knowledge.BusinessKnowledgeModelTest" time="0.121"/>
+  <testcase name="referencedExecutionContractsMustSatisfySchemaPolicy(String, String, Object, String)[2]" classname="com.zencas.edhr.knowledge.BusinessKnowledgeModelTest" time="0.139"/>
+  <testcase name="referencedExecutionContractsMustSatisfySchemaPolicy(String, String, Object, String)[3]" classname="com.zencas.edhr.knowledge.BusinessKnowledgeModelTest" time="0.108"/>
+  <testcase name="factsRequireProvenanceFields" classname="com.zencas.edhr.knowledge.BusinessKnowledgeModelTest" time="0.078"/>
+  <testcase name="schemaCollectionMappingsMustCoverEveryRecordType" classname="com.zencas.edhr.knowledge.BusinessKnowledgeModelTest" time="0.065"/>
+  <testcase name="verifiedInternalRecordsRequireExecutionContracts" classname="com.zencas.edhr.knowledge.BusinessKnowledgeModelTest" time="0.072"/>
+  <testcase name="stringOperatorsRejectNonStringFacts" classname="com.zencas.edhr.knowledge.BusinessKnowledgeModelTest" time="0.082"/>
+  <testcase name="malformedTopLevelCollectionsReportTheirDocument" classname="com.zencas.edhr.knowledge.BusinessKnowledgeModelTest" time="0.056"/>
+  <testcase name="executionContractReferencesMustResolveEvenForNonVerifiedRules" classname="com.zencas.edhr.knowledge.BusinessKnowledgeModelTest" time="0.081"/>
+  <testcase name="invalidStatusesAreRejected" classname="com.zencas.edhr.knowledge.BusinessKnowledgeModelTest" time="0.067"/>
+  <testcase name="factCatalogRejectsOperatorNotAllowedByFact" classname="com.zencas.edhr.knowledge.BusinessKnowledgeModelTest" time="0.075"/>
+  <testcase name="schemaRejectsNestedDescriptorMappingMismatch" classname="com.zencas.edhr.knowledge.BusinessKnowledgeModelTest" time="0.055"/>
+  <testcase name="factValueTypesMustComeFromTheControlledVocabulary" classname="com.zencas.edhr.knowledge.BusinessKnowledgeModelTest" time="0.064"/>
+  <testcase name="factNamesInStringsAreNeverImplicitlyDereferenced" classname="com.zencas.edhr.knowledge.BusinessKnowledgeModelTest" time="0.079"/>
+  <testcase name="knownNestedCollectionsCannotAppearOnUndeclaredParentRecordTypes" classname="com.zencas.edhr.knowledge.BusinessKnowledgeModelTest" time="0.06"/>
+  <testcase name="invalidConditionOperatorsAreRejected" classname="com.zencas.edhr.knowledge.BusinessKnowledgeModelTest" time="0.07"/>
+  <testcase name="typedComparisonsPreserveNumericAndPredicateSemantics(String, String, String, Object)[1]" classname="com.zencas.edhr.knowledge.BusinessKnowledgeModelTest" time="0.105"/>
+  <testcase name="typedComparisonsPreserveNumericAndPredicateSemantics(String, String, String, Object)[2]" classname="com.zencas.edhr.knowledge.BusinessKnowledgeModelTest" time="0.138"/>
+  <testcase name="typedComparisonsPreserveNumericAndPredicateSemantics(String, String, String, Object)[3]" classname="com.zencas.edhr.knowledge.BusinessKnowledgeModelTest" time="0.096"/>
+  <testcase name="typedComparisonsPreserveNumericAndPredicateSemantics(String, String, String, Object)[4]" classname="com.zencas.edhr.knowledge.BusinessKnowledgeModelTest" time="0.087"/>
+  <testcase name="typedComparisonsPreserveNumericAndPredicateSemantics(String, String, String, Object)[5]" classname="com.zencas.edhr.knowledge.BusinessKnowledgeModelTest" time="0.089"/>
+  <testcase name="typedComparisonsPreserveNumericAndPredicateSemantics(String, String, String, Object)[6]" classname="com.zencas.edhr.knowledge.BusinessKnowledgeModelTest" time="0.104"/>
+  <testcase name="typedComparisonsPreserveNumericAndPredicateSemantics(String, String, String, Object)[7]" classname="com.zencas.edhr.knowledge.BusinessKnowledgeModelTest" time="0.081"/>
+  <testcase name="typedComparisonsPreserveNumericAndPredicateSemantics(String, String, String, Object)[8]" classname="com.zencas.edhr.knowledge.BusinessKnowledgeModelTest" time="0.108"/>
+  <testcase name="danglingEvidenceIdsAreRejected" classname="com.zencas.edhr.knowledge.BusinessKnowledgeModelTest" time="0.095"/>
+  <testcase name="verifiedRulesCanReferenceValidRegisteredExecutionContracts" classname="com.zencas.edhr.knowledge.BusinessKnowledgeModelTest" time="0.083"/>
+  <testcase name="invalidCardinalitiesAreRejected" classname="com.zencas.edhr.knowledge.BusinessKnowledgeModelTest" time="0.07"/>
+  <testcase name="factCatalogRejectsUnknownSemanticAlias" classname="com.zencas.edhr.knowledge.BusinessKnowledgeModelTest" time="0.073"/>
+  <testcase name="conditionNotGroupsRequireOneExpression" classname="com.zencas.edhr.knowledge.BusinessKnowledgeModelTest" time="0.068"/>
+  <testcase name="enumFactsRequireAnExplicitNonEmptyValueSet" classname="com.zencas.edhr.knowledge.BusinessKnowledgeModelTest" time="0.07"/>
+  <testcase name="numericComparisonRejectsStringFactEvenWhenItsOperatorIsListed" classname="com.zencas.edhr.knowledge.BusinessKnowledgeModelTest" time="0.092"/>
+  <testcase name="schemaIdPrefixesMustCoverEveryRecordType" classname="com.zencas.edhr.knowledge.BusinessKnowledgeModelTest" time="0.101"/>
+  <testcase name="nestedDuplicateIdsAreRejected" classname="com.zencas.edhr.knowledge.BusinessKnowledgeModelTest" time="0.068"/>
+  <testcase name="ruleOperandsMustMatchTheirDeclaredFacts(String, String, String, Object, String)[1]" classname="com.zencas.edhr.knowledge.BusinessKnowledgeModelTest" time="0.076"/>
+  <testcase name="ruleOperandsMustMatchTheirDeclaredFacts(String, String, String, Object, String)[2]" classname="com.zencas.edhr.knowledge.BusinessKnowledgeModelTest" time="0.081"/>
+  <testcase name="ruleOperandsMustMatchTheirDeclaredFacts(String, String, String, Object, String)[3]" classname="com.zencas.edhr.knowledge.BusinessKnowledgeModelTest" time="0.074"/>
+  <testcase name="ruleOperandsMustMatchTheirDeclaredFacts(String, String, String, Object, String)[4]" classname="com.zencas.edhr.knowledge.BusinessKnowledgeModelTest" time="0.074"/>
+  <testcase name="ruleOperandsMustMatchTheirDeclaredFacts(String, String, String, Object, String)[5]" classname="com.zencas.edhr.knowledge.BusinessKnowledgeModelTest" time="0.074"/>
+  <testcase name="ruleOperandsMustMatchTheirDeclaredFacts(String, String, String, Object, String)[6]" classname="com.zencas.edhr.knowledge.BusinessKnowledgeModelTest" time="0.074"/>
+  <testcase name="ruleOperandsMustMatchTheirDeclaredFacts(String, String, String, Object, String)[7]" classname="com.zencas.edhr.knowledge.BusinessKnowledgeModelTest" time="0.078"/>
+  <testcase name="ruleOperandsMustMatchTheirDeclaredFacts(String, String, String, Object, String)[8]" classname="com.zencas.edhr.knowledge.BusinessKnowledgeModelTest" time="0.076"/>
+  <testcase name="ruleOperandsMustMatchTheirDeclaredFacts(String, String, String, Object, String)[9]" classname="com.zencas.edhr.knowledge.BusinessKnowledgeModelTest" time="0.076"/>
+  <testcase name="ruleOperandsMustMatchTheirDeclaredFacts(String, String, String, Object, String)[10]" classname="com.zencas.edhr.knowledge.BusinessKnowledgeModelTest" time="0.074"/>
+  <testcase name="conditionLeavesRejectAdditionalFields" classname="com.zencas.edhr.knowledge.BusinessKnowledgeModelTest" time="0.068"/>
+  <testcase name="absoluteEvidencePathsAreRejectedEvenWhenTheyExist" classname="com.zencas.edhr.knowledge.BusinessKnowledgeModelTest" time="0.073"/>
+  <testcase name="conditionGroupsMustBeNonEmpty" classname="com.zencas.edhr.knowledge.BusinessKnowledgeModelTest" time="0.071"/>
+  <testcase name="unknownEmptyCollectionsAreRejected" classname="com.zencas.edhr.knowledge.BusinessKnowledgeModelTest" time="0.059"/>
+  <testcase name="implementationAnchorsRejectUnknownProvenanceReviewStatus" classname="com.zencas.edhr.knowledge.BusinessKnowledgeModelTest" time="0.065"/>
+  <testcase name="numericOperandsMustBeFinite" classname="com.zencas.edhr.knowledge.BusinessKnowledgeModelTest" time="0.075"/>
+  <testcase name="currentKnowledgeBaselineUsesTheTypedFactSchema" classname="com.zencas.edhr.knowledge.BusinessKnowledgeModelTest" time="0.05"/>
+  <testcase name="factReferenceObjectsMustUseTheExactOperandShape" classname="com.zencas.edhr.knowledge.BusinessKnowledgeModelTest" time="0.073"/>
+  <testcase name="topLevelCollectionsAreDiscoveredFromSchemaMappings" classname="com.zencas.edhr.knowledge.BusinessKnowledgeModelTest" time="0.073"/>
+  <testcase name="danglingTermIdsAreRejected" classname="com.zencas.edhr.knowledge.BusinessKnowledgeModelTest" time="0.066"/>
+  <testcase name="verifiedRuntimeRecordsRequireEvidence" classname="com.zencas.edhr.knowledge.BusinessKnowledgeModelTest" time="0.075"/>
+  <testcase name="schemaCollectionMappingsRejectDuplicateTargetsDeterministically" classname="com.zencas.edhr.knowledge.BusinessKnowledgeModelTest" time="0.051"/>
+  <testcase name="recordIdsMustUseSchemaPrefixes(String, String)[1]" classname="com.zencas.edhr.knowledge.BusinessKnowledgeModelTest" time="0.068"/>
+  <testcase name="recordIdsMustUseSchemaPrefixes(String, String)[2]" classname="com.zencas.edhr.knowledge.BusinessKnowledgeModelTest" time="0.067"/>
+  <testcase name="normalizedEvidencePathsCannotEscapeRepository(Path)" classname="com.zencas.edhr.knowledge.BusinessKnowledgeModelTest" time="0.074"/>
+  <testcase name="duplicateIdsAreRejected" classname="com.zencas.edhr.knowledge.BusinessKnowledgeModelTest" time="0.063"/>
+  <testcase name="explicitFactOperandsMustHaveCompatibleTypes" classname="com.zencas.edhr.knowledge.BusinessKnowledgeModelTest" time="0.073"/>
+  <testcase name="conditionValuesMustUseSchemaValueTypes" classname="com.zencas.edhr.knowledge.BusinessKnowledgeModelTest" time="0.064"/>
+  <testcase name="schemaCollectionMappingsRejectUnknownRecordTypes" classname="com.zencas.edhr.knowledge.BusinessKnowledgeModelTest" time="0.052"/>
+  <testcase name="nestedRecordsUseSchemaRequiredFieldsEnumsAndBasicTypes(String, String, String, Object, boolean, String)[1]" classname="com.zencas.edhr.knowledge.BusinessKnowledgeModelTest" time="0.066"/>
+  <testcase name="nestedRecordsUseSchemaRequiredFieldsEnumsAndBasicTypes(String, String, String, Object, boolean, String)[2]" classname="com.zencas.edhr.knowledge.BusinessKnowledgeModelTest" time="0.058"/>
+  <testcase name="nestedRecordsUseSchemaRequiredFieldsEnumsAndBasicTypes(String, String, String, Object, boolean, String)[3]" classname="com.zencas.edhr.knowledge.BusinessKnowledgeModelTest" time="0.059"/>
+  <testcase name="nestedRecordsUseSchemaRequiredFieldsEnumsAndBasicTypes(String, String, String, Object, boolean, String)[4]" classname="com.zencas.edhr.knowledge.BusinessKnowledgeModelTest" time="0.057"/>
+  <testcase name="nestedRecordsUseSchemaRequiredFieldsEnumsAndBasicTypes(String, String, String, Object, boolean, String)[5]" classname="com.zencas.edhr.knowledge.BusinessKnowledgeModelTest" time="0.062"/>
+  <testcase name="nestedRecordsUseSchemaRequiredFieldsEnumsAndBasicTypes(String, String, String, Object, boolean, String)[6]" classname="com.zencas.edhr.knowledge.BusinessKnowledgeModelTest" time="0.059"/>
+  <testcase name="explicitFactOperandsResolveIdsAndAliasesWithoutBeingTreatedAsClauses" classname="com.zencas.edhr.knowledge.BusinessKnowledgeModelTest" time="0.157"/>
+  <testcase name="unknownNestedRecordCollectionsAreRejected" classname="com.zencas.edhr.knowledge.BusinessKnowledgeModelTest" time="0.056"/>
+  <testcase name="unknownTopLevelCollectionsReportTheirDocumentAndSortedAllowedCollections" classname="com.zencas.edhr.knowledge.BusinessKnowledgeModelTest" time="0.055"/>
+  <testcase name="missingEvidencePathsAreRejected" classname="com.zencas.edhr.knowledge.BusinessKnowledgeModelTest" time="0.071"/>
+  <testcase name="explicitFactOperandsRejectUnknownReferences" classname="com.zencas.edhr.knowledge.BusinessKnowledgeModelTest" time="0.077"/>
+  <testcase name="executionContractIdsUseSchemaPrefixes" classname="com.zencas.edhr.knowledge.BusinessKnowledgeModelTest" time="0.067"/>
+  <testcase name="realEvidencePathsCannotEscapeRepositoryThroughSymlinks(Path)" classname="com.zencas.edhr.knowledge.BusinessKnowledgeModelTest" time="0.085"/>
+  <testcase name="implementedRecordsCannotEnterCustomerProjection" classname="com.zencas.edhr.knowledge.BusinessKnowledgeModelTest" time="0.076"/>
+  <testcase name="aliasesCannotShadowAnotherFactIdInEitherCollectionOrder" classname="com.zencas.edhr.knowledge.BusinessKnowledgeModelTest" time="0.146"/>
+</testsuite>

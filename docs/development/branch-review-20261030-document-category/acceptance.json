@@ -1,0 +1,281 @@
+{
+  "baseCommit": "d10590bd3fe8f3da4e68bcc087b2102d2c211934",
+  "runtimeTestedCommit": "5d1487b195cec7e994285fc623c55097bde09bf2",
+  "reviewedCommit": "5d1487b195cec7e994285fc623c55097bde09bf2",
+  "executionLevel": "L2",
+  "status": "passed",
+  "qualityResult": "evidence/final-quality/quality-result.yaml",
+  "independentReview": "evidence/final-quality/quality-review.md",
+  "requiredPassed": 19,
+  "requiredTotal": 19,
+  "optionalNonGreen": [
+    {
+      "id": "q2.premium-global-existing",
+      "outcome": "failed"
+    },
+    {
+      "id": "q2.process-verifier-existing-path",
+      "outcome": "blocked"
+    },
+    {
+      "id": "q2.lint-missing-config",
+      "outcome": "failed"
+    }
+  ],
+  "findings": [
+    {
+      "id": "AUD-W4-DOCUMENT-CATEGORY-ORDER-AUDIT-001",
+      "severity": "medium",
+      "scope": "document-category order and adjacent rename transactions",
+      "summary": "真实排序缺审计与并发旧before/字段覆盖已按现有规则修复并独立复验。",
+      "reproductionSteps": [
+        "Actualold d105 same17:9failure8positive.",
+        "Actualfirst ac3a same17:3concurrencyfailure14positive.",
+        "Actualcurrent5d1487 native17 including controlled sort-sort/sort-rename/rename-sort allpass."
+      ],
+      "expectedResult": "每次持久化真实排序变化形成对应操作者准确before/after；并发改名和排序不相互覆盖；失败回滚。",
+      "actualResult": "Current17passed; sort-sort4audits, mixed3audits correct fields/actor; audit failure500 fully rolls five tables back.",
+      "evidence": [
+        "/tmp/edhr-document-category-q2-old-base-summary.json",
+        "/tmp/edhr-document-category-q2-old-first-summary.json",
+        "/tmp/edhr-document-category-q2-pg-DocumentCategoryAuditPostgresTest.xml",
+        "/tmp/edhr-document-category-q2-pg-category-http.jsonl"
+      ],
+      "resolutionStatus": "resolved",
+      "resolutionEvidence": [
+        {
+          "type": "commit",
+          "reference": "5d1487b195cec7e994285fc623c55097bde09bf2"
+        },
+        {
+          "type": "command",
+          "reference": "/tmp/edhr-document-category-q2-pg-test.txt"
+        },
+        {
+          "type": "audit-record",
+          "reference": "/tmp/edhr-document-category-q2-pg-category-http.jsonl"
+        }
+      ]
+    },
+    {
+      "id": "AUD-W4-DOCUMENT-CATEGORY-DELETE-PROMISE-001",
+      "severity": "low",
+      "scope": "category delete confirmation/success",
+      "summary": "已纠正自动转未分类的错误承诺，保留既有引用保护。",
+      "reproductionSteps": [
+        "Same actual page script old4copyfail6positive;current10pass.",
+        "Native realAspect/FK blocks referenced category and permits empty delete with audit."
+      ],
+      "expectedResult": "引用分类仍阻断；空分类可删；提示不承诺迁移文档。",
+      "actualResult": "Currentbrowser10/10 and native protection/audit passed; existing reference409 not credited as newproductfix.",
+      "evidence": [
+        "/tmp/edhr-document-category-q2-browser-current/result.json",
+        "/tmp/edhr-document-category-q2-browser-old/result.json",
+        "/tmp/edhr-document-category-q2-pg-category-http.jsonl"
+      ],
+      "resolutionStatus": "resolved",
+      "resolutionEvidence": [
+        {
+          "type": "commit",
+          "reference": "5d1487b195cec7e994285fc623c55097bde09bf2"
+        },
+        {
+          "type": "screenshot",
+          "reference": "/tmp/edhr-document-category-q2-browser-current/390-success-feedback.png"
+        },
+        {
+          "type": "command",
+          "reference": "/tmp/edhr-document-category-q2-browser-current.txt"
+        }
+      ]
+    }
+  ],
+  "independentRuns": {
+    "h2AndExisting": {
+      "tests": 258,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "nativePostgres": {
+      "tests": 143,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "knowledge": {
+      "tests": 89,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "oldActualTarget": {
+      "tests": 17,
+      "failures": 9,
+      "errors": 0,
+      "skipped": 0,
+      "commit": "d10590bd3fe8f3da4e68bcc087b2102d2c211934",
+      "positiveControls": 8,
+      "expectedRed": true,
+      "sameFinalTestSha256": "7f6e808d8a37194925d6b2d6f2687a91d0466df7cd2ce868888eec0dbc68b72b"
+    },
+    "oldFirstCandidate": {
+      "tests": 17,
+      "failures": 3,
+      "errors": 0,
+      "skipped": 0,
+      "commit": "ac3a421e42529bdb304e2c72145ceb580ec70618",
+      "positiveControls": 14,
+      "expectedRed": true,
+      "sameFinalTestSha256": "7f6e808d8a37194925d6b2d6f2687a91d0466df7cd2ce868888eec0dbc68b72b"
+    }
+  },
+  "browser": {
+    "currentPassed": 10,
+    "oldRealCopyFailures": 4,
+    "oldPositiveControls": 6,
+    "widths": [
+      390,
+      1440
+    ],
+    "scenarioFamilies": 5,
+    "apiMode": "controlled",
+    "visualInspected": [
+      "390 confirmation",
+      "390 success",
+      "1440 referenced protection"
+    ],
+    "notBrowserToNativeE2e": true
+  },
+  "frontend": {
+    "build": "passed: tsc -b and Vite",
+    "genericUi": {
+      "passed": 14
+    },
+    "listTableStyle": "passed",
+    "premiumAppSrcOld": 19,
+    "premiumAppSrcCurrent": 19,
+    "sameCurrentOfficialScriptComparison": "identical hints, both exit2, global nongreen",
+    "lint": "existing missing ESLint config, exit2",
+    "processModelingVerifier": "existing old SQL path ENOENT before assertions"
+  },
+  "countingBoundary": "401 cross-engine executions, not401unique; 55write/58read scenarios repeat across engines; same final17 actually copied without edits to two real old commits. Browser five families repeat at two widths.",
+  "ontology": {
+    "result": "not-applicable",
+    "roleState": "FINAL",
+    "version": "0.3.25",
+    "limitedExistingIds": 12,
+    "knowledgeChanges": 0,
+    "newHistoricalUniqueIncrement": null,
+    "resultDocument": "evidence/ontology-result.yaml",
+    "concurrencyResultDocument": "evidence/ontology-concurrency-result.yaml",
+    "incrementKnowledge89": "explicit reuse after byte hash check",
+    "finalQualitySeparatelyRanKnowledge89": true
+  },
+  "independentArchive": "evidence/final-quality/archive-map.json",
+  "independentOriginalFilesIncludingManifest": 107,
+  "history": {
+    "initialCandidate": "ac3a421e42529bdb304e2c72145ceb580ec70618",
+    "firstQualityResult": "failed",
+    "firstQualityArchive": "evidence/first-quality/archive-map.json",
+    "firstQualityFiles": 88,
+    "primaryOriginalRecords": 119,
+    "concurrencyAdditionalRecords": 27,
+    "initialSixSourcesVerifiedAt": "Git ac3a objects",
+    "currentSourceSnapshots": 7,
+    "originalDecisionPackagePreserved": true,
+    "firstQualityNotRun": [
+      "old native14",
+      "premium increment"
+    ],
+    "initialPrimaryFailure": "audit-storage failure correctly500/fullyrolledback; test incorrectly expected400, corrected only assertion; original failure retained",
+    "oldWorktreeInitialFailure": "vite absent before tests, raw log retained; only linked existing node_modules then same test executed"
+  },
+  "scopeReview": {
+    "allFormalRoles": "FINAL",
+    "noDrift": true,
+    "actualUserCommunicationBeforePrCreation": true,
+    "document": "scope-review.md"
+  },
+  "sourceCoverage": {
+    "limitedMethodGroups": 9,
+    "wholeFileCompletion": 0,
+    "historicalUniqueIncrement": null,
+    "document": "source-review.json"
+  },
+  "inventory": {
+    "fixedCommit": "d10590bd3fe8f3da4e68bcc087b2102d2c211934",
+    "trackedPaths": 4755,
+    "migrations": 130,
+    "httpAnnotationCandidates": 442,
+    "frontendRouteCandidates": 198,
+    "status": "inventory-only"
+  },
+  "a23": {
+    "methodRecords": 7,
+    "wholeFileCompletion": 0,
+    "historicalUniqueIncrement": null,
+    "historicalLanguageQueue": 856,
+    "previousFeatureAddedPending": 1,
+    "separateSqlQueue": 130,
+    "sqlChecked": 0,
+    "currentChangedPending": 5,
+    "currentAddedPending": 2,
+    "document": "a23-review.json",
+    "historicalHandling": "W6 includes previously reviewed current code; W7 latest-target increment recheck. Existing queues remain pending."
+  },
+  "limits": [
+    {
+      "id": "q2.full-audit-not-complete",
+      "description": "W3/W4有限分类切片；W2余项、W3/W4其余入口、W5–W7未完成；盘点4755/SQL130不算语义审查，source9与semantic12有历史重叠，整文件0/unique null。",
+      "impact": "不可据401/89或此passed宣称全仓完成。",
+      "mitigation": "继续固定分母增量台账；A23旧856语言+feature1/SQL130及当前5改2增在W6/W7整体复审。"
+    },
+    {
+      "id": "q2.capacity-and-lock-tradeoff",
+      "description": "sort锁当前租户custom分类C，rename单行；已有分类响应聚合仍在同事务，C/D增长可能延长持锁和等待。分类计数、详情文件、版本删除等其他性能候选仍在。",
+      "impact": "本次不是大数据时延/堆/GC/全部并发认证；不能为了性能删除必要锁或审计。",
+      "mitigation": "先量化C/D/V/E增长并与用户讨论性能取舍；未实施未授权优化。"
+    },
+    {
+      "id": "q2.global-tools-nongreen",
+      "description": "官方appsrc strict19旧新一致，ESLint缺配置，processverifier ENOENT断言前失效。",
+      "impact": "没有全仓静态/lint/该verifier通过；与实际tsc/Vite成功分列。",
+      "mitigation": "W5/W6按工具/源码逐项核对，不洗绿或扩大本批。"
+    },
+    {
+      "id": "q2.runtime-evidence-boundaries",
+      "description": "Native MockMvc/JWT/realPG 与受控API浏览器分别运行；五表快照不是整库；串行预检后加引用不是全部并发认证。",
+      "impact": "未运行当前TCP probe、生产端到端、全部设备/locale/200%zoom或全审计digest重算。",
+      "mitigation": "保持真实测试入口与原件范围，既有审计摘要线索留W5，不以snapshot_hash正则声称已关闭。"
+    },
+    {
+      "id": "q2.policy-and-deferrals",
+      "description": "TaskDetail友方签名链、生产弹窗设计、记录控制依赖DHRhigh/A12、四knowledgegap和其余性能讨论保持原边界。排序unknown/repeated等兼容保持不等于长期业务政策新增确认。",
+      "impact": "本批未恢复暂缓或回写旧数据；无新政策、merge或部署。",
+      "mitigation": "后续按用户决定和依赖条件处理；有新远端提交增量核对。"
+    },
+    {
+      "id": "q2.initial-old-build-recovered",
+      "description": "第一次oldworktree测试前因未链接依赖vite not found退出127；原始日志保留，之后只链接现有node_modules后实际跑两代17。",
+      "impact": "启动失败不计9条真实断言红，也不当产品问题；initial cleanup瞬间absent:false已由final精确检查覆盖。",
+      "mitigation": "保留initial-old-base-build-failure.txt/run-pg.txt/initial-cleanup.json及恢复命令与最终cleanup。"
+    }
+  ],
+  "explicitScopeLimits": [
+    "Current canonical PG schema initialized fresh, not historical migration or production recovery; five-table atomic snapshots do not certify every schema table.",
+    "Three controlled concurrent pairs and serial new-reference recheck are finite cases, not all-concurrency or entire production dependency-graph certification.",
+    "Ordinary list reads not write locked; sort locks tenant custom rows in fixed ID order, rename target row only. Existing aggregate response may extend lock holding at large C/D; performance/SLA/heapGC not certified.",
+    "No new409policy/versioncolumn/schema migration; existing partial/unknown/repeated ID compatibility preserved, not finally confirmed business policy.",
+    "Other equipment/material and document classification count/detail/version-delete performance candidates remain pending discussion, not optimization authorization.",
+    "Original TaskDetail friend-owned fix, production dialog redesign, record-control dependent DHRhigh/A12, four knowledge gaps and missing-file policy remain deferred.",
+    "W2/W3/W4 remaining entrypoints, W5-W7 and A23 old-reviewed/full-SQL/increment queues remain unfinished; no global pass percentage or unique semantic increment.",
+    "Global premium/lint/process verifier remain nongreen; unchanged-source scope comparison passing is not global tooling passing."
+  ],
+  "blockingConditions": [],
+  "recommendMergeForThisBatch": true,
+  "nextAction": "Fetch actual merge and external increments; review document upload/preview/download permissions, file consistency and resource release; keep remaining entrypoints and deferred performance visible.",
+  "deliveryPolicy": "Manual user merge only; no CI/Actions query/trigger, merge, deployment, historical restore or shared-history rewrite.",
+  "postQaVerification": "evidence/delivery-verification.json",
+  "delivery": "delivery.json"
+}
