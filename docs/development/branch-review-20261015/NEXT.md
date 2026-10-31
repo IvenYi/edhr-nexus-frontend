@@ -2,6 +2,10 @@
 
 ## PR48已合入：上传登记事务补偿
 
+全新最终独立对clean `22a96503ce0eb7d40343453c28e3e6c174f5907b` 正式passed/FINAL、11/11必需检查，独立单次63/63和新知识89/89，真实旧两引擎同10=6断言红4正、0error/skip。当前[验收](../branch-review-20261031-upload-transactions/acceptance.json)有限resolved，39最终原件归档，原33/两轮夹具失败保留；本体NA/FINAL。全部正式角色FINAL后已实际向用户做PR前范围无漂移/阶段/余项说明，后续仅L0归档/验收/交付，受测保护路径保持。
+
+下轮先fetch实际合入与外部增量，优先核新增记录控制实现对原DHR高风险项的影响；文件DELETE/相邻回调/未知提交对账继续待审，三ACL等待答复。666/44/183、A23旧已审全量/SQL与新4迁移/W7增量均不关闭；5927/134仅盘点。不自动merge/deploy/恢复、不查询触发CI。下文为主侧历史检查点，当前状态以上段为准。
+
 已fetch edhr-dev@a98e60792554f7753d22406d02b274fd50ea2e6c，PR48人工合入、整树同4df，无外部增量。从最新目标建audit/edhr-dev-upload-transactions-20261031；[本批](../branch-review-20261031-upload-transactions/README.md)仅FileController新增短登记事务及已回滚补偿，未知提交保留原件，未进仓储的启动失败可清理。旧真实JPA H2/PG各5为3真实红2正，当前一次60+另3全过，0error/skip；初始两轮夹具错误单独保留不算产品红。知识89实际过、本体8ID有限NA/FINAL；当前待新独立最终QA，不提前resolved。
 
 5927/134只盘点，五有限源码/A23五记录、6改4增不关旧856+feature1/SQL130+新4迁移及历史队列。DELETE/真实未知提交对账/崩溃、DHR相邻回调源候选、三ACL待决、容量与666增量继续；记录控制已实现转待审，旧DHRhigh/A12剩余/四gap/TaskDetail不自动关。全部角色FINAL后实际PR前范围/漂移/阶段复核再交付，不自动merge/deploy/恢复、不查询触发CI。
