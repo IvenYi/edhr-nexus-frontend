@@ -1,0 +1,172 @@
+{
+  "runtime": "isolated H2 real repositories/HTTP; SQL-seeded valid volume rows and synthetic metadata, not disk files",
+  "cases": [
+    {
+      "case": "volume-file-none",
+      "params": {
+        "size": "2"
+      },
+      "reportedTotalDocuments": 8,
+      "returnedDocuments": 2,
+      "returnedVersions": 8,
+      "sqlCount": 3,
+      "entityLoads": {
+        "SopDocument": 8,
+        "DocumentVersion": 32,
+        "DocumentCategory": 1,
+        "FileObject": 0,
+        "AuditEvent": 0
+      }
+    },
+    {
+      "case": "volume-file-none",
+      "params": {
+        "size": "5"
+      },
+      "reportedTotalDocuments": 8,
+      "returnedDocuments": 5,
+      "returnedVersions": 20,
+      "sqlCount": 3,
+      "entityLoads": {
+        "SopDocument": 8,
+        "DocumentVersion": 32,
+        "DocumentCategory": 1,
+        "FileObject": 0,
+        "AuditEvent": 0
+      }
+    },
+    {
+      "case": "volume-file-shared",
+      "params": {
+        "size": "2"
+      },
+      "reportedTotalDocuments": 8,
+      "returnedDocuments": 2,
+      "returnedVersions": 8,
+      "sqlCount": 11,
+      "entityLoads": {
+        "SopDocument": 8,
+        "DocumentVersion": 32,
+        "DocumentCategory": 1,
+        "FileObject": 8,
+        "AuditEvent": 0
+      }
+    },
+    {
+      "case": "volume-file-shared",
+      "params": {
+        "size": "5"
+      },
+      "reportedTotalDocuments": 8,
+      "returnedDocuments": 5,
+      "returnedVersions": 20,
+      "sqlCount": 23,
+      "entityLoads": {
+        "SopDocument": 8,
+        "DocumentVersion": 32,
+        "DocumentCategory": 1,
+        "FileObject": 20,
+        "AuditEvent": 0
+      }
+    },
+    {
+      "case": "volume-file-distinct",
+      "params": {
+        "size": "2"
+      },
+      "reportedTotalDocuments": 8,
+      "returnedDocuments": 2,
+      "returnedVersions": 8,
+      "sqlCount": 11,
+      "entityLoads": {
+        "SopDocument": 8,
+        "DocumentVersion": 32,
+        "DocumentCategory": 1,
+        "FileObject": 8,
+        "AuditEvent": 0
+      }
+    },
+    {
+      "case": "volume-file-distinct",
+      "params": {
+        "size": "5"
+      },
+      "reportedTotalDocuments": 8,
+      "returnedDocuments": 5,
+      "returnedVersions": 20,
+      "sqlCount": 23,
+      "entityLoads": {
+        "SopDocument": 8,
+        "DocumentVersion": 32,
+        "DocumentCategory": 1,
+        "FileObject": 20,
+        "AuditEvent": 0
+      }
+    },
+    {
+      "case": "volume-materialization",
+      "params": {
+        "size": "5"
+      },
+      "reportedTotalDocuments": 20,
+      "returnedDocuments": 5,
+      "returnedVersions": 15,
+      "sqlCount": 3,
+      "entityLoads": {
+        "SopDocument": 20,
+        "DocumentVersion": 60,
+        "DocumentCategory": 1,
+        "FileObject": 0,
+        "AuditEvent": 0
+      }
+    },
+    {
+      "case": "volume-materialization",
+      "params": {
+        "size": "5"
+      },
+      "reportedTotalDocuments": 100,
+      "returnedDocuments": 5,
+      "returnedVersions": 15,
+      "sqlCount": 3,
+      "entityLoads": {
+        "SopDocument": 100,
+        "DocumentVersion": 300,
+        "DocumentCategory": 1,
+        "FileObject": 0,
+        "AuditEvent": 0
+      }
+    },
+    {
+      "case": "volume-categories",
+      "params": {},
+      "reportedTotalDocuments": 20,
+      "returnedDocuments": 0,
+      "returnedVersions": 0,
+      "sqlCount": 2,
+      "entityLoads": {
+        "SopDocument": 20,
+        "DocumentVersion": 0,
+        "DocumentCategory": 5,
+        "FileObject": 0,
+        "AuditEvent": 0
+      }
+    },
+    {
+      "case": "volume-categories",
+      "params": {},
+      "reportedTotalDocuments": 100,
+      "returnedDocuments": 0,
+      "returnedVersions": 0,
+      "sqlCount": 2,
+      "entityLoads": {
+        "SopDocument": 100,
+        "DocumentVersion": 0,
+        "DocumentCategory": 5,
+        "FileObject": 0,
+        "AuditEvent": 0
+      }
+    }
+  ],
+  "claimLimit": "No native PG plan, production latency/heap/GC/capacity; no optimization implemented; SQL counts observational only."
+}

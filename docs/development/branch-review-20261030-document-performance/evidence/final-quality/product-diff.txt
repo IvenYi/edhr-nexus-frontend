@@ -1,0 +1,246 @@
+diff --git a/gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/DocumentManagementController.java b/gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/DocumentManagementController.java
+index 423fab31..5f2c2119 100644
+--- a/gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/DocumentManagementController.java
++++ b/gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/DocumentManagementController.java
+@@ -22,6 +22,7 @@ import com.zencas.edhr.masterdata.repository.DocumentCategoryRepository;
+ import com.zencas.edhr.masterdata.repository.DocumentVersionRepository;
+ import com.zencas.edhr.masterdata.repository.ProductProcessOperationDocumentBindingRepository;
+ import com.zencas.edhr.masterdata.repository.SopDocumentRepository;
++import com.zencas.edhr.masterdata.service.DocumentListReadService;
+ import jakarta.transaction.Transactional;
+ import lombok.RequiredArgsConstructor;
+ import org.springframework.util.StringUtils;
+@@ -66,6 +67,7 @@ public class DocumentManagementController {
+     private final FileObjectRepository fileObjectRepository;
+     private final AuditEventRepository auditEventRepository;
+     private final SnowflakeIdGenerator idGenerator;
++    private final DocumentListReadService documentListReadService;
+ 
+     @GetMapping
+     public ApiResponse<PageResult<DocumentResponse>> list(
+@@ -74,24 +76,10 @@ public class DocumentManagementController {
+             @RequestParam(defaultValue = "1") int page,
+             @RequestParam(defaultValue = "20") int size) {
+         String normalizedCategoryId = normalizeCategoryFilter(categoryId);
+-        List<SopDocument> categoryDocuments = documentRepository.findAll().stream()
+-                .filter(document -> matchesCategory(document, normalizedCategoryId))
+-                .toList();
+-        Map<Long, DocumentCategory> categoriesById = documentCategoriesById();
+-        Map<Long, List<DocumentVersion>> versionsByDocument = categoryDocuments.isEmpty() ? Map.of() : documentVersionRepository
+-                .findByDocumentIdInOrderByCreatedAtDesc(categoryDocuments.stream().map(SopDocument::getId).toList())
+-                .stream().collect(Collectors.groupingBy(DocumentVersion::getDocumentId));
+-        List<SopDocument> documents = categoryDocuments.stream()
+-                .filter(document -> matchesKeyword(document, versionsByDocument.getOrDefault(document.getId(), List.of()), keyword))
+-                .sorted(Comparator.comparing(SopDocument::getUpdatedAt, Comparator.nullsLast(LocalDateTime::compareTo)).reversed())
+-                .toList();
+-        int safePage = Math.max(page, 1);
+-        int safeSize = Math.max(size, 1);
+-        int from = Math.min((safePage - 1) * safeSize, documents.size());
+-        int to = Math.min(from + safeSize, documents.size());
+-        return ApiResponse.success(PageResult.of(documents.subList(from, to).stream()
+-                .map(document -> toResponse(document, versionsByDocument.getOrDefault(document.getId(), List.of()), categoriesById))
+-                .toList(), safePage, safeSize, documents.size()));
++        var result = documentListReadService.read(normalizedCategoryId, keyword, page, size);
++        return ApiResponse.success(PageResult.of(result.documents().stream()
++                .map(document -> toResponse(document, result.versionsByDocument().getOrDefault(document.getId(), List.of()),
++                        result.categoriesById(), result.filesById())).toList(), result.page(), result.size(), result.total()));
+     }
+ 
+     @GetMapping("/categories")
+@@ -316,14 +304,28 @@ public class DocumentManagementController {
+     }
+ 
+     private DocumentResponse toResponse(SopDocument document, List<DocumentVersion> versions, Map<Long, DocumentCategory> categoriesById) {
++        return toDocumentResponse(document, versions.stream().map(this::toVersionResponse).toList(), categoriesById);
++    }
++
++    private DocumentResponse toResponse(SopDocument document, List<DocumentVersion> versions, Map<Long, DocumentCategory> categoriesById,
++                                        Map<Long, FileObject> filesById) {
++        return toDocumentResponse(document, versions.stream().map(version -> toVersionResponse(version,
++                version.getFileId() == null ? null : filesById.get(version.getFileId()))).toList(), categoriesById);
++    }
++
++    private DocumentResponse toDocumentResponse(SopDocument document, List<DocumentVersionResponse> versions, Map<Long, DocumentCategory> categoriesById) {
+         DocumentCategory category = document.getCategoryId() == null ? null : categoriesById.get(document.getCategoryId());
+         return new DocumentResponse(id(document.getId()), document.getTitle(), idOrNull(document.getCategoryId()), category == null ? null : category.getName(),
+                 document.getDescription(), document.getCreatedBy(), document.getCreatedAt(), document.getUpdatedBy(), document.getUpdatedAt(),
+-                versions.stream().map(this::toVersionResponse).toList());
++                versions);
+     }
+ 
+     private DocumentVersionResponse toVersionResponse(DocumentVersion version) {
+         FileObject file = version.getFileId() == null ? null : fileObjectRepository.findById(version.getFileId()).orElse(null);
++        return toVersionResponse(version, file);
++    }
++
++    private DocumentVersionResponse toVersionResponse(DocumentVersion version, FileObject file) {
+         return new DocumentVersionResponse(id(version.getId()), id(version.getDocumentId()), version.getVersion(), version.getCode(), version.getFileId() == null ? null : id(version.getFileId()),
+                 file == null ? null : file.getOriginalName(), file == null ? null : file.getMimeType(),
+                 version.getFileReference(), version.getDescription(), version.getEffectiveDate(), version.getExpiryDate(),
+@@ -402,14 +404,12 @@ public class DocumentManagementController {
+     }
+ 
+     private List<DocumentCategoryResponse> toDocumentCategoryResponses() {
+-        List<SopDocument> documents = documentRepository.findAll();
+-        Map<Long, Long> categoryCounts = documents.stream()
+-                .map(SopDocument::getCategoryId)
+-                .filter(Objects::nonNull)
+-                .collect(Collectors.groupingBy(Function.identity(), LinkedHashMap::new, Collectors.counting()));
+-        long uncategorizedCount = documents.stream().filter(document -> document.getCategoryId() == null).count();
++        Map<Long, Long> categoryCounts = new LinkedHashMap<>();
++        documentRepository.countGroupedByCategory().forEach(count -> categoryCounts.put(count.getCategoryId(), count.getDocumentCount()));
++        long total = categoryCounts.values().stream().mapToLong(Long::longValue).sum();
++        long uncategorizedCount = categoryCounts.getOrDefault(null, 0L);
+         List<DocumentCategoryResponse> responses = new ArrayList<>();
+-        responses.add(new DocumentCategoryResponse(DOCUMENT_CATEGORY_ALL, "全部", (long) documents.size(), 0, true));
++        responses.add(new DocumentCategoryResponse(DOCUMENT_CATEGORY_ALL, "全部", total, 0, true));
+         responses.add(new DocumentCategoryResponse(DOCUMENT_CATEGORY_UNCATEGORIZED, "未分类", uncategorizedCount, 1, true));
+         documentCategoryRepository.findByTenantIdOrderBySortOrderAscNameAsc(TENANT_ID).stream()
+                 .sorted(Comparator.comparing(DocumentCategory::getSortOrder, Comparator.nullsLast(Integer::compareTo))
+@@ -454,12 +454,6 @@ public class DocumentManagementController {
+         return name;
+     }
+ 
+-    private boolean matchesCategory(SopDocument document, String categoryId) {
+-        if (categoryId == null || DOCUMENT_CATEGORY_ALL.equals(categoryId)) return true;
+-        if (DOCUMENT_CATEGORY_UNCATEGORIZED.equals(categoryId)) return document.getCategoryId() == null;
+-        return Objects.equals(id(document.getCategoryId()), categoryId);
+-    }
+-
+     private String normalizeCategoryFilter(String value) {
+         if (!hasText(value) || DOCUMENT_CATEGORY_ALL.equalsIgnoreCase(value)) return DOCUMENT_CATEGORY_ALL;
+         if (DOCUMENT_CATEGORY_UNCATEGORIZED.equalsIgnoreCase(value)) return DOCUMENT_CATEGORY_UNCATEGORIZED;
+@@ -506,10 +500,6 @@ public class DocumentManagementController {
+         snapshot.put("文档数量", count == null ? 0L : count);
+         return snapshot;
+     }
+-    private boolean matchesKeyword(SopDocument document, List<DocumentVersion> versions, String keyword) {
+-        return !hasText(keyword) || contains(document.getTitle(), keyword) || versions.stream().anyMatch(version -> contains(version.getCode(), keyword));
+-    }
+-    private boolean contains(String value, String keyword) { return value != null && value.toLowerCase().contains(keyword.trim().toLowerCase()); }
+     private boolean hasText(String value) { return StringUtils.hasText(value); }
+     private String requireText(String value, String message) { if (!hasText(value)) throw new BusinessException(ErrorCode.GENERAL_001, message); return value.trim(); }
+     private String trimToNull(String value) { return hasText(value) ? value.trim() : null; }
+diff --git a/gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/repository/SopDocumentRepository.java b/gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/repository/SopDocumentRepository.java
+index f1268221..682bc9ad 100644
+--- a/gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/repository/SopDocumentRepository.java
++++ b/gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/repository/SopDocumentRepository.java
+@@ -3,9 +3,40 @@ package com.zencas.edhr.masterdata.repository;
+ import com.zencas.edhr.masterdata.entity.SopDocument;
+ import org.springframework.data.jpa.repository.JpaRepository;
+ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
++import org.springframework.data.jpa.repository.Query;
++import org.springframework.data.repository.query.Param;
+ import org.springframework.stereotype.Repository;
+ 
++import java.util.List;
++
+ @Repository
+ public interface SopDocumentRepository extends JpaRepository<SopDocument, Long>, JpaSpecificationExecutor<SopDocument> {
+     boolean existsByTenantIdAndCodeIgnoreCase(String tenantId, String code);
++
++    String LIST_FILTER = """
++            WHERE (:allCategories = true
++                OR (:uncategorized = true AND d.category_id IS NULL)
++                OR (:uncategorized = false AND d.category_id = :categoryId))
++              AND (:pattern = '' OR LOWER(NORMALIZE(UPPER(d.title))) LIKE LOWER(NORMALIZE(UPPER(:pattern))) ESCAPE '!'
++                OR EXISTS (SELECT 1 FROM document_version v
++                    WHERE v.document_id = d.id AND LOWER(NORMALIZE(UPPER(v.code))) LIKE LOWER(NORMALIZE(UPPER(:pattern))) ESCAPE '!'))
++            """;
++
++    @Query(value = "SELECT COUNT(*) FROM sop_document d " + LIST_FILTER, nativeQuery = true)
++    long countForList(@Param("allCategories") boolean allCategories, @Param("uncategorized") boolean uncategorized,
++                      @Param("categoryId") long categoryId, @Param("pattern") String pattern);
++
++    @Query(value = "SELECT d.* FROM sop_document d " + LIST_FILTER
++            + " ORDER BY d.updated_at DESC NULLS FIRST, d.id ASC LIMIT :limit OFFSET :offset", nativeQuery = true)
++    List<SopDocument> findPageForList(@Param("allCategories") boolean allCategories, @Param("uncategorized") boolean uncategorized,
++                                    @Param("categoryId") long categoryId, @Param("pattern") String pattern,
++                                    @Param("limit") int limit, @Param("offset") long offset);
++
++    @Query(value = "SELECT category_id AS \"categoryId\", COUNT(*) AS \"documentCount\" FROM sop_document GROUP BY category_id", nativeQuery = true)
++    List<CategoryCount> countGroupedByCategory();
++
++    interface CategoryCount {
++        Long getCategoryId();
++        long getDocumentCount();
++    }
+ }
+diff --git a/gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/DocumentListReadService.java b/gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/DocumentListReadService.java
+new file mode 100644
+index 00000000..9cf98129
+--- /dev/null
++++ b/gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/DocumentListReadService.java
+@@ -0,0 +1,72 @@
++package com.zencas.edhr.masterdata.service;
++
++import com.zencas.edhr.compliance.entity.FileObject;
++import com.zencas.edhr.compliance.repository.FileObjectRepository;
++import com.zencas.edhr.masterdata.entity.DocumentCategory;
++import com.zencas.edhr.masterdata.entity.DocumentVersion;
++import com.zencas.edhr.masterdata.entity.SopDocument;
++import com.zencas.edhr.masterdata.repository.DocumentCategoryRepository;
++import com.zencas.edhr.masterdata.repository.DocumentVersionRepository;
++import com.zencas.edhr.masterdata.repository.SopDocumentRepository;
++import lombok.RequiredArgsConstructor;
++import org.springframework.stereotype.Service;
++import org.springframework.transaction.annotation.Isolation;
++import org.springframework.transaction.annotation.Transactional;
++import org.springframework.util.StringUtils;
++
++import java.util.ArrayList;
++import java.util.List;
++import java.util.Map;
++import java.util.Objects;
++import java.util.function.Function;
++import java.util.stream.Collectors;
++
++@Service
++@RequiredArgsConstructor
++public class DocumentListReadService {
++    // Bound IN parameters independently of a document's complete version history; no API page-size cap.
++    private static final int ID_BATCH_SIZE = 512;
++    private final SopDocumentRepository documents;
++    private final DocumentVersionRepository versions;
++    private final DocumentCategoryRepository categories;
++    private final FileObjectRepository files;
++
++    @Transactional(readOnly = true, isolation = Isolation.REPEATABLE_READ)
++    public DocumentPage read(String normalizedCategoryId, String keyword, int page, int size) {
++        int safePage = Math.max(page, 1), safeSize = Math.max(size, 1);
++        boolean all = "ALL".equals(normalizedCategoryId), uncategorized = "UNCATEGORIZED".equals(normalizedCategoryId);
++        long categoryId = all || uncategorized ? 0 : Long.parseLong(normalizedCategoryId);
++        String pattern = StringUtils.hasText(keyword) ? "%" + keyword.trim()
++                .replace("!", "!!").replace("%", "!%").replace("_", "!_") + "%" : "";
++        long total = documents.countForList(all, uncategorized, categoryId, pattern);
++        long offset = (long) (safePage - 1) * safeSize;
++        if (offset >= total) return new DocumentPage(List.of(), Map.of(), Map.of(), Map.of(), safePage, safeSize, total);
++
++        List<SopDocument> pageDocuments = documents.findPageForList(all, uncategorized, categoryId, pattern, safeSize, offset);
++        List<DocumentVersion> pageVersions = readBatches(pageDocuments.stream().map(SopDocument::getId).toList(),
++                versions::findByDocumentIdInOrderByCreatedAtDesc);
++        Map<Long, List<DocumentVersion>> versionsByDocument = pageVersions.stream().collect(Collectors.groupingBy(DocumentVersion::getDocumentId));
++        Map<Long, FileObject> filesById = readBatches(pageVersions.stream().map(DocumentVersion::getFileId)
++                .filter(Objects::nonNull).distinct().toList(), files::findAllById).stream()
++                .collect(Collectors.toMap(FileObject::getId, Function.identity()));
++        Map<Long, DocumentCategory> categoriesById = readBatches(pageDocuments.stream().map(SopDocument::getCategoryId)
++                .filter(Objects::nonNull).distinct().toList(), categories::findAllById).stream()
++                .filter(category -> "default".equals(category.getTenantId()))
++                .collect(Collectors.toMap(DocumentCategory::getId, Function.identity()));
++        return new DocumentPage(pageDocuments, versionsByDocument, categoriesById, filesById, safePage, safeSize, total);
++    }
++
++    private <T> List<T> readBatches(List<Long> ids, Function<List<Long>, List<T>> read) {
++        List<T> rows = new ArrayList<>();
++        for (int start = 0; start < ids.size();) {
++            int end = start + Math.min(ID_BATCH_SIZE, ids.size() - start);
++            rows.addAll(read.apply(ids.subList(start, end)));
++            start = end;
++        }
++        return rows;
++    }
++
++    public record DocumentPage(List<SopDocument> documents, Map<Long, List<DocumentVersion>> versionsByDocument,
++                               Map<Long, DocumentCategory> categoriesById, Map<Long, FileObject> filesById,
++                               int page, int size, long total) {}
++}

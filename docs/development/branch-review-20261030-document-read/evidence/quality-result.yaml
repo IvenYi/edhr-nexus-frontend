@@ -1,0 +1,255 @@
+qualityResult:
+  result: passed
+  baseCommit: 31058765002e0705f1659f42abb1fb25b6dc7611
+  headCommit: b8054cc6e5d3b0639c38b28f00181721f57b2718
+  contractBaseline:
+    sourceCommit: b8054cc6e5d3b0639c38b28f00181721f57b2718
+    targetBranch: edhr-dev
+    targetCommit: 31058765002e0705f1659f42abb1fb25b6dc7611
+    contractReadCommit: b8054cc6e5d3b0639c38b28f00181721f57b2718
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: clean
+    includedPaths: []
+    excludedPaths: []
+    untrackedPaths: []
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+  - id: check.document-read.integration-baseline
+    required: true
+    category: requirements
+    description: 实际目标、契约、PR43同树及干净候选
+    method: inspection
+    command: git fetch origin edhr-dev; git rev-parse HEAD origin/edhr-dev; inspect contract diffs
+    outcome: passed
+    evidence:
+    - base 31058765002e0705f1659f42abb1fb25b6dc7611
+    - final reviewed candidate b8054cc6e5d3b0639c38b28f00181721f57b2718
+    - runtime tested 3ccd178ba541b6a953347de2de6c8c577a0b538b
+    - /tmp/edhr-document-qa-inspection.json
+    - /tmp/edhr-document-qa-docs-delta.json
+  - id: check.document-read.minimum-fix
+    required: true
+    category: api
+    description: 唯一产品2+/2-修分页中间算术，原过滤/顺序/身份/归一化/完整版本保持
+    method: inspection
+    command: git diff 31058765002e0705f1659f42abb1fb25b6dc7611 3ccd178ba541b6a953347de2de6c8c577a0b538b -- gmp-platform/backend/src/main;
+      read list/create/toResponse
+    outcome: passed
+    evidence:
+    - /tmp/edhr-document-qa-product-diff.txt
+    - No SQL/storage/auth/business policy change; long product and addition bound all accepted int parameters.
+  - id: check.document-read.test-strength-schema
+    required: true
+    category: database
+    description: 新增26断言不删旧测试；H2父code按规范schema可空、初轮夹具错误单列
+    method: inspection
+    command: Read new test, canonical schema and legacy SopDocument; compare old test paths; parse initial-fixture
+      JUnit
+    outcome: passed
+    evidence:
+    - /tmp/edhr-document-qa-inspection.json
+    - /tmp/edhr-document-qa-initial-fixture-check.json
+    - Explicit fixture ALTER code nullable matches canonical schema; no native-PG constraint/migration certification.
+  - id: check.document-read.candidate-backend
+    required: true
+    category: regression
+    description: 独立候选170/170，含16新正确性+10显式成本观察；0error/skip
+    method: command
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f gmp-platform/backend/pom.xml -Dtest=DocumentReadBoundaryIntegrationTest,DocumentManagementControllerTest,MasterDataBoundaryIntegrationTest,ProcessModelingControllerTest,ProductProcessControllerTest,MaterialImportIntegrationTest
+      -Dedhr.audit.documentReads=true -Dedhr.audit.documentOutput=/tmp/edhr-document-qa-current-http.jsonl test
+    outcome: passed
+    evidence:
+    - Actual execution at 3ccd178ba541b6a953347de2de6c8c577a0b538b
+    - Applicable at b8054cc6e5d3b0639c38b28f00181721f57b2718 by identical product/test blobs documented in docs-delta
+    - /tmp/edhr-document-qa-current-test.txt
+    - /tmp/edhr-document-qa-current-summary.json
+  - id: check.document-read.baseline-red-green
+    required: true
+    category: integration
+    description: 独立旧worktree原样装配新测试，26中4真实分页500/22正，无夹具错误或跳过
+    method: command
+    command: git worktree add --detach <owned-worktree> 31058765002e0705f1659f42abb1fb25b6dc7611; copy candidate
+      new test byte-identically; run -Dtest=DocumentReadBoundaryIntegrationTest -Dedhr.audit.documentReads=true
+      test
+    outcome: passed
+    evidence:
+    - /tmp/edhr-document-qa-base-assembly.json
+    - /tmp/edhr-document-qa-baseline-test.txt
+    - /tmp/edhr-document-qa-baseline-junit.xml
+    - /tmp/edhr-document-qa-baseline-summary.json
+  - id: check.document-read.api-identity-audit-auth
+    required: true
+    category: audit
+    description: 27授权GET、全部成员/分类/元数据/旧版本keyword、五表完整快照及2匿名401
+    method: automated-test
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f gmp-platform/backend/pom.xml -Dtest=DocumentReadBoundaryIntegrationTest,DocumentManagementControllerTest,MasterDataBoundaryIntegrationTest,ProcessModelingControllerTest,ProductProcessControllerTest,MaterialImportIntegrationTest
+      -Dedhr.audit.documentReads=true -Dedhr.audit.documentOutput=/tmp/edhr-document-qa-current-http.jsonl test
+    outcome: passed
+    evidence:
+    - /tmp/edhr-document-qa-current-http.jsonl
+    - /tmp/edhr-document-qa-current-summary.json
+    - 27 records:24HTTP200/3HTTP400; anonymous2 not recorded in that stream; no full method-permission certification.
+  - id: check.document-read.performance-observations
+    required: true
+    category: database
+    description: 独立重现10成本场景、重复同文件lookup/全量物化及批量版本/分类反证
+    method: query
+    command: Inspect StatementInspector/Hibernate entity-load output from independent opt-in26 and cross-check every
+      returned version/file metadata
+    outcome: passed
+    evidence:
+    - /tmp/edhr-document-qa-current-http.jsonl
+    - /tmp/edhr-document-qa-current-summary.json
+    - 'File pages2/5: none3SQL, shared/distinct11/23SQL; whole20/100 docs and60/300 versions despite page5; category2SQL
+      no versions; no production capacity/PG plans.'
+  - id: check.document-read.knowledge-basis
+    required: true
+    category: ontology
+    description: 6既有ID有限对照，分页/A23是工程研发安排，NA不新增业务政策
+    method: inspection
+    command: Read current ontology/rule/DEC0001-07/09/DEC0064-05 and corresponding entity/reference/audit impacts
+    outcome: passed
+    evidence:
+    - docs/development/branch-review-20261030-document-read/evidence/ontology-result.yaml
+    - docs/development/branch-review-20261030-document-read/evidence/rule-review.json
+    - Direct current definitions checked; original early chat export not obtained. Limited scope, no new unique/whole-domain
+      claim.
+  - id: check.document-read.knowledge-structure
+    required: true
+    category: ontology
+    description: 独立运行知识结构89/89，0failure/error/skip
+    method: command
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f tools/knowledge-model/pom.xml test
+    outcome: passed
+    evidence:
+    - /tmp/edhr-document-qa-knowledge-test.txt
+    - /tmp/edhr-document-qa-knowledge-junit.xml
+    - Executed at runtime candidate; knowledge unchanged in docs-only final candidate.
+  - id: check.document-read.a23-initial-and-queue
+    required: true
+    category: documentation
+    description: 新增维度当前同步/W6回查旧已审/W7反查，856全pending+feature1与7方法overlay精确
+    method: inspection
+    command: Rebuild CSV from fixed inventory using recorded prefixes/extensions; read actual seven method groups
+      and A23 charter/plan
+    outcome: passed
+    evidence:
+    - /tmp/edhr-document-qa-inspection.json
+    - 856=629source/tool+227test, no inheritedA23pass; 7overlay=5necessary/1simplification/1gap; whole-file0.
+  - id: check.document-read.inventory-rebuild
+    required: true
+    category: documentation
+    description: 四库存从固定目标逐字节重建，4372路径/130迁移仅盘点
+    method: command
+    command: python3 scripts/build-branch-review-inventory.py --ref 31058765002e0705f1659f42abb1fb25b6dc7611 --out
+      <owned-temp-directory>
+    outcome: passed
+    evidence:
+    - /tmp/edhr-document-qa-inventory-check.json
+    - /tmp/edhr-document-qa-inventory-rebuild.txt
+    - 442HTTPannotation/198route/8state/1background are candidates only.
+  - id: check.document-read.originals
+    required: true
+    category: documentation
+    description: 24主侧原件hash/size及6本体归档映射核对，失败原件不改
+    method: inspection
+    command: Verify primary-verification.json files sha256/bytes and ontology archive map
+    outcome: passed
+    evidence:
+    - /tmp/edhr-document-qa-inspection.json
+    - No original cleaned or reserialized; independent runs not added to duplicate primary counts.
+  - id: check.document-read.scope-structure-deferrals
+    required: true
+    category: requirements
+    description: 审查无业务/性能实施漂移，有具体读服务/纯assembler边界，原用户暂缓保持
+    method: inspection
+    command: Read decisionPackage/findings/scope-review/charter/NEXT and source responsibilities
+    outcome: passed
+    evidence:
+    - docs/development/branch-review-20261030-document-read/findings.md
+    - docs/development/branch-review-20261030-document-read/scope-review.md
+    - Two performance risks pending-discussion; TaskDetail/production-dialog/record-control DHRhigh/A12/fourgaps
+      retained; whole audit incomplete.
+  - id: check.document-read.docs-delta-sql
+    required: true
+    category: documentation
+    description: 最终b805只六文档增量；SQL130pending单列，运行证据按同blob适用复用
+    method: inspection
+    command: git diff 3ccd178ba541b6a953347de2de6c8c577a0b538b b8054cc6e5d3b0639c38b28f00181721f57b2718 -- protected
+      paths; reconstruct SQL CSV from fixed inventory and inspect six documentation changes
+    outcome: passed
+    evidence:
+    - /tmp/edhr-document-qa-docs-delta.json
+    - SQL130=129migration+1verification SQL, checked0, distinct from856 language queue and inventory130migration
+      files; no replay/restore authorization.
+  - id: check.document-read.non-evidence-whitespace
+    required: true
+    category: documentation
+    description: 最终候选19个非证据路径空白通过
+    method: command
+    command: git -c core.whitespace=cr-at-eol diff --check 31058765002e0705f1659f42abb1fb25b6dc7611 b8054cc6e5d3b0639c38b28f00181721f57b2718
+      -- <19 non-evidence paths>
+    outcome: passed
+    evidence:
+    - /tmp/edhr-document-qa-whitespace-final-nonraw.txt
+    - /tmp/edhr-document-qa-docs-delta.json
+  - id: check.document-read.all-whitespace
+    required: false
+    category: documentation
+    description: 全区间空白非绿，仅9原样日志/XML
+    method: command
+    command: git -c core.whitespace=cr-at-eol diff --check 31058765002e0705f1659f42abb1fb25b6dc7611 b8054cc6e5d3b0639c38b28f00181721f57b2718
+    outcome: failed
+    evidence:
+    - /tmp/edhr-document-qa-whitespace-final-all.txt
+    - /tmp/edhr-document-qa-docs-delta.json
+    - Raw originals retained; optional failed is not passed.
+  findings:
+  - id: AUD-W4-DOCUMENT-PAGE-ARITHMETIC-001
+    severity: medium
+    scope: document-list-pagination
+    summary: 接受的大正整数分页在原int中间运算溢出导致500，含空库；当前两行修复通过。
+    reproductionSteps:
+    - 正常POST两个文档/版本，GET /api/v1/master-data/documents 使用page=2147483647,size=20或page=2,size=2147483647等组合。
+    - 空库GET page=2147483647,size=2147483647。
+    - 同一新增26测试原样装配旧31058765，对照实际运行候选3ccd178b及同产品测试blob最终b805。
+    expectedResult: 沿原非正归一化与空页语义，元数据、完整版本及身份保持，不出现int溢出500。
+    actualResult: 旧26恰4真实分页失败/22正，当前170通过；最终文档增量不改变产品/测试。
+    evidence:
+    - /tmp/edhr-document-qa-baseline-summary.json
+    - /tmp/edhr-document-qa-baseline-http.jsonl
+    - /tmp/edhr-document-qa-current-summary.json
+    resolutionStatus: resolved
+    resolutionEvidence:
+    - type: commit
+      reference: 3ccd178ba541b6a953347de2de6c8c577a0b538b
+    - type: command
+      reference: /tmp/edhr-document-qa-current-test.txt
+    - type: document
+      reference: /tmp/edhr-document-qa-docs-delta.json
+  residualRisks:
+  - id: PERF-DOCUMENT-PAGE-VERSION-MATERIALIZATION-001
+    description: Independent H2 confirms whole document/version materialization despite page5; optimization not
+      implemented.
+    impact: Growth cost O(D+V), no production latency/heap/SLA or nativePG plan measured.
+    mitigation: Keep pending-discussion, preserve version keyword/full-member semantics and consistent view before
+      choosing query plan.
+  - id: PERF-DOCUMENT-VERSION-FILE-LOOKUPS-001
+    description: Current page version file metadata lookup repeats even same fileID;11/23SQL at2/5pages observed.
+    impact: Cost depends on current-page complete version countF, not full-libraryV; metadata only.
+    mitigation: Discuss request-local deduplicated file batch map; do not remove history/identity/auth protections
+      or add crossrequestcache silently.
+  - id: A23-RECHECK-INCOMPLETE
+    description: 856language code paths+feature1 and130SQL remain file-level pending; only7method overlays inspected.
+    impact: Prior reviewed code not yet fully rechecked for new dimension, whole audit incomplete.
+    mitigation: Apply per-domain A23 now, W6 systematic backcheck and W7 delta/coverage reconciliation; no automatic
+      historical pass.
+  - id: RETAINED-SCOPE-AND-ENVIRONMENT-LIMITS
+    description: Legacy parent-code entity/schema mapping candidate, missing-file fallback policy gap, document
+      method-auth candidate and original user deferrals remain.
+    impact: This review does not certify complete doc lifecycle/auth, nativePG constraints/migration, disk/upload/browser
+      persistence or production capacity. Historical strict19/ESLint configuration gap remain non-green and not
+      rerun.
+    mitigation: Track scoped candidates and user deferrals, continue W3/W4/W5-W7; no production merge/deploy/restore.
+  blockingConditions: []

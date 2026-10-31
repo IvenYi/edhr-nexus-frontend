@@ -1,0 +1,22 @@
+{
+  "basis":"Previous fixed856 language files + feature1 and separate130 SQL remain historical pending denominator; this overlay records new actual feature paths, not a regenerated false completion count.",
+  "previousFeatureCommit":"793503cbbd32375d47fc76185cf0568ec1fe7bd4",
+  "changedPending":[
+    "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/DocumentManagementController.java",
+    "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/repository/SopDocumentRepository.java",
+    "gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/DocumentReadBoundaryIntegrationTest.java",
+    "gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/DocumentManagementControllerTest.java"
+  ],
+  "addedPending":[
+    "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/DocumentListReadService.java",
+    "gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/DocumentReadPerformancePostgresTest.java"
+  ],
+  "limitedCurrentObservations":[
+    "Empty count/offset return avoids pointless page/IN queries while preserving prior empty-page API; real positive and huge-int inputs tested.",
+    "Nullable file/category IDs are real schema boundaries, filtered before ID batch and guarded in pure projection; not removed as excessive defense.",
+    "Private batch helper has three real consumers and512 technical parameter bound, no invented general framework or customer limit.",
+    "No failure-as-success fallback/crossrequest cache added. Missing metadata preserves old identity without resolving the policy gap."
+  ],
+  "wholeFileCompletion":0,
+  "remaining":"W6 whole-source backcheck and W7 current-target delta/coverage reconciliation required; old comparator-null simplification and missing-file policy candidates remain."
+}

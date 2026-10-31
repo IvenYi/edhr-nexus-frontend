@@ -1,0 +1,184 @@
+{
+  "h2": {
+    "events": 55,
+    "actorStatusMutation": [
+      {
+        "actor": "anonymous",
+        "status": 401,
+        "mutated": false,
+        "count": 13
+      },
+      {
+        "actor": "no-permissions",
+        "status": 403,
+        "mutated": false,
+        "count": 13
+      },
+      {
+        "actor": "other-page",
+        "status": 403,
+        "mutated": false,
+        "count": 13
+      },
+      {
+        "actor": "allowed",
+        "status": 200,
+        "mutated": false,
+        "count": 3
+      },
+      {
+        "actor": "allowed",
+        "status": 200,
+        "mutated": true,
+        "count": 10
+      },
+      {
+        "actor": "fail-audit",
+        "status": 400,
+        "mutated": false,
+        "count": 3
+      }
+    ],
+    "allowedSql": {
+      "list": 4,
+      "categories": 2,
+      "create-category": 6,
+      "update-category": 8,
+      "delete-category": 8,
+      "order-categories": 4,
+      "detail": 3,
+      "create": 12,
+      "update": 7,
+      "create-version": 10,
+      "update-version": 10,
+      "delete-version": 6,
+      "delete": 7
+    },
+    "readHelperEvents": 60
+  },
+  "pg": {
+    "events": 55,
+    "actorStatusMutation": [
+      {
+        "actor": "anonymous",
+        "status": 401,
+        "mutated": false,
+        "count": 13
+      },
+      {
+        "actor": "no-permissions",
+        "status": 403,
+        "mutated": false,
+        "count": 13
+      },
+      {
+        "actor": "other-page",
+        "status": 403,
+        "mutated": false,
+        "count": 13
+      },
+      {
+        "actor": "allowed",
+        "status": 200,
+        "mutated": false,
+        "count": 3
+      },
+      {
+        "actor": "allowed",
+        "status": 200,
+        "mutated": true,
+        "count": 10
+      },
+      {
+        "actor": "fail-audit",
+        "status": 400,
+        "mutated": false,
+        "count": 3
+      }
+    ],
+    "allowedSql": {
+      "list": 4,
+      "categories": 2,
+      "create-category": 6,
+      "update-category": 8,
+      "delete-category": 8,
+      "order-categories": 4,
+      "detail": 3,
+      "create": 12,
+      "update": 7,
+      "create-version": 10,
+      "update-version": 10,
+      "delete-version": 6,
+      "delete": 7
+    },
+    "readHelperEvents": 72
+  },
+  "old": {
+    "events": 55,
+    "actorStatusMutation": [
+      {
+        "actor": "anonymous",
+        "status": 401,
+        "mutated": false,
+        "count": 13
+      },
+      {
+        "actor": "no-permissions",
+        "status": 200,
+        "mutated": false,
+        "count": 3
+      },
+      {
+        "actor": "other-page",
+        "status": 200,
+        "mutated": false,
+        "count": 3
+      },
+      {
+        "actor": "no-permissions",
+        "status": 200,
+        "mutated": true,
+        "count": 10
+      },
+      {
+        "actor": "other-page",
+        "status": 200,
+        "mutated": true,
+        "count": 10
+      },
+      {
+        "actor": "allowed",
+        "status": 200,
+        "mutated": false,
+        "count": 3
+      },
+      {
+        "actor": "allowed",
+        "status": 200,
+        "mutated": true,
+        "count": 10
+      },
+      {
+        "actor": "fail-audit",
+        "status": 400,
+        "mutated": false,
+        "count": 3
+      }
+    ],
+    "allowedSql": {
+      "list": 4,
+      "categories": 2,
+      "create-category": 6,
+      "update-category": 8,
+      "delete-category": 8,
+      "order-categories": 4,
+      "detail": 3,
+      "create": 12,
+      "update": 7,
+      "create-version": 10,
+      "update-version": 10,
+      "delete-version": 6,
+      "delete": 7
+    }
+  }
+}

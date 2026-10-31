@@ -1,0 +1,44 @@
+ontologyResult:
+  result: not-applicable
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: 31058765002e0705f1659f42abb1fb25b6dc7611
+    targetBranch: edhr-dev
+    targetCommit: 31058765002e0705f1659f42abb1fb25b6dc7611
+    contractReadCommit: 31058765002e0705f1659f42abb1fb25b6dc7611
+    uncommittedContractPaths: []
+  reason: 本轮产品仅把文档列表两处页下标中间运算扩为long并在裁剪后转int，保持原非正归一化、分类/关键词阶段、排序、完整版本成员及原身份；不改变文档引用、冻结、历史、审计、权限、发布或兼容政策。六个既有ID在列明影响边界有限一致，无需知识同步。新增A23和W6/W7补查是用户要求的研发审计安排，不是产品业务知识；页归一化/空页是工程约定，不写成新用户政策。两项性能仍待讨论，父code映射差异和缺文件fallback证据缺口不因本轮通过自动关闭。
+  changedArtifacts: []
+  knowledgeSync: []
+  conflicts: []
+  questions: []
+  validationEvidence:
+    - id: validation.document-read.limited-semantic-review
+      checkType: evidence-path
+      command: Read six current knowledge records, related original versioned sources and document list/create/projection/audit, entity/schema and operation-document reference code; inspect actual product diff.
+      outcome: passed
+      evidence:
+        - /tmp/edhr-document-rule-review.json
+        - /tmp/edhr-document-rule-review.md
+        - 本角色核对HEAD 31058765加未提交两行产品修复，不冒称最终候选运行验收。
+    - id: validation.document-read.knowledge-structure
+      checkType: schema
+      command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f tools/knowledge-model/pom.xml test
+      outcome: passed
+      evidence:
+        - /tmp/edhr-document-ontology-knowledge-test.txt
+        - /tmp/edhr-document-ontology-knowledge-junit.xml
+        - 本角色实际运行89测试，0失败/错误/跳过；2026-10-30T01:23:12Z结束。结构/引用检查不代替逐条语义或产品运行验收。
+    - id: validation.document-read.contract-and-knowledge-unchanged
+      checkType: reference
+      command: git diff 0a8991b3227a6e78ceb46dc1b14d2322e09ec652 31058765002e0705f1659f42abb1fb25b6dc7611 -- AGENTS.md codeplzreadme.md docs/agents docs/knowledge; git diff --name-only -- docs/knowledge docs/architecture docs/agents AGENTS.md codeplzreadme.md
+      outcome: passed
+      evidence:
+        - 输出为空；PR43交付至merge无契约/知识增量，当前工作树知识/架构/角色契约未改。
+        - /tmp/edhr-document-ontology-manifest.json
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages: [P1, P2, P3]

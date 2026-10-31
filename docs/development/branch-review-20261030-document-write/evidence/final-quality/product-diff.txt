@@ -1,0 +1,33 @@
+diff --git a/gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/DocumentManagementController.java b/gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/DocumentManagementController.java
+index 5f2c2119..62d69dc1 100644
+--- a/gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/DocumentManagementController.java
++++ b/gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/DocumentManagementController.java
+@@ -25,6 +25,7 @@ import com.zencas.edhr.masterdata.repository.SopDocumentRepository;
+ import com.zencas.edhr.masterdata.service.DocumentListReadService;
+ import jakarta.transaction.Transactional;
+ import lombok.RequiredArgsConstructor;
++import org.springframework.security.access.prepost.PreAuthorize;
+ import org.springframework.util.StringUtils;
+ import org.springframework.web.bind.annotation.DeleteMapping;
+ import org.springframework.web.bind.annotation.GetMapping;
+@@ -50,6 +51,7 @@ import java.util.stream.Collectors;
+ @RestController
+ @RequestMapping("/api/v1/master-data/documents")
+ @RequiredArgsConstructor
++@PreAuthorize("hasAuthority('master-data.documents')")
+ public class DocumentManagementController {
+ 
+     private static final String TENANT_ID = "default";
+diff --git a/gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/entity/SopDocument.java b/gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/entity/SopDocument.java
+index 64b65d05..738aebab 100644
+--- a/gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/entity/SopDocument.java
++++ b/gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/entity/SopDocument.java
+@@ -10,7 +10,7 @@ public class SopDocument {
+     @Id private Long id;
+     @Column(name = "tenant_id")
+     @Builder.Default private String tenantId = "default";
+-    @Column(name = "code", nullable = false, length = 64)
++    @Column(name = "code", length = 64)
+     private String code;
+     @Column(name = "title")
+     private String title;

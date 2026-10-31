@@ -1,0 +1,107 @@
+decisionPackage:
+  id: DEC-PACKAGE-AUDIT-DOCUMENT-WRITE-20261030
+  scope: PR44合入后继续W3/W4文档专用接口权限与父编码映射核对
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: 2e24711aad1124bb28674161ef8f3dbaf00b569a
+    targetBranch: edhr-dev
+    targetCommit: 2e24711aad1124bb28674161ef8f3dbaf00b569a
+    contractReadCommit: 2e24711aad1124bb28674161ef8f3dbaf00b569a
+    uncommittedContractPaths: []
+  summary: 复用现有master-data.documents权限修复专用文档接口漏检；按既有0051迁移及canonical schema对齐父code可空。不新增权限政策、不修改业务版本/身份/审计/删除规则。
+  confirmed:
+    concepts: []
+    relationships: []
+    rules:
+      - id: rule.master-data.endpoint-page-authority
+        name: 主数据接口按页面权限隔离
+        status: implemented
+        trigger: master-data.endpoint.access
+        condition:
+          all:
+            - fact: masterData.endpointPageAuthority
+              operator: is-present
+              value: true
+        result:
+          type: allow-with-governance
+          requiredAuthorityCodes: [master-data.materials, master-data.operations, master-data.routes, master-data.products, master-data.product-families, master-data.documents]
+          unauthorisedOutcome: block
+        sourceReferences: [docs/knowledge/decisions/DEC-0065-master-data-permission-audit-contract.yaml, docs/knowledge/rules/master-data-permission-audit.yaml]
+    executionContracts: []
+  inferred:
+    - id: inference.document-specialized-authority-omission
+      statement: 专用文档控制器未接入现有页面权限检查；沿用同资源旧建模端点authority修补漏检，不新增业务政策。
+      rationale: 现有DEC0065及规则、旧控制器、seed权限和前端页面资源一致；运行后果仍以真实JWT接口复现为准。
+      relatedIds: [DEC-0065-01, rule.master-data.endpoint-page-authority]
+    - id: inference.document-parent-code-mapping
+      statement: 父code可空、版本code必填已经由0051迁移和当前规范schema实现，遗留实体标记未同步。
+      rationale: 默认生产ddl-auto=none，不声称生产schema被ORM重建；验证freshORM实际POST与当前schema一致性。
+      relatedIds: [concept.document-version]
+  unresolved: []
+  replacementScopes: []
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - area: document-authority
+        change: 对专用控制器全部13映射执行既有master-data.documents授权；拒绝先于业务读写。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/DocumentManagementController.java]
+      - area: entity-schema
+        change: SopDocument.code映射允许空，与当前DDL和正常父记录创建一致；版本code必填保持。
+        evidenceReferences: [gmp-platform/backend/src/test/resources/db/changelog/0051-document-version-code.sql, gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql]
+    transitiveImpacts:
+      - area: callers
+        change: 当前专用文档API调用者必须具有已存在的文档页面权限，与旧建模文档查询及菜单资源一致；不按角色名添加豁免。
+        evidenceReferences: [gmp-platform/frontend/src/api/documents.ts, gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java]
+    potentialImpacts:
+      - area: transaction-proxies
+        concern: 类级方法授权与既有Transactional并存，需验证拒绝无读写以及写审计失败回滚。
+        evidenceReferences: []
+    unaffectedAreas:
+      - area: prior-scope
+        change: PR44两个已合入性能整改不重开；其他性能需讨论、TaskDetail友方修复、生产弹窗设计、记录控制依赖DHRhigh/A12及四知识gap保持。
+        evidenceReferences: [docs/development/branch-review-20261015/NEXT.md]
+    compatibilityAndMigration:
+      - area: storage
+        change: 无迁移或历史数据恢复；父code仅同步映射，历史迁移作为来源只读不回放。
+        evidenceReferences: []
+    snapshotImpacts:
+      - area: production-dhr
+        change: 不改变文档版本引用、START冻结或历史证据。
+        evidenceReferences: []
+    auditImpacts:
+      - area: writes
+        change: 保持既有统一审计和持久化快照；真实失败注入验证父子写入/更新/删除回滚。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/DocumentManagementController.java]
+    permissionImpacts:
+      - area: existing-resource-authority
+        change: 只复用master-data.documents，不更改登录/JWT/角色赋权/租户框架/新权限码。
+        evidenceReferences: [gmp-platform/backend/src/main/resources/db/changelog/baseline/0002-current-seed.sql]
+    testImpacts:
+      - scope: jwt-http-and-orm
+        scenarios: [13端点无权限拒绝和无读写, 13端点匿名401, 13端点有权限正向, 审计失败事务回滚, freshORM无DDL补丁正常创建版本]
+        evidenceReferences: []
+    evidenceGaps:
+      - 当前默认租户实现不等于完整多租户认证；文件元数据归属/历史缺失政策仍待独立领域审查，不静默改政策。
+      - 局部测试的绑定仓储为mock，不能把这些用例声称完整删除保护/产品引用/真实文件内容认证；既有删除回归另行复用适用范围。
+      - 分类更新/删除全量读取和审计内重复查询仅取证登记，不因本轮继续自动实施新的性能方案。
+  extensionStrategy:
+    selectedPaths: [product-core]
+    rationale: 在现有资源所有者边界补齐授权并同步ORM字段，无通用框架或大模块搬迁。
+    ownershipBoundaries:
+      - owner: DocumentManagementController
+        responsibility: 页面权限、输入/写入/审计；只读服务保留PR44职责。
+      - owner: SopDocument
+        responsibility: 反映已有父记录存储契约，不把版本code义务移回父记录。
+  affectedFiles:
+    - path: gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/DocumentManagementController.java
+      changeType: update
+      reason: 缺少既有页面授权。
+    - path: gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/entity/SopDocument.java
+      changeType: update
+      reason: 对齐既有schema，不生成新业务义务。
+  acceptanceScenarios:
+    - id: scenario.document-authority-and-mapping
+      given: 已有文档页面权限规则及父code可空/版本code必填的存储契约
+      when: 匿名、无权限和有权限主体访问专用接口，及freshORM创建文档
+      then: 分别401、403无业务读写、维持正确操作和审计；freshORM不需手工DROP NOT NULL即成功。
+      evidenceRequirements: [旧目标真实红与正向对照, 当前JWT及数据库断言, 审计失败回滚, 全新独立最终验证]

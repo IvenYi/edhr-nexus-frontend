@@ -1,0 +1,320 @@
+{
+  "sourceCommit": "2e24711aad1124bb28674161ef8f3dbaf00b569a",
+  "targetCommit": "2e24711aad1124bb28674161ef8f3dbaf00b569a",
+  "workingTree": "exact product/test changes in sourceSnapshot; not a fabricated commit",
+  "totals": {
+    "tests": 384,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "sourceSnapshot": [
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/DocumentManagementController.java",
+      "sha256": "e4fac7c2a26570089f5caae3bbebff3bfdea632ace9c6008a0fafc9f3f8a5e34",
+      "bytes": 33546
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/entity/SopDocument.java",
+      "sha256": "b0d087470ba86f07d92e2643102f94af319d30b74ceab4924c6de51996aaa0c5",
+      "bytes": 1678
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/DocumentReadBoundaryIntegrationTest.java",
+      "sha256": "10e4c0b46838cd0a0c8b7ae60cfb20da7c97b175b1532ac4c875536a9c8ee38e",
+      "bytes": 26526
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/DocumentOrmSchemaIntegrationTest.java",
+      "sha256": "42629a19ced94191128251d31d0d4e336b1a65ad6acb937c17c9e1b6a7171538",
+      "bytes": 3358
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/DocumentWriteBoundaryIntegrationTest.java",
+      "sha256": "e6e1fe7d4a1e8164b40ff2c91850c86acd397d607a36a9dcc2febceafeca302c",
+      "bytes": 13516
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/DocumentWriteBoundaryPostgresTest.java",
+      "sha256": "0ea57d7b79b36e84339f009cb00c7188542c6f865bfdc1f7ad973a15834ddbb7",
+      "bytes": 1328
+    }
+  ],
+  "ontologyArchiveMap": [
+    {
+      "origin": "/tmp/edhr-document-write-ontology-result.yaml",
+      "path": "docs/development/branch-review-20261030-document-write/evidence/ontology-result.yaml",
+      "sha256": "fdbc1a0d3c8a70e2c67ba5e766f8b0097e9f89f527842e87dfe9166253875bad",
+      "bytes": 3753
+    },
+    {
+      "origin": "/tmp/edhr-document-write-rule-review.json",
+      "path": "docs/development/branch-review-20261030-document-write/evidence/rule-review.json",
+      "sha256": "89367a649ef6504df31db1046de33aaabb7cc5e0d27e824ea4d3a7da64066586",
+      "bytes": 6675
+    },
+    {
+      "origin": "/tmp/edhr-document-write-rule-review.md",
+      "path": "docs/development/branch-review-20261030-document-write/evidence/rule-review.md",
+      "sha256": "2a41b299726454a03cc90b8baa8e658f269ce76facf3281d9327dcaa08680d5b",
+      "bytes": 3679
+    },
+    {
+      "origin": "/tmp/edhr-document-write-ontology-knowledge-test.txt",
+      "path": "docs/development/branch-review-20261030-document-write/evidence/ontology-knowledge-test.txt",
+      "sha256": "76468694c2620e2552eadfe0721450b3d90a0d3039f92d3a9ebc203489783c3c",
+      "bytes": 2112
+    },
+    {
+      "origin": "/tmp/edhr-document-write-ontology-knowledge-junit.xml",
+      "path": "docs/development/branch-review-20261030-document-write/evidence/ontology-knowledge-junit.xml",
+      "sha256": "e9fa0210ec685531df26183bf8f853c69ab882a12b3a9e9f39d7fc38a62368fc",
+      "bytes": 20418
+    },
+    {
+      "origin": "/tmp/edhr-document-write-ontology-history-permission.yaml",
+      "path": "docs/development/branch-review-20261030-document-write/evidence/ontology-history-permission.yaml",
+      "sha256": "0e981beb87292e9fff406455c2049a2053015e871f71ba876118b71a3c9c6e5f",
+      "bytes": 4585
+    },
+    {
+      "origin": "/tmp/edhr-document-write-ontology-history-version-code.sql",
+      "path": "docs/development/branch-review-20261030-document-write/evidence/ontology-history-version-code.sql",
+      "sha256": "6a50b47eeace56ad1ee47587166ba3ae3393f1d00ba8491be67558eeabbce382",
+      "bytes": 1422
+    },
+    {
+      "origin": "/tmp/edhr-document-write-ontology-product-diff.txt",
+      "path": "docs/development/branch-review-20261030-document-write/evidence/ontology-product-diff.txt",
+      "sha256": "360e59432b48b301c0d32529e165cc1e768068ba484528187755df3936a47512",
+      "bytes": 2013
+    },
+    {
+      "origin": "/tmp/edhr-document-write-ontology-manifest.json",
+      "path": "docs/development/branch-review-20261030-document-write/evidence/ontology-manifest.json",
+      "sha256": "92594f2bc441fd1cfc460bf3face3c2f8c2bf1bb81df2e139beb37e96d3f8486",
+      "bytes": 71093
+    }
+  ],
+  "files": [
+    {
+      "origin": "/tmp/edhr-document-write-old-summary.json",
+      "path": "docs/development/branch-review-20261030-document-write/evidence/old-summary.json",
+      "sha256": "e8374efa4d2c8376c44be7962d33d914581ecb5487bebfd6295fcb9c94d82ae8",
+      "bytes": 4626
+    },
+    {
+      "origin": "/tmp/edhr-document-write-old-DocumentOrmSchemaIntegrationTest.xml",
+      "path": "docs/development/branch-review-20261030-document-write/evidence/old-DocumentOrmSchemaIntegrationTest.xml",
+      "sha256": "d4c2215f93c1b30f82050b879c597f87bcb3fe7fb241145c339b7a69c83233e5",
+      "bytes": 56930
+    },
+    {
+      "origin": "/tmp/edhr-document-write-old-DocumentWriteBoundaryIntegrationTest.xml",
+      "path": "docs/development/branch-review-20261030-document-write/evidence/old-DocumentWriteBoundaryIntegrationTest.xml",
+      "sha256": "7adc863384f5b19041bbdc479b1a0f5889b2238d2e4c039e658e26e58ff8c50a",
+      "bytes": 284881
+    },
+    {
+      "origin": "/tmp/edhr-document-write-old-http.jsonl",
+      "path": "docs/development/branch-review-20261030-document-write/evidence/old-http.jsonl",
+      "sha256": "f0909093ff7618ab3482bc2e222d1ac97e29104e3f17d0b616a864f3282770dd",
+      "bytes": 157359
+    },
+    {
+      "origin": "/tmp/edhr-document-write-old-test.txt",
+      "path": "docs/development/branch-review-20261030-document-write/evidence/old-test.txt",
+      "sha256": "86490aed28265a70b8f8620de21eedbd1ad454a849b0a5c43b0d834612f4c600",
+      "bytes": 275220
+    },
+    {
+      "origin": "/tmp/edhr-document-write-main-cleanup.json",
+      "path": "docs/development/branch-review-20261030-document-write/evidence/main-cleanup.json",
+      "sha256": "f1b6d0b194df44ce7f508fa970fe01cff6fe5729623210e835f4f5c47de1da9d",
+      "bytes": 286
+    },
+    {
+      "origin": "/tmp/edhr-document-write-main-summary.json",
+      "path": "docs/development/branch-review-20261030-document-write/evidence/main-summary.json",
+      "sha256": "5f3e54422a1ec0fe5e0a8a73adcf82c35967f0908b86a0995af688b4eb6d9f9d",
+      "bytes": 2421
+    },
+    {
+      "origin": "/tmp/edhr-document-write-main-MaterialImportIntegrationTest.xml",
+      "path": "docs/development/branch-review-20261030-document-write/evidence/main-MaterialImportIntegrationTest.xml",
+      "sha256": "71659be7384f0353274ea126bc92d92b1e4c96078ce1388725a94eb79e505c6d",
+      "bytes": 129829
+    },
+    {
+      "origin": "/tmp/edhr-document-write-main-ProductProcessControllerTest.xml",
+      "path": "docs/development/branch-review-20261030-document-write/evidence/main-ProductProcessControllerTest.xml",
+      "sha256": "35a57f7181334c632d5ee2416cfba249f8166c64c5dfb6c75d2cb72a406c21d0",
+      "bytes": 35373
+    },
+    {
+      "origin": "/tmp/edhr-document-write-main-ProcessModelingControllerTest.xml",
+      "path": "docs/development/branch-review-20261030-document-write/evidence/main-ProcessModelingControllerTest.xml",
+      "sha256": "2b1735d8dc1b040aa7e60d0f3076f2f2e0ace771a959758e220aa83b6708062e",
+      "bytes": 42152
+    },
+    {
+      "origin": "/tmp/edhr-document-write-main-MasterDataBoundaryIntegrationTest.xml",
+      "path": "docs/development/branch-review-20261030-document-write/evidence/main-MasterDataBoundaryIntegrationTest.xml",
+      "sha256": "23b7c44ed8731190a434894c36c3fec9df190c3c1b0cea44ec4ecc209b8a4e31",
+      "bytes": 275626
+    },
+    {
+      "origin": "/tmp/edhr-document-write-main-DocumentManagementControllerTest.xml",
+      "path": "docs/development/branch-review-20261030-document-write/evidence/main-DocumentManagementControllerTest.xml",
+      "sha256": "c5eaa961a41b2b4d2d52ae784c6a4d3a3b555a9b012b4d7d2c2f5b25b6ac6b28",
+      "bytes": 34914
+    },
+    {
+      "origin": "/tmp/edhr-document-write-main-DocumentReadPerformancePostgresTest.xml",
+      "path": "docs/development/branch-review-20261030-document-write/evidence/main-DocumentReadPerformancePostgresTest.xml",
+      "sha256": "e4ba51fd828af36ea20199b3ba5655b1bba6d690073e0c2bf712401e3f1eb6ef",
+      "bytes": 288535
+    },
+    {
+      "origin": "/tmp/edhr-document-write-main-DocumentReadBoundaryIntegrationTest.xml",
+      "path": "docs/development/branch-review-20261030-document-write/evidence/main-DocumentReadBoundaryIntegrationTest.xml",
+      "sha256": "149643d0d8d07c57bc6ef6b5b4bb51ef07dd8d968b0d2ff7f6f5ddc3ba7d3ac8",
+      "bytes": 240167
+    },
+    {
+      "origin": "/tmp/edhr-document-write-main-DocumentWriteBoundaryPostgresTest.xml",
+      "path": "docs/development/branch-review-20261030-document-write/evidence/main-DocumentWriteBoundaryPostgresTest.xml",
+      "sha256": "9d36de345b2e953d6bc575224f827786249ea6c678012438edff32544110a19b",
+      "bytes": 136422
+    },
+    {
+      "origin": "/tmp/edhr-document-write-main-DocumentOrmSchemaIntegrationTest.xml",
+      "path": "docs/development/branch-review-20261030-document-write/evidence/main-DocumentOrmSchemaIntegrationTest.xml",
+      "sha256": "145996b5010997b86b9a2c392408312bd820f7dfe747c33f4948ff971e677e1f",
+      "bytes": 57855
+    },
+    {
+      "origin": "/tmp/edhr-document-write-main-DocumentWriteBoundaryIntegrationTest.xml",
+      "path": "docs/development/branch-review-20261030-document-write/evidence/main-DocumentWriteBoundaryIntegrationTest.xml",
+      "sha256": "a671d57a95e99284e32da5cdb8ed441d56904cff19a09a4d9c009a9a630337b1",
+      "bytes": 126667
+    },
+    {
+      "origin": "/tmp/edhr-document-write-main-exit.json",
+      "path": "docs/development/branch-review-20261030-document-write/evidence/main-exit.json",
+      "sha256": "8d626278261168cabfa1ea2cc2f0d887e190d745e2b47f2c36f6a4a863c7d1b7",
+      "bytes": 960
+    },
+    {
+      "origin": "/tmp/edhr-document-write-main-http.jsonl",
+      "path": "docs/development/branch-review-20261030-document-write/evidence/main-http.jsonl",
+      "sha256": "23ddb52581f3c9193f01e1ae4d613c0d7259bca7f6069a98eefa8f6b062841f0",
+      "bytes": 264210
+    },
+    {
+      "origin": "/tmp/edhr-document-write-main-read-http.jsonl",
+      "path": "docs/development/branch-review-20261030-document-write/evidence/main-read-http.jsonl",
+      "sha256": "fff4e145d970021eee78fd66e56ae5c12a1b29c71df788939019a1c9be5e8f91",
+      "bytes": 721272
+    },
+    {
+      "origin": "/tmp/edhr-document-write-main-test.txt",
+      "path": "docs/development/branch-review-20261030-document-write/evidence/main-test.txt",
+      "sha256": "8b93dd419deb5657f27ddc49082885c1d76a4bae88ec7696ba9f1ef3d4a908cf",
+      "bytes": 961315
+    },
+    {
+      "origin": "/tmp/edhr-document-write-main-pg-version.txt",
+      "path": "docs/development/branch-review-20261030-document-write/evidence/main-pg-version.txt",
+      "sha256": "c1b00ee83c6744f03199c44faddda8f20a96877037cc867744d965bfa7feae13",
+      "bytes": 111
+    },
+    {
+      "origin": "/tmp/edhr-document-write-main-db.json",
+      "path": "docs/development/branch-review-20261030-document-write/evidence/main-db.json",
+      "sha256": "73b855cc9f08e6791d839dab302478b83bf313c1e117079966deab2c34d5e3cc",
+      "bytes": 236
+    },
+    {
+      "origin": "/tmp/edhr-document-write-ontology-result.yaml",
+      "path": "docs/development/branch-review-20261030-document-write/evidence/ontology-result.yaml",
+      "sha256": "fdbc1a0d3c8a70e2c67ba5e766f8b0097e9f89f527842e87dfe9166253875bad",
+      "bytes": 3753
+    },
+    {
+      "origin": "/tmp/edhr-document-write-rule-review.json",
+      "path": "docs/development/branch-review-20261030-document-write/evidence/rule-review.json",
+      "sha256": "89367a649ef6504df31db1046de33aaabb7cc5e0d27e824ea4d3a7da64066586",
+      "bytes": 6675
+    },
+    {
+      "origin": "/tmp/edhr-document-write-rule-review.md",
+      "path": "docs/development/branch-review-20261030-document-write/evidence/rule-review.md",
+      "sha256": "2a41b299726454a03cc90b8baa8e658f269ce76facf3281d9327dcaa08680d5b",
+      "bytes": 3679
+    },
+    {
+      "origin": "/tmp/edhr-document-write-ontology-knowledge-test.txt",
+      "path": "docs/development/branch-review-20261030-document-write/evidence/ontology-knowledge-test.txt",
+      "sha256": "76468694c2620e2552eadfe0721450b3d90a0d3039f92d3a9ebc203489783c3c",
+      "bytes": 2112
+    },
+    {
+      "origin": "/tmp/edhr-document-write-ontology-knowledge-junit.xml",
+      "path": "docs/development/branch-review-20261030-document-write/evidence/ontology-knowledge-junit.xml",
+      "sha256": "e9fa0210ec685531df26183bf8f853c69ab882a12b3a9e9f39d7fc38a62368fc",
+      "bytes": 20418
+    },
+    {
+      "origin": "/tmp/edhr-document-write-ontology-history-permission.yaml",
+      "path": "docs/development/branch-review-20261030-document-write/evidence/ontology-history-permission.yaml",
+      "sha256": "0e981beb87292e9fff406455c2049a2053015e871f71ba876118b71a3c9c6e5f",
+      "bytes": 4585
+    },
+    {
+      "origin": "/tmp/edhr-document-write-ontology-history-version-code.sql",
+      "path": "docs/development/branch-review-20261030-document-write/evidence/ontology-history-version-code.sql",
+      "sha256": "6a50b47eeace56ad1ee47587166ba3ae3393f1d00ba8491be67558eeabbce382",
+      "bytes": 1422
+    },
+    {
+      "origin": "/tmp/edhr-document-write-ontology-product-diff.txt",
+      "path": "docs/development/branch-review-20261030-document-write/evidence/ontology-product-diff.txt",
+      "sha256": "360e59432b48b301c0d32529e165cc1e768068ba484528187755df3936a47512",
+      "bytes": 2013
+    },
+    {
+      "origin": "/tmp/edhr-document-write-ontology-manifest.json",
+      "path": "docs/development/branch-review-20261030-document-write/evidence/ontology-manifest.json",
+      "sha256": "92594f2bc441fd1cfc460bf3face3c2f8c2bf1bb81df2e139beb37e96d3f8486",
+      "bytes": 71093
+    },
+    {
+      "path": "docs/development/branch-review-20261030-document-write/evidence/primary-product-diff.txt",
+      "sha256": "360e59432b48b301c0d32529e165cc1e768068ba484528187755df3936a47512",
+      "bytes": 2013
+    },
+    {
+      "path": "docs/development/branch-review-20261030-document-write/inventory/coverage.csv",
+      "sha256": "5f804f0f50cb7f6ae9f6e2d5d047b80f2f7187b2abf3f5c903f58092fe0e1372",
+      "bytes": 1378532
+    },
+    {
+      "path": "docs/development/branch-review-20261030-document-write/inventory/entrypoints.csv",
+      "sha256": "b7d1717fc3d7794db6363f8cc6c38617400e7ee54550be2fabae29c484836db4",
+      "bytes": 152331
+    },
+    {
+      "path": "docs/development/branch-review-20261030-document-write/inventory/inventory-summary.json",
+      "sha256": "d6cd9d9ed93379436cba78c6ed5e38b2a40526244c09b7ca81f6588866906b7d",
+      "bytes": 1043
+    },
+    {
+      "path": "docs/development/branch-review-20261030-document-write/inventory/migrations.csv",
+      "sha256": "8443134328f6b7004d19c9f78f0f762ec4d5f9f37f6bee6a090eeb105a7c7179",
+      "bytes": 33469
+    }
+  ],
+  "countingBoundary": "55 new authority/atomicity scenarios and58 read scenarios repeat across engines;384 is executions, not unique.",
+  "cleanup": "main-cleanup.json"
+}

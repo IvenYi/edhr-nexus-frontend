@@ -1,0 +1,80 @@
+{
+  "createStatus" : 200,
+  "createBody" : {
+    "code" : 200,
+    "message" : "success",
+    "data" : {
+      "id" : "391443759344128000",
+      "title" : "İzmir work instruction",
+      "createdBy" : "独立复验",
+      "createdAt" : "2026-10-30T02:31:04.901627268",
+      "updatedBy" : "独立复验",
+      "updatedAt" : "2026-10-30T02:31:04.901627268",
+      "versions" : [ {
+        "id" : "391443759641923584",
+        "documentId" : "391443759344128000",
+        "version" : "V1",
+        "code" : "IZMIR-PROBE",
+        "status" : "ACTIVE",
+        "createdBy" : "独立复验",
+        "createdAt" : "2026-10-30T02:31:04.901627268",
+        "updatedBy" : "独立复验",
+        "updatedAt" : "2026-10-30T02:31:04.901627268"
+      } ]
+    },
+    "timestamp" : "2026-10-30T02:31:04.980241054Z",
+    "traceId" : "5274c2bc-3d2b-4e00-b862-09cf8c4c4121"
+  },
+  "İzmir" : {
+    "status" : 200,
+    "body" : {
+      "code" : 200,
+      "message" : "success",
+      "data" : {
+        "content" : [ ],
+        "page" : 1,
+        "size" : 20,
+        "totalElements" : 0,
+        "totalPages" : 0
+      },
+      "timestamp" : "2026-10-30T02:31:05.042770124Z",
+      "traceId" : "444d85df-e3c4-4d59-8930-9cea8b6e2e34"
+    }
+  },
+  "izmir" : {
+    "status" : 200,
+    "body" : {
+      "code" : 200,
+      "message" : "success",
+      "data" : {
+        "content" : [ {
+          "id" : "391443759344128000",
+          "title" : "İzmir work instruction",
+          "createdBy" : "独立复验",
+          "createdAt" : "2026-10-30T02:31:04.901627",
+          "updatedBy" : "独立复验",
+          "updatedAt" : "2026-10-30T02:31:04.901627",
+          "versions" : [ {
+            "id" : "391443759641923584",
+            "documentId" : "391443759344128000",
+            "version" : "V1",
+            "code" : "IZMIR-PROBE",
+            "status" : "ACTIVE",
+            "createdBy" : "独立复验",
+            "createdAt" : "2026-10-30T02:31:04.901627",
+            "updatedBy" : "独立复验",
+            "updatedAt" : "2026-10-30T02:31:04.901627"
+          } ]
+        } ],
+        "page" : 1,
+        "size" : 20,
+        "totalElements" : 1,
+        "totalPages" : 1
+      },
+      "timestamp" : "2026-10-30T02:31:05.061195842Z",
+      "traceId" : "1228d05b-e0b0-49f9-a9e9-be2412c8665e"
+    }
+  },
+  "javaNormalized" : "i̇zmir",
+  "persistedTitle" : "İzmir work instruction"
+}

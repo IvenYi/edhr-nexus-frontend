@@ -1,0 +1,21 @@
+{
+  "command": [
+    "bash",
+    "/workspace/.edhr-cloud-tools/mvn-edhr",
+    "-f",
+    "gmp-platform/backend/pom.xml",
+    "-Dtest=DocumentWriteBoundaryIntegrationTest,DocumentOrmSchemaIntegrationTest,DocumentWriteBoundaryPostgresTest,DocumentReadBoundaryIntegrationTest,DocumentReadPerformancePostgresTest,DocumentManagementControllerTest,MasterDataBoundaryIntegrationTest,ProcessModelingControllerTest,ProductProcessControllerTest,MaterialImportIntegrationTest",
+    "-Dedhr.audit.documentReads=true",
+    "-Dedhr.audit.documentOutput=/tmp/edhr-document-write-main-read-http.jsonl",
+    "-Dedhr.audit.documentWriteOutput=/tmp/edhr-document-write-main-http.jsonl",
+    "test"
+  ],
+  "exit": 0,
+  "database": {
+    "container": "261656f02ff24e47e43d88a734ce633f7b6351c1f8c9da5d40aa298455032488",
+    "name": "edhr-document-write-main-6b3455f4a5",
+    "owner": "document-write-main-20261030",
+    "port": 32768,
+    "database": "edhr_document_read_test"
+  }
+}

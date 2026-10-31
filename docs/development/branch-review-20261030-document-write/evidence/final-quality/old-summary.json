@@ -1,0 +1,138 @@
+{
+  "suites": [
+    {
+      "suite": "DocumentWriteBoundaryIntegrationTest",
+      "tests": 55,
+      "failures": 26,
+      "errors": 0,
+      "skipped": 0,
+      "failuresDetail": [
+        {
+          "case": "unauthorizedRequestsDoNotReadOrMutateBusinessRows(Endpoint, String)[2]",
+          "message": "\nexpected: 403\n but was: 200"
+        },
+        {
+          "case": "unauthorizedRequestsDoNotReadOrMutateBusinessRows(Endpoint, String)[3]",
+          "message": "\nexpected: 403\n but was: 200"
+        },
+        {
+          "case": "unauthorizedRequestsDoNotReadOrMutateBusinessRows(Endpoint, String)[5]",
+          "message": "\nexpected: 403\n but was: 200"
+        },
+        {
+          "case": "unauthorizedRequestsDoNotReadOrMutateBusinessRows(Endpoint, String)[6]",
+          "message": "\nexpected: 403\n but was: 200"
+        },
+        {
+          "case": "unauthorizedRequestsDoNotReadOrMutateBusinessRows(Endpoint, String)[8]",
+          "message": "\nexpected: 403\n but was: 200"
+        },
+        {
+          "case": "unauthorizedRequestsDoNotReadOrMutateBusinessRows(Endpoint, String)[9]",
+          "message": "\nexpected: 403\n but was: 200"
+        },
+        {
+          "case": "unauthorizedRequestsDoNotReadOrMutateBusinessRows(Endpoint, String)[11]",
+          "message": "\nexpected: 403\n but was: 200"
+        },
+        {
+          "case": "unauthorizedRequestsDoNotReadOrMutateBusinessRows(Endpoint, String)[12]",
+          "message": "\nexpected: 403\n but was: 200"
+        },
+        {
+          "case": "unauthorizedRequestsDoNotReadOrMutateBusinessRows(Endpoint, String)[14]",
+          "message": "\nexpected: 403\n but was: 200"
+        },
+        {
+          "case": "unauthorizedRequestsDoNotReadOrMutateBusinessRows(Endpoint, String)[15]",
+          "message": "\nexpected: 403\n but was: 200"
+        },
+        {
+          "case": "unauthorizedRequestsDoNotReadOrMutateBusinessRows(Endpoint, String)[17]",
+          "message": "\nexpected: 403\n but was: 200"
+        },
+        {
+          "case": "unauthorizedRequestsDoNotReadOrMutateBusinessRows(Endpoint, String)[18]",
+          "message": "\nexpected: 403\n but was: 200"
+        },
+        {
+          "case": "unauthorizedRequestsDoNotReadOrMutateBusinessRows(Endpoint, String)[20]",
+          "message": "\nexpected: 403\n but was: 200"
+        },
+        {
+          "case": "unauthorizedRequestsDoNotReadOrMutateBusinessRows(Endpoint, String)[21]",
+          "message": "\nexpected: 403\n but was: 200"
+        },
+        {
+          "case": "unauthorizedRequestsDoNotReadOrMutateBusinessRows(Endpoint, String)[23]",
+          "message": "\nexpected: 403\n but was: 200"
+        },
+        {
+          "case": "unauthorizedRequestsDoNotReadOrMutateBusinessRows(Endpoint, String)[24]",
+          "message": "\nexpected: 403\n but was: 200"
+        },
+        {
+          "case": "unauthorizedRequestsDoNotReadOrMutateBusinessRows(Endpoint, String)[26]",
+          "message": "\nexpected: 403\n but was: 200"
+        },
+        {
+          "case": "unauthorizedRequestsDoNotReadOrMutateBusinessRows(Endpoint, String)[27]",
+          "message": "\nexpected: 403\n but was: 200"
+        },
+        {
+          "case": "unauthorizedRequestsDoNotReadOrMutateBusinessRows(Endpoint, String)[29]",
+          "message": "\nexpected: 403\n but was: 200"
+        },
+        {
+          "case": "unauthorizedRequestsDoNotReadOrMutateBusinessRows(Endpoint, String)[30]",
+          "message": "\nexpected: 403\n but was: 200"
+        },
+        {
+          "case": "unauthorizedRequestsDoNotReadOrMutateBusinessRows(Endpoint, String)[32]",
+          "message": "\nexpected: 403\n but was: 200"
+        },
+        {
+          "case": "unauthorizedRequestsDoNotReadOrMutateBusinessRows(Endpoint, String)[33]",
+          "message": "\nexpected: 403\n but was: 200"
+        },
+        {
+          "case": "unauthorizedRequestsDoNotReadOrMutateBusinessRows(Endpoint, String)[35]",
+          "message": "\nexpected: 403\n but was: 200"
+        },
+        {
+          "case": "unauthorizedRequestsDoNotReadOrMutateBusinessRows(Endpoint, String)[36]",
+          "message": "\nexpected: 403\n but was: 200"
+        },
+        {
+          "case": "unauthorizedRequestsDoNotReadOrMutateBusinessRows(Endpoint, String)[38]",
+          "message": "\nexpected: 403\n but was: 200"
+        },
+        {
+          "case": "unauthorizedRequestsDoNotReadOrMutateBusinessRows(Endpoint, String)[39]",
+          "message": "\nexpected: 403\n but was: 200"
+        }
+      ]
+    },
+    {
+      "suite": "DocumentOrmSchemaIntegrationTest",
+      "tests": 1,
+      "failures": 1,
+      "errors": 0,
+      "skipped": 0,
+      "failuresDetail": [
+        {
+          "case": "freshMappingSupportsTheExistingVersionOwnedCodeContract",
+          "message": "Status expected:<200> but was:<400>"
+        }
+      ]
+    }
+  ],
+  "totals": {
+    "tests": 56,
+    "failures": 27,
+    "errors": 0,
+    "skipped": 0
+  },
+  "positiveControls": 29,
+  "expectedRed": true
+}

@@ -1,0 +1,178 @@
+diff --git a/gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java b/gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java
+index aa3406cf..ef911c4b 100644
+--- a/gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java
++++ b/gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java
+@@ -1049,166 +1049,170 @@ public class ProcessModelingController {
+     private String resolveRouteVersionRuntimeStatus(RouteVersion version) {
+         if (version == null) return "ACTIVE";
+         return resolveRouteVersionRuntimeStatus(version.getEffectiveDate(), version.getExpiryDate());
+     }
+ 
+     private String resolveRouteVersionRuntimeStatus(LocalDateTime effectiveDate, LocalDateTime expiryDate) {
+         return RdoVersionStatusResolver.resolve(effectiveDate, expiryDate);
+     }
+ 
+     private String resolveRouteGroupRuntimeStatus(List<RouteVersion> versions) {
+         return RdoVersionStatusResolver.resolveAggregate(versions.stream()
+                 .map(this::resolveRouteVersionRuntimeStatus)
+                 .toList());
+     }
+ 
+     private BusinessException derivedProductMutationException() {
+         return new BusinessException(ErrorCode.GENERAL_001, "产品管理由物料管理自动派生，请在物料管理中维护半成品或产成品物料");
+     }
+ 
+     private boolean matchesKeyword(Material material, String keyword) {
+         if (!StringUtils.hasText(keyword)) return true;
+         String normalized = keyword.trim().toLowerCase();
+         return containsIgnoreCase(material.getName(), normalized)
+                 || containsIgnoreCase(material.getCode(), normalized)
+                 || containsIgnoreCase(material.getSpecification(), normalized)
+                 || containsIgnoreCase(material.getVersion(), normalized)
+                 || containsIgnoreCase(material.getUnit(), normalized);
+     }
+ 
+     private boolean matchesMaterialKeyword(Material material, String keyword, String materialName, String materialCode, String materialTypeName) {
+         if (StringUtils.hasText(materialName) && !containsIgnoreCase(material.getName(), materialName.trim().toLowerCase())) return false;
+         if (StringUtils.hasText(materialCode) && !containsIgnoreCase(material.getCode(), materialCode.trim().toLowerCase())) return false;
+         if (StringUtils.hasText(materialTypeName) && !matchesMaterialTypeName(material, materialTypeName)) return false;
+         if (!StringUtils.hasText(keyword)) return true;
+         String normalized = keyword.trim().toLowerCase();
+         return containsIgnoreCase(material.getName(), normalized)
+                 || containsIgnoreCase(material.getCode(), normalized)
+                 || containsIgnoreCase(material.getSpecification(), normalized)
+                 || containsIgnoreCase(material.getVersion(), normalized)
+                 || containsIgnoreCase(material.getUnit(), normalized)
+                 || matchesMaterialTypeName(material, normalized);
+     }
+ 
+     private boolean matchesMaterialTypeName(Material material, String materialTypeName) {
+         if (material == null || !StringUtils.hasText(materialTypeName)) return false;
+         String resolvedTypeName = material.getMaterialTypeName();
+         if (!StringUtils.hasText(resolvedTypeName) && material.getMaterialTypeId() != null) {
+             resolvedTypeName = materialTypeNameMap().get(material.getMaterialTypeId());
+         }
+         return StringUtils.hasText(resolvedTypeName) && resolvedTypeName.toLowerCase().contains(materialTypeName.trim().toLowerCase());
+     }
+ 
+     private boolean containsIgnoreCase(String value, String normalizedKeyword) {
+         return value != null && value.toLowerCase().contains(normalizedKeyword);
+     }
+ 
+     private boolean matchesStatus(String value, String status) {
+         return !StringUtils.hasText(status) || "ALL".equalsIgnoreCase(status) || status.trim().equals(value);
+     }
+ 
+     private Comparator<Material> materialComparator(String sort, String order) {
+         Comparator<Material> comparator = switch (sort) {
+             case "name" -> Comparator.comparing(Material::getName, Comparator.nullsLast(String::compareToIgnoreCase));
+             case "code" -> Comparator.comparing(Material::getCode, Comparator.nullsLast(String::compareToIgnoreCase));
+             case "status" -> Comparator.comparing(this::resolveMaterialRuntimeStatus, Comparator.nullsLast(String::compareToIgnoreCase));
+             case "updatedAt" -> Comparator.comparing(Material::getUpdatedAt, Comparator.nullsLast(LocalDateTime::compareTo));
+             default -> Comparator.comparing(Material::getCreatedAt, Comparator.nullsLast(LocalDateTime::compareTo));
+         };
+         return "asc".equalsIgnoreCase(order) ? comparator : comparator.reversed();
+     }
+ 
+     private int compareMaterialVersionDesc(Material left, Material right) {
+         return compareVersion(right == null ? null : right.getVersion(), left == null ? null : left.getVersion());
+     }
+ 
+     private int compareVersion(String left, String right) {
+         String leftValue = StringUtils.hasText(left) ? left.trim() : "";
+         String rightValue = StringUtils.hasText(right) ? right.trim() : "";
+         Matcher leftMatcher = VERSION_NUMBER_PATTERN.matcher(leftValue);
+         Matcher rightMatcher = VERSION_NUMBER_PATTERN.matcher(rightValue);
+-        while (leftMatcher.find() && rightMatcher.find()) {
++        while (true) {
++            boolean hasLeftNumber = leftMatcher.find();
++            boolean hasRightNumber = rightMatcher.find();
++            if (!hasLeftNumber || !hasRightNumber) {
++                if (hasLeftNumber != hasRightNumber) return hasLeftNumber ? 1 : -1;
++                break;
++            }
+             int numberCompare = new BigInteger(leftMatcher.group()).compareTo(new BigInteger(rightMatcher.group()));
+             if (numberCompare != 0) return numberCompare;
+         }
+-        if (leftMatcher.find()) return 1;
+-        if (rightMatcher.find()) return -1;
+         return leftValue.compareToIgnoreCase(rightValue);
+     }
+ 
+     private boolean isEffectiveMaterialVersion(Material material) {
+         return "ACTIVE".equals(resolveMaterialRuntimeStatus(material));
+     }
+ 
+     private String resolveMaterialRuntimeStatus(Material material) {
+         if (material == null) return "ACTIVE";
+         return resolveMaterialRuntimeStatus(material.getEffectiveDate(), material.getExpiryDate());
+     }
+ 
+     private String resolveMaterialRuntimeStatus(LocalDateTime effectiveDate, LocalDateTime expiryDate) {
+         return RdoVersionStatusResolver.resolve(effectiveDate, expiryDate);
+     }
+ 
+     private String resolveMaterialGroupRuntimeStatus(List<Material> versions) {
+         return RdoVersionStatusResolver.resolveAggregate(versions.stream()
+                 .map(this::resolveMaterialRuntimeStatus)
+                 .toList());
+     }
+ 
+     private PageRequest pageable(int page, int size, String sort, String order) {
+         Sort.Direction direction = "asc".equalsIgnoreCase(order) ? Sort.Direction.ASC : Sort.Direction.DESC;
+         return PageRequest.of(Math.max(page - 1, 0), Math.max(size, 1), Sort.by(direction, safeSort(sort)));
+     }
+ 
+     private String safeSort(String sort) {
+         if (!StringUtils.hasText(sort)) return "createdAt";
+         return switch (sort) {
+             case "name", "code", "status", "createdAt", "updatedAt", "sortOrder" -> sort;
+             default -> "createdAt";
+         };
+     }
+ 
+     private <T> Specification<T> keywordStatusSpec(String keyword, String status) {
+         return (root, query, cb) -> {
+             java.util.List<jakarta.persistence.criteria.Predicate> predicates = new java.util.ArrayList<>();
+             if (StringUtils.hasText(keyword)) {
+                 String like = "%" + keyword.trim() + "%";
+                 predicates.add(cb.or(cb.like(root.get("name"), like), cb.like(root.get("code"), like)));
+             }
+             if (StringUtils.hasText(status) && !"ALL".equalsIgnoreCase(status)) {
+                 predicates.add(cb.equal(root.get("status"), status.trim()));
+             }
+             return predicates.isEmpty() ? cb.conjunction() : cb.and(predicates.toArray(new jakarta.persistence.criteria.Predicate[0]));
+         };
+     }
+ 
+     private Specification<Route> routeSpec(String keyword, String status) {
+         return (root, query, cb) -> {
+             java.util.List<jakarta.persistence.criteria.Predicate> predicates = new java.util.ArrayList<>();
+             if (StringUtils.hasText(keyword)) {
+                 String like = "%" + keyword.trim() + "%";
+                 predicates.add(cb.or(cb.like(root.get("name"), like), cb.like(root.get("code"), like)));
+             }
+             if (StringUtils.hasText(status) && !"ALL".equalsIgnoreCase(status)) {
+                 LocalDateTime now = LocalDateTime.now();
+                 jakarta.persistence.criteria.Subquery<Long> versionSubquery = query.subquery(Long.class);
+                 jakarta.persistence.criteria.Root<RouteVersion> versionRoot = versionSubquery.from(RouteVersion.class);
+                 java.util.List<jakarta.persistence.criteria.Predicate> versionPredicates = new java.util.ArrayList<>();
+                 versionPredicates.add(cb.equal(versionRoot.get("routeId"), root.get("id")));
+                 if (RdoVersionStatusResolver.ACTIVE.equals(status.trim())) {
+                     versionPredicates.add(cb.or(cb.isNull(versionRoot.get("effectiveDate")), cb.lessThanOrEqualTo(versionRoot.get("effectiveDate"), now)));
+                     versionPredicates.add(cb.or(cb.isNull(versionRoot.get("expiryDate")), cb.greaterThan(versionRoot.get("expiryDate"), now)));
+                 } else if (RdoVersionStatusResolver.EXPIRED.equals(status.trim())) {
+                     versionPredicates.add(cb.or(
+                             cb.greaterThan(versionRoot.get("effectiveDate"), now),
+                             cb.lessThanOrEqualTo(versionRoot.get("expiryDate"), now)));
+                 } else {
+                     return cb.disjunction();
+                 }
+                 versionSubquery.select(versionRoot.get("routeId"));
+                 versionSubquery.where(cb.and(versionPredicates.toArray(new jakarta.persistence.criteria.Predicate[0])));
+                 predicates.add(root.get("id").in(versionSubquery));
+             }
+             return predicates.isEmpty() ? cb.conjunction() : cb.and(predicates.toArray(new jakarta.persistence.criteria.Predicate[0]));
+         };
+     }
+ 

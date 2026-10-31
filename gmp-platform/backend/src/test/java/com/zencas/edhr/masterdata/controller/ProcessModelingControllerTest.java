@@ -1111,6 +1111,36 @@ class ProcessModelingControllerTest {
     }
 
     @Test
+    void versionComparisonObeysOrderingLawsForAcceptedLabelsAndLegacyEmptyValues() throws Exception {
+        String[] labels = {null, "", " ", "Z", "A1", "V0", "V1", " V1 ", "v1", "V01", "V1.0",
+                "V1.2z", "V1.2a3", "V2a3", "V2b", "V2a3.0", "V02a", "V2z", "V10",
+                "V9223372036854775808", "V2a9223372036854775808", "版本二"};
+        Method compare = ProcessModelingController.class.getDeclaredMethod("compareVersion", String.class, String.class);
+        compare.setAccessible(true);
+        int[][] signs = new int[labels.length][labels.length];
+        for (int i = 0; i < labels.length; i++) {
+            for (int j = 0; j < labels.length; j++) {
+                signs[i][j] = Integer.signum((Integer) compare.invoke(controller, labels[i], labels[j]));
+            }
+        }
+        for (int i = 0; i < labels.length; i++) {
+            assertThat(signs[i][i]).isZero();
+            for (int j = 0; j < labels.length; j++) {
+                assertThat(signs[i][j]).as("antisymmetry: %s / %s", labels[i], labels[j]).isEqualTo(-signs[j][i]);
+                for (int k = 0; k < labels.length; k++) {
+                    if (signs[i][j] > 0 && signs[j][k] > 0) {
+                        assertThat(signs[i][k]).as("transitivity: %s / %s / %s", labels[i], labels[j], labels[k]).isPositive();
+                    }
+                    if (signs[i][j] == 0) {
+                        assertThat(signs[i][k]).as("equal-label consistency: %s / %s / %s", labels[i], labels[j], labels[k])
+                                .isEqualTo(signs[j][k]);
+                    }
+                }
+            }
+        }
+    }
+
+    @Test
     void listsMaterialsGroupedByCodeAndNameWithNumericVersionOrder() {
         Material v1 = Material.builder()
                 .id(101L)

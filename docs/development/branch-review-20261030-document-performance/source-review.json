@@ -1,0 +1,13 @@
+{
+  "targetCommit":"31058765002e0705f1659f42abb1fb25b6dc7611",
+  "previousFeatureCommit":"793503cbbd32375d47fc76185cf0568ec1fe7bd4",
+  "scopeType":"limited-method-ranges",
+  "wholeFileCompletion":0,
+  "historicalUniqueIncrement":null,
+  "records":[
+    {"path":"gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/DocumentManagementController.java","symbols":["list","toResponse/toDocumentResponse/toVersionResponse","toDocumentCategoryResponses"],"scope":"原列表/文件投影与分类实体物化真实调用链和本次替换；写入/审计仅核对保留路径，不称完整CRUD/授权已审"},
+    {"path":"gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/repository/SopDocumentRepository.java","symbols":["LIST_FILTER","countForList","findPageForList","countGroupedByCategory"],"scope":"绑定参数、EXISTS匹配旧版本、字面转义、longoffset、NULLSFIRST和ID次序、分类聚合；真实H2/PG与6计划，非全仓SQL已审"},
+    {"path":"gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/DocumentListReadService.java","symbols":["read","readBatches","DocumentPage"],"scope":"新局部读侧职责、RR代理事务和一致快照、批次/身份映射及不依赖ControllerDTO；页面完整历史可能很大，未做任意容量认证"}
+  ],
+  "countingBoundary":"3个本轮源码范围组，跨历史重叠，不加算完整文件或全域完成。相同40场景跨引擎复验独立统计，不当80个unique。"
+}

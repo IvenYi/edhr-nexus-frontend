@@ -1,0 +1,16 @@
+{
+  "baseCommit": "31058765002e0705f1659f42abb1fb25b6dc7611",
+  "dimension": "A23",
+  "methodGroups": 7,
+  "wholeFileCompletion": 0,
+  "countingBoundary": "Current limited method evidence overlays the all-pending fixed file queue. Prior reviewed code is explicitly reread here; no historical review is backfilled.",
+  "records": [
+    {"path":"gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java","symbol":"compareMaterialVersionDesc","conclusion":"simplification-candidate","id":"A23-W4-MATERIAL-COMPARATOR-NULL-001","basis":"唯一调用链toMaterialGroups先groupingBy解引用Material，toMaterialGroup再排序；参数null兜底不能保护此前已失败的输入。仅两个对象null分支可简化候选，不连带删除标签空白兼容。W6再核最新消费者后最小处理，当前不改产品。"},
+    {"path":"gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java","symbol":"toPagedResult","conclusion":"necessary-protection","basis":"保留既有非正分页归一化/安全clamp，旧边界回归证明输入范围，不能以简化删除。"},
+    {"path":"gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProductProcessController.java","symbol":"listProducts page normalization and bounds only","conclusion":"necessary-protection","basis":"同一已接受分页边界，重读normalizedPage/normalizedSize和long裁剪；不认证方法所有其他分支。"},
+    {"path":"gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/DocumentManagementController.java","symbol":"normalizeCategoryFilter/requireDocumentCategory","conclusion":"necessary-protection","basis":"外部文本格式/long范围与真实分类存在性及租户有不同职责；本批真实GET非法/越long/缺失分类均400，不默认为ALL。"},
+    {"path":"gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/DocumentManagementController.java","symbol":"list empty categoryDocuments guard","conclusion":"necessary-protection","basis":"空输入不执行无意义版本IN查询；不是吞异常或默认成功。空库实际页算术缺陷另独立修复。"},
+    {"path":"gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/DocumentManagementController.java","symbol":"toVersionResponse missing file fallback","conclusion":"evidence-gap","id":"A23-W4-DOCUMENT-FILE-FALLBACK-001","basis":"缺文件保留fileId并空属性的实际代码可定位，但合法历史兼容/删除政策尚无充分证据；不能擅自删保护或把它称确定合理。"},
+    {"path":"gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/DocumentManagementController.java","symbol":"toAuditJson","conclusion":"necessary-protection","basis":"捕获序列化异常后抛业务错误，无空审计成功fallback；仅源码核对，未做异常注入或事务回滚运行。"}
+  ]
+}

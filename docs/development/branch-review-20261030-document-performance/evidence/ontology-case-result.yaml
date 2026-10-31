@@ -1,0 +1,52 @@
+ontologyResult:
+  result: not-applicable
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: 092afa5bc1a967545569cae4910a92da25c0b292
+    targetBranch: edhr-dev
+    targetCommit: 31058765002e0705f1659f42abb1fb25b6dc7611
+    contractReadCommit: 793503cbbd32375d47fc76185cf0568ec1fe7bd4
+    uncommittedContractPaths: []
+  reason: 同一文档性能切片中的大小写变体检索实现纠错，Repo字段与参数统一DB UPPER/NFC/LOWER，保留字面LIKE及存储原文。六既有ID业务边界未改变，无新地区/locale业务政策；H2
+    NFC适配不认证PG语义，完整Unicode/任意locale限制及旧failed保持。
+  changedArtifacts: []
+  knowledgeSync: []
+  conflicts: []
+  questions: []
+  validationEvidence:
+  - id: validation.document-perf.case-semantic-increment
+    checkType: evidence-path
+    command: Read two repository predicate diffs,17literal-symbol tests,12native-case
+      variants and H2-only JDKNFC adapter
+    outcome: passed
+    evidence:
+    - /tmp/edhr-document-perf-ontology-case-review.json
+    - /tmp/edhr-document-perf-ontology-case-review.md
+    - Actual092HEAD plusuncommitted correction; not final runtime acceptance.
+  - id: validation.document-perf.case-knowledge-preserved
+    checkType: reference
+    command: git diff --name-only 793503cb 092afa5b -- docs/knowledge docs/architecture
+      docs/agents AGENTS.md codeplzreadme.md tools/knowledge-model; git diff --name-only
+      -- samepaths
+    outcome: passed
+    evidence:
+    - Both diffs empty; source/target/contract and actual code hashes in case manifest.
+  - id: validation.document-perf.case-prior89-reuse
+    checkType: schema
+    command: Reuse prior actual89knowledge validation after unchanged-source and original
+      hash verification; no rerun
+    outcome: passed
+    evidence:
+    - /tmp/edhr-document-perf-ontology-knowledge-test.txt
+    - /tmp/edhr-document-perf-ontology-knowledge-junit.xml
+    - Actual earlier89/0failure/error/skip by this role, not additional89 or product
+      test.
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages:
+    - P1
+    - P2
+    - P3

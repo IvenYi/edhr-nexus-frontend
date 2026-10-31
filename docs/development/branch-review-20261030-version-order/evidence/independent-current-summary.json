@@ -1,0 +1,68 @@
+{
+  "headCommit": "57d44a125132a788606507619e07896f0b21bc38",
+  "suites": [
+    {
+      "suite": "MasterDataBoundaryIntegrationTest",
+      "evidence": "/tmp/edhr-version-order-qa-current-MasterDataBoundaryIntegrationTest.xml",
+      "timestamp": null,
+      "tests": 60,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "ProcessModelingControllerTest",
+      "evidence": "/tmp/edhr-version-order-qa-current-ProcessModelingControllerTest.xml",
+      "timestamp": null,
+      "tests": 55,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "ProductProcessControllerTest",
+      "evidence": "/tmp/edhr-version-order-qa-current-ProductProcessControllerTest.xml",
+      "timestamp": null,
+      "tests": 14,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "MaterialImportIntegrationTest",
+      "evidence": "/tmp/edhr-version-order-qa-current-MaterialImportIntegrationTest.xml",
+      "timestamp": null,
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  ],
+  "totals": {
+    "tests": 133,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "knowledge": [
+    {
+      "suite": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "evidence": "/tmp/edhr-version-order-qa-knowledge-TEST-com.zencas.edhr.knowledge.BusinessKnowledgeModelTest.xml",
+      "tests": 89,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  ],
+  "knowledgeTotals": {
+    "tests": 89,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "authorizedHttpRecords": 59,
+  "mixedRecords": 24,
+  "uniqueMixedCombinations": 24,
+  "anonymousQualification": "one of 60 integration tests executes three anonymous GETs and asserts401 plus full three-table snapshots; not in59authorizedrecordstream",
+  "sameRunCounting": "Do not add primary133 or ontology89 to independent identical test counts."
+}

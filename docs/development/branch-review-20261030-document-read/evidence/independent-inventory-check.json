@@ -1,0 +1,42 @@
+{
+  "baseCommit": "31058765002e0705f1659f42abb1fb25b6dc7611",
+  "files": [
+    {
+      "name": "coverage.csv",
+      "rebuiltPath": "/tmp/edhr-document-qa-inventory-hcy950et/coverage.csv",
+      "sha256": "dd4d4ea32c21b7d3ed010ba0aafb72d56458c993f4d2b52dbfc2ed10654e1f07",
+      "bytes": 1292124,
+      "sameBytes": true
+    },
+    {
+      "name": "entrypoints.csv",
+      "rebuiltPath": "/tmp/edhr-document-qa-inventory-hcy950et/entrypoints.csv",
+      "sha256": "c43def17092515cf997233d83d95af0fb79e583fe5a0cc8f9c80de2ee8b7deb6",
+      "bytes": 152332,
+      "sameBytes": true
+    },
+    {
+      "name": "migrations.csv",
+      "rebuiltPath": "/tmp/edhr-document-qa-inventory-hcy950et/migrations.csv",
+      "sha256": "b2bec70659ccee7b47e1d5539056e877017be623da9809848f64c62ebc7e7465",
+      "bytes": 33469,
+      "sameBytes": true
+    },
+    {
+      "name": "inventory-summary.json",
+      "rebuiltPath": "/tmp/edhr-document-qa-inventory-hcy950et/inventory-summary.json",
+      "sha256": "c521a8fe6bb28cbcf486268a0bf580c2fcd209175fe5b7180d117b2b82e44704",
+      "bytes": 1043,
+      "sameBytes": true
+    }
+  ],
+  "trackedPaths": 4372,
+  "migrations": 130,
+  "entrypointCandidates": {
+    "http-annotation": 442,
+    "state-definition-candidate": 8,
+    "background-candidate": 1,
+    "frontend-route-candidate": 198
+  },
+  "qualification": "Inventory only, no semantic review or whole-file completion."
+}

@@ -1126,12 +1126,16 @@ public class ProcessModelingController {
         String rightValue = StringUtils.hasText(right) ? right.trim() : "";
         Matcher leftMatcher = VERSION_NUMBER_PATTERN.matcher(leftValue);
         Matcher rightMatcher = VERSION_NUMBER_PATTERN.matcher(rightValue);
-        while (leftMatcher.find() && rightMatcher.find()) {
+        while (true) {
+            boolean hasLeftNumber = leftMatcher.find();
+            boolean hasRightNumber = rightMatcher.find();
+            if (!hasLeftNumber || !hasRightNumber) {
+                if (hasLeftNumber != hasRightNumber) return hasLeftNumber ? 1 : -1;
+                break;
+            }
             int numberCompare = new BigInteger(leftMatcher.group()).compareTo(new BigInteger(rightMatcher.group()));
             if (numberCompare != 0) return numberCompare;
         }
-        if (leftMatcher.find()) return 1;
-        if (rightMatcher.find()) return -1;
         return leftValue.compareToIgnoreCase(rightValue);
     }
 

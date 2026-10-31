@@ -1,0 +1,74 @@
+{
+  "sourceCommit": "092afa5bc1a967545569cae4910a92da25c0b292",
+  "workingTree": "same keyword fold family fixed withDBUPPER/NFC/LOWER plus native variant and literal regressions",
+  "suites": [
+    {
+      "suite": "DocumentReadBoundaryIntegrationTest",
+      "tests": 58,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "DocumentReadPerformancePostgresTest",
+      "tests": 71,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "DocumentManagementControllerTest",
+      "tests": 11,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "MasterDataBoundaryIntegrationTest",
+      "tests": 60,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "ProcessModelingControllerTest",
+      "tests": 55,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "ProductProcessControllerTest",
+      "tests": 14,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "MaterialImportIntegrationTest",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  ],
+  "totals": {
+    "tests": 273,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "postgres": 71,
+  "h2AndExisting": 202,
+  "uniqueBoundary": "58 common doc scenarios across H2/PG,12 PG-specific variants plus1 concurrent snapshot; not273unique",
+  "helperReadEvents": 132,
+  "runnerOrder": [
+    "com.zencas.edhr.masterdata.controller.DocumentManagementControllerTest",
+    "com.zencas.edhr.masterdata.controller.MasterDataBoundaryIntegrationTest",
+    "com.zencas.edhr.masterdata.controller.MaterialImportIntegrationTest",
+    "com.zencas.edhr.masterdata.controller.ProcessModelingControllerTest",
+    "com.zencas.edhr.masterdata.controller.ProductProcessControllerTest",
+    "com.zencas.edhr.masterdata.controller.DocumentReadBoundaryIntegrationTest",
+    "com.zencas.edhr.masterdata.controller.DocumentReadPerformancePostgresTest"
+  ]
+}

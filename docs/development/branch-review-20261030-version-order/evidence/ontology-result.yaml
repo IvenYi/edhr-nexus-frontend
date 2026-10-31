@@ -1,0 +1,42 @@
+ontologyResult:
+  result: not-applicable
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: 635711f97e9b794f4af02e1e5d1939bb2ecf920f
+    targetBranch: edhr-dev
+    targetCommit: 635711f97e9b794f4af02e1e5d1939bb2ecf920f
+    contractReadCommit: 635711f97e9b794f4af02e1e5d1939bb2ecf920f
+    uncommittedContractPaths: []
+  reason: 本轮只修物料显示比较器的Matcher推进，使原数字段比较、额外数字段分支及文本回退形成一致顺序；不新增版本格式、SemVer、发布/默认选择政策，也不改变物料版本身份、产品源物料、生产冻结、审计或权限。相关5个既有ID有限核对一致，无知识同步修改。数字段顺序是既有实现的工程意图，未作为用户确认的业务规则写入知识。
+  changedArtifacts: []
+  knowledgeSync: []
+  conflicts: []
+  questions: []
+  validationEvidence:
+    - id: validation.version-order-limited-semantic-review
+      checkType: evidence-path
+      command: 直接读取ontology/glossary、DEC-0001、product-process规则/证据及Material和两个控制器的列明方法；核对当前工作树产品diff。
+      outcome: passed
+      evidence:
+        - /tmp/edhr-version-order-rule-review.json
+        - /tmp/edhr-version-order-rule-review.md
+        - 核对发生于HEAD 635711f9加未提交compareVersion修改；不是已提交候选的运行验收。
+    - id: validation.version-order-knowledge-structure
+      checkType: schema
+      command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f tools/knowledge-model/pom.xml test
+      outcome: passed
+      evidence:
+        - /tmp/edhr-version-order-ontology-knowledge-test.txt
+        - 本角色实际执行89测试、0失败/错误/跳过；2026-10-30T00:28:32Z结束。只证明正式知识结构/引用门禁，不代表全量语义或产品API验收。
+    - id: validation.version-order-contract-increment
+      checkType: reference
+      command: git diff 5539d26e92936c188337706427fa2cce3b0b48ec 635711f97e9b794f4af02e1e5d1939bb2ecf920f -- AGENTS.md docs/agents docs/knowledge
+      outcome: passed
+      evidence:
+        - 输出为空；实际读取契约与合入后基线一致，不依赖知识版本号推断。
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages: [P1, P2, P3]

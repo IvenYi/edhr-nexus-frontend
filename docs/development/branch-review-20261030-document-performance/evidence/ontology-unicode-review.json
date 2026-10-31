@@ -1,0 +1,52 @@
+{
+  "schema": "edhr-limited-semantic-increment/v1",
+  "reviewer": "/root/document_performance_ontology_20261030",
+  "sourceCommit": "7d376e81ba32c543d671e11f1503dab28e7760c3",
+  "targetCommit": "31058765002e0705f1659f42abb1fb25b6dc7611",
+  "knowledgeBaselineVersion": "0.3.25",
+  "workingTree": "Two uncommitted product files plus8 test cases; not a final committed QA candidate.",
+  "relatedExistingIds": [
+    "concept.document-version",
+    "relation.operation-binding-references-document-versions",
+    "rule.product-process.multiple-classified-documents",
+    "DEC-0001-07",
+    "DEC-0001-09",
+    "DEC-0064-05"
+  ],
+  "counts": {
+    "relatedExistingIds": 6,
+    "newSemanticIdsReviewed": 0,
+    "knowledgeChanges": 0,
+    "newHistoricalUniqueCoverage": 0,
+    "wholeFileCompletion": 0
+  },
+  "result": "not-applicable",
+  "basis": "原样标题/版本编码关键词应可命中自身，是既有查询含义。两处SQLLOWER(:pattern)与移除Java Locale.ROOT预折叠，使字段和参数在同一DB/locale下折叠，修复实现差异，不新增地区业务政策。",
+  "actuallyRead": [
+    "Current two product diffs",
+    "Current decisionPackage original scope",
+    "Eight title/version-code tests forİzmir/ΟΣ/Ångström/Étage",
+    "Main original unicode-baseline-summary49/4failure/0error/skip, not independently run",
+    "Contract/knowledge byte-preservation diffs from793 to7d and current worktree"
+  ],
+  "preserved": [
+    "参数化查询、!/%/_字面转义、trim/空白判断均保留。",
+    "文档/版本/文件身份、分类、完整版本/任意旧版本编码匹配、分页/排序/批读/RR和历史引用/审计含义不变。",
+    "六ID只重核本次参数折叠与上述业务边界之间无新影响，不重复计新增unique。",
+    "首轮quality failed及早先ontology原件完整保留；本体NA不能替代修复后的全新质量实例复验。"
+  ],
+  "limitations": [
+    "未运行产品/H2/PG/Unicode回归，不将主侧49旧4红45正或当前241报告当成本角色实测。",
+    "统一DB折叠修复已证参数/字段不一致；不声称不同部署locale或任意Unicode字符有形式化等价证明。",
+    "原有缺文件政策gap、实体映射/方法权限候选、A23与用户暂缓均未关闭。"
+  ],
+  "knowledgeValidationReuse": {
+    "actualEarlierTests": 89,
+    "rerun": false,
+    "reason": "知识和知识验证源码/结构未变，原89JUnit/log哈希已核对，沿用本角色此前真实结构验证，不新增一次运行。",
+    "originalEvidence": [
+      "/tmp/edhr-document-perf-ontology-knowledge-test.txt",
+      "/tmp/edhr-document-perf-ontology-knowledge-junit.xml"
+    ]
+  }
+}

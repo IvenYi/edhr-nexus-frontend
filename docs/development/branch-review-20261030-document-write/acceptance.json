@@ -1,0 +1,219 @@
+{
+  "baseCommit": "2e24711aad1124bb28674161ef8f3dbaf00b569a",
+  "runtimeTestedCommit": "fd1e80d9abb01e75b60d8d40e9f2c39587c420a1",
+  "reviewedCommit": "fd1e80d9abb01e75b60d8d40e9f2c39587c420a1",
+  "executionLevel": "L2",
+  "status": "passed",
+  "qualityResult": "evidence/final-quality/quality-result.yaml",
+  "independentReview": "evidence/final-quality/quality-review.md",
+  "requiredPassed": 16,
+  "requiredTotal": 16,
+  "optionalFailed": 1,
+  "findings": [
+    {
+      "id": "AUD-W3-DOCUMENT-PAGE-AUTHORITY-001",
+      "severity": "high",
+      "scope": "all13specializeddocument/categoryHTTPendpoints",
+      "summary": "承接旧CAND-W3-DOCUMENT-METHOD-AUTH-001；旧仅登录使无文档页面权限者可读写，当前同资源authority已独立验证解决。",
+      "reproductionSteps": [
+        "在旧2e创建真实签名JWT，permissions为空或仅master-data.materials。",
+        "逐个执行原样测试中的13个合法文档/分类请求；旧26缺权请求均200，20次改变业务/审计行、6读取。",
+        "同样测试在候选fd1e分别H2/PG执行，验证403/0SQL/完整五表无变，同时保留匿名401和有权正向。"
+      ],
+      "expectedResult": "缺少master-data.documents的已认证请求403且不读写业务数据；匿名401，有权者可沿既有业务规则操作。",
+      "actualResult": "本实例当前两引擎每个13路矩阵全过；旧同组26缺权真实失败，当前26均403/0SQL/五表不变。",
+      "evidence": [
+        "/tmp/edhr-document-write-q1-old-http.jsonl",
+        "/tmp/edhr-document-write-q1-old-summary.json",
+        "/tmp/edhr-document-write-q1-h2-http.jsonl",
+        "/tmp/edhr-document-write-q1-pg-http.jsonl",
+        "/tmp/edhr-document-write-q1-http-observations.json"
+      ],
+      "resolutionStatus": "resolved",
+      "resolutionEvidence": [
+        {
+          "type": "commit",
+          "reference": "fd1e80d9abb01e75b60d8d40e9f2c39587c420a1"
+        },
+        {
+          "type": "command",
+          "reference": "/tmp/edhr-document-write-q1-h2-test.txt"
+        },
+        {
+          "type": "command",
+          "reference": "/tmp/edhr-document-write-q1-pg-test.txt"
+        }
+      ]
+    },
+    {
+      "id": "AUD-W5-DOCUMENT-PARENT-CODE-MAPPING-001",
+      "severity": "medium",
+      "scope": "SopDocument.code ORMnullability,existingversion-ownedcodecontract",
+      "summary": "承接旧CAND-W5-DOCUMENT-ENTITY-NULLABILITY-001；遗留父code NOTNULL映射与0051/canonical及正常创建不符，当前仅同步映射。",
+      "reproductionSteps": [
+        "独立fresh H2 ORM create-drop，不执行DROP NOT NULL或父编码补值。",
+        "有文档权限的真实JWT POST仅在version.code提供必填编码。",
+        "旧同测试400，当前200并持久化父codeNULL/版本code/两条审计；后续新版本缺code仍400且不新增记录。"
+      ],
+      "expectedResult": "映射反映已有父code可空与版本code必填，正常创建无需fixtureDDL修补。",
+      "actualResult": "独立旧fresh1真实断言红、当前同1通过；生产默认ddl-auto:none，本结果不声称当前canonical生产库被自动重建或无法创建。",
+      "evidence": [
+        "/tmp/edhr-document-write-q1-old-DocumentOrmSchemaIntegrationTest.xml",
+        "/tmp/edhr-document-write-q1-h2-DocumentOrmSchemaIntegrationTest.xml",
+        "/tmp/edhr-document-write-q1-product-diff.txt"
+      ],
+      "resolutionStatus": "resolved",
+      "resolutionEvidence": [
+        {
+          "type": "commit",
+          "reference": "fd1e80d9abb01e75b60d8d40e9f2c39587c420a1"
+        },
+        {
+          "type": "command",
+          "reference": "/tmp/edhr-document-write-q1-h2-test.txt"
+        }
+      ]
+    }
+  ],
+  "candidateMapping": [
+    {
+      "candidate": "CAND-W3-DOCUMENT-METHOD-AUTH-001",
+      "finding": "AUD-W3-DOCUMENT-PAGE-AUTHORITY-001",
+      "resolutionStatus": "resolved"
+    },
+    {
+      "candidate": "CAND-W5-DOCUMENT-ENTITY-NULLABILITY-001",
+      "finding": "AUD-W5-DOCUMENT-PARENT-CODE-MAPPING-001",
+      "resolutionStatus": "resolved"
+    }
+  ],
+  "independentRuns": {
+    "h2AndExisting": {
+      "tests": 258,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "nativePostgres": {
+      "tests": 126,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "knowledge": {
+      "tests": 89,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "oldActualTarget": {
+      "tests": 56,
+      "failures": 27,
+      "positiveControls": 29,
+      "errors": 0,
+      "skipped": 0,
+      "expectedRed": true
+    }
+  },
+  "countingBoundary": "Current384 cross-engine executions, not384unique; H2/PG each55write-helper and60/72read-helper; freshORM2POST separate; same primary/independent runs not added into unique.",
+  "ontology": {
+    "result": "not-applicable",
+    "roleState": "FINAL",
+    "version": "0.3.25",
+    "limitedExistingIds": 8,
+    "knowledgeChanges": 0,
+    "wholeFileCompletion": 0,
+    "newHistoricalUniqueIncrement": null,
+    "resultDocument": "evidence/ontology-result.yaml",
+    "actualKnowledgeTests": 89,
+    "finalQualitySeparatelyRanKnowledge89": true
+  },
+  "independentArchive": "evidence/final-quality/archive-map.json",
+  "scopeReview": {
+    "allFormalRoles": "FINAL",
+    "noDrift": true,
+    "actualUserCommunicationBeforePrCreation": true,
+    "document": "scope-review.md"
+  },
+  "sourceCoverage": {
+    "limitedMethodGroups": 8,
+    "wholeFileCompletion": 0,
+    "historicalUniqueIncrement": null,
+    "document": "source-review.json"
+  },
+  "inventory": {
+    "fixedCommit": "2e24711aad1124bb28674161ef8f3dbaf00b569a",
+    "trackedPaths": 4650,
+    "migrations": 130,
+    "status": "inventory-only"
+  },
+  "a23": {
+    "methodRecords": 7,
+    "wholeFileCompletion": 0,
+    "historicalLanguageQueue": 856,
+    "previousFeatureAddedPending": 1,
+    "separateSqlQueue": 130,
+    "sqlChecked": 0,
+    "currentChangedPending": 3,
+    "currentAddedPending": 3,
+    "document": "a23-review.json",
+    "historicalHandling": "W6 includes previously reviewed current code, W7 latest-target increments; no inherited A23 pass or permanent-current denominator claim."
+  },
+  "limits": [
+    {
+      "id": "risk.partial-deletion-and-files",
+      "description": "授权/原子性测试用真实五类实体仓储，但产品绑定repo为mock、删除Aspect未装配、文件只有合成元数据。",
+      "impact": "不能认证完整生产引用/删除图、多租户或磁盘文件内容。",
+      "mitigation": "按真实生产guard与文件领域后续单独验证；当前仅静态确认methodsecurity200先于删除Aspect1000。"
+    },
+    {
+      "id": "risk.schema-environment",
+      "description": "freshORM为H2，PG为自建16.15/en_US.utf8合成库；生产Liquibase/完整迁移未回放，父code修改不执行历史数据修复。",
+      "impact": "不等同生产schema/部署全链认证。",
+      "mitigation": "保持ddl-auto:none与已有canonical，实际发布按风险补环境验证。"
+    },
+    {
+      "id": "risk.performance-candidates",
+      "description": "分类写全量读取/重复计数、详情文件及删除版本查询增长仍为source候选/单文档观测；库内扫描和大页完整历史风险保持。",
+      "impact": "本批不能声称全路径性能、生产时延/堆GC/SLA已通过。",
+      "mitigation": "先量化真实guard/缓存/增长反证，再与用户讨论方案；不未经讨论优化。"
+    },
+    {
+      "id": "risk.sorting-policy-gap",
+      "description": "分类排序未知/重复ID兼容与审计归属尚待核依据，访问正向测试没有固化其合法性。",
+      "impact": "不能以授权修复关闭排序业务/审计规范。",
+      "mitigation": "独立候选跟踪，按已有规则及真实来源核对后处理。"
+    },
+    {
+      "id": "risk.audit-coverage-remains",
+      "description": "4650盘点与有限8源码/8知识范围不等全审；W2/W3/W4余项、W5–W7、A23旧已审全量/SQL队列及新增增量仍待完成。",
+      "impact": "本批通过只覆盖当前切片，不给整体百分比或新unique。",
+      "mitigation": "保持固定清单/历史原件，后续fetch增量复核和W6/W7反查。"
+    },
+    {
+      "id": "risk.retained-deferrals",
+      "description": "TaskDetail友方修复、生产弹窗设计、记录控制依赖DHRhigh/A12、四知识gap及缺文件政策不关闭。",
+      "impact": "原延期功能/政策缺口不能因本批通过自动变绿。",
+      "mitigation": "按既有所有权及用户确认推进，无merge/deploy/restore。"
+    },
+    {
+      "id": "risk.ui-tooling-not-run",
+      "description": "无UI变动，未跑浏览器/完整前端build/strict/lint；历史strict19/ESLint配置缺口仍非绿。",
+      "impact": "Maven打印资源生成不代表前端全量验收；未核分支强制CI设置。",
+      "mitigation": "按适用模块后续验证，不查询触发CI/Actions。"
+    }
+  ],
+  "explicitScopeLimits": [
+    "Authorization/atomicity tests use real JWT/filter/methodsecurity/transactions/five repositories; binding repository mock and no deletion aspect, not full production reference-graph certification.",
+    "Production ddl-auto:none; fresh ORM regression proves mapping alignment, not a current canonical-production creation outage.",
+    "Synthetic metadata only, no disk file verification, production migration/heapGC/SLA or full multitenant certification.",
+    "Classification write findAll/repeated count and detail/delete version-dependent query candidates remain pending discussion, no implementation authorization inferred.",
+    "Category reorder compatibility/audit ownership and A23 merge-left simplification remain source/evidence candidates.",
+    "No UI change: browser/full frontend build/strict/lint not rerun; historical strict19/ESLint gap stay nongreen; optional raw whitespace failed with immutable CSV/logs preserved.",
+    "W2/W3/W4 remaining and W5-W7 not complete; prior user deferrals and four knowledge gaps unchanged."
+  ],
+  "blockingConditions": [],
+  "recommendMergeForThisBatch": true,
+  "deliveryPolicy": "Manual user merge only; no CI/Actions query/trigger, merge, deploy, restore or shared-history rewrite.",
+  "postQaVerification": "evidence/delivery-verification.json"
+}

@@ -1,0 +1,161 @@
+{
+  "schema": "edhr-limited-semantic-review/v1",
+  "reviewer": "/root/document_performance_ontology_20261030",
+  "contractReadCommit": "793503cbbd32375d47fc76185cf0568ec1fe7bd4",
+  "targetCommit": "31058765002e0705f1659f42abb1fb25b6dc7611",
+  "knowledgeBaselineVersion": "0.3.25",
+  "workingTreeQualification": "HEAD793503cb plus uncommitted document controller/repository/new read service; not a committed final QA candidate.",
+  "counts": {
+    "reviewedRecords": 6,
+    "limitedConsistent": 6,
+    "newKnowledgeIds": 0,
+    "knowledgeChanges": 0,
+    "historicalUniqueIncrement": null,
+    "wholeFileCompletion": 0
+  },
+  "countingBoundary": "Six existing IDs overlap previous document review; no unique history dedup, no maturity upgrade, no whole domain completion.",
+  "records": [
+    {
+      "id": "concept.document-version",
+      "recordType": "concept",
+      "sourcePath": "docs/knowledge/ontology.yaml",
+      "sourceLocator": "concept.document-version",
+      "originalMaturity": "implemented",
+      "auditScope": "limited-document-read-performance-impact",
+      "semanticReviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "scope": "文档父记录/具体版本稳定ID与document_id保持；DB页位置、文件map及512批次不产生新身份。",
+      "implementationReferences": [
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/entity/DocumentVersion.java",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/DocumentListReadService.java#read",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/DocumentManagementController.java#toVersionResponse"
+      ],
+      "reasonableness": "文档/版本/引用身份与读取策略分离可保留已有业务含义；本轮降低读取成本而不通过新业务政策删除完整版本、引用或历史职责。",
+      "limitations": [
+        "当前范围不是整条规则/整个文档生命周期的运行认证；未进行本角色产品API/PG/性能验证。"
+      ]
+    },
+    {
+      "id": "relation.operation-binding-references-document-versions",
+      "recordType": "relation",
+      "sourcePath": "docs/knowledge/ontology.yaml",
+      "sourceLocator": "relation.operation-binding-references-document-versions",
+      "originalMaturity": "implemented",
+      "auditScope": "limited-document-read-performance-impact",
+      "semanticReviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "scope": "生产绑定继续引用具体documentVersionId，列表count/page与metadata去重不改变绑定基数或历史引用。",
+      "implementationReferences": [
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/entity/ProductProcessOperationDocumentBinding.java",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProductProcessController.java#saveOperationBindings/validateOperationReferences"
+      ],
+      "reasonableness": "文档/版本/引用身份与读取策略分离可保留已有业务含义；本轮降低读取成本而不通过新业务政策删除完整版本、引用或历史职责。",
+      "limitations": [
+        "当前范围不是整条规则/整个文档生命周期的运行认证；未进行本角色产品API/PG/性能验证。"
+      ]
+    },
+    {
+      "id": "rule.product-process.multiple-classified-documents",
+      "recordType": "rule",
+      "sourcePath": "docs/knowledge/rules/product-process.yaml",
+      "sourceLocator": "rule.product-process.multiple-classified-documents",
+      "originalMaturity": "implemented",
+      "auditScope": "limited-document-read-performance-impact",
+      "semanticReviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "scope": "任意分类文档可绑定且同工序不重复具体版本；列表类别过滤保留ALL/未分类/具体ID，不增加只限SOP的限制。",
+      "implementationReferences": [
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/DocumentManagementController.java#normalizeCategoryFilter",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/repository/SopDocumentRepository.java#LIST_FILTER",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/DocumentListReadService.java#read"
+      ],
+      "reasonableness": "文档/版本/引用身份与读取策略分离可保留已有业务含义；本轮降低读取成本而不通过新业务政策删除完整版本、引用或历史职责。",
+      "limitations": [
+        "当前范围不是整条规则/整个文档生命周期的运行认证；未进行本角色产品API/PG/性能验证。"
+      ]
+    },
+    {
+      "id": "DEC-0001-07",
+      "recordType": "decision-statement",
+      "sourcePath": "docs/knowledge/decisions/DEC-0001-product-process-modeling.yaml",
+      "sourceLocator": "DEC-0001-07",
+      "originalMaturity": "implemented",
+      "auditScope": "limited-document-read-performance-impact",
+      "semanticReviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "scope": "与现行任意分类文档规范及具体版本引用含义一致；SQL聚合计数和列表页读取不是新的文档适用规则。",
+      "implementationReferences": [
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/repository/SopDocumentRepository.java#countGroupedByCategory",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/DocumentManagementController.java#toDocumentCategoryResponses"
+      ],
+      "reasonableness": "文档/版本/引用身份与读取策略分离可保留已有业务含义；本轮降低读取成本而不通过新业务政策删除完整版本、引用或历史职责。",
+      "limitations": [
+        "当前范围不是整条规则/整个文档生命周期的运行认证；未进行本角色产品API/PG/性能验证。"
+      ]
+    },
+    {
+      "id": "DEC-0001-09",
+      "recordType": "decision-statement",
+      "sourcePath": "docs/knowledge/decisions/DEC-0001-product-process-modeling.yaml",
+      "sourceLocator": "DEC-0001-09",
+      "originalMaturity": "specified",
+      "auditScope": "limited-document-read-performance-impact",
+      "semanticReviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "scope": "START冻结实际身份/配置的规范继续；列表RR只是当前查询一致视图，不是生产快照或新的冻结时点，不改历史。",
+      "implementationReferences": [
+        "docs/knowledge/evidence/batch-process-2026-10-27.md#用户确认",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/DocumentListReadService.java#read",
+        "git diff -- gmp-platform/backend/src/main: only document read/controller/repository paths"
+      ],
+      "reasonableness": "文档/版本/引用身份与读取策略分离可保留已有业务含义；本轮降低读取成本而不通过新业务政策删除完整版本、引用或历史职责。",
+      "limitations": [
+        "当前范围不是整条规则/整个文档生命周期的运行认证；未进行本角色产品API/PG/性能验证。"
+      ]
+    },
+    {
+      "id": "DEC-0064-05",
+      "recordType": "decision-statement",
+      "sourcePath": "docs/knowledge/decisions/DEC-0064-master-data-description-contract.yaml",
+      "sourceLocator": "DEC-0064-05",
+      "originalMaturity": "implemented",
+      "auditScope": "limited-document-read-performance-impact",
+      "semanticReviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "scope": "历史审计不回写，现有创建/版本写入和审计保留；列表投影沿description/版本说明，未增加remark或读侧审计写入。",
+      "implementationReferences": [
+        "docs/knowledge/evidence/master-data-description.yaml",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/DocumentManagementController.java#toDocumentResponse/toVersionResponse/documentSnapshot/versionSnapshot/writeAudit"
+      ],
+      "reasonableness": "文档/版本/引用身份与读取策略分离可保留已有业务含义；本轮降低读取成本而不通过新业务政策删除完整版本、引用或历史职责。",
+      "limitations": [
+        "当前范围不是整条规则/整个文档生命周期的运行认证；未进行本角色产品API/PG/性能验证。"
+      ]
+    }
+  ],
+  "engineeringBoundaries": [
+    "DB COUNT/EXISTS plus LIMIT/OFFSET preserves parent-title or any-version-code matching and complete versions for selected parents; escapingLIKE literals,512 ID batch size and RR are engineering choices, not new user policy.",
+    "Original comparator reversed(nullsLast) yields null timestamps first; current DESC NULLS FIRST keeps direction and adds id ASC for previously unspecified timestamp ties as stable paging.",
+    "FileId preserved with missing metadata keeps previous projection only; no new approval that missing historical files are legitimate, and old A23 gap not closed.",
+    "Classification count moves to GROUP BY with total/uncategorized/default-empty buckets; no change to category identity or custom/system lifecycle.",
+    "SQL COUNT/filter/sort may scan more rows than page; bounded entity materialization does not assert bounded physical scans or production SLA.",
+    "Current parameter lower-case/LIKE folding is database/locale engineering; this role does not certify arbitrary deployed locale or Unicode equivalence."
+  ],
+  "provenance": {
+    "userConfirmed": "Inherited current user explicitly asks to fix the two explained performance risks; authorization is not inferred from continue/merge.",
+    "versionedUserSources": [
+      "docs/knowledge/decisions/DEC-0001-product-process-modeling.yaml#DEC-0001-07/09",
+      "docs/knowledge/evidence/batch-process-2026-10-27.md#用户确认",
+      "docs/knowledge/decisions/DEC-0064-master-data-description-contract.yaml#DEC-0064-05",
+      "docs/frontend/dialog-guidelines.md"
+    ],
+    "originalEvidence": "Directly read current three product files, related entities/reference binding code and versioned source/evidence; inspected actual working-tree product diff.",
+    "secondaryReference": "Main reported225 pass and old40 five failures/35 positive; this role did not rerun product tests or EXPLAIN.",
+    "inference": "Historical simple implementation tradeoff is not an original author decision record."
+  },
+  "remaining": [
+    "A23 856 language-code plus130 SQL queue and feature pending stay unchanged.",
+    "Document method-auth/entity-nullability candidates, missing-file policy gap, prior TaskDetail/production-dialog/record-control dependentDHR high/A12/four gaps retained.",
+    "No nativePG/production migration/volume or full business lifecycle certification by this role."
+  ]
+}

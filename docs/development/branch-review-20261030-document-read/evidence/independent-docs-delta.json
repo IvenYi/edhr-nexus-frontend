@@ -1,0 +1,37 @@
+{
+  "baseCommit": "31058765002e0705f1659f42abb1fb25b6dc7611",
+  "runtimeTestedCommit": "3ccd178ba541b6a953347de2de6c8c577a0b538b",
+  "finalReviewedCandidate": "b8054cc6e5d3b0639c38b28f00181721f57b2718",
+  "docsOnlyChangedPaths": [
+    "docs/development/branch-review-20261015/NEXT.md",
+    "docs/development/branch-review-20261026-capacity-audit/audit-charter.md",
+    "docs/development/branch-review-20261030-document-read/README.md",
+    "docs/development/branch-review-20261030-document-read/a23-sql-recheck-summary.json",
+    "docs/development/branch-review-20261030-document-read/a23-sql-recheck.csv",
+    "docs/development/branch-review-20261030-document-read/overdefense-review.md"
+  ],
+  "protectedDelta": [],
+  "runtimeReuse": "Actual170/89 executed at3ccd178b; product/tests/knowledge/contracts byte-identical atb8054cc6; no runtime reexecution claimed.",
+  "sqlPending": 130,
+  "sqlKinds": {
+    "configuration-or-data": 1,
+    "database-migration": 129
+  },
+  "sqlChecked": 0,
+  "sqlQueueRebuiltSameBytes": true,
+  "oldQueueAndMethodOverlayUnchanged": true,
+  "finalNonEvidenceWhitespaceExit": 0,
+  "finalNonEvidencePaths": 19,
+  "finalFullWhitespaceExit": 2,
+  "finalRawWhitespacePaths": [
+    "docs/development/branch-review-20261030-document-read/evidence/baseline-junit.xml",
+    "docs/development/branch-review-20261030-document-read/evidence/baseline-test.txt",
+    "docs/development/branch-review-20261030-document-read/evidence/current-DocumentReadBoundaryIntegrationTest.xml",
+    "docs/development/branch-review-20261030-document-read/evidence/current-MasterDataBoundaryIntegrationTest.xml",
+    "docs/development/branch-review-20261030-document-read/evidence/current-MaterialImportIntegrationTest.xml",
+    "docs/development/branch-review-20261030-document-read/evidence/current-test.txt",
+    "docs/development/branch-review-20261030-document-read/evidence/initial-fixture-junit.xml",
+    "docs/development/branch-review-20261030-document-read/evidence/initial-fixture-test.txt",
+    "docs/development/branch-review-20261030-document-read/evidence/ontology-knowledge-test.txt"
+  ]
+}

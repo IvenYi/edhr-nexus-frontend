@@ -1,0 +1,34 @@
+{
+  "baseCommit": "31058765002e0705f1659f42abb1fb25b6dc7611",
+  "rows": 856,
+  "featureAddedPaths": [
+    {"path":"gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/DocumentReadBoundaryIntegrationTest.java","a23_status":"pending","phase":"W6","scope":"New feature file outside fixed target denominator; include on next integration/delta, not silently omitted."}
+  ],
+  "allInitialStatus": "pending",
+  "byKind": {
+    "source-or-tool": 629,
+    "test": 227
+  },
+  "prefixes": [
+    "gmp-platform/backend/src/",
+    "gmp-platform/frontend/src/",
+    "gmp-platform/frontend/scripts/",
+    "scripts/",
+    "tools/"
+  ],
+  "extensions": [
+    ".cjs",
+    ".java",
+    ".js",
+    ".jsx",
+    ".mjs",
+    ".py",
+    ".sh",
+    ".ts",
+    ".tsx"
+  ],
+  "previouslyReviewed": "All current owned-source paths included regardless of historic review, no inherited pass. Method overlays separate; no whole-file completion.",
+  "queueSha256": "fa4a26672fbae2fbe5288008702c3d62e3ff9170debfc51874532d8cbac1fccf",
+  "updates": "At active fetch checkpoints add new paths pending, mark changed files/dependencies needs-delta, retain deleted/renamed provenance; W7 reconcile.",
+  "exclusions": "Third-party/build outputs and immutable historical evidence in docs are not mutable product source; evidence quality remains A21."
+}

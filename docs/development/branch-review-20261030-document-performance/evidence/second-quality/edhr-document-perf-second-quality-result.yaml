@@ -1,0 +1,176 @@
+qualityResult:
+  result: failed
+  baseCommit: 31058765002e0705f1659f42abb1fb25b6dc7611
+  headCommit: 092afa5bc1a967545569cae4910a92da25c0b292
+  contractBaseline:
+    sourceCommit: 092afa5bc1a967545569cae4910a92da25c0b292
+    targetBranch: edhr-dev
+    targetCommit: 31058765002e0705f1659f42abb1fb25b6dc7611
+    contractReadCommit: 092afa5bc1a967545569cae4910a92da25c0b292
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: clean
+    includedPaths: []
+    excludedPaths: []
+    untrackedPaths: []
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+  - id: check.document-perf-finalqa2.baseline-contract
+    required: true
+    category: documentation
+    description: 独立fetch/clean/实际契约及知识增量核验
+    method: command
+    command: git fetch origin edhr-dev; git status --porcelain; git diff origin/edhr-dev
+      HEAD -- AGENTS.md codeplzreadme.md docs/agents docs/knowledge
+    outcome: passed
+    evidence:
+    - /tmp/edhr-document-perf-finalqa-inspection.json
+    - base=31058765002e0705f1659f42abb1fb25b6dc7611;head=tested=092afa5bc1a967545569cae4910a92da25c0b292;clean;contract/knowledge
+      delta empty
+  - id: check.document-perf-finalqa2.minimum-structure
+    required: true
+    category: requirements
+    description: 三产品文件局部读职责/SQL绑定/512批次与投影源码检查
+    method: inspection
+    command: Read DocumentManagementController, DocumentListReadService and SopDocumentRepository;
+      compare793503cb to candidate
+    outcome: passed
+    evidence:
+    - /tmp/edhr-document-perf-finalqa-inspection.json
+    - 3 product paths; no schema/permission/production snapshot change; RR and literal
+      LIKE binding inspected.
+  - id: check.document-perf-finalqa2.h2-backend
+    required: true
+    category: integration
+    description: 独立H2及既有192执行
+    method: command
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f gmp-platform/backend/pom.xml
+      -Dtest=DocumentReadBoundaryIntegrationTest,DocumentManagementControllerTest,MasterDataBoundaryIntegrationTest,ProcessModelingControllerTest,ProductProcessControllerTest,MaterialImportIntegrationTest
+      -Dedhr.audit.documentReads=true -Dedhr.audit.documentOutput=/tmp/edhr-document-perf-finalqa-h2-http.jsonl
+      test
+    outcome: passed
+    evidence:
+    - /tmp/edhr-document-perf-finalqa-h2-summary.json
+    - 192 tests,0failure/error/skip
+  - id: check.document-perf-finalqa2.postgres-backend
+    required: true
+    category: integration
+    description: 独立自建原生PG49执行，包括8自匹配及并发快照
+    method: command
+    command: EDHR_DOCUMENT_DATABASE_* own localhost DB; mvn-edhr -f gmp-platform/backend/pom.xml
+      -Dtest=DocumentReadPerformancePostgresTest -Dedhr.audit.documentReads=true -Dedhr.audit.documentOutput=/tmp/edhr-document-perf-finalqa-pg-http.jsonl
+      test
+    outcome: passed
+    evidence:
+    - /tmp/edhr-document-perf-finalqa-pg-junit.xml
+    - 49 tests,0failure/error/skip; same48 scenarios repeated across engines plus1
+      PG concurrent test, not241unique
+  - id: check.document-perf-finalqa2.api-cost-records
+    required: true
+    category: api
+    description: 50/50授权helper记录、元数据身份和读取成本核验
+    method: inspection
+    command: Parse own H2 and PG HTTP records and JUnit assertions
+    outcome: passed
+    evidence:
+    - /tmp/edhr-document-perf-finalqa-observations.json
+    - Eachengine50helperGET+2anonymous401; PG extra concurrent raw GET not inhelperstream.
+      New5SQL file-path,5docs/15versions,0doc category loading; old23 is prior evidence
+      not this instance baseline run.
+  - id: check.document-perf-finalqa2.knowledge-basis
+    required: true
+    category: ontology
+    description: 六既有ID有限范围及NA依据核对
+    method: inspection
+    command: Read actual ontology concepts/relations, product-process rules, DEC0001-07/09,
+      DEC0064-05 and role originals
+    outcome: passed
+    evidence:
+    - 6existing IDs limited, no new unique/full-domain claim. No new policy from DB
+      pagination/batching/read-only transaction. Knowledge89 not run by this instance.
+  - id: check.document-perf-finalqa2.originals
+    required: true
+    category: documentation
+    description: 32旧主侧和47新增原件hash/size与本体6+4映射核验
+    method: command
+    command: Python SHA256/size validation of primary-verification.json and final-verification.json
+    outcome: passed
+    evidence:
+    - /tmp/edhr-document-perf-finalqa-inspection.json
+    - 32/47 hashes and6initial/4unicode ontology mappings match; first failed remains
+      unchanged.
+  - id: check.document-perf-finalqa2.scope-deferrals
+    required: true
+    category: requirements
+    description: 排程/覆盖与授权边界核对
+    method: inspection
+    command: Read scope-review/source-review/a23-delta and deferred findings
+    outcome: passed
+    evidence:
+    - 856language+feature and130SQL pending retained,3limited ranges/6existing semantic
+      IDs not whole completion; other performance/TaskDetail/production dialog/record-control/DHRhighA12/four
+      gaps retained.
+  - id: check.document-perf-finalqa2.nonraw-whitespace
+    required: true
+    category: documentation
+    description: 非原件差异空白检查
+    method: command
+    command: git -c core.whitespace=cr-at-eol diff --check base head -- paths excluding/evidence/
+    outcome: passed
+    evidence:
+    - /tmp/edhr-document-perf-finalqa-whitespace-summary.json
+    - 29non-evidence paths passed
+  - id: check.document-perf-finalqa2.unicode-case-compatibility
+    required: true
+    category: api
+    description: 正常API原Greek大小写行为回退
+    method: command
+    command: Java source launcher /tmp/DocumentUnicodeCaseProbe.java with actual candidate
+      Config/JWT/MockMvc on owned native PG
+    outcome: failed
+    evidence:
+    - /tmp/DocumentUnicodeCaseProbe.java
+    - /tmp/edhr-document-perf-finalqa-sigma-api.json
+    - POST ΟΣ work instruction200; GET ΟΣ ->1,ος ->0,οσ ->1. Old source Java lower
+      contains evaluates true forος. No old API run claimed.
+  - id: check.document-perf-finalqa2.all-whitespace
+    required: false
+    category: documentation
+    description: 原始证据全区间空白检查
+    method: command
+    command: git -c core.whitespace=cr-at-eol diff --check base head
+    outcome: failed
+    evidence:
+    - /tmp/edhr-document-perf-finalqa-whitespace-all.txt
+    - exit2; raw original evidence retained
+  findings:
+  - id: QF-DOCUMENT-UNICODE-FOLD-001
+    severity: medium
+    scope: document-list-case-insensitive-search
+    summary: 原样Unicode自匹配已修，但同一查询折叠问题家族仍有Greek大小写变体回退；不重复计新修复成绩。
+    reproductionSteps:
+    - Use clean candidate092afa5bc1a967545569cae4910a92da25c0b292 against owned PostgreSQL (image postgres:16-alpine)
+      with real JWT/filter/MockMvc.
+    - POST /api/v1/master-data/documents title=ΟΣ work instruction,version=V1,code=SIGMA-PROBE;
+      response200 and stored title preserved.
+    - GET same endpoint keyword=ΟΣ returns1; keyword=ος returns0; keyword=οσ returns1.
+    expectedResult: 保留原case-insensitive查找含义：旧源码title.toLowerCase().contains(keyword.toLowerCase())对ΟΣ/ος为true，小写关键词应命中同一文档。
+    actualResult: Native SQL LOWER(ΟΣ)=οσ while LOWER(ος)=ος; candidate exact lowercase
+      keyword misses. Existing8same-case Unicode assertions and all241suite assertions
+      pass but do not cover this case variant.
+    evidence:
+    - /tmp/edhr-document-perf-finalqa-sigma-api.json
+    - /tmp/edhr-document-perf-finalqa-sigma-api-test.txt
+    - /tmp/DocumentUnicodeCaseProbe.java
+    resolutionStatus: open
+    resolutionEvidence: []
+  residualRisks:
+  - id: not-run-after-confirmed-failure
+    description: 未执行旧310基线48、知识89、六份计划重跑；因已证查询回退停止剩余昂贵范围。未借用主侧结果。
+    impact: 本实例不认证这些未执行项。
+    mitigation: 主侧修复后新实例补齐最终验证。
+  - id: capacity-and-ui-limits
+    description: 无生产SLA/容量/任意locale形式证明；未跑浏览器/完整前端build/strict/lint，旧非绿状态保留。
+    impact: 不能声称整体审计或生产容量完成。
+    mitigation: 按既有范围/延期独立列明。
+  blockingConditions: []

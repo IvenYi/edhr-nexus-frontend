@@ -22,8 +22,10 @@ import com.zencas.edhr.masterdata.repository.DocumentCategoryRepository;
 import com.zencas.edhr.masterdata.repository.DocumentVersionRepository;
 import com.zencas.edhr.masterdata.repository.ProductProcessOperationDocumentBindingRepository;
 import com.zencas.edhr.masterdata.repository.SopDocumentRepository;
+import com.zencas.edhr.masterdata.service.DocumentListReadService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -49,6 +51,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/api/v1/master-data/documents")
 @RequiredArgsConstructor
+@PreAuthorize("hasAuthority('master-data.documents')")
 public class DocumentManagementController {
 
     private static final String TENANT_ID = "default";
@@ -66,6 +69,7 @@ public class DocumentManagementController {
     private final FileObjectRepository fileObjectRepository;
     private final AuditEventRepository auditEventRepository;
     private final SnowflakeIdGenerator idGenerator;
+    private final DocumentListReadService documentListReadService;
 
     @GetMapping
     public ApiResponse<PageResult<DocumentResponse>> list(
@@ -74,24 +78,10 @@ public class DocumentManagementController {
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "20") int size) {
         String normalizedCategoryId = normalizeCategoryFilter(categoryId);
-        List<SopDocument> categoryDocuments = documentRepository.findAll().stream()
-                .filter(document -> matchesCategory(document, normalizedCategoryId))
-                .toList();
-        Map<Long, DocumentCategory> categoriesById = documentCategoriesById();
-        Map<Long, List<DocumentVersion>> versionsByDocument = categoryDocuments.isEmpty() ? Map.of() : documentVersionRepository
-                .findByDocumentIdInOrderByCreatedAtDesc(categoryDocuments.stream().map(SopDocument::getId).toList())
-                .stream().collect(Collectors.groupingBy(DocumentVersion::getDocumentId));
-        List<SopDocument> documents = categoryDocuments.stream()
-                .filter(document -> matchesKeyword(document, versionsByDocument.getOrDefault(document.getId(), List.of()), keyword))
-                .sorted(Comparator.comparing(SopDocument::getUpdatedAt, Comparator.nullsLast(LocalDateTime::compareTo)).reversed())
-                .toList();
-        int safePage = Math.max(page, 1);
-        int safeSize = Math.max(size, 1);
-        int from = Math.min((safePage - 1) * safeSize, documents.size());
-        int to = Math.min(from + safeSize, documents.size());
-        return ApiResponse.success(PageResult.of(documents.subList(from, to).stream()
-                .map(document -> toResponse(document, versionsByDocument.getOrDefault(document.getId(), List.of()), categoriesById))
-                .toList(), safePage, safeSize, documents.size()));
+        var result = documentListReadService.read(normalizedCategoryId, keyword, page, size);
+        return ApiResponse.success(PageResult.of(result.documents().stream()
+                .map(document -> toResponse(document, result.versionsByDocument().getOrDefault(document.getId(), List.of()),
+                        result.categoriesById(), result.filesById())).toList(), result.page(), result.size(), result.total()));
     }
 
     @GetMapping("/categories")
@@ -316,14 +306,28 @@ public class DocumentManagementController {
     }
 
     private DocumentResponse toResponse(SopDocument document, List<DocumentVersion> versions, Map<Long, DocumentCategory> categoriesById) {
+        return toDocumentResponse(document, versions.stream().map(this::toVersionResponse).toList(), categoriesById);
+    }
+
+    private DocumentResponse toResponse(SopDocument document, List<DocumentVersion> versions, Map<Long, DocumentCategory> categoriesById,
+                                        Map<Long, FileObject> filesById) {
+        return toDocumentResponse(document, versions.stream().map(version -> toVersionResponse(version,
+                version.getFileId() == null ? null : filesById.get(version.getFileId()))).toList(), categoriesById);
+    }
+
+    private DocumentResponse toDocumentResponse(SopDocument document, List<DocumentVersionResponse> versions, Map<Long, DocumentCategory> categoriesById) {
         DocumentCategory category = document.getCategoryId() == null ? null : categoriesById.get(document.getCategoryId());
         return new DocumentResponse(id(document.getId()), document.getTitle(), idOrNull(document.getCategoryId()), category == null ? null : category.getName(),
                 document.getDescription(), document.getCreatedBy(), document.getCreatedAt(), document.getUpdatedBy(), document.getUpdatedAt(),
-                versions.stream().map(this::toVersionResponse).toList());
+                versions);
     }
 
     private DocumentVersionResponse toVersionResponse(DocumentVersion version) {
         FileObject file = version.getFileId() == null ? null : fileObjectRepository.findById(version.getFileId()).orElse(null);
+        return toVersionResponse(version, file);
+    }
+
+    private DocumentVersionResponse toVersionResponse(DocumentVersion version, FileObject file) {
         return new DocumentVersionResponse(id(version.getId()), id(version.getDocumentId()), version.getVersion(), version.getCode(), version.getFileId() == null ? null : id(version.getFileId()),
                 file == null ? null : file.getOriginalName(), file == null ? null : file.getMimeType(),
                 version.getFileReference(), version.getDescription(), version.getEffectiveDate(), version.getExpiryDate(),
@@ -402,14 +406,12 @@ public class DocumentManagementController {
     }
 
     private List<DocumentCategoryResponse> toDocumentCategoryResponses() {
-        List<SopDocument> documents = documentRepository.findAll();
-        Map<Long, Long> categoryCounts = documents.stream()
-                .map(SopDocument::getCategoryId)
-                .filter(Objects::nonNull)
-                .collect(Collectors.groupingBy(Function.identity(), LinkedHashMap::new, Collectors.counting()));
-        long uncategorizedCount = documents.stream().filter(document -> document.getCategoryId() == null).count();
+        Map<Long, Long> categoryCounts = new LinkedHashMap<>();
+        documentRepository.countGroupedByCategory().forEach(count -> categoryCounts.put(count.getCategoryId(), count.getDocumentCount()));
+        long total = categoryCounts.values().stream().mapToLong(Long::longValue).sum();
+        long uncategorizedCount = categoryCounts.getOrDefault(null, 0L);
         List<DocumentCategoryResponse> responses = new ArrayList<>();
-        responses.add(new DocumentCategoryResponse(DOCUMENT_CATEGORY_ALL, "全部", (long) documents.size(), 0, true));
+        responses.add(new DocumentCategoryResponse(DOCUMENT_CATEGORY_ALL, "全部", total, 0, true));
         responses.add(new DocumentCategoryResponse(DOCUMENT_CATEGORY_UNCATEGORIZED, "未分类", uncategorizedCount, 1, true));
         documentCategoryRepository.findByTenantIdOrderBySortOrderAscNameAsc(TENANT_ID).stream()
                 .sorted(Comparator.comparing(DocumentCategory::getSortOrder, Comparator.nullsLast(Integer::compareTo))
@@ -452,12 +454,6 @@ public class DocumentManagementController {
             throw new BusinessException(ErrorCode.GENERAL_001, "该文档分类名称为系统保留名称");
         }
         return name;
-    }
-
-    private boolean matchesCategory(SopDocument document, String categoryId) {
-        if (categoryId == null || DOCUMENT_CATEGORY_ALL.equals(categoryId)) return true;
-        if (DOCUMENT_CATEGORY_UNCATEGORIZED.equals(categoryId)) return document.getCategoryId() == null;
-        return Objects.equals(id(document.getCategoryId()), categoryId);
     }
 
     private String normalizeCategoryFilter(String value) {
@@ -506,10 +502,6 @@ public class DocumentManagementController {
         snapshot.put("文档数量", count == null ? 0L : count);
         return snapshot;
     }
-    private boolean matchesKeyword(SopDocument document, List<DocumentVersion> versions, String keyword) {
-        return !hasText(keyword) || contains(document.getTitle(), keyword) || versions.stream().anyMatch(version -> contains(version.getCode(), keyword));
-    }
-    private boolean contains(String value, String keyword) { return value != null && value.toLowerCase().contains(keyword.trim().toLowerCase()); }
     private boolean hasText(String value) { return StringUtils.hasText(value); }
     private String requireText(String value, String message) { if (!hasText(value)) throw new BusinessException(ErrorCode.GENERAL_001, message); return value.trim(); }
     private String trimToNull(String value) { return hasText(value) ? value.trim() : null; }

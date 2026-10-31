@@ -1,0 +1,105 @@
+{
+  "baseCommit": "2e24711aad1124bb28674161ef8f3dbaf00b569a",
+  "workingTree": "two product fixes and tests as reviewed diff",
+  "suites": [
+    {
+      "suite": "DocumentWriteBoundaryIntegrationTest",
+      "tests": 55,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "DocumentOrmSchemaIntegrationTest",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "DocumentWriteBoundaryPostgresTest",
+      "tests": 55,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "DocumentReadBoundaryIntegrationTest",
+      "tests": 58,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "DocumentReadPerformancePostgresTest",
+      "tests": 71,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "DocumentManagementControllerTest",
+      "tests": 11,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "MasterDataBoundaryIntegrationTest",
+      "tests": 60,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "ProcessModelingControllerTest",
+      "tests": 55,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "ProductProcessControllerTest",
+      "tests": 14,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "MaterialImportIntegrationTest",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  ],
+  "totals": {
+    "tests": 384,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "nativePostgres": 126,
+  "h2AndExisting": 258,
+  "writeHelperEvents": 110,
+  "actors": {
+    "anonymous": 26,
+    "no-permissions": 26,
+    "other-page": 26,
+    "allowed": 26,
+    "fail-audit": 6
+  },
+  "runnerOrder": [
+    "DocumentManagementControllerTest",
+    "DocumentReadBoundaryIntegrationTest",
+    "DocumentReadPerformancePostgresTest",
+    "MasterDataBoundaryIntegrationTest",
+    "MaterialImportIntegrationTest",
+    "ProcessModelingControllerTest",
+    "ProductProcessControllerTest",
+    "DocumentWriteBoundaryPostgresTest",
+    "DocumentOrmSchemaIntegrationTest",
+    "DocumentWriteBoundaryIntegrationTest"
+  ],
+  "countingBoundary": "55 new authority/atomicity scenarios and58 read scenarios repeat across engines;384 is executions, not unique."
+}

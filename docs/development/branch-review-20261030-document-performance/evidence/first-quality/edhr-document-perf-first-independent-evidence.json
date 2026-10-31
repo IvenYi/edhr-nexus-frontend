@@ -1,0 +1,177 @@
+{
+  "reviewer": "/root/document_performance_final_qa_20261030",
+  "baseCommit": "31058765002e0705f1659f42abb1fb25b6dc7611",
+  "headCommit": "7d376e81ba32c543d671e11f1503dab28e7760c3",
+  "result": "failed",
+  "requiredPassed": 7,
+  "requiredTotal": 8,
+  "independence": "No product/test/knowledge/fixture repair; standalone independent real HTTP probe uses actual Config and same canonical nullable-code test alignment.",
+  "actualRuns": {
+    "h2AndExisting": {
+      "suites": [
+        {
+          "suite": "DocumentReadBoundaryIntegrationTest",
+          "tests": 40,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "suite": "DocumentManagementControllerTest",
+          "tests": 11,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "suite": "MasterDataBoundaryIntegrationTest",
+          "tests": 60,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "suite": "ProcessModelingControllerTest",
+          "tests": 55,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "suite": "ProductProcessControllerTest",
+          "tests": 14,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "suite": "MaterialImportIntegrationTest",
+          "tests": 4,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        }
+      ],
+      "totals": {
+        "tests": 184,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    },
+    "postgres": "only standalone actual SQL and normalPOST/GET Unicode probe; PG41 suite not run"
+  },
+  "notExecuted": [
+    "PG41 full suite",
+    "knowledge89",
+    "old310 baseline40",
+    "six EXPLAIN reruns",
+    "whole inventory/A23 full backcheck"
+  ],
+  "cleanup": {
+    "createdContainer": "5ec8f3105bd4f9ab673c7a322c21307888ad4bbac06c8965496877b2d793f715",
+    "name": "edhr-document-perf-qa-0dffbb628f",
+    "url": "jdbc:postgresql://127.0.0.1:32769/edhr_document_read_test",
+    "stoppedExactOwnedContainer": true,
+    "autoRemoved": true,
+    "ownWorktreeCreated": false,
+    "sharedDependenciesTouched": false,
+    "mainSourceStatus": "",
+    "evidencePreserved": "/tmp/edhr-document-perf-qa-* and /tmp/DocumentUnicodeProbe.java",
+    "afterStopContainerListing": "",
+    "verification": "docker ps -a --no-trunc --filter exact created ID; immediate inspect after stop may race auto-removal"
+  },
+  "files": [
+    {
+      "path": "/tmp/edhr-document-perf-qa-h2-test.txt",
+      "sha256": "d5ea090d896ce8b500abe080fe961c365700d17db4332ef67ff7370e26509e21",
+      "bytes": 364609
+    },
+    {
+      "path": "/tmp/edhr-document-perf-qa-h2-http.jsonl",
+      "sha256": "db0a7a983aa8c878bea8c67f7a707d5c7a1fb4af0e6307440019a087008c1a01",
+      "bytes": 301745
+    },
+    {
+      "path": "/tmp/edhr-document-perf-qa-h2-summary.json",
+      "sha256": "fe1caa230d7df9bfe3f2794b93646c225bba5785dc2c347e420af91c65d114b6",
+      "bytes": 956
+    },
+    {
+      "path": "/tmp/edhr-document-perf-qa-classpath.txt",
+      "sha256": "8b85f0ca3592d07282d3bfbb8e7586bc7a04fdbb600e26f16dd8c57032202c3a",
+      "bytes": 13847
+    },
+    {
+      "path": "/tmp/edhr-document-perf-qa-unicode-sql.txt",
+      "sha256": "0233932989a53c79001d5a502b692f8a75a6c85cc8094793463df55a17ae9389",
+      "bytes": 19
+    },
+    {
+      "path": "/tmp/DocumentUnicodeProbe.java",
+      "sha256": "08584306e47c665ee0a7a9763b52304f493781ed89e478c8c8ca241344d39929",
+      "bytes": 3475
+    },
+    {
+      "path": "/tmp/edhr-document-perf-qa-unicode-api.json",
+      "sha256": "14a8abe3d7e441850bc29ab8df010c861d89a7989985bfd683f8672c38d54813",
+      "bytes": 2391
+    },
+    {
+      "path": "/tmp/edhr-document-perf-qa-unicode-api-test.txt",
+      "sha256": "7b18efddafad0461500764373d71c9bd4a2e2955d44b0e40e89b0723ab705dac",
+      "bytes": 29434
+    },
+    {
+      "path": "/tmp/edhr-document-perf-qa-first-inspection.json",
+      "sha256": "8d33d72ae01bdf18990ca46d65fac06b1f87a028003092c716899a19113b632c",
+      "bytes": 2556
+    },
+    {
+      "path": "/tmp/edhr-document-perf-qa-first-cleanup.json",
+      "sha256": "74245bcaf522e476a0508a77f99db3771ee914dfdcd7f6bdeff997056f807b8e",
+      "bytes": 613
+    },
+    {
+      "path": "/tmp/edhr-document-perf-first-quality-result.yaml",
+      "sha256": "f7804f3445c8fc0621d2402147708d398195b808e5d41fe3949e006539ecfb11",
+      "bytes": 6755
+    },
+    {
+      "path": "/tmp/edhr-document-perf-first-quality-review.md",
+      "sha256": "3727c89b863b701ed4d20feafc4fe4038c0021294892c97c059752a52223a878",
+      "bytes": 1727
+    },
+    {
+      "path": "/tmp/edhr-document-perf-qa-h2-DocumentReadBoundaryIntegrationTest.xml",
+      "sha256": "c1e4e55ba0ece47e46e599dae2d3c17271cf4e99f00a2b39f951e692e8a2df5f",
+      "bytes": 76421
+    },
+    {
+      "path": "/tmp/edhr-document-perf-qa-h2-DocumentManagementControllerTest.xml",
+      "sha256": "cf967a9d646abc92948dd725dab651dd20455c9cc8457af2ae59c036155af822",
+      "bytes": 34667
+    },
+    {
+      "path": "/tmp/edhr-document-perf-qa-h2-MasterDataBoundaryIntegrationTest.xml",
+      "sha256": "35d4ef0ca487a0f7ce53e15cbadaeaa23735a75dedf5be9ddc517d76202e6c16",
+      "bytes": 276611
+    },
+    {
+      "path": "/tmp/edhr-document-perf-qa-h2-ProcessModelingControllerTest.xml",
+      "sha256": "83d475daa57e32fe91a45ef25f593dd80d04f597199fe5ca0f1f49a08b36858f",
+      "bytes": 41904
+    },
+    {
+      "path": "/tmp/edhr-document-perf-qa-h2-ProductProcessControllerTest.xml",
+      "sha256": "e77a29b5aa75cd35171494d02a643ad38b729aadb1e2480c5611a7534fb81c59",
+      "bytes": 35124
+    },
+    {
+      "path": "/tmp/edhr-document-perf-qa-h2-MaterialImportIntegrationTest.xml",
+      "sha256": "999e8d67e63023f41103a0c8d1c50bdbe67037da3036010fcc611d67bc15f413",
+      "bytes": 129702
+    }
+  ],
+  "manifestQualification": "18 original/log/report/source artifacts; manifest not self-hashed. Local synthetic DB credentials file omitted, no production credentials involved."
+}

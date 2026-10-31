@@ -1,0 +1,26 @@
+{
+  "baseCommit": "31058765002e0705f1659f42abb1fb25b6dc7611",
+  "headCommit": "3ccd178ba541b6a953347de2de6c8c577a0b538b",
+  "contractReadCommit": "3ccd178ba541b6a953347de2de6c8c577a0b538b",
+  "knowledgeVersion": "0.3.25",
+  "mainWorkingTree": "clean",
+  "protectedDiff": [],
+  "productOnly": "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/DocumentManagementController.java",
+  "productNumstat": "2+/2-",
+  "originalTestsUnchanged": true,
+  "originalHashes": 24,
+  "ontologyMappings": 6,
+  "a23FixedPending": 856,
+  "a23Kinds": {
+    "source-or-tool": 629,
+    "test": 227
+  },
+  "a23FeaturePending": 1,
+  "a23OverlayCounts": {
+    "simplification-candidate": 1,
+    "necessary-protection": 5,
+    "evidence-gap": 1
+  },
+  "sourceReviewGroups": 6,
+  "qualification": "All source methods/knowledge IDs reviewed only within named bounds; A23 queue not executed full audit; historical unique not recomputed."
+}

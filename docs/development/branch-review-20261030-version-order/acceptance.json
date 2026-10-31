@@ -1,0 +1,328 @@
+{
+  "baseCommit": "635711f97e9b794f4af02e1e5d1939bb2ecf920f",
+  "testedCommit": "57d44a125132a788606507619e07896f0b21bc38",
+  "status": "passed",
+  "qualityResult": "evidence/quality-result.yaml",
+  "requiredPassed": 12,
+  "requiredTotal": 12,
+  "optionalFailed": 1,
+  "findings": [
+    {
+      "id": "AUD-W4-VERSION-COMPARATOR-ORDER-001",
+      "severity": "medium",
+      "scope": "master-data-material-version-display",
+      "summary": "相同正常保存版本集合因输入顺序导致不同组头/版本列表；原比较器违反反对称性，本候选已修复。",
+      "reproductionSteps": [
+        "正常POST同组V2b与V2a3（或反向创建），保持不同真实创建时间。",
+        "GET /api/v1/master-data/process-modeling/materials?size=1&sort=createdAt&order=desc，切换asc及创建顺序。",
+        "对照原候选测试安装于旧635711f9时的HTTP/断言及当前57d44a12。"
+      ],
+      "expectedResult": "沿原数字段比较、额外数字段与文本回退工程意图形成一致顺序，组头与完整成员保持；不新定格式或发布政策。",
+      "actualResult": "旧24混合组合中8项组头/列表错误且性质测试失败；候选133全过，旧115中其余106正向保持。",
+      "evidence": [
+        "/tmp/edhr-version-order-qa-baseline-summary.json",
+        "/tmp/edhr-version-order-qa-baseline-http.jsonl",
+        "/tmp/edhr-version-order-qa-current-summary.json"
+      ],
+      "resolutionStatus": "resolved",
+      "resolutionEvidence": [
+        {
+          "type": "commit",
+          "reference": "57d44a125132a788606507619e07896f0b21bc38"
+        },
+        {
+          "type": "command",
+          "reference": "/tmp/edhr-version-order-qa-current-test.txt"
+        },
+        {
+          "type": "document",
+          "reference": "/tmp/edhr-version-order-qa-baseline-summary.json"
+        }
+      ]
+    }
+  ],
+  "candidateToFindingMapping": [
+    {
+      "candidate": "CAND-W4-VERSION-COMPARATOR-ORDER-001",
+      "finding": "AUD-W4-VERSION-COMPARATOR-ORDER-001",
+      "disposition": "one existing candidate now API-confirmed and resolved; not duplicate defect"
+    }
+  ],
+  "independentRuns": {
+    "candidateBackend": {
+      "tests": 133,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "baselineBackend": {
+      "tests": 115,
+      "failures": 9,
+      "positiveControls": 106,
+      "errors": 0,
+      "skipped": 0
+    },
+    "knowledge": {
+      "tests": 89,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "countingBoundary": "Same scenarios in primary/independent runs are not summed into unique coverage."
+  },
+  "ontology": {
+    "result": "not-applicable",
+    "roleState": "FINAL",
+    "version": "0.3.25",
+    "limitedExistingIds": 5,
+    "knowledgeChanges": 0,
+    "historicalUniqueIncrement": null,
+    "wholeFileCompletion": 0
+  },
+  "inventory": {
+    "fixedCommit": "635711f97e9b794f4af02e1e5d1939bb2ecf920f",
+    "trackedPaths": 4311,
+    "migrations": 130,
+    "kind": "inventory-only; no semantic completion"
+  },
+  "sourceCoverage": {
+    "limitedMethodGroups": 4,
+    "wholeFileCompletion": 0,
+    "historicalUniqueIncrement": null
+  },
+  "independentArchive": [
+    {
+      "origin": "/tmp/edhr-version-order-qa-base-assembly.json",
+      "archive": "docs/development/branch-review-20261030-version-order/evidence/independent-base-assembly.json",
+      "sha256": "34f6e8c8cc59eb72d1d3ccd64df17ec8df520f86b9a8afa99d014ac85044b614",
+      "bytes": 1248
+    },
+    {
+      "origin": "/tmp/edhr-version-order-qa-base-path.txt",
+      "archive": "docs/development/branch-review-20261030-version-order/evidence/independent-base-path.txt",
+      "sha256": "4459b334181333cce186afe14f85b035b111aa5311631d434cdf228d1b6edd4d",
+      "bytes": 41
+    },
+    {
+      "origin": "/tmp/edhr-version-order-qa-baseline-MasterDataBoundaryIntegrationTest.xml",
+      "archive": "docs/development/branch-review-20261030-version-order/evidence/independent-baseline-MasterDataBoundaryIntegrationTest.xml",
+      "sha256": "96b0e5d07edfffa1fe04601be2c9af4612d31a59a6778aa830e05aef13801d83",
+      "bytes": 388539
+    },
+    {
+      "origin": "/tmp/edhr-version-order-qa-baseline-ProcessModelingControllerTest.xml",
+      "archive": "docs/development/branch-review-20261030-version-order/evidence/independent-baseline-ProcessModelingControllerTest.xml",
+      "sha256": "83d0ac425adf2123ba9cf73641a258d3026e03c2044ebdef43f1dadc0737fde4",
+      "bytes": 42747
+    },
+    {
+      "origin": "/tmp/edhr-version-order-qa-baseline-exit.txt",
+      "archive": "docs/development/branch-review-20261030-version-order/evidence/independent-baseline-exit.txt",
+      "sha256": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+      "bytes": 2
+    },
+    {
+      "origin": "/tmp/edhr-version-order-qa-baseline-http.jsonl",
+      "archive": "docs/development/branch-review-20261030-version-order/evidence/independent-baseline-http.jsonl",
+      "sha256": "46858adb65ca4e894078aa86660c68bbe50d29d108f7f6723e719fd024b9630b",
+      "bytes": 62694
+    },
+    {
+      "origin": "/tmp/edhr-version-order-qa-baseline-summary.json",
+      "archive": "docs/development/branch-review-20261030-version-order/evidence/independent-baseline-summary.json",
+      "sha256": "5fac6c0ed885df8a741f1b7dafc7f845aaff3989e9b9d3f744e1146fffc7a5d2",
+      "bytes": 4599
+    },
+    {
+      "origin": "/tmp/edhr-version-order-qa-baseline-test.txt",
+      "archive": "docs/development/branch-review-20261030-version-order/evidence/independent-baseline-test.txt",
+      "sha256": "464a3c64ec3ccb3acf36e28667f28b6bffd7812b0f30c62ad8dbca842ac022b6",
+      "bytes": 349387
+    },
+    {
+      "origin": "/tmp/edhr-version-order-qa-cleanup.json",
+      "archive": "docs/development/branch-review-20261030-version-order/evidence/independent-cleanup.json",
+      "sha256": "688e04109add7c3e6eec6648598d0eef871f24940e847769abeaf6127dd6ec9e",
+      "bytes": 1314
+    },
+    {
+      "origin": "/tmp/edhr-version-order-qa-current-MasterDataBoundaryIntegrationTest.xml",
+      "archive": "docs/development/branch-review-20261030-version-order/evidence/independent-current-MasterDataBoundaryIntegrationTest.xml",
+      "sha256": "5d61b22ab5f90b2185e9e5f4f985094b801f2a11113645eb60afef47127e4ce6",
+      "bytes": 276983
+    },
+    {
+      "origin": "/tmp/edhr-version-order-qa-current-MaterialImportIntegrationTest.xml",
+      "archive": "docs/development/branch-review-20261030-version-order/evidence/independent-current-MaterialImportIntegrationTest.xml",
+      "sha256": "53887cecde75548b71bfd73ba8e3dd925abe4b5feaf2146ff2d73e49f7fe059c",
+      "bytes": 129580
+    },
+    {
+      "origin": "/tmp/edhr-version-order-qa-current-ProcessModelingControllerTest.xml",
+      "archive": "docs/development/branch-review-20261030-version-order/evidence/independent-current-ProcessModelingControllerTest.xml",
+      "sha256": "4290cdd628f94a7623e04a9dbf96ed11821fc3b05f31b726edabf6d9ad6c17ea",
+      "bytes": 41778
+    },
+    {
+      "origin": "/tmp/edhr-version-order-qa-current-ProductProcessControllerTest.xml",
+      "archive": "docs/development/branch-review-20261030-version-order/evidence/independent-current-ProductProcessControllerTest.xml",
+      "sha256": "1c1342c65345dd9d4d370b7610876d2e79a78ba75ceb38f82aa2fd14b2077135",
+      "bytes": 35000
+    },
+    {
+      "origin": "/tmp/edhr-version-order-qa-current-http.jsonl",
+      "archive": "docs/development/branch-review-20261030-version-order/evidence/independent-current-http.jsonl",
+      "sha256": "3611ab8946740e7773246f383b7a235650ac3b1e6adee6cc5b20b53f1809d21b",
+      "bytes": 62734
+    },
+    {
+      "origin": "/tmp/edhr-version-order-qa-current-summary.json",
+      "archive": "docs/development/branch-review-20261030-version-order/evidence/independent-current-summary.json",
+      "sha256": "3902594efffb4e268ba622aae3067213e532cc7e5125bd4e7b8a2a9ef01900dd",
+      "bytes": 1945
+    },
+    {
+      "origin": "/tmp/edhr-version-order-qa-current-test.txt",
+      "archive": "docs/development/branch-review-20261030-version-order/evidence/independent-current-test.txt",
+      "sha256": "2f8ee4f209377a8e03247558f8d66ab054e1d642b1c123bd4dd7892710187d5c",
+      "bytes": 329158
+    },
+    {
+      "origin": "/tmp/edhr-version-order-qa-inspection.json",
+      "archive": "docs/development/branch-review-20261030-version-order/evidence/independent-inspection.json",
+      "sha256": "c615c836d1b6672bb1a4d1179ffe237e65eb86656937919758f7a3b95e7d1ff2",
+      "bytes": 10375
+    },
+    {
+      "origin": "/tmp/edhr-version-order-qa-inventory-check.json",
+      "archive": "docs/development/branch-review-20261030-version-order/evidence/independent-inventory-check.json",
+      "sha256": "2e9fd4137ac9cbc2102b4b9f4907c7b155d50200ee40e78bc3f063cc873c3d5e",
+      "bytes": 3330
+    },
+    {
+      "origin": "/tmp/edhr-version-order-qa-knowledge-TEST-com.zencas.edhr.knowledge.BusinessKnowledgeModelTest.xml",
+      "archive": "docs/development/branch-review-20261030-version-order/evidence/independent-knowledge-TEST-com.zencas.edhr.knowledge.BusinessKnowledgeModelTest.xml",
+      "sha256": "477ff6648158aa43678ab1b1f8ed0d7aa9b6dfb3ccf82efd2c71e2974c0987f6",
+      "bytes": 20420
+    },
+    {
+      "origin": "/tmp/edhr-version-order-qa-knowledge-test.txt",
+      "archive": "docs/development/branch-review-20261030-version-order/evidence/independent-knowledge-test.txt",
+      "sha256": "2ae0affce00dffd66b56a99e5b6f7d496516635dc69d471d8af11ccbe7a3bc20",
+      "bytes": 2112
+    },
+    {
+      "origin": "/tmp/edhr-version-order-qa-product-diff.txt",
+      "archive": "docs/development/branch-review-20261030-version-order/evidence/independent-product-diff.txt",
+      "sha256": "23d93767423ed42f6d3f1c8e3910e8959955a18713c583c68f68b2366472f2d8",
+      "bytes": 10710
+    },
+    {
+      "origin": "/tmp/edhr-version-order-qa-whitespace-all.txt",
+      "archive": "docs/development/branch-review-20261030-version-order/evidence/independent-whitespace-all.txt",
+      "sha256": "d24735889873c7f8b2e883bfb59c678ee900a752eea2b80f1a71ea5d518eda5b",
+      "bytes": 110366
+    },
+    {
+      "origin": "/tmp/edhr-version-order-qa-whitespace-nonraw.txt",
+      "archive": "docs/development/branch-review-20261030-version-order/evidence/independent-whitespace-nonraw.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "origin": "/tmp/edhr-version-order-qa-inventory-gfjhl_to/coverage.csv",
+      "archive": "docs/development/branch-review-20261030-version-order/evidence/coverage.csv",
+      "sha256": "8228917445fde354168517d06c9bad498b0da467f2648812d50f519fe69ea14b",
+      "bytes": 1273947
+    },
+    {
+      "origin": "/tmp/edhr-version-order-qa-inventory-gfjhl_to/entrypoints.csv",
+      "archive": "docs/development/branch-review-20261030-version-order/evidence/entrypoints.csv",
+      "sha256": "8a8082d9a348c82501d48c06b4b8f7ab7e8ac64163b088613e9565b3319c51ed",
+      "bytes": 152332
+    },
+    {
+      "origin": "/tmp/edhr-version-order-qa-inventory-gfjhl_to/migrations.csv",
+      "archive": "docs/development/branch-review-20261030-version-order/evidence/migrations.csv",
+      "sha256": "1424edf4d9ec9657064036ac9c3de7743e264dfd2cf01ce231d3457b20057a4b",
+      "bytes": 33469
+    },
+    {
+      "origin": "/tmp/edhr-version-order-qa-inventory-gfjhl_to/inventory-summary.json",
+      "archive": "docs/development/branch-review-20261030-version-order/evidence/inventory-summary.json",
+      "sha256": "145cc72d46c8acb34ccb90df95cf2d966cdc2d9e462d8067d1c622a1ecef9b46",
+      "bytes": 1043
+    },
+    {
+      "origin": "/tmp/edhr-version-order-quality-result.yaml",
+      "archive": "docs/development/branch-review-20261030-version-order/evidence/quality-result.yaml",
+      "sha256": "4f87cd5543b7b50f4fbf4335efb0b696a1eabe1499a7e2c11072494a2fde185c",
+      "bytes": 11381
+    },
+    {
+      "origin": "/tmp/edhr-version-order-quality-review.md",
+      "archive": "docs/development/branch-review-20261030-version-order/evidence/quality-review.md",
+      "sha256": "604e1e95d9ea672d979aa36bbf04bf092ac7e8ba0464a7913f7f2aece1770592",
+      "bytes": 3072
+    },
+    {
+      "origin": "/tmp/edhr-version-order-independent-evidence.json",
+      "archive": "docs/development/branch-review-20261030-version-order/evidence/independent-evidence.json",
+      "sha256": "e5593e78b985ee6820c27c3e88f3dfca0fb77df94aa79dd82e5adf885a0eabd4",
+      "bytes": 14542
+    }
+  ],
+  "scopeReview": {
+    "allFormalRoles": "FINAL",
+    "actualUserCommunication": "After both FINAL results and before PR creation; reported no drift, current W4 and unfinished W2/W3/W5-W7, document candidates next, performance and user deferrals retained."
+  },
+  "postTestChangeBoundary": "Only acceptance archives/README/findings/NEXT/scope-review/PR registration; no product/test/knowledge/contracts change after testedCommit.",
+  "remaining": {
+    "currentBatchBlockingConditions": [],
+    "nextCandidates": [
+      "CAND-W4-DOCUMENT-PAGE-ARITHMETIC-001",
+      "PERF-DOCUMENT-PAGE-VERSION-MATERIALIZATION-001",
+      "PERF-DOCUMENT-VERSION-FILE-LOOKUPS-001"
+    ],
+    "existingPerformance": "Three measured equipment/material risks remain pending-discussion; not implemented.",
+    "deferrals": "TaskDetail signature, production dialog design, record-control dependent DHR high/A12 and four knowledge gaps retained.",
+    "limits": [
+      "H2 and focused comparator law set are not PG plan/capacity or arbitrary-string formal proof.",
+      "No frontend product changes; browser/full frontend build/strict/lint not rerun. Historical strict19 and ESLint configuration gap remain non-green.",
+      "Optional complete-interval whitespace failed on8 raw logs/XML at tested commit;13 non-evidence paths passed; archive preserves raw bytes.",
+      "W2/W3/W4 remaining and W5-W7 not complete; no overall completion percentage."
+    ]
+  },
+  "cleanup": {
+    "exactCreatedWorktree": "/tmp/edhr-version-order-qa-base-o4d9hba4",
+    "beforeCleanupStatus": " M gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/MasterDataBoundaryIntegrationTest.java\n M gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/ProcessModelingControllerTest.java\n?? gmp-platform/frontend/node_modules\n",
+    "testCopyDisposal": [
+      {
+        "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/MasterDataBoundaryIntegrationTest.java",
+        "candidateCopyVerifiedBeforeRemoval": true,
+        "restoredExactBaselineSha256": "0d50a6b28b98910fb01a452436e508745f5ab436fe7d5dca9277fcc4e084b896"
+      },
+      {
+        "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/ProcessModelingControllerTest.java",
+        "candidateCopyVerifiedBeforeRemoval": true,
+        "restoredExactBaselineSha256": "f51dd875cafb52a3c99bd3798d00c90d36657b32a35dff80c51731a54be5603f"
+      }
+    ],
+    "symlinkOnlyRemoved": "/tmp/edhr-version-order-qa-base-o4d9hba4/gmp-platform/frontend/node_modules",
+    "sharedNodeModulesPreserved": true,
+    "preRemovalClean": true,
+    "worktreeRemoved": true,
+    "mainStatus": "",
+    "evidencePreserved": "all /tmp/edhr-version-order-qa-* raw logs, reports, HTTP, assembly and summaries remain"
+  },
+  "pullRequest": {
+    "number": 43,
+    "url": "https://github.com/IvenYi/edhr-nexus-frontend/pull/43",
+    "branch": "audit/edhr-dev-version-order-20261030",
+    "targetBranch": "edhr-dev",
+    "createdAtHead": "2a4fe4c661a6700047cfd7a63bcd4c15710c322a",
+    "mergeableAtCreation": "MERGEABLE",
+    "mergeStateAtCreation": "CLEAN",
+    "status": "open-for-user-manual-merge"
+  }
+}

@@ -1,0 +1,114 @@
+{
+  "docs/development/branch-review-20261030-document-read/a23-recheck.csv": {
+    "rows": 856,
+    "columns": [
+      "base_commit",
+      "path",
+      "blob",
+      "kind",
+      "phase",
+      "a23_status",
+      "previous_review_handling"
+    ],
+    "statuses": {
+      "pending": 856
+    },
+    "unchangedFromPreviousFeature": true,
+    "sha256": "fa4a26672fbae2fbe5288008702c3d62e3ff9170debfc51874532d8cbac1fccf"
+  },
+  "docs/development/branch-review-20261030-document-read/a23-sql-recheck.csv": {
+    "rows": 130,
+    "columns": [
+      "base_commit",
+      "path",
+      "blob",
+      "kind",
+      "phase",
+      "a23_status",
+      "modification_boundary"
+    ],
+    "statuses": {
+      "pending": 130
+    },
+    "unchangedFromPreviousFeature": true,
+    "sha256": "7e9983f60a052397cf8f1a39013cf517c1f27849235197f70f438d42f253359b"
+  },
+  "docs/development/branch-review-20261030-document-read/inventory/coverage.csv": {
+    "rows": 4372,
+    "columns": [
+      "baseline_commit",
+      "path",
+      "asset_type",
+      "domain",
+      "work_package",
+      "in_scope",
+      "exclusion_reason",
+      "review_depth",
+      "review_status",
+      "reviewer",
+      "source_evidence",
+      "finding_ids",
+      "tested_commit",
+      "notes"
+    ],
+    "statuses": {
+      "pending": 4372
+    },
+    "unchangedFromPreviousFeature": true,
+    "sha256": "dd4d4ea32c21b7d3ed010ba0aafb72d56458c993f4d2b52dbfc2ed10654e1f07"
+  },
+  "docs/development/branch-review-20261030-document-read/inventory/entrypoints.csv": {
+    "rows": 649,
+    "columns": [
+      "baseline_commit",
+      "kind",
+      "path",
+      "line",
+      "source",
+      "status"
+    ],
+    "statuses": {
+      "candidate-needs-call-chain-review": 649
+    },
+    "unchangedFromPreviousFeature": true,
+    "sha256": "c43def17092515cf997233d83d95af0fb79e583fe5a0cc8f9c80de2ee8b7deb6"
+  },
+  "docs/development/branch-review-20261030-document-read/inventory/migrations.csv": {
+    "rows": 130,
+    "columns": [
+      "baseline_commit",
+      "path",
+      "blob",
+      "status",
+      "notes"
+    ],
+    "statuses": {
+      "inventory-only": 130
+    },
+    "unchangedFromPreviousFeature": true,
+    "sha256": "b2bec70659ccee7b47e1d5539056e877017be623da9809848f64c62ebc7e7465"
+  },
+  "actualTargetTrackedPaths": 4372,
+  "a23Delta": {
+    "basis": "Previous fixed856 language files + feature1 and separate130 SQL remain historical pending denominator; this overlay records new actual feature paths, not a regenerated false completion count.",
+    "previousFeatureCommit": "793503cbbd32375d47fc76185cf0568ec1fe7bd4",
+    "changedPending": [
+      "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/DocumentManagementController.java",
+      "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/repository/SopDocumentRepository.java",
+      "gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/DocumentReadBoundaryIntegrationTest.java",
+      "gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/DocumentManagementControllerTest.java"
+    ],
+    "addedPending": [
+      "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/DocumentListReadService.java",
+      "gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/DocumentReadPerformancePostgresTest.java"
+    ],
+    "limitedCurrentObservations": [
+      "Empty count/offset return avoids pointless page/IN queries while preserving prior empty-page API; real positive and huge-int inputs tested.",
+      "Nullable file/category IDs are real schema boundaries, filtered before ID batch and guarded in pure projection; not removed as excessive defense.",
+      "Private batch helper has three real consumers and512 technical parameter bound, no invented general framework or customer limit.",
+      "No failure-as-success fallback/crossrequest cache added. Missing metadata preserves old identity without resolving the policy gap."
+    ],
+    "wholeFileCompletion": 0,
+    "remaining": "W6 whole-source backcheck and W7 current-target delta/coverage reconciliation required; old comparator-null simplification and missing-file policy candidates remain."
+  }
+}
