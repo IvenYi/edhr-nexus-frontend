@@ -1,0 +1,134 @@
+diff --git a/gmp-platform/backend/src/test/java/com/zencas/edhr/recordcontrol/service/RecordControlPostgresIntegrationTest.java b/gmp-platform/backend/src/test/java/com/zencas/edhr/recordcontrol/service/RecordControlPostgresIntegrationTest.java
+index 1489bce3..3a689f8d 100644
+--- a/gmp-platform/backend/src/test/java/com/zencas/edhr/recordcontrol/service/RecordControlPostgresIntegrationTest.java
++++ b/gmp-platform/backend/src/test/java/com/zencas/edhr/recordcontrol/service/RecordControlPostgresIntegrationTest.java
+@@ -11,6 +11,14 @@ import org.junit.jupiter.api.Test;
+ import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
+ import org.springframework.beans.factory.annotation.Autowired;
+ import org.springframework.boot.test.context.SpringBootTest;
++import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
++import org.springframework.test.web.servlet.MockMvc;
++import org.springframework.http.MediaType;
++import org.junit.jupiter.params.ParameterizedTest;
++import org.junit.jupiter.params.provider.ValueSource;
++import java.nio.file.Files;
++import java.nio.file.Path;
++import java.nio.file.StandardOpenOption;
+ import org.springframework.boot.test.mock.mockito.MockBean;
+ import org.springframework.jdbc.core.JdbcTemplate;
+ import org.springframework.security.crypto.password.PasswordEncoder;
+@@ -27,7 +35,10 @@ import static org.assertj.core.api.Assertions.*;
+ @EnabledIfEnvironmentVariable(named = "RECORD_CONTROL_TEST_DATABASE_URL",
+         matches = "jdbc:postgresql://(?:localhost|127\\.0\\.0\\.1):[0-9]+/edhr_record_control_test_[a-z0-9_]+")
+ @SpringBootTest(properties = {"spring.jpa.hibernate.ddl-auto=none", "spring.liquibase.enabled=true"})
++@AutoConfigureMockMvc
+ class RecordControlPostgresIntegrationTest {
++    @Autowired MockMvc mvc;
++    @Autowired com.zencas.edhr.identity.security.JwtTokenProvider tokens;
+     @DynamicPropertySource static void database(DynamicPropertyRegistry properties) {
+         String url = System.getenv("RECORD_CONTROL_TEST_DATABASE_URL");
+         if (url == null || !url.matches("jdbc:postgresql://(?:localhost|127\\.0\\.0\\.1):[0-9]+/edhr_record_control_test_[a-z0-9_]+"))
+@@ -164,6 +175,103 @@ class RecordControlPostgresIntegrationTest {
+         return reports.query(new com.zencas.edhr.production.controller.FormProjectionController.Query("production", null, null, java.util.Map.of(), 0, 20, null, null)).getData();
+     }
+ 
++    @ParameterizedTest @ValueSource(strings = {"anonymous", "no-menu", "act-only", "menu-only", "candidate", "unrelated", "submitter"})
++    void ordinaryHttpReviewMatrixUsesMenuActionAndTaskIdentitySeparately(String scenario) throws Exception {
++        dhr(true);
++        var version = summaries.submit(1000L, summaryCommand());
++        long task = dhrTask();
++        jdbc.update("INSERT INTO user_account(id,tenant_id,username,display_name,password_hash,status) VALUES(43,0,'unrelated-reviewer','其他用户','unused','ACTIVE')");
++        String user = scenario.equals("unrelated") ? "43" : scenario.equals("submitter") ? "41" : "42";
++        List<String> permissions = switch (scenario) {
++            case "no-menu" -> List.of();
++            case "act-only" -> List.of("dhr.reviews.act");
++            case "menu-only" -> List.of("records.dhr-review");
++            default -> List.of("records.dhr-review", "dhr.reviews.act");
++        };
++        String token = scenario.equals("anonymous") ? null : tokens.generateToken(user, "ordinary-account", "普通账号", 5, permissions);
++        String before = reviewRows();
++        int menuStatus = scenario.equals("anonymous") ? 401 : scenario.equals("no-menu") || scenario.equals("act-only") ? 403 : 200;
++        boolean taskOwner = user.equals("42");
++        int taskStatus = menuStatus != 200 ? menuStatus : taskOwner ? 200 : 403;
++        var list = http("list-" + scenario, "GET", "/api/v1/dhr-reviews", token, null, menuStatus);
++        if (menuStatus == 200) assertThat(list.at("/data/totalElements").asLong()).isEqualTo(taskOwner ? 1 : 0);
++        var detail = http("detail-" + scenario, "GET", "/api/v1/dhr-reviews/" + task, token, null, taskStatus);
++        if (taskStatus == 200) assertThat(detail.at("/data/version/id").asText()).isEqualTo(version.path("id").asText());
++        http("audit-" + scenario, "GET", "/api/v1/dhr-reviews/" + task + "/audit", token, null, taskStatus);
++        assertThat(reviewRows()).isEqualTo(before);
++        int actStatus = scenario.equals("candidate") ? 200 : scenario.equals("anonymous") ? 401 : 403;
++        http("approve-" + scenario, "POST", "/api/v1/dhr-reviews/" + task + "/actions", token,
++                mapper.createObjectNode().put("action", "APPROVE").put("opinion", "普通账号核对")
++                        .put("expectedSnapshotHash", version.path("snapshotHash").asText()), actStatus);
++        if (actStatus != 200) assertThat(reviewRows()).isEqualTo(before);
++        else assertThat(scalar("SELECT status FROM dhr_summary_review")).isEqualTo("APPROVED");
++        assertThat(scalar("SELECT snapshot_hash FROM dhr_summary_version")).isEqualTo(version.path("snapshotHash").asText());
++    }
++
++    @Test void ordinaryHttpInboxIsPersonalAndDoesNotGrantDhrPageAccess() throws Exception {
++        dhr(false); var version = summaries.submit(1000L, summaryCommand());
++        String frozen = scalar("SELECT candidate_snapshot||snapshot_hash FROM dhr_summary_version");
++        jdbc.update("INSERT INTO user_account(id,tenant_id,username,display_name,password_hash,status) VALUES(43,0,'same-name-inbox','申请人','unused','ACTIVE')");
++        requests.submit(command(BusinessType.CHANGE)); complete(taskId(), "APPROVE");
++        String owner = tokens.generateToken("41", "rc-applicant"), other = tokens.generateToken("43", "same-name-inbox");
++        var inbox = http("owner-inbox", "GET", "/api/v1/dhr-impact-notifications", owner, null, 200);
++        assertThat(inbox.at("/data/unreadCount").asInt()).isEqualTo(1);
++        String impact = inbox.at("/data/content/0/id").asText();
++        assertThat(http("same-name-other-inbox", "GET", "/api/v1/dhr-impact-notifications", other, null, 200).at("/data/total").asInt()).isZero();
++        http("other-mark-read", "POST", "/api/v1/dhr-impact-notifications/" + impact + "/read", other, null, 200);
++        assertThat(http("owner-still-unread", "GET", "/api/v1/dhr-impact-notifications", owner, null, 200).at("/data/unreadCount").asInt()).isEqualTo(1);
++        http("owner-without-summary-menu", "GET", "/api/v1/dhr-instances/1000/summary/versions/" + version.path("id").asText(), owner, null, 403);
++        http("owner-mark-read", "POST", "/api/v1/dhr-impact-notifications/" + impact + "/read", owner, null, 200);
++        assertThat(http("owner-read", "GET", "/api/v1/dhr-impact-notifications", owner, null, 200).at("/data/unreadCount").asInt()).isZero();
++        http("anonymous-inbox", "GET", "/api/v1/dhr-impact-notifications", null, null, 401);
++        assertThat(scalar("SELECT candidate_snapshot||snapshot_hash FROM dhr_summary_version")).isEqualTo(frozen);
++    }
++
++    @Test void ordinaryHandledReviewerReadsFrozenValuesAfterEffectiveChangeWithoutReapproving() throws Exception {
++        dhr(true); var version = summaries.submit(1000L, summaryCommand());
++        long task = dhrTask();
++        String reviewer = tokens.generateToken("42", "rc-reviewer", "审批人", 5, List.of("records.dhr-review", "dhr.reviews.act"));
++        http("ordinary-initial-approval", "POST", "/api/v1/dhr-reviews/" + task + "/actions", reviewer,
++                mapper.createObjectNode().put("action", "APPROVE").put("opinion", "核查完成")
++                        .put("expectedSnapshotHash", version.path("snapshotHash").asText()), 200);
++        String frozen = scalar("SELECT candidate_snapshot||snapshot_hash FROM dhr_summary_version");
++        actor(); requests.submit(command(BusinessType.CHANGE)); complete(taskId(), "APPROVE");
++        var detail = http("ordinary-done-frozen-detail", "GET", "/api/v1/dhr-reviews/" + task, reviewer, null, 200);
++        assertThat(detail.at("/data/version/candidates/0/fieldValues/value").asText()).isEqualTo("old");
++        assertThat(detail.at("/data/version/reviewOutcome").asText()).isEqualTo("APPROVED");
++        assertThat(detail.at("/data/canAct").asBoolean()).isFalse();
++        assertThat(detail.at("/data/evidenceChanges").size()).isEqualTo(1);
++        assertThat(mapper.readTree(scalar("SELECT values_json FROM form_instance_record")).path("value").asText()).isEqualTo("new");
++        String before = reviewRows();
++        http("ordinary-cannot-reapprove-done", "POST", "/api/v1/dhr-reviews/" + task + "/actions", reviewer,
++                mapper.createObjectNode().put("action", "APPROVE").put("opinion", "不能重复审批")
++                        .put("expectedSnapshotHash", version.path("snapshotHash").asText()), 400);
++        assertThat(reviewRows()).isEqualTo(before);
++        assertThat(scalar("SELECT candidate_snapshot||snapshot_hash FROM dhr_summary_version")).isEqualTo(frozen);
++    }
++
++    private String reviewRows() {
++        return List.of("dhr_summary_version", "workflow_task", "signature", "audit_event", "form_instance_record")
++                .stream().map(table -> scalar("SELECT COALESCE(jsonb_agg(to_jsonb(t) ORDER BY t.id),'[]'::jsonb)::text FROM " + table + " t")).toList().toString()
++                + scalar("SELECT COALESCE(jsonb_agg(to_jsonb(t) ORDER BY t.object_id),'[]'::jsonb)::text FROM production_execution t")
++                + scalar("SELECT COALESCE(jsonb_agg(to_jsonb(t) ORDER BY t.summary_version_id),'[]'::jsonb)::text FROM dhr_summary_review t");
++    }
++
++    private com.fasterxml.jackson.databind.JsonNode http(String label, String method, String path, String token,
++            com.fasterxml.jackson.databind.JsonNode body, int expectedStatus) throws Exception {
++        var request = org.springframework.test.web.servlet.request.MockMvcRequestBuilders.request(org.springframework.http.HttpMethod.valueOf(method), path);
++        if (token != null) request.header("Authorization", "Bearer " + token);
++        if (body != null) request.contentType(MediaType.APPLICATION_JSON).content(body.toString());
++        var response = mvc.perform(request).andReturn().getResponse();
++        var result = mapper.readTree(response.getContentAsString(java.nio.charset.StandardCharsets.UTF_8));
++        String output = System.getProperty("edhr.audit.dhrHttpOutput");
++        if (output != null) Files.writeString(Path.of(output), mapper.createObjectNode().put("case", label).put("method", method)
++                .put("path", path).put("expectedStatus", expectedStatus).put("actualStatus", response.getStatus()).set("body", result).toString() + "\n",
++                StandardOpenOption.CREATE, StandardOpenOption.APPEND);
++        assertThat(response.getStatus()).as(label).isEqualTo(expectedStatus);
++        return result;
++    }
++
+     private void personnel() {
+         String hash = passwords.encode("test-signature-password");
+         jdbc.update("INSERT INTO user_account(id,tenant_id,username,display_name,password_hash,status) VALUES (43,0,'rc-target','新审批人',?,'ACTIVE'),(44,0,'rc-manager','干预人',?,'ACTIVE'),(45,1,'rc-outside','外租户',?,'ACTIVE')", hash, hash, hash);

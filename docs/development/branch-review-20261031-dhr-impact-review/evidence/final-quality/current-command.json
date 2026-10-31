@@ -1,0 +1,17 @@
+{
+  "head": "977287f6da3ba1cb78c4eb2842f3ace69bb1f43b",
+  "command": [
+    "bash",
+    "/workspace/.edhr-cloud-tools/mvn-edhr",
+    "-f",
+    "gmp-platform/backend/pom.xml",
+    "-Dtest=RecordControlPostgresIntegrationTest,DhrReviewServiceTest,DhrReviewLifecycleIntegrationTest",
+    "-Dedhr.audit.dhrHttpOutput=/tmp/edhr-dhr-q1-http.jsonl",
+    "test"
+  ],
+  "databaseUrl": "jdbc:postgresql://127.0.0.1:32769/edhr_record_control_test_q1_20261031",
+  "PGUSER": "edhr",
+  "start": "2026-10-31T10:48:27.180887+00:00",
+  "exit": 0,
+  "end": "2026-10-31T10:49:06.441092+00:00"
+}

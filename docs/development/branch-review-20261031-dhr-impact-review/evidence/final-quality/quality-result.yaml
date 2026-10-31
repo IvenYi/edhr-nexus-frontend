@@ -1,0 +1,184 @@
+qualityResult:
+  result: passed
+  baseCommit: 1ad6300918bd0059049eab3c415ca31162dd5115
+  headCommit: 977287f6da3ba1cb78c4eb2842f3ace69bb1f43b
+  contractBaseline:
+    sourceCommit: 977287f6da3ba1cb78c4eb2842f3ace69bb1f43b
+    targetBranch: edhr-dev
+    targetCommit: 1ad6300918bd0059049eab3c415ca31162dd5115
+    contractReadCommit: 977287f6da3ba1cb78c4eb2842f3ace69bb1f43b
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: clean
+    includedPaths: []
+    excludedPaths: []
+    untrackedPaths: []
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+  - id: check.baseline-and-test-only-delta
+    required: true
+    category: documentation
+    description: 实际候选包含最新目标，干净且产品/知识/契约无改
+    method: command
+    command: git fetch origin edhr-dev; git rev-parse HEAD origin/edhr-dev; git diff
+      --name-only base head
+    outcome: passed
+    evidence:
+    - /tmp/edhr-dhr-q1-inspection.json
+    - base=1ad6300918bd0059049eab3c415ca31162dd5115; tested head=977287f6da3ba1cb78c4eb2842f3ace69bb1f43b;
+      clean
+  - id: check.confirmed-quality-boundary
+    required: true
+    category: requirements
+    description: 人工检查凭证与客观来源变化分界，无新增自动质量或放行政策
+    method: inspection
+    command: Read DEC0063-04/05/14, DEC0068-05/06/07/11/12/13/14, DEC0087-02/05 and
+      original user confirmation against source symbols
+    outcome: passed
+    evidence:
+    - /tmp/edhr-dhr-q1-inspection.json
+    - docs/knowledge/evidence/dhr-summary-user-confirmed.md:107-119
+  - id: check.ontology-and-original-provenance
+    required: true
+    category: ontology
+    description: 本体NA/FINAL、有限ID及330知识和原件指纹保持
+    method: command
+    command: python3 /tmp/edhr-dhr-q1-provenance.py
+    outcome: passed
+    evidence:
+    - /tmp/edhr-dhr-q1-provenance.json
+    - 17 primary originals;10 ontology including manifest;330 unchanged knowledge;24
+      IDs18consistent6gap
+  - id: check.task-authority-and-frozen-source-inspection
+    required: true
+    category: security
+    description: 源码核个人任务/已办、通知ID隔离、原冻结及双向阻断
+    method: inspection
+    command: Read controller annotations and DhrReviewService/DhrSummaryService/DhrFrozenEvidenceIntegrity/DhrEvidenceImpactService/RecordControlService/DhrImpactNotificationService
+      affected methods
+    outcome: passed
+    evidence:
+    - /tmp/edhr-dhr-q1-inspection.json
+    - No product fix claimed; no full account-state certification
+  - id: check.native-postgres-and-adjacent-regression
+    required: true
+    category: integration
+    description: 独立PG完整应用及相邻DHR测试一次52全过
+    method: automated-test
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f gmp-platform/backend/pom.xml
+      -Dtest=RecordControlPostgresIntegrationTest,DhrReviewServiceTest,DhrReviewLifecycleIntegrationTest
+      -Dedhr.audit.dhrHttpOutput=/tmp/edhr-dhr-q1-http.jsonl test
+    outcome: passed
+    evidence:
+    - /tmp/edhr-dhr-q1-current-summary.json
+    - /tmp/edhr-dhr-q1-current-command.json
+    - /tmp/edhr-dhr-q1-current-test.txt
+    - /tmp/edhr-dhr-q1-database-observation.txt
+    - 34 PG includes9 new +12 service+6 lifecycle=52; 0 failure/error/skip; fresh
+      Liquibase9 changesets, not all134 historical files
+  - id: check.ordinary-jwt-mvc-matrix
+    required: true
+    category: api
+    description: 7组权限身份及2条提醒/冻结历史链实际39响应全部匹配
+    method: automated-test
+    command: Inspect actual JSONL emitted by unchanged full application MockMvc/JWT
+      tests and JUnit assertions
+    outcome: passed
+    evidence:
+    - /tmp/edhr-dhr-q1-http.jsonl
+    - /tmp/edhr-dhr-q1-runtime-observation.json
+    - 39 responses:17x200,1x400,5x401,16x403;9 new test executions; active ordinary
+      accounts and JWT claims, not login/browser/socket
+  - id: check.knowledge-validation
+    required: true
+    category: ontology
+    description: 独立运行知识89全过，不代替全量语义审计
+    method: automated-test
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f tools/knowledge-model/pom.xml
+      test
+    outcome: passed
+    evidence:
+    - /tmp/edhr-dhr-q1-knowledge-summary.json
+    - /tmp/edhr-dhr-q1-knowledge-test.txt
+    - 89 tests,0failure/error/skip;0.3.25 unchanged
+  - id: check.fixed-inventory-rebuilt
+    required: true
+    category: documentation
+    description: 四份固定目标清单逐字节重建一致，仅盘点
+    method: command
+    command: python3 scripts/build-branch-review-inventory.py --ref 1ad6300918bd0059049eab3c415ca31162dd5115
+      --out /tmp/edhr-dhr-q1-inventory
+    outcome: passed
+    evidence:
+    - /tmp/edhr-dhr-q1-provenance.json
+    - /tmp/edhr-dhr-q1-inventory/inventory-summary.json
+    - 6017 paths/134 migrations/464 HTTP annotations/216 route candidates, no coverage
+      certification
+  - id: check.capacity-mechanism-observation
+    required: true
+    category: regression
+    description: 独立复现64分批但全量遍历的增长机制，未优化
+    method: command
+    command: Compile exact archived EdhrDhrReviewCapacityProbe.java outside repository
+      and invoke actual list using H2 test configuration
+    outcome: passed
+    evidence:
+    - /tmp/edhr-dhr-q1-capacity-command.json
+    - /tmp/edhr-dhr-q1-capacity.txt
+    - personal21/page20:21,521,5021 loaded rows and2,10,80 SQL including empty terminator;
+      controlled same-version H2 only
+  - id: check.a23-and-progress-boundary
+    required: true
+    category: documentation
+    description: 具体抽取方案与过防御判断有限，旧high/覆盖/队列不虚假关闭
+    method: inspection
+    command: Read source-review.json/review-notes.md/NEXT.md and compare pending ledgers
+      with previous batch
+    outcome: passed
+    evidence:
+    - /tmp/edhr-dhr-q1-inspection.json
+    - /tmp/edhr-dhr-q1-provenance.json
+    - five A23 method judgments,wholeFile0,unique null;666/44/183 and all historical
+      W6/W7 overlays remain pending
+  - id: check.authored-whitespace
+    required: true
+    category: documentation
+    description: 六手写路径空白检查通过，原始XML/log不清洗
+    method: command
+    command: git diff --check 1ad6300918bd0059049eab3c415ca31162dd5115 977287f6da3ba1cb78c4eb2842f3ace69bb1f43b
+      -- <six authored paths outside evidence/inventory>
+    outcome: passed
+    evidence:
+    - /tmp/edhr-dhr-q1-inventory/whitespace.txt
+    - /tmp/edhr-dhr-q1-provenance.json
+  - id: check.qa-owned-resource-cleanup
+    required: true
+    category: database
+    description: 只清理本质量实例PG并确认不存在
+    method: command
+    command: docker stop <owned container>; docker inspect <owned container>
+    outcome: passed
+    evidence:
+    - /tmp/edhr-dhr-q1-db.json
+    - /tmp/edhr-dhr-q1-cleanup.json
+    - Owned container removed, no temporary worktree created; no shared DB/container
+      touched
+  findings: []
+  residualRisks:
+  - id: risk.known-dhr-highs-not-closed
+    description: 两项既有DHR high仍open：完整质量事实/变化比较及全部普通权限UI、账号状态和收件人矩阵。本批只补有限测试证据。
+    impact: 本批通过不能作为DHR全链、合规放行或全项目发布认证。
+    mitigation: 按真实权威事实与剩余矩阵继续分批审查；不从人工checkResult发明自动质判。
+  - id: risk.list-global-scan
+    description: 个人DHR页仍遍历全部任务，容量机制独立复现；detail重复影响读取、附件/逐版本投递容量候选继续。
+    impact: 历史任务增多使SQL往返、读取和CPU增长；未测生产时延、PG计划或堆峰值。
+    mitigation: 先讨论等价DB筛选/计数/分页，明确授权后优化并证明权限、关键词和排序等价；本批不实施。
+  - id: risk.identity-and-ui-coverage
+    description: 新测试用真实JWT claims+MockMvc及ACTIVE账号，不包含登录/RBAC签发、停用锁定撤销、多租户及完整浏览器/所有附件权限。
+    impact: 不能外推为完整账号即时状态或UI验收；JWTFilter仅claim验证是后续审查入口，不擅定撤销政策。
+    mitigation: 后续定位已确认身份契约并补独立矩阵，保留任务签署页朋友负责范围。
+  - id: risk.global-audit-and-deferred-work
+    description: 6017盘点非已审；wholeFile0/unique未知，666/44/183、W2余项、全部W6/A23旧已审复核及W7增量、ACL三问、DELETE/UNKNOWN/DHR附件回调、A12及四gap仍待审/待决。
+    impact: 不能声称整体审计结束或全部业务一致。
+    mitigation: 继续版本化台账，每次fetch核新代码增量，已暂缓生产弹窗/朋友任务签署页不私自修改。
+  blockingConditions: []

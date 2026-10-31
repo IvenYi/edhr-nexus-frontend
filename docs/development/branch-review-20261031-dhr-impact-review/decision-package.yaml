@@ -1,0 +1,70 @@
+decisionPackage:
+  id: DEC-PACKAGE-AUDIT-DHR-IMPACT-20261031
+  scope: PR49合入后记录控制生效到DHR审批/冻结/本人提醒的增量源码和普通账号HTTP矩阵
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: 1ad6300918bd0059049eab3c415ca31162dd5115
+    targetBranch: edhr-dev
+    targetCommit: 1ad6300918bd0059049eab3c415ca31162dd5115
+    contractReadCommit: 1ad6300918bd0059049eab3c415ca31162dd5115
+    uncommittedContractPaths: []
+  summary: 核原两项DHR high实际剩余范围，扩普通账号真实JWT/HTTP授权、来源生效与冻结身份矩阵；不为覆盖未定质量含义修改业务规则。DHR待办全量遍历为性能候选，先量化讨论。
+  confirmed: {concepts: [], relationships: [], rules: [], executionContracts: []}
+  inferred:
+    - id: inference.dhr-existing-impact-contract-verification
+      statement: 当前生效和当前个人审批资格应按真实业务关联验证，不用ADMIN正向或历史报告代替普通账号验收。
+      rationale: DEC0068-05/07/11/12/13/14及DEC0087已有明确规范，本轮核实现，不制定新政策。
+      relatedIds: [DEC-0068-05, DEC-0068-07, DEC-0068-11, DEC-0068-12, DEC-0068-13, DEC-0068-14, DEC-0087-02, DEC-0087-05]
+  unresolved: []
+  replacementScopes: []
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - area: validation
+        change: 新增真实普通JWT/HTTP矩阵，涵盖无权/非候选/当前本人/已办及本人提醒、冻结身份。
+        evidenceReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/recordcontrol/service/RecordControlPostgresIntegrationTest.java]
+    transitiveImpacts:
+      - area: semantic-status
+        change: 区分已有局部实现、实际本轮测试与仍未覆盖的质量/完整UI/账号矩阵；不把本批通过关闭两个high。
+        evidenceReferences: [docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml]
+    potentialImpacts:
+      - area: review-list-capacity
+        concern: 每页仍遍历所有DHR任务、Java候选过滤和计数，历史任务增长时存在查询/内存风险；受控实验后先讨论，不直接优化。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrReviewService.java]
+    unaffectedAreas:
+      - area: policies
+        change: 不修改业务规则、源签名或放行，不自动退回/重汇总/改写冻结版本；文件ACL三规则仍待决。
+        evidenceReferences: []
+    compatibilityAndMigration: []
+    snapshotImpacts:
+      - area: immutable-version
+        change: 测试核冻结版本和原批准保持，不执行历史恢复或回填。
+        evidenceReferences: []
+    auditImpacts: []
+    permissionImpacts:
+      - area: existing-authority
+        change: 仅验证既有页面/动作及候选身份，不新增权限码/默认人员策略。
+        evidenceReferences: []
+    testImpacts:
+      - scope: dhr-source-and-authority
+        scenarios: [普通账号个人任务/已办, 缺权与非候选拒绝, 待审来源阻断, 有效变更/作废后冻结不变, 本人提醒及已读隔离, 既有真实PG记录控制回归]
+        evidenceReferences: []
+    evidenceGaps: [完整质量检查变化比较的事实来源仍需核定, 全普通权限UI及账号状态/全部收件人矩阵仍非完整认证, 666增量并非全部已审]
+  extensionStrategy:
+    selectedPaths: [product-core]
+    rationale: 复用现有完整应用测试和普通账号认证链，不建立第二套业务解释或新功能。
+    ownershipBoundaries:
+      - owner: RecordControlService
+        responsibility: 来源真实生效及当前贡献切换。
+      - owner: DhrReviewService
+        responsibility: 专属审批资格、变化阻断、冻结版本消费。
+  affectedFiles:
+    - path: gmp-platform/backend/src/test/java/com/zencas/edhr/recordcontrol/service/RecordControlPostgresIntegrationTest.java
+      changeType: update
+      reason: 普通账号实际HTTP矩阵。
+  acceptanceScenarios:
+    - id: scenario.dhr-source-effect-and-personal-authority
+      given: 普通账号及实际记录控制/DHR冻结版本
+      when: 通过真实HTTP读取/办理及来源生效后查看
+      then: 缺权或非任务主体拒绝、本人按权可读、原冻结和批准不改，本人提醒隔离。
+      evidenceRequirements: [真实PG/JWT/HTTP, 冻结前后快照, 新独立最终验收]

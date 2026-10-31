@@ -1,0 +1,464 @@
+{
+  "capturedAt": "2026-10-31T10:43:59.494062+00:00",
+  "contractBaseline": {
+    "sourceCommit": "1ad6300918bd0059049eab3c415ca31162dd5115",
+    "targetBranch": "edhr-dev",
+    "targetCommit": "1ad6300918bd0059049eab3c415ca31162dd5115",
+    "contractReadCommit": "1ad6300918bd0059049eab3c415ca31162dd5115",
+    "uncommittedContractPaths": []
+  },
+  "knowledgeBaselineVersion": "0.3.25",
+  "schemaVersion": "1.2.0",
+  "readOnlyRole": true,
+  "knowledgeAssetsChanged": [],
+  "maturityChanges": [],
+  "semanticReview": {
+    "limitedRecordCount": 24,
+    "conclusions": {
+      "consistent": 18,
+      "evidence-gap": 6
+    },
+    "records": [
+      {
+        "id": "DEC-0063-04",
+        "recordType": "decision-statement",
+        "sourcePath": "docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml",
+        "sourceLocator": "line 21; id=DEC-0063-04",
+        "originalMaturity": "specified/internal",
+        "auditScopeClassification": "quality-boundary",
+        "semanticReviewStatus": "reviewed",
+        "conclusion": "consistent",
+        "semanticFinding": "COMPLETED is workflow completion, not a generic qualified-quality result. Manual review and objective checks remain distinct.",
+        "originalEvidenceReferences": [
+          "docs/knowledge/evidence/dhr-summary-user-confirmed.md:107-108",
+          "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrSummaryService.java:272-294"
+        ],
+        "limits": "Finite rule/source/method review only; does not certify all scenarios or close remaining broad gaps."
+      },
+      {
+        "id": "DEC-0063-05",
+        "recordType": "decision-statement",
+        "sourcePath": "docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml",
+        "sourceLocator": "line 25; id=DEC-0063-05",
+        "originalMaturity": "specified/internal",
+        "auditScopeClassification": "freeze-time-and-version",
+        "semanticReviewStatus": "reviewed",
+        "conclusion": "consistent",
+        "semanticFinding": "Submit rechecks the current actual scope and freezes source identity, status, content, attachments and checkResult. Old versions remain historical.",
+        "originalEvidenceReferences": [
+          "docs/knowledge/evidence/dhr-summary-user-confirmed.md:115",
+          "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrSummaryService.java:218-337",
+          "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrFrozenEvidenceIntegrity.java:65-90"
+        ],
+        "limits": "Finite rule/source/method review only; does not certify all scenarios or close remaining broad gaps."
+      },
+      {
+        "id": "DEC-0063-14",
+        "recordType": "decision-statement",
+        "sourcePath": "docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml",
+        "sourceLocator": "line 61; id=DEC-0063-14",
+        "originalMaturity": "specified/internal",
+        "auditScopeClassification": "manual-quality-check-provenance",
+        "semanticReviewStatus": "reviewed",
+        "conclusion": "consistent",
+        "semanticFinding": "Three human review confirmations, note, confirmer and time are frozen at submit; current implementation explicitly declines arbitrary automatic quality interpretation.",
+        "originalEvidenceReferences": [
+          "docs/knowledge/evidence/dhr-summary-user-confirmed.md:116",
+          "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrSummaryService.java:272-294",
+          "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrReviewService.java:184-193"
+        ],
+        "limits": "Finite rule/source/method review only; does not certify all scenarios or close remaining broad gaps."
+      },
+      {
+        "id": "DEC-0068-02",
+        "recordType": "decision-statement",
+        "sourcePath": "docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml",
+        "sourceLocator": "line 22; id=DEC-0068-02",
+        "originalMaturity": "specified/internal",
+        "auditScopeClassification": "actual-source-and-frozen-membership",
+        "semanticReviewStatus": "reviewed",
+        "conclusion": "consistent",
+        "semanticFinding": "Display organization cannot select evidence out; task/history consumption uses frozen candidates instead of live draft membership.",
+        "originalEvidenceReferences": [
+          "docs/knowledge/evidence/dhr-filling-review-confirmed.md:199",
+          "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrSummaryService.java:92-113",
+          "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrEvidenceImpactService.java:89-151"
+        ],
+        "limits": "Finite rule/source/method review only; does not certify all scenarios or close remaining broad gaps."
+      },
+      {
+        "id": "DEC-0068-04",
+        "recordType": "decision-statement",
+        "sourcePath": "docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml",
+        "sourceLocator": "line 30; id=DEC-0068-04",
+        "originalMaturity": "specified/internal",
+        "auditScopeClassification": "record-control-ownership",
+        "semanticReviewStatus": "reviewed",
+        "conclusion": "consistent",
+        "semanticFinding": "Only real source effectiveness is consumed as effectiveness; an active application is a separate temporary guard.",
+        "originalEvidenceReferences": [
+          "gmp-platform/backend/src/main/java/com/zencas/edhr/recordcontrol/service/RecordControlService.java:365-405",
+          "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrEvidenceImpactService.java:34-86"
+        ],
+        "limits": "Finite rule/source/method review only; does not certify all scenarios or close remaining broad gaps."
+      },
+      {
+        "id": "DEC-0068-05",
+        "recordType": "decision-statement",
+        "sourcePath": "docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml",
+        "sourceLocator": "line 34; id=DEC-0068-05",
+        "originalMaturity": "specified/internal",
+        "auditScopeClassification": "effective-evidence-comparison",
+        "semanticReviewStatus": "reviewed",
+        "conclusion": "evidence-gap",
+        "semanticFinding": "Current code compares complete frozen source JSON values/snapshot, status, template and revision identity, effective impacts, new sources and attachments. This supports the explicit finite source cases, not every undefined external quality-result source.",
+        "originalEvidenceReferences": [
+          "docs/knowledge/evidence/dhr-filling-review-confirmed.md:199-201",
+          "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrEvidenceImpactService.java:89-151",
+          "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrReviewService.java:108-118"
+        ],
+        "limits": "Finite rule/source/method review only; does not certify all scenarios or close remaining broad gaps."
+      },
+      {
+        "id": "DEC-0068-06",
+        "recordType": "decision-statement",
+        "sourcePath": "docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml",
+        "sourceLocator": "line 38; id=DEC-0068-06",
+        "originalMaturity": "specified/internal",
+        "auditScopeClassification": "old-approval-retention",
+        "semanticReviewStatus": "reviewed",
+        "conclusion": "consistent",
+        "semanticFinding": "Effective changes annotate old versions but do not clear old approvals, rewrite frozen evidence or auto-return; human revision creates a new draft.",
+        "originalEvidenceReferences": [
+          "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrEvidenceImpactService.java:42-86",
+          "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrReviewService.java:128-138",
+          "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrSummaryService.java:136-189"
+        ],
+        "limits": "Finite rule/source/method review only; does not certify all scenarios or close remaining broad gaps."
+      },
+      {
+        "id": "DEC-0068-07",
+        "recordType": "decision-statement",
+        "sourcePath": "docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml",
+        "sourceLocator": "line 42; id=DEC-0068-07",
+        "originalMaturity": "specified/internal",
+        "auditScopeClassification": "approval-object",
+        "semanticReviewStatus": "reviewed",
+        "conclusion": "consistent",
+        "semanticFinding": "Approval binds the complete immutable DHR summary version and its checkResult, not only an arranged subset. Integrity reconstructs the frozen digest including checkResult.",
+        "originalEvidenceReferences": [
+          "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrSummaryService.java:296-337",
+          "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrFrozenEvidenceIntegrity.java:65-90",
+          "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrReviewService.java:108-118"
+        ],
+        "limits": "Finite rule/source/method review only; does not certify all scenarios or close remaining broad gaps."
+      },
+      {
+        "id": "DEC-0068-11",
+        "recordType": "decision-statement",
+        "sourcePath": "docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml",
+        "sourceLocator": "line 58; id=DEC-0068-11",
+        "originalMaturity": "specified/internal",
+        "auditScopeClassification": "task-specific-authority",
+        "semanticReviewStatus": "reviewed",
+        "conclusion": "consistent",
+        "semanticFinding": "Current eligible or own handled task is required; broad DHR read or inbox delivery does not grant task access.",
+        "originalEvidenceReferences": [
+          "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrReviewService.java:74-82",
+          "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrReviewService.java:184-203",
+          "gmp-platform/backend/src/test/java/com/zencas/edhr/recordcontrol/service/RecordControlPostgresIntegrationTest.java:178-270"
+        ],
+        "limits": "Finite rule/source/method review only; does not certify all scenarios or close remaining broad gaps."
+      },
+      {
+        "id": "DEC-0068-12",
+        "recordType": "decision-statement",
+        "sourcePath": "docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml",
+        "sourceLocator": "line 62; id=DEC-0068-12",
+        "originalMaturity": "specified/internal",
+        "auditScopeClassification": "notification-identity-and-channel",
+        "semanticReviewStatus": "reviewed",
+        "conclusion": "consistent",
+        "semanticFinding": "Existing sourceEffective targets actual submitter ID plus current task recipients, using an in-app inbox. Personal reads and mark-read use authenticated actor; no automatic grant follows delivery.",
+        "originalEvidenceReferences": [
+          "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrEvidenceImpactService.java:42-86",
+          "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrImpactNotificationService.java:19-53",
+          "gmp-platform/backend/src/test/java/com/zencas/edhr/recordcontrol/service/RecordControlPostgresIntegrationTest.java:178-270"
+        ],
+        "limits": "Finite rule/source/method review only; does not certify all scenarios or close remaining broad gaps."
+      },
+      {
+        "id": "DEC-0068-13",
+        "recordType": "decision-statement",
+        "sourcePath": "docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml",
+        "sourceLocator": "line 66; id=DEC-0068-13",
+        "originalMaturity": "specified/internal",
+        "auditScopeClassification": "pending-application-guard",
+        "semanticReviewStatus": "reviewed",
+        "conclusion": "consistent",
+        "semanticFinding": "Active applications block summary submit and approval while leaving the current effective revision viewable; ending an application does not auto-approve DHR.",
+        "originalEvidenceReferences": [
+          "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrEvidenceImpactService.java:34-40",
+          "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrSummaryService.java:218-231",
+          "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrReviewService.java:107-118"
+        ],
+        "limits": "Finite rule/source/method review only; does not certify all scenarios or close remaining broad gaps."
+      },
+      {
+        "id": "DEC-0068-14",
+        "recordType": "decision-statement",
+        "sourcePath": "docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml",
+        "sourceLocator": "line 70; id=DEC-0068-14",
+        "originalMaturity": "specified/internal",
+        "auditScopeClassification": "pending-dhr-guard",
+        "semanticReviewStatus": "reviewed",
+        "conclusion": "consistent",
+        "semanticFinding": "The final source application service checks related pending DHR while holding shared production object lock, rather than relying on button visibility.",
+        "originalEvidenceReferences": [
+          "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrEvidenceImpactService.java:28-32",
+          "gmp-platform/backend/src/main/java/com/zencas/edhr/recordcontrol/service/RecordControlService.java:282-299"
+        ],
+        "limits": "Finite rule/source/method review only; does not certify all scenarios or close remaining broad gaps."
+      },
+      {
+        "id": "DEC-0087-02",
+        "recordType": "decision-statement",
+        "sourcePath": "docs/knowledge/decisions/DEC-0087-record-control-v1-closure.yaml",
+        "sourceLocator": "line 13; id=DEC-0087-02",
+        "originalMaturity": "specified/internal",
+        "auditScopeClassification": "revision-and-history",
+        "semanticReviewStatus": "reviewed",
+        "conclusion": "consistent",
+        "semanticFinding": "Approved CHANGE switches only current revision/content, OBSOLETE marks effective revision void; originals and historical identity survive.",
+        "originalEvidenceReferences": [
+          "gmp-platform/backend/src/main/java/com/zencas/edhr/recordcontrol/service/RecordControlService.java:422-447"
+        ],
+        "limits": "Finite rule/source/method review only; does not certify all scenarios or close remaining broad gaps."
+      },
+      {
+        "id": "DEC-0087-03",
+        "recordType": "decision-statement",
+        "sourcePath": "docs/knowledge/decisions/DEC-0087-record-control-v1-closure.yaml",
+        "sourceLocator": "line 17; id=DEC-0087-03",
+        "originalMaturity": "specified/internal",
+        "auditScopeClassification": "source-qualification-and-lock",
+        "semanticReviewStatus": "reviewed",
+        "conclusion": "consistent",
+        "semanticFinding": "Final application creation rechecks completed/effective revision and active request under source transaction locks.",
+        "originalEvidenceReferences": [
+          "gmp-platform/backend/src/main/java/com/zencas/edhr/recordcontrol/service/RecordControlService.java:282-299",
+          "gmp-platform/backend/src/main/java/com/zencas/edhr/recordcontrol/service/RecordControlService.java:365-405"
+        ],
+        "limits": "Finite rule/source/method review only; does not certify all scenarios or close remaining broad gaps."
+      },
+      {
+        "id": "DEC-0087-05",
+        "recordType": "decision-statement",
+        "sourcePath": "docs/knowledge/decisions/DEC-0087-record-control-v1-closure.yaml",
+        "sourceLocator": "line 25; id=DEC-0087-05",
+        "originalMaturity": "specified/internal",
+        "auditScopeClassification": "atomic-effect-consumption",
+        "semanticReviewStatus": "reviewed",
+        "conclusion": "consistent",
+        "semanticFinding": "APPROVED source effect, trace refresh, official projection switching, DHR impact and audit execute in the result transaction; prior event is matched before idempotent return.",
+        "originalEvidenceReferences": [
+          "gmp-platform/backend/src/main/java/com/zencas/edhr/recordcontrol/service/RecordControlService.java:365-407"
+        ],
+        "limits": "Finite rule/source/method review only; does not certify all scenarios or close remaining broad gaps."
+      },
+      {
+        "id": "DEC-0087-08",
+        "recordType": "decision-statement",
+        "sourcePath": "docs/knowledge/decisions/DEC-0087-record-control-v1-closure.yaml",
+        "sourceLocator": "line 37; id=DEC-0087-08",
+        "originalMaturity": "specified/internal",
+        "auditScopeClassification": "historical-and-deferred-boundaries",
+        "semanticReviewStatus": "reviewed",
+        "conclusion": "consistent",
+        "semanticFinding": "The source-to-DHR linkage is partially implemented; old blanket unimplemented descriptions cannot replace current source. Full quality/UI matrices, A12 and release judgment remain unclosed.",
+        "originalEvidenceReferences": [
+          "docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml:implementationDiscrepancies",
+          "docs/knowledge/evidence/dhr-filling-review-confirmed.md:15-27",
+          "gmp-platform/backend/src/main/java/com/zencas/edhr/recordcontrol/service/RecordControlService.java:393-405"
+        ],
+        "limits": "Finite rule/source/method review only; does not certify all scenarios or close remaining broad gaps."
+      },
+      {
+        "id": "rule.dhr-summary-manual-review-confirmation",
+        "recordType": "rule",
+        "sourcePath": "docs/knowledge/rules/dhr-summary.yaml",
+        "sourceLocator": "line 45; id=rule.dhr-summary-manual-review-confirmation",
+        "originalMaturity": "specified/internal",
+        "auditScopeClassification": "human-review-not-quality-predicate",
+        "semanticReviewStatus": "reviewed",
+        "conclusion": "consistent",
+        "semanticFinding": "Human acknowledgment is auditable action evidence, not an automatic derived quality or source-signature-validity truth.",
+        "originalEvidenceReferences": [
+          "docs/knowledge/evidence/dhr-summary-user-confirmed.md:116",
+          "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrSummaryService.java:272-294"
+        ],
+        "limits": "Finite rule/source/method review only; does not certify all scenarios or close remaining broad gaps."
+      },
+      {
+        "id": "rule.dhr-summary-freeze-version",
+        "recordType": "rule",
+        "sourcePath": "docs/knowledge/rules/dhr-summary.yaml",
+        "sourceLocator": "line 27; id=rule.dhr-summary-freeze-version",
+        "originalMaturity": "specified/internal",
+        "auditScopeClassification": "snapshot-ownership",
+        "semanticReviewStatus": "reviewed",
+        "conclusion": "consistent",
+        "semanticFinding": "Frozen checkResult is part of the immutable version; generating fresh timestamps and comparing the entire regenerated object would not be an authorized business change detector.",
+        "originalEvidenceReferences": [
+          "docs/knowledge/evidence/dhr-summary-user-confirmed.md:115-119",
+          "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrSummaryService.java:284-307",
+          "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrFrozenEvidenceIntegrity.java:79"
+        ],
+        "limits": "Finite rule/source/method review only; does not certify all scenarios or close remaining broad gaps."
+      },
+      {
+        "id": "rule.dhr-summary-block-stale-approval",
+        "recordType": "rule",
+        "sourcePath": "docs/knowledge/rules/dhr-summary.yaml",
+        "sourceLocator": "line 151; id=rule.dhr-summary-block-stale-approval",
+        "originalMaturity": "specified/internal",
+        "auditScopeClassification": "objective-stale-evidence-guard",
+        "semanticReviewStatus": "reviewed",
+        "conclusion": "evidence-gap",
+        "semanticFinding": "Known effective source changes are blocked by existing whole-value/revision and attachment comparison. Complete automated quality/exception fact mapping beyond these sources is not specified.",
+        "originalEvidenceReferences": [
+          "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrEvidenceImpactService.java:89-151",
+          "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrReviewService.java:108-118",
+          "docs/knowledge/facts/dhr-summary.yaml:fact.dhr-summary.effective-evidence-change"
+        ],
+        "limits": "Finite rule/source/method review only; does not certify all scenarios or close remaining broad gaps."
+      },
+      {
+        "id": "fact.dhr-summary.required-directory-qualified",
+        "recordType": "fact",
+        "sourcePath": "docs/knowledge/facts/dhr-summary.yaml",
+        "sourceLocator": "line 35; id=fact.dhr-summary.required-directory-qualified",
+        "originalMaturity": "specified/internal",
+        "auditScopeClassification": "quality-qualified-record-source",
+        "semanticReviewStatus": "reviewed",
+        "conclusion": "evidence-gap",
+        "semanticFinding": "This full qualified-record fact remains specified/not-available. A completed source or human checkbox cannot be silently promoted into its executable truth source.",
+        "originalEvidenceReferences": [
+          "docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml:DEC-0063-04",
+          "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrSummaryService.java:272-294"
+        ],
+        "limits": "Finite rule/source/method review only; does not certify all scenarios or close remaining broad gaps."
+      },
+      {
+        "id": "fact.dhr-summary.manual-review-confirmed",
+        "recordType": "fact",
+        "sourcePath": "docs/knowledge/facts/dhr-summary.yaml",
+        "sourceLocator": "line 51; id=fact.dhr-summary.manual-review-confirmed",
+        "originalMaturity": "specified/internal",
+        "auditScopeClassification": "review-event-time",
+        "semanticReviewStatus": "reviewed",
+        "conclusion": "consistent",
+        "semanticFinding": "The source is submit manualReview plus authenticated actor and current submit time; it attests human review only. Its maturity remains unchanged.",
+        "originalEvidenceReferences": [
+          "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrSummaryService.java:272-294",
+          "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrReviewService.java:184-193"
+        ],
+        "limits": "Finite rule/source/method review only; does not certify all scenarios or close remaining broad gaps."
+      },
+      {
+        "id": "fact.dhr-summary.effective-evidence-change",
+        "recordType": "fact",
+        "sourcePath": "docs/knowledge/facts/dhr-summary.yaml",
+        "sourceLocator": "line 163; id=fact.dhr-summary.effective-evidence-change",
+        "originalMaturity": "specified/internal",
+        "auditScopeClassification": "full-change-detection-fact",
+        "semanticReviewStatus": "reviewed",
+        "conclusion": "evidence-gap",
+        "semanticFinding": "Retain full fact specified/not-available: existing implementation supports finite effective source comparisons but not a certified universal quality or exhaustive authority matrix.",
+        "originalEvidenceReferences": [
+          "docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml:DEC-0068-05",
+          "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrEvidenceImpactService.java:89-151"
+        ],
+        "limits": "Finite rule/source/method review only; does not certify all scenarios or close remaining broad gaps."
+      },
+      {
+        "id": "discrepancy.dhr-review-complete-evidence-impact-gap",
+        "recordType": "implementation-discrepancy",
+        "sourcePath": "docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml",
+        "sourceLocator": "line 132; id=discrepancy.dhr-review-complete-evidence-impact-gap",
+        "originalMaturity": "high/open",
+        "auditScopeClassification": "old-high-remains-open",
+        "semanticReviewStatus": "reviewed",
+        "conclusion": "evidence-gap",
+        "semanticFinding": "Remain high/open. New ordinary-account application HTTP cases cannot close undefined complete quality-result comparison or remaining comprehensive scenarios.",
+        "originalEvidenceReferences": [
+          "docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml:138",
+          "docs/knowledge/evidence/dhr-filling-review-confirmed.md:15-27",
+          "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrEvidenceImpactService.java:89-151"
+        ],
+        "limits": "Finite rule/source/method review only; does not certify all scenarios or close remaining broad gaps."
+      },
+      {
+        "id": "discrepancy.dhr-review-effective-source-integration",
+        "recordType": "implementation-discrepancy",
+        "sourcePath": "docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml",
+        "sourceLocator": "line 140; id=discrepancy.dhr-review-effective-source-integration",
+        "originalMaturity": "high/open",
+        "auditScopeClassification": "old-high-remains-open",
+        "semanticReviewStatus": "reviewed",
+        "conclusion": "evidence-gap",
+        "semanticFinding": "Remain high/open. Actual source/index/current-contribution/inbox integration exists; full ordinary-permission browser UI, recipients and account-state matrices remain unverified.",
+        "originalEvidenceReferences": [
+          "docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml:146",
+          "gmp-platform/backend/src/main/java/com/zencas/edhr/recordcontrol/service/RecordControlService.java:393-405",
+          "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrImpactNotificationService.java:19-53",
+          "gmp-platform/backend/src/test/java/com/zencas/edhr/recordcontrol/service/RecordControlPostgresIntegrationTest.java:178-270"
+        ],
+        "limits": "Finite rule/source/method review only; does not certify all scenarios or close remaining broad gaps."
+      }
+    ]
+  },
+  "coverageAccounting": {
+    "knowledgeAssetsFingerprinted": 330,
+    "wholeFilesSemanticallyCertified": 0,
+    "uniqueCoverage": null,
+    "limitedRecordsAreNotUniqueCoverageIncrement": true,
+    "originalIncrement": {
+      "targetPaths": 666,
+      "knowledgePaths": 44,
+      "idCandidates": 183,
+      "status": "pending except individually documented finite records; no blanket completion or denominator change"
+    }
+  },
+  "qualityFactBoundary": {
+    "confirmed": [
+      "Submission freezes full evidence and checkResult at submit.",
+      "COMPLETED is not a generic quality-pass result.",
+      "Human checks plus note/actor/time are action evidence, not an automatic quality predicate.",
+      "Existing frozen fieldValues/source snapshot changes, status/template/revision identity, effective events, new source/attachment scope and file integrity are deterministic comparisons."
+    ],
+    "notConfirmed": [
+      "Independent authoritative quality/exception/disposition sources outside frozen form/attachment data and their stable identity/version.",
+      "How such external quality facts are selected, bound, frozen and reread, including failure/missing semantics.",
+      "A generic algorithm to interpret any form field as pass/fail or to derive automatic product release."
+    ],
+    "takeValueTimes": {
+      "sourceAtSubmit": "DhrSummaryService.submit locked current complete evidence scope, sources, revisions, attachments; checkResult captures this submit event.",
+      "humanReviewAtSubmit": "Three supplied confirmations plus authenticated actor/name and submit timestamps frozen in checkResult.manualReview.",
+      "atApproval": "DhrReviewService.act checks pending applications, completeness of frozen manualReview, current mandatory form policy, source/attachment differences and frozen integrity before approval.",
+      "afterEffectiveSourceChange": "RecordControlService.handle only after real APPROVED result refreshes current trace and official contribution and records impacts/notifications in its same transaction.",
+      "historical": "Old frozen version is read as recorded then; later impact does not rewrite old evidence or approval."
+    },
+    "permittedDeterministicFixes": "A demonstrated omission in these explicitly confirmed source comparisons, version integrity or authorization can be fixed under existing rules. No such production omission was established by this ontology-only review.",
+    "dependentFutureWork": "If quality results exist independently from already frozen/current compared evidence, first identify actual authoritative source and approved source/version/evaluation contract; do not invent a field name or recompute human action evidence.",
+    "currentSliceBlockingQuestion": false
+  },
+  "testBoundary": "Current added application HTTP tests use real JwtTokenProvider, MockMvc filter/controller chain and PostgreSQL test database; they are not an external-network or complete browser UI certification. This role did not execute product/HTTP/PG tests.",
+  "knownRemaining": [
+    "Both DEC-0068 high/open entries remain unchanged.",
+    "External/unified quality fact mapping and complete quality-result impact matrix remain uncertified.",
+    "All recipient variants and inactive/locked/account status variations and full ordinary-permission browser UI remain outside finite test slice.",
+    "DhrReviewService.list scanning all historical tasks in batches64 is a performance candidate to quantify and discuss, not an authorization to redesign pagination in this slice.",
+    "A12 and release, generic friend-owned signature page, production dialog design and file ACL questions are not closed."
+  ]
+}
