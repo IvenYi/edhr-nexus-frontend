@@ -1,5 +1,7 @@
 # 上传登记事务与失败补偿
 
+已交付[PR49](https://github.com/IvenYi/edhr-nexus-frontend/pull/49)，audit/edhr-dev-upload-transactions-20261031→edhr-dev，登记时OPEN/MERGEABLE/CLEAN，待人工merge。[交付记录](delivery.json)对应受测22a96503及登记远端b84faeed；受测后仅L0原件/验收/范围与当前交付登记，保护路径不变，不冒称重跑。下一批先fetch实际合入和外部增量。
+
 当前最终验收：全新独立质量对clean `22a96503ce0eb7d40343453c28e3e6c174f5907b` 正式passed/FINAL、11/11必需检查，独立单次63/63和知识89/89。原样最终两类在真实旧a98共10为6真实红4正，0error/skip；该发现按[验收](acceptance.json)有限resolved。[最终报告](evidence/final-quality/quality-review.md)及[39份原件映射](evidence/final-quality/archive-map.json)保持实际输出，原33主侧及夹具失败不回写。全部正式角色FINAL后已实际向用户完成PR前范围/漂移/阶段复核，见scope-review.md；下文待QA属于主侧历史检查点，由本段覆盖当前状态。
 
 本轮L2基线edhr-dev@a98e60792554f7753d22406d02b274fd50ea2e6c。PR48人工合入、整树同4df7620f，无额外代码/知识/契约增量；新分支audit/edhr-dev-upload-transactions-20261031。5927路径/134迁移、464HTTP注解/216路由候选只固定盘点，不代表已审计。

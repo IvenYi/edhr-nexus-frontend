@@ -2,6 +2,8 @@
 
 ## PR48已合入：上传登记事务补偿
 
+已交付[PR49](https://github.com/IvenYi/edhr-nexus-frontend/pull/49)，audit/edhr-dev-upload-transactions-20261031→edhr-dev，登记时OPEN/MERGEABLE/CLEAN，建议本批人工合入。受测22a96503后b84faeed仅L0原件/验收/范围，当前只登记交付，受测保护路径保持。下轮fetch真实合入及外部增量，优先记录控制对原DHR高风险项影响；DELETE/相邻回调/UNKNOWN对账/ACL/666增量继续待审，不自动merge/deploy/恢复。
+
 全新最终独立对clean `22a96503ce0eb7d40343453c28e3e6c174f5907b` 正式passed/FINAL、11/11必需检查，独立单次63/63和新知识89/89，真实旧两引擎同10=6断言红4正、0error/skip。当前[验收](../branch-review-20261031-upload-transactions/acceptance.json)有限resolved，39最终原件归档，原33/两轮夹具失败保留；本体NA/FINAL。全部正式角色FINAL后已实际向用户做PR前范围无漂移/阶段/余项说明，后续仅L0归档/验收/交付，受测保护路径保持。
 
 下轮先fetch实际合入与外部增量，优先核新增记录控制实现对原DHR高风险项的影响；文件DELETE/相邻回调/未知提交对账继续待审，三ACL等待答复。666/44/183、A23旧已审全量/SQL与新4迁移/W7增量均不关闭；5927/134仅盘点。不自动merge/deploy/恢复、不查询触发CI。下文为主侧历史检查点，当前状态以上段为准。
