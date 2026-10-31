@@ -194,7 +194,7 @@ class ExecutionAccessTest {
     @Test void executionAttachmentsCannotBeDeletedThroughGenericFiles() {
         var files = mock(FileObjectRepository.class);
         when(files.findById(1L)).thenReturn(Optional.of(FileObject.builder().id(1L).targetType("PRODUCTION_EXECUTION").build()));
-        var controller = new FileController(files, null, null, null, null);
+        var controller = new FileController(files, null, null, null, null, null);
         assertThatThrownBy(() -> controller.delete(1L)).hasMessageContaining("追溯证据");
         verify(files, never()).deleteById(any());
     }
@@ -230,7 +230,7 @@ class ExecutionAccessTest {
         try (var pdf = new org.apache.pdfbox.pdmodel.PDDocument()) { pdf.addPage(new org.apache.pdfbox.pdmodel.PDPage()); pdf.save(path.toFile()); }
         var files = mock(FileObjectRepository.class);
         when(files.findById(1L)).thenReturn(Optional.of(FileObject.builder().id(1L).storedPath(path.toString()).mimeType("application/pdf").build()));
-        var controller = new FileController(files, null, null, null, null);
+        var controller = new FileController(files, null, null, null, null, null);
         var response = controller.pagePreview(1L, 1);
         assertThat(response.getHeaders().getFirst("X-Page-Count")).isEqualTo("1");
         assertThat(response.getHeaders().getContentType()).isEqualTo(org.springframework.http.MediaType.IMAGE_PNG);

@@ -32,8 +32,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(value = FileController.class, properties = {
         "app.jwt.secret=file-boundary-synthetic-secret-at-least-32-characters",
         "app.jwt.expiration-ms=60000"})
-@Import({SecurityConfig.class, JwtAuthenticationFilter.class, JwtTokenProvider.class})
+@Import({SecurityConfig.class, JwtAuthenticationFilter.class, JwtTokenProvider.class, FileHttpBoundaryTest.Transactions.class})
 class FileHttpBoundaryTest {
+    @org.springframework.boot.test.context.TestConfiguration
+    static class Transactions {
+        @org.springframework.context.annotation.Bean
+        org.springframework.transaction.PlatformTransactionManager transactionManager() { return FileTestTransactions.manager(); }
+    }
     @Autowired MockMvc mvc;
     @Autowired JwtTokenProvider tokens;
     @Autowired FileController controller;

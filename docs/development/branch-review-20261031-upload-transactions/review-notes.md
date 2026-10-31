@@ -1,0 +1,15 @@
+# 事务范围、容量与后续
+
+实际成功路径先读摘要、预占并复制新原件，再开启登记事务；不会为150MiB复制新增长DB事务。原仓储保存仍同一方法，事务加入既有REQUIRED边界，单对象登记没有循环SQL或新增用户查询，不声称测得查询数/生产SLA。若内部调用已有外层事务，方法返回不表示外层已提交，afterCompletion等外层最终结果；真实外层回滚用例确认数据和本次文件一起撤销。
+
+完成回调只确认ROLLED_BACK才清理，UNKNOWN保留原件/ID/路径并报告，不能照搬DhrAttachmentService的!=COMMITTED删除。该相邻回调与吞清理IO记CAND-W5-DHR-ATTACHMENT-UNKNOWN-CLEANUP-001源候选，专用受控附件需另回归，当前不关闭。当前UNKNOWN用AbstractPlatformTransactionManager实际同步生命周期的合成提交异常验证；不假称切断真实数据库连接。真实DB beforeCommit钩子测试晚失败回滚，与数据库已发送COMMIT后的不确定结果分开。
+
+completionRegistered不是为了单元测试绕过事务：启动失败尚未调用仓储可以安全补偿，完成同步已注册则只由最终结果决定，不在catch里再无条件删。原37回归通过FileTestTransactions的真实轻量事务管理器保留所有原断言，WebMvc仓储仍mock，不借这些作为DB证据；新JPA/H2/PG类使用真实仓储/事务/文件，表DDL从当前canonical逐字抽出，加测试CHECK，非全库初始化或历史迁移认证。
+
+两轮初始夹具失败完整保留：无同步上下文/Mockito接口不能callRealMethod，后改为包装真实JpaTransactionManager，在getTransaction完成后注册故障钩子，持久化仓储不mock；外层断言前显式flush观测SQL。最终旧两引擎各3红2正才算产品反证，不能把初版4fail或HTTP500误算真实提交前故障。当前主侧60+3分两次，最终质量实际运行范围另记。
+
+剩余优先项：DELETE仍先物理删除后DB删除、IO还可能吞错，需真实约束/故障和受控引用政策共同核对；本批不调整这条业务链。未知提交/进程崩溃/清理失败没有持久化对账，本次保守保留可能孤儿，不自动删除历史或恢复数据。共享文件ACL未绑定/多引用/个人认证原件三规则仍未答，冻结签名展示图与证件分开。PDF像素/并发和导出原件总量的容量风险先量化讨论。
+
+如果后续多上传入口需要同语义，可抽OwnedUploadRegistration.register(file,path)独占登记事务/结果补偿；Controller只留HTTP和原件复制，不将整类搬进Service。抽取须同一事务管理器/REQUIRED参与、只拥有新文件、ROLLED_BACK与UNKNOWN分开、已提交原件不删；保护测试为SQL拒绝/flush/晚失败/外层回滚/启动失败/未知/清理失败/原件碰撞及字节摘要。逐入口委托可回退，不新增无真实需求的磁盘事务框架。
+
+本批无UI修改，未跑浏览器/前端全构建，旧扫描结果不覆盖新增整合界面。当前5927/134仅盘点，330知识仅有限8ID回放；记录控制666路径/44知识文件/183ID候选仍待增量审计。原DHRhigh/A12剩余/四gap/TaskDetail等按既有边界保持，不自动关闭。

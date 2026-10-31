@@ -1,5 +1,11 @@
 # 持续推进台账
 
+## PR48已合入：上传登记事务补偿
+
+已fetch edhr-dev@a98e60792554f7753d22406d02b274fd50ea2e6c，PR48人工合入、整树同4df，无外部增量。从最新目标建audit/edhr-dev-upload-transactions-20261031；[本批](../branch-review-20261031-upload-transactions/README.md)仅FileController新增短登记事务及已回滚补偿，未知提交保留原件，未进仓储的启动失败可清理。旧真实JPA H2/PG各5为3真实红2正，当前一次60+另3全过，0error/skip；初始两轮夹具错误单独保留不算产品红。知识89实际过、本体8ID有限NA/FINAL；当前待新独立最终QA，不提前resolved。
+
+5927/134只盘点，五有限源码/A23五记录、6改4增不关旧856+feature1/SQL130+新4迁移及历史队列。DELETE/真实未知提交对账/崩溃、DHR相邻回调源候选、三ACL待决、容量与666增量继续；记录控制已实现转待审，旧DHRhigh/A12剩余/四gap/TaskDetail不自动关。全部角色FINAL后实际PR前范围/漂移/阶段复核再交付，不自动merge/deploy/恢复、不查询触发CI。
+
 ## PR47已合入：上传文件所有权与认证上传者
 
 已交付[PR48](https://github.com/IvenYi/edhr-nexus-frontend/pull/48)，audit/edhr-dev-file-consistency-20261031→edhr-dev，登记时OPEN/MERGEABLE/CLEAN，建议本批人工合入。实际受测2bdea59，之后a5c155fd仅L0原件/验收/范围，当前只登记交付；受测保护路径不变。下轮fetch真实合入及外部增量，优先DB保存/提交/删除失败一致性；ACL三边界待用户，666路径增量保持pending，旧high/A12/gap不自动关，不自动merge/deploy/恢复。

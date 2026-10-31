@@ -1,0 +1,27 @@
+{
+  "baseCommit":"a98e60792554f7753d22406d02b274fd50ea2e6c",
+  "scopeType":"limited-registration-and-transaction-outcome-ranges",
+  "wholeFileCompletion":0,
+  "historicalUniqueIncrement":null,
+  "records":[
+    {"path":"gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/controller/FileController.java","scope":"upload/registerUploadedFile、事务启动/完成/原件所有权及delete失败顺序只读定位；不认证完整CRUD/ACL"},
+    {"path":"gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/entity/FileObject.java","scope":"Repository/JPA单表映射、当前canonical file_object原DDL/PK与真实SQL结果；不涉及迁移回放"},
+    {"path":"gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrAttachmentService.java","scope":"相邻afterCompletion的status!=COMMITTED/吞IO源候选，仅有限比较，未修或认证DHR上传全链"},
+    {"path":"gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/deletion/DeletionProtectionAspect.java","scope":"现项目TransactionTemplate所有权用法参考，不借此复审全部删除图"},
+    {"path":"gmp-platform/backend/src/main/java/com/zencas/edhr/common/exception/GlobalExceptionHandler.java","scope":"真实SQL约束400/提交前Runtime500沿现有映射；未改异常业务规则"}
+  ],
+  "a23":{
+    "records":[
+      {"symbol":"completionRegistered guard","status":"necessary","reason":"区分启动未触及仓储与回调已拥有补偿；启动失败真实文件清理验证，避免回调后重复清理其他请求的新路径"},
+      {"symbol":"ROLLED_BACK versus UNKNOWN","status":"necessary","reason":"未知提交不能等同回滚删除可能已提交原件；合成真实同步生命周期故障回归，不冒称真实断网"},
+      {"symbol":"afterCompletion cleanup errors","status":"necessary-observability","reason":"清理失败不代替数据库错误、不返回虚假成功；实际非空目录故障确认原件残留，日志供后续处理"},
+      {"symbol":"copy outside DB transaction","status":"necessary-bounded-transaction","reason":"大文件复制不持有数据库连接；外层既有调用事务边界仍由调用者负责"},
+      {"symbol":"DHR sibling noncommitted cleanup","status":"pending-source-candidate","reason":"!=COMMITTED可能包含UNKNOWN，不能按兄弟实现复制或以本批通过关闭，需专用链后续回归"}
+    ],
+    "historicalLanguageQueue":856,"previousFeatureAddedPending":1,"historicalSqlQueue":130,"newMigrationQueue":4,"sqlChecked":0,
+    "currentChangedPending":["FileController.java","FileControllerTest.java","FileCopyOwnershipTest.java","FileHttpBoundaryTest.java","FileUploadResourceTest.java","ExecutionAccessTest.java"],
+    "currentAddedPending":["FileTestTransactions.java","FileUploadTransactionFailureTest.java","FileUploadTransactionIntegrationTest.java","FileUploadTransactionPostgresTest.java"],
+    "wholeFileCompletion":0,
+    "remaining":"W6全量含旧已审/W7增量，原666增量及所有历史队列不关闭"
+  }
+}

@@ -42,7 +42,7 @@ class FileUploadResourceTest {
         var ids = mock(SnowflakeIdGenerator.class);
         when(ids.nextId()).thenReturn(77L);
         controller = new FileController(files, mock(IconAssetRepository.class),
-                mock(SystemSettingRepository.class), mock(UserAccountRepository.class), ids);
+                mock(SystemSettingRepository.class), mock(UserAccountRepository.class), ids, FileTestTransactions.manager());
         ReflectionTestUtils.setField(controller, "storagePath", directory.toString());
     }
 
