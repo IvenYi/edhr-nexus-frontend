@@ -219,6 +219,16 @@ ontologyResult:
         - original-evidence；浏览器脚本覆盖确认文案、取消、成功反馈、有关联、预检失败及慢请求取消，使用拦截API；不将其解释为真实数据库浏览器验收。
         - 本角色未执行Maven、数据库操作、产品业务动作或浏览器，本轮不修改产品代码、数据迁移或知识文件；新候选运行与独立质量仍由主智能体和质量实例取得。
         - secondary-reference；PR46随附历史审计证据只作为来源索引，未用其历史通过结论代替63456e14候选验证；此前完整矩阵、放行、归档及A12暂缓保持。
+    - id: validation.integration-pr47-file-boundary
+      checkType: status-transition
+      command: git diff ccedd56453c02c5d3acd60aa4351809a3928e83e 032b83e9d5b8a25bee6d5b59c45d86892f672d00 -- gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/controller/FileController.java; 静态读取上传及公开预览调用链与FileUploadResourceTest/FileHttpBoundaryTest；核对契约、知识及其余领域差异。
+      outcome: passed
+      evidence:
+        - original-evidence；2026-10-31追加核对来源/合并候选6edb5411ef10f22320e00b737a13d56b84f4e848与新目标edhr-dev@032b83e9d5b8a25bee6d5b59c45d86892f672d00，原报告和PR46时点均保留；原contractReadCommit 943dc9fed4ffde482fa3eff3dc10f8a157ce5134仍适用，无项目、编码、角色或交接契约增量。
+        - original-evidence；产品增量仅FileController的两处上传输入流try-with-resources、MD5读取IOException传播和空targetType公开预览拒绝，另有2个测试文件；候选FileController与新目标相同。知识、架构、迁移、前端、记录控制、生产及流程代码无增量，63456e14与6edb5411的知识树同为3d7a7bdbf40530d3a10cc31991c4ea3ac5b5a4b9，知识工作树无修改。
+        - original-evidence；上传保存FileObject位于摘要读取和文件复制成功之后，流读取/关闭失败不再以空摘要登记成功；原MD5算法、允许类型、大小边界和已存内容不变。此处不声称文件系统与数据库完全原子，复制失败残留文件的既有补偿边界未被本增量解决。
+        - original-evidence；publicPreview先由findById或异常取得非空文件，再沿原ICON_ASSET/SYSTEM_LOGO/SYSTEM_FAVICON/USER_AVATAR白名单及实际引用判断；空targetType走既有拒绝分支，不授予文档、表单或DHR附件公开权限，不改变签名、冻结或审计语义。
+        - 本次为现有资源与访问边界的工程修复，无新增政策、ID、声明替代或成熟度变化；DEC-0063等原证据保留及授权边界继续适用，无需修改知识定义。测试仅核对源码断言，未运行Maven、数据库、浏览器或业务动作；新候选运行验证由主智能体及独立质量角色取得。
   roadmapProgress:
     stage: P0
     status: in-progress

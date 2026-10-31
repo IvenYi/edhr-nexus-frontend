@@ -1,0 +1,86 @@
+qualityResult:
+  result: passed
+  baseCommit: 63456e143063c13558db362d28cde83f8e0cdb9b
+  headCommit: 6edb5411ef10f22320e00b737a13d56b84f4e848
+  contractBaseline:
+    sourceCommit: 6edb5411ef10f22320e00b737a13d56b84f4e848
+    targetBranch: edhr-dev
+    targetCommit: 032b83e9d5b8a25bee6d5b59c45d86892f672d00
+    contractReadCommit: 6edb5411ef10f22320e00b737a13d56b84f4e848
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: dirty
+    includedPaths:
+      - docs/development/edhr-dev-integration-20261031/README.md
+      - docs/development/edhr-dev-integration-20261031/decision-package.yaml
+      - docs/development/edhr-dev-integration-20261031/ontology-result.yaml
+      - docs/development/edhr-dev-integration-20261031/quality-pr47-result.yaml
+      - docs/development/edhr-dev-integration-20261031/evidence/pr47/
+    excludedPaths: [gmp-platform/frontend/output/, output/]
+    untrackedPaths:
+      - docs/development/edhr-dev-integration-20261031/quality-pr47-result.yaml
+      - docs/development/edhr-dev-integration-20261031/evidence/pr47/
+      - gmp-platform/frontend/output/
+      - output/
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+    - id: check.pr47-baseline-and-retained-scope
+      required: true
+      category: integration
+      description: 本报告为同一L2集成切片的PR47增量，固定新目标及实际测试候选，保留旧验证时点。
+      method: command
+      command: git merge-base --is-ancestor; git rev-parse <commit>:<path>; git diff 63456e14..6edb5411 -- <受影响及相邻路径>
+      outcome: passed
+      evidence:
+        - original-evidence；target为032b83e9d5b8a25bee6d5b59c45d86892f672d00，原feature为84995f7efab3abdf0012b974cb0a11e04920fe77，tested candidate为6edb5411ef10f22320e00b737a13d56b84f4e848。
+        - evidence/pr47/independent/baseline.json：目标、前轮63456e14、朋友aef427c5及原功能均为候选祖先；双亲为a6c397c42373bb9c38341dde0708157706f70c4c和032b83e9，三个增量文件与目标blob完全一致。
+        - 仅FileController和两个新增测试改变；契约、知识、架构、迁移、前端、记录控制、workflow和production/DHR无差异，产品无未提交修改。
+        - quality-final-result.yaml的63456e14检查保留其原时点；其中171项后端、10项分类浏览器、视觉和迁移结果按无影响差异分析复用，不声称在6edb5411全部重跑。文件边界及主环境按下述本轮证据补验。
+    - id: check.pr47-file-source-and-tests
+      required: true
+      category: regression
+      description: 独立核对上传资源关闭、异常传播及公开预览边界，执行新增和相邻测试。
+      method: automated-test
+      command: JAVA_HOME=/opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home mvn --batch-mode --no-transfer-progress -Dtest=FileControllerTest,FileHttpBoundaryTest,FileUploadResourceTest test
+      outcome: passed
+      evidence:
+        - original-evidence；在tracked无WIP后按授权将旧工作树快进至6edb5411并运行；27项全部通过，0失败、0错误、0跳过。原件为evidence/pr47/independent/backend-summary.json、3份TEST-*.xml.gz和backend.log.gz。
+        - 两个输入流各自try-with-resources；摘要读取及复制/关闭失败传播IOException，不继续登记FileObject成功，正常MD5与原字节保持；测试覆盖read1/close1/read2/close2四故障点。
+        - publicPreview的唯一调用点先由Optional.orElseThrow取得非空对象；null targetType在读取磁盘前按原拒绝分支处理，空字符串和其他非白名单目标继续拒绝，原四类公开目标仍要求实际引用。
+        - HTTP测试使用真实JWT/filter/MVC及本地文件字节，仓储受控；覆盖公开引用正反例、私有读取登录边界、匿名列表/写操作拒绝。不宣称对象级授权、真实数据库文件写入或跨存储原子性已由这些测试证明。
+    - id: check.pr47-main-and-preservation
+      required: true
+      category: database
+      description: 最终主目录服务重启后只读复验正常入口、原数据与未消费人工样例。
+      method: command
+      command: python3 docs/development/edhr-dev-integration-20261031/evidence/pr47/independent/run-readonly.py; ps/lsof核对主进程。
+      outcome: passed
+      evidence:
+        - evidence/pr47/independent/main-api-readonly.json：新候选上28项登录/GET检查全部通过；仅登录和读取，无批准、改派、转办、撤回、保存、重置或删除动作，令牌不写证据。
+        - evidence/pr47/independent/preservation.json：104表原2120行及原886个文件SHA256全部保留；迁入行仅四UAT账号last_login_at按正常登录改变，其他字段、冻结版本和签名原件一致。
+        - 8完成来源、7在审申请、4DHR与8有效修订引用保持；14条签名行保留，其中10条带摘要原文SHA256均正确，4条初始认证行原本无摘要，未冒称验签通过。
+        - evidence/pr47/independent/runtime.json：前端9731、后端14842均从主目录运行，后端dev/8081；没有创建新测试数据库或停止主服务。
+        - 本轮复用原只读核验脚本，仅在执行时替换输出目录；原质量报告和原证据未覆盖，数据库查询继续强制default_transaction_read_only。
+    - id: check.pr47-knowledge-and-delivery-boundary
+      required: true
+      category: ontology
+      description: 核对本体增量、范围声明及交付门禁边界。
+      method: inspection
+      command: 阅读更新decision-package.yaml、README.md及ontology-result.yaml的validation.integration-pr47-file-boundary；git diff --check。
+      outcome: passed
+      evidence:
+        - ontologyResult仍为updated；知识0.3.25、声明、权限白名单、签名/冻结/审计含义均未改变，无新增政策、引用或知识成熟度变化。
+        - 影响分析固定6edb5411/032b83e9并区分前轮全范围检查与本轮文件增量；适用项目/角色/交接契约无变化，git diff --check通过。
+        - 本质量实例及只读复核子实例均未参与代码、测试、迁移或知识修复；本轮没有遗留自建DB或浏览器/服务资源。
+        - 非强制push曾被竞态拒绝后保留双方历史合并；最终成功推送和指定旧工作树移除尚待主侧执行，不作为本报告已通过事项。
+  findings: []
+  residualRisks:
+    - id: risk.file-cross-resource-compensation
+      description: 文件复制或数据库失败的磁盘残留补偿属于既有未覆盖范围，本增量未实现。
+      impact: 本报告不保证文件系统与数据库跨资源原子性，也不认证全部文件对象级权限。
+      mitigation: 保留现有边界，后续有明确需求时独立定义补偿和权限切片；本轮成功登记与流资源释放已聚焦验证。
+    - id: risk.retained-scope-and-post-gate-actions
+      description: quality-final-result.yaml中的业务暂缓、主库仅只读、生产/全系统验收限制以及分支保护未核验仍适用；成功推送和工作树移除未执行。
+      impact: 不能将本次增量通过解释为全量重跑、生产发布或交付清理已经完成。
+      mitigation: 主侧按既有授权完成证据提交、非强制推送及指定工作树移除并记录回执；若目标或产品再变动，重新核对受影响范围。
+  blockingConditions: []

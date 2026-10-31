@@ -1,0 +1,42 @@
+{
+  "candidate": "6edb5411ef10f22320e00b737a13d56b84f4e848",
+  "target": "032b83e9d5b8a25bee6d5b59c45d86892f672d00",
+  "previousVerifiedCandidate": "63456e143063c13558db362d28cde83f8e0cdb9b",
+  "parents": [
+    "a6c397c42373bb9c38341dde0708157706f70c4c",
+    "032b83e9d5b8a25bee6d5b59c45d86892f672d00"
+  ],
+  "ancestors": {
+    "032b83e9d5b8a25bee6d5b59c45d86892f672d00": true,
+    "63456e143063c13558db362d28cde83f8e0cdb9b": true,
+    "aef427c524bd7270b3775fbd7c599c72a545e21b": true,
+    "84995f7efab3abdf0012b974cb0a11e04920fe77": true
+  },
+  "productAndTestDelta": [
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/controller/FileController.java",
+      "matchesTarget": true
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/compliance/controller/FileHttpBoundaryTest.java",
+      "matchesTarget": true
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/compliance/controller/FileUploadResourceTest.java",
+      "matchesTarget": true
+    }
+  ],
+  "unchangedScopes": {
+    "AGENTS.md": true,
+    "codeplzreadme.md": true,
+    "docs/agents": true,
+    "docs/knowledge": true,
+    "docs/architecture": true,
+    "gmp-platform/backend/src/main/resources/db": true,
+    "gmp-platform/frontend": true,
+    "gmp-platform/backend/src/main/java/com/zencas/edhr/recordcontrol": true,
+    "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow": true,
+    "gmp-platform/backend/src/main/java/com/zencas/edhr/production": true
+  },
+  "passed": true
+}
