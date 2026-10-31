@@ -1,0 +1,102 @@
+{
+  "baseCommit": "1ad6300918bd0059049eab3c415ca31162dd5115",
+  "scopeType": "limited-dhr-impact-read-review-and-personal-http-ranges",
+  "wholeFileCompletion": 0,
+  "historicalUniqueIncrement": null,
+  "records": [
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/recordcontrol/service/RecordControlService.java",
+      "scope": "submit/handle/applyChange/applyObsolete/updateExecution/lockSource: 来源生效、当前贡献、锁与影响同事务",
+      "bytes": 38791,
+      "sha256": "93507a91197f9a58dacfdb9b853d71c2cc0e4883babb5ad378ce7b153a672d44"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrEvidenceImpactService.java",
+      "scope": "requireRecordControlAllowed/requireNoPendingApplications/sourceEffective/changes: 双向阻断、来源差异、提醒收件人",
+      "bytes": 11774,
+      "sha256": "09ae4603a600df3a8cafb00e9e304e7cffbc840a2fab6b8b511f745822649c80"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrReviewService.java",
+      "scope": "list/detail/act/eligible/handled: 个人权限、冻结读取、审批锁与全量遍历",
+      "bytes": 15793,
+      "sha256": "afbf44533270c535188d4c78a7481022ea7cc0126bded081ec86631f181b7282"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrSummaryService.java",
+      "scope": "version/submit/validateFrozenFormFiles: 人工核查凭证、冻结及完整性；非整文件",
+      "bytes": 44493,
+      "sha256": "20d96b976bd931ccf65c710204a01d8d571d51f8deebaf64bb0aaad8f7e24c3e"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrFrozenEvidenceIntegrity.java",
+      "scope": "逐来源/成员/全版hash含checkResult核验",
+      "bytes": 6277,
+      "sha256": "3dcf8632a2049d9a13e8e178e55ff5c24643f50f496410ba2ef3f8f71c054e66"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrImpactNotificationService.java",
+      "scope": "list/read: recipient ID与tenant隔离、分页、已读不授权",
+      "bytes": 2842,
+      "sha256": "2ec8ab10285cb55892fbf71ae8a3c7bab2bac9a73510c0d6f855d2102a9c38ce"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrReviewController.java",
+      "scope": "菜单与动作AND、个人任务读取入口",
+      "bytes": 3309,
+      "sha256": "37f6af83e063e1593e15ac28e021ec719888c21fe45d314916c9f20975e2417e"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrSummaryController.java",
+      "scope": "独立summary读取权限",
+      "bytes": 3419,
+      "sha256": "5ce62999330203581417a182a68621658ade5a8f5f264293d9e810e394c8292f"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrImpactNotificationController.java",
+      "scope": "认证与个人通知入口",
+      "bytes": 938,
+      "sha256": "637b3d89e50452bddf364a08f4bebde29494ecd91b0fa7833323caedff8a93d7"
+    }
+  ],
+  "a23": {
+    "records": [
+      {
+        "symbol": "frozen evidence hashes and member cross-checks",
+        "status": "necessary",
+        "reason": "冻结版本及逐来源原证完整性，禁止过期/替换证据批准"
+      },
+      {
+        "symbol": "object lock and in-review bilateral checks",
+        "status": "necessary",
+        "reason": "来源生效与批准并发串行；同事务重核状态并非无依据重复保护"
+      },
+      {
+        "symbol": "menu/action/task identity",
+        "status": "necessary",
+        "reason": "页面可见、办理动作与当前/已办身份是不同维度，普通JWT矩阵验证"
+      },
+      {
+        "symbol": "detail repeated evidenceChanges",
+        "status": "redundant-read-candidate",
+        "reason": "summary.version已读影响后detail再次读；未优化，需一致性及容量核定"
+      },
+      {
+        "symbol": "list batch64 full traversal",
+        "status": "performance-risk-confirmed",
+        "reason": "单批有界但全量扫描；21/521/5021行与2/10/80SQL，先讨论"
+      }
+    ],
+    "historicalLanguageQueue": 856,
+    "previousFeatureAddedPending": 1,
+    "historicalSqlQueue": 130,
+    "newMigrationQueue": 4,
+    "sqlChecked": 0,
+    "currentChangedPending": [
+      "RecordControlPostgresIntegrationTest.java"
+    ],
+    "currentAddedPending": [],
+    "wholeFileCompletion": 0,
+    "remaining": "W6 whole including previously reviewed; W7 increments; all previous batch overlays and 666/44/183 remain pending"
+  }
+}
