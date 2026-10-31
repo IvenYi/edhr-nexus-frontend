@@ -1,0 +1,16 @@
+{
+  "commit": "ccedd56453c02c5d3acd60aa4351809a3928e83e",
+  "command": [
+    "bash",
+    "/workspace/.edhr-cloud-tools/mvn-edhr",
+    "-f",
+    "gmp-platform/backend/pom.xml",
+    "-Dtest=FileUploadResourceTest,FileHttpBoundaryTest",
+    "test"
+  ],
+  "testHashes": {
+    "gmp-platform/backend/src/test/java/com/zencas/edhr/compliance/controller/FileUploadResourceTest.java": "f1a8a9c9008b0645f2ba64ed61e4b3baeb71660518515f5628a5d95123ce39eb",
+    "gmp-platform/backend/src/test/java/com/zencas/edhr/compliance/controller/FileHttpBoundaryTest.java": "7799b76e0db0f87f100874eb921b09a6e9d09f8e5d9c3b18eafefcc5855d36e3"
+  },
+  "dependencySymlink": "/tmp/edhr-file-q1-old-worktree/gmp-platform/frontend/node_modules"
+}

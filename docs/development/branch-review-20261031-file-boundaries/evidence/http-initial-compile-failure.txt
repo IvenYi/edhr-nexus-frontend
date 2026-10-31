@@ -1,0 +1,84 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] --------------------------< com.zencas:edhr >---------------------------
+[INFO] Building eDHR 0.0.1-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- exec:3.5.0:exec (dhr-print-renderer) @ edhr ---
+
+> edhr-frontend@0.0.1 build:dhr-print
+> vite build --config vite.dhr-print.config.ts
+
+vite v5.4.21 building for production...
+transforming...
+✓ 11665 modules transformed.
+rendering chunks...
+computing gzip size...
+../backend/target/generated-resources/dhr-print/renderer.js  662.41 kB │ gzip: 211.13 kB
+✓ built in 4.37s
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ edhr ---
+[INFO] Copying 6 resources from src/main/resources to target/classes
+[INFO] Copying 1 resource from target/generated-resources to target/classes
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ edhr ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ edhr ---
+[INFO] Copying 129 resources from src/test/resources to target/test-classes
+[INFO] 
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ edhr ---
+[INFO] Recompiling the module because of changed source code.
+[INFO] Compiling 155 source files with javac [debug parameters release 21] to target/test-classes
+[INFO] -------------------------------------------------------------
+[ERROR] COMPILATION ERROR : 
+[INFO] -------------------------------------------------------------
+[ERROR] /workspace/edhr-nexus-frontend/gmp-platform/backend/src/test/java/com/zencas/edhr/compliance/controller/FileHttpBoundaryTest.java:[20,62] package org.springframework.test.context.bean.override.mockito does not exist
+[ERROR] /workspace/edhr-nexus-frontend/gmp-platform/backend/src/test/java/com/zencas/edhr/compliance/controller/FileHttpBoundaryTest.java:[39,6] cannot find symbol
+  symbol:   class MockitoBean
+  location: class com.zencas.edhr.compliance.controller.FileHttpBoundaryTest
+[ERROR] /workspace/edhr-nexus-frontend/gmp-platform/backend/src/test/java/com/zencas/edhr/compliance/controller/FileHttpBoundaryTest.java:[40,6] cannot find symbol
+  symbol:   class MockitoBean
+  location: class com.zencas.edhr.compliance.controller.FileHttpBoundaryTest
+[ERROR] /workspace/edhr-nexus-frontend/gmp-platform/backend/src/test/java/com/zencas/edhr/compliance/controller/FileHttpBoundaryTest.java:[41,6] cannot find symbol
+  symbol:   class MockitoBean
+  location: class com.zencas.edhr.compliance.controller.FileHttpBoundaryTest
+[ERROR] /workspace/edhr-nexus-frontend/gmp-platform/backend/src/test/java/com/zencas/edhr/compliance/controller/FileHttpBoundaryTest.java:[42,6] cannot find symbol
+  symbol:   class MockitoBean
+  location: class com.zencas.edhr.compliance.controller.FileHttpBoundaryTest
+[ERROR] /workspace/edhr-nexus-frontend/gmp-platform/backend/src/test/java/com/zencas/edhr/compliance/controller/FileHttpBoundaryTest.java:[43,6] cannot find symbol
+  symbol:   class MockitoBean
+  location: class com.zencas.edhr.compliance.controller.FileHttpBoundaryTest
+[INFO] 6 errors 
+[INFO] -------------------------------------------------------------
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  7.394 s
+[INFO] Finished at: 2026-10-31T07:11:53Z
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-compiler-plugin:3.13.0:testCompile (default-testCompile) on project edhr: Compilation failure: Compilation failure: 
+[ERROR] /workspace/edhr-nexus-frontend/gmp-platform/backend/src/test/java/com/zencas/edhr/compliance/controller/FileHttpBoundaryTest.java:[20,62] package org.springframework.test.context.bean.override.mockito does not exist
+[ERROR] /workspace/edhr-nexus-frontend/gmp-platform/backend/src/test/java/com/zencas/edhr/compliance/controller/FileHttpBoundaryTest.java:[39,6] cannot find symbol
+[ERROR]   symbol:   class MockitoBean
+[ERROR]   location: class com.zencas.edhr.compliance.controller.FileHttpBoundaryTest
+[ERROR] /workspace/edhr-nexus-frontend/gmp-platform/backend/src/test/java/com/zencas/edhr/compliance/controller/FileHttpBoundaryTest.java:[40,6] cannot find symbol
+[ERROR]   symbol:   class MockitoBean
+[ERROR]   location: class com.zencas.edhr.compliance.controller.FileHttpBoundaryTest
+[ERROR] /workspace/edhr-nexus-frontend/gmp-platform/backend/src/test/java/com/zencas/edhr/compliance/controller/FileHttpBoundaryTest.java:[41,6] cannot find symbol
+[ERROR]   symbol:   class MockitoBean
+[ERROR]   location: class com.zencas.edhr.compliance.controller.FileHttpBoundaryTest
+[ERROR] /workspace/edhr-nexus-frontend/gmp-platform/backend/src/test/java/com/zencas/edhr/compliance/controller/FileHttpBoundaryTest.java:[42,6] cannot find symbol
+[ERROR]   symbol:   class MockitoBean
+[ERROR]   location: class com.zencas.edhr.compliance.controller.FileHttpBoundaryTest
+[ERROR] /workspace/edhr-nexus-frontend/gmp-platform/backend/src/test/java/com/zencas/edhr/compliance/controller/FileHttpBoundaryTest.java:[43,6] cannot find symbol
+[ERROR]   symbol:   class MockitoBean
+[ERROR]   location: class com.zencas.edhr.compliance.controller.FileHttpBoundaryTest
+[ERROR] -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException

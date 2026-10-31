@@ -1,0 +1,57 @@
+diff --git a/gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/controller/FileController.java b/gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/controller/FileController.java
+index 2639420b..627b427b 100644
+--- a/gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/controller/FileController.java
++++ b/gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/controller/FileController.java
+@@ -106,7 +106,10 @@ public class FileController {
+         }
+ 
+         // Compute MD5
+-        String md5Hash = computeMd5(file.getInputStream());
++        String md5Hash;
++        try (InputStream input = file.getInputStream()) {
++            md5Hash = computeMd5(input);
++        }
+ 
+         // Ensure storage directory exists
+         Path storageDir = Path.of(storagePath);
+@@ -116,7 +119,9 @@ public class FileController {
+         long fileId = idGenerator.nextId();
+         String storedName = fileId + "_" + sanitizeFileName(file.getOriginalFilename());
+         Path targetPath = storageDir.resolve(storedName);
+-        Files.copy(file.getInputStream(), targetPath, StandardCopyOption.REPLACE_EXISTING);
++        try (InputStream input = file.getInputStream()) {
++            Files.copy(input, targetPath, StandardCopyOption.REPLACE_EXISTING);
++        }
+ 
+         FileObject fileObject = FileObject.builder()
+                 .id(fileId)
+@@ -218,7 +223,7 @@ public class FileController {
+     }
+ 
+     private boolean canPublicPreview(FileObject fileObject) {
+-        if (fileObject == null || !PUBLIC_PREVIEW_TARGET_TYPES.contains(fileObject.getTargetType())) return false;
++        if (fileObject.getTargetType() == null || !PUBLIC_PREVIEW_TARGET_TYPES.contains(fileObject.getTargetType())) return false;
+         Long fileId = fileObject.getId();
+         if ("ICON_ASSET".equals(fileObject.getTargetType())) {
+             return iconAssetRepository.existsByFileId(fileId);
+@@ -310,7 +315,7 @@ public class FileController {
+ 
+     // ======================== Helpers ========================
+ 
+-    private String computeMd5(InputStream inputStream) {
++    private String computeMd5(InputStream inputStream) throws IOException {
+         try {
+             MessageDigest md = MessageDigest.getInstance("MD5");
+             byte[] buffer = new byte[8192];
+@@ -319,9 +324,8 @@ public class FileController {
+                 md.update(buffer, 0, bytesRead);
+             }
+             return HexFormat.of().formatHex(md.digest());
+-        } catch (NoSuchAlgorithmException | IOException e) {
+-            log.error("MD5 computation failed", e);
+-            return "";
++        } catch (NoSuchAlgorithmException e) {
++            throw new IllegalStateException("MD5 algorithm unavailable", e);
+         }
+     }
+ 
