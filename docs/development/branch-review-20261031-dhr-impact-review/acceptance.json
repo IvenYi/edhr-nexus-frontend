@@ -149,5 +149,10 @@
   ],
   "blockingConditions": [],
   "recommendMergeForThisBatch": true,
-  "nextAction": "Fetch actual integration and increments; continue remaining ordinary-account/recipient/UI matrix and file DELETE/DHR attachment callback consistency; optimize query only after explicit decision."
+  "nextAction": "Fetch actual integration and increments; continue remaining ordinary-account/recipient/UI matrix and file DELETE/DHR attachment callback consistency; optimize query only after explicit decision.",
+  "postQaVerification": {
+    "document": "evidence/delivery-verification.json",
+    "protectedDeltaPaths": [],
+    "retestClaimed": false
+  }
 }

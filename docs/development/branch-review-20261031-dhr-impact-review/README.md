@@ -1,5 +1,7 @@
 # DHR 来源影响与普通账号验收
 
+已交付 [PR50](https://github.com/IvenYi/edhr-nexus-frontend/pull/50)，`audit/edhr-dev-dhr-impact-review-20261031` → `edhr-dev`，登记时 OPEN / MERGEABLE / CLEAN，建议人工合入本批验收增量。[交付记录](delivery.json)保存创建时实际远端013475a2；受测977287f6后仅L0原件、验收及交付登记，保护路径不变，未冒称文档提交重跑。下一批先fetch实际合入与外部增量。
+
 本轮 L2，从实际最新 `edhr-dev@1ad6300918bd0059049eab3c415ca31162dd5115` 建立审计分支；PR49 已合入，目标整树同其交付 0405e826，无额外代码、知识或契约增量。
 
 全新独立质量对干净 `977287f6da3ba1cb78c4eb2842f3ace69bb1f43b` 正式 passed/FINAL、12/12必需检查；独立单次52/52、知识89及39份JWT/MVC响应全部匹配，容量机制独立复现，自有数据库清理确认不存在。[正式报告](evidence/final-quality/quality-review.md)、[31份原件映射](evidence/final-quality/archive-map.json)及[验收](acceptance.json)保留准确边界。本体与质量全部FINAL后，已实际完成[PR前范围/漂移/阶段沟通](scope-review.md)。可合入本批测试与证据增量，两项旧 high 继续 open，整体审计未完成；受测后仅L0归档、验收及交付登记，保护路径保持。
