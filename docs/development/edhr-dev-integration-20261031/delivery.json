@@ -1,0 +1,31 @@
+{
+  "date": "2026-10-31",
+  "level": "L2",
+  "branch": "edhr-dev",
+  "sourceFeature": "84995f7efab3abdf0012b974cb0a11e04920fe77",
+  "latestMergedTarget": "032b83e9d5b8a25bee6d5b59c45d86892f672d00",
+  "testedProductCandidate": "6edb5411ef10f22320e00b737a13d56b84f4e848",
+  "pushedCommit": "1c59f6304ebc2333d359bec1adefb8b98bd08860",
+  "push": "passed",
+  "ontology": "updated",
+  "quality": "passed",
+  "mainRoot": "/Users/ivenwang/Documents/edhr-nexus",
+  "database": "edhr_dev",
+  "samplesReady": 8,
+  "archive": {
+    "result": "blocked-by-client-primary-checkout-protection",
+    "removed": false,
+    "path": "/Users/ivenwang/.codex/worktrees/record-control-integration/edhr-nexus",
+    "toolReceipt": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"type\":\"error\",\"message\":\"The task's primary checkout cannot be removed.\"}"
+        }
+      ],
+      "isError": true
+    }
+  },
+  "backups": "/Users/ivenwang/.codex/backups/edhr/integration-20261031/",
+  "remainingAction": "Move this chat off its primary independent checkout through supported Codex UI/workflow before requesting removal; main runtime and acceptance do not depend on it."
+}
