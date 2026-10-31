@@ -1,0 +1,16 @@
+{
+  "cmd": [
+    "bash",
+    "/workspace/.edhr-cloud-tools/mvn-edhr",
+    "-f",
+    "gmp-platform/backend/pom.xml",
+    "-Dtest=FileUploadTransactionIntegrationTest,FileUploadTransactionPostgresTest",
+    "test"
+  ],
+  "cwd": "/tmp/edhr-upload-q1-old-worktree",
+  "commit": "a98e60792554f7753d22406d02b274fd50ea2e6c",
+  "testSha256": {
+    "FileUploadTransactionIntegrationTest": "cf1ae9c7a53b3517b5399f7ff1ed48b59052bd3a1912e2acaabaa7ad4753b841",
+    "FileUploadTransactionPostgresTest": "cc53336ba13e7c4f9f3f3becd2a2f8d173835b81694dfe9c4615dd0af407db42"
+  }
+}

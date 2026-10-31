@@ -1,0 +1,62 @@
+{
+  "commit": "a98e60792554f7753d22406d02b274fd50ea2e6c",
+  "exit": 1,
+  "suites": [
+    {
+      "suite": "FileUploadTransactionIntegrationTest",
+      "tests": 5,
+      "failures": 3,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "FileUploadTransactionPostgresTest",
+      "tests": 5,
+      "failures": 3,
+      "errors": 0,
+      "skipped": 0
+    }
+  ],
+  "totals": {
+    "tests": 10,
+    "failures": 6,
+    "errors": 0,
+    "skipped": 0
+  },
+  "failures": [
+    {
+      "case": "sqlConstraintRollbackDoesNotLeaveAnUnregisteredOriginal",
+      "kind": "failure",
+      "message": "\nExpecting actual:\n  [\"391923045347889152_reject.txt\", \"unrelated-original\"]\nto contain exactly (and in same order):\n  [\"unrelated-original\"]\nbut some elements were not expected:\n  [\"391923045347889152_reject.txt\"]\n"
+    },
+    {
+      "case": "failureAfterSaveButBeforeCommitRollsBackAndRemovesNewOriginal",
+      "kind": "failure",
+      "message": "\nExpecting actual:\n  [\"391923045465329664_late.txt\", \"unrelated-original\"]\nto contain exactly (and in same order):\n  [\"unrelated-original\"]\nbut some elements were not expected:\n  [\"391923045465329664_late.txt\"]\n"
+    },
+    {
+      "case": "joiningAnOuterTransactionWaitsForItsFinalRollback",
+      "kind": "failure",
+      "message": "\nExpecting actual:\n  [\"391923045540827136_outer.txt\", \"unrelated-original\"]\nto contain exactly (and in same order):\n  [\"unrelated-original\"]\nbut some elements were not expected:\n  [\"391923045540827136_outer.txt\"]\n"
+    },
+    {
+      "case": "sqlConstraintRollbackDoesNotLeaveAnUnregisteredOriginal",
+      "kind": "failure",
+      "message": "\nExpecting actual:\n  [\"391923039970791424_reject.txt\", \"unrelated-original\"]\nto contain exactly (and in same order):\n  [\"unrelated-original\"]\nbut some elements were not expected:\n  [\"391923039970791424_reject.txt\"]\n"
+    },
+    {
+      "case": "failureAfterSaveButBeforeCommitRollsBackAndRemovesNewOriginal",
+      "kind": "failure",
+      "message": "\nExpecting actual:\n  [\"391923040251809792_late.txt\", \"unrelated-original\"]\nto contain exactly (and in same order):\n  [\"unrelated-original\"]\nbut some elements were not expected:\n  [\"391923040251809792_late.txt\"]\n"
+    },
+    {
+      "case": "joiningAnOuterTransactionWaitsForItsFinalRollback",
+      "kind": "failure",
+      "message": "\nExpecting actual:\n  [\"391923040411193344_outer.txt\", \"unrelated-original\"]\nto contain exactly (and in same order):\n  [\"unrelated-original\"]\nbut some elements were not expected:\n  [\"391923040411193344_outer.txt\"]\n"
+    }
+  ],
+  "testSha256": {
+    "FileUploadTransactionIntegrationTest": "cf1ae9c7a53b3517b5399f7ff1ed48b59052bd3a1912e2acaabaa7ad4753b841",
+    "FileUploadTransactionPostgresTest": "cc53336ba13e7c4f9f3f3becd2a2f8d173835b81694dfe9c4615dd0af407db42"
+  }
+}

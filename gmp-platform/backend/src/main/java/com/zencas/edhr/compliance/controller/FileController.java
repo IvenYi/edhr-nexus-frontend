@@ -26,6 +26,10 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.support.TransactionSynchronization;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -58,6 +62,7 @@ public class FileController {
     private final SystemSettingRepository systemSettingRepository;
     private final UserAccountRepository userAccountRepository;
     private final SnowflakeIdGenerator idGenerator;
+    private final PlatformTransactionManager transactionManager;
 
     @Value("${edhr.file.storage-path:#{systemProperties['user.home'] + '/.edhr/files'}}")
     private String storagePath;
@@ -150,7 +155,7 @@ public class FileController {
                 .uploadedBy(getCurrentOperatorId())
                 .createdAt(LocalDateTime.now())
                 .build();
-        fileObjectRepository.save(fileObject);
+        registerUploadedFile(fileObject, targetPath);
 
         log.info("File uploaded: id={}, originalName={}, size={}", fileId,
                 file.getOriginalFilename(), file.getSize());
@@ -329,6 +334,40 @@ public class FileController {
     }
 
     // ======================== Helpers ========================
+
+    private void registerUploadedFile(FileObject file, Path ownedPath) {
+        boolean[] completionRegistered = {false};
+        try {
+            new TransactionTemplate(transactionManager).executeWithoutResult(transaction -> {
+                TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+                    @Override public void afterCompletion(int status) {
+                        if (status == STATUS_ROLLED_BACK) {
+                            try {
+                                Files.deleteIfExists(ownedPath);
+                            } catch (IOException | RuntimeException cleanupFailure) {
+                                log.error("Failed to remove rolled-back upload: id={}, path={}", file.getId(), ownedPath, cleanupFailure);
+                            }
+                        } else if (status == STATUS_UNKNOWN) {
+                            log.error("Upload transaction outcome unknown; original retained: id={}, path={}", file.getId(), ownedPath);
+                        }
+                    }
+                });
+                completionRegistered[0] = true;
+                fileObjectRepository.save(file);
+            });
+        } catch (RuntimeException failure) {
+            // No synchronization means database registration was never reached (e.g. connection unavailable).
+            if (!completionRegistered[0]) {
+                try {
+                    Files.deleteIfExists(ownedPath);
+                } catch (IOException | RuntimeException cleanupFailure) {
+                    failure.addSuppressed(cleanupFailure);
+                    log.error("Failed to remove upload before registration: id={}, path={}", file.getId(), ownedPath, cleanupFailure);
+                }
+            }
+            throw failure;
+        }
+    }
 
     private String computeMd5(InputStream inputStream) throws IOException {
         try {

@@ -1,0 +1,55 @@
+ontologyResult:
+  result: not-applicable
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: a98e60792554f7753d22406d02b274fd50ea2e6c
+    targetBranch: edhr-dev
+    targetCommit: a98e60792554f7753d22406d02b274fd50ea2e6c
+    contractReadCommit: a98e60792554f7753d22406d02b274fd50ea2e6c
+    uncommittedContractPaths: []
+  reason: Short registration transaction and request-owned compensation for confirmed
+    rollback are engineering corrections. Unknown commit preserves the original rather
+    than authorizing deletion. General150MiB/MD5 and controlled DHR50MiB/SHA256, existing
+    ACL/deletion/evidence/actor policies remain; no new business concept, rule, migration
+    or maturity. Runtime and complete cross-storage atomicity are not certified by
+    ontology review.
+  changedArtifacts: []
+  knowledgeSync: []
+  conflicts: []
+  questions: []
+  validationEvidence:
+  - id: validation.upload-tx.knowledge89
+    checkType: schema
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f tools/knowledge-model/pom.xml
+      test
+    outcome: passed
+    evidence:
+    - /tmp/edhr-upload-tx-ontology-knowledge-test.txt
+    - /tmp/edhr-upload-tx-ontology-knowledge-junit.xml
+    - 89 tests/0fail/error/skip actual single execution
+  - id: validation.upload-tx.boundary-source
+    checkType: evidence-path
+    command: Read actual decision package, current controller lifecycle, existing
+      controlled-attachment definitions, original confirmation and task-specific download
+      source
+    outcome: passed
+    evidence:
+    - /tmp/edhr-upload-tx-ontology-review.json
+    - /tmp/edhr-upload-tx-ontology-review.md
+    - /tmp/edhr-upload-tx-ontology-product-diff.txt
+  - id: validation.upload-tx.knowledge-unchanged
+    checkType: reference
+    command: Hash and byte-compare all330 knowledge files against actual target; inspect
+      contract/architecture delta
+    outcome: passed
+    evidence:
+    - /tmp/edhr-upload-tx-ontology-review.json
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages:
+    - P1
+    - P2
+    - P3

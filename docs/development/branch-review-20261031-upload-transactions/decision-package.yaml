@@ -1,0 +1,70 @@
+decisionPackage:
+  id: DEC-PACKAGE-AUDIT-UPLOAD-TRANSACTIONS-20261031
+  scope: PR48合入后通用文件上传登记的真实事务失败补偿
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: a98e60792554f7753d22406d02b274fd50ea2e6c
+    targetBranch: edhr-dev
+    targetCommit: a98e60792554f7753d22406d02b274fd50ea2e6c
+    contractReadCommit: a98e60792554f7753d22406d02b274fd50ea2e6c
+    uncommittedContractPaths: []
+  summary: 原件复制完成后再开启短数据库登记事务，已确认回滚仅删除本次新上传文件；事务启动失败在未调用仓储前清理；提交结果未知保留原件并报告，禁止无条件删除。保留既有文件规则及共享ACL待决。
+  confirmed: {concepts: [], relationships: [], rules: [], executionContracts: []}
+  inferred:
+    - id: inference.upload-known-rollback-compensation
+      statement: 登记失败不能伪报成功；确认回滚时清理本次原件，已提交或结果未知不能自动删可能被引用的原件。
+      rationale: 本次文件所有权与数据库提交结果的工程一致性；不同于历史数据删除或新增保留政策。
+      relatedIds: []
+  unresolved: []
+  replacementScopes: []
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - area: file-registration
+        change: 显式TransactionTemplate协调登记和afterCompletion；已回滚清理、未知保留；复制仍在DB事务之外。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/controller/FileController.java]
+    transitiveImpacts:
+      - area: tests
+        change: 旧直接构造测试补真实轻量事务管理器，既有断言保留；新增真实JPA/H2及PG/磁盘/HTTP故障验证。
+        evidenceReferences: []
+    potentialImpacts:
+      - area: transaction-result
+        concern: 物理清理失败会保留孤儿并记录；提交不确定、进程崩溃和删除顺序另待闭环，不宣称跨介质原子性。
+        evidenceReferences: []
+    unaffectedAreas:
+      - area: business-policy
+        change: 通用150MiB/MD5、DHR受控50MiB/SHA256、公开引用及生产/签名删除保护不改；ACL三项仍待用户答复。
+        evidenceReferences: []
+    compatibilityAndMigration: []
+    snapshotImpacts:
+      - area: history
+        change: 无历史修复/删除/回填，仅处理本次失败请求生成的文件。
+        evidenceReferences: []
+    auditImpacts:
+      - area: uploader
+        change: PR48真实上传者来源保持，不新增审计体系。
+        evidenceReferences: []
+    permissionImpacts: []
+    testImpacts:
+      - scope: registration-lifecycle
+        scenarios: [真实HTTP成功原件与DB, SQL约束/flush失败, beforeCommit晚失败, 外层回滚, 清理失败保留错误, 事务启动失败, 提交未知不删原件, 原37回归]
+        evidenceReferences: []
+    evidenceGaps: [DELETE原件/DB失败一致性待真实观测, 提交结果未知及进程崩溃无自动对账, 666路径增量仍pending, 共享文件ACL三规则待决]
+  extensionStrategy:
+    selectedPaths: [transaction-orchestration, product-core]
+    rationale: 现控制器局部登记事务及本次文件完成回调，不引入全局磁盘事务框架，不将复制放入长DB事务。
+    ownershipBoundaries:
+      - owner: FileController
+        responsibility: 本次文件所有权及登记事务完成结果；下载流仍归框架。
+      - owner: PlatformTransactionManager
+        responsibility: 实际数据库开始、提交、回滚及完成状态。
+  affectedFiles:
+    - path: gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/controller/FileController.java
+      changeType: update
+      reason: 失败登记补偿，不改删除或权限政策。
+  acceptanceScenarios:
+    - id: scenario.upload-registration-outcome
+      given: 当前canonical file_object表、隔离存储与真实事务管理器
+      when: 上传成功或登记/提交前失败、外层回滚、清理失败、提交结果未知
+      then: 成功DB和原件一致；确认失败/回滚清理本次文件；未知不删原件，不返回成功或改写原有证据。
+      evidenceRequirements: [实际旧红新绿, 真实数据库和文件快照, 新独立最终验收]

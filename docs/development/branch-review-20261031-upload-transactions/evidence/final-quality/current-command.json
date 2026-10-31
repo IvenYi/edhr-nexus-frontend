@@ -1,0 +1,12 @@
+{
+  "cmd": [
+    "bash",
+    "/workspace/.edhr-cloud-tools/mvn-edhr",
+    "-f",
+    "gmp-platform/backend/pom.xml",
+    "-Dtest=FileUploadTransactionIntegrationTest,FileUploadTransactionPostgresTest,FileUploadTransactionFailureTest,FileCopyOwnershipTest,FileHttpBoundaryTest,FileUploadResourceTest,FileControllerTest,DhrFormFilesTest,ExecutionAccessTest",
+    "test"
+  ],
+  "cwd": "/workspace/edhr-nexus-frontend",
+  "head": "22a96503ce0eb7d40343453c28e3e6c174f5907b"
+}
