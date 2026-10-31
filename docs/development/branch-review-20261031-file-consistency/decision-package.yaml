@@ -1,0 +1,80 @@
+decisionPackage:
+  id: DEC-PACKAGE-AUDIT-FILE-CONSISTENCY-20261031
+  scope: PR47合入后的上传文件所有权、复制失败清理及认证上传身份；并行核对共享对象权限来源
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: e9548d5f9d555f78afbe1c1c8ea68f64d45e6c55
+    targetBranch: edhr-dev
+    targetCommit: 0bd0848bbded6d6954d62a4f924e0b2eec6623ad
+    contractReadCommit: 0bd0848bbded6d6954d62a4f924e0b2eec6623ad
+    uncommittedContractPaths: []
+  summary: 原子预占本次新路径，复制或输入流关闭失败只清理本次拥有的文件，原失败/清理失败均保留；认证HTTP上传者保存现有JWT审计主体ID。完整DB补偿和共享ACL另做真实关联核对，不新增权限政策。
+  confirmed: {concepts: [], relationships: [], rules: [], executionContracts: []}
+  inferred:
+    - id: inference.file-owned-copy-cleanup
+      statement: 未完成复制不能遗留本次残片或覆盖旧路径；失败清理不能删其他请求的原件。
+      rationale: 存储所有权与原件完整性工程约束；只处理当前失败请求生成的新文件，不清理历史或已注册文件。
+      relatedIds: []
+    - id: inference.file-authenticated-uploader
+      statement: HTTP上传元数据使用当前已认证主体ID，不能固定伪记system。
+      rationale: JwtAuthenticationFilter已为请求设置AuditContext，沿既有身份来源修正字段，不引入新的AuditEvent。
+      relatedIds: []
+  unresolved: []
+  replacementScopes: []
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - area: upload-file-copy
+        change: CREATE_NEW预占路径后才复制；复制/第二流打开关闭故障清理自有路径，碰撞不覆盖、不删除旧文件。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/controller/FileController.java]
+      - area: uploader
+        change: 复用AuditContext主体ID；非HTTP直接调用沿旧system兜底，不声称扩大认证。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/common/audit/AuditContext.java]
+    transitiveImpacts:
+      - area: regression
+        change: 原copy故障只断言流关闭；增加真实磁盘残片与碰撞保护回归，不削弱旧断言。
+        evidenceReferences: []
+    potentialImpacts:
+      - area: database-and-filesystem
+        concern: repository.save或提交失败、delete顺序和进程崩溃不在本批修复，保持未关闭，不假称跨存储原子性。
+        evidenceReferences: []
+    unaffectedAreas:
+      - area: file-policy
+        change: 通用150MiB/MD5、公开用途真实引用、生产/签名删除保护、DHR受控50MiB/SHA256保持。
+        evidenceReferences: []
+    compatibilityAndMigration: []
+    snapshotImpacts:
+      - area: originals
+        change: 不覆盖已有物理原件，不回填历史上传者或摘要，不恢复历史数据。
+        evidenceReferences: []
+    auditImpacts:
+      - area: metadata
+        change: uploadedBy用现有认证ID；不新增审计模型或虚构历史。
+        evidenceReferences: []
+    permissionImpacts:
+      - area: shared-file-object-access
+        change: 实际业务引用/未绑定/共享用途授权需按知识来源核对，不能仅凭targetType自行制定全局ACL。
+        evidenceReferences: [docs/knowledge/decisions/DEC-0065-master-data-permission-audit-contract.yaml]
+    testImpacts:
+      - scope: ownership-and-actor
+        scenarios: [成功原件与MD5, 部分复制失败清理, 第二流关闭失败清理, 预占碰撞原件不动, 清理失败保留原异常与suppressed, 两用户真实JWT上传身份, 原资源/HTTP/DHR回归]
+        evidenceReferences: []
+    evidenceGaps: [DB提交失败/删除/全部对象ACL仍待实际验证, PDF容量/导出内存先量化讨论, 不宣称全部文件入口均已审完, 目标新增记录控制/DHR/工作流666路径逐项pending见integration-increment.json不得借本批通过认证新增模块]
+  extensionStrategy:
+    selectedPaths: [product-core]
+    rationale: 原FileController局部所有权与既有身份来源修复，不引入磁盘事务框架。
+    ownershipBoundaries:
+      - owner: FileController
+        responsibility: 本次预占路径/复制流/失败清理与元数据主体。
+      - owner: JwtAuthenticationFilter
+        responsibility: 既有HTTP主体解析和AuditContext生命周期。
+  affectedFiles:
+    - path: gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/controller/FileController.java
+      changeType: update
+      reason: 新文件所有权、失败残片与上传身份。
+  acceptanceScenarios:
+    - id: scenario.file-owned-copy-and-actor
+      given: 合法文件、隔离目录与真实签名JWT
+      when: 成功、复制/关闭失败、路径碰撞或清理失败
+      then: 成功原件/摘要不变且上传者准确；失败无新记录，清理只涉及本次路径，原始异常不丢失。
+      evidenceRequirements: [同源旧红新绿, 实际磁盘故障, JWT/HTTP身份, 全新独立最终验证]

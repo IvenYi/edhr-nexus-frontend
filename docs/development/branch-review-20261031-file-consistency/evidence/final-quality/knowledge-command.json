@@ -1,0 +1,12 @@
+{
+  "command": [
+    "bash",
+    "/workspace/.edhr-cloud-tools/mvn-edhr",
+    "-f",
+    "tools/knowledge-model/pom.xml",
+    "test"
+  ],
+  "cwd": "/workspace/edhr-nexus-frontend",
+  "testedCommit": "2bdea59bc591fcec6ba9a4c8cbc4374cc65da1ab",
+  "exit": 0
+}

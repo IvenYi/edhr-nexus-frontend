@@ -1,0 +1,24 @@
+{
+  "cwd": "/tmp/edhr-copy-q1-old-worktree",
+  "baseCommit": "032b83e9d5b8a25bee6d5b59c45d86892f672d00",
+  "command": [
+    "bash",
+    "/workspace/.edhr-cloud-tools/mvn-edhr",
+    "-f",
+    "gmp-platform/backend/pom.xml",
+    "-Dtest=FileCopyOwnershipTest,FileHttpBoundaryTest",
+    "test"
+  ],
+  "copiedTests": [
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/compliance/controller/FileCopyOwnershipTest.java",
+      "sha256": "bc545b8a4bb0648d081ba375afaf1d83049fde8ca6d435f7a72e0221dc7ffa83",
+      "bytes": 5522
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/compliance/controller/FileHttpBoundaryTest.java",
+      "sha256": "07223295278b8bacc9b8b1ad6fd3c810a980ca96d0f277d00fe54cf333210f5d",
+      "bytes": 6186
+    }
+  ]
+}

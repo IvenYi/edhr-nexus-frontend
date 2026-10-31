@@ -1,0 +1,57 @@
+{
+  "roleState": "FINAL",
+  "ontologyResult": "not-applicable",
+  "sourceCommit": "e9548d5f9d555f78afbe1c1c8ea68f64d45e6c55",
+  "targetCommit": "0bd0848bbded6d6954d62a4f924e0b2eec6623ad",
+  "packageSha256": "10b7cd8863bd20d8a09db1e7bb8371b0761c67c31445889f81d2602f6bb49668",
+  "limitedReplayedExistingIds": 10,
+  "screenedNewDecisionContainers": 7,
+  "newUniqueIncrement": null,
+  "knowledgeFileCount": 330,
+  "knowledgeChangedFiles": 44,
+  "pendingIdCandidateLocations": 183,
+  "knowledgeTests": {
+    "tests": 89,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "originalOntologyManifestSha256": "67e96f3f8cb4fe6a5e2ca7495a992b91ba07100150f4a485dc2e20e540e889b0",
+  "files": [
+    {
+      "path": "/tmp/edhr-copy-integration-ontology-result.yaml",
+      "sha256": "4a6748eb2e24d0b1f172b3412b01e4f8fad22070c33036eed4b1905632fbf694",
+      "bytes": 2601
+    },
+    {
+      "path": "/tmp/edhr-copy-integration-ontology-review.json",
+      "sha256": "1da2fbd637f829a1a25ee20713e8ccc4c7e6fa8644147fa62acb79e1645d2be9",
+      "bytes": 103679
+    },
+    {
+      "path": "/tmp/edhr-copy-integration-ontology-review.md",
+      "sha256": "f47bb90933ac69a2a96193fba6c14cd947a26c55830ec6f4c30aba1f7d81d711",
+      "bytes": 3190
+    },
+    {
+      "path": "/tmp/edhr-copy-integration-ontology-pending-increment.json",
+      "sha256": "a8a27ec7423c1806364a7ccb2786d260e367f3a61f25114a969d59eb41903376",
+      "bytes": 101596
+    },
+    {
+      "path": "/tmp/edhr-copy-integration-ontology-integration-diff.txt",
+      "sha256": "f0027bc7761d405fa8ecc91eae25ae4c570407760bbd7906596deb16ea125b97",
+      "bytes": 49523
+    },
+    {
+      "path": "/tmp/edhr-copy-integration-ontology-knowledge-test.txt",
+      "sha256": "f2037d019cc5596e4dc355f361cba2ac87377419ac1b58e58cfcf4f7f17ee24a",
+      "bytes": 2112
+    },
+    {
+      "path": "/tmp/edhr-copy-integration-ontology-knowledge-junit.xml",
+      "sha256": "f2d57b833e0bd5901b1f864f9325cad720867dbd14f071fe6089a286739dd3d0",
+      "bytes": 20414
+    }
+  ]
+}

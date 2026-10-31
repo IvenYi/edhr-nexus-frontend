@@ -2,6 +2,7 @@ package com.zencas.edhr.compliance.controller;
 
 import com.zencas.edhr.common.dto.ApiResponse;
 import com.zencas.edhr.common.dto.PageResult;
+import com.zencas.edhr.common.audit.AuditContext;
 import com.zencas.edhr.common.exception.BusinessException;
 import com.zencas.edhr.common.exception.ErrorCode;
 import com.zencas.edhr.common.util.SnowflakeIdGenerator;
@@ -28,9 +29,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
+import java.nio.file.StandardOpenOption;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
@@ -119,8 +121,21 @@ public class FileController {
         long fileId = idGenerator.nextId();
         String storedName = fileId + "_" + sanitizeFileName(file.getOriginalFilename());
         Path targetPath = storageDir.resolve(storedName);
-        try (InputStream input = file.getInputStream()) {
-            Files.copy(input, targetPath, StandardCopyOption.REPLACE_EXISTING);
+        // Reserve a new path before taking cleanup ownership; never replace an existing original.
+        Files.createFile(targetPath);
+        try {
+            try (InputStream input = file.getInputStream();
+                 OutputStream output = Files.newOutputStream(targetPath, StandardOpenOption.WRITE)) {
+                input.transferTo(output);
+            }
+        } catch (IOException | RuntimeException failure) {
+            try {
+                Files.deleteIfExists(targetPath);
+            } catch (IOException | RuntimeException cleanupFailure) {
+                failure.addSuppressed(cleanupFailure);
+                log.warn("Failed to remove incomplete upload: {}", targetPath, cleanupFailure);
+            }
+            throw failure;
         }
 
         FileObject fileObject = FileObject.builder()
@@ -353,13 +368,9 @@ public class FileController {
         }
     }
 
-    /**
-     * Resolve the current operator ID.
-     * For Phase 0, returns a default system user. Will be replaced by
-     * SecurityContext-based resolution once Auth integration is complete.
-     */
+    /** Use the authenticated request identity; retain the legacy fallback for direct internal calls. */
     private String getCurrentOperatorId() {
-        // TODO: integrate with SecurityContextHolder after Auth module is wired
-        return "system";
+        String operatorId = AuditContext.getOperatorId();
+        return operatorId != null ? operatorId : "system";
     }
 }

@@ -1,5 +1,21 @@
 # 持续推进台账
 
+## PR47已合入：上传文件所有权与认证上传者
+
+已交付[PR48](https://github.com/IvenYi/edhr-nexus-frontend/pull/48)，audit/edhr-dev-file-consistency-20261031→edhr-dev，登记时OPEN/MERGEABLE/CLEAN，建议本批人工合入。实际受测2bdea59，之后a5c155fd仅L0原件/验收/范围，当前只登记交付；受测保护路径不变。下轮fetch真实合入及外部增量，优先DB保存/提交/删除失败一致性；ACL三边界待用户，666路径增量保持pending，旧high/A12/gap不自动关，不自动merge/deploy/恢复。
+
+当前已通过fresh最终质量：受测clean `2bdea59bc591fcec6ba9a4c8cbc4374cc65da1ab`，passed/FINAL、12/12必需检查，实际37/37和新知识89/89。同源最终17在最新0bd为7真实红10正、预补正e954为1红16正，0error/skip；两发现按[验收](../branch-review-20261031-file-consistency/acceptance.json)有限resolved。原18/failed45/整合41保持，42最终原件归档；本体原及新增量均NA/FINAL。全部正式角色FINAL后已实际完成PR前范围/漂移/阶段汇报；后续仅L0归档/验收/交付，受测保护路径保持。
+
+整体仍W3/W4/W5交叉，当前5758/134只是盘点，666路径/44知识文件/183ID候选pending；记录控制新实现转增量审查，不再称未实现，旧DHRhigh/A12剩余/四gap/TaskDetail不自动关闭。下一批先fetch合入和外部增量，优先DB登记/提交/删除真实失败一致性，ACL三边界等待用户；A23旧已审全量/历史SQL130+新4迁移/W7增量保持，不自动merge/deploy/恢复。下文是过程检查点，由本段覆盖当前“待QA”状态。
+
+首轮独立持READ句柄探针实证REPLACE_EXISTING会unlink/recreate预占文件，同一所有权项仍有缺口；当前改为对已预占文件WRITE输出流transferTo，新增同句柄读字节回归后最新集成组合37/37通过。当前等fresh最终QA，原失败/旧36和16不改。新全量5758路径/134迁移与464HTTP/216路由仅盘点；旧SQL130历史队列+新增4迁移均待A23审查。
+
+本批收尾捕获目标新增至`0bd0848bbded6d6954d62a4f924e0b2eec6623ad`：记录控制/DHR/工作流等666路径，已正常merge保留历史，初始三源码未变、契约无增量；[增量逐项清单](../branch-review-20261031-file-consistency/integration-increment.json)全部pending，330当前知识另核，不继承原303不变声明。记录变更/作废和联动已具实现，原“未实现暂缓”转增量待审；旧DHRhigh/A12剩余历史视图、知识gap及TaskDetail友方不自动关闭。新候选重新本体/最终质量，旧36/89只作初始检查点，不冒称覆盖新增全系统。
+
+最新fetch edhr-dev@032b83e9d5b8a25bee6d5b59c45d86892f672d00，PR47人工合入、整树同f730，无外部增量。从最新目标建audit/edhr-dev-file-consistency-20261031；[本批](../branch-review-20261031-file-consistency/README.md)仅一个产品文件修复复制失败自有残片/碰撞保护和上传者system占位。旧同16为6真实红10正，当前5类36/36、0error/skip；当前待正式本体及新最终独立质量，不提前resolved。
+
+共享文件ACL已核文档页权/生产SOP/独立DHR冻结附件差异，三处未定边界已集中问用户，依赖实现pending，不凭targetType制定全局权限。DBsave/commit及delete顺序仍待真实事务/故障验证，本批只关闭复制子项，性能仍先讨论。5173/130仅盘点，六有限源码范围/A23六记录与2改1增不计整文件或unique，W6含旧已审/W7增量及原队列/暂缓/四gap保持。全部正式角色FINAL后实际范围/漂移/阶段复核再PR，不自动merge/deploy/恢复。
+
 ## PR46已合入：文件上传资源与公开预览边界
 
 已交付[PR47](https://github.com/IvenYi/edhr-nexus-frontend/pull/47)，audit/edhr-dev-file-boundaries-20261031→edhr-dev，登记时OPEN/MERGEABLE/CLEAN，建议本批人工合入。受测17f1fad4后d740678d仅L0归档/验收/范围，当前只登记交付，受测保护路径无变。下轮fetch实际合入和外部增量，优先共享文件真实对象权限、DB/磁盘失败一致性；其余候选/原暂缓/整体未完保持，不自动merge/deploy/恢复。
