@@ -1,0 +1,352 @@
+{
+  "candidate": "943dc9fed4ffde482fa3eff3dc10f8a157ce5134",
+  "workingTreeFixes": [
+    "two DHR test fixture proxyTargetClass settings",
+    "0090 exact migration manifest/count/menu checks",
+    "two current knowledge descriptions"
+  ],
+  "totals": {
+    "tests": 723,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 21
+  },
+  "classes": [
+    {
+      "name": "com.zencas.edhr.masterdata.controller.ProcessModelingControllerTest",
+      "tests": "55",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    {
+      "name": "com.zencas.edhr.masterdata.controller.DocumentManagementControllerTest",
+      "tests": "11",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    {
+      "name": "com.zencas.edhr.production.service.DhrArchiveLayoutReaderTest",
+      "tests": "3",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    {
+      "name": "com.zencas.edhr.production.service.DhrFormFilesTest",
+      "tests": "2",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    {
+      "name": "com.zencas.edhr.production.service.FormTraceIndexServiceTest",
+      "tests": "5",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    {
+      "name": "com.zencas.edhr.production.service.DhrReviewLifecycleIntegrationTest",
+      "tests": "6",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    {
+      "name": "com.zencas.edhr.recordcontrol.service.RecordControlMigrationTest",
+      "tests": "1",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    {
+      "name": "com.zencas.edhr.recordcontrol.service.RecordControlAccessTest",
+      "tests": "10",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    {
+      "name": "com.zencas.edhr.production.service.DhrSummaryServiceTest",
+      "tests": "8",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    {
+      "name": "com.zencas.edhr.production.service.DhrTraceReportPostgresTest",
+      "tests": "5",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "5"
+    },
+    {
+      "name": "com.zencas.edhr.masterdata.controller.ProductProcessControllerTest",
+      "tests": "14",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    {
+      "name": "com.zencas.edhr.masterdata.controller.DocumentOrmSchemaIntegrationTest",
+      "tests": "1",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    {
+      "name": "com.zencas.edhr.masterdata.controller.MaterialImportIntegrationTest",
+      "tests": "4",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    {
+      "name": "com.zencas.edhr.production.service.DhrReviewServiceTest",
+      "tests": "12",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    {
+      "name": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "tests": "89",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    {
+      "name": "com.zencas.edhr.common.config.CurrentDatabaseBaselineTest",
+      "tests": "1",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    {
+      "name": "com.zencas.edhr.production.service.DhrReviewMigrationTest",
+      "tests": "1",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    {
+      "name": "com.zencas.edhr.recordcontrol.service.RecordControlPostgresIntegrationTest",
+      "tests": "25",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    {
+      "name": "com.zencas.edhr.recordcontrol.service.RecordControlTaskActionServiceTest",
+      "tests": "4",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    {
+      "name": "com.zencas.edhr.production.service.DhrAttachmentAndArchiveTest",
+      "tests": "13",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    {
+      "name": "com.zencas.edhr.production.service.DhrInstanceMigrationTest",
+      "tests": "1",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    {
+      "name": "com.zencas.edhr.masterdata.controller.DocumentReadPerformancePostgresTest",
+      "tests": "64",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "3"
+    },
+    {
+      "name": "com.zencas.edhr.masterdata.controller.DocumentReadBoundaryIntegrationTest",
+      "tests": "51",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "3"
+    },
+    {
+      "name": "com.zencas.edhr.masterdata.controller.DocumentWriteBoundaryIntegrationTest",
+      "tests": "55",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    {
+      "name": "com.zencas.edhr.production.service.DhrEvidenceBatchPostgresTest",
+      "tests": "4",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "4"
+    },
+    {
+      "name": "com.zencas.edhr.production.service.DhrInstanceLookupTest",
+      "tests": "2",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    {
+      "name": "com.zencas.edhr.masterdata.controller.MasterDataBoundaryIntegrationTest",
+      "tests": "60",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    {
+      "name": "com.zencas.edhr.common.config.CurrentDatabaseBaselinePostgresTest",
+      "tests": "3",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    {
+      "name": "com.zencas.edhr.workflow.controller.RecordControlWorkflowControllerTest",
+      "tests": "3",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    {
+      "name": "com.zencas.edhr.production.service.DhrSummaryPersistenceTest",
+      "tests": "24",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    {
+      "name": "com.zencas.edhr.production.service.DhrPdfRendererTest",
+      "tests": "7",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "1"
+    },
+    {
+      "name": "com.zencas.edhr.workflow.engine.WorkflowEngineTest",
+      "tests": "24",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    {
+      "name": "com.zencas.edhr.production.controller.DhrWorkbenchPermissionsTest",
+      "tests": "8",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    {
+      "name": "com.zencas.edhr.production.service.DhrLegacyMigrationTest",
+      "tests": "5",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "5"
+    },
+    {
+      "name": "com.zencas.edhr.recordcontrol.service.RecordControlDiffTest",
+      "tests": "8",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    {
+      "name": "com.zencas.edhr.production.service.DhrAuditReadTest",
+      "tests": "4",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    {
+      "name": "com.zencas.edhr.production.controller.DhrGenericAccessTest",
+      "tests": "4",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    {
+      "name": "com.zencas.edhr.production.service.DhrSummaryMigrationTest",
+      "tests": "1",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    {
+      "name": "com.zencas.edhr.masterdata.controller.DocumentWriteBoundaryPostgresTest",
+      "tests": "55",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    {
+      "name": "com.zencas.edhr.workflow.controller.WorkflowTaskControllerTest",
+      "tests": "5",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    {
+      "name": "com.zencas.edhr.workflow.controller.WorkflowInstanceAuthorizationIntegrationTest",
+      "tests": "22",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    {
+      "name": "com.zencas.edhr.workflow.service.RecordControlWorkflowServiceTest",
+      "tests": "3",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    {
+      "name": "com.zencas.edhr.production.service.DhrSummaryOrderMigrationTest",
+      "tests": "1",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    {
+      "name": "com.zencas.edhr.production.service.DhrFillingServiceTest",
+      "tests": "4",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    {
+      "name": "com.zencas.edhr.production.service.DhrSummaryDisplayNameMigrationTest",
+      "tests": "1",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    {
+      "name": "com.zencas.edhr.production.service.ProductionQualitySummaryTest",
+      "tests": "9",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    {
+      "name": "com.zencas.edhr.template.service.FormProjectionInterpreterTest",
+      "tests": "25",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    }
+  ],
+  "firstRun": {
+    "tests": 723,
+    "failures": 2,
+    "errors": 36,
+    "skipped": 21
+  },
+  "reruns": "Failed fixture/baseline tests rerun after fixes; knowledge89 also rerun after ontology edits; final baseline4 passed."
+}

@@ -1,0 +1,141 @@
+qualityResult:
+  result: passed
+  baseCommit: 84995f7efab3abdf0012b974cb0a11e04920fe77
+  headCommit: 84995f7efab3abdf0012b974cb0a11e04920fe77
+  contractBaseline:
+    sourceCommit: 84995f7efab3abdf0012b974cb0a11e04920fe77
+    targetBranch: edhr-dev
+    targetCommit: d10590bd3fe8f3da4e68bcc087b2102d2c211934
+    contractReadCommit: 84995f7efab3abdf0012b974cb0a11e04920fe77
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: dirty
+    includedPaths:
+      - docs/development/workflow-dhr-acceptance-20261030/
+    excludedPaths:
+      - gmp-platform/frontend/src/components/shared/AppLayout.tsx
+      - gmp-platform/frontend/scripts/test-report-menu-navigation.mjs
+      - gmp-platform/frontend/node_modules
+      - output/playwright/record-control-integration-20261028/
+      - output/record-menu-navigation-20261030/
+    untrackedPaths:
+      - docs/development/workflow-dhr-acceptance-20261030/
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+    - id: check.acceptance.contract-and-scope
+      required: true
+      category: documentation
+      description: 全新质量实例独立读取项目、质量和交接契约，核对来源、目标及实际审查范围。
+      method: command
+      command: git rev-parse HEAD origin/edhr-dev; git diff --name-only HEAD origin/edhr-dev -- AGENTS.md codeplzreadme.md docs/agents; git status --short
+      outcome: passed
+      evidence:
+        - 来源HEAD为84995f7efab3abdf0012b974cb0a11e04920fe77；本地目标跟踪引用为d10590bd3fe8f3da4e68bcc087b2102d2c211934；适用契约提交间和未提交差异均为空。
+        - 本次仅验收未提交的数据准备目录，不是合并候选、产品代码回归或发布验收；并行前端修改未由本实例改写。
+    - id: check.acceptance.requirements-and-knowledge
+      required: true
+      category: requirements
+      description: 核对8场景、4账号、签署凭证、动作边界、DHR阻断及历史解释，确认影响分析和扩展路径与实际交付一致。
+      method: inspection
+      command: 阅读decision-package.yaml、README.md、manifest.json、seed.py、ontology-result.yaml，核对知识README、开放问题、DEC-0091/0092、DEC-0063-16及DEC-0068-12/13/14。
+      outcome: passed
+      evidence:
+        - user-confirmed：补人工验收数据、不影响现有数据及提供操作步骤，来自本次决策包。
+        - original-evidence：seed.py只新增专用命名空间；申请、冻结、审核与签名通过现有接口生成；README已区分登录密码与签名密码、当前草稿与旧冻结V1。
+        - ontology-result.yaml为not-applicable；既有规则保留，无新增或替代业务政策。
+        - README明确归档、独立DHR变更申请及打印过滤不在本轮可验收范围。
+    - id: check.acceptance.seed-syntax
+      required: true
+      category: documentation
+      description: 检查数据准备脚本语法和隔离配置。
+      method: command
+      command: Python ast.parse(seed.py)；检查DB、BASE、专用ID及执行入口。
+      outcome: passed
+      evidence:
+        - seed.py语法解析通过；默认DB为edhr_acceptance_20261030，接口端口8081；本实例没有重新播种或修复数据。
+    - id: check.acceptance.original-data-preservation
+      required: true
+      category: database
+      description: 本实例重新核对原库104表摘要，并逐行比对验收副本对原始记录的完整保留。
+      method: query
+      command: 对original-before.json中的104表重算行摘要；使用to_jsonb完整行的多重集合检查原库行是否完整包含于验收副本。
+      outcome: passed
+      evidence:
+        - evidence/independent/final-review-preservation.json
+        - 原库changedOriginalTables为空；验收副本copiedTablesWithMissingOrModifiedOriginalRows为空。
+    - id: check.acceptance.ready-data-and-runtime
+      required: true
+      category: api
+      description: 本实例重新登录4账号，读取8个来源、7条在审申请、撤回资格和4个DHR初始状态，并核对实际服务连接。
+      method: query
+      command: 8081真实登录和只读接口；SQL读回summary_status；ps核对8081/8108的datasource参数。
+      outcome: passed
+      evidence:
+        - evidence/independent/final-review-readiness.json
+        - 保留环境8081连接edhr_acceptance_20261030；7条申请均IN_REVIEW，DECIDED不可撤回，其余6条可撤回；8个来源仍COMPLETED/UAT-LOT-OLD/100。
+        - DHR-REVIEW为PENDING_REVIEW；DHR-PENDING为NOT_STARTED；DHR-CHANGE和DHR-VOID为FORMALIZED且各保留V1。
+    - id: check.acceptance.destructive-probe-evidence
+      required: true
+      category: integration
+      description: 独立审核前实例已实际执行的40项HTTP/DB正负向原始证据和探针源码，再由本实例读回QA最终状态；不把前实例启动状态当作质量结论。
+      method: inspection
+      command: 阅读evidence/independent/verify.py和api-verification.json；本实例对QA8108执行关键API/DB只读复核。
+      outcome: passed
+      evidence:
+        - evidence/independent/api-verification.json记录40通过、0失败；api-verification-before-final.json为早一轮40项证据，不用它替代最终ready快照。
+        - evidence/independent/final-review-qa-readback.json
+        - 已核对签名/权限/申请人负例无副作用、责任变化不批准、旧处理权失效、受限撤回、双向阻断中的提交路径、来源真实生效、冻结/批准/签名保留及按实际提交人提醒。
+        - 本实例重新读回改派/转办目标、撤回终态、已有决定不可撤回、变更新值120及作废OBSOLETE与历史影响记录，均与40项探针结果一致。
+    - id: check.acceptance.obsolete-current-and-frozen-ui
+      required: true
+      category: e2e
+      description: 本实例在可丢弃QA环境通过真实页面发起修订，验证作废来源隐藏开关与旧V1历史解释。
+      method: browser
+      command: Playwright uat-quality-final访问3018；DHR-VOID发起修订、填写原因、确认、切换显示作废表单并切回V1。
+      outcome: passed
+      evidence:
+        - evidence/independent/final-review-ui.json
+        - evidence/independent/void-current-hidden.png
+        - evidence/independent/void-current-shown.png
+        - evidence/independent/void-frozen-v1-retained.png
+        - 当前草稿默认0份，勾选后显示1份且标记已作废，关闭后再次隐藏；旧V1仍显示当时已完成/UAT-LOT-OLD/100，旧版证据变化提示保留。
+    - id: check.acceptance.retained-browser-evidence
+      required: true
+      category: visual
+      description: 审核主侧保留环境的实际页面证据，核对可操作入口与README路径。
+      method: inspection
+      command: 阅读browser-readiness.json及reassignment-ready.png、dhr-frozen-ready.png；结合本实例QA页面交互核对说明。
+      outcome: passed
+      evidence:
+        - evidence/browser-readiness.json记录3000实际登录、7条运行申请、改派签名弹窗、账号菜单、4份新增DHR和冻结V1旧值。
+        - 此处保留环境6项页面检查由主侧执行，本实例未冒称重新执行；本实例自己执行的作废页面检查单独记录。
+    - id: check.acceptance.cleanup-and-retention
+      required: true
+      category: regression
+      description: 清理归属明确的QA临时资源，保留用户验收环境和备份。
+      method: command
+      command: 核对进程参数后停止QA Java19335及Vite20573，关闭uat-quality/uat-quality-final，dropdb edhr_acceptance_quality_20261030，检查端口、数据库和备份。
+      outcome: passed
+      evidence:
+        - 清理后仅3000和8081监听；edhr_dev与edhr_acceptance_20261030保留，QA数据库不存在；其他浏览器会话未操作。
+        - /Users/ivenwang/.codex/backups/edhr/edhr-dev-before-acceptance-20261030.dump
+        - /Users/ivenwang/.codex/backups/edhr/edhr-acceptance-ready-20261030.dump
+  findings: []
+  residualRisks:
+    - id: risk.remote-target-freshness
+      description: 本实例git fetch origin edhr-dev返回Empty reply from server；本地origin/edhr-dev为d10590，无法确认此刻远端最新提交。
+      impact: 不影响固定本地源码及隔离库的验收数据就绪结论；不能据此宣称与远端最新同步、完成集成或发布门禁。
+      mitigation: 本轮不提交、推送、合并或发布；后续集成前成功获取目标并按契约增量重新评估。
+    - id: risk.manual-acceptance-consumes-fixtures
+      description: 人工批准、转办或撤回会消耗专用场景的初始条件。
+      impact: 本结果证明交付时ready，不保证用户后续操作后仍保留初始条件。
+      mitigation: 按README分别操作；仅使用ready备份恢复专用验收副本，勿覆盖原库。
+    - id: risk.product-regression-outside-data-preparation
+      description: 本轮交付仅验收数据与说明，未重新执行198项产品回归、全权限矩阵、并发矩阵或历史在审来源阻断DHR批准的兼容竞态场景。
+      impact: passed仅适用于本目录、数据保全、场景就绪及已列举的实际操作；不代替完整产品或发布验收。
+      mitigation: 保留既有产品质量记录；需要改产品或发布时针对实际候选重新确定并执行适用验证。
+    - id: risk.deferred-product-capabilities
+      description: 打印过滤、DHR归档和独立DHR变更申请均不在本轮实现及验收范围。
+      impact: 不能将发起修订解释为独立DHR变更申请，也不能据此验收归档。
+      mitigation: README明确列出暂缓范围，继续沿既有知识和后续独立功能切片处理。
+  blockingConditions: []

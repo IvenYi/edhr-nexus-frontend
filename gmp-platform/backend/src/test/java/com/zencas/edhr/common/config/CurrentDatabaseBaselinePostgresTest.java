@@ -47,7 +47,9 @@ class CurrentDatabaseBaselinePostgresTest {
     @Test void freshInstallIsCurrentCompleteAndRepeatableWithoutBusinessBackfills() throws Exception {
         install();
         connection.setAutoCommit(true);
-        assertThat(scalar("SELECT count(*) FROM databasechangelog")).isEqualTo("8");
+        assertThat(scalar("SELECT count(*) FROM databasechangelog")).isEqualTo("9");
+        assertThat(scalar("SELECT name FROM permission WHERE code='workflow.instances'")).isEqualTo("流程日志");
+        assertThat(scalar("SELECT name||':'||type FROM permission WHERE code='workflow.intervene'")).isEqualTo("流程干预:PAGE");
         assertThat(scalar("SELECT count(*) FROM pg_constraint WHERE connamespace='public'::regnamespace AND NOT convalidated")).isEqualTo("0");
         assertThat(scalar("SELECT count(*) FROM form_lookup_item WHERE builtin")).isEqualTo("9");
         assertThat(scalar("SELECT string_agg(id,',' ORDER BY id) FROM form_lookup_item WHERE builtin"))
@@ -74,7 +76,7 @@ class CurrentDatabaseBaselinePostgresTest {
         String before = scalar("SELECT md5(string_agg(row_to_json(p)::text,',' ORDER BY id)) FROM permission p");
         install();
         connection.setAutoCommit(true);
-        assertThat(scalar("SELECT count(*) FROM databasechangelog")).isEqualTo("8");
+        assertThat(scalar("SELECT count(*) FROM databasechangelog")).isEqualTo("9");
         assertThat(scalar("SELECT md5(string_agg(row_to_json(p)::text,',' ORDER BY id)) FROM permission p")).isEqualTo(before);
 
         // First release stores the original bytes, not the normalized JSONB representation.

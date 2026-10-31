@@ -1,0 +1,472 @@
+{
+  "timestamp": "2026-10-31T06:51:44.879793+00:00",
+  "performedBy": "environment_recovery_quality",
+  "evidenceType": "original-evidence",
+  "frontend": "http://127.0.0.1:3010",
+  "checks": [
+    {
+      "id": "http-http://127.0.0.1:3010/",
+      "status": 200
+    },
+    {
+      "id": "http-http://[::1]:3000/",
+      "status": 200
+    },
+    {
+      "id": "menu-http-/src/utils/constants.ts",
+      "status": 200,
+      "containsNewMenuLabelsAndRoutes": true,
+      "sha256": "a725806389741d57971ad24c381cf1e38807bd78e023124fd6dfb52d06dd0ce0"
+    },
+    {
+      "id": "menu-http-/src/utils/menuManagement.ts",
+      "status": 200,
+      "containsNewMenuLabelsAndRoutes": true,
+      "sha256": "b7dde4970b18a86e5d8703d8ed1c1dde2c2b6a1121616142ef1985b53554d78e"
+    }
+  ],
+  "accounts": [
+    {
+      "username": "uat_manager",
+      "id": "883010000004",
+      "httpStatus": 200,
+      "forcePasswordChange": false,
+      "forceSignatureVerification": false
+    },
+    {
+      "username": "uat_reviewer",
+      "id": "883010000002",
+      "httpStatus": 200,
+      "forcePasswordChange": false,
+      "forceSignatureVerification": false
+    },
+    {
+      "username": "uat_target",
+      "id": "883010000003",
+      "httpStatus": 200,
+      "forcePasswordChange": false,
+      "forceSignatureVerification": false
+    },
+    {
+      "username": "uat_applicant",
+      "id": "883010000001",
+      "httpStatus": 200,
+      "forcePasswordChange": false,
+      "forceSignatureVerification": false
+    }
+  ],
+  "requests": [
+    {
+      "case": "REASSIGN",
+      "id": "391515361576685568",
+      "requestNo": "RC-20261030-000001",
+      "status": "IN_REVIEW",
+      "canWithdraw": true,
+      "sourceValues": {
+        "value": "UAT-LOT-OLD",
+        "qty": 100,
+        "unit": "件",
+        "note": "合成验收资料：重新分配"
+      },
+      "proposedValues": {
+        "value": "UAT-LOT-NEW",
+        "qty": 120,
+        "unit": "件",
+        "note": "合成验收：更正后的内容"
+      }
+    },
+    {
+      "case": "TRANSFER",
+      "id": "391515362138722304",
+      "requestNo": "RC-20261030-000002",
+      "status": "IN_REVIEW",
+      "canWithdraw": true,
+      "sourceValues": {
+        "value": "UAT-LOT-OLD",
+        "qty": 100,
+        "unit": "件",
+        "note": "合成验收资料：转办"
+      },
+      "proposedValues": {
+        "value": "UAT-LOT-NEW",
+        "qty": 120,
+        "unit": "件",
+        "note": "合成验收：更正后的内容"
+      }
+    },
+    {
+      "case": "WITHDRAW",
+      "id": "391515362579124224",
+      "requestNo": "RC-20261030-000003",
+      "status": "IN_REVIEW",
+      "canWithdraw": true,
+      "sourceValues": {
+        "value": "UAT-LOT-OLD",
+        "qty": 100,
+        "unit": "件",
+        "note": "合成验收资料：可撤回"
+      },
+      "proposedValues": {
+        "value": "UAT-LOT-NEW",
+        "qty": 120,
+        "unit": "件",
+        "note": "合成验收：更正后的内容"
+      }
+    },
+    {
+      "case": "DECIDED",
+      "id": "391515363027914752",
+      "requestNo": "RC-20261030-000004",
+      "status": "IN_REVIEW",
+      "canWithdraw": false,
+      "sourceValues": {
+        "value": "UAT-LOT-OLD",
+        "qty": 100,
+        "unit": "件",
+        "note": "合成验收资料：已有决定不可撤回"
+      },
+      "proposedValues": {
+        "value": "UAT-LOT-NEW",
+        "qty": 120,
+        "unit": "件",
+        "note": "合成验收：更正后的内容"
+      }
+    },
+    {
+      "case": "DHR-PENDING",
+      "id": "391515364231680000",
+      "requestNo": "RC-20261030-000005",
+      "status": "IN_REVIEW",
+      "canWithdraw": true,
+      "sourceValues": {
+        "value": "UAT-LOT-OLD",
+        "qty": 100,
+        "unit": "件",
+        "note": "合成验收资料：来源在审阻止汇总"
+      },
+      "proposedValues": {
+        "value": "UAT-LOT-NEW",
+        "qty": 120,
+        "unit": "件",
+        "note": "合成验收：更正后的内容"
+      }
+    },
+    {
+      "case": "DHR-CHANGE",
+      "id": "391515365217341440",
+      "requestNo": "RC-20261030-000006",
+      "status": "IN_REVIEW",
+      "canWithdraw": true,
+      "sourceValues": {
+        "value": "UAT-LOT-OLD",
+        "qty": 100,
+        "unit": "件",
+        "note": "合成验收资料：变更生效保留旧版"
+      },
+      "proposedValues": {
+        "value": "UAT-LOT-NEW",
+        "qty": 120,
+        "unit": "件",
+        "note": "合成验收：更正后的内容"
+      }
+    },
+    {
+      "case": "DHR-VOID",
+      "id": "391515366144282624",
+      "requestNo": "RC-20261030-000007",
+      "status": "IN_REVIEW",
+      "canWithdraw": true,
+      "sourceValues": {
+        "value": "UAT-LOT-OLD",
+        "qty": 100,
+        "unit": "件",
+        "note": "合成验收资料：作废生效及隐藏"
+      },
+      "proposedValues": null
+    }
+  ],
+  "dhrs": [
+    {
+      "case": "DHR-REVIEW",
+      "id": "883010004004",
+      "summaryStatus": "PENDING_REVIEW",
+      "status": "COMPLETED",
+      "versions": [
+        {
+          "id": "391515363774500864",
+          "versionNo": 1,
+          "status": "PENDING_REVIEW",
+          "reviewOutcome": "PENDING_REVIEW"
+        }
+      ],
+      "sources": [
+        {
+          "id": "883010002004",
+          "status": "COMPLETED",
+          "fieldValues": {
+            "value": "UAT-LOT-OLD",
+            "qty": 100,
+            "unit": "件",
+            "note": "合成验收资料：DHR审核中先退回"
+          }
+        }
+      ]
+    },
+    {
+      "case": "DHR-PENDING",
+      "id": "883010004005",
+      "summaryStatus": "NOT_STARTED",
+      "status": "COMPLETED",
+      "versions": [],
+      "sources": [
+        {
+          "id": "883010002005",
+          "status": "COMPLETED",
+          "fieldValues": {
+            "value": "UAT-LOT-OLD",
+            "qty": 100,
+            "unit": "件",
+            "note": "合成验收资料：来源在审阻止汇总"
+          }
+        }
+      ]
+    },
+    {
+      "case": "DHR-CHANGE",
+      "id": "883010004006",
+      "summaryStatus": "FORMALIZED",
+      "status": "COMPLETED",
+      "versions": [
+        {
+          "id": "391515364441395200",
+          "versionNo": 1,
+          "status": "PENDING_REVIEW",
+          "reviewOutcome": "APPROVED"
+        }
+      ],
+      "sources": [
+        {
+          "id": "883010002006",
+          "status": "COMPLETED",
+          "fieldValues": {
+            "value": "UAT-LOT-OLD",
+            "qty": 100,
+            "unit": "件",
+            "note": "合成验收资料：变更生效保留旧版"
+          }
+        }
+      ]
+    },
+    {
+      "case": "DHR-VOID",
+      "id": "883010004007",
+      "summaryStatus": "FORMALIZED",
+      "status": "COMPLETED",
+      "versions": [
+        {
+          "id": "391515365410279424",
+          "versionNo": 1,
+          "status": "PENDING_REVIEW",
+          "reviewOutcome": "APPROVED"
+        }
+      ],
+      "sources": [
+        {
+          "id": "883010002007",
+          "status": "COMPLETED",
+          "fieldValues": {
+            "value": "UAT-LOT-OLD",
+            "qty": 100,
+            "unit": "件",
+            "note": "合成验收资料：作废生效及隐藏"
+          }
+        }
+      ]
+    }
+  ],
+  "workflowInstances": [
+    {
+      "id": "391515366161059840",
+      "businessKey": "RC-20261030-000007",
+      "status": "RUNNING"
+    },
+    {
+      "id": "391515365234118656",
+      "businessKey": "RC-20261030-000006",
+      "status": "RUNNING"
+    },
+    {
+      "id": "391515364252651520",
+      "businessKey": "RC-20261030-000005",
+      "status": "RUNNING"
+    },
+    {
+      "id": "391515363048886272",
+      "businessKey": "RC-20261030-000004",
+      "status": "RUNNING"
+    },
+    {
+      "id": "391515362604290048",
+      "businessKey": "RC-20261030-000003",
+      "status": "RUNNING"
+    },
+    {
+      "id": "391515362163888128",
+      "businessKey": "RC-20261030-000002",
+      "status": "RUNNING"
+    },
+    {
+      "id": "391515361643794432",
+      "businessKey": "RC-20261030-000001",
+      "status": "RUNNING"
+    }
+  ],
+  "reassignmentTasks": [
+    {
+      "id": "391515361681543168",
+      "status": "PENDING",
+      "assigneeId": "883010000002",
+      "assigneeName": "验收·审批甲"
+    }
+  ],
+  "reassignmentTargets": [
+    {
+      "username": "uat_target",
+      "id": "883010000003",
+      "name": "验收·审批乙"
+    }
+  ],
+  "transferContext": {
+    "canTransfer": true,
+    "signatureRequired": true
+  },
+  "businessActionsSubmitted": false,
+  "note": "Only login POSTs and read-only GETs were executed. Login can create authentication logs; no approval/reassignment/transfer/withdrawal or DHR mutation was submitted. This is the 2026-10-31 environment recovery check, not a rerun of previous 40 business checks. An initial query mistakenly used page=0 and received 400; source inspection confirmed the one-based contract, and page=1 succeeds.",
+  "contractBaseline": {
+    "sourceCommit": "84995f7efab3abdf0012b974cb0a11e04920fe77",
+    "targetBranch": "edhr-dev",
+    "targetCommit": "d10590bd3fe8f3da4e68bcc087b2102d2c211934",
+    "contractReadCommit": "84995f7efab3abdf0012b974cb0a11e04920fe77",
+    "uncommittedContractPaths": []
+  },
+  "contractDiffAgainstLocalTarget": "",
+  "uncommittedContractDiff": "",
+  "processes": [
+    {
+      "pid": 2663,
+      "port": 3000,
+      "cwd": "/Users/ivenwang/Documents/edhr-nexus/gmp-platform/frontend",
+      "datasource": [],
+      "serverPort": []
+    },
+    {
+      "pid": 2704,
+      "port": 8081,
+      "cwd": "/Users/ivenwang/Documents/edhr-nexus/gmp-platform/backend",
+      "datasource": [
+        "jdbc:postgresql://127.0.0.1:5432/edhr_dev"
+      ],
+      "serverPort": [
+        "8081"
+      ]
+    },
+    {
+      "pid": 4045,
+      "port": 3010,
+      "cwd": "/Users/ivenwang/.codex/worktrees/record-control-integration/edhr-nexus/gmp-platform/frontend",
+      "datasource": [],
+      "serverPort": []
+    },
+    {
+      "pid": 4106,
+      "port": 8091,
+      "cwd": "/Users/ivenwang/.codex/worktrees/record-control-integration/edhr-nexus/gmp-platform/backend",
+      "datasource": [
+        "jdbc:postgresql://localhost:5432/edhr_acceptance_20261030"
+      ],
+      "serverPort": [
+        "8091"
+      ]
+    }
+  ],
+  "frontendProxyEnv": [
+    "http://127.0.0.1:8091"
+  ],
+  "originalWorktree": {
+    "branch": "edhr-dev",
+    "head": "bbd2ff88886ade456aac8d7d73f8af4f5c1575e2"
+  },
+  "databaseReadback": {
+    "database": "edhr_acceptance_20261030",
+    "sources": [
+      {
+        "id": "883010002000",
+        "status": "COMPLETED"
+      },
+      {
+        "id": "883010002001",
+        "status": "COMPLETED"
+      },
+      {
+        "id": "883010002002",
+        "status": "COMPLETED"
+      },
+      {
+        "id": "883010002003",
+        "status": "COMPLETED"
+      },
+      {
+        "id": "883010002004",
+        "status": "COMPLETED"
+      },
+      {
+        "id": "883010002005",
+        "status": "COMPLETED"
+      },
+      {
+        "id": "883010002006",
+        "status": "COMPLETED"
+      },
+      {
+        "id": "883010002007",
+        "status": "COMPLETED"
+      }
+    ],
+    "activeRequests": 7
+  },
+  "liquibaseStartupSummary": [
+    "2026-10-31T14:49:25.120+08:00  INFO 4106 --- [edhr] [           main] liquibase.util                           : Run:                          0",
+    "2026-10-31T14:49:25.120+08:00  INFO 4106 --- [edhr] [           main] liquibase.util                           : Previously run:               9"
+  ],
+  "backupExists": true,
+  "reviewedDocuments": [
+    {
+      "path": "docs/development/workflow-dhr-acceptance-20261030/README.md",
+      "sha256": "83a254c1aa6ca256b6460f9417fc89811f52807af7ed883c458d56a633736fa9"
+    },
+    {
+      "path": "docs/development/workflow-dhr-acceptance-20261030/environment-recovery-20261031.md",
+      "sha256": "6732b9fd05e7b5c628e9e23b81489e7e1ce01e044b8dd7550388b540d58f1c8c"
+    },
+    {
+      "path": "docs/development/workflow-dhr-acceptance-20261030/manifest.json",
+      "sha256": "e2cde47be0cd3102e90640dfd25cd17f1cef018602ac5c29db334cf01cc089ba"
+    }
+  ],
+  "browserEvidenceReviewed": {
+    "performedBy": "primary-agent",
+    "qualityMethod": "Independent inspection of raw screenshots and Playwright snapshot, not independent browser replay",
+    "files": [
+      "evidence/environment-browser-20261031.json",
+      "evidence/environment-3010-ready.png",
+      "evidence/environment-3010-reassign.png",
+      ".playwright-cli/page-2026-10-31T06-50-29-830Z.yml"
+    ],
+    "observations": [
+      "Both new menu labels visible",
+      "7 running requests displayed",
+      "Reassignment dialog shows current assignee, target, reason and signature fields",
+      "Submit button disabled with blank fields; no action submitted"
+    ]
+  }
+}

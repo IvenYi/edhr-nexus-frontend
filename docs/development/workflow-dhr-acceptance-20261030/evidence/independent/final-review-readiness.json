@@ -1,0 +1,72 @@
+{
+  "baseUrl": "http://127.0.0.1:8081/api/v1",
+  "database": "edhr_acceptance_20261030",
+  "accountsLoginPassed": [
+    "applicant",
+    "reviewer",
+    "target",
+    "manager"
+  ],
+  "activeRequests": 7,
+  "runtimeCommands": [
+    "com.zencas.edhr.EdhrApplication --server.port=8081 --spring.profiles.active=dev --spring.datasource.url=jdbc:postgresql://localhost:5432/edhr_acceptance_20261030",
+    "com.zencas.edhr.EdhrApplication --server.port=8108 --spring.profiles.active=dev --spring.datasource.url=jdbc:postgresql://localhost:5432/edhr_acceptance_quality_20261030"
+  ],
+  "checks": [
+    {
+      "case": "REASSIGN",
+      "source": "COMPLETED/UAT-LOT-OLD/100",
+      "requestStatus": "IN_REVIEW",
+      "canWithdraw": true
+    },
+    {
+      "case": "TRANSFER",
+      "source": "COMPLETED/UAT-LOT-OLD/100",
+      "requestStatus": "IN_REVIEW",
+      "canWithdraw": true
+    },
+    {
+      "case": "WITHDRAW",
+      "source": "COMPLETED/UAT-LOT-OLD/100",
+      "requestStatus": "IN_REVIEW",
+      "canWithdraw": true
+    },
+    {
+      "case": "DECIDED",
+      "source": "COMPLETED/UAT-LOT-OLD/100",
+      "requestStatus": "IN_REVIEW",
+      "canWithdraw": false
+    },
+    {
+      "case": "DHR-REVIEW",
+      "source": "COMPLETED/UAT-LOT-OLD/100",
+      "summaryStatus": "PENDING_REVIEW",
+      "versions": 1
+    },
+    {
+      "case": "DHR-PENDING",
+      "source": "COMPLETED/UAT-LOT-OLD/100",
+      "requestStatus": "IN_REVIEW",
+      "canWithdraw": true,
+      "summaryStatus": "NOT_STARTED",
+      "versions": 0
+    },
+    {
+      "case": "DHR-CHANGE",
+      "source": "COMPLETED/UAT-LOT-OLD/100",
+      "requestStatus": "IN_REVIEW",
+      "canWithdraw": true,
+      "summaryStatus": "FORMALIZED",
+      "versions": 1
+    },
+    {
+      "case": "DHR-VOID",
+      "source": "COMPLETED/UAT-LOT-OLD/100",
+      "requestStatus": "IN_REVIEW",
+      "canWithdraw": true,
+      "summaryStatus": "FORMALIZED",
+      "versions": 1
+    }
+  ],
+  "passed": true
+}

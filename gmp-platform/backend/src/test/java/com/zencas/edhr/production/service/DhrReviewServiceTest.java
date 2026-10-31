@@ -183,7 +183,7 @@ class DhrReviewServiceTest {
         verify(audits).save(argThat(event -> "7".equals(event.getOperatorId()) && event.getContentAfter().contains("签署人B")));
         assertThat(AuditContext.getOperatorId()).isEqualTo("7");
     }
-    @Configuration @EnableTransactionManagement static class Config {
+    @Configuration @EnableTransactionManagement(proxyTargetClass = true) static class Config {
         @Bean DataSource source() { return new DriverManagerDataSource("jdbc:h2:mem:dhr-review;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE;DB_CLOSE_DELAY=-1", "sa", ""); }
         @Bean JdbcTemplate jdbc(DataSource source) { return new JdbcTemplate(source); }
         @Bean PlatformTransactionManager transactions(DataSource source) { return new DataSourceTransactionManager(source); }

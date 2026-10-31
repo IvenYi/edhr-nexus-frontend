@@ -1,0 +1,81 @@
+[
+  {
+    "case": "REASSIGN",
+    "requestReady": true,
+    "canWithdraw": true
+  },
+  {
+    "case": "REASSIGN",
+    "targetsReady": true,
+    "context": [
+      {
+        "name": "验收·审批乙",
+        "username": "uat_target",
+        "id": "883010000003"
+      }
+    ]
+  },
+  {
+    "case": "TRANSFER",
+    "requestReady": true,
+    "canWithdraw": true
+  },
+  {
+    "case": "TRANSFER",
+    "targetsReady": true,
+    "context": {
+      "taskState": "371a19819782d0862644c419aec6ef53c42c25f8a04788c881b79d034ddfd996",
+      "canTransfer": true,
+      "signatureRequired": true
+    }
+  },
+  {
+    "case": "WITHDRAW",
+    "requestReady": true,
+    "canWithdraw": true
+  },
+  {
+    "case": "DECIDED",
+    "requestReady": true,
+    "canWithdraw": false
+  },
+  {
+    "case": "DHR-REVIEW",
+    "dhrReady": true,
+    "summaryStatus": "PENDING_REVIEW",
+    "versions": 1
+  },
+  {
+    "case": "DHR-PENDING",
+    "requestReady": true,
+    "canWithdraw": true
+  },
+  {
+    "case": "DHR-PENDING",
+    "dhrReady": true,
+    "summaryStatus": "NOT_STARTED",
+    "versions": 0
+  },
+  {
+    "case": "DHR-CHANGE",
+    "requestReady": true,
+    "canWithdraw": true
+  },
+  {
+    "case": "DHR-CHANGE",
+    "dhrReady": true,
+    "summaryStatus": "FORMALIZED",
+    "versions": 1
+  },
+  {
+    "case": "DHR-VOID",
+    "requestReady": true,
+    "canWithdraw": true
+  },
+  {
+    "case": "DHR-VOID",
+    "dhrReady": true,
+    "summaryStatus": "FORMALIZED",
+    "versions": 1
+  }
+]

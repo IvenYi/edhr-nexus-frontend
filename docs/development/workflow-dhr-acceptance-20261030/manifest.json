@@ -1,0 +1,117 @@
+{
+  "database": "edhr_dev",
+  "sourceDatabaseBeforeIntegration": "edhr_acceptance_20261030",
+  "url": "http://localhost:3000",
+  "accounts": {
+    "applicant": {
+      "username": "uat_applicant",
+      "displayName": "验收·申请及汇总人"
+    },
+    "reviewer": {
+      "username": "uat_reviewer",
+      "displayName": "验收·审批甲"
+    },
+    "target": {
+      "username": "uat_target",
+      "displayName": "验收·审批乙"
+    },
+    "manager": {
+      "username": "uat_manager",
+      "displayName": "验收·流程管理员"
+    }
+  },
+  "cases": [
+    {
+      "code": "REASSIGN",
+      "title": "重新分配",
+      "objectNo": "UAT-1030-REASSIGN",
+      "instanceNo": "FR-UAT-1030-REASSIGN",
+      "recordId": "883010002000",
+      "requestId": "391515361576685568",
+      "requestNo": "RC-20261030-000001",
+      "workflowInstanceId": "391515361643794432",
+      "taskId": "391515361681543168"
+    },
+    {
+      "code": "TRANSFER",
+      "title": "转办",
+      "objectNo": "UAT-1030-TRANSFER",
+      "instanceNo": "FR-UAT-1030-TRANSFER",
+      "recordId": "883010002001",
+      "requestId": "391515362138722304",
+      "requestNo": "RC-20261030-000002",
+      "workflowInstanceId": "391515362163888128",
+      "taskId": "391515362180665344"
+    },
+    {
+      "code": "WITHDRAW",
+      "title": "可撤回",
+      "objectNo": "UAT-1030-WITHDRAW",
+      "instanceNo": "FR-UAT-1030-WITHDRAW",
+      "recordId": "883010002002",
+      "requestId": "391515362579124224",
+      "requestNo": "RC-20261030-000003",
+      "workflowInstanceId": "391515362604290048",
+      "taskId": "391515362616872960"
+    },
+    {
+      "code": "DECIDED",
+      "title": "已有决定不可撤回",
+      "objectNo": "UAT-1030-DECIDED",
+      "instanceNo": "FR-UAT-1030-DECIDED",
+      "recordId": "883010002003",
+      "requestId": "391515363027914752",
+      "requestNo": "RC-20261030-000004",
+      "workflowInstanceId": "391515363048886272",
+      "taskId": "391515363539619840"
+    },
+    {
+      "code": "DHR-REVIEW",
+      "title": "DHR审核中先退回",
+      "objectNo": "UAT-1030-DHR-REVIEW",
+      "instanceNo": "FR-UAT-1030-DHR-REVIEW",
+      "recordId": "883010002004",
+      "dhrId": "883010004004",
+      "versionId": "391515363774500864",
+      "reviewTaskId": "391515363820638208"
+    },
+    {
+      "code": "DHR-PENDING",
+      "title": "来源在审阻止汇总",
+      "objectNo": "UAT-1030-DHR-PENDING",
+      "instanceNo": "FR-UAT-1030-DHR-PENDING",
+      "recordId": "883010002005",
+      "dhrId": "883010004005",
+      "requestId": "391515364231680000",
+      "requestNo": "RC-20261030-000005",
+      "workflowInstanceId": "391515364252651520",
+      "taskId": "391515364265234432"
+    },
+    {
+      "code": "DHR-CHANGE",
+      "title": "变更生效保留旧版",
+      "objectNo": "UAT-1030-DHR-CHANGE",
+      "instanceNo": "FR-UAT-1030-DHR-CHANGE",
+      "recordId": "883010002006",
+      "dhrId": "883010004006",
+      "versionId": "391515364441395200",
+      "requestId": "391515365217341440",
+      "requestNo": "RC-20261030-000006",
+      "workflowInstanceId": "391515365234118656",
+      "taskId": "391515365255090176"
+    },
+    {
+      "code": "DHR-VOID",
+      "title": "作废生效及隐藏",
+      "objectNo": "UAT-1030-DHR-VOID",
+      "instanceNo": "FR-UAT-1030-DHR-VOID",
+      "recordId": "883010002007",
+      "dhrId": "883010004007",
+      "versionId": "391515365410279424",
+      "requestId": "391515366144282624",
+      "requestNo": "RC-20261030-000007",
+      "workflowInstanceId": "391515366161059840",
+      "taskId": "391515366169448448"
+    }
+  ]
+}

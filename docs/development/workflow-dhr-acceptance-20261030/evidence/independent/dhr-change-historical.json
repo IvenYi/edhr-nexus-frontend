@@ -1,0 +1,192 @@
+{
+  "dhr": {
+    "id": "883010004006",
+    "dhrNo": "DHR-UAT-1030-DHR-CHANGE",
+    "productionObjectId": "883010001006",
+    "objectNo": "UAT-1030-DHR-CHANGE",
+    "objectType": "BATCH",
+    "workOrderId": "883010000108",
+    "workOrderNo": "UAT-1030-WO",
+    "productCode": "UAT-1030-PRODUCT",
+    "productName": "验收专用产品",
+    "processVersion": "1",
+    "routeName": "验收专用路线",
+    "routeVersion": "1",
+    "dhrTemplateName": "验收目录",
+    "dhrTemplateVersion": "1",
+    "status": "COMPLETED",
+    "displayStatus": "FINALIZED",
+    "productionStatus": "COMPLETED",
+    "terminationReason": null,
+    "terminationAt": null,
+    "terminatedBy": null,
+    "terminationSnapshotAvailable": false,
+    "summaryStatus": "FORMALIZED",
+    "dhrReviewMode": "REQUIRED",
+    "createdBy": null,
+    "createdAt": "2026-10-30T15:15:00.897073",
+    "updatedBy": "验收·审批甲",
+    "updatedAt": "2026-10-30T15:15:36.993125",
+    "completedAt": null,
+    "directorySnapshot": {
+      "directories": [
+        {
+          "id": "883010005999",
+          "name": "验收记录",
+          "items": [
+            {
+              "id": "883010006000",
+              "name": "验收·变更生效保留旧版",
+              "required": false,
+              "sortOrder": 0
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "version": {
+    "id": "391515364441395200",
+    "versionNo": 1,
+    "status": "PENDING_REVIEW",
+    "reviewMode": "REQUIRED",
+    "snapshotHash": "ca60cd45e2f54ab34325ef4ae77a0b6dacc187e97ea6338ebaf42eb501b31e01",
+    "reviewWorkflowDefinitionId": "883010000500",
+    "reviewWorkflowVersionId": "883010000501",
+    "submittedBy": "验收·申请及汇总人",
+    "submittedAt": "2026-10-30T15:15:36.886096",
+    "baseDirectory": {
+      "directories": [
+        {
+          "id": "883010005999",
+          "name": "验收记录",
+          "items": [
+            {
+              "id": "883010006000",
+              "name": "验收·变更生效保留旧版",
+              "required": false,
+              "sortOrder": 0
+            }
+          ]
+        }
+      ]
+    },
+    "overlayDirectories": [],
+    "candidates": [
+      {
+        "id": "883010002006",
+        "instanceNo": "FR-UAT-1030-DHR-CHANGE",
+        "operationId": "op",
+        "operationName": "验收工序",
+        "formId": "form",
+        "copyId": "form",
+        "templateId": "883010000110",
+        "templateVersionId": "883010000111",
+        "templateCode": "UAT-1030-FORM",
+        "templateName": "验收·变更生效保留旧版",
+        "templateVersion": "V1",
+        "status": "COMPLETED",
+        "currentRevisionId": "883010003006",
+        "createdBy": "验收初始化",
+        "createdAt": "2026-10-30T15:15:00.908181",
+        "updatedBy": "验收初始化",
+        "updatedAt": "2026-10-30T15:15:00.908181",
+        "snapshot": {
+          "id": "form",
+          "versionId": "883010000111",
+          "code": "UAT-1030-FORM",
+          "name": "验收·变更生效保留旧版",
+          "version": "V1",
+          "sourceType": "DIRECTORY",
+          "dhrItemId": "883010006000",
+          "fields": [
+            {
+              "id": "value",
+              "type": "text",
+              "name": "物料批号"
+            },
+            {
+              "id": "qty",
+              "type": "number",
+              "name": "报工数量"
+            },
+            {
+              "id": "unit",
+              "type": "text",
+              "name": "单位"
+            },
+            {
+              "id": "note",
+              "type": "text",
+              "name": "备注"
+            }
+          ],
+          "projection": {
+            "version": "form-projection-v1",
+            "bindings": [
+              {
+                "id": "production",
+                "enabled": true,
+                "modelId": "production",
+                "sources": {
+                  "outputQuantity": "qty",
+                  "unit": "unit"
+                }
+              },
+              {
+                "id": "trace",
+                "enabled": true,
+                "modelId": "formTrace",
+                "sources": {
+                  "materialLotText": "value"
+                }
+              }
+            ]
+          }
+        },
+        "fieldValues": {
+          "value": "UAT-LOT-OLD",
+          "qty": 100,
+          "unit": "件",
+          "note": "合成验收资料：变更生效保留旧版"
+        },
+        "originKind": "DIRECTORY"
+      }
+    ],
+    "attachments": [],
+    "checkResult": {
+      "ruleVersion": "DHR_SUMMARY_CHECK_V1",
+      "checkedAt": "2026-10-30T15:15:36.886007+08:00",
+      "checkedBy": "验收·申请及汇总人",
+      "actualRecordCount": 1,
+      "verifiedAttachmentCount": 0,
+      "requiredDirectoryItemsChecked": true,
+      "requiredSourceRecordsChecked": true,
+      "unfinishedSupplementsChecked": true,
+      "formOriginalsChecked": true,
+      "qualityConclusionAutomaticallyInterpreted": false,
+      "manualReview": {
+        "qualityAndExceptionsReviewed": true,
+        "sourceSignaturesReviewed": true,
+        "completeScopeReviewed": true,
+        "note": "合成验收初始化：已核对本样例资料、质量与源签署范围",
+        "confirmedBy": "验收·申请及汇总人",
+        "confirmedAt": "2026-10-30T15:15:36.886014+08:00"
+      }
+    },
+    "reviewOutcome": "APPROVED"
+  },
+  "evidenceChanges": [
+    {
+      "recordId": "883010002006",
+      "instanceNo": "FR-UAT-1030-DHR-CHANGE",
+      "message": "来源记录与提交时冻结证据不一致，请核对表单变更或作废记录"
+    }
+  ],
+  "placements": [
+    {
+      "recordId": "883010002006",
+      "targetNodeKey": "base-item-883010006000"
+    }
+  ]
+}

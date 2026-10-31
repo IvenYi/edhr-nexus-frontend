@@ -1,0 +1,37 @@
+{
+  "environment": "http://127.0.0.1:3000",
+  "database": "edhr_acceptance_20261030",
+  "checks": [
+    {
+      "name": "manager-real-login",
+      "passed": true
+    },
+    {
+      "name": "intervention-has-seven-running-requests",
+      "passed": true
+    },
+    {
+      "name": "reassignment-current-task-and-signature-dialog",
+      "passed": true,
+      "screenshot": "reassignment-ready.png"
+    },
+    {
+      "name": "applicant-real-login-and-record-menus",
+      "passed": true
+    },
+    {
+      "name": "dhr-list-has-four-UAT-cases-and-eleven-existing",
+      "passed": true
+    },
+    {
+      "name": "frozen-V1-renders-old-material-lot-and-quantity",
+      "passed": true,
+      "screenshot": "dhr-frozen-ready.png"
+    }
+  ],
+  "mutatingBusinessActionsExecuted": false,
+  "limitations": [
+    "主侧保留库仅登录和查看；消耗性操作由独立质量在其副本执行。",
+    "本轮不修改业务代码，未重跑198项产品回归；验证数据准备及实际受影响操作。"
+  ]
+}

@@ -475,7 +475,7 @@ class DhrSummaryPersistenceTest {
         return record;
     }
 
-    @Configuration @EnableTransactionManagement
+    @Configuration @EnableTransactionManagement(proxyTargetClass = true)
     static class Config {
         @Bean DataSource dataSource() { return new DriverManagerDataSource("jdbc:h2:mem:dhr-summary-persistence;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE;DB_CLOSE_DELAY=-1", "sa", ""); }
         @Bean JdbcTemplate jdbc(DataSource source) { return new JdbcTemplate(source); }

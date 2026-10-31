@@ -35,7 +35,7 @@ decisions:
         status: specified
         visibility: internal
       - id: DEC-0087-08
-        statement: "provenance: user-confirmed-and-original-evidence；2026-09-16 的首期材料以当时缺少可靠 DHR/放行来源为暂缓依据，原始材料保留。当前目标分支已具有 DHR 实例、汇总及审批实现，不能继续将该历史前提写成当前事实；本次记录控制集成仍未接通 DHR 放行判断、证据影响主动通知、补开或重汇总，不能宣称已阻断外部/历史已放行 DHR，也不自动创建替代表单。DEC-0068 的真实生效消费和影响识别两项 high 与 A12 继续开放。"
+        statement: "provenance: user-confirmed-and-original-evidence；2026-09-16 的首期材料以当时缺少可靠 DHR/放行来源为暂缓依据，原始材料保留。2026-10-28 首轮记录控制集成时目标已具有 DHR 实例、汇总及审批，真实生效联动当时尚未接通；后续 DEC-0068 的联动切片已接入当前内容索引、正式贡献切换、DHR 影响和站内提醒，并保留双向在审阻断及人工退回后重新汇总的既有路径，不能继续概括为全部未实现。DHR 放行判断仍暂缓，不能宣称已阻断外部/历史已放行 DHR，也不自动创建替代表单或重汇总。DEC-0068 两项 high 的完整变化比较及未覆盖全面矩阵、完整 A12 继续开放，实际验收取对应候选证据，不将本次集成提升为完整链路或生产发布。"
         status: specified
         visibility: internal
       - id: DEC-0087-09
@@ -47,7 +47,7 @@ decisions:
         status: implemented
         visibility: internal
     supersedes: []
-    evidenceIds: [evidence.record-control-v1-user-confirmed, evidence.record-change-search-scope-user-confirmed, evidence.record-control-v1-service, evidence.record-control-signature-generic-controller-boundary, evidence.record-control-signature-generic-list-boundary, evidence.record-control-signature-generic-crud-tests, evidence.record-control-signature-generic-list-tests, evidence.record-control-active-detail-access-tests, evidence.record-control-workflow-task-projection-repository, evidence.record-control-workflow-task-projection-service, evidence.record-control-workflow-task-projection-api, evidence.record-control-workflow-task-projection-ui, evidence.record-control-workflow-task-projection-tests]
+    evidenceIds: [evidence.record-control-v1-user-confirmed, evidence.record-change-search-scope-user-confirmed, evidence.record-control-v1-service, evidence.record-control-signature-generic-controller-boundary, evidence.record-control-signature-generic-list-boundary, evidence.record-control-signature-generic-crud-tests, evidence.record-control-signature-generic-list-tests, evidence.record-control-active-detail-access-tests, evidence.record-control-workflow-task-projection-repository, evidence.record-control-workflow-task-projection-service, evidence.record-control-workflow-task-projection-api, evidence.record-control-workflow-task-projection-ui, evidence.record-control-workflow-task-projection-tests, evidence.record-control-dhr-effective-orchestration, evidence.dhr-record-control-linkage-source]
     acceptanceScenarios:
       - id: scenario.record-control-v1-menu-scope
         given: 用户拥有表单管理及变更管理对应菜单权限
@@ -74,10 +74,10 @@ decisions:
         evidenceIds: [evidence.record-control-v1-user-confirmed]
         evidenceRequirements: [非管理员接口授权测试, 伪造前端人员参数测试, 列表和详情越权测试]
       - id: scenario.record-control-v1-dhr-deferred
-        given: 当前目标分支已有 DHR 实例和审批能力，但记录控制真实生效与 DHR 的完整消费链路仍未集成
+        given: 当前已有 DHR 实例、审批和记录控制真实生效的局部联动，完整矩阵与放行判断仍未交付
         when: 验收首期记录变更与作废
-        then: 保留真实生效消费、影响识别和通知的缺口，不宣称已实现放行阻断、证据缺项、补开或重汇总，也不自动生成替代表单
-        evidenceIds: [evidence.record-control-v1-user-confirmed]
+        then: 按 DEC-0068 保留已接入的真实生效、影响识别和站内提醒及其实际证据，完整变化比较、未覆盖全面矩阵、完整 A12 和放行判断继续暂缓，不宣称完整链路已验收，不自动生成替代表单或重汇总
+        evidenceIds: [evidence.record-control-v1-user-confirmed, evidence.record-control-dhr-effective-orchestration, evidence.dhr-record-control-linkage-source]
         evidenceRequirements: [页面文案检查, 验收范围检查]
       - id: scenario.record-control-signature-generic-isolation
         given: 存在 targetType 为 RECORD_CONTROL_REQUEST 的记录控制签名证据
