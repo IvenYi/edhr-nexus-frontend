@@ -38,6 +38,15 @@ test('legacy report entry belongs to records before redirecting to form trace', 
   assert.equal(resolve('/reports/form-projections'), 'records');
 });
 
+for (const path of [
+  '/records/change', '/records/mine', '/records/approvals', '/records/history',
+  '/records/requests/123', '/records/approvals/456/123',
+]) {
+  test(`${path}: record change pages keep the records sidebar`, () => {
+    assert.equal(resolve(path), 'records');
+  });
+}
+
 test('existing non-report module routes keep their ownership', () => {
   for (const [path, module] of [
     ['/', 'home'], ['/account/settings', 'home'],
@@ -48,7 +57,7 @@ test('existing non-report module routes keep their ownership', () => {
 });
 
 test('unknown paths and similar prefixes do not claim another module', () => {
-  for (const path of ['/reports/form-trace-other', '/reports/unknown', '/production-other', '/form-management-other']) {
+  for (const path of ['/reports/form-trace-other', '/reports/unknown', '/production-other', '/form-management-other', '/records-other']) {
     assert.equal(resolve(path), 'home');
   }
 });
