@@ -2,6 +2,8 @@
 
 ## PR46已合入：文件上传资源与公开预览边界
 
+已交付[PR47](https://github.com/IvenYi/edhr-nexus-frontend/pull/47)，audit/edhr-dev-file-boundaries-20261031→edhr-dev，登记时OPEN/MERGEABLE/CLEAN，建议本批人工合入。受测17f1fad4后d740678d仅L0归档/验收/范围，当前只登记交付，受测保护路径无变。下轮fetch实际合入和外部增量，优先共享文件真实对象权限、DB/磁盘失败一致性；其余候选/原暂缓/整体未完保持，不自动merge/deploy/恢复。
+
 全新最终独立对clean `17f1fad49c863761269c1937b7d5059a5ecfe9e6` 正式passed/FINAL、11/11必需检查，当前29/29和知识89/89、实际旧同18=7真实红11正、0error/skip，两项按[验收](../branch-review-20261031-file-boundaries/acceptance.json)resolved。本体NA/FINAL、6有限ID不计新unique；30份最终原件归档，原18主侧及编译失败保留。全部正式角色FINAL后已实际向用户完成PR前无漂移/阶段/余项说明，后续仅L0归档/验收/交付，受测保护路径保持。下一批优先共享文件实际对象授权与跨介质失败一致性；当前mock仓储HTTP通过不替代这些未审范围。下文待QA属主测历史检查点，本段为当前状态。
 
 已fetch并核对edhr-dev@ccedd56453c02c5d3acd60aa4351809a3928e83e，PR46人工合入且整树同b5a29fbc，无额外增量。从最新目标建audit/edhr-dev-file-boundaries-20261031；[本批](../branch-review-20261031-file-boundaries/README.md)修复FileController上传流未关闭/摘要IO吞错，以及可选用途公开预览500。只有1个产品文件局部变动，旧同源资源9=6真实红3正、HTTP9=1红8正，当前29/29通过，0error/skip；HTTP初版编译错误独立保留。知识6既有ID有限NA/FINAL、89实际通过；当前待新独立最终QA，未提前关闭发现。
