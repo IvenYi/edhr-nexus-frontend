@@ -1,0 +1,813 @@
+{
+  "baseCommit": "d10590bd3fe8f3da4e68bcc087b2102d2c211934",
+  "workingTree": "exact current sourceSnapshot; no fabricated tested commit",
+  "sourceSnapshot": [
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/DocumentManagementController.java",
+      "sha256": "582653b0640519a8746cf2aa8f90ef24df9f3f325f4b17fe42e4acdfa4a9f991",
+      "bytes": 33302
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/DocumentManagementControllerTest.java",
+      "sha256": "af148dd0f2c10a3644008c650234c444abbcfc561480054705f26513c9c96a96",
+      "bytes": 12494
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/DocumentWriteBoundaryIntegrationTest.java",
+      "sha256": "31c0a4d8b7886df4879cf8eb96b29ff9698d9e889633c2b7fd7cd1a27a7b0800",
+      "bytes": 13523
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/master-data/DocumentManagementPage.tsx",
+      "sha256": "a36c9d4f06c567ec1b2c6fe1a01395c0ed5959140db705e6731127a07047fc36",
+      "bytes": 68861
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/DocumentCategoryAuditPostgresTest.java",
+      "sha256": "3b92ef4411dac2c2eada2ef17d03b5abad4d876d8c19ca3a9d6cfc2489d9d294",
+      "bytes": 14653
+    },
+    {
+      "path": "gmp-platform/frontend/scripts/test-document-category-delete-browser.mjs",
+      "sha256": "5f1b67fb3956e9d807d59f66057efef50c571e551e7e6f2ef5147fb0301bc18c",
+      "bytes": 12026
+    }
+  ],
+  "files": [
+    {
+      "origin": "/tmp/edhr-document-category-main-cleanup.json",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/main-cleanup.json",
+      "sha256": "3e318d01cf6a1f495c80ea449de8170be51b234cdab3c4d6a5ca2955036753d4",
+      "bytes": 330
+    },
+    {
+      "origin": "/tmp/edhr-document-category-main-summary.json",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/main-summary.json",
+      "sha256": "512b2f437d91027e0fd38befa4a12dfbbda660029c90c0762ef545d5f6e09b14",
+      "bytes": 2702
+    },
+    {
+      "origin": "/tmp/edhr-document-category-main-MaterialImportIntegrationTest.xml",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/main-MaterialImportIntegrationTest.xml",
+      "sha256": "aace60ada2126ddc52d353eff6bd3736d65956d2c04eb957946918e69c801195",
+      "bytes": 130099
+    },
+    {
+      "origin": "/tmp/edhr-document-category-main-ProductProcessControllerTest.xml",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/main-ProductProcessControllerTest.xml",
+      "sha256": "9b85ac17225b802d2040b571572e82f6b2b9f5c63ef6e86ec287bfb95d9316e3",
+      "bytes": 35521
+    },
+    {
+      "origin": "/tmp/edhr-document-category-main-ProcessModelingControllerTest.xml",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/main-ProcessModelingControllerTest.xml",
+      "sha256": "bfe0e33b8db1d66527e42e137330a22137bdc784427d0781f0066853bfd2f241",
+      "bytes": 42302
+    },
+    {
+      "origin": "/tmp/edhr-document-category-main-MasterDataBoundaryIntegrationTest.xml",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/main-MasterDataBoundaryIntegrationTest.xml",
+      "sha256": "b8c595a0bd149fc17fd7038882397b8bd7d6a7ebd50d99223627f714ce73a73d",
+      "bytes": 276514
+    },
+    {
+      "origin": "/tmp/edhr-document-category-main-DocumentManagementControllerTest.xml",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/main-DocumentManagementControllerTest.xml",
+      "sha256": "086c4250c2d6f33c94011db5710511da9b5b14a8ec95931aaf8b2f34e52351af",
+      "bytes": 35059
+    },
+    {
+      "origin": "/tmp/edhr-document-category-main-DocumentReadPerformancePostgresTest.xml",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/main-DocumentReadPerformancePostgresTest.xml",
+      "sha256": "1b129bb24be1d15c0b312de746d071b8ca2d6c8d3fa705a867775528d1f42d3c",
+      "bytes": 289493
+    },
+    {
+      "origin": "/tmp/edhr-document-category-main-DocumentReadBoundaryIntegrationTest.xml",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/main-DocumentReadBoundaryIntegrationTest.xml",
+      "sha256": "d2736e78a99ca57bc366a3e5ed3a45b1ec1dc4c5c0094887f044de759b534ae7",
+      "bytes": 240484
+    },
+    {
+      "origin": "/tmp/edhr-document-category-main-DocumentWriteBoundaryPostgresTest.xml",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/main-DocumentWriteBoundaryPostgresTest.xml",
+      "sha256": "1a287dfd8a1b928bd857560c8f31233c03dff934ce8484e997687cd997af60d3",
+      "bytes": 136863
+    },
+    {
+      "origin": "/tmp/edhr-document-category-main-DocumentOrmSchemaIntegrationTest.xml",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/main-DocumentOrmSchemaIntegrationTest.xml",
+      "sha256": "ebab240f812e11486d0b41e97220289ab345742bf79ab6e24b026cbd2bc285d9",
+      "bytes": 58533
+    },
+    {
+      "origin": "/tmp/edhr-document-category-main-DocumentWriteBoundaryIntegrationTest.xml",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/main-DocumentWriteBoundaryIntegrationTest.xml",
+      "sha256": "6fa3248f3c7532def98c2faa2b1c41d081038def483c040368a351d2a0b1cad4",
+      "bytes": 127071
+    },
+    {
+      "origin": "/tmp/edhr-document-category-main-DocumentCategoryAuditPostgresTest.xml",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/main-DocumentCategoryAuditPostgresTest.xml",
+      "sha256": "0cbdd896ae3e28e95a645ebfcec57e0b23c26311b7bb2e8664f1307b85ae8765",
+      "bytes": 107787
+    },
+    {
+      "origin": "/tmp/edhr-document-category-main-http.jsonl",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/main-http.jsonl",
+      "sha256": "f9df2d3066ea8e5e9b6bc606dee7cd3582222afc733961192c23245b86dc20dc",
+      "bytes": 62499
+    },
+    {
+      "origin": "/tmp/edhr-document-category-main-write-http.jsonl",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/main-write-http.jsonl",
+      "sha256": "d1dffc05172201f0ca3bff91a64cb57340ec7b541e7784108aabf3d2dcc0a05a",
+      "bytes": 265549
+    },
+    {
+      "origin": "/tmp/edhr-document-category-main-read-http.jsonl",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/main-read-http.jsonl",
+      "sha256": "722d55e651ce774fed4f41cd36793c7018e5b5c29ce6dc08d79c26be049db8f1",
+      "bytes": 721259
+    },
+    {
+      "origin": "/tmp/edhr-document-category-main-test.txt",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/main-test.txt",
+      "sha256": "ae0e72ebf063b1aecfb9133351480bd59f8e450d3c42df69f9b0181d9b55791f",
+      "bytes": 1037545
+    },
+    {
+      "origin": "/tmp/edhr-document-category-main-pg-version.txt",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/main-pg-version.txt",
+      "sha256": "c1b00ee83c6744f03199c44faddda8f20a96877037cc867744d965bfa7feae13",
+      "bytes": 111
+    },
+    {
+      "origin": "/tmp/edhr-document-category-main-db.json",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/main-db.json",
+      "sha256": "0563daf7fdcec96f819da610fe310cdfe23e7cd156a15b30ceaed7348b897f4d",
+      "bytes": 305
+    },
+    {
+      "origin": "/tmp/edhr-document-category-old-summary.json",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/old-summary.json",
+      "sha256": "36bc6a0371e5c6714c3ec0b436f7f9dae031ad0bbffab6b16a4c7e30508274ac",
+      "bytes": 1332
+    },
+    {
+      "origin": "/tmp/edhr-document-category-old-junit.xml",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/old-junit.xml",
+      "sha256": "82167774ddb32c2267da2b7a1b68e3b7791954a39a1d4379a7a03611f8ca857e",
+      "bytes": 79767
+    },
+    {
+      "origin": "/tmp/edhr-document-category-old-http.jsonl",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/old-http.jsonl",
+      "sha256": "1b928d3bc3b71fdaa1635ecd5bb7256f3cd492fa07f5f9b7957c9d82dae44160",
+      "bytes": 52093
+    },
+    {
+      "origin": "/tmp/edhr-document-category-old-test.txt",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/old-test.txt",
+      "sha256": "02e924f65f4ed4c37d53660a656191e2030f89dcea61e775942b074087a587ba",
+      "bytes": 49780
+    },
+    {
+      "origin": "/tmp/edhr-document-category-final-summary.json",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/final-summary.json",
+      "sha256": "fe5b33d8d3d8a5c17e0bd4eb54f6a3cdb88c756e681950dffa73e806b50cb482",
+      "bytes": 341
+    },
+    {
+      "origin": "/tmp/edhr-document-category-final-junit.xml",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/final-junit.xml",
+      "sha256": "f758fa45a915c340c30d4aa40eb02b490220e3b4f7d054e998087c82bb543105",
+      "bytes": 105216
+    },
+    {
+      "origin": "/tmp/edhr-document-category-final-http.jsonl",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/final-http.jsonl",
+      "sha256": "bf326baa4146169455c3e2b086c79c60da45d4017952007c91fdfb41ba8e3dce",
+      "bytes": 62499
+    },
+    {
+      "origin": "/tmp/edhr-document-category-final-test.txt",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/final-test.txt",
+      "sha256": "10d0c0862ad63e8760dbd7eca65a1d4f5335da8f08094094dbe595d2fd72dc9a",
+      "bytes": 73252
+    },
+    {
+      "origin": "/tmp/edhr-document-category-premium-app-baseline.json",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/premium-app-baseline.json",
+      "sha256": "735043ab69d53c04af63d47aaca2fc45412a5fb6caea86e9dfe17b6ae0cd378c",
+      "bytes": 7638
+    },
+    {
+      "origin": "/tmp/edhr-document-category-premium-app-baseline.txt",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/premium-app-baseline.txt",
+      "sha256": "735043ab69d53c04af63d47aaca2fc45412a5fb6caea86e9dfe17b6ae0cd378c",
+      "bytes": 7638
+    },
+    {
+      "origin": "/tmp/edhr-document-category-premium-app-current.json",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/premium-app-current.json",
+      "sha256": "b7c08e0fec76acbe47910f7c30b4f2733bdcf9835d4b04e4c47155c820843856",
+      "bytes": 7625
+    },
+    {
+      "origin": "/tmp/edhr-document-category-premium-app-current.txt",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/premium-app-current.txt",
+      "sha256": "b7c08e0fec76acbe47910f7c30b4f2733bdcf9835d4b04e4c47155c820843856",
+      "bytes": 7625
+    },
+    {
+      "origin": "/tmp/edhr-document-category-premium-current.json",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/premium-current.json",
+      "sha256": "927b2527b9deabcc4714b6e06d44f63fdda4aa7da6b23288e2bbb1fa438aa11a",
+      "bytes": 34737
+    },
+    {
+      "origin": "/tmp/edhr-document-category-premium-current.txt",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/premium-current.txt",
+      "sha256": "927b2527b9deabcc4714b6e06d44f63fdda4aa7da6b23288e2bbb1fa438aa11a",
+      "bytes": 34737
+    },
+    {
+      "origin": "/tmp/edhr-document-category-premium-baseline.json",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/premium-baseline.json",
+      "sha256": "927b2527b9deabcc4714b6e06d44f63fdda4aa7da6b23288e2bbb1fa438aa11a",
+      "bytes": 34737
+    },
+    {
+      "origin": "/tmp/edhr-document-category-premium-baseline.txt",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/premium-baseline.txt",
+      "sha256": "927b2527b9deabcc4714b6e06d44f63fdda4aa7da6b23288e2bbb1fa438aa11a",
+      "bytes": 34737
+    },
+    {
+      "origin": "/tmp/edhr-document-category-schema-setup.txt",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/schema-setup.txt",
+      "sha256": "1212cb26088a8b17b55585cb9160960a460801064829a4aefdc9f4eaef548fd0",
+      "bytes": 5696
+    },
+    {
+      "origin": "/tmp/edhr-document-category-build.txt",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/build.txt",
+      "sha256": "a22ba45701b62e2bb6ef284916224b74906d7f4cb5ca04c290d5851908787564",
+      "bytes": 9572
+    },
+    {
+      "origin": "/tmp/edhr-document-category-generic-ui.txt",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/generic-ui.txt",
+      "sha256": "649620472d4fd64e4a30d7e2451a6df6b92bf779368ec1fb018c04f737cca36f",
+      "bytes": 2562
+    },
+    {
+      "origin": "/tmp/edhr-document-category-lint.txt",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/lint.txt",
+      "sha256": "4072a2a05ee82c5471348b2e593c2c6b58b14f65fe5c4ef2b385e71f0914dbdd",
+      "bytes": 611
+    },
+    {
+      "origin": "/tmp/edhr-document-category-process-verifier.txt",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/process-verifier.txt",
+      "sha256": "2d5c99bb25433a7fa6a487ce87e4947e1a16a3f4905692d4bed88528e62e6571",
+      "bytes": 930
+    },
+    {
+      "origin": "/tmp/edhr-document-category-table-verifier.txt",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/table-verifier.txt",
+      "sha256": "43c6e083087fe4bd0b25b00c4ccbba0268752d1fd864ec593a456cc192f6e03b",
+      "bytes": 234
+    },
+    {
+      "origin": "/tmp/edhr-document-category-static-comparison.json",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/static-comparison.json",
+      "sha256": "5610936f4193d65d75cbfaea9b476a4aea95ded1c4df3a4b2c7d9a01fb98d5e2",
+      "bytes": 659
+    },
+    {
+      "origin": "/tmp/edhr-document-category-browser-old.txt",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/browser-old.txt",
+      "sha256": "a6d71ad978bd84a3b91b80b9caf526cf000b69e380996dfc0d63009cb7931b2a",
+      "bytes": 8344
+    },
+    {
+      "origin": "/tmp/edhr-document-category-browser-current.txt",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/browser-current.txt",
+      "sha256": "1d87a3024bae340a91f17d587890d5c665f4956cc9d9da280ed8ec66550b1ac4",
+      "bytes": 7427
+    },
+    {
+      "origin": "/tmp/edhr-document-category-browser-final-old.txt",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/browser-final-old.txt",
+      "sha256": "ac1266aec430fcc2ee4d40dd0f7545f0476ddb0f8e53ee63de9943e1534195bc",
+      "bytes": 8691
+    },
+    {
+      "origin": "/tmp/edhr-document-category-browser-final-current.txt",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/browser-final-current.txt",
+      "sha256": "ca451e99c8cc8d959266d764298f5fe33ca13120d0e45afd37f0c3b0682b84b8",
+      "bytes": 7774
+    },
+    {
+      "origin": "/tmp/edhr-document-category-ontology-result.yaml",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/ontology-result.yaml",
+      "sha256": "e21979eb0da4f2fcd46ad249602f6f4dd29f74b35576ae47afe4e5f66da8f3bd",
+      "bytes": 3151
+    },
+    {
+      "origin": "/tmp/edhr-document-category-rule-review.json",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/rule-review.json",
+      "sha256": "abc6b29e5529444f4055ace516f2a6294466fd36b17523b0202606a04bb465f9",
+      "bytes": 10894
+    },
+    {
+      "origin": "/tmp/edhr-document-category-rule-review.md",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/rule-review.md",
+      "sha256": "68291ac2f478a2afdacdd62a1412295efbb5ef8954194d4e2ab65a154d8eb886",
+      "bytes": 2420
+    },
+    {
+      "origin": "/tmp/edhr-document-category-ontology-knowledge-test.txt",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/ontology-knowledge-test.txt",
+      "sha256": "5bf59c49e0478075e41163da8b194ba019be722a035e159aad3995e3316d21cd",
+      "bytes": 2111
+    },
+    {
+      "origin": "/tmp/edhr-document-category-ontology-knowledge-junit.xml",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/ontology-knowledge-junit.xml",
+      "sha256": "39baa87255a4b524756a4edc5819f50df3bfe2619ba73b8b52ace84190f5d7e2",
+      "bytes": 20421
+    },
+    {
+      "origin": "/tmp/edhr-document-category-ontology-history-deletion-decision.yaml",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/ontology-history-deletion-decision.yaml",
+      "sha256": "8caf2694aae0a4f0f33d9ac6c57fd82dc2447e44b8922d867433447b9a93d89f",
+      "bytes": 7592
+    },
+    {
+      "origin": "/tmp/edhr-document-category-ontology-history-deletion-confirmed.md",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/ontology-history-deletion-confirmed.md",
+      "sha256": "209acedbc8422dc1fb4052c3b70db7253fc6e6e0da751a8f305292a1b33329c4",
+      "bytes": 5612
+    },
+    {
+      "origin": "/tmp/edhr-document-category-ontology-history-deletion-architecture.md",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/ontology-history-deletion-architecture.md",
+      "sha256": "c71d09a3150cdca1da81df51a666a6d5187915a9d8893418249117ed2b508f62",
+      "bytes": 5452
+    },
+    {
+      "origin": "/tmp/edhr-document-category-ontology-history-audit-decision.yaml",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/ontology-history-audit-decision.yaml",
+      "sha256": "0e981beb87292e9fff406455c2049a2053015e871f71ba876118b71a3c9c6e5f",
+      "bytes": 4585
+    },
+    {
+      "origin": "/tmp/edhr-document-category-ontology-manifest.json",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/ontology-manifest.json",
+      "sha256": "a47ae699f48111863c4c7d0ec413461813a5c115942a8651290fc6a106882a09",
+      "bytes": 88741
+    },
+    {
+      "origin": "/tmp/edhr-document-category-browser-old/1440-confirm-copy-cancel-failed.png",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/browser-old/1440-confirm-copy-cancel-failed.png",
+      "sha256": "82d06ac6d7bc200917d316d601a6d5c1256452dafd1706d614f120ad77d0fb80",
+      "bytes": 54530
+    },
+    {
+      "origin": "/tmp/edhr-document-category-browser-old/1440-precheck-error.png",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/browser-old/1440-precheck-error.png",
+      "sha256": "120cd8ecd9560ca245ac02fd38d156ecf5da044bf1f7247448cc88cd0a4534c7",
+      "bytes": 42405
+    },
+    {
+      "origin": "/tmp/edhr-document-category-browser-old/1440-referenced.png",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/browser-old/1440-referenced.png",
+      "sha256": "b2f24c3b3c4708da4d23d338d283a2feabcec656e39bbf2f9b080181e1a3b891",
+      "bytes": 70413
+    },
+    {
+      "origin": "/tmp/edhr-document-category-browser-old/1440-slow-cancel.png",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/browser-old/1440-slow-cancel.png",
+      "sha256": "495882dad0f5ed755537e1df57a398bb5cfb6f0080925cdf217a14837fab65d2",
+      "bytes": 40778
+    },
+    {
+      "origin": "/tmp/edhr-document-category-browser-old/1440-success-feedback-failed.png",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/browser-old/1440-success-feedback-failed.png",
+      "sha256": "a3edce2ffdcd0ddd90267b0e6235d5dab1ff2f37120ed69f91ca942bf3e142bc",
+      "bytes": 42803
+    },
+    {
+      "origin": "/tmp/edhr-document-category-browser-old/390-confirm-copy-cancel-failed.png",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/browser-old/390-confirm-copy-cancel-failed.png",
+      "sha256": "6c6f04c29a6ab6aa28100d9456fc514b7195d34372ea2d02c444daa70f65f823",
+      "bytes": 40193
+    },
+    {
+      "origin": "/tmp/edhr-document-category-browser-old/390-precheck-error.png",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/browser-old/390-precheck-error.png",
+      "sha256": "8f66fea4529283905bbbc54ce2387602152fad172c408f996669f03d7c2f5c0a",
+      "bytes": 30710
+    },
+    {
+      "origin": "/tmp/edhr-document-category-browser-old/390-referenced.png",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/browser-old/390-referenced.png",
+      "sha256": "fc636929f56d2025bb6922591e918f377075de695a3ffd9a2f1133ef641390be",
+      "bytes": 55387
+    },
+    {
+      "origin": "/tmp/edhr-document-category-browser-old/390-slow-cancel.png",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/browser-old/390-slow-cancel.png",
+      "sha256": "0e422b1082d53697e38694fee78b220f5676a51d5a483b594d04976ae1a36da9",
+      "bytes": 29188
+    },
+    {
+      "origin": "/tmp/edhr-document-category-browser-old/390-success-feedback-failed.png",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/browser-old/390-success-feedback-failed.png",
+      "sha256": "3ac7a5fdd1f3f1fca99b3b7577fb610495f9a6e150ae98a0aa8be9396a72ff04",
+      "bytes": 31188
+    },
+    {
+      "origin": "/tmp/edhr-document-category-browser-old/result.json",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/browser-old/result.json",
+      "sha256": "a6d71ad978bd84a3b91b80b9caf526cf000b69e380996dfc0d63009cb7931b2a",
+      "bytes": 8344
+    },
+    {
+      "origin": "/tmp/edhr-document-category-browser-current/1440-confirm-copy-cancel.png",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/browser-current/1440-confirm-copy-cancel.png",
+      "sha256": "8f50f629c3decc4f483acc97facf7ff0098b593a9cb1bb28cef67e4605120256",
+      "bytes": 42700
+    },
+    {
+      "origin": "/tmp/edhr-document-category-browser-current/1440-precheck-error.png",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/browser-current/1440-precheck-error.png",
+      "sha256": "91d9ba253f0581a4bf432cf54e1b34f1232c4c83b14c607dccd3b532c38aab1e",
+      "bytes": 42424
+    },
+    {
+      "origin": "/tmp/edhr-document-category-browser-current/1440-referenced.png",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/browser-current/1440-referenced.png",
+      "sha256": "14fb53956d047f41a81541381d534dd38221eaea1b002486642165ca6f4edfab",
+      "bytes": 70526
+    },
+    {
+      "origin": "/tmp/edhr-document-category-browser-current/1440-slow-cancel.png",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/browser-current/1440-slow-cancel.png",
+      "sha256": "495882dad0f5ed755537e1df57a398bb5cfb6f0080925cdf217a14837fab65d2",
+      "bytes": 40778
+    },
+    {
+      "origin": "/tmp/edhr-document-category-browser-current/1440-success-feedback.png",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/browser-current/1440-success-feedback.png",
+      "sha256": "ad8b86363a6c0bc0619f8501968d130503ce3f221b740899380afd5b9ef13c09",
+      "bytes": 40125
+    },
+    {
+      "origin": "/tmp/edhr-document-category-browser-current/390-confirm-copy-cancel.png",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/browser-current/390-confirm-copy-cancel.png",
+      "sha256": "0384f2e485e70d303fc245c464bc5f10b1b3e9cf59058dfe454559d3b271f9b4",
+      "bytes": 30897
+    },
+    {
+      "origin": "/tmp/edhr-document-category-browser-current/390-precheck-error.png",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/browser-current/390-precheck-error.png",
+      "sha256": "b2120a0419c79f0a41d315adf271dbcb743db6fcd69a2be747ff81f53f6bd2be",
+      "bytes": 30709
+    },
+    {
+      "origin": "/tmp/edhr-document-category-browser-current/390-referenced.png",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/browser-current/390-referenced.png",
+      "sha256": "c6bca22a0a6ebf5f937b837ce24b314142e21e1cdbbd1dc78c555bd802328c37",
+      "bytes": 55392
+    },
+    {
+      "origin": "/tmp/edhr-document-category-browser-current/390-slow-cancel.png",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/browser-current/390-slow-cancel.png",
+      "sha256": "c5820816ec90d99c142d79831815fa08f237411950ca934711535211647f8d4f",
+      "bytes": 29293
+    },
+    {
+      "origin": "/tmp/edhr-document-category-browser-current/390-success-feedback.png",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/browser-current/390-success-feedback.png",
+      "sha256": "02768db090484abcc19d16329d97fbb5922a51fa702b3f30a2d9f206267b42f9",
+      "bytes": 30397
+    },
+    {
+      "origin": "/tmp/edhr-document-category-browser-current/result.json",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/browser-current/result.json",
+      "sha256": "1d87a3024bae340a91f17d587890d5c665f4956cc9d9da280ed8ec66550b1ac4",
+      "bytes": 7427
+    },
+    {
+      "origin": "/tmp/edhr-document-category-browser-final-old/1440-confirm-copy-cancel-failed.png",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/browser-final-old/1440-confirm-copy-cancel-failed.png",
+      "sha256": "6956775229dbe5fb0d586e94b5e47eda123675b7bd2e0c85c6930e094d2285aa",
+      "bytes": 54656
+    },
+    {
+      "origin": "/tmp/edhr-document-category-browser-final-old/1440-confirm-copy-cancel-open.png",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/browser-final-old/1440-confirm-copy-cancel-open.png",
+      "sha256": "6956775229dbe5fb0d586e94b5e47eda123675b7bd2e0c85c6930e094d2285aa",
+      "bytes": 54656
+    },
+    {
+      "origin": "/tmp/edhr-document-category-browser-final-old/1440-precheck-error-open.png",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/browser-final-old/1440-precheck-error-open.png",
+      "sha256": "6956775229dbe5fb0d586e94b5e47eda123675b7bd2e0c85c6930e094d2285aa",
+      "bytes": 54656
+    },
+    {
+      "origin": "/tmp/edhr-document-category-browser-final-old/1440-precheck-error.png",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/browser-final-old/1440-precheck-error.png",
+      "sha256": "3c58c3560f85ca799f5490dede614ec5de477256eb7db12144c2ae7cc0803814",
+      "bytes": 42387
+    },
+    {
+      "origin": "/tmp/edhr-document-category-browser-final-old/1440-referenced.png",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/browser-final-old/1440-referenced.png",
+      "sha256": "a6f394da9112f53a9f76ce7e7f56c0fc4fceb87284767ef8199cc1d4ab255dbe",
+      "bytes": 77663
+    },
+    {
+      "origin": "/tmp/edhr-document-category-browser-final-old/1440-slow-cancel.png",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/browser-final-old/1440-slow-cancel.png",
+      "sha256": "149aa81108945c1929a7ef9ba1a153e057f3092f9e4438a12c878b62fe7bdc16",
+      "bytes": 40458
+    },
+    {
+      "origin": "/tmp/edhr-document-category-browser-final-old/1440-success-feedback-failed.png",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/browser-final-old/1440-success-feedback-failed.png",
+      "sha256": "a3edce2ffdcd0ddd90267b0e6235d5dab1ff2f37120ed69f91ca942bf3e142bc",
+      "bytes": 42803
+    },
+    {
+      "origin": "/tmp/edhr-document-category-browser-final-old/1440-success-feedback-open.png",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/browser-final-old/1440-success-feedback-open.png",
+      "sha256": "6956775229dbe5fb0d586e94b5e47eda123675b7bd2e0c85c6930e094d2285aa",
+      "bytes": 54656
+    },
+    {
+      "origin": "/tmp/edhr-document-category-browser-final-old/390-confirm-copy-cancel-failed.png",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/browser-final-old/390-confirm-copy-cancel-failed.png",
+      "sha256": "4a6decd430326918dd39cbe8f4ac3dd53fe5aa2dc7eaea923a297d47adec609e",
+      "bytes": 37152
+    },
+    {
+      "origin": "/tmp/edhr-document-category-browser-final-old/390-confirm-copy-cancel-open.png",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/browser-final-old/390-confirm-copy-cancel-open.png",
+      "sha256": "4a6decd430326918dd39cbe8f4ac3dd53fe5aa2dc7eaea923a297d47adec609e",
+      "bytes": 37152
+    },
+    {
+      "origin": "/tmp/edhr-document-category-browser-final-old/390-precheck-error-open.png",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/browser-final-old/390-precheck-error-open.png",
+      "sha256": "4a6decd430326918dd39cbe8f4ac3dd53fe5aa2dc7eaea923a297d47adec609e",
+      "bytes": 37152
+    },
+    {
+      "origin": "/tmp/edhr-document-category-browser-final-old/390-precheck-error.png",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/browser-final-old/390-precheck-error.png",
+      "sha256": "ae4dab5eff60d9f156f466afc31ef365d04f71a4a9cd684cc0b45eb2a79ec41c",
+      "bytes": 30713
+    },
+    {
+      "origin": "/tmp/edhr-document-category-browser-final-old/390-referenced.png",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/browser-final-old/390-referenced.png",
+      "sha256": "61fc811b3393367c721e2ff23b55a4bc6978126ea52eabbf6085dec2152c5243",
+      "bytes": 51116
+    },
+    {
+      "origin": "/tmp/edhr-document-category-browser-final-old/390-slow-cancel.png",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/browser-final-old/390-slow-cancel.png",
+      "sha256": "cd10db8edd71d779121b4d105dfe6ee41a7937b1acc90527a7aa18a59843a9dc",
+      "bytes": 28891
+    },
+    {
+      "origin": "/tmp/edhr-document-category-browser-final-old/390-success-feedback-failed.png",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/browser-final-old/390-success-feedback-failed.png",
+      "sha256": "3ac7a5fdd1f3f1fca99b3b7577fb610495f9a6e150ae98a0aa8be9396a72ff04",
+      "bytes": 31188
+    },
+    {
+      "origin": "/tmp/edhr-document-category-browser-final-old/390-success-feedback-open.png",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/browser-final-old/390-success-feedback-open.png",
+      "sha256": "4a6decd430326918dd39cbe8f4ac3dd53fe5aa2dc7eaea923a297d47adec609e",
+      "bytes": 37152
+    },
+    {
+      "origin": "/tmp/edhr-document-category-browser-final-old/result.json",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/browser-final-old/result.json",
+      "sha256": "ac1266aec430fcc2ee4d40dd0f7545f0476ddb0f8e53ee63de9943e1534195bc",
+      "bytes": 8691
+    },
+    {
+      "origin": "/tmp/edhr-document-category-browser-final-current/1440-confirm-copy-cancel-open.png",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/browser-final-current/1440-confirm-copy-cancel-open.png",
+      "sha256": "70be51a2d1205a2a5e25fcdb2a592c8113126161b4b1453aa9a5e210582b2614",
+      "bytes": 50974
+    },
+    {
+      "origin": "/tmp/edhr-document-category-browser-final-current/1440-confirm-copy-cancel.png",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/browser-final-current/1440-confirm-copy-cancel.png",
+      "sha256": "8f7fb17efc421142c88564a378e4679ced319cb70c5f4a75f46dd339e6ac9a64",
+      "bytes": 42707
+    },
+    {
+      "origin": "/tmp/edhr-document-category-browser-final-current/1440-precheck-error-open.png",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/browser-final-current/1440-precheck-error-open.png",
+      "sha256": "70be51a2d1205a2a5e25fcdb2a592c8113126161b4b1453aa9a5e210582b2614",
+      "bytes": 50974
+    },
+    {
+      "origin": "/tmp/edhr-document-category-browser-final-current/1440-precheck-error.png",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/browser-final-current/1440-precheck-error.png",
+      "sha256": "dda96423970eabd5e6a2db046fc7b0797e725f3f34c10e505b569c8e2988b206",
+      "bytes": 42505
+    },
+    {
+      "origin": "/tmp/edhr-document-category-browser-final-current/1440-referenced.png",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/browser-final-current/1440-referenced.png",
+      "sha256": "a6f394da9112f53a9f76ce7e7f56c0fc4fceb87284767ef8199cc1d4ab255dbe",
+      "bytes": 77663
+    },
+    {
+      "origin": "/tmp/edhr-document-category-browser-final-current/1440-slow-cancel.png",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/browser-final-current/1440-slow-cancel.png",
+      "sha256": "149aa81108945c1929a7ef9ba1a153e057f3092f9e4438a12c878b62fe7bdc16",
+      "bytes": 40458
+    },
+    {
+      "origin": "/tmp/edhr-document-category-browser-final-current/1440-success-feedback-open.png",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/browser-final-current/1440-success-feedback-open.png",
+      "sha256": "70be51a2d1205a2a5e25fcdb2a592c8113126161b4b1453aa9a5e210582b2614",
+      "bytes": 50974
+    },
+    {
+      "origin": "/tmp/edhr-document-category-browser-final-current/1440-success-feedback.png",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/browser-final-current/1440-success-feedback.png",
+      "sha256": "ad8b86363a6c0bc0619f8501968d130503ce3f221b740899380afd5b9ef13c09",
+      "bytes": 40125
+    },
+    {
+      "origin": "/tmp/edhr-document-category-browser-final-current/390-confirm-copy-cancel-open.png",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/browser-final-current/390-confirm-copy-cancel-open.png",
+      "sha256": "85d66b22457c8f46fa6264b38d51ad9b13bdd0ce22b0a53dee3c708a61f2985f",
+      "bytes": 33962
+    },
+    {
+      "origin": "/tmp/edhr-document-category-browser-final-current/390-confirm-copy-cancel.png",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/browser-final-current/390-confirm-copy-cancel.png",
+      "sha256": "062271224d635091b65558e01f635fafbabfea64fe9f8770092e857f9c364300",
+      "bytes": 30871
+    },
+    {
+      "origin": "/tmp/edhr-document-category-browser-final-current/390-precheck-error-open.png",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/browser-final-current/390-precheck-error-open.png",
+      "sha256": "85d66b22457c8f46fa6264b38d51ad9b13bdd0ce22b0a53dee3c708a61f2985f",
+      "bytes": 33962
+    },
+    {
+      "origin": "/tmp/edhr-document-category-browser-final-current/390-precheck-error.png",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/browser-final-current/390-precheck-error.png",
+      "sha256": "689a638041f4f1d5f43cf27c737924ba47455a753d0d295474c303166a496e18",
+      "bytes": 30711
+    },
+    {
+      "origin": "/tmp/edhr-document-category-browser-final-current/390-referenced.png",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/browser-final-current/390-referenced.png",
+      "sha256": "61fc811b3393367c721e2ff23b55a4bc6978126ea52eabbf6085dec2152c5243",
+      "bytes": 51116
+    },
+    {
+      "origin": "/tmp/edhr-document-category-browser-final-current/390-slow-cancel.png",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/browser-final-current/390-slow-cancel.png",
+      "sha256": "cd10db8edd71d779121b4d105dfe6ee41a7937b1acc90527a7aa18a59843a9dc",
+      "bytes": 28891
+    },
+    {
+      "origin": "/tmp/edhr-document-category-browser-final-current/390-success-feedback-open.png",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/browser-final-current/390-success-feedback-open.png",
+      "sha256": "85d66b22457c8f46fa6264b38d51ad9b13bdd0ce22b0a53dee3c708a61f2985f",
+      "bytes": 33962
+    },
+    {
+      "origin": "/tmp/edhr-document-category-browser-final-current/390-success-feedback.png",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/browser-final-current/390-success-feedback.png",
+      "sha256": "5b1d5bb0218cca2e5f15bb0225fd850637fb370942ad8e0b840492dd10c64f76",
+      "bytes": 30427
+    },
+    {
+      "origin": "/tmp/edhr-document-category-browser-final-current/result.json",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/browser-final-current/result.json",
+      "sha256": "ca451e99c8cc8d959266d764298f5fe33ca13120d0e45afd37f0c3b0682b84b8",
+      "bytes": 7774
+    },
+    {
+      "origin": "/tmp/edhr-premium-ui-audit-project.py",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/official-premium-audit-project.py",
+      "sha256": "67fd35597c85a2f37dd3c566f0bd79768cbe059114edcf28074fc5afa3e0ce68",
+      "bytes": 37716
+    },
+    {
+      "path": "docs/development/branch-review-20261030-document-category/inventory/coverage.csv",
+      "sha256": "13e980f191d14955b4cd2a11cde0c467aeb00e340f11e1cd54df7061b53e7c07",
+      "bytes": 1410260
+    },
+    {
+      "path": "docs/development/branch-review-20261030-document-category/inventory/inventory-summary.json",
+      "sha256": "44328021aea029e52b2500a55282f21fd1dc6ba7118f02f9fcac09ef94521d6a",
+      "bytes": 1043
+    },
+    {
+      "path": "docs/development/branch-review-20261030-document-category/inventory/entrypoints.csv",
+      "sha256": "f0ecd4a99580fb03631a8c5cf75d1d3b31c5a82cda1affaad98c0764d3520c38",
+      "bytes": 152331
+    },
+    {
+      "path": "docs/development/branch-review-20261030-document-category/inventory/migrations.csv",
+      "sha256": "b24b16e7dd1ddc11775bf249c3ca04515553d4f9ff000b429cb8da138e6ace13",
+      "bytes": 33469
+    },
+    {
+      "path": "docs/development/branch-review-20261030-document-category/evidence/primary-product-diff.txt",
+      "sha256": "8cba1871111a35f27654375b3277a289854580e2c99e796ca67f3062821661e1",
+      "bytes": 7190
+    },
+    {
+      "path": "docs/development/branch-review-20261030-document-category/evidence/primary-summary.json",
+      "sha256": "be29dfbcc73e07c985cd80b2e57fb71b8c34d433a7277eb0c4ea02478eb94db5",
+      "bytes": 3629
+    }
+  ],
+  "ontologyArchiveMap": [
+    {
+      "origin": "/tmp/edhr-document-category-ontology-result.yaml",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/ontology-result.yaml",
+      "sha256": "e21979eb0da4f2fcd46ad249602f6f4dd29f74b35576ae47afe4e5f66da8f3bd",
+      "bytes": 3151
+    },
+    {
+      "origin": "/tmp/edhr-document-category-rule-review.json",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/rule-review.json",
+      "sha256": "abc6b29e5529444f4055ace516f2a6294466fd36b17523b0202606a04bb465f9",
+      "bytes": 10894
+    },
+    {
+      "origin": "/tmp/edhr-document-category-rule-review.md",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/rule-review.md",
+      "sha256": "68291ac2f478a2afdacdd62a1412295efbb5ef8954194d4e2ab65a154d8eb886",
+      "bytes": 2420
+    },
+    {
+      "origin": "/tmp/edhr-document-category-ontology-knowledge-test.txt",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/ontology-knowledge-test.txt",
+      "sha256": "5bf59c49e0478075e41163da8b194ba019be722a035e159aad3995e3316d21cd",
+      "bytes": 2111
+    },
+    {
+      "origin": "/tmp/edhr-document-category-ontology-knowledge-junit.xml",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/ontology-knowledge-junit.xml",
+      "sha256": "39baa87255a4b524756a4edc5819f50df3bfe2619ba73b8b52ace84190f5d7e2",
+      "bytes": 20421
+    },
+    {
+      "origin": "/tmp/edhr-document-category-ontology-history-deletion-decision.yaml",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/ontology-history-deletion-decision.yaml",
+      "sha256": "8caf2694aae0a4f0f33d9ac6c57fd82dc2447e44b8922d867433447b9a93d89f",
+      "bytes": 7592
+    },
+    {
+      "origin": "/tmp/edhr-document-category-ontology-history-deletion-confirmed.md",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/ontology-history-deletion-confirmed.md",
+      "sha256": "209acedbc8422dc1fb4052c3b70db7253fc6e6e0da751a8f305292a1b33329c4",
+      "bytes": 5612
+    },
+    {
+      "origin": "/tmp/edhr-document-category-ontology-history-deletion-architecture.md",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/ontology-history-deletion-architecture.md",
+      "sha256": "c71d09a3150cdca1da81df51a666a6d5187915a9d8893418249117ed2b508f62",
+      "bytes": 5452
+    },
+    {
+      "origin": "/tmp/edhr-document-category-ontology-history-audit-decision.yaml",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/ontology-history-audit-decision.yaml",
+      "sha256": "0e981beb87292e9fff406455c2049a2053015e871f71ba876118b71a3c9c6e5f",
+      "bytes": 4585
+    },
+    {
+      "origin": "/tmp/edhr-document-category-ontology-manifest.json",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/ontology-manifest.json",
+      "sha256": "a47ae699f48111863c4c7d0ec413461813a5c115942a8651290fc6a106882a09",
+      "bytes": 88741
+    }
+  ],
+  "summary": "primary-summary.json",
+  "skillProvenance": [
+    "skill://plugins_6a7039f8e9708191bde88207b1919bf4/frontend-design/SKILL.md",
+    "skill://plugins_6a7039f8e9708191bde88207b1919bf4/frontend-design-premium/SKILL.md"
+  ]
+}

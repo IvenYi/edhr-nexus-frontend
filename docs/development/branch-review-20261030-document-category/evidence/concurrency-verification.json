@@ -1,0 +1,259 @@
+{
+  "sourceCommit": "ac3a421e42529bdb304e2c72145ceb580ec70618",
+  "targetCommit": "d10590bd3fe8f3da4e68bcc087b2102d2c211934",
+  "workingTree": "current seven source/test hashes, no fabricated candidate SHA",
+  "totals": {
+    "tests": 401,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "h2AndExisting": 258,
+  "nativePostgres": 143,
+  "nativeCategory": 17,
+  "sourceSnapshot": [
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/DocumentManagementController.java",
+      "sha256": "60b3179e256db34d9c4b272fedad9ac833ebf7e4c98d8af735ac903e24ea44c0",
+      "bytes": 33349
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/repository/DocumentCategoryRepository.java",
+      "sha256": "0133496f0d9eedce0b11b6a2abd6eb3a8dce8bf6aae1c018f44745bb69961d9e",
+      "bytes": 1324
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/DocumentCategoryAuditPostgresTest.java",
+      "sha256": "7f6e808d8a37194925d6b2d6f2687a91d0466df7cd2ce868888eec0dbc68b72b",
+      "bytes": 18982
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/DocumentManagementControllerTest.java",
+      "sha256": "5fe92d8718ee98c14bafed728087a1a45386f7ef91056ceb837e91c41712cdde",
+      "bytes": 12510
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/DocumentWriteBoundaryIntegrationTest.java",
+      "sha256": "31c0a4d8b7886df4879cf8eb96b29ff9698d9e889633c2b7fd7cd1a27a7b0800",
+      "bytes": 13523
+    },
+    {
+      "path": "gmp-platform/frontend/scripts/test-document-category-delete-browser.mjs",
+      "sha256": "5f1b67fb3956e9d807d59f66057efef50c571e551e7e6f2ef5147fb0301bc18c",
+      "bytes": 12026
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/master-data/DocumentManagementPage.tsx",
+      "sha256": "a36c9d4f06c567ec1b2c6fe1a01395c0ed5959140db705e6731127a07047fc36",
+      "bytes": 68861
+    }
+  ],
+  "oldSourceSnapshotVerifiedAt": "ac3a421e42529bdb304e2c72145ceb580ec70618",
+  "oldOriginalRecordsVerified": 119,
+  "firstFailedQualityOriginalsVerified": 88,
+  "ontologyConcurrencyArchiveMap": [
+    {
+      "origin": "/tmp/edhr-document-category-ontology-concurrency-result.yaml",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/ontology-concurrency-result.yaml",
+      "sha256": "7532407d263119e973d4d1f2dbc7c4e4c2b9747c292711f706d8f47ae20556ea",
+      "bytes": 2702
+    },
+    {
+      "origin": "/tmp/edhr-document-category-ontology-concurrency-review.json",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/ontology-concurrency-review.json",
+      "sha256": "85e1e9f6d159f2172508c625ad34de196d85a9831e50cbafd87e29ea1ec5b671",
+      "bytes": 5256
+    },
+    {
+      "origin": "/tmp/edhr-document-category-ontology-concurrency-review.md",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/ontology-concurrency-review.md",
+      "sha256": "2dfef261aa927a3b58c5126a944ce36c6dfe51ae4e5d40237ebd84a515de5b2f",
+      "bytes": 2291
+    },
+    {
+      "origin": "/tmp/edhr-document-category-ontology-concurrency-product-diff.txt",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/ontology-concurrency-product-diff.txt",
+      "sha256": "b0ae1be6dec70fc31b0d1428fc32ce05381e5a1466246ed6aeb363730f111994",
+      "bytes": 4147
+    },
+    {
+      "origin": "/tmp/edhr-document-category-ontology-concurrency-manifest.json",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/ontology-concurrency-manifest.json",
+      "sha256": "92e241dddf34ded305baf6f86ab26dc171f134d3df23151264894bcc30fb472e",
+      "bytes": 7013
+    }
+  ],
+  "frontendReuse": {
+    "sourceCommit": "ac3a421e42529bdb304e2c72145ceb580ec70618",
+    "changedPaths": [],
+    "actualPriorBuild": true,
+    "actualPriorBrowserCurrent": 10,
+    "actualPriorBrowserOldFailed": 4,
+    "actualPriorBrowserOldPositive": 6,
+    "noRerunClaimed": true
+  },
+  "firstFailedScope": "Same audit family concurrent stale-before omission; failed original and only actually run checks retained, old native14 and premium not run by that instance.",
+  "lockScope": "Tenant custom category rows stable ID order for sort; tenant target row for rename; same original command transaction, ordinary list not write locked; no new409 policy or migration.",
+  "countingBoundary": "401 backend executions include55write/58read cross-engine repeated scenarios; three controlled concurrent pairs not all concurrency certification.",
+  "files": [
+    {
+      "origin": "/tmp/edhr-document-category-concurrency-cleanup.json",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/concurrency-cleanup.json",
+      "sha256": "637409cbceefc60b9ffbcb0ba2fbc04fc37feab0dcae29bda36af9217e25d39f",
+      "bytes": 289
+    },
+    {
+      "origin": "/tmp/edhr-document-category-concurrency-summary.json",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/concurrency-summary.json",
+      "sha256": "9a2f79c0100e5ab5b6dde50120a064aa361dbf84778670622b69a46ac2404a27",
+      "bytes": 2787
+    },
+    {
+      "origin": "/tmp/edhr-document-category-concurrency-MaterialImportIntegrationTest.xml",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/concurrency-MaterialImportIntegrationTest.xml",
+      "sha256": "44c81ddc41386c049081626f80293f3faea3b5c09502ccd6fb5cab68e6a9ebd7",
+      "bytes": 130120
+    },
+    {
+      "origin": "/tmp/edhr-document-category-concurrency-ProductProcessControllerTest.xml",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/concurrency-ProductProcessControllerTest.xml",
+      "sha256": "f9148dde91cf0cf0392a6cf89b822f31b5550d40f62233f6dfc694d305e21530",
+      "bytes": 35542
+    },
+    {
+      "origin": "/tmp/edhr-document-category-concurrency-ProcessModelingControllerTest.xml",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/concurrency-ProcessModelingControllerTest.xml",
+      "sha256": "7d65cd1a240da094cfb835f9550f0d7ffdca1e1b240e57c513a9b8a799bc1f72",
+      "bytes": 42323
+    },
+    {
+      "origin": "/tmp/edhr-document-category-concurrency-MasterDataBoundaryIntegrationTest.xml",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/concurrency-MasterDataBoundaryIntegrationTest.xml",
+      "sha256": "b5fe29c5bf4dd845b3ff3e7db5e87fd9be4814297ac247454f5d884efdaa8b67",
+      "bytes": 276543
+    },
+    {
+      "origin": "/tmp/edhr-document-category-concurrency-DocumentManagementControllerTest.xml",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/concurrency-DocumentManagementControllerTest.xml",
+      "sha256": "d80033f7faeff476bba2c6b005d75e827aa5f30154889bb1b7a4df497714dcaf",
+      "bytes": 35080
+    },
+    {
+      "origin": "/tmp/edhr-document-category-concurrency-DocumentReadPerformancePostgresTest.xml",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/concurrency-DocumentReadPerformancePostgresTest.xml",
+      "sha256": "533add545ab3a642fd916a5b39d8aba0959268ff5413270e20bd9bb37fe93a66",
+      "bytes": 289517
+    },
+    {
+      "origin": "/tmp/edhr-document-category-concurrency-DocumentReadBoundaryIntegrationTest.xml",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/concurrency-DocumentReadBoundaryIntegrationTest.xml",
+      "sha256": "d284629c2c6c124ad0fc1f3070d1e6fb8c70f3d7c7fb9b2ff1ffb7cd8216f9b0",
+      "bytes": 240511
+    },
+    {
+      "origin": "/tmp/edhr-document-category-concurrency-DocumentWriteBoundaryPostgresTest.xml",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/concurrency-DocumentWriteBoundaryPostgresTest.xml",
+      "sha256": "719b6a7cae61f24025983f1448e12fdf501be3519b69594be4bae75623d16579",
+      "bytes": 136886
+    },
+    {
+      "origin": "/tmp/edhr-document-category-concurrency-DocumentOrmSchemaIntegrationTest.xml",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/concurrency-DocumentOrmSchemaIntegrationTest.xml",
+      "sha256": "29339fd782bc2ef105dbb56adf96dab3b441174aea6506fad20648bdf9fb9b14",
+      "bytes": 58557
+    },
+    {
+      "origin": "/tmp/edhr-document-category-concurrency-DocumentWriteBoundaryIntegrationTest.xml",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/concurrency-DocumentWriteBoundaryIntegrationTest.xml",
+      "sha256": "bd120a195f7f62c1783f20f4fc7cea63b8995aa2751ca35fb34d2f36b5d2d6b1",
+      "bytes": 127086
+    },
+    {
+      "origin": "/tmp/edhr-document-category-concurrency-DocumentCategoryAuditPostgresTest.xml",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/concurrency-DocumentCategoryAuditPostgresTest.xml",
+      "sha256": "aeb0539a52f4a60af3c426f1ad516e1130d8f0d6e91f8730a23b9a8e41bfdefa",
+      "bytes": 113459
+    },
+    {
+      "origin": "/tmp/edhr-document-category-concurrency-http.jsonl",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/concurrency-http.jsonl",
+      "sha256": "9d9fbed9f85a57e9e8b9dc35c51824352069a0d0a5426f79a319234ee6f15815",
+      "bytes": 90440
+    },
+    {
+      "origin": "/tmp/edhr-document-category-concurrency-write-http.jsonl",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/concurrency-write-http.jsonl",
+      "sha256": "caee99fb6e5d8a1074f651447835114f56fed142a83ebc5fe441b62290851745",
+      "bytes": 265546
+    },
+    {
+      "origin": "/tmp/edhr-document-category-concurrency-read-http.jsonl",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/concurrency-read-http.jsonl",
+      "sha256": "d1948c85823f8e126080ad0ecb6432bcad1c5c6013113f2e1d7b965207eabfdc",
+      "bytes": 721264
+    },
+    {
+      "origin": "/tmp/edhr-document-category-concurrency-test.txt",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/concurrency-test.txt",
+      "sha256": "b25371e5315559bc861c739ac395c02bb1f4e1a92cf4c79e1fd6988a79def4a8",
+      "bytes": 1041402
+    },
+    {
+      "origin": "/tmp/edhr-document-category-concurrency-schema-setup.txt",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/concurrency-schema-setup.txt",
+      "sha256": "1212cb26088a8b17b55585cb9160960a460801064829a4aefdc9f4eaef548fd0",
+      "bytes": 5696
+    },
+    {
+      "origin": "/tmp/edhr-document-category-concurrency-db.json",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/concurrency-db.json",
+      "sha256": "89aec7b32f47fd04474f44adc70f427d424a246b64444bfa8132515d358f469b",
+      "bytes": 315
+    },
+    {
+      "origin": "/tmp/edhr-document-category-ontology-concurrency-result.yaml",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/ontology-concurrency-result.yaml",
+      "sha256": "7532407d263119e973d4d1f2dbc7c4e4c2b9747c292711f706d8f47ae20556ea",
+      "bytes": 2702
+    },
+    {
+      "origin": "/tmp/edhr-document-category-ontology-concurrency-review.json",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/ontology-concurrency-review.json",
+      "sha256": "85e1e9f6d159f2172508c625ad34de196d85a9831e50cbafd87e29ea1ec5b671",
+      "bytes": 5256
+    },
+    {
+      "origin": "/tmp/edhr-document-category-ontology-concurrency-review.md",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/ontology-concurrency-review.md",
+      "sha256": "2dfef261aa927a3b58c5126a944ce36c6dfe51ae4e5d40237ebd84a515de5b2f",
+      "bytes": 2291
+    },
+    {
+      "origin": "/tmp/edhr-document-category-ontology-concurrency-product-diff.txt",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/ontology-concurrency-product-diff.txt",
+      "sha256": "b0ae1be6dec70fc31b0d1428fc32ce05381e5a1466246ed6aeb363730f111994",
+      "bytes": 4147
+    },
+    {
+      "origin": "/tmp/edhr-document-category-ontology-concurrency-manifest.json",
+      "path": "docs/development/branch-review-20261030-document-category/evidence/ontology-concurrency-manifest.json",
+      "sha256": "92e241dddf34ded305baf6f86ab26dc171f134d3df23151264894bcc30fb472e",
+      "bytes": 7013
+    },
+    {
+      "path": "docs/development/branch-review-20261030-document-category/evidence/primary-verification.json",
+      "sha256": "ad9e6bf6e746bab78fedbd3b8307a7452a7ab4cf2defdd4123d5b792ad81133e",
+      "bytes": 42009
+    },
+    {
+      "path": "docs/development/branch-review-20261030-document-category/evidence/first-quality/archive-map.json",
+      "sha256": "b11c74660d30bf2ec86b9e16441a3b3084a1eb7149565ba1fb6294090bb4f400",
+      "bytes": 28957
+    },
+    {
+      "path": "docs/development/branch-review-20261030-document-category/evidence/original-decision-package.yaml",
+      "sha256": "88989a45bcf74ec32097869cefeda25fa1ec44fde2975cebe6993e1cd2fe6c94",
+      "bytes": 8185
+    }
+  ]
+}

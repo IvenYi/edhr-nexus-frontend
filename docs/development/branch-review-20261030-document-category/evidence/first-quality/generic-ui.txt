@@ -1,0 +1,58 @@
+
+> edhr-frontend@0.0.1 test:generic-ui
+> node --test scripts/test-generic-ui.mjs
+
+▲ [WARNING] "import.meta" is not available with the "cjs" output format and will be empty [empty-import-meta]
+
+    src/utils/sessionPolicy.ts:63:6:
+      63 │   if (import.meta.hot) {
+         ╵       ~~~~~~~~~~~
+
+  You need to set the output format to "esm" for "import.meta" to work correctly.
+
+▲ [WARNING] "import.meta" is not available with the "cjs" output format and will be empty [empty-import-meta]
+
+    src/utils/sessionPolicy.ts:64:4:
+      64 │     import.meta.hot.dispose(() => {
+         ╵     ~~~~~~~~~~~
+
+  You need to set the output format to "esm" for "import.meta" to work correctly.
+
+▲ [WARNING] "import.meta" is not available with the "cjs" output format and will be empty [empty-import-meta]
+
+    src/stores/authStore.ts:55:6:
+      55 │   if (import.meta.hot) {
+         ╵       ~~~~~~~~~~~
+
+  You need to set the output format to "esm" for "import.meta" to work correctly.
+
+▲ [WARNING] "import.meta" is not available with the "cjs" output format and will be empty [empty-import-meta]
+
+    src/stores/authStore.ts:56:4:
+      56 │     import.meta.hot.dispose(() => window.removeEventListener(AUTH_...
+         ╵     ~~~~~~~~~~~
+
+  You need to set the output format to "esm" for "import.meta" to work correctly.
+
+✔ legacy menus remain a draft until explicitly saved, including selected icons (7.032769ms)
+✔ server configuration replaces an older browser cache (3.243111ms)
+✔ failed save preserves the last saved state and the editable input (1.612437ms)
+✔ save uses the server response and still refreshes the shell when localStorage is unavailable (1.236619ms)
+✔ a delayed read cannot overwrite a completed save (2.549994ms)
+✔ reset persists target defaults and retains target production and workshop routes (2.462681ms)
+✔ legacy production execution becomes one workbench under preparation and survives save and reload (10.529263ms)
+✔ normalization preserves configured module and required-menu icons on repeated saves (2.34204ms)
+✔ equipment modeling restores saved menus and removes legacy duplicate equipment entries (1.680971ms)
+✔ equipment modeling exists in default menus and survives save and server reload (7.576421ms)
+✔ login rendering: loading (9260.751168ms)
+✔ login rendering: error (13.475957ms)
+✔ login rendering: retrying (13.330006ms)
+✔ login rendering: ready (53.559567ms)
+ℹ tests 14
+ℹ suites 0
+ℹ pass 14
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 9638.678046

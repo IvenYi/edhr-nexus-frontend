@@ -1,0 +1,51 @@
+ontologyResult:
+  result: not-applicable
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: ac3a421e42529bdb304e2c72145ceb580ec70618
+    targetBranch: edhr-dev
+    targetCommit: d10590bd3fe8f3da4e68bcc087b2102d2c211934
+    contractReadCommit: d10590bd3fe8f3da4e68bcc087b2102d2c211934
+    uncommittedContractPaths: []
+  reason: 同一排序审计家族的并发旧前值/相邻改名覆盖实现补正。真实差量规范不变；同租户custom分类固定ID锁序与目标单行锁在原事务内取得有效before，不新增409业务政策/权限/状态/迁移或知识成熟度。12既有ID无新语义，知识/契约/工具字节不变，明确复用原89。当前仅源码/语义核对，不认证主侧401或最终独立运行。
+  changedArtifacts: []
+  knowledgeSync: []
+  conflicts: []
+  questions: []
+  validationEvidence:
+  - id: validation.category-concurrency.same-audit-semantics
+    checkType: evidence-path
+    command: Read updated decision-package; compare actual controller/repository PESSIMISTIC_WRITE queries, lock
+      sequence and transaction/before capture; inspect unchanged frontend relativeac3a
+    outcome: passed
+    evidence:
+    - /tmp/edhr-document-category-ontology-concurrency-review.json
+    - /tmp/edhr-document-category-ontology-concurrency-review.md
+    - /tmp/edhr-document-category-ontology-concurrency-product-diff.txt
+    - Actualac3a plusuncommitted locking correction; no product/runtime acceptance by this role.
+  - id: validation.category-concurrency.original89-reuse
+    checkType: reference
+    command: Hash all303 current knowledge files and9original ontology artifacts; git diff d105..ac3a andworkingtree
+      across knowledge/contracts/architecture/tools; verify original89log/JUnit hashes, no rerun
+    outcome: passed
+    evidence:
+    - /tmp/edhr-document-category-ontology-concurrency-review.json
+    - /tmp/edhr-document-category-ontology-concurrency-manifest.json
+    - Original actual89/0failure/error/skip reused after unchanged-source verification; no additional89 execution.
+  - id: validation.category-concurrency.history-preserved
+    checkType: reference
+    command: Recompute all119primary records/88firstQAarchive sha256/size; compare original-decision-package byte-identical
+      toac3a package and old ontology manifest; inspect first qualityfailed/open
+    outcome: passed
+    evidence:
+    - /tmp/edhr-document-category-ontology-concurrency-review.json
+    - Original failed and initial package preserved unchanged; this NA cannot close quality findings.
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages:
+    - P1
+    - P2
+    - P3

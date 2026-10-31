@@ -1,0 +1,54 @@
+{
+  "command": [
+    "bash",
+    "/workspace/.edhr-cloud-tools/mvn-edhr",
+    "-f",
+    "gmp-platform/backend/pom.xml",
+    "-Dtest=DocumentCategoryAuditPostgresTest,DocumentReadPerformancePostgresTest,DocumentWriteBoundaryPostgresTest",
+    "-Dedhr.audit.documentReads=true",
+    "-Dedhr.audit.documentOutput=/tmp/edhr-document-category-q1-pg-read-http.jsonl",
+    "-Dedhr.audit.documentWriteOutput=/tmp/edhr-document-category-q1-pg-write-http.jsonl",
+    "-Dedhr.audit.categoryOutput=/tmp/edhr-document-category-q1-pg-category-http.jsonl",
+    "test"
+  ],
+  "exit": 0,
+  "suites": [
+    {
+      "suite": "DocumentCategoryAuditPostgresTest",
+      "tests": 14,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "DocumentReadPerformancePostgresTest",
+      "tests": 71,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "DocumentWriteBoundaryPostgresTest",
+      "tests": 55,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  ],
+  "totals": {
+    "tests": 140,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "canonicalSchemaSha256": "61560f972ef9eeeb8f69620c947b54b2326ad9341d929b19385653bec81cf99b",
+  "database": {
+    "container": "535d32d654d4c88ecb3a39a2bd1f2283fb685c758192e70bc5976ca545b7301c",
+    "name": "edhr-category-final-qa-896e74e396",
+    "owner": "document-category-final-qa-20261030",
+    "port": 32769,
+    "username": "category_q1",
+    "categoryDatabase": "edhr_document_category_test",
+    "readDatabase": "edhr_document_read_test"
+  }
+}

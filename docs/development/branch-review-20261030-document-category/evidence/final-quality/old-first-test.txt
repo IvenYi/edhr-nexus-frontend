@@ -1,0 +1,620 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] --------------------------< com.zencas:edhr >---------------------------
+[INFO] Building eDHR 0.0.1-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- exec:3.5.0:exec (dhr-print-renderer) @ edhr ---
+
+> edhr-frontend@0.0.1 build:dhr-print
+> vite build --config vite.dhr-print.config.ts
+
+vite v5.4.21 building for production...
+transforming...
+✓ 11665 modules transformed.
+rendering chunks...
+computing gzip size...
+../backend/target/generated-resources/dhr-print/renderer.js  662.41 kB │ gzip: 211.13 kB
+✓ built in 6.08s
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ edhr ---
+[INFO] Copying 6 resources from src/main/resources to target/classes
+[INFO] Copying 1 resource from target/generated-resources to target/classes
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ edhr ---
+[INFO] Recompiling the module because of changed source code.
+[INFO] Compiling 334 source files with javac [debug parameters release 21] to target/classes
+[INFO] /tmp/edhr-document-category-q2-worktree-old-first/gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/controller/AuditController.java: Some input files use or override a deprecated API.
+[INFO] /tmp/edhr-document-category-q2-worktree-old-first/gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/controller/AuditController.java: Recompile with -Xlint:deprecation for details.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ edhr ---
+[INFO] Copying 129 resources from src/test/resources to target/test-classes
+[INFO] 
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ edhr ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 153 source files with javac [debug parameters release 21] to target/test-classes
+[INFO] /tmp/edhr-document-category-q2-worktree-old-first/gmp-platform/backend/src/test/java/com/zencas/edhr/common/config/CurrentDatabaseBaselinePostgresTest.java: Some input files use or override a deprecated API.
+[INFO] /tmp/edhr-document-category-q2-worktree-old-first/gmp-platform/backend/src/test/java/com/zencas/edhr/common/config/CurrentDatabaseBaselinePostgresTest.java: Recompile with -Xlint:deprecation for details.
+[INFO] /tmp/edhr-document-category-q2-worktree-old-first/gmp-platform/backend/src/test/java/com/zencas/edhr/identity/controller/LoginLogControllerTest.java: Some input files use unchecked or unsafe operations.
+[INFO] /tmp/edhr-document-category-q2-worktree-old-first/gmp-platform/backend/src/test/java/com/zencas/edhr/identity/controller/LoginLogControllerTest.java: Recompile with -Xlint:unchecked for details.
+[INFO] 
+[INFO] --- surefire:3.2.5:test (default-test) @ edhr ---
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running com.zencas.edhr.masterdata.controller.DocumentCategoryAuditPostgresTest
+Standard Commons Logging discovery in action with spring-jcl: please remove commons-logging.jar from classpath in order to avoid potential conflicts
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.3.0)
+
+2026-10-30T08:04:58.898Z  INFO 32769 --- [edhr] [           main] .e.m.c.DocumentCategoryAuditPostgresTest : Starting DocumentCategoryAuditPostgresTest using Java 21.0.12.1 with PID 32769 (started by agent in /tmp/edhr-document-category-q2-worktree-old-first/gmp-platform/backend)
+2026-10-30T08:04:58.899Z DEBUG 32769 --- [edhr] [           main] .e.m.c.DocumentCategoryAuditPostgresTest : Running with Spring Boot v3.3.0, Spring v6.1.8
+2026-10-30T08:04:58.900Z  INFO 32769 --- [edhr] [           main] .e.m.c.DocumentCategoryAuditPostgresTest : The following 1 profile is active: "dev"
+2026-10-30T08:04:59.993Z  INFO 32769 --- [edhr] [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-10-30T08:05:00.024Z  INFO 32769 --- [edhr] [           main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.5.2.Final
+2026-10-30T08:05:00.042Z  INFO 32769 --- [edhr] [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-10-30T08:05:00.102Z  INFO 32769 --- [edhr] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-10-30T08:05:00.225Z  INFO 32769 --- [edhr] [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@1201e064
+2026-10-30T08:05:00.226Z  INFO 32769 --- [edhr] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-10-30T08:05:00.247Z  WARN 32769 --- [edhr] [           main] org.hibernate.orm.deprecation            : HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-10-30T08:05:00.389Z  INFO 32769 --- [edhr] [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-10-30T08:05:00.981Z  INFO 32769 --- [edhr] [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-10-30T08:05:00.984Z  INFO 32769 --- [edhr] [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-10-30T08:05:01.142Z  INFO 32769 --- [edhr] [           main] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+WARNING: A Java agent has been loaded dynamically (/workspace/.pr6-m2/net/bytebuddy/byte-buddy-agent/1.14.16/byte-buddy-agent-1.14.16.jar)
+WARNING: If a serviceability tool is in use, please run with -XX:+EnableDynamicAgentLoading to hide this warning
+WARNING: If a serviceability tool is not in use, please run with -Djdk.instrument.traceUsage for more information
+WARNING: Dynamic loading of agents will be disallowed by default in a future release
+2026-10-30T08:05:02.615Z  WARN 32769 --- [edhr] [           main] .s.s.UserDetailsServiceAutoConfiguration : 
+
+Using generated security password: 3ff8127b-6f90-4502-8c44-60a8500cf869
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+2026-10-30T08:05:02.620Z  INFO 32769 --- [edhr] [           main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+2026-10-30T08:05:02.822Z  INFO 32769 --- [edhr] [           main] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@4b71aee1, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@6e44d39e, org.springframework.security.web.context.SecurityContextHolderFilter@6614a420, org.springframework.security.web.header.HeaderWriterFilter@178f0865, org.springframework.web.filter.CorsFilter@1f122485, org.springframework.security.web.authentication.logout.LogoutFilter@6788168c, com.zencas.edhr.identity.security.JwtAuthenticationFilter@7dfccbf2, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@5861073f, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@1543b936, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@7fd9d86, org.springframework.security.web.session.SessionManagementFilter@40d013cb, org.springframework.security.web.access.ExceptionTranslationFilter@575e8860, org.springframework.security.web.access.intercept.AuthorizationFilter@c4fad0e]
+2026-10-30T08:05:03.194Z DEBUG 32769 --- [edhr] [           main] c.z.e.i.s.JwtAuthenticationFilter        : Filter 'com.zencas.edhr.identity.security.JwtAuthenticationFilter' configured for use
+2026-10-30T08:05:03.195Z  INFO 32769 --- [edhr] [           main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-10-30T08:05:03.195Z  INFO 32769 --- [edhr] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-10-30T08:05:03.196Z  INFO 32769 --- [edhr] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 1 ms
+2026-10-30T08:05:03.212Z  INFO 32769 --- [edhr] [           main] .e.m.c.DocumentCategoryAuditPostgresTest : Started DocumentCategoryAuditPostgresTest in 4.532 seconds (process running for 5.162)
+2026-10-30T08:05:03.342Z DEBUG 32769 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing PUT /api/v1/master-data/documents/categories/order
+2026-10-30T08:05:03.368Z DEBUG 32769 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured PUT /api/v1/master-data/documents/categories/order
+2026-10-30T08:05:03.407Z DEBUG 32769 --- [edhr] [           main] horizationManagerBeforeMethodInterceptor : Authorizing method invocation ReflectiveMethodInvocation: public com.zencas.edhr.common.dto.ApiResponse com.zencas.edhr.masterdata.controller.DocumentManagementController.reorderCategories(com.zencas.edhr.masterdata.controller.DocumentManagementController$DocumentCategoryOrderRequest); target is of class [com.zencas.edhr.masterdata.controller.DocumentManagementController]
+2026-10-30T08:05:03.415Z DEBUG 32769 --- [edhr] [           main] horizationManagerBeforeMethodInterceptor : Authorized method invocation ReflectiveMethodInvocation: public com.zencas.edhr.common.dto.ApiResponse com.zencas.edhr.masterdata.controller.DocumentManagementController.reorderCategories(com.zencas.edhr.masterdata.controller.DocumentManagementController$DocumentCategoryOrderRequest); target is of class [com.zencas.edhr.masterdata.controller.DocumentManagementController]
+2026-10-30T08:05:03.535Z  INFO 32769 --- [edhr] [           main] org.hibernate.orm.jdbc.batch             : HHH100503: On release of batch it still contained JDBC statements
+2026-10-30T08:05:03.535Z ERROR 32769 --- [edhr] [           main] org.hibernate.orm.jdbc.batch             : HHH100501: Exception executing batch [java.sql.BatchUpdateException: Batch entry 1 insert into audit_event (action,content_after,content_before,created_at,data_summary,entity_id,entity_type,function_name,ip_address,menu_name,module_name,operator_account,operator_id,operator_name,reason,snapshot_hash,source,tenant_id,id) values (('UPDATE'),('{"排序":30}'),('{"排序":40}'),('2026-10-30 08:05:03.501295+00'),('文档管理 #202'),('202'),('DOCUMENT_CATEGORY'),('调整排序'),('127.0.0.1'),('工艺建模 · 文档管理'),('数据'),('fail-audit'),('category-auditor'),('分类审查'),(NULL),('11cbbdaf01c576f31ea0f4be03e8ceff33850fb24e5b71d0211d06f9f1683405'),('UI'),('default'),('391527807324262400'::int8)) was aborted: ERROR: new row for relation "audit_event" violates check constraint "ck_category_audit_failure"
+  Detail: Failing row contains (391527807324262400, default, DOCUMENT_CATEGORY, 202, UPDATE, {"排序": 40}, {"排序": 30}, category-auditor, 分类审查, UI, null, 127.0.0.1, 2026-10-30 08:05:03.501295, fail-audit, 数据, 工艺建模 · 文档管理, 调整排序, 文档管理 #202, 11cbbdaf01c576f31ea0f4be03e8ceff33850fb24e5b71d0211d06f9f1683405).  Call getNextException to see other errors in the batch.], SQL: insert into audit_event (action,content_after,content_before,created_at,data_summary,entity_id,entity_type,function_name,ip_address,menu_name,module_name,operator_account,operator_id,operator_name,reason,snapshot_hash,source,tenant_id,id) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+2026-10-30T08:05:03.536Z  WARN 32769 --- [edhr] [           main] o.h.engine.jdbc.spi.SqlExceptionHelper   : SQL Error: 0, SQLState: 23514
+2026-10-30T08:05:03.536Z ERROR 32769 --- [edhr] [           main] o.h.engine.jdbc.spi.SqlExceptionHelper   : Batch entry 1 insert into audit_event (action,content_after,content_before,created_at,data_summary,entity_id,entity_type,function_name,ip_address,menu_name,module_name,operator_account,operator_id,operator_name,reason,snapshot_hash,source,tenant_id,id) values (('UPDATE'),('{"排序":30}'),('{"排序":40}'),('2026-10-30 08:05:03.501295+00'),('文档管理 #202'),('202'),('DOCUMENT_CATEGORY'),('调整排序'),('127.0.0.1'),('工艺建模 · 文档管理'),('数据'),('fail-audit'),('category-auditor'),('分类审查'),(NULL),('11cbbdaf01c576f31ea0f4be03e8ceff33850fb24e5b71d0211d06f9f1683405'),('UI'),('default'),('391527807324262400'::int8)) was aborted: ERROR: new row for relation "audit_event" violates check constraint "ck_category_audit_failure"
+  Detail: Failing row contains (391527807324262400, default, DOCUMENT_CATEGORY, 202, UPDATE, {"排序": 40}, {"排序": 30}, category-auditor, 分类审查, UI, null, 127.0.0.1, 2026-10-30 08:05:03.501295, fail-audit, 数据, 工艺建模 · 文档管理, 调整排序, 文档管理 #202, 11cbbdaf01c576f31ea0f4be03e8ceff33850fb24e5b71d0211d06f9f1683405).  Call getNextException to see other errors in the batch.
+2026-10-30T08:05:03.537Z ERROR 32769 --- [edhr] [           main] o.h.engine.jdbc.spi.SqlExceptionHelper   : ERROR: new row for relation "audit_event" violates check constraint "ck_category_audit_failure"
+  Detail: Failing row contains (391527807324262400, default, DOCUMENT_CATEGORY, 202, UPDATE, {"排序": 40}, {"排序": 30}, category-auditor, 分类审查, UI, null, 127.0.0.1, 2026-10-30 08:05:03.501295, fail-audit, 数据, 工艺建模 · 文档管理, 调整排序, 文档管理 #202, 11cbbdaf01c576f31ea0f4be03e8ceff33850fb24e5b71d0211d06f9f1683405).
+2026-10-30T08:05:03.542Z ERROR 32769 --- [edhr] [           main] c.z.e.c.e.GlobalExceptionHandler         : Unhandled exception at path=/api/v1/master-data/documents/categories/order: could not execute batch [Batch entry 1 insert into audit_event (action,content_after,content_before,created_at,data_summary,entity_id,entity_type,function_name,ip_address,menu_name,module_name,operator_account,operator_id,operator_name,reason,snapshot_hash,source,tenant_id,id) values (('UPDATE'),('{"排序":30}'),('{"排序":40}'),('2026-10-30 08:05:03.501295+00'),('文档管理 #202'),('202'),('DOCUMENT_CATEGORY'),('调整排序'),('127.0.0.1'),('工艺建模 · 文档管理'),('数据'),('fail-audit'),('category-auditor'),('分类审查'),(NULL),('11cbbdaf01c576f31ea0f4be03e8ceff33850fb24e5b71d0211d06f9f1683405'),('UI'),('default'),('391527807324262400'::int8)) was aborted: ERROR: new row for relation "audit_event" violates check constraint "ck_category_audit_failure"
+  Detail: Failing row contains (391527807324262400, default, DOCUMENT_CATEGORY, 202, UPDATE, {"排序": 40}, {"排序": 30}, category-auditor, 分类审查, UI, null, 127.0.0.1, 2026-10-30 08:05:03.501295, fail-audit, 数据, 工艺建模 · 文档管理, 调整排序, 文档管理 #202, 11cbbdaf01c576f31ea0f4be03e8ceff33850fb24e5b71d0211d06f9f1683405).  Call getNextException to see other errors in the batch.] [insert into audit_event (action,content_after,content_before,created_at,data_summary,entity_id,entity_type,function_name,ip_address,menu_name,module_name,operator_account,operator_id,operator_name,reason,snapshot_hash,source,tenant_id,id) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)]
+
+org.hibernate.exception.ConstraintViolationException: could not execute batch [Batch entry 1 insert into audit_event (action,content_after,content_before,created_at,data_summary,entity_id,entity_type,function_name,ip_address,menu_name,module_name,operator_account,operator_id,operator_name,reason,snapshot_hash,source,tenant_id,id) values (('UPDATE'),('{"排序":30}'),('{"排序":40}'),('2026-10-30 08:05:03.501295+00'),('文档管理 #202'),('202'),('DOCUMENT_CATEGORY'),('调整排序'),('127.0.0.1'),('工艺建模 · 文档管理'),('数据'),('fail-audit'),('category-auditor'),('分类审查'),(NULL),('11cbbdaf01c576f31ea0f4be03e8ceff33850fb24e5b71d0211d06f9f1683405'),('UI'),('default'),('391527807324262400'::int8)) was aborted: ERROR: new row for relation "audit_event" violates check constraint "ck_category_audit_failure"
+  Detail: Failing row contains (391527807324262400, default, DOCUMENT_CATEGORY, 202, UPDATE, {"排序": 40}, {"排序": 30}, category-auditor, 分类审查, UI, null, 127.0.0.1, 2026-10-30 08:05:03.501295, fail-audit, 数据, 工艺建模 · 文档管理, 调整排序, 文档管理 #202, 11cbbdaf01c576f31ea0f4be03e8ceff33850fb24e5b71d0211d06f9f1683405).  Call getNextException to see other errors in the batch.] [insert into audit_event (action,content_after,content_before,created_at,data_summary,entity_id,entity_type,function_name,ip_address,menu_name,module_name,operator_account,operator_id,operator_name,reason,snapshot_hash,source,tenant_id,id) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)]
+	at org.hibernate.exception.internal.SQLStateConversionDelegate.convert(SQLStateConversionDelegate.java:97) ~[hibernate-core-6.5.2.Final.jar:6.5.2.Final]
+	at org.hibernate.exception.internal.StandardSQLExceptionConverter.convert(StandardSQLExceptionConverter.java:58) ~[hibernate-core-6.5.2.Final.jar:6.5.2.Final]
+	at org.hibernate.engine.jdbc.spi.SqlExceptionHelper.convert(SqlExceptionHelper.java:108) ~[hibernate-core-6.5.2.Final.jar:6.5.2.Final]
+	at org.hibernate.engine.jdbc.batch.internal.BatchImpl.lambda$performExecution$2(BatchImpl.java:294) ~[hibernate-core-6.5.2.Final.jar:6.5.2.Final]
+	at org.hibernate.engine.jdbc.mutation.internal.PreparedStatementGroupSingleTable.forEachStatement(PreparedStatementGroupSingleTable.java:67) ~[hibernate-core-6.5.2.Final.jar:6.5.2.Final]
+	at org.hibernate.engine.jdbc.batch.internal.BatchImpl.performExecution(BatchImpl.java:264) ~[hibernate-core-6.5.2.Final.jar:6.5.2.Final]
+	at org.hibernate.engine.jdbc.batch.internal.BatchImpl.execute(BatchImpl.java:242) ~[hibernate-core-6.5.2.Final.jar:6.5.2.Final]
+	at org.hibernate.engine.jdbc.internal.JdbcCoordinatorImpl.executeBatch(JdbcCoordinatorImpl.java:188) ~[hibernate-core-6.5.2.Final.jar:6.5.2.Final]
+	at org.hibernate.engine.spi.ActionQueue.executeActions(ActionQueue.java:662) ~[hibernate-core-6.5.2.Final.jar:6.5.2.Final]
+	at org.hibernate.engine.spi.ActionQueue.executeActions(ActionQueue.java:499) ~[hibernate-core-6.5.2.Final.jar:6.5.2.Final]
+	at org.hibernate.event.internal.AbstractFlushingEventListener.performExecutions(AbstractFlushingEventListener.java:371) ~[hibernate-core-6.5.2.Final.jar:6.5.2.Final]
+	at org.hibernate.event.internal.DefaultFlushEventListener.onFlush(DefaultFlushEventListener.java:41) ~[hibernate-core-6.5.2.Final.jar:6.5.2.Final]
+	at org.hibernate.event.service.internal.EventListenerGroupImpl.fireEventOnEachListener(EventListenerGroupImpl.java:127) ~[hibernate-core-6.5.2.Final.jar:6.5.2.Final]
+	at org.hibernate.internal.SessionImpl.doFlush(SessionImpl.java:1425) ~[hibernate-core-6.5.2.Final.jar:6.5.2.Final]
+	at org.hibernate.internal.SessionImpl.flush(SessionImpl.java:1411) ~[hibernate-core-6.5.2.Final.jar:6.5.2.Final]
+	at org.hibernate.query.sql.internal.NativeQueryImpl.prepareForExecution(NativeQueryImpl.java:601) ~[hibernate-core-6.5.2.Final.jar:6.5.2.Final]
+	at org.hibernate.query.spi.AbstractSelectionQuery.beforeQuery(AbstractSelectionQuery.java:452) ~[hibernate-core-6.5.2.Final.jar:6.5.2.Final]
+	at org.hibernate.query.spi.AbstractSelectionQuery.beforeQueryHandlingFetchProfiles(AbstractSelectionQuery.java:439) ~[hibernate-core-6.5.2.Final.jar:6.5.2.Final]
+	at org.hibernate.query.spi.AbstractSelectionQuery.list(AbstractSelectionQuery.java:420) ~[hibernate-core-6.5.2.Final.jar:6.5.2.Final]
+	at org.hibernate.query.Query.getResultList(Query.java:120) ~[hibernate-core-6.5.2.Final.jar:6.5.2.Final]
+	at org.springframework.data.jpa.repository.query.JpaQueryExecution$CollectionExecution.doExecute(JpaQueryExecution.java:129) ~[spring-data-jpa-3.3.0.jar:3.3.0]
+	at org.springframework.data.jpa.repository.query.JpaQueryExecution.execute(JpaQueryExecution.java:92) ~[spring-data-jpa-3.3.0.jar:3.3.0]
+	at org.springframework.data.jpa.repository.query.AbstractJpaQuery.doExecute(AbstractJpaQuery.java:152) ~[spring-data-jpa-3.3.0.jar:3.3.0]
+	at org.springframework.data.jpa.repository.query.AbstractJpaQuery.execute(AbstractJpaQuery.java:140) ~[spring-data-jpa-3.3.0.jar:3.3.0]
+	at org.springframework.data.repository.core.support.RepositoryMethodInvoker.doInvoke(RepositoryMethodInvoker.java:170) ~[spring-data-commons-3.3.0.jar:3.3.0]
+	at org.springframework.data.repository.core.support.RepositoryMethodInvoker.invoke(RepositoryMethodInvoker.java:158) ~[spring-data-commons-3.3.0.jar:3.3.0]
+	at org.springframework.data.repository.core.support.QueryExecutorMethodInterceptor.doInvoke(QueryExecutorMethodInterceptor.java:164) ~[spring-data-commons-3.3.0.jar:3.3.0]
+	at org.springframework.data.repository.core.support.QueryExecutorMethodInterceptor.invoke(QueryExecutorMethodInterceptor.java:143) ~[spring-data-commons-3.3.0.jar:3.3.0]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184) ~[spring-aop-6.1.8.jar:6.1.8]
+	at org.springframework.data.projection.DefaultMethodInvokingMethodInterceptor.invoke(DefaultMethodInvokingMethodInterceptor.java:70) ~[spring-data-commons-3.3.0.jar:3.3.0]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184) ~[spring-aop-6.1.8.jar:6.1.8]
+	at org.springframework.data.jpa.repository.support.CrudMethodMetadataPostProcessor$CrudMethodMetadataPopulatingMethodInterceptor.invoke(CrudMethodMetadataPostProcessor.java:136) ~[spring-data-jpa-3.3.0.jar:3.3.0]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184) ~[spring-aop-6.1.8.jar:6.1.8]
+	at org.springframework.aop.interceptor.ExposeInvocationInterceptor.invoke(ExposeInvocationInterceptor.java:97) ~[spring-aop-6.1.8.jar:6.1.8]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184) ~[spring-aop-6.1.8.jar:6.1.8]
+	at org.springframework.aop.framework.JdkDynamicAopProxy.invoke(JdkDynamicAopProxy.java:223) ~[spring-aop-6.1.8.jar:6.1.8]
+	at jdk.proxy2/jdk.proxy2.$Proxy148.countGroupedByCategory(Unknown Source) ~[na:na]
+	at com.zencas.edhr.masterdata.controller.DocumentManagementController.toDocumentCategoryResponses(DocumentManagementController.java:404) ~[classes/:na]
+	at com.zencas.edhr.masterdata.controller.DocumentManagementController.reorderCategories(DocumentManagementController.java:161) ~[classes/:na]
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580) ~[na:na]
+	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:354) ~[spring-aop-6.1.8.jar:6.1.8]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.invokeJoinpoint(ReflectiveMethodInvocation.java:196) ~[spring-aop-6.1.8.jar:6.1.8]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163) ~[spring-aop-6.1.8.jar:6.1.8]
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:768) ~[spring-aop-6.1.8.jar:6.1.8]
+	at org.springframework.transaction.interceptor.TransactionInterceptor$1.proceedWithInvocation(TransactionInterceptor.java:123) ~[spring-tx-6.1.8.jar:6.1.8]
+	at org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:392) ~[spring-tx-6.1.8.jar:6.1.8]
+	at org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:119) ~[spring-tx-6.1.8.jar:6.1.8]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184) ~[spring-aop-6.1.8.jar:6.1.8]
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:768) ~[spring-aop-6.1.8.jar:6.1.8]
+	at org.springframework.security.authorization.method.AuthorizationManagerBeforeMethodInterceptor.proceed(AuthorizationManagerBeforeMethodInterceptor.java:269) ~[spring-security-core-6.3.0.jar:6.3.0]
+	at org.springframework.security.authorization.method.AuthorizationManagerBeforeMethodInterceptor.attemptAuthorization(AuthorizationManagerBeforeMethodInterceptor.java:264) ~[spring-security-core-6.3.0.jar:6.3.0]
+	at org.springframework.security.authorization.method.AuthorizationManagerBeforeMethodInterceptor.invoke(AuthorizationManagerBeforeMethodInterceptor.java:197) ~[spring-security-core-6.3.0.jar:6.3.0]
+	at org.springframework.security.config.annotation.method.configuration.PrePostMethodSecurityConfiguration$DeferringMethodInterceptor.invoke(PrePostMethodSecurityConfiguration.java:200) ~[spring-security-config-6.3.0.jar:6.3.0]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184) ~[spring-aop-6.1.8.jar:6.1.8]
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:768) ~[spring-aop-6.1.8.jar:6.1.8]
+	at org.springframework.aop.interceptor.ExposeInvocationInterceptor.invoke(ExposeInvocationInterceptor.java:97) ~[spring-aop-6.1.8.jar:6.1.8]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184) ~[spring-aop-6.1.8.jar:6.1.8]
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:768) ~[spring-aop-6.1.8.jar:6.1.8]
+	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:720) ~[spring-aop-6.1.8.jar:6.1.8]
+	at com.zencas.edhr.masterdata.controller.DocumentManagementController$$SpringCGLIB$$0.reorderCategories(<generated>) ~[classes/:na]
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580) ~[na:na]
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:255) ~[spring-web-6.1.8.jar:6.1.8]
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:188) ~[spring-web-6.1.8.jar:6.1.8]
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:118) ~[spring-webmvc-6.1.8.jar:6.1.8]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:926) ~[spring-webmvc-6.1.8.jar:6.1.8]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:831) ~[spring-webmvc-6.1.8.jar:6.1.8]
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87) ~[spring-webmvc-6.1.8.jar:6.1.8]
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1089) ~[spring-webmvc-6.1.8.jar:6.1.8]
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:979) ~[spring-webmvc-6.1.8.jar:6.1.8]
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014) ~[spring-webmvc-6.1.8.jar:6.1.8]
+	at org.springframework.web.servlet.FrameworkServlet.doPut(FrameworkServlet.java:925) ~[spring-webmvc-6.1.8.jar:6.1.8]
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:593) ~[tomcat-embed-core-10.1.24.jar:6.0]
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885) ~[spring-webmvc-6.1.8.jar:6.1.8]
+	at org.springframework.test.web.servlet.TestDispatcherServlet.service(TestDispatcherServlet.java:72) ~[spring-test-6.1.8.jar:6.1.8]
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658) ~[tomcat-embed-core-10.1.24.jar:6.0]
+	at org.springframework.mock.web.MockFilterChain$ServletFilterProxy.doFilter(MockFilterChain.java:165) ~[spring-test-6.1.8.jar:6.1.8]
+	at org.springframework.mock.web.MockFilterChain.doFilter(MockFilterChain.java:132) ~[spring-test-6.1.8.jar:6.1.8]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:110) ~[spring-web-6.1.8.jar:6.1.8]
+	at org.springframework.test.web.servlet.setup.MockMvcFilterDecorator.doFilter(MockMvcFilterDecorator.java:151) ~[spring-test-6.1.8.jar:6.1.8]
+	at org.springframework.mock.web.MockFilterChain.doFilter(MockFilterChain.java:132) ~[spring-test-6.1.8.jar:6.1.8]
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:108) ~[spring-web-6.1.8.jar:6.1.8]
+	at org.springframework.security.web.FilterChainProxy.lambda$doFilterInternal$3(FilterChainProxy.java:231) ~[spring-security-web-6.3.0.jar:6.3.0]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:365) ~[spring-security-web-6.3.0.jar:6.3.0]
+	at org.springframework.security.web.access.intercept.AuthorizationFilter.doFilter(AuthorizationFilter.java:100) ~[spring-security-web-6.3.0.jar:6.3.0]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.3.0.jar:6.3.0]
+	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:126) ~[spring-security-web-6.3.0.jar:6.3.0]
+	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:120) ~[spring-security-web-6.3.0.jar:6.3.0]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.3.0.jar:6.3.0]
+	at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:131) ~[spring-security-web-6.3.0.jar:6.3.0]
+	at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:85) ~[spring-security-web-6.3.0.jar:6.3.0]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.3.0.jar:6.3.0]
+	at org.springframework.security.web.authentication.AnonymousAuthenticationFilter.doFilter(AnonymousAuthenticationFilter.java:100) ~[spring-security-web-6.3.0.jar:6.3.0]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.3.0.jar:6.3.0]
+	at org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter.doFilter(SecurityContextHolderAwareRequestFilter.java:179) ~[spring-security-web-6.3.0.jar:6.3.0]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.3.0.jar:6.3.0]
+	at org.springframework.security.web.savedrequest.RequestCacheAwareFilter.doFilter(RequestCacheAwareFilter.java:63) ~[spring-security-web-6.3.0.jar:6.3.0]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.3.0.jar:6.3.0]
+	at com.zencas.edhr.identity.security.JwtAuthenticationFilter.doFilterInternal(JwtAuthenticationFilter.java:50) ~[classes/:na]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.8.jar:6.1.8]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.3.0.jar:6.3.0]
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:107) ~[spring-security-web-6.3.0.jar:6.3.0]
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:93) ~[spring-security-web-6.3.0.jar:6.3.0]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.3.0.jar:6.3.0]
+	at org.springframework.web.filter.CorsFilter.doFilterInternal(CorsFilter.java:91) ~[spring-web-6.1.8.jar:6.1.8]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.8.jar:6.1.8]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.3.0.jar:6.3.0]
+	at org.springframework.security.web.header.HeaderWriterFilter.doHeadersAfter(HeaderWriterFilter.java:90) ~[spring-security-web-6.3.0.jar:6.3.0]
+	at org.springframework.security.web.header.HeaderWriterFilter.doFilterInternal(HeaderWriterFilter.java:75) ~[spring-security-web-6.3.0.jar:6.3.0]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.8.jar:6.1.8]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.3.0.jar:6.3.0]
+	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:82) ~[spring-security-web-6.3.0.jar:6.3.0]
+	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:69) ~[spring-security-web-6.3.0.jar:6.3.0]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.3.0.jar:6.3.0]
+	at org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter.doFilterInternal(WebAsyncManagerIntegrationFilter.java:62) ~[spring-security-web-6.3.0.jar:6.3.0]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.8.jar:6.1.8]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.3.0.jar:6.3.0]
+	at org.springframework.security.web.session.DisableEncodeUrlFilter.doFilterInternal(DisableEncodeUrlFilter.java:42) ~[spring-security-web-6.3.0.jar:6.3.0]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.8.jar:6.1.8]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.3.0.jar:6.3.0]
+	at org.springframework.security.web.FilterChainProxy.doFilterInternal(FilterChainProxy.java:233) ~[spring-security-web-6.3.0.jar:6.3.0]
+	at org.springframework.security.web.FilterChainProxy.doFilter(FilterChainProxy.java:191) ~[spring-security-web-6.3.0.jar:6.3.0]
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113) ~[spring-web-6.1.8.jar:6.1.8]
+	at org.springframework.web.servlet.handler.HandlerMappingIntrospector.lambda$createCacheFilter$3(HandlerMappingIntrospector.java:195) ~[spring-webmvc-6.1.8.jar:6.1.8]
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113) ~[spring-web-6.1.8.jar:6.1.8]
+	at org.springframework.web.filter.CompositeFilter.doFilter(CompositeFilter.java:74) ~[spring-web-6.1.8.jar:6.1.8]
+	at org.springframework.security.config.annotation.web.configuration.WebMvcSecurityConfiguration$CompositeFilterChainProxy.doFilter(WebMvcSecurityConfiguration.java:230) ~[spring-security-config-6.3.0.jar:6.3.0]
+	at org.springframework.web.filter.DelegatingFilterProxy.invokeDelegate(DelegatingFilterProxy.java:352) ~[spring-web-6.1.8.jar:6.1.8]
+	at org.springframework.web.filter.DelegatingFilterProxy.doFilter(DelegatingFilterProxy.java:268) ~[spring-web-6.1.8.jar:6.1.8]
+	at org.springframework.test.web.servlet.setup.MockMvcFilterDecorator.doFilter(MockMvcFilterDecorator.java:151) ~[spring-test-6.1.8.jar:6.1.8]
+	at org.springframework.mock.web.MockFilterChain.doFilter(MockFilterChain.java:132) ~[spring-test-6.1.8.jar:6.1.8]
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100) ~[spring-web-6.1.8.jar:6.1.8]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.8.jar:6.1.8]
+	at org.springframework.test.web.servlet.setup.MockMvcFilterDecorator.doFilter(MockMvcFilterDecorator.java:151) ~[spring-test-6.1.8.jar:6.1.8]
+	at org.springframework.mock.web.MockFilterChain.doFilter(MockFilterChain.java:132) ~[spring-test-6.1.8.jar:6.1.8]
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93) ~[spring-web-6.1.8.jar:6.1.8]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.8.jar:6.1.8]
+	at org.springframework.test.web.servlet.setup.MockMvcFilterDecorator.doFilter(MockMvcFilterDecorator.java:151) ~[spring-test-6.1.8.jar:6.1.8]
+	at org.springframework.mock.web.MockFilterChain.doFilter(MockFilterChain.java:132) ~[spring-test-6.1.8.jar:6.1.8]
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201) ~[spring-web-6.1.8.jar:6.1.8]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.8.jar:6.1.8]
+	at org.springframework.test.web.servlet.setup.MockMvcFilterDecorator.doFilter(MockMvcFilterDecorator.java:151) ~[spring-test-6.1.8.jar:6.1.8]
+	at org.springframework.mock.web.MockFilterChain.doFilter(MockFilterChain.java:132) ~[spring-test-6.1.8.jar:6.1.8]
+	at org.springframework.test.web.servlet.MockMvc.perform(MockMvc.java:201) ~[spring-test-6.1.8.jar:6.1.8]
+	at com.zencas.edhr.masterdata.controller.DocumentCategoryAuditPostgresTest.perform(DocumentCategoryAuditPostgresTest.java:289) ~[test-classes/:na]
+	at com.zencas.edhr.masterdata.controller.DocumentCategoryAuditPostgresTest.failureOnTheSecondCategoryAuditRollsBackBothOrdersAndAllAuditRows(DocumentCategoryAuditPostgresTest.java:192) ~[test-classes/:na]
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580) ~[na:na]
+	at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:728) ~[junit-platform-commons-1.10.2.jar:1.10.2]
+	at org.junit.jupiter.engine.execution.MethodInvocation.proceed(MethodInvocation.java:60) ~[junit-jupiter-engine-5.10.2.jar:5.10.2]
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain$ValidatingInvocation.proceed(InvocationInterceptorChain.java:131) ~[junit-jupiter-engine-5.10.2.jar:5.10.2]
+	at org.junit.jupiter.engine.extension.TimeoutExtension.intercept(TimeoutExtension.java:156) ~[junit-jupiter-engine-5.10.2.jar:5.10.2]
+	at org.junit.jupiter.engine.extension.TimeoutExtension.interceptTestableMethod(TimeoutExtension.java:147) ~[junit-jupiter-engine-5.10.2.jar:5.10.2]
+	at org.junit.jupiter.engine.extension.TimeoutExtension.interceptTestMethod(TimeoutExtension.java:86) ~[junit-jupiter-engine-5.10.2.jar:5.10.2]
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker$ReflectiveInterceptorCall.lambda$ofVoidMethod$0(InterceptingExecutableInvoker.java:103) ~[junit-jupiter-engine-5.10.2.jar:5.10.2]
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker.lambda$invoke$0(InterceptingExecutableInvoker.java:93) ~[junit-jupiter-engine-5.10.2.jar:5.10.2]
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain$InterceptedInvocation.proceed(InvocationInterceptorChain.java:106) ~[junit-jupiter-engine-5.10.2.jar:5.10.2]
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain.proceed(InvocationInterceptorChain.java:64) ~[junit-jupiter-engine-5.10.2.jar:5.10.2]
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain.chainAndInvoke(InvocationInterceptorChain.java:45) ~[junit-jupiter-engine-5.10.2.jar:5.10.2]
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain.invoke(InvocationInterceptorChain.java:37) ~[junit-jupiter-engine-5.10.2.jar:5.10.2]
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker.invoke(InterceptingExecutableInvoker.java:92) ~[junit-jupiter-engine-5.10.2.jar:5.10.2]
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker.invoke(InterceptingExecutableInvoker.java:86) ~[junit-jupiter-engine-5.10.2.jar:5.10.2]
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.lambda$invokeTestMethod$7(TestMethodTestDescriptor.java:218) ~[junit-jupiter-engine-5.10.2.jar:5.10.2]
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73) ~[junit-platform-engine-1.10.2.jar:1.10.2]
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.invokeTestMethod(TestMethodTestDescriptor.java:214) ~[junit-jupiter-engine-5.10.2.jar:5.10.2]
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.execute(TestMethodTestDescriptor.java:139) ~[junit-jupiter-engine-5.10.2.jar:5.10.2]
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.execute(TestMethodTestDescriptor.java:69) ~[junit-jupiter-engine-5.10.2.jar:5.10.2]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:151) ~[junit-platform-engine-1.10.2.jar:1.10.2]
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73) ~[junit-platform-engine-1.10.2.jar:1.10.2]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:141) ~[junit-platform-engine-1.10.2.jar:1.10.2]
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137) ~[junit-platform-engine-1.10.2.jar:1.10.2]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:139) ~[junit-platform-engine-1.10.2.jar:1.10.2]
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73) ~[junit-platform-engine-1.10.2.jar:1.10.2]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:138) ~[junit-platform-engine-1.10.2.jar:1.10.2]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:95) ~[junit-platform-engine-1.10.2.jar:1.10.2]
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596) ~[na:na]
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:41) ~[junit-platform-engine-1.10.2.jar:1.10.2]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:155) ~[junit-platform-engine-1.10.2.jar:1.10.2]
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73) ~[junit-platform-engine-1.10.2.jar:1.10.2]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:141) ~[junit-platform-engine-1.10.2.jar:1.10.2]
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137) ~[junit-platform-engine-1.10.2.jar:1.10.2]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:139) ~[junit-platform-engine-1.10.2.jar:1.10.2]
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73) ~[junit-platform-engine-1.10.2.jar:1.10.2]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:138) ~[junit-platform-engine-1.10.2.jar:1.10.2]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:95) ~[junit-platform-engine-1.10.2.jar:1.10.2]
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596) ~[na:na]
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:41) ~[junit-platform-engine-1.10.2.jar:1.10.2]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:155) ~[junit-platform-engine-1.10.2.jar:1.10.2]
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73) ~[junit-platform-engine-1.10.2.jar:1.10.2]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:141) ~[junit-platform-engine-1.10.2.jar:1.10.2]
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137) ~[junit-platform-engine-1.10.2.jar:1.10.2]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:139) ~[junit-platform-engine-1.10.2.jar:1.10.2]
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73) ~[junit-platform-engine-1.10.2.jar:1.10.2]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:138) ~[junit-platform-engine-1.10.2.jar:1.10.2]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:95) ~[junit-platform-engine-1.10.2.jar:1.10.2]
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.submit(SameThreadHierarchicalTestExecutorService.java:35) ~[junit-platform-engine-1.10.2.jar:1.10.2]
+	at org.junit.platform.engine.support.hierarchical.HierarchicalTestExecutor.execute(HierarchicalTestExecutor.java:57) ~[junit-platform-engine-1.10.2.jar:1.10.2]
+	at org.junit.platform.engine.support.hierarchical.HierarchicalTestEngine.execute(HierarchicalTestEngine.java:54) ~[junit-platform-engine-1.10.2.jar:1.10.2]
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:198) ~[junit-platform-launcher-1.10.2.jar:1.10.2]
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:169) ~[junit-platform-launcher-1.10.2.jar:1.10.2]
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:93) ~[junit-platform-launcher-1.10.2.jar:1.10.2]
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.lambda$execute$0(EngineExecutionOrchestrator.java:58) ~[junit-platform-launcher-1.10.2.jar:1.10.2]
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.withInterceptedStreams(EngineExecutionOrchestrator.java:141) ~[junit-platform-launcher-1.10.2.jar:1.10.2]
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:57) ~[junit-platform-launcher-1.10.2.jar:1.10.2]
+	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:103) ~[junit-platform-launcher-1.10.2.jar:1.10.2]
+	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:85) ~[junit-platform-launcher-1.10.2.jar:1.10.2]
+	at org.junit.platform.launcher.core.DelegatingLauncher.execute(DelegatingLauncher.java:47) ~[junit-platform-launcher-1.10.2.jar:1.10.2]
+	at org.apache.maven.surefire.junitplatform.LazyLauncher.execute(LazyLauncher.java:56) ~[surefire-junit-platform-3.2.5.jar:3.2.5]
+	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.execute(JUnitPlatformProvider.java:184) ~[surefire-junit-platform-3.2.5.jar:3.2.5]
+	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.invokeAllTests(JUnitPlatformProvider.java:148) ~[surefire-junit-platform-3.2.5.jar:3.2.5]
+	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.invoke(JUnitPlatformProvider.java:122) ~[surefire-junit-platform-3.2.5.jar:3.2.5]
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:385) ~[surefire-booter-3.2.5.jar:3.2.5]
+	at org.apache.maven.surefire.booter.ForkedBooter.execute(ForkedBooter.java:162) ~[surefire-booter-3.2.5.jar:3.2.5]
+	at org.apache.maven.surefire.booter.ForkedBooter.run(ForkedBooter.java:507) ~[surefire-booter-3.2.5.jar:3.2.5]
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:495) ~[surefire-booter-3.2.5.jar:3.2.5]
+Caused by: java.sql.BatchUpdateException: Batch entry 1 insert into audit_event (action,content_after,content_before,created_at,data_summary,entity_id,entity_type,function_name,ip_address,menu_name,module_name,operator_account,operator_id,operator_name,reason,snapshot_hash,source,tenant_id,id) values (('UPDATE'),('{"排序":30}'),('{"排序":40}'),('2026-10-30 08:05:03.501295+00'),('文档管理 #202'),('202'),('DOCUMENT_CATEGORY'),('调整排序'),('127.0.0.1'),('工艺建模 · 文档管理'),('数据'),('fail-audit'),('category-auditor'),('分类审查'),(NULL),('11cbbdaf01c576f31ea0f4be03e8ceff33850fb24e5b71d0211d06f9f1683405'),('UI'),('default'),('391527807324262400'::int8)) was aborted: ERROR: new row for relation "audit_event" violates check constraint "ck_category_audit_failure"
+  Detail: Failing row contains (391527807324262400, default, DOCUMENT_CATEGORY, 202, UPDATE, {"排序": 40}, {"排序": 30}, category-auditor, 分类审查, UI, null, 127.0.0.1, 2026-10-30 08:05:03.501295, fail-audit, 数据, 工艺建模 · 文档管理, 调整排序, 文档管理 #202, 11cbbdaf01c576f31ea0f4be03e8ceff33850fb24e5b71d0211d06f9f1683405).  Call getNextException to see other errors in the batch.
+	at org.postgresql.jdbc.BatchResultHandler.handleError(BatchResultHandler.java:165) ~[postgresql-42.7.3.jar:42.7.3]
+	at org.postgresql.core.v3.QueryExecutorImpl.processResults(QueryExecutorImpl.java:2413) ~[postgresql-42.7.3.jar:42.7.3]
+	at org.postgresql.core.v3.QueryExecutorImpl.execute(QueryExecutorImpl.java:579) ~[postgresql-42.7.3.jar:42.7.3]
+	at org.postgresql.jdbc.PgStatement.internalExecuteBatch(PgStatement.java:912) ~[postgresql-42.7.3.jar:42.7.3]
+	at org.postgresql.jdbc.PgStatement.executeBatch(PgStatement.java:936) ~[postgresql-42.7.3.jar:42.7.3]
+	at org.postgresql.jdbc.PgPreparedStatement.executeBatch(PgPreparedStatement.java:1733) ~[postgresql-42.7.3.jar:42.7.3]
+	at com.zaxxer.hikari.pool.ProxyStatement.executeBatch(ProxyStatement.java:127) ~[HikariCP-5.1.0.jar:na]
+	at com.zaxxer.hikari.pool.HikariProxyPreparedStatement.executeBatch(HikariProxyPreparedStatement.java) ~[HikariCP-5.1.0.jar:na]
+	at org.hibernate.engine.jdbc.batch.internal.BatchImpl.lambda$performExecution$2(BatchImpl.java:279) ~[hibernate-core-6.5.2.Final.jar:6.5.2.Final]
+	... 212 common frames omitted
+Caused by: org.postgresql.util.PSQLException: ERROR: new row for relation "audit_event" violates check constraint "ck_category_audit_failure"
+  Detail: Failing row contains (391527807324262400, default, DOCUMENT_CATEGORY, 202, UPDATE, {"排序": 40}, {"排序": 30}, category-auditor, 分类审查, UI, null, 127.0.0.1, 2026-10-30 08:05:03.501295, fail-audit, 数据, 工艺建模 · 文档管理, 调整排序, 文档管理 #202, 11cbbdaf01c576f31ea0f4be03e8ceff33850fb24e5b71d0211d06f9f1683405).
+	at org.postgresql.core.v3.QueryExecutorImpl.receiveErrorResponse(QueryExecutorImpl.java:2725) ~[postgresql-42.7.3.jar:42.7.3]
+	at org.postgresql.core.v3.QueryExecutorImpl.processResults(QueryExecutorImpl.java:2412) ~[postgresql-42.7.3.jar:42.7.3]
+	... 219 common frames omitted
+
+2026-10-30T08:05:03.641Z DEBUG 32769 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/deletion-check/document_category/202
+2026-10-30T08:05:03.644Z DEBUG 32769 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/deletion-check/document_category/202
+2026-10-30T08:05:03.676Z DEBUG 32769 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing DELETE /api/v1/master-data/documents/categories/202
+2026-10-30T08:05:03.678Z DEBUG 32769 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured DELETE /api/v1/master-data/documents/categories/202
+2026-10-30T08:05:03.679Z DEBUG 32769 --- [edhr] [           main] horizationManagerBeforeMethodInterceptor : Authorizing method invocation ReflectiveMethodInvocation: public com.zencas.edhr.common.dto.ApiResponse com.zencas.edhr.masterdata.controller.DocumentManagementController.deleteCategory(java.lang.Long); target is of class [com.zencas.edhr.masterdata.controller.DocumentManagementController]
+2026-10-30T08:05:03.679Z DEBUG 32769 --- [edhr] [           main] horizationManagerBeforeMethodInterceptor : Authorized method invocation ReflectiveMethodInvocation: public com.zencas.edhr.common.dto.ApiResponse com.zencas.edhr.masterdata.controller.DocumentManagementController.deleteCategory(java.lang.Long); target is of class [com.zencas.edhr.masterdata.controller.DocumentManagementController]
+2026-10-30T08:05:03.718Z DEBUG 32769 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/deletion-check/document_category/202
+2026-10-30T08:05:03.720Z DEBUG 32769 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/deletion-check/document_category/202
+2026-10-30T08:05:03.734Z DEBUG 32769 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing DELETE /api/v1/master-data/documents/categories/202
+2026-10-30T08:05:03.736Z DEBUG 32769 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured DELETE /api/v1/master-data/documents/categories/202
+2026-10-30T08:05:03.736Z DEBUG 32769 --- [edhr] [           main] horizationManagerBeforeMethodInterceptor : Authorizing method invocation ReflectiveMethodInvocation: public com.zencas.edhr.common.dto.ApiResponse com.zencas.edhr.masterdata.controller.DocumentManagementController.deleteCategory(java.lang.Long); target is of class [com.zencas.edhr.masterdata.controller.DocumentManagementController]
+2026-10-30T08:05:03.736Z DEBUG 32769 --- [edhr] [           main] horizationManagerBeforeMethodInterceptor : Authorized method invocation ReflectiveMethodInvocation: public com.zencas.edhr.common.dto.ApiResponse com.zencas.edhr.masterdata.controller.DocumentManagementController.deleteCategory(java.lang.Long); target is of class [com.zencas.edhr.masterdata.controller.DocumentManagementController]
+2026-10-30T08:05:03.789Z DEBUG 32769 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing PUT /api/v1/master-data/documents/categories/order
+2026-10-30T08:05:03.791Z DEBUG 32769 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured PUT /api/v1/master-data/documents/categories/order
+2026-10-30T08:05:03.792Z DEBUG 32769 --- [edhr] [           main] horizationManagerBeforeMethodInterceptor : Authorizing method invocation ReflectiveMethodInvocation: public com.zencas.edhr.common.dto.ApiResponse com.zencas.edhr.masterdata.controller.DocumentManagementController.reorderCategories(com.zencas.edhr.masterdata.controller.DocumentManagementController$DocumentCategoryOrderRequest); target is of class [com.zencas.edhr.masterdata.controller.DocumentManagementController]
+2026-10-30T08:05:03.792Z DEBUG 32769 --- [edhr] [           main] horizationManagerBeforeMethodInterceptor : Authorized method invocation ReflectiveMethodInvocation: public com.zencas.edhr.common.dto.ApiResponse com.zencas.edhr.masterdata.controller.DocumentManagementController.reorderCategories(com.zencas.edhr.masterdata.controller.DocumentManagementController$DocumentCategoryOrderRequest); target is of class [com.zencas.edhr.masterdata.controller.DocumentManagementController]
+2026-10-30T08:05:03.851Z DEBUG 32769 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/deletion-check/document_category/201
+2026-10-30T08:05:03.853Z DEBUG 32769 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/deletion-check/document_category/201
+2026-10-30T08:05:03.866Z DEBUG 32769 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing DELETE /api/v1/master-data/documents/categories/201
+2026-10-30T08:05:03.867Z DEBUG 32769 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured DELETE /api/v1/master-data/documents/categories/201
+2026-10-30T08:05:03.868Z DEBUG 32769 --- [edhr] [           main] horizationManagerBeforeMethodInterceptor : Authorizing method invocation ReflectiveMethodInvocation: public com.zencas.edhr.common.dto.ApiResponse com.zencas.edhr.masterdata.controller.DocumentManagementController.deleteCategory(java.lang.Long); target is of class [com.zencas.edhr.masterdata.controller.DocumentManagementController]
+2026-10-30T08:05:03.868Z DEBUG 32769 --- [edhr] [           main] horizationManagerBeforeMethodInterceptor : Authorized method invocation ReflectiveMethodInvocation: public com.zencas.edhr.common.dto.ApiResponse com.zencas.edhr.masterdata.controller.DocumentManagementController.deleteCategory(java.lang.Long); target is of class [com.zencas.edhr.masterdata.controller.DocumentManagementController]
+2026-10-30T08:05:03.895Z DEBUG 32769 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing PUT /api/v1/master-data/documents/categories/order
+2026-10-30T08:05:03.897Z DEBUG 32769 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured PUT /api/v1/master-data/documents/categories/order
+2026-10-30T08:05:03.897Z DEBUG 32769 --- [edhr] [           main] horizationManagerBeforeMethodInterceptor : Authorizing method invocation ReflectiveMethodInvocation: public com.zencas.edhr.common.dto.ApiResponse com.zencas.edhr.masterdata.controller.DocumentManagementController.reorderCategories(com.zencas.edhr.masterdata.controller.DocumentManagementController$DocumentCategoryOrderRequest); target is of class [com.zencas.edhr.masterdata.controller.DocumentManagementController]
+2026-10-30T08:05:03.898Z DEBUG 32769 --- [edhr] [           main] horizationManagerBeforeMethodInterceptor : Authorized method invocation ReflectiveMethodInvocation: public com.zencas.edhr.common.dto.ApiResponse com.zencas.edhr.masterdata.controller.DocumentManagementController.reorderCategories(com.zencas.edhr.masterdata.controller.DocumentManagementController$DocumentCategoryOrderRequest); target is of class [com.zencas.edhr.masterdata.controller.DocumentManagementController]
+2026-10-30T08:05:03.917Z DEBUG 32769 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing PUT /api/v1/master-data/documents/categories/order
+2026-10-30T08:05:03.918Z DEBUG 32769 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured PUT /api/v1/master-data/documents/categories/order
+2026-10-30T08:05:03.919Z DEBUG 32769 --- [edhr] [           main] horizationManagerBeforeMethodInterceptor : Authorizing method invocation ReflectiveMethodInvocation: public com.zencas.edhr.common.dto.ApiResponse com.zencas.edhr.masterdata.controller.DocumentManagementController.reorderCategories(com.zencas.edhr.masterdata.controller.DocumentManagementController$DocumentCategoryOrderRequest); target is of class [com.zencas.edhr.masterdata.controller.DocumentManagementController]
+2026-10-30T08:05:03.919Z DEBUG 32769 --- [edhr] [           main] horizationManagerBeforeMethodInterceptor : Authorized method invocation ReflectiveMethodInvocation: public com.zencas.edhr.common.dto.ApiResponse com.zencas.edhr.masterdata.controller.DocumentManagementController.reorderCategories(com.zencas.edhr.masterdata.controller.DocumentManagementController$DocumentCategoryOrderRequest); target is of class [com.zencas.edhr.masterdata.controller.DocumentManagementController]
+2026-10-30T08:05:03.945Z DEBUG 32769 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing PUT /api/v1/master-data/documents/categories/order
+2026-10-30T08:05:03.946Z DEBUG 32769 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured PUT /api/v1/master-data/documents/categories/order
+2026-10-30T08:05:03.947Z DEBUG 32769 --- [edhr] [           main] horizationManagerBeforeMethodInterceptor : Authorizing method invocation ReflectiveMethodInvocation: public com.zencas.edhr.common.dto.ApiResponse com.zencas.edhr.masterdata.controller.DocumentManagementController.reorderCategories(com.zencas.edhr.masterdata.controller.DocumentManagementController$DocumentCategoryOrderRequest); target is of class [com.zencas.edhr.masterdata.controller.DocumentManagementController]
+2026-10-30T08:05:03.947Z DEBUG 32769 --- [edhr] [           main] horizationManagerBeforeMethodInterceptor : Authorized method invocation ReflectiveMethodInvocation: public com.zencas.edhr.common.dto.ApiResponse com.zencas.edhr.masterdata.controller.DocumentManagementController.reorderCategories(com.zencas.edhr.masterdata.controller.DocumentManagementController$DocumentCategoryOrderRequest); target is of class [com.zencas.edhr.masterdata.controller.DocumentManagementController]
+2026-10-30T08:05:03.999Z DEBUG 32769 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/deletion-check/document_category/201
+2026-10-30T08:05:04.000Z DEBUG 32769 --- [edhr] [           main] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-10-30T08:05:04.006Z DEBUG 32769 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing DELETE /api/v1/master-data/documents/categories/201
+2026-10-30T08:05:04.006Z DEBUG 32769 --- [edhr] [           main] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-10-30T08:05:04.013Z DEBUG 32769 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing PUT /api/v1/master-data/documents/categories/order
+2026-10-30T08:05:04.014Z DEBUG 32769 --- [edhr] [           main] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-10-30T08:05:04.032Z DEBUG 32769 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/deletion-check/document_category/201
+2026-10-30T08:05:04.034Z DEBUG 32769 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/deletion-check/document_category/201
+2026-10-30T08:05:04.035Z  WARN 32769 --- [edhr] [           main] c.z.e.c.e.GlobalExceptionHandler         : Access denied: 无操作权限
+2026-10-30T08:05:04.042Z DEBUG 32769 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing DELETE /api/v1/master-data/documents/categories/201
+2026-10-30T08:05:04.044Z DEBUG 32769 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured DELETE /api/v1/master-data/documents/categories/201
+2026-10-30T08:05:04.045Z DEBUG 32769 --- [edhr] [           main] horizationManagerBeforeMethodInterceptor : Authorizing method invocation ReflectiveMethodInvocation: public com.zencas.edhr.common.dto.ApiResponse com.zencas.edhr.masterdata.controller.DocumentManagementController.deleteCategory(java.lang.Long); target is of class [com.zencas.edhr.masterdata.controller.DocumentManagementController]
+2026-10-30T08:05:04.046Z DEBUG 32769 --- [edhr] [           main] horizationManagerBeforeMethodInterceptor : Failed to authorize ReflectiveMethodInvocation: public com.zencas.edhr.common.dto.ApiResponse com.zencas.edhr.masterdata.controller.DocumentManagementController.deleteCategory(java.lang.Long); target is of class [com.zencas.edhr.masterdata.controller.DocumentManagementController] with authorization manager org.springframework.security.config.annotation.method.configuration.DeferringObservationAuthorizationManager@2ca50b7a and decision ExpressionAuthorizationDecision [granted=false, expressionAttribute=hasAuthority('master-data.documents')]
+2026-10-30T08:05:04.047Z  WARN 32769 --- [edhr] [           main] c.z.e.c.e.GlobalExceptionHandler         : Access denied: Access Denied
+2026-10-30T08:05:04.051Z DEBUG 32769 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing PUT /api/v1/master-data/documents/categories/order
+2026-10-30T08:05:04.053Z DEBUG 32769 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured PUT /api/v1/master-data/documents/categories/order
+2026-10-30T08:05:04.053Z DEBUG 32769 --- [edhr] [           main] horizationManagerBeforeMethodInterceptor : Authorizing method invocation ReflectiveMethodInvocation: public com.zencas.edhr.common.dto.ApiResponse com.zencas.edhr.masterdata.controller.DocumentManagementController.reorderCategories(com.zencas.edhr.masterdata.controller.DocumentManagementController$DocumentCategoryOrderRequest); target is of class [com.zencas.edhr.masterdata.controller.DocumentManagementController]
+2026-10-30T08:05:04.054Z DEBUG 32769 --- [edhr] [           main] horizationManagerBeforeMethodInterceptor : Failed to authorize ReflectiveMethodInvocation: public com.zencas.edhr.common.dto.ApiResponse com.zencas.edhr.masterdata.controller.DocumentManagementController.reorderCategories(com.zencas.edhr.masterdata.controller.DocumentManagementController$DocumentCategoryOrderRequest); target is of class [com.zencas.edhr.masterdata.controller.DocumentManagementController] with authorization manager org.springframework.security.config.annotation.method.configuration.DeferringObservationAuthorizationManager@2ca50b7a and decision ExpressionAuthorizationDecision [granted=false, expressionAttribute=hasAuthority('master-data.documents')]
+2026-10-30T08:05:04.054Z  WARN 32769 --- [edhr] [           main] c.z.e.c.e.GlobalExceptionHandler         : Access denied: Access Denied
+2026-10-30T08:05:04.069Z DEBUG 32769 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing PUT /api/v1/master-data/documents/categories/order
+2026-10-30T08:05:04.071Z DEBUG 32769 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured PUT /api/v1/master-data/documents/categories/order
+2026-10-30T08:05:04.071Z DEBUG 32769 --- [edhr] [           main] horizationManagerBeforeMethodInterceptor : Authorizing method invocation ReflectiveMethodInvocation: public com.zencas.edhr.common.dto.ApiResponse com.zencas.edhr.masterdata.controller.DocumentManagementController.reorderCategories(com.zencas.edhr.masterdata.controller.DocumentManagementController$DocumentCategoryOrderRequest); target is of class [com.zencas.edhr.masterdata.controller.DocumentManagementController]
+2026-10-30T08:05:04.071Z DEBUG 32769 --- [edhr] [           main] horizationManagerBeforeMethodInterceptor : Authorized method invocation ReflectiveMethodInvocation: public com.zencas.edhr.common.dto.ApiResponse com.zencas.edhr.masterdata.controller.DocumentManagementController.reorderCategories(com.zencas.edhr.masterdata.controller.DocumentManagementController$DocumentCategoryOrderRequest); target is of class [com.zencas.edhr.masterdata.controller.DocumentManagementController]
+2026-10-30T08:05:04.100Z DEBUG 32769 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing DELETE /api/v1/master-data/documents/categories/203
+2026-10-30T08:05:04.102Z DEBUG 32769 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured DELETE /api/v1/master-data/documents/categories/203
+2026-10-30T08:05:04.102Z DEBUG 32769 --- [edhr] [           main] horizationManagerBeforeMethodInterceptor : Authorizing method invocation ReflectiveMethodInvocation: public com.zencas.edhr.common.dto.ApiResponse com.zencas.edhr.masterdata.controller.DocumentManagementController.deleteCategory(java.lang.Long); target is of class [com.zencas.edhr.masterdata.controller.DocumentManagementController]
+2026-10-30T08:05:04.102Z DEBUG 32769 --- [edhr] [           main] horizationManagerBeforeMethodInterceptor : Authorized method invocation ReflectiveMethodInvocation: public com.zencas.edhr.common.dto.ApiResponse com.zencas.edhr.masterdata.controller.DocumentManagementController.deleteCategory(java.lang.Long); target is of class [com.zencas.edhr.masterdata.controller.DocumentManagementController]
+2026-10-30T08:05:04.106Z  WARN 32769 --- [edhr] [           main] c.z.e.c.e.GlobalExceptionHandler         : Business exception: code=GENERAL-001, message=系统内置文档分类不允许编辑或删除, path=/api/v1/master-data/documents/categories/203
+2026-10-30T08:05:04.121Z DEBUG 32769 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing PUT /api/v1/master-data/documents/categories/order
+2026-10-30T08:05:04.123Z DEBUG 32769 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured PUT /api/v1/master-data/documents/categories/order
+2026-10-30T08:05:04.123Z DEBUG 32769 --- [edhr] [           main] horizationManagerBeforeMethodInterceptor : Authorizing method invocation ReflectiveMethodInvocation: public com.zencas.edhr.common.dto.ApiResponse com.zencas.edhr.masterdata.controller.DocumentManagementController.reorderCategories(com.zencas.edhr.masterdata.controller.DocumentManagementController$DocumentCategoryOrderRequest); target is of class [com.zencas.edhr.masterdata.controller.DocumentManagementController]
+2026-10-30T08:05:04.123Z DEBUG 32769 --- [edhr] [           main] horizationManagerBeforeMethodInterceptor : Authorized method invocation ReflectiveMethodInvocation: public com.zencas.edhr.common.dto.ApiResponse com.zencas.edhr.masterdata.controller.DocumentManagementController.reorderCategories(com.zencas.edhr.masterdata.controller.DocumentManagementController$DocumentCategoryOrderRequest); target is of class [com.zencas.edhr.masterdata.controller.DocumentManagementController]
+2026-10-30T08:05:04.152Z DEBUG 32769 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing PUT /api/v1/master-data/documents/categories/order
+2026-10-30T08:05:04.153Z DEBUG 32769 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured PUT /api/v1/master-data/documents/categories/order
+2026-10-30T08:05:04.154Z DEBUG 32769 --- [edhr] [           main] horizationManagerBeforeMethodInterceptor : Authorizing method invocation ReflectiveMethodInvocation: public com.zencas.edhr.common.dto.ApiResponse com.zencas.edhr.masterdata.controller.DocumentManagementController.reorderCategories(com.zencas.edhr.masterdata.controller.DocumentManagementController$DocumentCategoryOrderRequest); target is of class [com.zencas.edhr.masterdata.controller.DocumentManagementController]
+2026-10-30T08:05:04.154Z DEBUG 32769 --- [edhr] [           main] horizationManagerBeforeMethodInterceptor : Authorized method invocation ReflectiveMethodInvocation: public com.zencas.edhr.common.dto.ApiResponse com.zencas.edhr.masterdata.controller.DocumentManagementController.reorderCategories(com.zencas.edhr.masterdata.controller.DocumentManagementController$DocumentCategoryOrderRequest); target is of class [com.zencas.edhr.masterdata.controller.DocumentManagementController]
+2026-10-30T08:05:04.173Z DEBUG 32769 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing PUT /api/v1/master-data/documents/categories/order
+2026-10-30T08:05:04.174Z DEBUG 32769 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured PUT /api/v1/master-data/documents/categories/order
+2026-10-30T08:05:04.175Z DEBUG 32769 --- [edhr] [           main] horizationManagerBeforeMethodInterceptor : Authorizing method invocation ReflectiveMethodInvocation: public com.zencas.edhr.common.dto.ApiResponse com.zencas.edhr.masterdata.controller.DocumentManagementController.reorderCategories(com.zencas.edhr.masterdata.controller.DocumentManagementController$DocumentCategoryOrderRequest); target is of class [com.zencas.edhr.masterdata.controller.DocumentManagementController]
+2026-10-30T08:05:04.175Z DEBUG 32769 --- [edhr] [           main] horizationManagerBeforeMethodInterceptor : Authorized method invocation ReflectiveMethodInvocation: public com.zencas.edhr.common.dto.ApiResponse com.zencas.edhr.masterdata.controller.DocumentManagementController.reorderCategories(com.zencas.edhr.masterdata.controller.DocumentManagementController$DocumentCategoryOrderRequest); target is of class [com.zencas.edhr.masterdata.controller.DocumentManagementController]
+2026-10-30T08:05:04.213Z DEBUG 32769 --- [edhr] [pool-2-thread-1] o.s.security.web.FilterChainProxy        : Securing PUT /api/v1/master-data/documents/categories/order
+2026-10-30T08:05:04.215Z DEBUG 32769 --- [edhr] [pool-2-thread-1] o.s.security.web.FilterChainProxy        : Secured PUT /api/v1/master-data/documents/categories/order
+2026-10-30T08:05:04.216Z DEBUG 32769 --- [edhr] [pool-2-thread-1] horizationManagerBeforeMethodInterceptor : Authorizing method invocation ReflectiveMethodInvocation: public com.zencas.edhr.common.dto.ApiResponse com.zencas.edhr.masterdata.controller.DocumentManagementController.reorderCategories(com.zencas.edhr.masterdata.controller.DocumentManagementController$DocumentCategoryOrderRequest); target is of class [com.zencas.edhr.masterdata.controller.DocumentManagementController]
+2026-10-30T08:05:04.216Z DEBUG 32769 --- [edhr] [pool-2-thread-1] horizationManagerBeforeMethodInterceptor : Authorized method invocation ReflectiveMethodInvocation: public com.zencas.edhr.common.dto.ApiResponse com.zencas.edhr.masterdata.controller.DocumentManagementController.reorderCategories(com.zencas.edhr.masterdata.controller.DocumentManagementController$DocumentCategoryOrderRequest); target is of class [com.zencas.edhr.masterdata.controller.DocumentManagementController]
+2026-10-30T08:05:04.256Z DEBUG 32769 --- [edhr] [pool-2-thread-2] o.s.security.web.FilterChainProxy        : Securing PUT /api/v1/master-data/documents/categories/order
+2026-10-30T08:05:04.259Z DEBUG 32769 --- [edhr] [pool-2-thread-2] o.s.security.web.FilterChainProxy        : Secured PUT /api/v1/master-data/documents/categories/order
+2026-10-30T08:05:04.262Z DEBUG 32769 --- [edhr] [pool-2-thread-2] horizationManagerBeforeMethodInterceptor : Authorizing method invocation ReflectiveMethodInvocation: public com.zencas.edhr.common.dto.ApiResponse com.zencas.edhr.masterdata.controller.DocumentManagementController.reorderCategories(com.zencas.edhr.masterdata.controller.DocumentManagementController$DocumentCategoryOrderRequest); target is of class [com.zencas.edhr.masterdata.controller.DocumentManagementController]
+2026-10-30T08:05:04.262Z DEBUG 32769 --- [edhr] [pool-2-thread-2] horizationManagerBeforeMethodInterceptor : Authorized method invocation ReflectiveMethodInvocation: public com.zencas.edhr.common.dto.ApiResponse com.zencas.edhr.masterdata.controller.DocumentManagementController.reorderCategories(com.zencas.edhr.masterdata.controller.DocumentManagementController$DocumentCategoryOrderRequest); target is of class [com.zencas.edhr.masterdata.controller.DocumentManagementController]
+2026-10-30T08:05:04.330Z DEBUG 32769 --- [edhr] [pool-3-thread-1] o.s.security.web.FilterChainProxy        : Securing PUT /api/v1/master-data/documents/categories/order
+2026-10-30T08:05:04.332Z DEBUG 32769 --- [edhr] [pool-3-thread-1] o.s.security.web.FilterChainProxy        : Secured PUT /api/v1/master-data/documents/categories/order
+2026-10-30T08:05:04.333Z DEBUG 32769 --- [edhr] [pool-3-thread-1] horizationManagerBeforeMethodInterceptor : Authorizing method invocation ReflectiveMethodInvocation: public com.zencas.edhr.common.dto.ApiResponse com.zencas.edhr.masterdata.controller.DocumentManagementController.reorderCategories(com.zencas.edhr.masterdata.controller.DocumentManagementController$DocumentCategoryOrderRequest); target is of class [com.zencas.edhr.masterdata.controller.DocumentManagementController]
+2026-10-30T08:05:04.333Z DEBUG 32769 --- [edhr] [pool-3-thread-1] horizationManagerBeforeMethodInterceptor : Authorized method invocation ReflectiveMethodInvocation: public com.zencas.edhr.common.dto.ApiResponse com.zencas.edhr.masterdata.controller.DocumentManagementController.reorderCategories(com.zencas.edhr.masterdata.controller.DocumentManagementController$DocumentCategoryOrderRequest); target is of class [com.zencas.edhr.masterdata.controller.DocumentManagementController]
+2026-10-30T08:05:04.350Z DEBUG 32769 --- [edhr] [pool-3-thread-2] o.s.security.web.FilterChainProxy        : Securing PUT /api/v1/master-data/documents/categories/201
+2026-10-30T08:05:04.352Z DEBUG 32769 --- [edhr] [pool-3-thread-2] o.s.security.web.FilterChainProxy        : Secured PUT /api/v1/master-data/documents/categories/201
+2026-10-30T08:05:04.354Z DEBUG 32769 --- [edhr] [pool-3-thread-2] horizationManagerBeforeMethodInterceptor : Authorizing method invocation ReflectiveMethodInvocation: public com.zencas.edhr.common.dto.ApiResponse com.zencas.edhr.masterdata.controller.DocumentManagementController.updateCategory(java.lang.Long,com.zencas.edhr.masterdata.controller.DocumentManagementController$DocumentCategoryRequest); target is of class [com.zencas.edhr.masterdata.controller.DocumentManagementController]
+2026-10-30T08:05:04.354Z DEBUG 32769 --- [edhr] [pool-3-thread-2] horizationManagerBeforeMethodInterceptor : Authorized method invocation ReflectiveMethodInvocation: public com.zencas.edhr.common.dto.ApiResponse com.zencas.edhr.masterdata.controller.DocumentManagementController.updateCategory(java.lang.Long,com.zencas.edhr.masterdata.controller.DocumentManagementController$DocumentCategoryRequest); target is of class [com.zencas.edhr.masterdata.controller.DocumentManagementController]
+2026-10-30T08:05:04.403Z DEBUG 32769 --- [edhr] [pool-4-thread-1] o.s.security.web.FilterChainProxy        : Securing PUT /api/v1/master-data/documents/categories/201
+2026-10-30T08:05:04.404Z DEBUG 32769 --- [edhr] [pool-4-thread-1] o.s.security.web.FilterChainProxy        : Secured PUT /api/v1/master-data/documents/categories/201
+2026-10-30T08:05:04.405Z DEBUG 32769 --- [edhr] [pool-4-thread-1] horizationManagerBeforeMethodInterceptor : Authorizing method invocation ReflectiveMethodInvocation: public com.zencas.edhr.common.dto.ApiResponse com.zencas.edhr.masterdata.controller.DocumentManagementController.updateCategory(java.lang.Long,com.zencas.edhr.masterdata.controller.DocumentManagementController$DocumentCategoryRequest); target is of class [com.zencas.edhr.masterdata.controller.DocumentManagementController]
+2026-10-30T08:05:04.405Z DEBUG 32769 --- [edhr] [pool-4-thread-1] horizationManagerBeforeMethodInterceptor : Authorized method invocation ReflectiveMethodInvocation: public com.zencas.edhr.common.dto.ApiResponse com.zencas.edhr.masterdata.controller.DocumentManagementController.updateCategory(java.lang.Long,com.zencas.edhr.masterdata.controller.DocumentManagementController$DocumentCategoryRequest); target is of class [com.zencas.edhr.masterdata.controller.DocumentManagementController]
+2026-10-30T08:05:04.425Z DEBUG 32769 --- [edhr] [pool-4-thread-2] o.s.security.web.FilterChainProxy        : Securing PUT /api/v1/master-data/documents/categories/order
+2026-10-30T08:05:04.426Z DEBUG 32769 --- [edhr] [pool-4-thread-2] o.s.security.web.FilterChainProxy        : Secured PUT /api/v1/master-data/documents/categories/order
+2026-10-30T08:05:04.427Z DEBUG 32769 --- [edhr] [pool-4-thread-2] horizationManagerBeforeMethodInterceptor : Authorizing method invocation ReflectiveMethodInvocation: public com.zencas.edhr.common.dto.ApiResponse com.zencas.edhr.masterdata.controller.DocumentManagementController.reorderCategories(com.zencas.edhr.masterdata.controller.DocumentManagementController$DocumentCategoryOrderRequest); target is of class [com.zencas.edhr.masterdata.controller.DocumentManagementController]
+2026-10-30T08:05:04.427Z DEBUG 32769 --- [edhr] [pool-4-thread-2] horizationManagerBeforeMethodInterceptor : Authorized method invocation ReflectiveMethodInvocation: public com.zencas.edhr.common.dto.ApiResponse com.zencas.edhr.masterdata.controller.DocumentManagementController.reorderCategories(com.zencas.edhr.masterdata.controller.DocumentManagementController$DocumentCategoryOrderRequest); target is of class [com.zencas.edhr.masterdata.controller.DocumentManagementController]
+2026-10-30T08:05:04.473Z  INFO 32769 --- [edhr] [           main] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-10-30T08:05:04.474Z  INFO 32769 --- [edhr] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2026-10-30T08:05:04.478Z  INFO 32769 --- [edhr] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+[ERROR] Tests run: 17, Failures: 3, Errors: 0, Skipped: 0, Time elapsed: 6.046 s <<< FAILURE! -- in com.zencas.edhr.masterdata.controller.DocumentCategoryAuditPostgresTest
+[ERROR] com.zencas.edhr.masterdata.controller.DocumentCategoryAuditPostgresTest.concurrentCategoryWritesUseFreshBeforeValuesAndKeepEveryChange(String)[1] -- Time elapsed: 0.120 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: 
+
+expected: 4
+ but was: 2
+	at java.base/jdk.internal.reflect.DirectConstructorHandleAccessor.newInstance(DirectConstructorHandleAccessor.java:62)
+	at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:502)
+	at com.zencas.edhr.masterdata.controller.DocumentCategoryAuditPostgresTest.concurrentCategoryWritesUseFreshBeforeValuesAndKeepEveryChange(DocumentCategoryAuditPostgresTest.java:225)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.accept(ForEachOps.java:184)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ReferencePipeline$2$1.accept(ReferencePipeline.java:179)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.accept(ForEachOps.java:184)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.accept(ForEachOps.java:184)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.Spliterators$ArraySpliterator.forEachRemaining(Spliterators.java:1024)
+	at java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:509)
+	at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:499)
+	at java.base/java.util.stream.ForEachOps$ForEachOp.evaluateSequential(ForEachOps.java:151)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.evaluateSequential(ForEachOps.java:174)
+	at java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234)
+	at java.base/java.util.stream.ReferencePipeline.forEach(ReferencePipeline.java:596)
+	at java.base/java.util.stream.ReferencePipeline$7$1.accept(ReferencePipeline.java:276)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.ArrayList$ArrayListSpliterator.forEachRemaining(ArrayList.java:1708)
+	at java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:509)
+	at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:499)
+	at java.base/java.util.stream.ForEachOps$ForEachOp.evaluateSequential(ForEachOps.java:151)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.evaluateSequential(ForEachOps.java:174)
+	at java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234)
+	at java.base/java.util.stream.ReferencePipeline.forEach(ReferencePipeline.java:596)
+	at java.base/java.util.stream.ReferencePipeline$7$1.accept(ReferencePipeline.java:276)
+	at java.base/java.util.ArrayList$ArrayListSpliterator.forEachRemaining(ArrayList.java:1708)
+	at java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:509)
+	at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:499)
+	at java.base/java.util.stream.ForEachOps$ForEachOp.evaluateSequential(ForEachOps.java:151)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.evaluateSequential(ForEachOps.java:174)
+	at java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234)
+	at java.base/java.util.stream.ReferencePipeline.forEach(ReferencePipeline.java:596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+[ERROR] com.zencas.edhr.masterdata.controller.DocumentCategoryAuditPostgresTest.concurrentCategoryWritesUseFreshBeforeValuesAndKeepEveryChange(String)[2] -- Time elapsed: 0.074 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: 
+
+expected: 40
+ but was: 30
+	at java.base/jdk.internal.reflect.DirectConstructorHandleAccessor.newInstance(DirectConstructorHandleAccessor.java:62)
+	at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:502)
+	at com.zencas.edhr.masterdata.controller.DocumentCategoryAuditPostgresTest.concurrentCategoryWritesUseFreshBeforeValuesAndKeepEveryChange(DocumentCategoryAuditPostgresTest.java:229)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.accept(ForEachOps.java:184)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ReferencePipeline$2$1.accept(ReferencePipeline.java:179)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.accept(ForEachOps.java:184)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.accept(ForEachOps.java:184)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.Spliterators$ArraySpliterator.forEachRemaining(Spliterators.java:1024)
+	at java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:509)
+	at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:499)
+	at java.base/java.util.stream.ForEachOps$ForEachOp.evaluateSequential(ForEachOps.java:151)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.evaluateSequential(ForEachOps.java:174)
+	at java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234)
+	at java.base/java.util.stream.ReferencePipeline.forEach(ReferencePipeline.java:596)
+	at java.base/java.util.stream.ReferencePipeline$7$1.accept(ReferencePipeline.java:276)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.ArrayList$ArrayListSpliterator.forEachRemaining(ArrayList.java:1708)
+	at java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:509)
+	at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:499)
+	at java.base/java.util.stream.ForEachOps$ForEachOp.evaluateSequential(ForEachOps.java:151)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.evaluateSequential(ForEachOps.java:174)
+	at java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234)
+	at java.base/java.util.stream.ReferencePipeline.forEach(ReferencePipeline.java:596)
+	at java.base/java.util.stream.ReferencePipeline$7$1.accept(ReferencePipeline.java:276)
+	at java.base/java.util.ArrayList$ArrayListSpliterator.forEachRemaining(ArrayList.java:1708)
+	at java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:509)
+	at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:499)
+	at java.base/java.util.stream.ForEachOps$ForEachOp.evaluateSequential(ForEachOps.java:151)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.evaluateSequential(ForEachOps.java:174)
+	at java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234)
+	at java.base/java.util.stream.ReferencePipeline.forEach(ReferencePipeline.java:596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+[ERROR] com.zencas.edhr.masterdata.controller.DocumentCategoryAuditPostgresTest.concurrentCategoryWritesUseFreshBeforeValuesAndKeepEveryChange(String)[3] -- Time elapsed: 0.081 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: 
+
+expected: "并发改名"
+ but was: "甲分类"
+	at java.base/jdk.internal.reflect.DirectConstructorHandleAccessor.newInstance(DirectConstructorHandleAccessor.java:62)
+	at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:502)
+	at com.zencas.edhr.masterdata.controller.DocumentCategoryAuditPostgresTest.concurrentCategoryWritesUseFreshBeforeValuesAndKeepEveryChange(DocumentCategoryAuditPostgresTest.java:230)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.accept(ForEachOps.java:184)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ReferencePipeline$2$1.accept(ReferencePipeline.java:179)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.accept(ForEachOps.java:184)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.accept(ForEachOps.java:184)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.Spliterators$ArraySpliterator.forEachRemaining(Spliterators.java:1024)
+	at java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:509)
+	at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:499)
+	at java.base/java.util.stream.ForEachOps$ForEachOp.evaluateSequential(ForEachOps.java:151)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.evaluateSequential(ForEachOps.java:174)
+	at java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234)
+	at java.base/java.util.stream.ReferencePipeline.forEach(ReferencePipeline.java:596)
+	at java.base/java.util.stream.ReferencePipeline$7$1.accept(ReferencePipeline.java:276)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.ArrayList$ArrayListSpliterator.forEachRemaining(ArrayList.java:1708)
+	at java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:509)
+	at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:499)
+	at java.base/java.util.stream.ForEachOps$ForEachOp.evaluateSequential(ForEachOps.java:151)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.evaluateSequential(ForEachOps.java:174)
+	at java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234)
+	at java.base/java.util.stream.ReferencePipeline.forEach(ReferencePipeline.java:596)
+	at java.base/java.util.stream.ReferencePipeline$7$1.accept(ReferencePipeline.java:276)
+	at java.base/java.util.ArrayList$ArrayListSpliterator.forEachRemaining(ArrayList.java:1708)
+	at java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:509)
+	at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:499)
+	at java.base/java.util.stream.ForEachOps$ForEachOp.evaluateSequential(ForEachOps.java:151)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.evaluateSequential(ForEachOps.java:174)
+	at java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234)
+	at java.base/java.util.stream.ReferencePipeline.forEach(ReferencePipeline.java:596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+[INFO] 
+[INFO] Results:
+[INFO] 
+[ERROR] Failures: 
+[ERROR]   DocumentCategoryAuditPostgresTest.concurrentCategoryWritesUseFreshBeforeValuesAndKeepEveryChange:225 
+expected: 4
+ but was: 2
+[ERROR]   DocumentCategoryAuditPostgresTest.concurrentCategoryWritesUseFreshBeforeValuesAndKeepEveryChange:229 
+expected: 40
+ but was: 30
+[ERROR]   DocumentCategoryAuditPostgresTest.concurrentCategoryWritesUseFreshBeforeValuesAndKeepEveryChange:230 
+expected: "并发改名"
+ but was: "甲分类"
+[INFO] 
+[ERROR] Tests run: 17, Failures: 3, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  26.861 s
+[INFO] Finished at: 2026-10-30T08:05:04Z
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-surefire-plugin:3.2.5:test (default-test) on project edhr: There are test failures.
+[ERROR] 
+[ERROR] Please refer to /tmp/edhr-document-category-q2-worktree-old-first/gmp-platform/backend/target/surefire-reports for the individual test results.
+[ERROR] Please refer to dump files (if any exist) [date].dump, [date]-jvmRun[N].dump and [date].dumpstream.
+[ERROR] -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException

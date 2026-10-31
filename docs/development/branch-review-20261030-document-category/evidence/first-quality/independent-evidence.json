@@ -1,0 +1,498 @@
+{
+  "status": "FINAL",
+  "qualityResult": "failed",
+  "role": "independent-quality-verifier",
+  "agent": "document_category_final_qa_20261030",
+  "baseCommit": "d10590bd3fe8f3da4e68bcc087b2102d2c211934",
+  "headCommit": "ac3a421e42529bdb304e2c72145ceb580ec70618",
+  "testedCommit": "ac3a421e42529bdb304e2c72145ceb580ec70618",
+  "knowledgeBaselineVersion": "0.3.25",
+  "independent": true,
+  "productTestFixtureKnowledgeMigrationOrPrimaryDocsModified": false,
+  "checksSummary": {
+    "passed": 14,
+    "failed": 2,
+    "blocked": 1
+  },
+  "actualRuntime": {
+    "h2": 258,
+    "postgres": 140,
+    "backendExecutions": 398,
+    "backendUniqueCountClaimed": false,
+    "knowledge": 89,
+    "genericUi": 14,
+    "browserCurrent": {
+      "passed": 10,
+      "cases": 10
+    },
+    "browserOld": {
+      "passed": 6,
+      "expectedCopyFailures": 4,
+      "cases": 10
+    },
+    "concurrency": {
+      "firstStatus": 200,
+      "secondStatus": 200,
+      "auditRows": 2,
+      "secondActorAuditRows": 0,
+      "actualDefect": true
+    }
+  },
+  "notRun": [
+    "final old native14 on separate worktree",
+    "independent official premium strict-src current/old replay",
+    "complete manual visual acceptance"
+  ],
+  "cleanup": {
+    "container": "535d32d654d4c88ecb3a39a2bd1f2283fb685c758192e70bc5976ca545b7301c",
+    "name": "edhr-category-final-qa-896e74e396",
+    "ownerVerified": true,
+    "containerRemoved": true,
+    "probe": "Error: No such object: 535d32d654d4c88ecb3a39a2bd1f2283fb685c758192e70bc5976ca545b7301c",
+    "oldWorktreeCreated": false,
+    "sharedNodeModulesUntouched": true,
+    "runtimeProbeContextClosed": true,
+    "mainHead": "ac3a421e42529bdb304e2c72145ceb580ec70618",
+    "mainStatus": ""
+  },
+  "rawFiles": [
+    {
+      "path": "/tmp/EdhrCategoryConcurrencyProbe.java",
+      "sha256": "b0e18a6fb311ccb6861af72b2fa71e5ef40a4a3bb102d75f00cacd427ec212ec",
+      "bytes": 5824
+    },
+    {
+      "path": "/tmp/edhr-document-category-q1-browser-current/1440-confirm-copy-cancel-open.png",
+      "sha256": "70be51a2d1205a2a5e25fcdb2a592c8113126161b4b1453aa9a5e210582b2614",
+      "bytes": 50974
+    },
+    {
+      "path": "/tmp/edhr-document-category-q1-browser-current/1440-confirm-copy-cancel.png",
+      "sha256": "2d984890238d03c1e3f8faa11dcb24fc557e957c4ce2fd198e2fc518b7ce0af8",
+      "bytes": 42875
+    },
+    {
+      "path": "/tmp/edhr-document-category-q1-browser-current/1440-precheck-error-open.png",
+      "sha256": "70be51a2d1205a2a5e25fcdb2a592c8113126161b4b1453aa9a5e210582b2614",
+      "bytes": 50974
+    },
+    {
+      "path": "/tmp/edhr-document-category-q1-browser-current/1440-precheck-error.png",
+      "sha256": "3c58c3560f85ca799f5490dede614ec5de477256eb7db12144c2ae7cc0803814",
+      "bytes": 42387
+    },
+    {
+      "path": "/tmp/edhr-document-category-q1-browser-current/1440-referenced.png",
+      "sha256": "a6f394da9112f53a9f76ce7e7f56c0fc4fceb87284767ef8199cc1d4ab255dbe",
+      "bytes": 77663
+    },
+    {
+      "path": "/tmp/edhr-document-category-q1-browser-current/1440-slow-cancel.png",
+      "sha256": "149aa81108945c1929a7ef9ba1a153e057f3092f9e4438a12c878b62fe7bdc16",
+      "bytes": 40458
+    },
+    {
+      "path": "/tmp/edhr-document-category-q1-browser-current/1440-success-feedback-open.png",
+      "sha256": "70be51a2d1205a2a5e25fcdb2a592c8113126161b4b1453aa9a5e210582b2614",
+      "bytes": 50974
+    },
+    {
+      "path": "/tmp/edhr-document-category-q1-browser-current/1440-success-feedback.png",
+      "sha256": "ad8b86363a6c0bc0619f8501968d130503ce3f221b740899380afd5b9ef13c09",
+      "bytes": 40125
+    },
+    {
+      "path": "/tmp/edhr-document-category-q1-browser-current/390-confirm-copy-cancel-open.png",
+      "sha256": "85d66b22457c8f46fa6264b38d51ad9b13bdd0ce22b0a53dee3c708a61f2985f",
+      "bytes": 33962
+    },
+    {
+      "path": "/tmp/edhr-document-category-q1-browser-current/390-confirm-copy-cancel.png",
+      "sha256": "7868d4a9f518ffc04d14463a61a3a2c567a60b1c3e2a0a847bbb4e9611af901b",
+      "bytes": 30892
+    },
+    {
+      "path": "/tmp/edhr-document-category-q1-browser-current/390-precheck-error-open.png",
+      "sha256": "85d66b22457c8f46fa6264b38d51ad9b13bdd0ce22b0a53dee3c708a61f2985f",
+      "bytes": 33962
+    },
+    {
+      "path": "/tmp/edhr-document-category-q1-browser-current/390-precheck-error.png",
+      "sha256": "f4b0ffc08d1920ff76fbdda7997eb9e99367ad3927b6f9a94c904cc462dcb7b1",
+      "bytes": 30708
+    },
+    {
+      "path": "/tmp/edhr-document-category-q1-browser-current/390-referenced.png",
+      "sha256": "61fc811b3393367c721e2ff23b55a4bc6978126ea52eabbf6085dec2152c5243",
+      "bytes": 51116
+    },
+    {
+      "path": "/tmp/edhr-document-category-q1-browser-current/390-slow-cancel.png",
+      "sha256": "cd10db8edd71d779121b4d105dfe6ee41a7937b1acc90527a7aa18a59843a9dc",
+      "bytes": 28891
+    },
+    {
+      "path": "/tmp/edhr-document-category-q1-browser-current/390-success-feedback-open.png",
+      "sha256": "85d66b22457c8f46fa6264b38d51ad9b13bdd0ce22b0a53dee3c708a61f2985f",
+      "bytes": 33962
+    },
+    {
+      "path": "/tmp/edhr-document-category-q1-browser-current/390-success-feedback.png",
+      "sha256": "5b1d5bb0218cca2e5f15bb0225fd850637fb370942ad8e0b840492dd10c64f76",
+      "bytes": 30427
+    },
+    {
+      "path": "/tmp/edhr-document-category-q1-browser-current/result.json",
+      "sha256": "ca451e99c8cc8d959266d764298f5fe33ca13120d0e45afd37f0c3b0682b84b8",
+      "bytes": 7774
+    },
+    {
+      "path": "/tmp/edhr-document-category-q1-browser-current.txt",
+      "sha256": "ca451e99c8cc8d959266d764298f5fe33ca13120d0e45afd37f0c3b0682b84b8",
+      "bytes": 7774
+    },
+    {
+      "path": "/tmp/edhr-document-category-q1-browser-old/1440-confirm-copy-cancel-failed.png",
+      "sha256": "6956775229dbe5fb0d586e94b5e47eda123675b7bd2e0c85c6930e094d2285aa",
+      "bytes": 54656
+    },
+    {
+      "path": "/tmp/edhr-document-category-q1-browser-old/1440-confirm-copy-cancel-open.png",
+      "sha256": "6956775229dbe5fb0d586e94b5e47eda123675b7bd2e0c85c6930e094d2285aa",
+      "bytes": 54656
+    },
+    {
+      "path": "/tmp/edhr-document-category-q1-browser-old/1440-precheck-error-open.png",
+      "sha256": "6956775229dbe5fb0d586e94b5e47eda123675b7bd2e0c85c6930e094d2285aa",
+      "bytes": 54656
+    },
+    {
+      "path": "/tmp/edhr-document-category-q1-browser-old/1440-precheck-error.png",
+      "sha256": "37ebdd0fd1f3f6db0a509953fcdf4911cd174685e9515c8aa6b435d809e538f5",
+      "bytes": 42384
+    },
+    {
+      "path": "/tmp/edhr-document-category-q1-browser-old/1440-referenced.png",
+      "sha256": "a6f394da9112f53a9f76ce7e7f56c0fc4fceb87284767ef8199cc1d4ab255dbe",
+      "bytes": 77663
+    },
+    {
+      "path": "/tmp/edhr-document-category-q1-browser-old/1440-slow-cancel.png",
+      "sha256": "149aa81108945c1929a7ef9ba1a153e057f3092f9e4438a12c878b62fe7bdc16",
+      "bytes": 40458
+    },
+    {
+      "path": "/tmp/edhr-document-category-q1-browser-old/1440-success-feedback-failed.png",
+      "sha256": "21340553209aa4731c4456ecc5bf3bdc2901b10445915b640b232c4cd81c43be",
+      "bytes": 42818
+    },
+    {
+      "path": "/tmp/edhr-document-category-q1-browser-old/1440-success-feedback-open.png",
+      "sha256": "6956775229dbe5fb0d586e94b5e47eda123675b7bd2e0c85c6930e094d2285aa",
+      "bytes": 54656
+    },
+    {
+      "path": "/tmp/edhr-document-category-q1-browser-old/390-confirm-copy-cancel-failed.png",
+      "sha256": "4a6decd430326918dd39cbe8f4ac3dd53fe5aa2dc7eaea923a297d47adec609e",
+      "bytes": 37152
+    },
+    {
+      "path": "/tmp/edhr-document-category-q1-browser-old/390-confirm-copy-cancel-open.png",
+      "sha256": "4a6decd430326918dd39cbe8f4ac3dd53fe5aa2dc7eaea923a297d47adec609e",
+      "bytes": 37152
+    },
+    {
+      "path": "/tmp/edhr-document-category-q1-browser-old/390-precheck-error-open.png",
+      "sha256": "4a6decd430326918dd39cbe8f4ac3dd53fe5aa2dc7eaea923a297d47adec609e",
+      "bytes": 37152
+    },
+    {
+      "path": "/tmp/edhr-document-category-q1-browser-old/390-precheck-error.png",
+      "sha256": "689a638041f4f1d5f43cf27c737924ba47455a753d0d295474c303166a496e18",
+      "bytes": 30711
+    },
+    {
+      "path": "/tmp/edhr-document-category-q1-browser-old/390-referenced.png",
+      "sha256": "61fc811b3393367c721e2ff23b55a4bc6978126ea52eabbf6085dec2152c5243",
+      "bytes": 51116
+    },
+    {
+      "path": "/tmp/edhr-document-category-q1-browser-old/390-slow-cancel.png",
+      "sha256": "cd10db8edd71d779121b4d105dfe6ee41a7937b1acc90527a7aa18a59843a9dc",
+      "bytes": 28891
+    },
+    {
+      "path": "/tmp/edhr-document-category-q1-browser-old/390-success-feedback-failed.png",
+      "sha256": "3ac7a5fdd1f3f1fca99b3b7577fb610495f9a6e150ae98a0aa8be9396a72ff04",
+      "bytes": 31188
+    },
+    {
+      "path": "/tmp/edhr-document-category-q1-browser-old/390-success-feedback-open.png",
+      "sha256": "4a6decd430326918dd39cbe8f4ac3dd53fe5aa2dc7eaea923a297d47adec609e",
+      "bytes": 37152
+    },
+    {
+      "path": "/tmp/edhr-document-category-q1-browser-old/result.json",
+      "sha256": "ac1266aec430fcc2ee4d40dd0f7545f0476ddb0f8e53ee63de9943e1534195bc",
+      "bytes": 8691
+    },
+    {
+      "path": "/tmp/edhr-document-category-q1-browser-old.txt",
+      "sha256": "ac1266aec430fcc2ee4d40dd0f7545f0476ddb0f8e53ee63de9943e1534195bc",
+      "bytes": 8691
+    },
+    {
+      "path": "/tmp/edhr-document-category-q1-build.txt",
+      "sha256": "9f9aa506667ab67f9a86e270fe06e76fb8d643b624d5f3fc9e1c2dfe95d1edf5",
+      "bytes": 9572
+    },
+    {
+      "path": "/tmp/edhr-document-category-q1-cleanup.json",
+      "sha256": "5759f1833c4855b950ea5b099c476283c0fd1505c178010994cde1d322cbfc24",
+      "bytes": 472
+    },
+    {
+      "path": "/tmp/edhr-document-category-q1-concurrency-probe.txt",
+      "sha256": "2e2990249f49245e0997b4d34247cee0d28fd6d0e2586547b4a8290de63c3e43",
+      "bytes": 8743
+    },
+    {
+      "path": "/tmp/edhr-document-category-q1-concurrency-result.json",
+      "sha256": "9cd80026680ee8f4da9e92756c5d960a20c35bba48cede1700b143b88a6c9037",
+      "bytes": 1613
+    },
+    {
+      "path": "/tmp/edhr-document-category-q1-db.json",
+      "sha256": "db21ff770455b025201b69e3a015fcf3993ff6de16f248a296d83f1abe902d29",
+      "bytes": 327
+    },
+    {
+      "path": "/tmp/edhr-document-category-q1-finalize.py",
+      "sha256": "45b72ef6a9d901e148274f200c092dcb355f091ed6eba4c1bcdd9182afc4b787",
+      "bytes": 22694
+    },
+    {
+      "path": "/tmp/edhr-document-category-q1-generic-ui.txt",
+      "sha256": "2869b5c3628806ae3bce1d539eafd7e50a09e73e33880700d0d2a2e5c8751d28",
+      "bytes": 2565
+    },
+    {
+      "path": "/tmp/edhr-document-category-q1-h2-DocumentManagementControllerTest.xml",
+      "sha256": "4d4b5ddc026293a324af56a28b75887e041c04d631baf0cdd157dfec12176919",
+      "bytes": 34856
+    },
+    {
+      "path": "/tmp/edhr-document-category-q1-h2-DocumentOrmSchemaIntegrationTest.xml",
+      "sha256": "35801ffe9b49672d87471856ff7fb09ca2991f32d281ed59e651960c623a8538",
+      "bytes": 58333
+    },
+    {
+      "path": "/tmp/edhr-document-category-q1-h2-DocumentReadBoundaryIntegrationTest.xml",
+      "sha256": "d569faf5453091a9c78c4999d72c4b098538f56d3a98e73c41f938952bccc660",
+      "bytes": 240282
+    },
+    {
+      "path": "/tmp/edhr-document-category-q1-h2-DocumentWriteBoundaryIntegrationTest.xml",
+      "sha256": "a08e6d92748d2c0a305c308beff187c1b2c3573d28c8219d085cdbfec2b08428",
+      "bytes": 126868
+    },
+    {
+      "path": "/tmp/edhr-document-category-q1-h2-MasterDataBoundaryIntegrationTest.xml",
+      "sha256": "6c893db062e37e36a60c02b41ffa01264e057aeae9c5565fc9d7f496e543876a",
+      "bytes": 276324
+    },
+    {
+      "path": "/tmp/edhr-document-category-q1-h2-MaterialImportIntegrationTest.xml",
+      "sha256": "ed849349ee13861fdd7d9ddf7d573500d84154aa72d39db6934e35b0bc7518f6",
+      "bytes": 129896
+    },
+    {
+      "path": "/tmp/edhr-document-category-q1-h2-ProcessModelingControllerTest.xml",
+      "sha256": "70cce6767e4df4a7636193086c8749400f65cd56bdfe0f1a2daea623c5ecf6aa",
+      "bytes": 42099
+    },
+    {
+      "path": "/tmp/edhr-document-category-q1-h2-ProductProcessControllerTest.xml",
+      "sha256": "d91afe5aeaa1331f49f3b42166a5cdf722f51dc2c966aa04d4062fab3736d4e3",
+      "bytes": 35318
+    },
+    {
+      "path": "/tmp/edhr-document-category-q1-h2-read-http.jsonl",
+      "sha256": "9c4227f20e72512d7348ce594f2a154d290092d8e9697aef1eea9459af281fc4",
+      "bytes": 347893
+    },
+    {
+      "path": "/tmp/edhr-document-category-q1-h2-summary.json",
+      "sha256": "fc5f41ee624d4687e4540dec8b6108107ec0009f31854d7537398ff3eb415590",
+      "bytes": 1243
+    },
+    {
+      "path": "/tmp/edhr-document-category-q1-h2-test.txt",
+      "sha256": "3047814c1addc8ddcb490594e20ea8619bfdc394929581212deb58689908f211",
+      "bytes": 631414
+    },
+    {
+      "path": "/tmp/edhr-document-category-q1-h2-write-http.jsonl",
+      "sha256": "681ad80aaba54f5fcf0ce13d424adec9b9dfbbabb9b29c396da5e39d3c2e7dc6",
+      "bytes": 132069
+    },
+    {
+      "path": "/tmp/edhr-document-category-q1-inspect.py",
+      "sha256": "4a010f23cecc24d4333f3359c9c7bc611edca2842d64c40c5774c65a0f3d74ef",
+      "bytes": 3097
+    },
+    {
+      "path": "/tmp/edhr-document-category-q1-inspection.json",
+      "sha256": "df50d509cf248eb8ef3da695c4177bb4b3949164d8d1e5df6b1bdab26ea14dfd",
+      "bytes": 2928
+    },
+    {
+      "path": "/tmp/edhr-document-category-q1-inventory/coverage.csv",
+      "sha256": "13e980f191d14955b4cd2a11cde0c467aeb00e340f11e1cd54df7061b53e7c07",
+      "bytes": 1410260
+    },
+    {
+      "path": "/tmp/edhr-document-category-q1-inventory/entrypoints.csv",
+      "sha256": "f0ecd4a99580fb03631a8c5cf75d1d3b31c5a82cda1affaad98c0764d3520c38",
+      "bytes": 152331
+    },
+    {
+      "path": "/tmp/edhr-document-category-q1-inventory/inventory-summary.json",
+      "sha256": "44328021aea029e52b2500a55282f21fd1dc6ba7118f02f9fcac09ef94521d6a",
+      "bytes": 1043
+    },
+    {
+      "path": "/tmp/edhr-document-category-q1-inventory/migrations.csv",
+      "sha256": "b24b16e7dd1ddc11775bf249c3ca04515553d4f9ff000b429cb8da138e6ace13",
+      "bytes": 33469
+    },
+    {
+      "path": "/tmp/edhr-document-category-q1-inventory-build.txt",
+      "sha256": "fd1ff321142ee4bb106501242a4436211cbe7e449637efd6a7bb6d0f30be75ad",
+      "bytes": 933
+    },
+    {
+      "path": "/tmp/edhr-document-category-q1-inventory-check.json",
+      "sha256": "54a13ef3d87a5d1cbc06cec14714987b14577745e36354ae770918ef65998e6a",
+      "bytes": 203
+    },
+    {
+      "path": "/tmp/edhr-document-category-q1-java-context.json",
+      "sha256": "c90b2f61ece9941f9daf29351b900cf672981542ff715eb8c6afa0045baf9d55",
+      "bytes": 13931
+    },
+    {
+      "path": "/tmp/edhr-document-category-q1-knowledge-junit.xml",
+      "sha256": "7f244f1bf0ab8e7a0940db8eae8a4fd4648aa295d648cbbbb53c4b9fce42ad73",
+      "bytes": 20420
+    },
+    {
+      "path": "/tmp/edhr-document-category-q1-knowledge-summary.json",
+      "sha256": "0357e2f0eddc2c11e6d014540c0ff131715c903d922f2e96b8c18626f776dc09",
+      "bytes": 66
+    },
+    {
+      "path": "/tmp/edhr-document-category-q1-knowledge-test.txt",
+      "sha256": "a7721450d7281beed36694862d4797782dbb36e0df13f698f857cc216202b3ca",
+      "bytes": 2111
+    },
+    {
+      "path": "/tmp/edhr-document-category-q1-lint.txt",
+      "sha256": "4072a2a05ee82c5471348b2e593c2c6b58b14f65fe5c4ef2b385e71f0914dbdd",
+      "bytes": 611
+    },
+    {
+      "path": "/tmp/edhr-document-category-q1-pg-DocumentCategoryAuditPostgresTest.xml",
+      "sha256": "b772d0c6edee910d797eea5a18c1b30aa55fa55c9e37fe62a3cb2c26beb6d205",
+      "bytes": 104601
+    },
+    {
+      "path": "/tmp/edhr-document-category-q1-pg-DocumentReadPerformancePostgresTest.xml",
+      "sha256": "9b8e4ee1feed257cab35e3cbc02f644cd11134405fd80b244443a9d9ef07dc73",
+      "bytes": 290218
+    },
+    {
+      "path": "/tmp/edhr-document-category-q1-pg-DocumentWriteBoundaryPostgresTest.xml",
+      "sha256": "8a07dd53fed11182010a83b8d39a7269b6488d9298250b5e880a32f479912d6c",
+      "bytes": 136601
+    },
+    {
+      "path": "/tmp/edhr-document-category-q1-pg-category-http.jsonl",
+      "sha256": "c3256523fb39261ab4b478ae7db69ea318b041eaf71575892d951997aa4e9a2b",
+      "bytes": 62499
+    },
+    {
+      "path": "/tmp/edhr-document-category-q1-pg-read-http.jsonl",
+      "sha256": "57df3e54569920e25f2b420b446a0cad634d1b1191bd9c6e40d6aeec46a98d9c",
+      "bytes": 373346
+    },
+    {
+      "path": "/tmp/edhr-document-category-q1-pg-ready.txt",
+      "sha256": "f65a06d12c78be4ce11dc662c4ebf525a1da13786331065f0fe973c6df5ddd29",
+      "bytes": 39
+    },
+    {
+      "path": "/tmp/edhr-document-category-q1-pg-summary.json",
+      "sha256": "5c8256856b0a149b6f6c11749324baefd2dfb1d311ad381b94bc7879a1d92ff9",
+      "bytes": 1564
+    },
+    {
+      "path": "/tmp/edhr-document-category-q1-pg-test.txt",
+      "sha256": "52787ec015254e81ce17abe9964cd0f4d350a8de7fe2a62e58d06f99b3d596ba",
+      "bytes": 403915
+    },
+    {
+      "path": "/tmp/edhr-document-category-q1-pg-version.txt",
+      "sha256": "ca800f24c9c884d6a245fe3201d8fe0f202d50cc1a02a2f0412e9c427a087d83",
+      "bytes": 192
+    },
+    {
+      "path": "/tmp/edhr-document-category-q1-pg-write-http.jsonl",
+      "sha256": "7a5e4d8ffe97f45ba6db11a807dca7e8610c3acbfc34e00e88633013a7cdf67a",
+      "bytes": 133474
+    },
+    {
+      "path": "/tmp/edhr-document-category-q1-process-verifier.txt",
+      "sha256": "2d5c99bb25433a7fa6a487ce87e4947e1a16a3f4905692d4bed88528e62e6571",
+      "bytes": 930
+    },
+    {
+      "path": "/tmp/edhr-document-category-q1-quality-result.yaml",
+      "sha256": "a833dae5dd2715c90f85e0ee459ccf0d7af36a4e4047d5f3e15b90a2af20cafc",
+      "bytes": 17620
+    },
+    {
+      "path": "/tmp/edhr-document-category-q1-quality-review.md",
+      "sha256": "a29ac78a2c1aa07463f2fcbc0540463675e72d9690f18b789698ec32e2e90831",
+      "bytes": 4861
+    },
+    {
+      "path": "/tmp/edhr-document-category-q1-run-pg.py",
+      "sha256": "f352ead033237c6dc66c2ab5666aa8d95ce6f2b9c53e8897933a946af061f289",
+      "bytes": 4180
+    },
+    {
+      "path": "/tmp/edhr-document-category-q1-schema-setup.txt",
+      "sha256": "1212cb26088a8b17b55585cb9160960a460801064829a4aefdc9f4eaef548fd0",
+      "bytes": 5696
+    },
+    {
+      "path": "/tmp/edhr-document-category-q1-table-verifier.txt",
+      "sha256": "43c6e083087fe4bd0b25b00c4ccbba0268752d1fd864ec593a456cc192f6e03b",
+      "bytes": 234
+    },
+    {
+      "path": "/tmp/edhr-document-category-q1-whitespace-all.txt",
+      "sha256": "172da028cfd3590a4fc20af52c34ee9335dad3e5d4891f4b6d1aab929b65be49",
+      "bytes": 2350288
+    },
+    {
+      "path": "/tmp/edhr-document-category-q1-whitespace-handwritten.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    }
+  ],
+  "manifestSelfHashOmitted": true,
+  "rawFileCount": 87,
+  "rawTotalBytes": 9055807
+}

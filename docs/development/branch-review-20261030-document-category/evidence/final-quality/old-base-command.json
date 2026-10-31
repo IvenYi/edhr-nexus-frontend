@@ -1,0 +1,14 @@
+{
+  "command": [
+    "bash",
+    "/workspace/.edhr-cloud-tools/mvn-edhr",
+    "-f",
+    "gmp-platform/backend/pom.xml",
+    "-Dtest=DocumentCategoryAuditPostgresTest",
+    "-Dedhr.audit.categoryOutput=/tmp/edhr-document-category-q2-old-base-http.jsonl",
+    "test"
+  ],
+  "commit": "d10590bd3fe8f3da4e68bcc087b2102d2c211934",
+  "copiedUnchangedTestSha256": "7f6e808d8a37194925d6b2d6f2687a91d0466df7cd2ce868888eec0dbc68b72b",
+  "dependencySymlinkOnly": "/tmp/edhr-document-category-q2-worktree-old-base/gmp-platform/frontend/node_modules"
+}

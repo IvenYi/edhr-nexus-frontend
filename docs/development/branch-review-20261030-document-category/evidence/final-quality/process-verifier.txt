@@ -1,0 +1,21 @@
+
+> edhr-frontend@0.0.1 verify:process-modeling
+> node scripts/verify-process-modeling-pages.mjs
+
+node:fs:484
+    return binding.readFileUtf8(path, stringToFlags(options.flag));
+                   ^
+
+Error: ENOENT: no such file or directory, open '/workspace/edhr-nexus-frontend/gmp-platform/backend/src/main/resources/db/changelog/0014-process-modeling-permissions.sql'
+    at readFileSync (node:fs:484:20)
+    at file:///workspace/edhr-nexus-frontend/gmp-platform/frontend/scripts/verify-process-modeling-pages.mjs:21:51
+    at ModuleJob.run (node:internal/modules/esm/module_job:439:25)
+    at async node:internal/modules/esm/loader:643:26
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5) {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: '/workspace/edhr-nexus-frontend/gmp-platform/backend/src/main/resources/db/changelog/0014-process-modeling-permissions.sql'
+}
+
+Node.js v24.19.0

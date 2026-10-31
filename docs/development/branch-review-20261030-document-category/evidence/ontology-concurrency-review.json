@@ -1,0 +1,91 @@
+{
+  "role": "business-knowledge-modeler",
+  "roleState": "FINAL",
+  "ontologyResult": "not-applicable",
+  "contractBaseline": {
+    "sourceCommit": "ac3a421e42529bdb304e2c72145ceb580ec70618",
+    "targetBranch": "edhr-dev",
+    "targetCommit": "d10590bd3fe8f3da4e68bcc087b2102d2c211934",
+    "contractReadCommit": "d10590bd3fe8f3da4e68bcc087b2102d2c211934",
+    "uncommittedContractPaths": []
+  },
+  "knowledgeBaselineVersion": "0.3.25",
+  "schemaVersion": "1.2.0",
+  "capturedAt": "2026-10-30T15:53:38.365026+08:00",
+  "sourceState": "Actualac3aHEAD plus explicit uncommitted controller/repository locking fix; frontend unchanged fromac3a. Not final product runtime acceptance.",
+  "limitedExistingIds": 12,
+  "deltaCheckedIds": [
+    "rule.master-data.write-audit-snapshot",
+    "DEC-0065-03",
+    "term.audit-change-snapshot",
+    "concept.audit-change-snapshot",
+    "term.audit-event",
+    "concept.audit-event"
+  ],
+  "newSemanticIds": [],
+  "wholeFileCompletion": 0,
+  "newHistoricalUniqueIncrement": null,
+  "reasoning": [
+    "真实差量原件必须来自本次更新前的有效持久化对象。首轮同时读取旧排序后第二成功写者无审计，是同一排序审计家族的实现完整性缺口，不是新业务规则。",
+    "两个锁查询均绑定tenant，排序仅锁custom分类且按不变主键ID排序；改名单行先锁再取before，避免原findById实体先读旧名/旧序后被保存覆盖。",
+    "Controller两个HTTP方法保留原Transactional，写锁获取、读取before、写业务和写不可变差量在原事务内；排序payload算法、空请求行为、同值不写fake变化及权限未更改。",
+    "没有引入状态/概念/新权限/版本冲突409/迁移/历史修复；删除保护与已纠正前端提示保持。现有12ID定义足够，无须更新知识或提升成熟度。",
+    "DEC0053继续specified/internal，P0仅in-progress；本增量不把事实目录not-available升级为通用规则运行集成。"
+  ],
+  "knowledgeReuse": {
+    "rerun": false,
+    "reason": "303knowledge files and all tracked knowledge-model/contract/architecture source byte-identical to original89run baseline; original log/JUnit hashes verified.",
+    "originalManifest": "/tmp/edhr-document-category-ontology-manifest.json",
+    "originalManifestSha256": "a47ae699f48111863c4c7d0ec413461813a5c115942a8651290fc6a106882a09",
+    "actualPriorExecution": {
+      "command": "bash /workspace/.edhr-cloud-tools/mvn-edhr -f tools/knowledge-model/pom.xml test",
+      "exit": 0,
+      "tests": 89,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "originalFilesVerified": 9
+  },
+  "preservedHistory": {
+    "primaryRecordsVerified": 119,
+    "firstQualityArchiveVerified": 88,
+    "firstQualityResult": "failed",
+    "firstQualitySha256": "a833dae5dd2715c90f85e0ee459ccf0d7af36a4e4047d5f3e15b90a2af20cafc",
+    "originalPackage": "docs/development/branch-review-20261030-document-category/evidence/original-decision-package.yaml",
+    "originalPackageSha256": "88989a45bcf74ec32097869cefeda25fa1ec44fde2975cebe6993e1cd2fe6c94",
+    "newPackageSha256": "d68c9293cd2f3038f85b1aed893006e2a5f7d91b1d35a9728585dc3d01f284ed"
+  },
+  "sourceSnapshot": [
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/DocumentManagementController.java",
+      "featureBlob": "d75d696d198d779504fc3e4ebb9f25925218fb5a",
+      "actualSha256": "60b3179e256db34d9c4b272fedad9ac833ebf7e4c98d8af735ac903e24ea44c0",
+      "bytes": 33349
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/repository/DocumentCategoryRepository.java",
+      "featureBlob": "60c25fb3d2905fd58be9d303bead0cee075e8477",
+      "actualSha256": "0133496f0d9eedce0b11b6a2abd6eb3a8dce8bf6aae1c018f44745bb69961d9e",
+      "bytes": 1324
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/master-data/DocumentManagementPage.tsx",
+      "featureBlob": "138bd1a46813a0b990828315626fe5fe86a07f62",
+      "actualSha256": "a36c9d4f06c567ec1b2c6fe1a01395c0ed5959140db705e6731127a07047fc36",
+      "bytes": 68861
+    }
+  ],
+  "limits": [
+    "仅做语义与源码增量核对；未运行产品401/原生受控并发/浏览器或知识重跑，不认证主侧当前运行通过。最终质量仍需全新独立实例。",
+    "首轮QA failed及排序medium open保持原件；本NA不把119旧原件/88首轮归档或旧通过回写为当前质量passed。",
+    "固定ID写锁和单行改名锁是准确前值/避免相邻覆盖所需完整性措施；锁等待及同租户全部自定义分类串行化有争用代价，非性能优化或生产SLA认证。",
+    "不保证网络到达先后或所有并发组合都成功，不新增409/版本冲突产品政策；保持有效事务更新和既有校验结果。",
+    "当前三受控并发源码覆盖sort-sort、sort-rename、rename-sort意图；其他创建/删除/子引用变更组合及广泛容量仍待实际范围验证。",
+    "其他性能/原用户暂缓/四知识gap及A23 W6全量和W7增量反查保留，不能将本次有限增量计作新unique或整体审计完成。"
+  ],
+  "knowledgeChangedByRole": [],
+  "productOrTestChangedByRole": [],
+  "conflicts": [],
+  "questions": []
+}

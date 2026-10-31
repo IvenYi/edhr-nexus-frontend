@@ -118,7 +118,7 @@ class DocumentManagementControllerTest {
     void rejectsRenamingACategoryToAnotherExistingName() {
         DocumentCategory existing = DocumentCategory.builder().id(301L).tenantId("default").name("装配").build();
         DocumentCategory duplicate = DocumentCategory.builder().id(302L).tenantId("default").name("检验").build();
-        when(documentCategoryRepository.findById(301L)).thenReturn(Optional.of(existing));
+        when(documentCategoryRepository.findForUpdate(301L, "default")).thenReturn(Optional.of(existing));
         when(documentCategoryRepository.findByTenantIdAndNameIgnoreCase("default", "检验")).thenReturn(Optional.of(duplicate));
 
         assertThatThrownBy(() -> controller.updateCategory(301L, new DocumentManagementController.DocumentCategoryRequest("检验")))
@@ -137,18 +137,17 @@ class DocumentManagementControllerTest {
     }
 
     @Test
-    void deletingACustomCategoryMovesItsDocumentsToUncategorized() {
+    void deletingAnEmptyCustomCategoryKeepsUnrelatedDocuments() {
         DocumentCategory category = DocumentCategory.builder().id(301L).tenantId("default").name("装配").build();
-        SopDocument document = SopDocument.builder().id(101L).categoryId(301L).documentType("OTHER").code("DOC-001").title("装配指导书").build();
+        SopDocument document = SopDocument.builder().id(101L).categoryId(302L).documentType("OTHER").code("DOC-001").title("装配指导书").build();
         when(documentCategoryRepository.findById(301L)).thenReturn(Optional.of(category));
         when(documentRepository.findAll()).thenReturn(List.of(document));
-        when(documentRepository.saveAll(any())).thenAnswer(invocation -> invocation.getArgument(0));
         when(auditEventRepository.save(any(AuditEvent.class))).thenAnswer(invocation -> invocation.getArgument(0));
         when(idGenerator.nextId()).thenReturn(401L, 402L);
 
         controller.deleteCategory(301L);
 
-        assertThat(document.getCategoryId()).isNull();
+        assertThat(document.getCategoryId()).isEqualTo(302L);
         assertThat(document.getDocumentType()).isEqualTo("OTHER");
         verify(documentCategoryRepository).delete(category);
     }

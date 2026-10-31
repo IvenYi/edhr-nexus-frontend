@@ -1,0 +1,50 @@
+knowledgeModelVersion: 0.3.24
+decisions:
+  - id: DEC-0065
+    title: 主数据页面权限与产品簇兼容接口审计契约
+    status: implemented
+    visibility: internal
+    context: L2 质量复核发现工艺建模控制器接口仅要求登录，旧产品簇兼容控制器也缺少页面权限和统一写审计。本决策记录修复后的权限边界，以及旧兼容路径与当前产品簇能力一致的审计语义；不改变主数据页面布局、产品簇业务关系或历史审计数据。
+    decisionStatements:
+      - id: DEC-0065-01
+        statement: 工艺建模控制器的物料、工序、工艺路线、产品、产品簇和文档接口分别要求现有 master-data.materials、master-data.operations、master-data.routes、master-data.products、master-data.product-families 和 master-data.documents 页面权限；没有对应页面权限的已认证用户不得访问接口。
+        status: implemented
+        visibility: internal
+      - id: DEC-0065-02
+        statement: 旧 /api/v1/master-data/product-families 兼容接口与当前产品簇能力使用同一 master-data.product-families 页面权限，覆盖其列表和创建、更新、删除操作。
+        status: implemented
+        visibility: internal
+      - id: DEC-0065-03
+        statement: 主数据写操作沿用统一 AuditEvent 及变更前后快照语义；旧产品簇兼容接口的创建、更新和删除写入 entityType=PRODUCT_FAMILY 的 CREATE、UPDATE、DELETE 审计事件。
+        status: implemented
+        visibility: internal
+      - id: DEC-0065-04
+        statement: 旧产品簇兼容接口的审计快照包含产品簇父记录 description；更新和删除的变更前快照来自持久化对象，不以请求参数替代真实持久化状态。
+        status: implemented
+        visibility: internal
+      - id: DEC-0065-05
+        statement: 本次权限和审计修复复用现有页面权限码、AuditEvent 模型和产品簇 description 字段契约，不新增页面条件分支、权限码或第二套审计模型。
+        status: implemented
+        visibility: internal
+    supersedes: []
+    evidenceIds: [evidence.master-data-page-authority-process-modeling-controller, evidence.master-data-page-authority-legacy-product-controller, evidence.master-data-page-authority-controller-test, evidence.master-data-page-authority-operation-integration-test, evidence.master-data-legacy-product-family-audit-controller, evidence.master-data-legacy-product-family-audit-test, evidence.master-data-description-process-controller, evidence.audit-aspect, evidence.audit-aspect-test]
+    acceptanceScenarios:
+      - id: scenario.master-data-endpoint-page-authority
+        given: 用户已认证但没有目标主数据页面权限
+        when: 请求工艺建模控制器或旧产品簇兼容控制器的对应接口
+        then: 服务端拒绝请求；拥有对应 master-data.* 页面权限的用户才可继续访问
+        evidenceIds: [evidence.master-data-page-authority-process-modeling-controller, evidence.master-data-page-authority-legacy-product-controller, evidence.master-data-page-authority-controller-test, evidence.master-data-page-authority-operation-integration-test]
+        evidenceRequirements: [主数据各资源读取和写入接口权限回归, 旧产品簇兼容接口权限回归]
+      - id: scenario.legacy-product-family-audit-with-description
+        given: 旧产品簇兼容接口收到创建、更新或删除请求，且通过产品簇页面权限和既有删除保护
+        when: 服务端完成对应写操作
+        then: 写入 PRODUCT_FAMILY 审计事件；创建的 after 或更新/删除的 before/after 快照包含 description
+        evidenceIds: [evidence.master-data-legacy-product-family-audit-controller, evidence.master-data-legacy-product-family-audit-test, evidence.master-data-description-process-controller]
+        evidenceRequirements: [CREATE/UPDATE/DELETE 审计动作, 变更前后快照, description 字段保留, 审计失败事务回滚]
+      - id: scenario.master-data-authority-code-reuse
+        given: 主数据页面和兼容接口均需要访问控制
+        when: 维护主数据接口权限边界
+        then: 复用现有六个 master-data.* authority，不创建客户条件分支或新的权限体系
+        evidenceIds: [evidence.master-data-page-authority-process-modeling-controller, evidence.master-data-page-authority-legacy-product-controller]
+        evidenceRequirements: [权限码与页面资源映射核对]
+    implementationDiscrepancies: []

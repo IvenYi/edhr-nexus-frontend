@@ -1,0 +1,41 @@
+{
+  "baseCommit": "d10590bd3fe8f3da4e68bcc087b2102d2c211934",
+  "headCommit": "5d1487b195cec7e994285fc623c55097bde09bf2",
+  "sourceStatus": "",
+  "primaryOriginals": 119,
+  "oldSourceSnapshotsVerifiedAt": "ac3a421e42529bdb304e2c72145ceb580ec70618",
+  "oldSourceSnapshotCount": 6,
+  "failedQualityOriginals": 88,
+  "concurrencyOriginals": 27,
+  "currentSourceSnapshots": 7,
+  "knowledgeFilesUnchanged": 303,
+  "historyOriginals": [
+    "docs/knowledge/decisions/DEC-0053-master-data-deletion-protection.yaml",
+    "docs/knowledge/evidence/master-data-deletion-user-confirmed.md",
+    "docs/architecture/master-data-deletion-protection.md",
+    "docs/knowledge/decisions/DEC-0065-master-data-permission-audit-contract.yaml"
+  ],
+  "manualWhitespace": {
+    "paths": [
+      "docs/development/branch-review-20261015/NEXT.md",
+      "docs/development/branch-review-20261030-document-category/README.md",
+      "docs/development/branch-review-20261030-document-category/a23-review.json",
+      "docs/development/branch-review-20261030-document-category/decision-package.yaml",
+      "docs/development/branch-review-20261030-document-category/inventory/inventory-summary.json",
+      "docs/development/branch-review-20261030-document-category/review-notes.md",
+      "docs/development/branch-review-20261030-document-category/scope-review.md",
+      "docs/development/branch-review-20261030-document-category/source-review.json",
+      "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/DocumentManagementController.java",
+      "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/repository/DocumentCategoryRepository.java",
+      "gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/DocumentCategoryAuditPostgresTest.java",
+      "gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/DocumentManagementControllerTest.java",
+      "gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/DocumentWriteBoundaryIntegrationTest.java",
+      "gmp-platform/frontend/scripts/test-document-category-delete-browser.mjs",
+      "gmp-platform/frontend/src/pages/master-data/DocumentManagementPage.tsx"
+    ],
+    "exit": 0
+  },
+  "fullRawWhitespaceExit": 2,
+  "productNumstat": "9\t15\tgmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/DocumentManagementController.java\n12\t0\tgmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/repository/DocumentCategoryRepository.java\n2\t2\tgmp-platform/frontend/src/pages/master-data/DocumentManagementPage.tsx\n",
+  "protectedDelta": []
+}
