@@ -1,0 +1,16 @@
+{
+  "command": [
+    "bash",
+    "/workspace/.edhr-cloud-tools/mvn-edhr",
+    "-f",
+    "gmp-platform/backend/pom.xml",
+    "-Dtest=FileCopyOwnershipTest,FileHttpBoundaryTest",
+    "test"
+  ],
+  "cwd": "/tmp/edhr-copy-q2-worktree-latest-old",
+  "commit": "0bd0848bbded6d6954d62a4f924e0b2eec6623ad",
+  "testSha256": {
+    "FileCopyOwnershipTest": "c1007f99c8981472318c00e0af793d0342cb998814387fcc8a8fb54af49cbf02",
+    "FileHttpBoundaryTest": "07223295278b8bacc9b8b1ad6fd3c810a980ca96d0f277d00fe54cf333210f5d"
+  }
+}

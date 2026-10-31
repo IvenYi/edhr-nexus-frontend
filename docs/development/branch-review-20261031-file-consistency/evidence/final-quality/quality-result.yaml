@@ -1,0 +1,222 @@
+qualityResult:
+  result: passed
+  baseCommit: 0bd0848bbded6d6954d62a4f924e0b2eec6623ad
+  headCommit: 2bdea59bc591fcec6ba9a4c8cbc4374cc65da1ab
+  contractBaseline:
+    sourceCommit: 2bdea59bc591fcec6ba9a4c8cbc4374cc65da1ab
+    targetBranch: edhr-dev
+    targetCommit: 0bd0848bbded6d6954d62a4f924e0b2eec6623ad
+    contractReadCommit: 2bdea59bc591fcec6ba9a4c8cbc4374cc65da1ab
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: clean
+    includedPaths: []
+    excludedPaths: []
+    untrackedPaths: []
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+  - id: q2.baseline-contract
+    required: true
+    category: documentation
+    description: 实时base、clean候选、祖先及实际契约增量核对
+    method: inspection
+    command: git fetch origin edhr-dev; git rev-parse; merge-base --is-ancestor; read AGENTS/quality-verifier/handoff
+    outcome: passed
+    evidence:
+    - /tmp/edhr-copy-q2-inspection.json
+    - base=0bd0848bbded6d6954d62a4f924e0b2eec6623ad; head/tested/contractRead=2bdea59bc591fcec6ba9a4c8cbc4374cc65da1ab; target
+      ancestor, clean.
+  - id: q2.rules-source-scope
+    required: true
+    category: requirements
+    description: 源码、既有身份及原件保护规则，最新知识边界与限定影响核对
+    method: inspection
+    command: Read actual product/tests/decision package, DEC0065/0068 sources, ontology integration, current README/open questions/review
+      notes
+    outcome: passed
+    evidence:
+    - /tmp/edhr-copy-q2-inspection.json
+    - createFile owns only new path; output WRITE/transferTo keeps reserved object; real JWT AuditContext ID, no submitted
+      identity; no ACL/deletion-policy expansion.
+  - id: q2.provenance
+    required: true
+    category: documentation
+    description: 原18、首failed45、整合41及旧/当前源快照独立逐字节核对
+    method: command
+    command: python3 /tmp/edhr-copy-q2-inspect.py
+    outcome: passed
+    evidence:
+    - /tmp/edhr-copy-q2-inspection.json
+    - Initial3 source hashes checked at Git ec485; current3 and ontology19 checked against frozen candidate; initial package
+      byte-identical; failed remains failed.
+  - id: q2.inventory-increment-a23
+    required: true
+    category: documentation
+    description: 新四盘点重建、旧四清单保留、666路径/44文件/183ID与A23剩余边界
+    method: command
+    command: python3 scripts/build-branch-review-inventory.py --ref 0bd0848bbded6d6954d62a4f924e0b2eec6623ad --out /tmp/edhr-copy-q2-inventory
+    outcome: passed
+    evidence:
+    - /tmp/edhr-copy-q2-inspection.json
+    - /tmp/edhr-copy-q2-inventory-build.txt
+    - 5758 paths/134 migrations/464HTTP annotations/216route candidates inventory only; 666 path,44knowledge,183ID candidates
+      pending; 6method groups/10replayedIDs overlap, whole-file0/unique null.
+  - id: q2.owned-copy-regression
+    required: true
+    category: integration
+    description: 当前原子路径碰撞/部分复制/open/close/清理故障与保留句柄六项
+    method: automated-test
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f gmp-platform/backend/pom.xml -Dtest=FileCopyOwnershipTest,FileHttpBoundaryTest,FileUploadResourceTest,FileControllerTest,DhrFormFilesTest
+      test
+    outcome: passed
+    evidence:
+    - /tmp/edhr-copy-q2-current-test.txt
+    - /tmp/edhr-copy-q2-current-FileCopyOwnershipTest.xml
+    - '6 passed: partial copy/open/close clean only owned path; old original preserved; cleanup failure retained suppressed;
+      same reserved FileChannel reads final3bytes.'
+  - id: q2.http-identity-boundaries
+    required: true
+    category: security
+    description: 真实JWT/filter/MVC两上传者身份和原公开/登录边界
+    method: automated-test
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f gmp-platform/backend/pom.xml -Dtest=FileCopyOwnershipTest,FileHttpBoundaryTest,FileUploadResourceTest,FileControllerTest,DhrFormFilesTest
+      test
+    outcome: passed
+    evidence:
+    - /tmp/edhr-copy-q2-current-FileHttpBoundaryTest.xml
+    - 11 passed, two real JWT IDs persisted and spoofed uploadedBy ignored; actual text bytes/public reference checks; repositories
+      mocked, not whole object ACL.
+  - id: q2.adjacent-regression
+    required: true
+    category: regression
+    description: 既有资源9、控制器9、DhrFormFiles2相邻回归
+    method: automated-test
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f gmp-platform/backend/pom.xml -Dtest=FileCopyOwnershipTest,FileHttpBoundaryTest,FileUploadResourceTest,FileControllerTest,DhrFormFilesTest
+      test
+    outcome: passed
+    evidence:
+    - /tmp/edhr-copy-q2-current-summary.json
+    - 20 adjacent passed; complete current run37/0failure/error/skip; no native DB or complete DHR export certification.
+  - id: q2.latest-target-red
+    required: true
+    category: regression
+    description: 相同最终17在实际最新目标0bd的真实红控
+    method: automated-test
+    command: python3 /tmp/edhr-copy-q2-run-old.py
+    outcome: passed
+    evidence:
+    - /tmp/edhr-copy-q2-latest-old-command.json
+    - /tmp/edhr-copy-q2-latest-old-summary.json
+    - 17=7 real assertion failures/10positive,0error/skip; copy5red+uploader2red; exact same source hashes as current.
+  - id: q2.pre-copy-fix-red
+    required: true
+    category: regression
+    description: 相同最终17在实际预补正合并e954的真实红控
+    method: automated-test
+    command: python3 /tmp/edhr-copy-q2-run-old.py
+    outcome: passed
+    evidence:
+    - /tmp/edhr-copy-q2-pre-copy-fix-command.json
+    - /tmp/edhr-copy-q2-pre-copy-fix-summary.json
+    - 17=1 reserved-object assertion failure/16positive,0error/skip; old handle EOF despite current path bytes correct; current
+      direct WRITE passes.
+  - id: q2.knowledge89
+    required: true
+    category: ontology
+    description: 当前330知识资产的既有正式89检查实际运行
+    method: automated-test
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f tools/knowledge-model/pom.xml test
+    outcome: passed
+    evidence:
+    - /tmp/edhr-copy-q2-knowledge-test.txt
+    - /tmp/edhr-copy-q2-knowledge-junit.xml
+    - /tmp/edhr-copy-q2-knowledge-summary.json
+    - 89/0failure/error/skip; automatic validation does not certify full new semantic audit.
+  - id: q2.authored-whitespace
+    required: true
+    category: documentation
+    description: 当前手工代码与文档范围空白检查
+    method: command
+    command: git diff --check 0bd0848bbded6d6954d62a4f924e0b2eec6623ad 2bdea59bc591fcec6ba9a4c8cbc4374cc65da1ab -- authored
+      paths
+    outcome: passed
+    evidence:
+    - /tmp/edhr-copy-q2-whitespace-handwritten.txt
+    - /tmp/edhr-copy-q2-inspection.json
+    - 9 authored paths; immutable raw logs/inventory excluded, not reformatted.
+  - id: q2.owned-cleanup
+    required: true
+    category: documentation
+    description: 两自有旧worktree精确清理与最终候选状态
+    method: command
+    command: git worktree remove exact owned paths; git status --porcelain
+    outcome: passed
+    evidence:
+    - /tmp/edhr-copy-q2-cleanup.json
+    - Both detached worktrees removed normally after restoring own copied tests/removing own symlinks; no prune/force, no
+      DB container started.
+  findings:
+  - id: AUD-W5-FILE-COPY-OWNERSHIP-001
+    severity: medium
+    scope: FileController.upload physical path ownership and copy failures
+    summary: 复制失败残片、旧路径覆盖及首轮替换式复制释放预占缺口已修复并fresh复验。
+    reproductionSteps:
+    - Actual latest target0bd same17:7failure/10positive.
+    - Actual pre-copy-fix e954 same17:reserved handle reads-1 instead of3;1failure16positive.
+    - Current clean candidate37pass with createFile+WRITE/transferTo and retained FileChannel check.
+    expectedResult: 失败仅清理本次拥有路径，碰撞旧原件不动，成功复制保留同一预占文件对象，清理失败保留原始异常。
+    actualResult: Current ownership6pass; latest-old5ownershipassertionsred; e954sameobject1red; current failure cleanup and
+      suppressed error correct.
+    evidence:
+    - /tmp/edhr-copy-q2-latest-old-summary.json
+    - /tmp/edhr-copy-q2-pre-copy-fix-summary.json
+    - /tmp/edhr-copy-q2-current-FileCopyOwnershipTest.xml
+    resolutionStatus: resolved
+    resolutionEvidence:
+    - type: commit
+      reference: 2bdea59bc591fcec6ba9a4c8cbc4374cc65da1ab
+    - type: command
+      reference: /tmp/edhr-copy-q2-current-test.txt
+    - type: document
+      reference: /tmp/edhr-copy-q2-pre-copy-fix-summary.json
+  - id: AUD-W4-FILE-UPLOADER-001
+    severity: medium
+    scope: FileObject.uploadedBy for authenticated upload
+    summary: HTTP上传者不再伪记system，复用真实JWT上下文ID。
+    reproductionSteps:
+    - Actual latest target0bd sameHTTP11:2uploaderassertionsfail, actualsystem.
+    - Current realJWT uploader-A/uploader-B each persist ownID and ignore submitted uploadedBy.
+    expectedResult: HTTP上传元数据使用真实认证主体ID，不信提交身份、不回填历史。
+    actualResult: CurrentHTTP11pass; both actor tests red on real latest target and green current; legacy nonHTTP fallback
+      retained.
+    evidence:
+    - /tmp/edhr-copy-q2-latest-old-summary.json
+    - /tmp/edhr-copy-q2-current-FileHttpBoundaryTest.xml
+    resolutionStatus: resolved
+    resolutionEvidence:
+    - type: commit
+      reference: 2bdea59bc591fcec6ba9a4c8cbc4374cc65da1ab
+    - type: command
+      reference: /tmp/edhr-copy-q2-current-test.txt
+  residualRisks:
+  - id: risk.shared-object-acl
+    description: 通用FileObject对象ACL三项产品边界仍待用户确认，个人认证证件与冻结签名展示图不同。
+    impact: 登录/公开真实引用测试不等完整对象访问授权；不能按可伪造targetType直接放行。
+    mitigation: 按真实业务引用继续核对；未答不选择默认，不一刀切主数据页权。
+  - id: risk.cross-storage-remains
+    description: DBsave/commit失败、删除顺序、崩溃及不确定提交未修，仍可能孤儿或跨介质不一致。
+    impact: 本批只修受控请求复制阶段，不能承诺完整文件/数据库原子性。
+    mitigation: 后续实际事务故障注入，按明确回滚/不确定结果保留策略；不自动清历史。
+  - id: risk.scope-capacity
+    description: 合成磁盘/受控故障和仓储mock，仅有限请求及文件对象保持验证。
+    impact: 不认证全部并发/外部进程任意改盘、PG/多租户、PDF视觉或生产堆GC/SLA。
+    mitigation: 按风险后续验证；容量量化后讨论优化，保持原件与摘要。
+  - id: risk.increment-pending
+    description: 新记录控制/DHR/工作流666路径、44知识增改文件及183ID候选待增量审计，当前330知识；10旧有限ID重放不计new unique。
+    impact: 本批37/89不表示新增全模块或全仓通过；旧记录控制未实现描述需转为已实现待审，旧high/A12/gap不自动关。
+    mitigation: 按新清单逐项核对，保留全量5758/134盘点和W2–W7/A23待审。
+  - id: risk.ui-tooling-not-run
+    description: 无本批UI变更，未执行浏览器/全前端构建/静态UI检查；旧strict19/lint/process限制不借用覆盖新目标UI。
+    impact: Maven资源构建不是完整前端验收，未核强制CI设置。
+    mitigation: 相关UI/模块后续独立验证，不查询触发CI。
+  blockingConditions: []

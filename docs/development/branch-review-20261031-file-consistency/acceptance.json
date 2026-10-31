@@ -1,0 +1,228 @@
+{
+  "baseCommit": "0bd0848bbded6d6954d62a4f924e0b2eec6623ad",
+  "runtimeTestedCommit": "2bdea59bc591fcec6ba9a4c8cbc4374cc65da1ab",
+  "reviewedCommit": "2bdea59bc591fcec6ba9a4c8cbc4374cc65da1ab",
+  "executionLevel": "L2",
+  "status": "passed",
+  "qualityResult": "evidence/final-quality/quality-result.yaml",
+  "independentReview": "evidence/final-quality/quality-review.md",
+  "requiredPassed": 12,
+  "requiredTotal": 12,
+  "findings": [
+    {
+      "id": "AUD-W5-FILE-COPY-OWNERSHIP-001",
+      "severity": "medium",
+      "scope": "FileController.upload physical path ownership and copy failures",
+      "summary": "复制失败残片、旧路径覆盖及首轮替换式复制释放预占缺口已修复并fresh复验。",
+      "reproductionSteps": [
+        "Actual latest target0bd same17:7failure/10positive.",
+        "Actual pre-copy-fix e954 same17:reserved handle reads-1 instead of3;1failure16positive.",
+        "Current clean candidate37pass with createFile+WRITE/transferTo and retained FileChannel check."
+      ],
+      "expectedResult": "失败仅清理本次拥有路径，碰撞旧原件不动，成功复制保留同一预占文件对象，清理失败保留原始异常。",
+      "actualResult": "Current ownership6pass; latest-old5ownershipassertionsred; e954sameobject1red; current failure cleanup and suppressed error correct.",
+      "evidence": [
+        "/tmp/edhr-copy-q2-latest-old-summary.json",
+        "/tmp/edhr-copy-q2-pre-copy-fix-summary.json",
+        "/tmp/edhr-copy-q2-current-FileCopyOwnershipTest.xml"
+      ],
+      "resolutionStatus": "resolved",
+      "resolutionEvidence": [
+        {
+          "type": "commit",
+          "reference": "2bdea59bc591fcec6ba9a4c8cbc4374cc65da1ab"
+        },
+        {
+          "type": "command",
+          "reference": "/tmp/edhr-copy-q2-current-test.txt"
+        },
+        {
+          "type": "document",
+          "reference": "/tmp/edhr-copy-q2-pre-copy-fix-summary.json"
+        }
+      ]
+    },
+    {
+      "id": "AUD-W4-FILE-UPLOADER-001",
+      "severity": "medium",
+      "scope": "FileObject.uploadedBy for authenticated upload",
+      "summary": "HTTP上传者不再伪记system，复用真实JWT上下文ID。",
+      "reproductionSteps": [
+        "Actual latest target0bd sameHTTP11:2uploaderassertionsfail, actualsystem.",
+        "Current realJWT uploader-A/uploader-B each persist ownID and ignore submitted uploadedBy."
+      ],
+      "expectedResult": "HTTP上传元数据使用真实认证主体ID，不信提交身份、不回填历史。",
+      "actualResult": "CurrentHTTP11pass; both actor tests red on real latest target and green current; legacy nonHTTP fallback retained.",
+      "evidence": [
+        "/tmp/edhr-copy-q2-latest-old-summary.json",
+        "/tmp/edhr-copy-q2-current-FileHttpBoundaryTest.xml"
+      ],
+      "resolutionStatus": "resolved",
+      "resolutionEvidence": [
+        {
+          "type": "commit",
+          "reference": "2bdea59bc591fcec6ba9a4c8cbc4374cc65da1ab"
+        },
+        {
+          "type": "command",
+          "reference": "/tmp/edhr-copy-q2-current-test.txt"
+        }
+      ]
+    }
+  ],
+  "independentRuns": {
+    "backend": {
+      "tests": 37,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "knowledge": {
+      "tests": 89,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "latestActualTarget17": {
+      "tests": 17,
+      "failures": 7,
+      "errors": 0,
+      "skipped": 0
+    },
+    "latestPositiveControls": 10,
+    "preCopyFixActual17": {
+      "tests": 17,
+      "failures": 1,
+      "errors": 0,
+      "skipped": 0
+    },
+    "preCopyFixPositiveControls": 16
+  },
+  "history": {
+    "initialTarget": "032b83e9d5b8a25bee6d5b59c45d86892f672d00",
+    "initialCandidate": "ec4857bef2c9ebb5a1b1d1b7f3c767d2cb63666a",
+    "preCopyFixMergedCandidate": "e9548d5f9d555f78afbe1c1c8ea68f64d45e6c55",
+    "firstQualityResult": "failed",
+    "firstQualityOriginals": 45,
+    "initialPrimaryOriginals": 18,
+    "integrationOriginals": 41,
+    "finalOriginalsIncludingManifest": 42,
+    "initialThreeSourcesVerifiedAt": "Git ec485 objects, not current source",
+    "initialDecisionPackagePreserved": true
+  },
+  "countingBoundary": "37 current executions include prior tests; final17 actually copied byte-identically to latest0bd and pre-fix e954. Two defect families, not every red assertion counted separately.",
+  "ontology": {
+    "result": "not-applicable",
+    "roleState": "FINAL",
+    "version": "0.3.25",
+    "initialResult": "evidence/ontology-result.yaml",
+    "currentResult": "evidence/integration-validation/integration-ontology-result.yaml",
+    "replayedExistingIds": 10,
+    "newDecisionContainersContextScreened": 7,
+    "newUniqueIncrement": null,
+    "knowledgeFiles": 330,
+    "changedKnowledgeFiles": 44,
+    "pendingIdCandidateLocations": 183,
+    "removedIdCandidateLocations": 1,
+    "knowledgeTestsAtLatestTarget": 89,
+    "finalQualitySeparatelyRanKnowledge89": true
+  },
+  "sourceCoverage": {
+    "limitedGroups": 6,
+    "wholeFileCompletion": 0,
+    "historicalUniqueIncrement": null,
+    "document": "source-review.json"
+  },
+  "inventory": {
+    "currentFixedCommit": "0bd0848bbded6d6954d62a4f924e0b2eec6623ad",
+    "currentTrackedPaths": 5758,
+    "currentMigrationRows": 134,
+    "currentHttpAnnotationCandidates": 464,
+    "currentFrontendRouteCandidates": 216,
+    "currentDirectory": "inventory-current",
+    "initialDirectory": "inventory",
+    "initialTrackedPaths": 5173,
+    "initialMigrationRows": 130,
+    "status": "inventory-only"
+  },
+  "targetIncrement": {
+    "paths": 666,
+    "reviewStatus": "all-pending",
+    "document": "integration-increment.json",
+    "recordControlState": "implemented and awaiting incremental audit; old unimplemented deferral superseded only in that scope",
+    "notAutomaticallyClosed": [
+      "old DHR two high",
+      "remaining A12 history views",
+      "four knowledge gaps",
+      "TaskDetail friend-owned issue"
+    ]
+  },
+  "a23": {
+    "limitedMethodRecords": 6,
+    "currentChangedPending": 2,
+    "currentAddedPending": 1,
+    "wholeFileCompletion": 0,
+    "historicalLanguageQueue": 856,
+    "previousFeatureAddedPending": 1,
+    "historicalSqlQueue": 130,
+    "newTargetMigrationRowsPending": 4,
+    "historicalQueuesRetained": true,
+    "next": "W6 including previously reviewed current source, W7 latest increments"
+  },
+  "scopeReview": {
+    "allFormalRoles": "FINAL",
+    "noDrift": true,
+    "actualUserCommunicationBeforePrCreation": true,
+    "document": "scope-review.md"
+  },
+  "residualRisks": [
+    {
+      "id": "risk.shared-object-acl",
+      "description": "通用FileObject对象ACL三项产品边界仍待用户确认，个人认证证件与冻结签名展示图不同。",
+      "impact": "登录/公开真实引用测试不等完整对象访问授权；不能按可伪造targetType直接放行。",
+      "mitigation": "按真实业务引用继续核对；未答不选择默认，不一刀切主数据页权。"
+    },
+    {
+      "id": "risk.cross-storage-remains",
+      "description": "DBsave/commit失败、删除顺序、崩溃及不确定提交未修，仍可能孤儿或跨介质不一致。",
+      "impact": "本批只修受控请求复制阶段，不能承诺完整文件/数据库原子性。",
+      "mitigation": "后续实际事务故障注入，按明确回滚/不确定结果保留策略；不自动清历史。"
+    },
+    {
+      "id": "risk.scope-capacity",
+      "description": "合成磁盘/受控故障和仓储mock，仅有限请求及文件对象保持验证。",
+      "impact": "不认证全部并发/外部进程任意改盘、PG/多租户、PDF视觉或生产堆GC/SLA。",
+      "mitigation": "按风险后续验证；容量量化后讨论优化，保持原件与摘要。"
+    },
+    {
+      "id": "risk.increment-pending",
+      "description": "新记录控制/DHR/工作流666路径、44知识增改文件及183ID候选待增量审计，当前330知识；10旧有限ID重放不计new unique。",
+      "impact": "本批37/89不表示新增全模块或全仓通过；旧记录控制未实现描述需转为已实现待审，旧high/A12/gap不自动关。",
+      "mitigation": "按新清单逐项核对，保留全量5758/134盘点和W2–W7/A23待审。"
+    },
+    {
+      "id": "risk.ui-tooling-not-run",
+      "description": "无本批UI变更，未执行浏览器/全前端构建/静态UI检查；旧strict19/lint/process限制不借用覆盖新目标UI。",
+      "impact": "Maven资源构建不是完整前端验收，未核强制CI设置。",
+      "mitigation": "相关UI/模块后续独立验证，不查询触发CI。"
+    }
+  ],
+  "remaining": {
+    "sharedFileAcl": "three boundaries asked; no reply, implementation dependent scope pending",
+    "crossStorage": "copy failure subcase corrected; DBsave/commit/delete/process-crash not certified",
+    "performance": "PDF/exports and prior risks quantify/discuss before optimization",
+    "newModules": "666 target increment paths remain pending despite local batch passing"
+  },
+  "explicitLimits": [
+    "One product file; actual streams/files/JWT/filter/MVC with repository mocks, no native DB/fullACL/allconcurrency certification.",
+    "Direct WRITE preserves reserved file object; assumes application-owned storage directory, no claim against uncontrolled local filesystem mutation.",
+    "No UI source changes by this batch; no full new-target UI/browser/build certification or old tooling results reused as new passes.",
+    "No migrations, historical uploader/digest backfill, history restore or automatic deletion of existing files.",
+    "Current37/new89 only narrow compatibility; no global audit completion percentage or newly unique semantic count."
+  ],
+  "independentArchive": "evidence/final-quality/archive-map.json",
+  "blockingConditions": [],
+  "recommendMergeForThisBatch": true,
+  "postQaVerification": "evidence/delivery-verification.json",
+  "deliveryPolicy": "User manual merge only; no deploy/history restore/CI query or trigger."
+}

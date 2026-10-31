@@ -1,0 +1,37 @@
+{
+  "commit": "e9548d5f9d555f78afbe1c1c8ea68f64d45e6c55",
+  "exit": 1,
+  "suites": [
+    {
+      "suite": "FileCopyOwnershipTest",
+      "tests": 6,
+      "failures": 1,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "FileHttpBoundaryTest",
+      "tests": 11,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  ],
+  "totals": {
+    "tests": 17,
+    "failures": 1,
+    "errors": 0,
+    "skipped": 0
+  },
+  "failures": [
+    {
+      "case": "copyKeepsTheReservedFileObjectRatherThanUnlinkingAndRecreatingIt",
+      "kind": "failure",
+      "message": "\nexpected: 3\n but was: -1"
+    }
+  ],
+  "testSha256": {
+    "FileCopyOwnershipTest": "c1007f99c8981472318c00e0af793d0342cb998814387fcc8a8fb54af49cbf02",
+    "FileHttpBoundaryTest": "07223295278b8bacc9b8b1ad6fd3c810a980ca96d0f277d00fe54cf333210f5d"
+  }
+}
