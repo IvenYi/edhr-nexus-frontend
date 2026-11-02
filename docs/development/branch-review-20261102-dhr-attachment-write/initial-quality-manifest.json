@@ -1,0 +1,694 @@
+{
+  "stage": "Initial clean601 candidate only; not final streaming implementation validation",
+  "baseCommit": "e3e49784eda6bc01e7e5c686d6f79dc5a600d5ae",
+  "headCommit": "6012672aa8be4d0d0c8f35a01b0dee0dd4af2882",
+  "bundle": "evidence/initial-quality/601-independent-originals.tar.gz",
+  "storedBytes": 1459674,
+  "storedSha256": "72860cc921784262d67fa74d8658ce140572c5fc0e0bf122809f20d4f19b1603",
+  "members": [
+    {
+      "sourcePath": "/tmp/edhr-dhr-write-qa-JfrReads.java",
+      "member": "edhr-dhr-write-qa-JfrReads.java",
+      "rawBytes": 1345,
+      "rawSha256": "d4b531c26ac89d9d0b90083fecdb36bf6640aedbc6a7448a1f89f8f432712c9b"
+    },
+    {
+      "sourcePath": "/tmp/edhr-dhr-write-qa-baseline.json",
+      "member": "edhr-dhr-write-qa-baseline.json",
+      "rawBytes": 3052901,
+      "rawSha256": "b47ba32579996e92735506a8372e54eeb837fec82e8a1993703be2ae9268b845"
+    },
+    {
+      "sourcePath": "/tmp/edhr-dhr-write-qa-capacity/capacity.json",
+      "member": "edhr-dhr-write-qa-capacity/capacity.json",
+      "rawBytes": 60695,
+      "rawSha256": "9b7f0beb4f282125ed12e7da102c1f48f8c1bd9333b25efbd4587dee369f4f36"
+    },
+    {
+      "sourcePath": "/tmp/edhr-dhr-write-qa-capacity/current-corrupt-1-reads.json",
+      "member": "edhr-dhr-write-qa-capacity/current-corrupt-1-reads.json",
+      "rawBytes": 79,
+      "rawSha256": "c9963c15c7386fb6165563a90c92cad6c632cb7f99fb3b6b19d360fd223527ed"
+    },
+    {
+      "sourcePath": "/tmp/edhr-dhr-write-qa-capacity/current-corrupt-1.jfr",
+      "member": "edhr-dhr-write-qa-capacity/current-corrupt-1.jfr",
+      "rawBytes": 114436,
+      "rawSha256": "f599f97de271ab6090d7f6e34d213174dc9aadfe6f5eb2b2b5302133b5595e16"
+    },
+    {
+      "sourcePath": "/tmp/edhr-dhr-write-qa-capacity/current-corrupt-16-reads.json",
+      "member": "edhr-dhr-write-qa-capacity/current-corrupt-16-reads.json",
+      "rawBytes": 81,
+      "rawSha256": "cb1ea2107db67c3b3f3c5b0a01ed28670853807f9106d7bbee721473470620db"
+    },
+    {
+      "sourcePath": "/tmp/edhr-dhr-write-qa-capacity/current-corrupt-16.jfr",
+      "member": "edhr-dhr-write-qa-capacity/current-corrupt-16.jfr",
+      "rawBytes": 115655,
+      "rawSha256": "41cf5cfced50de14afd8a69ae3a09bec11122e5d6ce9ea4851c2ca046dac788e"
+    },
+    {
+      "sourcePath": "/tmp/edhr-dhr-write-qa-capacity/current-corrupt-4-reads.json",
+      "member": "edhr-dhr-write-qa-capacity/current-corrupt-4-reads.json",
+      "rawBytes": 80,
+      "rawSha256": "bf18b93737cef3702b79c4fae9f86d4656768d09c847da741598b1b761f005a5"
+    },
+    {
+      "sourcePath": "/tmp/edhr-dhr-write-qa-capacity/current-corrupt-4.jfr",
+      "member": "edhr-dhr-write-qa-capacity/current-corrupt-4.jfr",
+      "rawBytes": 114306,
+      "rawSha256": "299886ca65a0019a7a8c2101786f5458c98fc51d431037b0b330de84ff790d03"
+    },
+    {
+      "sourcePath": "/tmp/edhr-dhr-write-qa-capacity/current-good-1-reads.json",
+      "member": "edhr-dhr-write-qa-capacity/current-good-1-reads.json",
+      "rawBytes": 82,
+      "rawSha256": "64689d81d627be1067dcc99182a236e10bb59923fba31e04cc6c49a5d53f266b"
+    },
+    {
+      "sourcePath": "/tmp/edhr-dhr-write-qa-capacity/current-good-1.jfr",
+      "member": "edhr-dhr-write-qa-capacity/current-good-1.jfr",
+      "rawBytes": 132590,
+      "rawSha256": "1c23f47953719b37f34f89e5304aea624d79beb354384096b867cfc77309dafb"
+    },
+    {
+      "sourcePath": "/tmp/edhr-dhr-write-qa-capacity/current-good-16-reads.json",
+      "member": "edhr-dhr-write-qa-capacity/current-good-16-reads.json",
+      "rawBytes": 85,
+      "rawSha256": "c51aba65e3aed954014ce94b09237d87c24066a19cd9125604f2813d0a89a36d"
+    },
+    {
+      "sourcePath": "/tmp/edhr-dhr-write-qa-capacity/current-good-16.jfr",
+      "member": "edhr-dhr-write-qa-capacity/current-good-16.jfr",
+      "rawBytes": 359549,
+      "rawSha256": "94268db99ab03d14717bb2e5350ae05e2ada4b1e60052b6693f8f4b9ecda8429"
+    },
+    {
+      "sourcePath": "/tmp/edhr-dhr-write-qa-capacity/current-good-4-reads.json",
+      "member": "edhr-dhr-write-qa-capacity/current-good-4-reads.json",
+      "rawBytes": 83,
+      "rawSha256": "627c83039b5eab2dbc796d2f1124766edfcead3f929d584c704262e4f0e38c1f"
+    },
+    {
+      "sourcePath": "/tmp/edhr-dhr-write-qa-capacity/current-good-4.jfr",
+      "member": "edhr-dhr-write-qa-capacity/current-good-4.jfr",
+      "rawBytes": 175298,
+      "rawSha256": "b1f92d4d8e6d817c99e53e64b8f66cc17fd1dadc1ac7fdc3a529be5b49570ba5"
+    },
+    {
+      "sourcePath": "/tmp/edhr-dhr-write-qa-capacity/frozen-corrupt-1-reads.json",
+      "member": "edhr-dhr-write-qa-capacity/frozen-corrupt-1-reads.json",
+      "rawBytes": 79,
+      "rawSha256": "c9963c15c7386fb6165563a90c92cad6c632cb7f99fb3b6b19d360fd223527ed"
+    },
+    {
+      "sourcePath": "/tmp/edhr-dhr-write-qa-capacity/frozen-corrupt-1.jfr",
+      "member": "edhr-dhr-write-qa-capacity/frozen-corrupt-1.jfr",
+      "rawBytes": 113974,
+      "rawSha256": "2dfcb78e135709cfd13595310c00d24409e9b0c126f602fe03f430cb3ba772eb"
+    },
+    {
+      "sourcePath": "/tmp/edhr-dhr-write-qa-capacity/frozen-corrupt-16-reads.json",
+      "member": "edhr-dhr-write-qa-capacity/frozen-corrupt-16-reads.json",
+      "rawBytes": 81,
+      "rawSha256": "cb1ea2107db67c3b3f3c5b0a01ed28670853807f9106d7bbee721473470620db"
+    },
+    {
+      "sourcePath": "/tmp/edhr-dhr-write-qa-capacity/frozen-corrupt-16.jfr",
+      "member": "edhr-dhr-write-qa-capacity/frozen-corrupt-16.jfr",
+      "rawBytes": 115632,
+      "rawSha256": "de2aafa80e1605fae37f59e3c92e6bae1a762917deb5d9321e60f1cee0dd1535"
+    },
+    {
+      "sourcePath": "/tmp/edhr-dhr-write-qa-capacity/frozen-corrupt-4-reads.json",
+      "member": "edhr-dhr-write-qa-capacity/frozen-corrupt-4-reads.json",
+      "rawBytes": 80,
+      "rawSha256": "bf18b93737cef3702b79c4fae9f86d4656768d09c847da741598b1b761f005a5"
+    },
+    {
+      "sourcePath": "/tmp/edhr-dhr-write-qa-capacity/frozen-corrupt-4.jfr",
+      "member": "edhr-dhr-write-qa-capacity/frozen-corrupt-4.jfr",
+      "rawBytes": 114165,
+      "rawSha256": "eeea9a3518f9d3a8a98fd3e7cc2e36debbfc63f6b5c63f6c0cac72a8ccb1d458"
+    },
+    {
+      "sourcePath": "/tmp/edhr-dhr-write-qa-capacity/frozen-good-1-reads.json",
+      "member": "edhr-dhr-write-qa-capacity/frozen-good-1-reads.json",
+      "rawBytes": 82,
+      "rawSha256": "64689d81d627be1067dcc99182a236e10bb59923fba31e04cc6c49a5d53f266b"
+    },
+    {
+      "sourcePath": "/tmp/edhr-dhr-write-qa-capacity/frozen-good-1.jfr",
+      "member": "edhr-dhr-write-qa-capacity/frozen-good-1.jfr",
+      "rawBytes": 132361,
+      "rawSha256": "ceb8d810f10d7902734a9eba6f1f7ec335c3a7f865fc3911f29ae712ab04607f"
+    },
+    {
+      "sourcePath": "/tmp/edhr-dhr-write-qa-capacity/frozen-good-16-reads.json",
+      "member": "edhr-dhr-write-qa-capacity/frozen-good-16-reads.json",
+      "rawBytes": 85,
+      "rawSha256": "c51aba65e3aed954014ce94b09237d87c24066a19cd9125604f2813d0a89a36d"
+    },
+    {
+      "sourcePath": "/tmp/edhr-dhr-write-qa-capacity/frozen-good-16.jfr",
+      "member": "edhr-dhr-write-qa-capacity/frozen-good-16.jfr",
+      "rawBytes": 398092,
+      "rawSha256": "2161b3f3f22f935fb41e7f5bb9b1bcd5ad7c5e14415be6baafa022a0b93d9aa3"
+    },
+    {
+      "sourcePath": "/tmp/edhr-dhr-write-qa-capacity/frozen-good-4-reads.json",
+      "member": "edhr-dhr-write-qa-capacity/frozen-good-4-reads.json",
+      "rawBytes": 83,
+      "rawSha256": "627c83039b5eab2dbc796d2f1124766edfcead3f929d584c704262e4f0e38c1f"
+    },
+    {
+      "sourcePath": "/tmp/edhr-dhr-write-qa-capacity/frozen-good-4.jfr",
+      "member": "edhr-dhr-write-qa-capacity/frozen-good-4.jfr",
+      "rawBytes": 184785,
+      "rawSha256": "b5538c3e4a475ba70f3fed2aa3536abab81852940427ae5b594071366881f5ef"
+    },
+    {
+      "sourcePath": "/tmp/edhr-dhr-write-qa-capacity-TEST-com.zencas.edhr.production.service.DhrAttachmentDownloadCapacityPostgresTest.xml",
+      "member": "edhr-dhr-write-qa-capacity-TEST-com.zencas.edhr.production.service.DhrAttachmentDownloadCapacityPostgresTest.xml",
+      "rawBytes": 409583,
+      "rawSha256": "d4f388fb78b2b163588f201fb160ae35a46c8d5cc2ff88625bc3cd4b720d78cd"
+    },
+    {
+      "sourcePath": "/tmp/edhr-dhr-write-qa-capacity-command.json",
+      "member": "edhr-dhr-write-qa-capacity-command.json",
+      "rawBytes": 5769,
+      "rawSha256": "324a2f2ac0bb63a36062cd3466657aa95d9f823d106745b3c3fe385aadcb30b0"
+    },
+    {
+      "sourcePath": "/tmp/edhr-dhr-write-qa-capacity-execution-environment.json",
+      "member": "edhr-dhr-write-qa-capacity-execution-environment.json",
+      "rawBytes": 707,
+      "rawSha256": "62e9a20af23e61cfb35493ee3320256df05550abf265436c9da97a1c1b263da9"
+    },
+    {
+      "sourcePath": "/tmp/edhr-dhr-write-qa-capacity-independent-jfr-command.json",
+      "member": "edhr-dhr-write-qa-capacity-independent-jfr-command.json",
+      "rawBytes": 896,
+      "rawSha256": "5a730dddea6a52a4fe878947f5942178d937ced5d17dc89360f1306a58abed37"
+    },
+    {
+      "sourcePath": "/tmp/edhr-dhr-write-qa-capacity-independent-jfr.stderr",
+      "member": "edhr-dhr-write-qa-capacity-independent-jfr.stderr",
+      "rawBytes": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "sourcePath": "/tmp/edhr-dhr-write-qa-capacity-independent-jfr.tsv",
+      "member": "edhr-dhr-write-qa-capacity-independent-jfr.tsv",
+      "rawBytes": 981,
+      "rawSha256": "ec76d8ae0716b2923bc666500ae9637ba93aa4d82681efb215cfd7bbb7ad2c78"
+    },
+    {
+      "sourcePath": "/tmp/edhr-dhr-write-qa-capacity-summary.json",
+      "member": "edhr-dhr-write-qa-capacity-summary.json",
+      "rawBytes": 855,
+      "rawSha256": "9e82abc7429cf1b52136e11ff7ea4114a49ce4a92366a66fca5d4515720cf89c"
+    },
+    {
+      "sourcePath": "/tmp/edhr-dhr-write-qa-capacity-test.log",
+      "member": "edhr-dhr-write-qa-capacity-test.log",
+      "rawBytes": 379683,
+      "rawSha256": "ff06720fdc2bcf4fa5369cb1f05ae68bd85137c758a59cdc0d21ab900e1ecb7d"
+    },
+    {
+      "sourcePath": "/tmp/edhr-dhr-write-qa-capacity-verification.json",
+      "member": "edhr-dhr-write-qa-capacity-verification.json",
+      "rawBytes": 8792,
+      "rawSha256": "9a33f88877a9cdab446a1bc42139a6ddfa47ff253af81f5798aa0bd70f16a1de"
+    },
+    {
+      "sourcePath": "/tmp/edhr-dhr-write-qa-capacity-verify.py",
+      "member": "edhr-dhr-write-qa-capacity-verify.py",
+      "rawBytes": 4834,
+      "rawSha256": "20e9fa929afc457135ba2df0d63649197278558c41cee0198294cdbd2474d983"
+    },
+    {
+      "sourcePath": "/tmp/edhr-dhr-write-qa-cleanup.json",
+      "member": "edhr-dhr-write-qa-cleanup.json",
+      "rawBytes": 536,
+      "rawSha256": "3ce1716b53fdaa306abf4da2ebd0a7faa6095f32f2f5e431b6dcbee8e0acc75a"
+    },
+    {
+      "sourcePath": "/tmp/edhr-dhr-write-qa-contract-validation.json",
+      "member": "edhr-dhr-write-qa-contract-validation.json",
+      "rawBytes": 400,
+      "rawSha256": "60b05ed5b1413acb98c7aaa8ce73da3ad9ad056a5f86467d1d9685ed62263529"
+    },
+    {
+      "sourcePath": "/tmp/edhr-dhr-write-qa-database.json",
+      "member": "edhr-dhr-write-qa-database.json",
+      "rawBytes": 4828,
+      "rawSha256": "7e9364e140d43511f510767403aa34978ebb4320304fd35c75190d738361307b"
+    },
+    {
+      "sourcePath": "/tmp/edhr-dhr-write-qa-evidence-commands.json",
+      "member": "edhr-dhr-write-qa-evidence-commands.json",
+      "rawBytes": 583,
+      "rawSha256": "e3f34c7d2df6ed3bc40eeef08af822825db98f253a7cf2323fa161beb0b5aa1a"
+    },
+    {
+      "sourcePath": "/tmp/edhr-dhr-write-qa-evidence-inventory/coverage.csv",
+      "member": "edhr-dhr-write-qa-evidence-inventory/coverage.csv",
+      "rawBytes": 2009910,
+      "rawSha256": "19a3e2797d127f53ea41a69a9e4fdaa90afdc206b97fee2b1523fea088d2c7b9"
+    },
+    {
+      "sourcePath": "/tmp/edhr-dhr-write-qa-evidence-inventory/entrypoints.csv",
+      "member": "edhr-dhr-write-qa-evidence-inventory/entrypoints.csv",
+      "rawBytes": 161809,
+      "rawSha256": "cbcb08ee668bbc14be1776a6a026c742ca3a3cdf059630afa05aec7b7aaacf1f"
+    },
+    {
+      "sourcePath": "/tmp/edhr-dhr-write-qa-evidence-inventory/inventory-summary.json",
+      "member": "edhr-dhr-write-qa-evidence-inventory/inventory-summary.json",
+      "rawBytes": 1044,
+      "rawSha256": "b506aea5f9ef0635c407b9a64e7c3b7744310d7e4b864e8cacd3e362849a39fd"
+    },
+    {
+      "sourcePath": "/tmp/edhr-dhr-write-qa-evidence-inventory/migrations.csv",
+      "member": "edhr-dhr-write-qa-evidence-inventory/migrations.csv",
+      "rawBytes": 34737,
+      "rawSha256": "3f4c20004c7248c38177abbf64a7c7836733374f6cf3422a7fec23962bff2943"
+    },
+    {
+      "sourcePath": "/tmp/edhr-dhr-write-qa-evidence-inventory-build-stderr.txt",
+      "member": "edhr-dhr-write-qa-evidence-inventory-build-stderr.txt",
+      "rawBytes": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "sourcePath": "/tmp/edhr-dhr-write-qa-evidence-inventory-build-stdout.txt",
+      "member": "edhr-dhr-write-qa-evidence-inventory-build-stdout.txt",
+      "rawBytes": 934,
+      "rawSha256": "bd99a11baa9972669945ed941842ca46aaf8936abf8e5d30582c71848573182e"
+    },
+    {
+      "sourcePath": "/tmp/edhr-dhr-write-qa-evidence-manifest.json",
+      "member": "edhr-dhr-write-qa-evidence-manifest.json",
+      "rawBytes": 2358,
+      "rawSha256": "b18dd5ae7f677432b928ac09438654aa1c2f0c6e8fece31c0fbda40db80ddd14"
+    },
+    {
+      "sourcePath": "/tmp/edhr-dhr-write-qa-evidence-quality-result.yaml",
+      "member": "edhr-dhr-write-qa-evidence-quality-result.yaml",
+      "rawBytes": 3596,
+      "rawSha256": "3f4cb30391768e9e1dd44d2ac81e18135a1ff27a7694d3baa1921cf5d1b921df"
+    },
+    {
+      "sourcePath": "/tmp/edhr-dhr-write-qa-evidence-report.md",
+      "member": "edhr-dhr-write-qa-evidence-report.md",
+      "rawBytes": 1638,
+      "rawSha256": "34e92e9607859c95c8917799a897ae0312fb95b8c64389978e1f6ce30fd2b481"
+    },
+    {
+      "sourcePath": "/tmp/edhr-dhr-write-qa-evidence-run-receipt.json",
+      "member": "edhr-dhr-write-qa-evidence-run-receipt.json",
+      "rawBytes": 582,
+      "rawSha256": "c3fc4a335243c578a21c4bce88b58430c2bea2bb5c8a1d1c74d7aa888d015b7d"
+    },
+    {
+      "sourcePath": "/tmp/edhr-dhr-write-qa-evidence-verification.json",
+      "member": "edhr-dhr-write-qa-evidence-verification.json",
+      "rawBytes": 189968,
+      "rawSha256": "404acbfea1bb329b52fe1c1c97b8ce38e8e37d1667fdd71653758807b02f5816"
+    },
+    {
+      "sourcePath": "/tmp/edhr-dhr-write-qa-evidence-verify.py",
+      "member": "edhr-dhr-write-qa-evidence-verify.py",
+      "rawBytes": 11625,
+      "rawSha256": "10531c9390403a478951645e1ce8667e7eb11bb65f7f2da8fb0e4a3ecf48839a"
+    },
+    {
+      "sourcePath": "/tmp/edhr-dhr-write-qa-final-baseline.json",
+      "member": "edhr-dhr-write-qa-final-baseline.json",
+      "rawBytes": 1630,
+      "rawSha256": "93b50d1c3169eb46aa8c5e5b6fbe3c6a04deddb2b19fb958cfa1919f3a0eb572"
+    },
+    {
+      "sourcePath": "/tmp/edhr-dhr-write-qa-finalize.py",
+      "member": "edhr-dhr-write-qa-finalize.py",
+      "rawBytes": 23324,
+      "rawSha256": "9bd6f08eb7fe69aa2cdb8b305c16ebfac7f89989638839edcb9d85a6879b799e"
+    },
+    {
+      "sourcePath": "/tmp/edhr-dhr-write-qa-knowledge-TEST-com.zencas.edhr.knowledge.BusinessKnowledgeModelTest.xml",
+      "member": "edhr-dhr-write-qa-knowledge-TEST-com.zencas.edhr.knowledge.BusinessKnowledgeModelTest.xml",
+      "rawBytes": 20416,
+      "rawSha256": "d1d7d6c478f17111a2f53835c5e69de1f723bd44c5c705a7e10c56d2b64c9905"
+    },
+    {
+      "sourcePath": "/tmp/edhr-dhr-write-qa-knowledge-command.json",
+      "member": "edhr-dhr-write-qa-knowledge-command.json",
+      "rawBytes": 5690,
+      "rawSha256": "99852cf6e0e7a81e64859bb13a1306b71481e3b30f8d5434cdb6ae3e252018b0"
+    },
+    {
+      "sourcePath": "/tmp/edhr-dhr-write-qa-knowledge-summary.json",
+      "member": "edhr-dhr-write-qa-knowledge-summary.json",
+      "rawBytes": 17419,
+      "rawSha256": "842a8b541a5f774a88485af0652c3c218e20f9081580cb0f441cd56acc214ef6"
+    },
+    {
+      "sourcePath": "/tmp/edhr-dhr-write-qa-knowledge-test.log",
+      "member": "edhr-dhr-write-qa-knowledge-test.log",
+      "rawBytes": 2113,
+      "rawSha256": "f878cd53b2f56921913c8e4ba5b872c29f6254e19ea8f3892f4810c5e78af45d"
+    },
+    {
+      "sourcePath": "/tmp/edhr-dhr-write-qa-main-TEST-com.zencas.edhr.compliance.controller.FileControllerTest.xml",
+      "member": "edhr-dhr-write-qa-main-TEST-com.zencas.edhr.compliance.controller.FileControllerTest.xml",
+      "rawBytes": 34906,
+      "rawSha256": "3fd965b7f1e6b5932fed38d54336a5a91b69b3364fa94b6786b4cb7bb297b876"
+    },
+    {
+      "sourcePath": "/tmp/edhr-dhr-write-qa-main-TEST-com.zencas.edhr.compliance.controller.FileCopyOwnershipTest.xml",
+      "member": "edhr-dhr-write-qa-main-TEST-com.zencas.edhr.compliance.controller.FileCopyOwnershipTest.xml",
+      "rawBytes": 42243,
+      "rawSha256": "e99ecc28a654be57f68d544dbd8a900e14fa38f8aeb8626a7b14afaabb0f7213"
+    },
+    {
+      "sourcePath": "/tmp/edhr-dhr-write-qa-main-TEST-com.zencas.edhr.compliance.controller.FileDeleteTransactionFailureTest.xml",
+      "member": "edhr-dhr-write-qa-main-TEST-com.zencas.edhr.compliance.controller.FileDeleteTransactionFailureTest.xml",
+      "rawBytes": 32999,
+      "rawSha256": "ca69c7eaa55020da98388e58afd986d56e8d705b4624f43125bcc128e5137e0d"
+    },
+    {
+      "sourcePath": "/tmp/edhr-dhr-write-qa-main-TEST-com.zencas.edhr.compliance.controller.FileDeleteTransactionIntegrationTest.xml",
+      "member": "edhr-dhr-write-qa-main-TEST-com.zencas.edhr.compliance.controller.FileDeleteTransactionIntegrationTest.xml",
+      "rawBytes": 102988,
+      "rawSha256": "8b77cdfd47f9fcc139e85d84eb30856e7c852430f74ec3207ca40f10e482fafb"
+    },
+    {
+      "sourcePath": "/tmp/edhr-dhr-write-qa-main-TEST-com.zencas.edhr.compliance.controller.FileDeleteTransactionPostgresTest.xml",
+      "member": "edhr-dhr-write-qa-main-TEST-com.zencas.edhr.compliance.controller.FileDeleteTransactionPostgresTest.xml",
+      "rawBytes": 104356,
+      "rawSha256": "f29591a4489c8e2e5730ab9d26858a362585562ae4fc3dcdfe25b78b3928d73a"
+    },
+    {
+      "sourcePath": "/tmp/edhr-dhr-write-qa-main-TEST-com.zencas.edhr.compliance.controller.FileHttpBoundaryTest.xml",
+      "member": "edhr-dhr-write-qa-main-TEST-com.zencas.edhr.compliance.controller.FileHttpBoundaryTest.xml",
+      "rawBytes": 47789,
+      "rawSha256": "203c3aa8a25e28b0e6d9e3d9786419aa443d0e2971b458429850516d25a9809e"
+    },
+    {
+      "sourcePath": "/tmp/edhr-dhr-write-qa-main-TEST-com.zencas.edhr.compliance.controller.FileUploadResourceTest.xml",
+      "member": "edhr-dhr-write-qa-main-TEST-com.zencas.edhr.compliance.controller.FileUploadResourceTest.xml",
+      "rawBytes": 34626,
+      "rawSha256": "a7f1ec5ccbef49e443f7854e7e027a17b0d15ccfd7ec8d43912fdf08497ae3e1"
+    },
+    {
+      "sourcePath": "/tmp/edhr-dhr-write-qa-main-TEST-com.zencas.edhr.compliance.controller.FileUploadTransactionFailureTest.xml",
+      "member": "edhr-dhr-write-qa-main-TEST-com.zencas.edhr.compliance.controller.FileUploadTransactionFailureTest.xml",
+      "rawBytes": 45953,
+      "rawSha256": "78696c9e303e1f0b316c1bd8b35e8b0f400e3d8cfd60fadbe8e54f8cbef401e0"
+    },
+    {
+      "sourcePath": "/tmp/edhr-dhr-write-qa-main-TEST-com.zencas.edhr.compliance.controller.FileUploadTransactionIntegrationTest.xml",
+      "member": "edhr-dhr-write-qa-main-TEST-com.zencas.edhr.compliance.controller.FileUploadTransactionIntegrationTest.xml",
+      "rawBytes": 122169,
+      "rawSha256": "6e498b85adb729f4ed78bcf5f3e7686a961e30d99aa82f1879d63e3974539448"
+    },
+    {
+      "sourcePath": "/tmp/edhr-dhr-write-qa-main-TEST-com.zencas.edhr.compliance.controller.FileUploadTransactionPostgresTest.xml",
+      "member": "edhr-dhr-write-qa-main-TEST-com.zencas.edhr.compliance.controller.FileUploadTransactionPostgresTest.xml",
+      "rawBytes": 123917,
+      "rawSha256": "e17f446a6daf6ab1e8401866ee897537972771f2a7de09e074d0047cdca39edb"
+    },
+    {
+      "sourcePath": "/tmp/edhr-dhr-write-qa-main-TEST-com.zencas.edhr.production.service.DhrAttachmentAndArchiveTest.xml",
+      "member": "edhr-dhr-write-qa-main-TEST-com.zencas.edhr.production.service.DhrAttachmentAndArchiveTest.xml",
+      "rawBytes": 36927,
+      "rawSha256": "62a686903b6759d76d63b22b0608d13eb7289498a5a564c6522a73b16b467e69"
+    },
+    {
+      "sourcePath": "/tmp/edhr-dhr-write-qa-main-TEST-com.zencas.edhr.production.service.DhrAttachmentTransactionPostgresTest.xml",
+      "member": "edhr-dhr-write-qa-main-TEST-com.zencas.edhr.production.service.DhrAttachmentTransactionPostgresTest.xml",
+      "rawBytes": 129994,
+      "rawSha256": "3b3b1726a958fab88240d32e9e2039c069b5f8327bda62ee9d7c3be27cecb8d7"
+    },
+    {
+      "sourcePath": "/tmp/edhr-dhr-write-qa-main-TEST-com.zencas.edhr.production.service.DhrAttachmentWriteFailureTest.xml",
+      "member": "edhr-dhr-write-qa-main-TEST-com.zencas.edhr.production.service.DhrAttachmentWriteFailureTest.xml",
+      "rawBytes": 45456,
+      "rawSha256": "6a6a7d88e34b19f4edc31b3cfd60fb6084f890e89f4a4f57dfa0a11dc577d8a1"
+    },
+    {
+      "sourcePath": "/tmp/edhr-dhr-write-qa-main-TEST-com.zencas.edhr.production.service.DhrFormFilesTest.xml",
+      "member": "edhr-dhr-write-qa-main-TEST-com.zencas.edhr.production.service.DhrFormFilesTest.xml",
+      "rawBytes": 33115,
+      "rawSha256": "d3b48d8fff0899cc66e987c89a15830520c38931291080a3fa82e45791e23939"
+    },
+    {
+      "sourcePath": "/tmp/edhr-dhr-write-qa-main-TEST-com.zencas.edhr.production.service.DhrReviewLifecycleIntegrationTest.xml",
+      "member": "edhr-dhr-write-qa-main-TEST-com.zencas.edhr.production.service.DhrReviewLifecycleIntegrationTest.xml",
+      "rawBytes": 286861,
+      "rawSha256": "bc4974ee364b246cf3f04a8dec4427f3ebaf8b71c96fb0dbcb56ba582673caae"
+    },
+    {
+      "sourcePath": "/tmp/edhr-dhr-write-qa-main-TEST-com.zencas.edhr.production.service.DhrSummaryServiceTest.xml",
+      "member": "edhr-dhr-write-qa-main-TEST-com.zencas.edhr.production.service.DhrSummaryServiceTest.xml",
+      "rawBytes": 34068,
+      "rawSha256": "ee3cfb6f42a7565720bb9eca22237b8e11d3c5a97b38a99200f84e0385d3abec"
+    },
+    {
+      "sourcePath": "/tmp/edhr-dhr-write-qa-main-TEST-com.zencas.edhr.production.service.ExecutionAccessTest.xml",
+      "member": "edhr-dhr-write-qa-main-TEST-com.zencas.edhr.production.service.ExecutionAccessTest.xml",
+      "rawBytes": 34976,
+      "rawSha256": "00393dfe527594de6a92d258a3af11b41ac4974bc77a7e71a7efd228d3c2fcb8"
+    },
+    {
+      "sourcePath": "/tmp/edhr-dhr-write-qa-main-command.json",
+      "member": "edhr-dhr-write-qa-main-command.json",
+      "rawBytes": 6080,
+      "rawSha256": "fca7d0f326a82556699cc5f2de99f7051789eb7ba7889f1e8c0f1910a7447b6b"
+    },
+    {
+      "sourcePath": "/tmp/edhr-dhr-write-qa-main-execution-environment.json",
+      "member": "edhr-dhr-write-qa-main-execution-environment.json",
+      "rawBytes": 633,
+      "rawSha256": "73a00e7633c8aa04e65d05305994eeeda41e73bcc3c2ff709d4736fc27eb2f68"
+    },
+    {
+      "sourcePath": "/tmp/edhr-dhr-write-qa-main-summary.json",
+      "member": "edhr-dhr-write-qa-main-summary.json",
+      "rawBytes": 32102,
+      "rawSha256": "a140216c3b9098c087db8800b420f8434a44d743fcfff952f92d0aef29053fb8"
+    },
+    {
+      "sourcePath": "/tmp/edhr-dhr-write-qa-main-test.log",
+      "member": "edhr-dhr-write-qa-main-test.log",
+      "rawBytes": 721536,
+      "rawSha256": "fa2a3013ccae8143e8284e73c02c69f03e4c47aac3c37e495e43d091e90679d5"
+    },
+    {
+      "sourcePath": "/tmp/edhr-dhr-write-qa-old-TEST-com.zencas.edhr.production.service.DhrAttachmentWriteFailureTest.xml",
+      "member": "edhr-dhr-write-qa-old-TEST-com.zencas.edhr.production.service.DhrAttachmentWriteFailureTest.xml",
+      "rawBytes": 36103,
+      "rawSha256": "31667944597ec2bb53656eda859a66929e6ab0e22f9928bed4781acd3230d6ff"
+    },
+    {
+      "sourcePath": "/tmp/edhr-dhr-write-qa-old-cleanup.json",
+      "member": "edhr-dhr-write-qa-old-cleanup.json",
+      "rawBytes": 179,
+      "rawSha256": "9604578c7421ee0b64112336ff68609716a5278e75a055e578b61b111f710513"
+    },
+    {
+      "sourcePath": "/tmp/edhr-dhr-write-qa-old-command.json",
+      "member": "edhr-dhr-write-qa-old-command.json",
+      "rawBytes": 5884,
+      "rawSha256": "7d6ce63f3ac78260a49120565fb9f1e5913adea8a1bce4c7e27f4ee4b8d1c2e1"
+    },
+    {
+      "sourcePath": "/tmp/edhr-dhr-write-qa-old-exact-DhrAttachmentWriteFailureTest.java",
+      "member": "edhr-dhr-write-qa-old-exact-DhrAttachmentWriteFailureTest.java",
+      "rawBytes": 7002,
+      "rawSha256": "6088d5bb120f1800da70d8542a16278a625f6efd5ea233c8b5e753013b81c69f"
+    },
+    {
+      "sourcePath": "/tmp/edhr-dhr-write-qa-old-failure-classification.json",
+      "member": "edhr-dhr-write-qa-old-failure-classification.json",
+      "rawBytes": 3100,
+      "rawSha256": "af8fca5daa890dbfe7ee392b6ad785b01801cdd92efa8ff817901ce268b73893"
+    },
+    {
+      "sourcePath": "/tmp/edhr-dhr-write-qa-old-setup.json",
+      "member": "edhr-dhr-write-qa-old-setup.json",
+      "rawBytes": 4242,
+      "rawSha256": "01b87a88e34a1e072572c27a17bcc11d383c4777548508852a740f9598c45d8a"
+    },
+    {
+      "sourcePath": "/tmp/edhr-dhr-write-qa-old-summary.json",
+      "member": "edhr-dhr-write-qa-old-summary.json",
+      "rawBytes": 1656,
+      "rawSha256": "2d56504b8ef79afd6dee9f51c43121b102a84353956aeac59937681dfa3d99bb"
+    },
+    {
+      "sourcePath": "/tmp/edhr-dhr-write-qa-old-test.log",
+      "member": "edhr-dhr-write-qa-old-test.log",
+      "rawBytes": 8183,
+      "rawSha256": "eff2f6b3953a222a28ac5912360dfd113569f4a938172cfa209c939820d2e08a"
+    },
+    {
+      "sourcePath": "/tmp/edhr-dhr-write-qa-quality-result.yaml",
+      "member": "edhr-dhr-write-qa-quality-result.yaml",
+      "rawBytes": 13390,
+      "rawSha256": "368d59d5873f24fdb53147737108d262ef32a5421c64f2c78d64b9fefcd31133"
+    },
+    {
+      "sourcePath": "/tmp/edhr-dhr-write-qa-report.md",
+      "member": "edhr-dhr-write-qa-report.md",
+      "rawBytes": 7091,
+      "rawSha256": "0565d080968cce01c9d8f9aade865669a144d0a111add8cedd0bec83b6ef3189"
+    },
+    {
+      "sourcePath": "/tmp/edhr-dhr-write-qa-roles-final.json",
+      "member": "edhr-dhr-write-qa-roles-final.json",
+      "rawBytes": 982,
+      "rawSha256": "e7f12c4763e4942a658e7ac53395b69320988a44607d1b9ba34f4cbfe3445b95"
+    },
+    {
+      "sourcePath": "/tmp/edhr-dhr-write-qa-run.py",
+      "member": "edhr-dhr-write-qa-run.py",
+      "rawBytes": 11049,
+      "rawSha256": "7c44814913ed54e95ca324a96f30ce244c4e97a4a5d8afc26d87ac9d828232e1"
+    },
+    {
+      "sourcePath": "/tmp/edhr-dhr-write-qa-source-base-DhrAttachmentService.java",
+      "member": "edhr-dhr-write-qa-source-base-DhrAttachmentService.java",
+      "rawBytes": 16473,
+      "rawSha256": "783c6f3338cd97b5b4cbfc0c3bc35c12707a7b0fc094912d28735a3b7c1a2bba"
+    },
+    {
+      "sourcePath": "/tmp/edhr-dhr-write-qa-source-build.py",
+      "member": "edhr-dhr-write-qa-source-build.py",
+      "rawBytes": 10129,
+      "rawSha256": "0c53de39b01cf1bcf5d36147b2660fd0d7808d29ffa2aa9e5ffa2c1e0dd0f2a2"
+    },
+    {
+      "sourcePath": "/tmp/edhr-dhr-write-qa-source-callers.txt",
+      "member": "edhr-dhr-write-qa-source-callers.txt",
+      "rawBytes": 2774,
+      "rawSha256": "19aa9ec69652809a33e18f9d11574ce28c146943a948429b0573d1ea061a5d30"
+    },
+    {
+      "sourcePath": "/tmp/edhr-dhr-write-qa-source-jdk-version.txt",
+      "member": "edhr-dhr-write-qa-source-jdk-version.txt",
+      "rawBytes": 205,
+      "rawSha256": "5b4412738541184e84f6b2d7520d4f4a7c2a455f60650491464c61adcbbbdeb0"
+    },
+    {
+      "sourcePath": "/tmp/edhr-dhr-write-qa-source-jdk-write-bytecode.txt",
+      "member": "edhr-dhr-write-qa-source-jdk-write-bytecode.txt",
+      "rawBytes": 1965,
+      "rawSha256": "981707c54b7d104162b621cc4f19f14dd62155c56684b0665c2af084a64d53e5"
+    },
+    {
+      "sourcePath": "/tmp/edhr-dhr-write-qa-source-knowledge-report.md",
+      "member": "edhr-dhr-write-qa-source-knowledge-report.md",
+      "rawBytes": 2281,
+      "rawSha256": "b08b4aadc7f80578b88ed9371b474e3416889afb17afe871b37750f4283c7478"
+    },
+    {
+      "sourcePath": "/tmp/edhr-dhr-write-qa-source-knowledge-review.json",
+      "member": "edhr-dhr-write-qa-source-knowledge-review.json",
+      "rawBytes": 37249,
+      "rawSha256": "a47d19254ece5a43cf685b395e57346c1f67f0b13e25e366a97345f2d4e5978c"
+    },
+    {
+      "sourcePath": "/tmp/edhr-dhr-write-qa-source-knowledge-review.py",
+      "member": "edhr-dhr-write-qa-source-knowledge-review.py",
+      "rawBytes": 9864,
+      "rawSha256": "96fa0680f9e9b2955ce98c84c6078006d71a8e8c88ef16511f1686bad7e7ce38"
+    },
+    {
+      "sourcePath": "/tmp/edhr-dhr-write-qa-source-manifest.json",
+      "member": "edhr-dhr-write-qa-source-manifest.json",
+      "rawBytes": 3901,
+      "rawSha256": "08202e10d7ecc52d68632449c875d2926e27aa5a29d5efc19542a7a28105b56b"
+    },
+    {
+      "sourcePath": "/tmp/edhr-dhr-write-qa-source-product.diff",
+      "member": "edhr-dhr-write-qa-source-product.diff",
+      "rawBytes": 1666,
+      "rawSha256": "1d572e7faf7f2a92bd5a0bf60da3c0cd54f654d5fe417878c032adce73687d86"
+    },
+    {
+      "sourcePath": "/tmp/edhr-dhr-write-qa-source-report.md",
+      "member": "edhr-dhr-write-qa-source-report.md",
+      "rawBytes": 5450,
+      "rawSha256": "9282a78a7a6bf2d7df7e1ae19930fd1fc0e90b6529732de4994d7077ba6e675a"
+    },
+    {
+      "sourcePath": "/tmp/edhr-dhr-write-qa-source-review.json",
+      "member": "edhr-dhr-write-qa-source-review.json",
+      "rawBytes": 9920,
+      "rawSha256": "27a5aa7652a7164f55863390bb7bc4c8465610a03d9a1d56933d80072e6b8d01"
+    },
+    {
+      "sourcePath": "/tmp/edhr-dhr-write-qa-source-snapshots/DhrArchiveService.java",
+      "member": "edhr-dhr-write-qa-source-snapshots/DhrArchiveService.java",
+      "rawBytes": 24562,
+      "rawSha256": "bf1d938746ebd3d4c4df7f94b54c0892647639cedefcc85633d6fa28cf402e08"
+    },
+    {
+      "sourcePath": "/tmp/edhr-dhr-write-qa-source-snapshots/DhrAttachmentController.java",
+      "member": "edhr-dhr-write-qa-source-snapshots/DhrAttachmentController.java",
+      "rawBytes": 3471,
+      "rawSha256": "85452748ac5c956ce2330ee6e4327ad640bf442e35b14b2731cdf2b15b69a5f6"
+    },
+    {
+      "sourcePath": "/tmp/edhr-dhr-write-qa-source-snapshots/DhrAttachmentDownloadCapacityPostgresTest.java",
+      "member": "edhr-dhr-write-qa-source-snapshots/DhrAttachmentDownloadCapacityPostgresTest.java",
+      "rawBytes": 13681,
+      "rawSha256": "b244f5861964fa0c54f7ff3ea0a73190b1c6e90137b95a3a1550801999a5ae66"
+    },
+    {
+      "sourcePath": "/tmp/edhr-dhr-write-qa-source-snapshots/DhrAttachmentService.java",
+      "member": "edhr-dhr-write-qa-source-snapshots/DhrAttachmentService.java",
+      "rawBytes": 17045,
+      "rawSha256": "15c0dda7257709ea7580e45421f59f50a04aa26f794abff26593a6d1ba38c3a1"
+    },
+    {
+      "sourcePath": "/tmp/edhr-dhr-write-qa-source-snapshots/DhrAttachmentWriteFailureTest.java",
+      "member": "edhr-dhr-write-qa-source-snapshots/DhrAttachmentWriteFailureTest.java",
+      "rawBytes": 7002,
+      "rawSha256": "6088d5bb120f1800da70d8542a16278a625f6efd5ea233c8b5e753013b81c69f"
+    },
+    {
+      "sourcePath": "/tmp/edhr-dhr-write-qa-source-snapshots/DhrOfficeAttachment.java",
+      "member": "edhr-dhr-write-qa-source-snapshots/DhrOfficeAttachment.java",
+      "rawBytes": 7224,
+      "rawSha256": "3257e8313d3e30ec686b78a80c8f5e1a6b2136445b3f655c40179bbcc62fb49d"
+    },
+    {
+      "sourcePath": "/tmp/edhr-dhr-write-qa-source-snapshots/DhrReviewController.java",
+      "member": "edhr-dhr-write-qa-source-snapshots/DhrReviewController.java",
+      "rawBytes": 3309,
+      "rawSha256": "37f6af83e063e1593e15ac28e021ec719888c21fe45d314916c9f20975e2417e"
+    },
+    {
+      "sourcePath": "/tmp/edhr-dhr-write-qa-source-snapshots/DhrSummaryService.java",
+      "member": "edhr-dhr-write-qa-source-snapshots/DhrSummaryService.java",
+      "rawBytes": 44493,
+      "rawSha256": "20d96b976bd931ccf65c710204a01d8d571d51f8deebaf64bb0aaad8f7e24c3e"
+    },
+    {
+      "sourcePath": "/tmp/edhr-dhr-write-qa-whitespace.json",
+      "member": "edhr-dhr-write-qa-whitespace.json",
+      "rawBytes": 425,
+      "rawSha256": "70d2df815f316c5c2903dc9140812d8818f087f2dafead287edb42a4a085de02"
+    },
+    {
+      "sourcePath": "/tmp/edhr-dhr-write-qa-manifest.json",
+      "member": "edhr-dhr-write-qa-manifest.json",
+      "rawBytes": 22641,
+      "rawSha256": "307a7ca84d2111b304953d90d31c3dde333a09d1ecd922506425ab1da37df7a7"
+    }
+  ]
+}

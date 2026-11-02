@@ -2,6 +2,8 @@
 
 ## PR53已合入：DHR附件登记前写入失败与容量观测
 
+本轮用户进一步明确“如果对用户来说没什么体验差距，那么就做流式摘要优化”。初601 fresh质量passed（127/89/capacity1）及114原件含manifest保留为初阶段，不覆盖新组合。主审独立小提交流式完整SHA后整合为320a4c74，组合主侧再次127/127与容量1/12组84请求、文件名/下载类型/ContentType/nosniff及完整字节SHA/坏文件拒绝全部通过。后续每请求约0.1–0.23MiB（首次约2MiB），16并发采样heap增量2–4MiB，原约50MiB/820MiB；SQL和两遍逻辑读取不变，UI/Controller不动，不承诺单次更快。汇总/归档等file()读者摘要也有界，资格/锁/完整校验保持。当前正补本体增量与另一fresh最终组合QA，原初候选记录不回写。
+
 实际fetch最新`edhr-dev@e3e49784eda6bc01e7e5c686d6f79dc5a600d5ae`，PR53人工合入、整树同2a0d9fd2，无外部源码/知识/契约增量。新分支audit/edhr-dev-dhr-attachment-write-20261102，本轮L2只upload登记前的当前文件写入/关闭失败；[本批](../branch-review-20261102-dhr-attachment-write/README.md)主侧单次127/127通过，另容量1项含12组84请求通过，0error/skip。exact最终同5在真实旧e3为3真断言红2碰撞正控。首轮static stubbing提前open的3fail为夹具错误，原件/初版源码留存不计产品红；中间与最终旧控不相加。
 
 CREATE_NEW成功返回流才进入本次补偿，开流碰撞不删既有file/dir；写入/关闭IOException清理当前残片，清理失败suppressed+ID/path保留原错，尚未登记/LINK。维持原JDK8KiB分块，原事务回调和业务规则不动。当前待fresh最终质量，不提前resolved；本体NA/FINAL，14既有ID有限重审、25源指纹，知识89及330资产不变。6604/135/464/216仅盘点，wholeFile0/unique未知。
