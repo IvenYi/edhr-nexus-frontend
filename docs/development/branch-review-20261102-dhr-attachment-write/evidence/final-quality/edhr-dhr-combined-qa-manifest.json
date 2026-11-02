@@ -1,0 +1,1379 @@
+{
+  "status": "FINAL",
+  "baseCommit": "e3e49784eda6bc01e7e5c686d6f79dc5a600d5ae",
+  "headCommit": "5cb1636a23e09342b2d218bb986217a4325ea559",
+  "qualityResult": "passed",
+  "createdAtUtc": "2026-11-02T14:31:50.174114+00:00",
+  "artifactCount": 171,
+  "artifacts": [
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-JfrReads.java",
+      "rawBytes": 994,
+      "sha256": "80fed9a97487f35344a8909923dd15b47bf5edd6f74b14cdb4caa29674cc45cd",
+      "storedBytes": 994,
+      "storedSha256": "80fed9a97487f35344a8909923dd15b47bf5edd6f74b14cdb4caa29674cc45cd",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-after-jfr-command.json",
+      "rawBytes": 894,
+      "sha256": "021bb481989ada9ad7e5dc19b0bc3125b2d6d45edf27616845455dd12dfcdc30",
+      "storedBytes": 894,
+      "storedSha256": "021bb481989ada9ad7e5dc19b0bc3125b2d6d45edf27616845455dd12dfcdc30",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-after-jfr-reparsed.jsonl",
+      "rawBytes": 2092,
+      "sha256": "63c780c495a14c59f591d0a6c607bd9d2fae9312a28ea7fe878f279c752fb708",
+      "storedBytes": 2092,
+      "storedSha256": "63c780c495a14c59f591d0a6c607bd9d2fae9312a28ea7fe878f279c752fb708",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-baseline/capacity.json",
+      "rawBytes": 60695,
+      "sha256": "9b7f0beb4f282125ed12e7da102c1f48f8c1bd9333b25efbd4587dee369f4f36",
+      "storedBytes": 60695,
+      "storedSha256": "9b7f0beb4f282125ed12e7da102c1f48f8c1bd9333b25efbd4587dee369f4f36",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-baseline/current-corrupt-1-reads.json",
+      "rawBytes": 79,
+      "sha256": "c9963c15c7386fb6165563a90c92cad6c632cb7f99fb3b6b19d360fd223527ed",
+      "storedBytes": 79,
+      "storedSha256": "c9963c15c7386fb6165563a90c92cad6c632cb7f99fb3b6b19d360fd223527ed",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-baseline/current-corrupt-1.jfr",
+      "rawBytes": 114436,
+      "sha256": "f599f97de271ab6090d7f6e34d213174dc9aadfe6f5eb2b2b5302133b5595e16",
+      "storedBytes": 114436,
+      "storedSha256": "f599f97de271ab6090d7f6e34d213174dc9aadfe6f5eb2b2b5302133b5595e16",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-baseline/current-corrupt-16-reads.json",
+      "rawBytes": 81,
+      "sha256": "cb1ea2107db67c3b3f3c5b0a01ed28670853807f9106d7bbee721473470620db",
+      "storedBytes": 81,
+      "storedSha256": "cb1ea2107db67c3b3f3c5b0a01ed28670853807f9106d7bbee721473470620db",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-baseline/current-corrupt-16.jfr",
+      "rawBytes": 115655,
+      "sha256": "41cf5cfced50de14afd8a69ae3a09bec11122e5d6ce9ea4851c2ca046dac788e",
+      "storedBytes": 115655,
+      "storedSha256": "41cf5cfced50de14afd8a69ae3a09bec11122e5d6ce9ea4851c2ca046dac788e",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-baseline/current-corrupt-4-reads.json",
+      "rawBytes": 80,
+      "sha256": "bf18b93737cef3702b79c4fae9f86d4656768d09c847da741598b1b761f005a5",
+      "storedBytes": 80,
+      "storedSha256": "bf18b93737cef3702b79c4fae9f86d4656768d09c847da741598b1b761f005a5",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-baseline/current-corrupt-4.jfr",
+      "rawBytes": 114306,
+      "sha256": "299886ca65a0019a7a8c2101786f5458c98fc51d431037b0b330de84ff790d03",
+      "storedBytes": 114306,
+      "storedSha256": "299886ca65a0019a7a8c2101786f5458c98fc51d431037b0b330de84ff790d03",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-baseline/current-good-1-reads.json",
+      "rawBytes": 82,
+      "sha256": "64689d81d627be1067dcc99182a236e10bb59923fba31e04cc6c49a5d53f266b",
+      "storedBytes": 82,
+      "storedSha256": "64689d81d627be1067dcc99182a236e10bb59923fba31e04cc6c49a5d53f266b",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-baseline/current-good-1.jfr",
+      "rawBytes": 132590,
+      "sha256": "1c23f47953719b37f34f89e5304aea624d79beb354384096b867cfc77309dafb",
+      "storedBytes": 132590,
+      "storedSha256": "1c23f47953719b37f34f89e5304aea624d79beb354384096b867cfc77309dafb",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-baseline/current-good-16-reads.json",
+      "rawBytes": 85,
+      "sha256": "c51aba65e3aed954014ce94b09237d87c24066a19cd9125604f2813d0a89a36d",
+      "storedBytes": 85,
+      "storedSha256": "c51aba65e3aed954014ce94b09237d87c24066a19cd9125604f2813d0a89a36d",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-baseline/current-good-16.jfr",
+      "rawBytes": 359549,
+      "sha256": "94268db99ab03d14717bb2e5350ae05e2ada4b1e60052b6693f8f4b9ecda8429",
+      "storedBytes": 359549,
+      "storedSha256": "94268db99ab03d14717bb2e5350ae05e2ada4b1e60052b6693f8f4b9ecda8429",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-baseline/current-good-4-reads.json",
+      "rawBytes": 83,
+      "sha256": "627c83039b5eab2dbc796d2f1124766edfcead3f929d584c704262e4f0e38c1f",
+      "storedBytes": 83,
+      "storedSha256": "627c83039b5eab2dbc796d2f1124766edfcead3f929d584c704262e4f0e38c1f",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-baseline/current-good-4.jfr",
+      "rawBytes": 175298,
+      "sha256": "b1f92d4d8e6d817c99e53e64b8f66cc17fd1dadc1ac7fdc3a529be5b49570ba5",
+      "storedBytes": 175298,
+      "storedSha256": "b1f92d4d8e6d817c99e53e64b8f66cc17fd1dadc1ac7fdc3a529be5b49570ba5",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-baseline/edhr-dhr-write-qa-capacity-command.json",
+      "rawBytes": 5769,
+      "sha256": "324a2f2ac0bb63a36062cd3466657aa95d9f823d106745b3c3fe385aadcb30b0",
+      "storedBytes": 5769,
+      "storedSha256": "324a2f2ac0bb63a36062cd3466657aa95d9f823d106745b3c3fe385aadcb30b0",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-baseline/edhr-dhr-write-qa-capacity-summary.json",
+      "rawBytes": 855,
+      "sha256": "9e82abc7429cf1b52136e11ff7ea4114a49ce4a92366a66fca5d4515720cf89c",
+      "storedBytes": 855,
+      "storedSha256": "9e82abc7429cf1b52136e11ff7ea4114a49ce4a92366a66fca5d4515720cf89c",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-baseline/edhr-dhr-write-qa-quality-result.yaml",
+      "rawBytes": 13390,
+      "sha256": "368d59d5873f24fdb53147737108d262ef32a5421c64f2c78d64b9fefcd31133",
+      "storedBytes": 13390,
+      "storedSha256": "368d59d5873f24fdb53147737108d262ef32a5421c64f2c78d64b9fefcd31133",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-baseline/frozen-corrupt-1-reads.json",
+      "rawBytes": 79,
+      "sha256": "c9963c15c7386fb6165563a90c92cad6c632cb7f99fb3b6b19d360fd223527ed",
+      "storedBytes": 79,
+      "storedSha256": "c9963c15c7386fb6165563a90c92cad6c632cb7f99fb3b6b19d360fd223527ed",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-baseline/frozen-corrupt-1.jfr",
+      "rawBytes": 113974,
+      "sha256": "2dfcb78e135709cfd13595310c00d24409e9b0c126f602fe03f430cb3ba772eb",
+      "storedBytes": 113974,
+      "storedSha256": "2dfcb78e135709cfd13595310c00d24409e9b0c126f602fe03f430cb3ba772eb",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-baseline/frozen-corrupt-16-reads.json",
+      "rawBytes": 81,
+      "sha256": "cb1ea2107db67c3b3f3c5b0a01ed28670853807f9106d7bbee721473470620db",
+      "storedBytes": 81,
+      "storedSha256": "cb1ea2107db67c3b3f3c5b0a01ed28670853807f9106d7bbee721473470620db",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-baseline/frozen-corrupt-16.jfr",
+      "rawBytes": 115632,
+      "sha256": "de2aafa80e1605fae37f59e3c92e6bae1a762917deb5d9321e60f1cee0dd1535",
+      "storedBytes": 115632,
+      "storedSha256": "de2aafa80e1605fae37f59e3c92e6bae1a762917deb5d9321e60f1cee0dd1535",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-baseline/frozen-corrupt-4-reads.json",
+      "rawBytes": 80,
+      "sha256": "bf18b93737cef3702b79c4fae9f86d4656768d09c847da741598b1b761f005a5",
+      "storedBytes": 80,
+      "storedSha256": "bf18b93737cef3702b79c4fae9f86d4656768d09c847da741598b1b761f005a5",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-baseline/frozen-corrupt-4.jfr",
+      "rawBytes": 114165,
+      "sha256": "eeea9a3518f9d3a8a98fd3e7cc2e36debbfc63f6b5c63f6c0cac72a8ccb1d458",
+      "storedBytes": 114165,
+      "storedSha256": "eeea9a3518f9d3a8a98fd3e7cc2e36debbfc63f6b5c63f6c0cac72a8ccb1d458",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-baseline/frozen-good-1-reads.json",
+      "rawBytes": 82,
+      "sha256": "64689d81d627be1067dcc99182a236e10bb59923fba31e04cc6c49a5d53f266b",
+      "storedBytes": 82,
+      "storedSha256": "64689d81d627be1067dcc99182a236e10bb59923fba31e04cc6c49a5d53f266b",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-baseline/frozen-good-1.jfr",
+      "rawBytes": 132361,
+      "sha256": "ceb8d810f10d7902734a9eba6f1f7ec335c3a7f865fc3911f29ae712ab04607f",
+      "storedBytes": 132361,
+      "storedSha256": "ceb8d810f10d7902734a9eba6f1f7ec335c3a7f865fc3911f29ae712ab04607f",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-baseline/frozen-good-16-reads.json",
+      "rawBytes": 85,
+      "sha256": "c51aba65e3aed954014ce94b09237d87c24066a19cd9125604f2813d0a89a36d",
+      "storedBytes": 85,
+      "storedSha256": "c51aba65e3aed954014ce94b09237d87c24066a19cd9125604f2813d0a89a36d",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-baseline/frozen-good-16.jfr",
+      "rawBytes": 398092,
+      "sha256": "2161b3f3f22f935fb41e7f5bb9b1bcd5ad7c5e14415be6baafa022a0b93d9aa3",
+      "storedBytes": 398092,
+      "storedSha256": "2161b3f3f22f935fb41e7f5bb9b1bcd5ad7c5e14415be6baafa022a0b93d9aa3",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-baseline/frozen-good-4-reads.json",
+      "rawBytes": 83,
+      "sha256": "627c83039b5eab2dbc796d2f1124766edfcead3f929d584c704262e4f0e38c1f",
+      "storedBytes": 83,
+      "storedSha256": "627c83039b5eab2dbc796d2f1124766edfcead3f929d584c704262e4f0e38c1f",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-baseline/frozen-good-4.jfr",
+      "rawBytes": 184785,
+      "sha256": "b5538c3e4a475ba70f3fed2aa3536abab81852940427ae5b594071366881f5ef",
+      "storedBytes": 184785,
+      "storedSha256": "b5538c3e4a475ba70f3fed2aa3536abab81852940427ae5b594071366881f5ef",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-baseline-extract.json",
+      "rawBytes": 7810,
+      "sha256": "420e5cac55c565cf35164b3ea3edb8b6bf28e01c8adf8bf17f3a63741706eee7",
+      "storedBytes": 7810,
+      "storedSha256": "420e5cac55c565cf35164b3ea3edb8b6bf28e01c8adf8bf17f3a63741706eee7",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-baseline-extract.py",
+      "rawBytes": 1471,
+      "sha256": "898ac8c0454196a73bc1bac188188ba03b34da8c842bf64c09bb5a1282995385",
+      "storedBytes": 1471,
+      "storedSha256": "898ac8c0454196a73bc1bac188188ba03b34da8c842bf64c09bb5a1282995385",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-baseline-jfr-reparsed.jsonl",
+      "rawBytes": 2064,
+      "sha256": "e84f879b1142878fc8cb2412641268b5e04a0aeafbe8844987112fedb5453a25",
+      "storedBytes": 2064,
+      "storedSha256": "e84f879b1142878fc8cb2412641268b5e04a0aeafbe8844987112fedb5453a25",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-capacity/capacity.json",
+      "rawBytes": 60465,
+      "sha256": "4f0cd3514bc0d8094016cff5993566e395548fade87e7c78ed118edac277f713",
+      "storedBytes": 60465,
+      "storedSha256": "4f0cd3514bc0d8094016cff5993566e395548fade87e7c78ed118edac277f713",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-capacity/current-corrupt-1-reads.json",
+      "rawBytes": 82,
+      "sha256": "e5e7a33b451285e8019b385f574f0b755829debc7e08103df3e4b3920c98c456",
+      "storedBytes": 82,
+      "storedSha256": "e5e7a33b451285e8019b385f574f0b755829debc7e08103df3e4b3920c98c456",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-capacity/current-corrupt-1.jfr",
+      "rawBytes": 229631,
+      "sha256": "1c868aae79c31aaec01d15f72bcf1152e2eaec2a1de0a054259102b47d23e425",
+      "storedBytes": 229631,
+      "storedSha256": "1c868aae79c31aaec01d15f72bcf1152e2eaec2a1de0a054259102b47d23e425",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-capacity/current-corrupt-16-reads.json",
+      "rawBytes": 85,
+      "sha256": "39379fb8d51c869e05a2611fef73e05dac36b7d22442be9453e07ca8bee98026",
+      "storedBytes": 85,
+      "storedSha256": "39379fb8d51c869e05a2611fef73e05dac36b7d22442be9453e07ca8bee98026",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-capacity/current-corrupt-16.jfr",
+      "rawBytes": 2266073,
+      "sha256": "654387a11db7695a82ab50d91604e4ae90007def27a0879f02d1322c3d10a91b",
+      "storedBytes": 2266073,
+      "storedSha256": "654387a11db7695a82ab50d91604e4ae90007def27a0879f02d1322c3d10a91b",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-capacity/current-corrupt-4-reads.json",
+      "rawBytes": 84,
+      "sha256": "e3c3d591d21f6b4f6317cc1936352f43067463d891d130f3d3d660a4f5fca97d",
+      "storedBytes": 84,
+      "storedSha256": "e3c3d591d21f6b4f6317cc1936352f43067463d891d130f3d3d660a4f5fca97d",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-capacity/current-corrupt-4.jfr",
+      "rawBytes": 651824,
+      "sha256": "d8857c3bcc8ca9882c17ce2cb75003deb49143ce1bb22f148290d496e4478272",
+      "storedBytes": 651824,
+      "storedSha256": "d8857c3bcc8ca9882c17ce2cb75003deb49143ce1bb22f148290d496e4478272",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-capacity/current-good-1-reads.json",
+      "rawBytes": 83,
+      "sha256": "d6b7319ff1d18a2f95442b267d8f78e52c9b09474231921fdf84ed50252e1bb3",
+      "storedBytes": 83,
+      "storedSha256": "d6b7319ff1d18a2f95442b267d8f78e52c9b09474231921fdf84ed50252e1bb3",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-capacity/current-good-1.jfr",
+      "rawBytes": 248307,
+      "sha256": "a047b88fd8865160daf4ef285d0a90f5207926a722110471f4ad22871d8555cd",
+      "storedBytes": 248307,
+      "storedSha256": "a047b88fd8865160daf4ef285d0a90f5207926a722110471f4ad22871d8555cd",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-capacity/current-good-16-reads.json",
+      "rawBytes": 86,
+      "sha256": "62d9f523d8436b57750c5eca342cb9b1badedad9b7a2a505710dfbca435c7b4e",
+      "storedBytes": 86,
+      "storedSha256": "62d9f523d8436b57750c5eca342cb9b1badedad9b7a2a505710dfbca435c7b4e",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-capacity/current-good-16.jfr",
+      "rawBytes": 2202577,
+      "sha256": "4c44bb1221cad7d8f395c53cff09d30c966dacfae8fe6862ee21ea617cba9f93",
+      "storedBytes": 2202577,
+      "storedSha256": "4c44bb1221cad7d8f395c53cff09d30c966dacfae8fe6862ee21ea617cba9f93",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-capacity/current-good-4-reads.json",
+      "rawBytes": 84,
+      "sha256": "ccd55d88dc1b383cd4162ac5c0a697ccb81f75a3710eab448d91aadcc285fd7f",
+      "storedBytes": 84,
+      "storedSha256": "ccd55d88dc1b383cd4162ac5c0a697ccb81f75a3710eab448d91aadcc285fd7f",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-capacity/current-good-4.jfr",
+      "rawBytes": 636134,
+      "sha256": "d80ccf5f96fe91f424b550af9138a3253f8d877ea20d1648e30dbaa6776984a7",
+      "storedBytes": 636134,
+      "storedSha256": "d80ccf5f96fe91f424b550af9138a3253f8d877ea20d1648e30dbaa6776984a7",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-capacity/frozen-corrupt-1-reads.json",
+      "rawBytes": 82,
+      "sha256": "e5e7a33b451285e8019b385f574f0b755829debc7e08103df3e4b3920c98c456",
+      "storedBytes": 82,
+      "storedSha256": "e5e7a33b451285e8019b385f574f0b755829debc7e08103df3e4b3920c98c456",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-capacity/frozen-corrupt-1.jfr",
+      "rawBytes": 248268,
+      "sha256": "cc119d81d6c7f1c486da97905343b97d7320399dad4acec359fa95a6378a1044",
+      "storedBytes": 248268,
+      "storedSha256": "cc119d81d6c7f1c486da97905343b97d7320399dad4acec359fa95a6378a1044",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-capacity/frozen-corrupt-16-reads.json",
+      "rawBytes": 85,
+      "sha256": "39379fb8d51c869e05a2611fef73e05dac36b7d22442be9453e07ca8bee98026",
+      "storedBytes": 85,
+      "storedSha256": "39379fb8d51c869e05a2611fef73e05dac36b7d22442be9453e07ca8bee98026",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-capacity/frozen-corrupt-16.jfr",
+      "rawBytes": 2297982,
+      "sha256": "33098a2de636fb57ed99444452ae4093ff7fb8195f4e11c973eb737d4468743a",
+      "storedBytes": 2297982,
+      "storedSha256": "33098a2de636fb57ed99444452ae4093ff7fb8195f4e11c973eb737d4468743a",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-capacity/frozen-corrupt-4-reads.json",
+      "rawBytes": 84,
+      "sha256": "e3c3d591d21f6b4f6317cc1936352f43067463d891d130f3d3d660a4f5fca97d",
+      "storedBytes": 84,
+      "storedSha256": "e3c3d591d21f6b4f6317cc1936352f43067463d891d130f3d3d660a4f5fca97d",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-capacity/frozen-corrupt-4.jfr",
+      "rawBytes": 651783,
+      "sha256": "8170bed8540c12c1eb3f5c4b1fe7b671a5a999934c987fb6837e4083ad3b1996",
+      "storedBytes": 651783,
+      "storedSha256": "8170bed8540c12c1eb3f5c4b1fe7b671a5a999934c987fb6837e4083ad3b1996",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-capacity/frozen-good-1-reads.json",
+      "rawBytes": 83,
+      "sha256": "d6b7319ff1d18a2f95442b267d8f78e52c9b09474231921fdf84ed50252e1bb3",
+      "storedBytes": 83,
+      "storedSha256": "d6b7319ff1d18a2f95442b267d8f78e52c9b09474231921fdf84ed50252e1bb3",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-capacity/frozen-good-1.jfr",
+      "rawBytes": 266720,
+      "sha256": "e8420e2bbe9aa9f70e45afff9e858a3697d9237b0481ec20b869849e45723b78",
+      "storedBytes": 266720,
+      "storedSha256": "e8420e2bbe9aa9f70e45afff9e858a3697d9237b0481ec20b869849e45723b78",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-capacity/frozen-good-16-reads.json",
+      "rawBytes": 86,
+      "sha256": "62d9f523d8436b57750c5eca342cb9b1badedad9b7a2a505710dfbca435c7b4e",
+      "storedBytes": 86,
+      "storedSha256": "62d9f523d8436b57750c5eca342cb9b1badedad9b7a2a505710dfbca435c7b4e",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-capacity/frozen-good-16.jfr",
+      "rawBytes": 2548252,
+      "sha256": "f0d4b1e320698ea9ab812455505876ff3183e1a6cbb7a78da7e6f0c889aa4cce",
+      "storedBytes": 2548252,
+      "storedSha256": "f0d4b1e320698ea9ab812455505876ff3183e1a6cbb7a78da7e6f0c889aa4cce",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-capacity/frozen-good-4-reads.json",
+      "rawBytes": 84,
+      "sha256": "ccd55d88dc1b383cd4162ac5c0a697ccb81f75a3710eab448d91aadcc285fd7f",
+      "storedBytes": 84,
+      "storedSha256": "ccd55d88dc1b383cd4162ac5c0a697ccb81f75a3710eab448d91aadcc285fd7f",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-capacity/frozen-good-4.jfr",
+      "rawBytes": 722422,
+      "sha256": "243e44fb1c6c2c13da2501cbf3ac84034e79bd5e57fd53e81409deb0899e2a0e",
+      "storedBytes": 722422,
+      "storedSha256": "243e44fb1c6c2c13da2501cbf3ac84034e79bd5e57fd53e81409deb0899e2a0e",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-capacity-DhrAttachmentDownloadCapacityPostgresTest.xml",
+      "rawBytes": 409397,
+      "sha256": "f63e7c4fbb7307bdef392161e3a9dad3e5ed0ca94be0da886467a6037d867d04",
+      "storedBytes": 409397,
+      "storedSha256": "f63e7c4fbb7307bdef392161e3a9dad3e5ed0ca94be0da886467a6037d867d04",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-capacity-command.json",
+      "rawBytes": 2619,
+      "sha256": "a7ebaa32b75479ab9edf57733a7500fd95245ef399767ba5b344275f2cea80ad",
+      "storedBytes": 2619,
+      "storedSha256": "a7ebaa32b75479ab9edf57733a7500fd95245ef399767ba5b344275f2cea80ad",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-capacity-summary.json",
+      "rawBytes": 555,
+      "sha256": "90afe523ac447779d99212c8ea2bd89ffb6adf206e6834e334f2c9af4a35397a",
+      "storedBytes": 555,
+      "storedSha256": "90afe523ac447779d99212c8ea2bd89ffb6adf206e6834e334f2c9af4a35397a",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-capacity-test.txt",
+      "rawBytes": 379452,
+      "sha256": "14b11291ccc8661b4c1763b3a902852453da1121a9d2d92d51888145df0af673",
+      "storedBytes": 379452,
+      "storedSha256": "14b11291ccc8661b4c1763b3a902852453da1121a9d2d92d51888145df0af673",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-cleanup.json",
+      "rawBytes": 544,
+      "sha256": "c24ebfa7cdcd8ee631874606f7b778b7aca1eaa40b2111d2752f4878f917606b",
+      "storedBytes": 544,
+      "storedSha256": "c24ebfa7cdcd8ee631874606f7b778b7aca1eaa40b2111d2752f4878f917606b",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-compare.py",
+      "rawBytes": 4063,
+      "sha256": "1dc218dcdd50fd5637d81e3f6da1d744846174186f7ba1f6678aa0304938f749",
+      "storedBytes": 4063,
+      "storedSha256": "1dc218dcdd50fd5637d81e3f6da1d744846174186f7ba1f6678aa0304938f749",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-comparison-output.txt",
+      "rawBytes": 9666,
+      "sha256": "9aefe74af2b80516ecc1bf120cf587f69cd822dad35b77bc3c1a3ba848efe111",
+      "storedBytes": 9666,
+      "storedSha256": "9aefe74af2b80516ecc1bf120cf587f69cd822dad35b77bc3c1a3ba848efe111",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-comparison.json",
+      "rawBytes": 11063,
+      "sha256": "a0ee992ed1aef3b00ee29831c60dd0f1c06c62e223425629df879e9432659340",
+      "storedBytes": 11063,
+      "storedSha256": "a0ee992ed1aef3b00ee29831c60dd0f1c06c62e223425629df879e9432659340",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-database.json",
+      "rawBytes": 978,
+      "sha256": "40c029d394b16c2ac90e465401c0c0dbf807a17146b9ed14a5e197d231b4f351",
+      "storedBytes": 978,
+      "storedSha256": "40c029d394b16c2ac90e465401c0c0dbf807a17146b9ed14a5e197d231b4f351",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-evidence-attempt1-command.json",
+      "rawBytes": 496,
+      "sha256": "ef36bcd2f9ee4d40bf79a7af03956480a43c198ea8a4f337d91d64b9debdf76e",
+      "storedBytes": 496,
+      "storedSha256": "ef36bcd2f9ee4d40bf79a7af03956480a43c198ea8a4f337d91d64b9debdf76e",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-evidence-attempt1-failure.txt",
+      "rawBytes": 710,
+      "sha256": "65d40d683f12c1f47119389809852f4ab65102e4394b15a9df6363485e26c502",
+      "storedBytes": 710,
+      "storedSha256": "65d40d683f12c1f47119389809852f4ab65102e4394b15a9df6363485e26c502",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-evidence-attempt1-script.py",
+      "rawBytes": 14966,
+      "sha256": "ad1c7623de920f76de2205e4d93a76b2a3e9d1a4c0b2199377d0e78eaf4c89e9",
+      "storedBytes": 14966,
+      "storedSha256": "ad1c7623de920f76de2205e4d93a76b2a3e9d1a4c0b2199377d0e78eaf4c89e9",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-evidence-attempt1-stderr.txt",
+      "rawBytes": 518,
+      "sha256": "423a0861a1001b669a4f445aa6731a586210a911a7643cad564375d1aa479b3f",
+      "storedBytes": 518,
+      "storedSha256": "423a0861a1001b669a4f445aa6731a586210a911a7643cad564375d1aa479b3f",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-evidence-attempt2-stderr.txt",
+      "rawBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storedBytes": 0,
+      "storedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-evidence-attempt2-stdout.txt",
+      "rawBytes": 1912,
+      "sha256": "38e43d2383e14619df66d8ae8ae4bc03d2660a84150e33d78b4f772273141229",
+      "storedBytes": 1912,
+      "storedSha256": "38e43d2383e14619df66d8ae8ae4bc03d2660a84150e33d78b4f772273141229",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-evidence-before-jfr/current-corrupt-1-jfr-print-stderr.txt",
+      "rawBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storedBytes": 0,
+      "storedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-evidence-before-jfr/current-corrupt-1-jfr-print.json.gz",
+      "rawBytes": 9861,
+      "sha256": "577df95da1ba5ed1b22ad3ed63590029701a38f5a79b8e26a3fd44f56b4cba0c",
+      "storedBytes": 775,
+      "storedSha256": "8fa945773d963236630fec328cce7bfaee9a5818f6c71edc30b25a0503e4d44d",
+      "compression": "gzip"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-evidence-before-jfr/current-corrupt-1.jfr",
+      "rawBytes": 114436,
+      "sha256": "f599f97de271ab6090d7f6e34d213174dc9aadfe6f5eb2b2b5302133b5595e16",
+      "storedBytes": 114436,
+      "storedSha256": "f599f97de271ab6090d7f6e34d213174dc9aadfe6f5eb2b2b5302133b5595e16",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-evidence-before-jfr/current-corrupt-16-jfr-print-stderr.txt",
+      "rawBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storedBytes": 0,
+      "storedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-evidence-before-jfr/current-corrupt-16-jfr-print.json.gz",
+      "rawBytes": 22047,
+      "sha256": "32c4be47c5f4c2d8534c829579c1f21fe9151732d7068eb1538af15bcd2a1357",
+      "storedBytes": 1087,
+      "storedSha256": "0d4570f93cfbda6aa914cb1ae9aa18d29844fc6c225824379d5750031650542c",
+      "compression": "gzip"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-evidence-before-jfr/current-corrupt-16.jfr",
+      "rawBytes": 115655,
+      "sha256": "41cf5cfced50de14afd8a69ae3a09bec11122e5d6ce9ea4851c2ca046dac788e",
+      "storedBytes": 115655,
+      "storedSha256": "41cf5cfced50de14afd8a69ae3a09bec11122e5d6ce9ea4851c2ca046dac788e",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-evidence-before-jfr/current-corrupt-4-jfr-print-stderr.txt",
+      "rawBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storedBytes": 0,
+      "storedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-evidence-before-jfr/current-corrupt-4-jfr-print.json.gz",
+      "rawBytes": 5533,
+      "sha256": "447b5596c1c2fc0dfd4ff1b7074e3d242e3de4fc0845601b7a8aa3303deec397",
+      "storedBytes": 538,
+      "storedSha256": "925d05b7d0dcc6a19e38620bbeba136090fc47449b648b1217f1b2d9339472cc",
+      "compression": "gzip"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-evidence-before-jfr/current-corrupt-4.jfr",
+      "rawBytes": 114306,
+      "sha256": "299886ca65a0019a7a8c2101786f5458c98fc51d431037b0b330de84ff790d03",
+      "storedBytes": 114306,
+      "storedSha256": "299886ca65a0019a7a8c2101786f5458c98fc51d431037b0b330de84ff790d03",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-evidence-before-jfr/current-good-1-jfr-print-stderr.txt",
+      "rawBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storedBytes": 0,
+      "storedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-evidence-before-jfr/current-good-1-jfr-print.json.gz",
+      "rawBytes": 625411,
+      "sha256": "2f96e6aa50a2d6067baa79b52f825a88eee5069f1d875b6c52fb7ff12286e021",
+      "storedBytes": 12434,
+      "storedSha256": "0482eba523b615367cad0e6172aa9a13bd9c1698d09432f154f4e06a960768cc",
+      "compression": "gzip"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-evidence-before-jfr/current-good-1.jfr",
+      "rawBytes": 132590,
+      "sha256": "1c23f47953719b37f34f89e5304aea624d79beb354384096b867cfc77309dafb",
+      "storedBytes": 132590,
+      "storedSha256": "1c23f47953719b37f34f89e5304aea624d79beb354384096b867cfc77309dafb",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-evidence-before-jfr/current-good-16-jfr-print-stderr.txt",
+      "rawBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storedBytes": 0,
+      "storedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-evidence-before-jfr/current-good-16-jfr-print.json.gz",
+      "rawBytes": 8823300,
+      "sha256": "4b249cc108120deebe23a807654d56837ce11dfbf87f42391ef76715bde2ff1d",
+      "storedBytes": 152977,
+      "storedSha256": "edf25cc026cf40298c400ac7238f59f48ed340c97431aaacb3f089df928f7deb",
+      "compression": "gzip"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-evidence-before-jfr/current-good-16.jfr",
+      "rawBytes": 359549,
+      "sha256": "94268db99ab03d14717bb2e5350ae05e2ada4b1e60052b6693f8f4b9ecda8429",
+      "storedBytes": 359549,
+      "storedSha256": "94268db99ab03d14717bb2e5350ae05e2ada4b1e60052b6693f8f4b9ecda8429",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-evidence-before-jfr/current-good-4-jfr-print-stderr.txt",
+      "rawBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storedBytes": 0,
+      "storedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-evidence-before-jfr/current-good-4-jfr-print.json.gz",
+      "rawBytes": 2203059,
+      "sha256": "c1d3685411b2870fa48ff72b04fa5e836644eee83d1796736c96b94e52e8fe1d",
+      "storedBytes": 38182,
+      "storedSha256": "211398699ae1adb21b8ac6c4ebaa0de11a7a5a48c716abb0b0c7daa78db0906b",
+      "compression": "gzip"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-evidence-before-jfr/current-good-4.jfr",
+      "rawBytes": 175298,
+      "sha256": "b1f92d4d8e6d817c99e53e64b8f66cc17fd1dadc1ac7fdc3a529be5b49570ba5",
+      "storedBytes": 175298,
+      "storedSha256": "b1f92d4d8e6d817c99e53e64b8f66cc17fd1dadc1ac7fdc3a529be5b49570ba5",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-evidence-before-jfr/frozen-corrupt-1-jfr-print-stderr.txt",
+      "rawBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storedBytes": 0,
+      "storedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-evidence-before-jfr/frozen-corrupt-1-jfr-print.json.gz",
+      "rawBytes": 1415,
+      "sha256": "aa34bfe5b19adcf4c9dd852a1593a41dcf5b66c68174b413624039a656784b83",
+      "storedBytes": 383,
+      "storedSha256": "00521090d6990181b3c475d9beab7f9660529a34ccae5ba968f929c81c573525",
+      "compression": "gzip"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-evidence-before-jfr/frozen-corrupt-1.jfr",
+      "rawBytes": 113974,
+      "sha256": "2dfcb78e135709cfd13595310c00d24409e9b0c126f602fe03f430cb3ba772eb",
+      "storedBytes": 113974,
+      "storedSha256": "2dfcb78e135709cfd13595310c00d24409e9b0c126f602fe03f430cb3ba772eb",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-evidence-before-jfr/frozen-corrupt-16-jfr-print-stderr.txt",
+      "rawBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storedBytes": 0,
+      "storedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-evidence-before-jfr/frozen-corrupt-16-jfr-print.json.gz",
+      "rawBytes": 22080,
+      "sha256": "652d1b6e9294e79ed66290e9f53e7a2a2b515f815fae32501532d278252d00ff",
+      "storedBytes": 1095,
+      "storedSha256": "9a9d4ec1bf92c83e7f3dae0bb60659d312e4c2816e4d393a51c2f41b1f8c0114",
+      "compression": "gzip"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-evidence-before-jfr/frozen-corrupt-16.jfr",
+      "rawBytes": 115632,
+      "sha256": "de2aafa80e1605fae37f59e3c92e6bae1a762917deb5d9321e60f1cee0dd1535",
+      "storedBytes": 115632,
+      "storedSha256": "de2aafa80e1605fae37f59e3c92e6bae1a762917deb5d9321e60f1cee0dd1535",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-evidence-before-jfr/frozen-corrupt-4-jfr-print-stderr.txt",
+      "rawBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storedBytes": 0,
+      "storedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-evidence-before-jfr/frozen-corrupt-4-jfr-print.json.gz",
+      "rawBytes": 5542,
+      "sha256": "4bdc88f51e4dc2bfa1a24d6880e69b8b6d9f0ec94450260d4cd67a9540cc2815",
+      "storedBytes": 540,
+      "storedSha256": "9574445a4b55beac231dcdaa485aad4703a0c0043995d8cf2c5ab30e812efd9e",
+      "compression": "gzip"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-evidence-before-jfr/frozen-corrupt-4.jfr",
+      "rawBytes": 114165,
+      "sha256": "eeea9a3518f9d3a8a98fd3e7cc2e36debbfc63f6b5c63f6c0cac72a8ccb1d458",
+      "storedBytes": 114165,
+      "storedSha256": "eeea9a3518f9d3a8a98fd3e7cc2e36debbfc63f6b5c63f6c0cac72a8ccb1d458",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-evidence-before-jfr/frozen-good-1-jfr-print-stderr.txt",
+      "rawBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storedBytes": 0,
+      "storedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-evidence-before-jfr/frozen-good-1-jfr-print.json.gz",
+      "rawBytes": 568746,
+      "sha256": "3d3db35b4902af583314ec220275cb1551f5bed9ba1617d05bfd8776b6cdd799",
+      "storedBytes": 10300,
+      "storedSha256": "52d5ac85cc4b0d4065e17e7039579744a1d20c3e24375be1afa54bea11720166",
+      "compression": "gzip"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-evidence-before-jfr/frozen-good-1.jfr",
+      "rawBytes": 132361,
+      "sha256": "ceb8d810f10d7902734a9eba6f1f7ec335c3a7f865fc3911f29ae712ab04607f",
+      "storedBytes": 132361,
+      "storedSha256": "ceb8d810f10d7902734a9eba6f1f7ec335c3a7f865fc3911f29ae712ab04607f",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-evidence-before-jfr/frozen-good-16-jfr-print-stderr.txt",
+      "rawBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storedBytes": 0,
+      "storedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-evidence-before-jfr/frozen-good-16-jfr-print.json.gz",
+      "rawBytes": 8857045,
+      "sha256": "25f145ee4809e6ff7e27dee36529d7ecdbfb1db6fed626c5b3ca4279458a0611",
+      "storedBytes": 156133,
+      "storedSha256": "8a7ebfd5705f4614a2ae35106b18fdf6e18e8087a908ddcd5ad26f7f5b30270b",
+      "compression": "gzip"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-evidence-before-jfr/frozen-good-16.jfr",
+      "rawBytes": 398092,
+      "sha256": "2161b3f3f22f935fb41e7f5bb9b1bcd5ad7c5e14415be6baafa022a0b93d9aa3",
+      "storedBytes": 398092,
+      "storedSha256": "2161b3f3f22f935fb41e7f5bb9b1bcd5ad7c5e14415be6baafa022a0b93d9aa3",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-evidence-before-jfr/frozen-good-4-jfr-print-stderr.txt",
+      "rawBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storedBytes": 0,
+      "storedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-evidence-before-jfr/frozen-good-4-jfr-print.json.gz",
+      "rawBytes": 2209496,
+      "sha256": "fae00fdfa16038618cf48d8f5e292927c999d5046aef7f598864ebdec1f65ce3",
+      "storedBytes": 38480,
+      "storedSha256": "7325093e43a0e99a2bcc3b6db953a028aa6ea8db87c73fe2d01b20160509a155",
+      "compression": "gzip"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-evidence-before-jfr/frozen-good-4.jfr",
+      "rawBytes": 184785,
+      "sha256": "b5538c3e4a475ba70f3fed2aa3536abab81852940427ae5b594071366881f5ef",
+      "storedBytes": 184785,
+      "storedSha256": "b5538c3e4a475ba70f3fed2aa3536abab81852940427ae5b594071366881f5ef",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-evidence-before-review.json",
+      "rawBytes": 19889,
+      "sha256": "df0b1ecacf53d4edb18be0a31ab55c62d67baae7112038c94bec17f7a39a6fe9",
+      "storedBytes": 19889,
+      "storedSha256": "df0b1ecacf53d4edb18be0a31ab55c62d67baae7112038c94bec17f7a39a6fe9",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-evidence-before-stderr.txt",
+      "rawBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storedBytes": 0,
+      "storedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-evidence-before-stdout.txt",
+      "rawBytes": 1487,
+      "sha256": "759c13ca9909430547ddb88c13a56008675efc38bfef9589af72deedd57726cf",
+      "storedBytes": 1487,
+      "storedSha256": "759c13ca9909430547ddb88c13a56008675efc38bfef9589af72deedd57726cf",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-evidence-before-verify.py",
+      "rawBytes": 7169,
+      "sha256": "003527aa2c87b0615cd58d8f9b81ab595eba7f342420e22f58d118d95f8e45d4",
+      "storedBytes": 7169,
+      "storedSha256": "003527aa2c87b0615cd58d8f9b81ab595eba7f342420e22f58d118d95f8e45d4",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-evidence-commands.json",
+      "rawBytes": 607,
+      "sha256": "4a79555b964a628fe798f8eccdb2a9d23142d1a22fa8ad87e1046d3a98fb9f90",
+      "storedBytes": 607,
+      "storedSha256": "4a79555b964a628fe798f8eccdb2a9d23142d1a22fa8ad87e1046d3a98fb9f90",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-evidence-inventory/coverage.csv",
+      "rawBytes": 2009910,
+      "sha256": "19a3e2797d127f53ea41a69a9e4fdaa90afdc206b97fee2b1523fea088d2c7b9",
+      "storedBytes": 2009910,
+      "storedSha256": "19a3e2797d127f53ea41a69a9e4fdaa90afdc206b97fee2b1523fea088d2c7b9",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-evidence-inventory/entrypoints.csv",
+      "rawBytes": 161809,
+      "sha256": "cbcb08ee668bbc14be1776a6a026c742ca3a3cdf059630afa05aec7b7aaacf1f",
+      "storedBytes": 161809,
+      "storedSha256": "cbcb08ee668bbc14be1776a6a026c742ca3a3cdf059630afa05aec7b7aaacf1f",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-evidence-inventory/inventory-summary.json",
+      "rawBytes": 1044,
+      "sha256": "b506aea5f9ef0635c407b9a64e7c3b7744310d7e4b864e8cacd3e362849a39fd",
+      "storedBytes": 1044,
+      "storedSha256": "b506aea5f9ef0635c407b9a64e7c3b7744310d7e4b864e8cacd3e362849a39fd",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-evidence-inventory/migrations.csv",
+      "rawBytes": 34737,
+      "sha256": "3f4c20004c7248c38177abbf64a7c7836733374f6cf3422a7fec23962bff2943",
+      "storedBytes": 34737,
+      "storedSha256": "3f4c20004c7248c38177abbf64a7c7836733374f6cf3422a7fec23962bff2943",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-evidence-inventory-attempt2/coverage.csv",
+      "rawBytes": 2009910,
+      "sha256": "19a3e2797d127f53ea41a69a9e4fdaa90afdc206b97fee2b1523fea088d2c7b9",
+      "storedBytes": 2009910,
+      "storedSha256": "19a3e2797d127f53ea41a69a9e4fdaa90afdc206b97fee2b1523fea088d2c7b9",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-evidence-inventory-attempt2/entrypoints.csv",
+      "rawBytes": 161809,
+      "sha256": "cbcb08ee668bbc14be1776a6a026c742ca3a3cdf059630afa05aec7b7aaacf1f",
+      "storedBytes": 161809,
+      "storedSha256": "cbcb08ee668bbc14be1776a6a026c742ca3a3cdf059630afa05aec7b7aaacf1f",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-evidence-inventory-attempt2/inventory-summary.json",
+      "rawBytes": 1044,
+      "sha256": "b506aea5f9ef0635c407b9a64e7c3b7744310d7e4b864e8cacd3e362849a39fd",
+      "storedBytes": 1044,
+      "storedSha256": "b506aea5f9ef0635c407b9a64e7c3b7744310d7e4b864e8cacd3e362849a39fd",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-evidence-inventory-attempt2/migrations.csv",
+      "rawBytes": 34737,
+      "sha256": "3f4c20004c7248c38177abbf64a7c7836733374f6cf3422a7fec23962bff2943",
+      "storedBytes": 34737,
+      "storedSha256": "3f4c20004c7248c38177abbf64a7c7836733374f6cf3422a7fec23962bff2943",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-evidence-inventory-attempt2-stderr.txt",
+      "rawBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storedBytes": 0,
+      "storedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-evidence-inventory-attempt2-stdout.txt",
+      "rawBytes": 934,
+      "sha256": "bd99a11baa9972669945ed941842ca46aaf8936abf8e5d30582c71848573182e",
+      "storedBytes": 934,
+      "storedSha256": "bd99a11baa9972669945ed941842ca46aaf8936abf8e5d30582c71848573182e",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-evidence-inventory-stderr.txt",
+      "rawBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storedBytes": 0,
+      "storedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-evidence-inventory-stdout.txt",
+      "rawBytes": 934,
+      "sha256": "bd99a11baa9972669945ed941842ca46aaf8936abf8e5d30582c71848573182e",
+      "storedBytes": 934,
+      "storedSha256": "bd99a11baa9972669945ed941842ca46aaf8936abf8e5d30582c71848573182e",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-evidence-manifest.json",
+      "rawBytes": 13043,
+      "sha256": "45117464bd577d92b87b88c5b626455f87c07c24f7b6f2c4d3bc87508a6c7576",
+      "storedBytes": 13043,
+      "storedSha256": "45117464bd577d92b87b88c5b626455f87c07c24f7b6f2c4d3bc87508a6c7576",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-evidence-review.json",
+      "rawBytes": 527841,
+      "sha256": "d052d2849bb3fafed6f4f5590922e5b4388dbd733cc9ada59577964a2fa8d132",
+      "storedBytes": 527841,
+      "storedSha256": "d052d2849bb3fafed6f4f5590922e5b4388dbd733cc9ada59577964a2fa8d132",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-evidence-review.md",
+      "rawBytes": 3016,
+      "sha256": "f7b136b9bb684c94594d4f2792c10da80186ebce3bf9d8ce39424be12ca7969a",
+      "storedBytes": 3016,
+      "storedSha256": "f7b136b9bb684c94594d4f2792c10da80186ebce3bf9d8ce39424be12ca7969a",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-evidence-verify.py",
+      "rawBytes": 15112,
+      "sha256": "73020febc64a3b3d50f52eeb0b7068d7fbd3bdb9d29b6d3356a78dd67ad042dc",
+      "storedBytes": 15112,
+      "storedSha256": "73020febc64a3b3d50f52eeb0b7068d7fbd3bdb9d29b6d3356a78dd67ad042dc",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-final-commands.json",
+      "rawBytes": 1134,
+      "sha256": "f816125f56f7b649bd973d7b3fc8432e1c9faedb21a33a1b144122ae14075e9a",
+      "storedBytes": 1134,
+      "storedSha256": "f816125f56f7b649bd973d7b3fc8432e1c9faedb21a33a1b144122ae14075e9a",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-final-sourceSnapshot.json",
+      "rawBytes": 1462,
+      "sha256": "c9458cca77e25ce32a188bdbfe6a334783f8ed0e4675273cdc3a54c1d1bbb53e",
+      "storedBytes": 1462,
+      "storedSha256": "c9458cca77e25ce32a188bdbfe6a334783f8ed0e4675273cdc3a54c1d1bbb53e",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-finalize.py",
+      "rawBytes": 19142,
+      "sha256": "147ae59bde9da48f1983dbe2f796e001a1585c586f59b34ec06222441d18dc1c",
+      "storedBytes": 19142,
+      "storedSha256": "147ae59bde9da48f1983dbe2f796e001a1585c586f59b34ec06222441d18dc1c",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-knowledge-BusinessKnowledgeModelTest.xml",
+      "rawBytes": 20526,
+      "sha256": "d58cd3462ca614ce315e4476e1c74d55dcd49a1e97a50ec577ef2597db85334d",
+      "storedBytes": 20526,
+      "storedSha256": "d58cd3462ca614ce315e4476e1c74d55dcd49a1e97a50ec577ef2597db85334d",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-knowledge-command.json",
+      "rawBytes": 2548,
+      "sha256": "48fcbcada3bc9ab1e497ecc4b802b92278be1a4bc9759213aab56eb81d09cd5c",
+      "storedBytes": 2548,
+      "storedSha256": "48fcbcada3bc9ab1e497ecc4b802b92278be1a4bc9759213aab56eb81d09cd5c",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-knowledge-summary.json",
+      "rawBytes": 13981,
+      "sha256": "06ce6a2c05b5d3410237f67655d9f4c86a2b320884bbf9b0dfd692181be34d91",
+      "storedBytes": 13981,
+      "storedSha256": "06ce6a2c05b5d3410237f67655d9f4c86a2b320884bbf9b0dfd692181be34d91",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-knowledge-test.txt",
+      "rawBytes": 2229,
+      "sha256": "ad6e2ef91ef3e8e1f30795124cc420e1ce31635ea36f84b766e73dd79f579f9c",
+      "storedBytes": 2229,
+      "storedSha256": "ad6e2ef91ef3e8e1f30795124cc420e1ce31635ea36f84b766e73dd79f579f9c",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-main-DhrAttachmentAndArchiveTest.xml",
+      "rawBytes": 36967,
+      "sha256": "970732d4e9c049179637bd18ca02c936f68b63a772d5a45a2f3500e2108b638a",
+      "storedBytes": 36967,
+      "storedSha256": "970732d4e9c049179637bd18ca02c936f68b63a772d5a45a2f3500e2108b638a",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-main-DhrAttachmentTransactionPostgresTest.xml",
+      "rawBytes": 130037,
+      "sha256": "b584863172ed33cd710db4cf13b60345231c56d6e6ed8a984a0811241a780723",
+      "storedBytes": 130037,
+      "storedSha256": "b584863172ed33cd710db4cf13b60345231c56d6e6ed8a984a0811241a780723",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-main-DhrAttachmentWriteFailureTest.xml",
+      "rawBytes": 45501,
+      "sha256": "de13474bb24115bc7e3836b7b5356c1fb698c6675e0069c8391a1f5c910ae6a3",
+      "storedBytes": 45501,
+      "storedSha256": "de13474bb24115bc7e3836b7b5356c1fb698c6675e0069c8391a1f5c910ae6a3",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-main-DhrFormFilesTest.xml",
+      "rawBytes": 33160,
+      "sha256": "2667cc84e9513aad846562b9fbd5fbcc2a5ffe853a8cab2eef5b1ce6a5a4605a",
+      "storedBytes": 33160,
+      "storedSha256": "2667cc84e9513aad846562b9fbd5fbcc2a5ffe853a8cab2eef5b1ce6a5a4605a",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-main-DhrReviewLifecycleIntegrationTest.xml",
+      "rawBytes": 287245,
+      "sha256": "d1c9515db87e3fc86fbfeb8208cfc13e418262b9cd0c3e9bb9939dc4e585ba9e",
+      "storedBytes": 287245,
+      "storedSha256": "d1c9515db87e3fc86fbfeb8208cfc13e418262b9cd0c3e9bb9939dc4e585ba9e",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-main-DhrSummaryServiceTest.xml",
+      "rawBytes": 33714,
+      "sha256": "29dcdbf89f1a68c6270981e457e54e5e80502bc20e0d1a3e681912ddc9fcc2a3",
+      "storedBytes": 33714,
+      "storedSha256": "29dcdbf89f1a68c6270981e457e54e5e80502bc20e0d1a3e681912ddc9fcc2a3",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-main-ExecutionAccessTest.xml",
+      "rawBytes": 35322,
+      "sha256": "6d874bf9a4e9e798c2a8d816c8302594920f145bbc38757808cf2b9baea335c9",
+      "storedBytes": 35322,
+      "storedSha256": "6d874bf9a4e9e798c2a8d816c8302594920f145bbc38757808cf2b9baea335c9",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-main-FileControllerTest.xml",
+      "rawBytes": 34708,
+      "sha256": "2b513b955e28ad10a5b1b65e17fd7cc2d4994dc3533ea087c9a05ac204c70e1a",
+      "storedBytes": 34708,
+      "storedSha256": "2b513b955e28ad10a5b1b65e17fd7cc2d4994dc3533ea087c9a05ac204c70e1a",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-main-FileCopyOwnershipTest.xml",
+      "rawBytes": 45744,
+      "sha256": "cac71ef8c7272d0793693f9394a39af478a60ddd3271ccc96b11a9c62cda27db",
+      "storedBytes": 45744,
+      "storedSha256": "cac71ef8c7272d0793693f9394a39af478a60ddd3271ccc96b11a9c62cda27db",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-main-FileDeleteTransactionFailureTest.xml",
+      "rawBytes": 33797,
+      "sha256": "51efcbb697c4300bab055e4f39a465ffff4b0ac15951d4d3b615f5624f0a2f4f",
+      "storedBytes": 33797,
+      "storedSha256": "51efcbb697c4300bab055e4f39a465ffff4b0ac15951d4d3b615f5624f0a2f4f",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-main-FileDeleteTransactionIntegrationTest.xml",
+      "rawBytes": 102707,
+      "sha256": "a9be4c076839c880a8173d451f2a4cc2a0cfdedc95b466aafa0c9cf4216b20ad",
+      "storedBytes": 102707,
+      "storedSha256": "a9be4c076839c880a8173d451f2a4cc2a0cfdedc95b466aafa0c9cf4216b20ad",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-main-FileDeleteTransactionPostgresTest.xml",
+      "rawBytes": 104406,
+      "sha256": "e7264b16971528853edad1ab462ba1d9de990feb26c0cc0492d7070ebc387e01",
+      "storedBytes": 104406,
+      "storedSha256": "e7264b16971528853edad1ab462ba1d9de990feb26c0cc0492d7070ebc387e01",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-main-FileHttpBoundaryTest.xml",
+      "rawBytes": 47843,
+      "sha256": "925d0d39794e7f6bca6cebeff36f9dfa4823a2a75dd664ad68cf6e5fb87c2b7a",
+      "storedBytes": 47843,
+      "storedSha256": "925d0d39794e7f6bca6cebeff36f9dfa4823a2a75dd664ad68cf6e5fb87c2b7a",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-main-FileUploadResourceTest.xml",
+      "rawBytes": 34671,
+      "sha256": "ce22f806052cf77edc8266cf8ccfbb70c277a85cd268f4c9537ceffdcd18ae57",
+      "storedBytes": 34671,
+      "storedSha256": "ce22f806052cf77edc8266cf8ccfbb70c277a85cd268f4c9537ceffdcd18ae57",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-main-FileUploadTransactionFailureTest.xml",
+      "rawBytes": 46001,
+      "sha256": "8f5837447c3ff4e4bb9d50127d5edae2b1922afd21274ee78e8700cc85def1f4",
+      "storedBytes": 46001,
+      "storedSha256": "8f5837447c3ff4e4bb9d50127d5edae2b1922afd21274ee78e8700cc85def1f4",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-main-FileUploadTransactionIntegrationTest.xml",
+      "rawBytes": 122223,
+      "sha256": "820136cebdb3b595bacf8ec4b63415a42e992402d27574eb809489374786c440",
+      "storedBytes": 122223,
+      "storedSha256": "820136cebdb3b595bacf8ec4b63415a42e992402d27574eb809489374786c440",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-main-FileUploadTransactionPostgresTest.xml",
+      "rawBytes": 123965,
+      "sha256": "1bfd77e0406f38e2d323f3abf2882e03aa762b3aa07719a90f3fcdf4a373d3ef",
+      "storedBytes": 123965,
+      "storedSha256": "1bfd77e0406f38e2d323f3abf2882e03aa762b3aa07719a90f3fcdf4a373d3ef",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-main-command.json",
+      "rawBytes": 3003,
+      "sha256": "22716c7d324d5357d05dc2ebe1891dba370fac1e99f26ecc9dbd1c0e72e2b9ba",
+      "storedBytes": 3003,
+      "storedSha256": "22716c7d324d5357d05dc2ebe1891dba370fac1e99f26ecc9dbd1c0e72e2b9ba",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-main-summary.json",
+      "rawBytes": 22722,
+      "sha256": "11c68f99836efb9c6bda8f68d30160ba88caefe610aea677469c4a2f9369f6d4",
+      "storedBytes": 22722,
+      "storedSha256": "11c68f99836efb9c6bda8f68d30160ba88caefe610aea677469c4a2f9369f6d4",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-main-test.txt",
+      "rawBytes": 729032,
+      "sha256": "7abb7d3fe5ab8f3d1eb505b415950a7cdf74fbd0010ea64c5fe76bceda75f7bb",
+      "storedBytes": 729032,
+      "storedSha256": "7abb7d3fe5ab8f3d1eb505b415950a7cdf74fbd0010ea64c5fe76bceda75f7bb",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-old-DhrAttachmentWriteFailureTest.xml",
+      "rawBytes": 36045,
+      "sha256": "a1f673c16254f307afa19e5b7f5f20ee8f88526c8c4d057b4ddb7c91ea0687bf",
+      "storedBytes": 36045,
+      "storedSha256": "a1f673c16254f307afa19e5b7f5f20ee8f88526c8c4d057b4ddb7c91ea0687bf",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-old-command.json",
+      "rawBytes": 2546,
+      "sha256": "37278589ed4e4be6f6e86cb747b90e5ef218c838726cc4623fd3c67d46b36e4a",
+      "storedBytes": 2546,
+      "storedSha256": "37278589ed4e4be6f6e86cb747b90e5ef218c838726cc4623fd3c67d46b36e4a",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-old-source-copy.json",
+      "rawBytes": 861,
+      "sha256": "29e79cf0bc300e8138b8a0af43785c860fcbf7989a4b77d0f6c6b53271aeaa12",
+      "storedBytes": 861,
+      "storedSha256": "29e79cf0bc300e8138b8a0af43785c860fcbf7989a4b77d0f6c6b53271aeaa12",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-old-summary.json",
+      "rawBytes": 1559,
+      "sha256": "9f4367af9f9b5b0a323fe1a17bc4ae5c8b02617b576c56816e8916b850ad8e7d",
+      "storedBytes": 1559,
+      "storedSha256": "9f4367af9f9b5b0a323fe1a17bc4ae5c8b02617b576c56816e8916b850ad8e7d",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-old-test.txt",
+      "rawBytes": 8137,
+      "sha256": "d501433be9df188c50f1d19e7f3c6316bd9e14a1c6a11aae8cef208ccec0ad70",
+      "storedBytes": 8137,
+      "storedSha256": "d501433be9df188c50f1d19e7f3c6316bd9e14a1c6a11aae8cef208ccec0ad70",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-quality-result.yaml",
+      "rawBytes": 12706,
+      "sha256": "e912707df68fca1070b91b09b054ed6f31ce3060dd5dff136cc65202b631d6f5",
+      "storedBytes": 12706,
+      "storedSha256": "e912707df68fca1070b91b09b054ed6f31ce3060dd5dff136cc65202b631d6f5",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-report.md",
+      "rawBytes": 4733,
+      "sha256": "cac4f2096a58291d2d8f41240b8f8912f3e13fb95d833a6a88e58e8326d9dfb2",
+      "storedBytes": 4733,
+      "storedSha256": "cac4f2096a58291d2d8f41240b8f8912f3e13fb95d833a6a88e58e8326d9dfb2",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-run.py",
+      "rawBytes": 8264,
+      "sha256": "eefe17abbc94094b4e7f22610efbd90fcded4cd49eb79bd84b3cf84a5eca3889",
+      "storedBytes": 8264,
+      "storedSha256": "eefe17abbc94094b4e7f22610efbd90fcded4cd49eb79bd84b3cf84a5eca3889",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-source-review-parser-attempt1.json",
+      "rawBytes": 21464,
+      "sha256": "b84a39375c1017fc2a12feccd51f2f8ff7707736496db09534beecb80e1c395e",
+      "storedBytes": 21464,
+      "storedSha256": "b84a39375c1017fc2a12feccd51f2f8ff7707736496db09534beecb80e1c395e",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-source-review.json",
+      "rawBytes": 21746,
+      "sha256": "c0d09ef41a4513f8343a6689f6fb06aefe3a80619326543e460294b2cf41f55a",
+      "storedBytes": 21746,
+      "storedSha256": "c0d09ef41a4513f8343a6689f6fb06aefe3a80619326543e460294b2cf41f55a",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-source-review.md",
+      "rawBytes": 3452,
+      "sha256": "c22ba8a49cd55aaddfdc1a3fa68ae4022df49dac0ae2295670117c8564a6bbf0",
+      "storedBytes": 3452,
+      "storedSha256": "c22ba8a49cd55aaddfdc1a3fa68ae4022df49dac0ae2295670117c8564a6bbf0",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-sourceSnapshot.json",
+      "rawBytes": 1085,
+      "sha256": "8c93cffa7a218ea47d9c59da1c897c4af7d79f7e63242c2d29fa5dc20dce6355",
+      "storedBytes": 1085,
+      "storedSha256": "8c93cffa7a218ea47d9c59da1c897c4af7d79f7e63242c2d29fa5dc20dce6355",
+      "compression": "none"
+    },
+    {
+      "path": "/tmp/edhr-dhr-combined-qa-start.json",
+      "rawBytes": 1345,
+      "sha256": "d367950f4bb87057b7d56c4c19246bf39fdddb4ae5b3d8702cc112dd80ae410e",
+      "storedBytes": 1345,
+      "storedSha256": "d367950f4bb87057b7d56c4c19246bf39fdddb4ae5b3d8702cc112dd80ae410e",
+      "compression": "none"
+    }
+  ],
+  "selfExcluded": true
+}

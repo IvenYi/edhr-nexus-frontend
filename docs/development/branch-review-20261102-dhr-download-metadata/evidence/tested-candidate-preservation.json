@@ -1,0 +1,65 @@
+{
+  "candidate": "b5cbdf076dbb55e57ba1ae93837d721da4940778",
+  "candidateTree": "60202e94a35154dfa506260d27ebb8e09b48fa5a",
+  "candidateTrackedPaths": 6812,
+  "trackedDeltaAtArchive": [],
+  "allOtherCandidateTrackedPathsUnchangedByGitDiff": true,
+  "sourceFingerprints": [
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrAttachmentController.java",
+      "bytes": 3456,
+      "sha256": "0120f55096608de86fe2c0080b90a8f1e666f7415ec2a63402a6ac0c85be7d62"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrReviewController.java",
+      "bytes": 3290,
+      "sha256": "62a5bbdf40de4cb457c69b644fa4f2120bb9bd429ecd492579d5ec1ea3487e6c"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrArchiveService.java",
+      "bytes": 24562,
+      "sha256": "bf1d938746ebd3d4c4df7f94b54c0892647639cedefcc85633d6fa28cf402e08"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrAttachmentService.java",
+      "bytes": 17921,
+      "sha256": "31db80b5e606b4fbe70d2dd3cf22309e7c3be82d6e47511c2df5cca10f45322b"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrSummaryService.java",
+      "bytes": 44493,
+      "sha256": "20d96b976bd931ccf65c710204a01d8d571d51f8deebaf64bb0aaad8f7e24c3e"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql",
+      "bytes": 106718,
+      "sha256": "61560f972ef9eeeb8f69620c947b54b2326ad9341d929b19385653bec81cf99b"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/DhrWorkbenchPermissionsTest.java",
+      "bytes": 8824,
+      "sha256": "f601c8c84688e1582faaa6c2f512e1c733953761376fe92373914b79b8cab86b"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrAttachmentAndArchiveTest.java",
+      "bytes": 29001,
+      "sha256": "d80c6879b0691e3ec20bada461d0b68daa879fa08e33dd1751fbea7d1bf55e30"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrAttachmentDownloadCapacityPostgresTest.java",
+      "bytes": 14167,
+      "sha256": "42d70f0fc7a2251c79475075d80136938ab73be9c32084884249aa590603d91a"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrAttachmentDownloadMetadataPostgresTest.java",
+      "bytes": 10354,
+      "sha256": "f0c4a0a43b612599b7dd4af0aecff71564d1e9662cd46778c1418255a176e800"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrAttachmentQueryObservationPostgresTest.java",
+      "bytes": 11520,
+      "sha256": "5866b4dc1d4713b9a4be456f03a748099e3af6324fe3c4ba2e34d4d8b1c22841"
+    }
+  ],
+  "note": "Git diff -z against clean tested candidate verifies all existing tracked paths except NEXT; finite raw fingerprints below. New L0 evidence/acceptance/scope/delivery records may be added. Not a semantic completion claim."
+}

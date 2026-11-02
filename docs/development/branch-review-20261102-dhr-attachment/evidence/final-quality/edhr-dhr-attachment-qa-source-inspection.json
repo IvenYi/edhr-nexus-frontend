@@ -1,0 +1,76 @@
+{
+  "status": "source inspection complete; runtime result separate",
+  "baseCommit": "ab5adafb9629b94f95eb88825ec0a4ea06f4efb1",
+  "headCommit": "a6f799459eb105da5e98ab3d548d6b03d18d9e43",
+  "contractReadCommit": "a6f799459eb105da5e98ab3d548d6b03d18d9e43",
+  "observedAt": "2026-11-02T12:43:48.205548+00:00",
+  "actualCommands": [
+    "git diff base head -- backend/src/main",
+    "git diff base head -- AGENTS/codeplz/docs/agents/model/knowledge",
+    "Read cited original decisions/evidence and exact new tests"
+  ],
+  "onlyProductSourcePath": [
+    "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrAttachmentService.java"
+  ],
+  "outsideCallbackAndLoggerByteIdentical": true,
+  "knowledgeAndContractDiff": "",
+  "sourceSnapshot": [
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrAttachmentService.java",
+      "bytes": 16473,
+      "sha256": "783c6f3338cd97b5b4cbfc0c3bc35c12707a7b0fc094912d28735a3b7c1a2bba"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrAttachmentTransactionPostgresTest.java",
+      "bytes": 15572,
+      "sha256": "de1b1705d3eec75c385524f9874518ca4a5376d30f74aeeadf81f164e81aed40"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrAttachmentController.java",
+      "bytes": 3471,
+      "sha256": "85452748ac5c956ce2330ee6e4327ad640bf442e35b14b2731cdf2b15b69a5f6"
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-attachment/decision-package.yaml",
+      "bytes": 4818,
+      "sha256": "d138e8e87b7eddd331616ad79b6a0714acf1d1585f2b419da15aa2a2b0d75296"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml",
+      "bytes": 23213,
+      "sha256": "11e70ec27862eb971a2ad01cd928e8c2ecba36be4df70e170bd1f5296c4e0253"
+    },
+    {
+      "path": "docs/knowledge/evidence/dhr-summary-user-confirmed.md",
+      "bytes": 36542,
+      "sha256": "51dc528c6fe38671023cec25cfbe6bf1f0a8dcf2fc088f7894524a2d5f035642"
+    }
+  ],
+  "knowledgeVersion": "0.3.25",
+  "schemaVersion": "1.2.0",
+  "finiteKnowledgeIds": [
+    "term.dhr-controlled-attachment",
+    "concept.dhr-controlled-attachment",
+    "relation.dhr-summary-version-contains-controlled-attachments",
+    "rule.dhr-summary-controlled-attachment-upload",
+    "rule.dhr-review-task-frozen-attachment-download",
+    "DEC-0063-05",
+    "DEC-0063-10",
+    "DEC-0063-12",
+    "DEC-0063-13",
+    "evidence.dhr-summary-attachment-service",
+    "DEC-0063-11",
+    "scenario.dhr-summary-attachment-export-and-audit"
+  ],
+  "policyScope": "DEC0063-10 original bytes/SHA256, metadata and verification; reasoned unlink retains history; no invented fourth form source or new runtime policy. UNKNOWN retention is implementation inference, not business replacement.",
+  "a23": "Confirmed rollback and UNKNOWN branches follow actual completion evidence. Cleanup catch only reports current-path compensation without replacing original transaction failure; no global retry/default/state framework. Existing size metadata and actual byte bounds serve different stages; digest/frozen membership preserved.",
+  "queryAssessment": "Single attachment path has no new loop/N+1/paging/index. Existing download explicit JDBC straight path is5 current/6 frozen; source count only. Full raw byte array up to50MiB per concurrent download yields capacity concern, not measured latency/heap/SLA.",
+  "extraction": "Concrete future upload service owns validation/current original/registration+audit/compensation; read resolver returns verified path/name/context; association service owns verify/unlink. HTTP permissions stay controller, Office parsing stays existing helper. No broad extraction performed.",
+  "limits": [
+    "New native scenario is actual PG commit followed by synthetic manager acknowledgement error and actual UNKNOWN synchronization, not real socket failure",
+    "Canonical3table DDL/PK with test-only refusal CHECK, not complete schema/FKs/migrations",
+    "No DHR HTTP/browser/full tenant/RBAC/recipient or production deployment certification",
+    "Interrupted write, no-transaction calls, crash/durable reconcile and UNKNOWN retry remain independent scopes",
+    "Finite12 retained IDs, wholeFile0/historyUnique unknown; old DHRhigh/A12/gaps/full audit queues remain"
+  ]
+}

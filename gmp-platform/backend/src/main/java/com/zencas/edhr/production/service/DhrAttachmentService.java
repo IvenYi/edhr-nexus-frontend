@@ -8,6 +8,7 @@ import com.zencas.edhr.common.util.SnowflakeIdGenerator;
 import com.zencas.edhr.compliance.entity.AuditEvent;
 import com.zencas.edhr.compliance.repository.AuditEventRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
 import java.util.HexFormat;
 import java.util.List;
@@ -31,6 +33,7 @@ import static com.zencas.edhr.production.service.ExecutionSnapshotBuilder.invali
 /** Immutable file bytes and auditable DHR association; removing a link never removes historical bytes. */
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class DhrAttachmentService {
     private static final long MAX_BYTES = 50L * 1024 * 1024;
     private static final Set<String> SOURCE_KINDS = Set.of("EXTERNAL_REPORT", "CERTIFICATE", "PAPER_SCAN", "OTHER");
@@ -96,11 +99,29 @@ public class DhrAttachmentService {
         Path directory = Path.of(storagePath).resolve("dhr");
         Files.createDirectories(directory);
         Path stored = directory.resolve(id + "." + extension);
-        Files.write(stored, bytes, java.nio.file.StandardOpenOption.CREATE_NEW);
+        var output = Files.newOutputStream(stored, java.nio.file.StandardOpenOption.CREATE_NEW);
+        try (output) {
+            for (int offset = 0; offset < bytes.length; offset += 8192)
+                output.write(bytes, offset, Math.min(8192, bytes.length - offset));
+        } catch (IOException writeFailure) {
+            try { Files.deleteIfExists(stored); }
+            catch (IOException cleanupFailure) {
+                writeFailure.addSuppressed(cleanupFailure);
+                log.error("Failed to remove incomplete DHR attachment: id={}, path={}", id, stored, cleanupFailure);
+            }
+            throw writeFailure;
+        }
         if (TransactionSynchronizationManager.isSynchronizationActive())
             TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
                 @Override public void afterCompletion(int status) {
-                    if (status != STATUS_COMMITTED) try { Files.deleteIfExists(stored); } catch (IOException ignored) { }
+                    if (status == STATUS_ROLLED_BACK) {
+                        try { Files.deleteIfExists(stored); }
+                        catch (IOException | RuntimeException cleanupFailure) {
+                            log.error("Failed to remove rolled-back DHR attachment: id={}, path={}", id, stored, cleanupFailure);
+                        }
+                    } else if (status == STATUS_UNKNOWN) {
+                        log.error("DHR attachment transaction outcome unknown; original retained: id={}, path={}", id, stored);
+                    }
                 }
             });
         String digest = sha256(bytes);
@@ -152,15 +173,11 @@ public class DhrAttachmentService {
         ensureDhr(dhrId, false);
         var rows = jdbc.queryForList("SELECT stored_path,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", dhrId, attachmentId);
         if (rows.isEmpty()) throw invalid("附件不存在");
-        Path file = Path.of(String.valueOf(rows.getFirst().get("stored_path")));
-        try {
-            if (!Files.isRegularFile(file) || !sha256(Files.readAllBytes(file)).equals(rows.getFirst().get("sha256"))) throw invalid("附件丢失或摘要不一致");
-        } catch (IOException ex) { throw invalid("附件无法读取"); }
-        return file;
+        return verifiedFile(rows.getFirst());
     }
 
     @Transactional(readOnly = true)
-    public Path downloadableFile(Long dhrId, Long attachmentId, Long versionId) {
+    public Download downloadableFile(Long dhrId, Long attachmentId, Long versionId) {
         ensureDhr(dhrId, false);
         var rows = jdbc.queryForList("SELECT active,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", dhrId, attachmentId);
         if (rows.isEmpty()) throw invalid("附件不存在");
@@ -177,13 +194,21 @@ public class DhrAttachmentService {
             if (!included) throw invalid("附件不属于指定的冻结版本");
         }
         else if (!Boolean.TRUE.equals(rows.getFirst().get("active"))) throw invalid("附件已解除关联，请从包含该附件的冻结版本查看");
-        return file(dhrId, attachmentId);
+        ensureDhr(dhrId, false);
+        var originals = jdbc.queryForList("SELECT stored_path,sha256,original_name FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", dhrId, attachmentId);
+        if (originals.isEmpty()) throw invalid("附件不存在");
+        var original = originals.getFirst();
+        return new Download(verifiedFile(original), (String) original.get("original_name"));
     }
 
-    @Transactional(readOnly = true)
-    public String originalName(Long dhrId, Long attachmentId) {
-        return jdbc.queryForObject("SELECT original_name FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?",
-                String.class, dhrId, attachmentId);
+    public record Download(Path path, String originalName) {}
+
+    private Path verifiedFile(Map<String, Object> original) {
+        Path file = Path.of(String.valueOf(original.get("stored_path")));
+        try {
+            if (!Files.isRegularFile(file) || !sha256(file).equals(original.get("sha256"))) throw invalid("附件丢失或摘要不一致");
+        } catch (IOException ex) { throw invalid("附件无法读取"); }
+        return file;
     }
 
     private void ensureDhr(Long dhrId, boolean editable) {
@@ -240,6 +265,20 @@ public class DhrAttachmentService {
     private static String sha256(byte[] value) {
         try { return HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(value)); }
         catch (Exception ex) { throw new IllegalStateException("无法计算附件摘要", ex); }
+    }
+
+    private static String sha256(Path file) throws IOException {
+        try {
+            var digest = MessageDigest.getInstance("SHA-256");
+            try (var input = Files.newInputStream(file)) {
+                byte[] buffer = new byte[8192];
+                int count;
+                while ((count = input.read(buffer)) != -1) digest.update(buffer, 0, count);
+            }
+            return HexFormat.of().formatHex(digest.digest());
+        } catch (NoSuchAlgorithmException failure) {
+            throw new IllegalStateException("无法计算附件摘要", failure);
+        }
     }
 
     private static String actor() {

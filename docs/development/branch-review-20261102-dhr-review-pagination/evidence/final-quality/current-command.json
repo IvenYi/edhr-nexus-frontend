@@ -1,0 +1,15 @@
+{
+  "cmd": [
+    "bash",
+    "/workspace/.edhr-cloud-tools/mvn-edhr",
+    "-f",
+    "gmp-platform/backend/pom.xml",
+    "-Dtest=DhrReviewPaginationPostgresTest,DhrReviewServiceTest,DhrReviewLifecycleIntegrationTest,RecordControlPostgresIntegrationTest,CurrentDatabaseBaselinePostgresTest",
+    "-Dedhr.audit.dhrPageOutput=/tmp/edhr-page-q1-observation.json",
+    "test"
+  ],
+  "startedEpoch": 1793594446.8474917,
+  "recordUrl": "jdbc:postgresql://127.0.0.1:32772/edhr_record_control_test_page_q1",
+  "baselineUrl": "jdbc:postgresql://127.0.0.1:32772/edhr_baseline_test_page_q1",
+  "head": "b07fc1ca5dd7e4a37b2584c19377495b86b5536a"
+}

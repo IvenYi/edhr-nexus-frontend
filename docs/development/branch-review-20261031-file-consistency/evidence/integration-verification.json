@@ -1,0 +1,274 @@
+{
+  "initialCandidate": "ec4857bef2c9ebb5a1b1d1b7f3c767d2cb63666a",
+  "targetCommit": "0bd0848bbded6d6954d62a4f924e0b2eec6623ad",
+  "currentSourceSnapshot": [
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/controller/FileController.java",
+      "sha256": "bfe244d83fe53f9b5d843cab6eb56f3028802fd11a08a62bda708e0e4cf72812",
+      "bytes": 17013
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/compliance/controller/FileHttpBoundaryTest.java",
+      "sha256": "07223295278b8bacc9b8b1ad6fd3c810a980ca96d0f277d00fe54cf333210f5d",
+      "bytes": 6186
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/compliance/controller/FileCopyOwnershipTest.java",
+      "sha256": "c1007f99c8981472318c00e0af793d0342cb998814387fcc8a8fb54af49cbf02",
+      "bytes": 6932
+    }
+  ],
+  "initialOriginalsVerified": 18,
+  "firstFailedOriginals": 45,
+  "currentBackendTests": 37,
+  "knowledgeAtNewTarget": 89,
+  "files": [
+    {
+      "origin": "/tmp/edhr-copy-integration-fixed-summary.json",
+      "path": "docs/development/branch-review-20261031-file-consistency/evidence/integration-validation/integration-fixed-summary.json",
+      "sha256": "0a1090665e903b521f83b86e8d3d7d70699e3b6ece1fd06402eabcca94ef2171",
+      "bytes": 752
+    },
+    {
+      "origin": "/tmp/edhr-copy-integration-fixed-DhrFormFilesTest.xml",
+      "path": "docs/development/branch-review-20261031-file-consistency/evidence/integration-validation/integration-fixed-DhrFormFilesTest.xml",
+      "sha256": "084fa2e37aa5747b799996d41492552538be4ba2a947a2386c7a6b79f919b7b9",
+      "bytes": 32674
+    },
+    {
+      "origin": "/tmp/edhr-copy-integration-fixed-FileControllerTest.xml",
+      "path": "docs/development/branch-review-20261031-file-consistency/evidence/integration-validation/integration-fixed-FileControllerTest.xml",
+      "sha256": "545e594f4d7e907ce7882fb34ca6a7650ad7e0758d3d82ac26d1e76843c969ea",
+      "bytes": 34487
+    },
+    {
+      "origin": "/tmp/edhr-copy-integration-fixed-FileUploadResourceTest.xml",
+      "path": "docs/development/branch-review-20261031-file-consistency/evidence/integration-validation/integration-fixed-FileUploadResourceTest.xml",
+      "sha256": "e06c40b08f7fdaa588d701bd9b2ef954680f869c4acd07f3fc065c9ab87470e4",
+      "bytes": 34182
+    },
+    {
+      "origin": "/tmp/edhr-copy-integration-fixed-FileHttpBoundaryTest.xml",
+      "path": "docs/development/branch-review-20261031-file-consistency/evidence/integration-validation/integration-fixed-FileHttpBoundaryTest.xml",
+      "sha256": "61c6b8edb644770bc090dfa8169669a01ce015f16cccbfaa3a86679b17bc93d9",
+      "bytes": 47684
+    },
+    {
+      "origin": "/tmp/edhr-copy-integration-fixed-FileCopyOwnershipTest.xml",
+      "path": "docs/development/branch-review-20261031-file-consistency/evidence/integration-validation/integration-fixed-FileCopyOwnershipTest.xml",
+      "sha256": "f1397f646b90e9dcffe8b6ed8f38a133ac5902c90dc87432ac7ae6bc79da8a84",
+      "bytes": 45259
+    },
+    {
+      "origin": "/tmp/edhr-copy-integration-fixed-test.txt",
+      "path": "docs/development/branch-review-20261031-file-consistency/evidence/integration-validation/integration-fixed-test.txt",
+      "sha256": "fbff5234e04c3e1979f5d7a9f3f75c4ed7af54d1a6a3b2497e05ea88046afa16",
+      "bytes": 30340
+    },
+    {
+      "origin": "/tmp/edhr-copy-integration-ontology-manifest.json",
+      "path": "docs/development/branch-review-20261031-file-consistency/evidence/integration-validation/integration-ontology-manifest.json",
+      "sha256": "76c969f509a7a7c13a8b3b716a7de4cf2a85c364a4feaa4c14ce91552f83b6dc",
+      "bytes": 2009
+    },
+    {
+      "origin": "/tmp/edhr-copy-integration-ontology-review.md",
+      "path": "docs/development/branch-review-20261031-file-consistency/evidence/integration-validation/integration-ontology-review.md",
+      "sha256": "f47bb90933ac69a2a96193fba6c14cd947a26c55830ec6f4c30aba1f7d81d711",
+      "bytes": 3190
+    },
+    {
+      "origin": "/tmp/edhr-copy-integration-ontology-result.yaml",
+      "path": "docs/development/branch-review-20261031-file-consistency/evidence/integration-validation/integration-ontology-result.yaml",
+      "sha256": "4a6748eb2e24d0b1f172b3412b01e4f8fad22070c33036eed4b1905632fbf694",
+      "bytes": 2601
+    },
+    {
+      "origin": "/tmp/edhr-copy-integration-ontology-review.json",
+      "path": "docs/development/branch-review-20261031-file-consistency/evidence/integration-validation/integration-ontology-review.json",
+      "sha256": "1da2fbd637f829a1a25ee20713e8ccc4c7e6fa8644147fa62acb79e1645d2be9",
+      "bytes": 103679
+    },
+    {
+      "origin": "/tmp/edhr-copy-integration-ontology-integration-diff.txt",
+      "path": "docs/development/branch-review-20261031-file-consistency/evidence/integration-validation/integration-ontology-integration-diff.txt",
+      "sha256": "f0027bc7761d405fa8ecc91eae25ae4c570407760bbd7906596deb16ea125b97",
+      "bytes": 49523
+    },
+    {
+      "origin": "/tmp/edhr-copy-integration-ontology-pending-increment.json",
+      "path": "docs/development/branch-review-20261031-file-consistency/evidence/integration-validation/integration-ontology-pending-increment.json",
+      "sha256": "a8a27ec7423c1806364a7ccb2786d260e367f3a61f25114a969d59eb41903376",
+      "bytes": 101596
+    },
+    {
+      "origin": "/tmp/edhr-copy-integration-ontology-build.py",
+      "path": "docs/development/branch-review-20261031-file-consistency/evidence/integration-validation/integration-ontology-build.py",
+      "sha256": "ece1ceb58aef3f5e8c072d7ff752d300822ad12d6bd6926a3094139b74207f24",
+      "bytes": 16346
+    },
+    {
+      "origin": "/tmp/edhr-copy-integration-current-summary.json",
+      "path": "docs/development/branch-review-20261031-file-consistency/evidence/integration-validation/integration-current-summary.json",
+      "sha256": "e90f0bee43f798c625686e2bfa1080a1b7cc5067bdd4b495a21dfc5da01406c3",
+      "bytes": 752
+    },
+    {
+      "origin": "/tmp/edhr-copy-integration-current-DhrFormFilesTest.xml",
+      "path": "docs/development/branch-review-20261031-file-consistency/evidence/integration-validation/integration-current-DhrFormFilesTest.xml",
+      "sha256": "fa00471af18da58c4135918f8417c80b2432024fbf984103a00bedd366d45940",
+      "bytes": 32674
+    },
+    {
+      "origin": "/tmp/edhr-copy-integration-current-FileControllerTest.xml",
+      "path": "docs/development/branch-review-20261031-file-consistency/evidence/integration-validation/integration-current-FileControllerTest.xml",
+      "sha256": "315c04f0fba67972997c76d9590d08fb11e9e08b19d48e8e6cb0f6cb3c53e7bc",
+      "bytes": 34487
+    },
+    {
+      "origin": "/tmp/edhr-copy-integration-current-FileUploadResourceTest.xml",
+      "path": "docs/development/branch-review-20261031-file-consistency/evidence/integration-validation/integration-current-FileUploadResourceTest.xml",
+      "sha256": "5f26866408f78743e2dbbb303593dbf7172825c6a77535395813381d1e6ab270",
+      "bytes": 34183
+    },
+    {
+      "origin": "/tmp/edhr-copy-integration-current-FileHttpBoundaryTest.xml",
+      "path": "docs/development/branch-review-20261031-file-consistency/evidence/integration-validation/integration-current-FileHttpBoundaryTest.xml",
+      "sha256": "c16d2b426edb92982b3e875ae7f1dcd5a55ee55b882f7f960669f8eed5c08013",
+      "bytes": 47686
+    },
+    {
+      "origin": "/tmp/edhr-copy-integration-current-FileCopyOwnershipTest.xml",
+      "path": "docs/development/branch-review-20261031-file-consistency/evidence/integration-validation/integration-current-FileCopyOwnershipTest.xml",
+      "sha256": "70e4494990675d8ad76e044b4c2a1bd49dec2758ec68e82c60916e59bce857ca",
+      "bytes": 44870
+    },
+    {
+      "origin": "/tmp/edhr-copy-integration-current-test.txt",
+      "path": "docs/development/branch-review-20261031-file-consistency/evidence/integration-validation/integration-current-test.txt",
+      "sha256": "7819fe7c3dbd284bc9dbd5cbb2cdd189da0651d6f838cdffd4896dc06cf49a86",
+      "bytes": 30178
+    },
+    {
+      "origin": "/tmp/edhr-copy-integration-ontology-knowledge-junit.xml",
+      "path": "docs/development/branch-review-20261031-file-consistency/evidence/integration-validation/integration-ontology-knowledge-junit.xml",
+      "sha256": "f2d57b833e0bd5901b1f864f9325cad720867dbd14f071fe6089a286739dd3d0",
+      "bytes": 20414
+    },
+    {
+      "origin": "/tmp/edhr-copy-integration-ontology-knowledge-test.txt",
+      "path": "docs/development/branch-review-20261031-file-consistency/evidence/integration-validation/integration-ontology-knowledge-test.txt",
+      "sha256": "f2037d019cc5596e4dc355f361cba2ac87377419ac1b58e58cfcf4f7f17ee24a",
+      "bytes": 2112
+    },
+    {
+      "origin": "/tmp/edhr-copy-final-main-summary.json",
+      "path": "docs/development/branch-review-20261031-file-consistency/evidence/integration-validation/final-main-summary.json",
+      "sha256": "0a1090665e903b521f83b86e8d3d7d70699e3b6ece1fd06402eabcca94ef2171",
+      "bytes": 752
+    },
+    {
+      "origin": "/tmp/edhr-copy-final-main-DhrFormFilesTest.xml",
+      "path": "docs/development/branch-review-20261031-file-consistency/evidence/integration-validation/final-main-DhrFormFilesTest.xml",
+      "sha256": "f9a68c94c2f4ba1781234c1cb5c732746b94f8ba28b04377c46a50a49c94ffc7",
+      "bytes": 32674
+    },
+    {
+      "origin": "/tmp/edhr-copy-final-main-FileControllerTest.xml",
+      "path": "docs/development/branch-review-20261031-file-consistency/evidence/integration-validation/final-main-FileControllerTest.xml",
+      "sha256": "299efc662488425e9a2da4c37d09df17145528c60b44014ad0c1fb719a4e91a8",
+      "bytes": 34487
+    },
+    {
+      "origin": "/tmp/edhr-copy-final-main-FileUploadResourceTest.xml",
+      "path": "docs/development/branch-review-20261031-file-consistency/evidence/integration-validation/final-main-FileUploadResourceTest.xml",
+      "sha256": "6fb7237b4e387898fef65d60821101ebd7d20f85a8060eca50a8d15d9e2f2c50",
+      "bytes": 34182
+    },
+    {
+      "origin": "/tmp/edhr-copy-final-main-FileHttpBoundaryTest.xml",
+      "path": "docs/development/branch-review-20261031-file-consistency/evidence/integration-validation/final-main-FileHttpBoundaryTest.xml",
+      "sha256": "b9590cc08996099c8f9ef5e9815719482aa28537f448a5911e66b291e9097fe9",
+      "bytes": 47687
+    },
+    {
+      "origin": "/tmp/edhr-copy-final-main-FileCopyOwnershipTest.xml",
+      "path": "docs/development/branch-review-20261031-file-consistency/evidence/integration-validation/final-main-FileCopyOwnershipTest.xml",
+      "sha256": "cbb3ef2d815b61b094b621a6cfd0e191b2cfebc40f1a547bf40e50c4949da74c",
+      "bytes": 45255
+    },
+    {
+      "origin": "/tmp/edhr-copy-final-main-test.txt",
+      "path": "docs/development/branch-review-20261031-file-consistency/evidence/integration-validation/final-main-test.txt",
+      "sha256": "d347621074919d6033b2d85f84cc13ad37ff2d05a6558f7fa79f847dbf40d06b",
+      "bytes": 29877
+    },
+    {
+      "origin": "/tmp/edhr-copy-reservation-before-fix.xml",
+      "path": "docs/development/branch-review-20261031-file-consistency/evidence/integration-validation/reservation-before-fix.xml",
+      "sha256": "e40df2cedc00e302b150c57f1f30b0efc20422c64e64bdbfd47a90ef6a3186ca",
+      "bytes": 43224
+    },
+    {
+      "origin": "/tmp/edhr-copy-reservation-before-fix.txt",
+      "path": "docs/development/branch-review-20261031-file-consistency/evidence/integration-validation/reservation-before-fix.txt",
+      "sha256": "cefec124cddb17868c2f4970a24e430254b35d98f564aae44f6e3d9ab4bc7524",
+      "bytes": 14328
+    },
+    {
+      "origin": "/tmp/edhr-copy-integration-ontology-pre-copy-fix/archive-map.json",
+      "path": "docs/development/branch-review-20261031-file-consistency/evidence/integration-validation/integration-ontology-pre-copy-fix/archive-map.json",
+      "sha256": "27ba0b50e33c392104256c381a8b80ed3149e3e219148da286320e3084e5342b",
+      "bytes": 2617
+    },
+    {
+      "origin": "/tmp/edhr-copy-integration-ontology-pre-copy-fix/edhr-copy-integration-ontology-manifest.json",
+      "path": "docs/development/branch-review-20261031-file-consistency/evidence/integration-validation/integration-ontology-pre-copy-fix/edhr-copy-integration-ontology-manifest.json",
+      "sha256": "a0364d21d3d73104571c1699c7452a841b9ed57a07a2abba85779e52953ceb32",
+      "bytes": 2009
+    },
+    {
+      "origin": "/tmp/edhr-copy-integration-ontology-pre-copy-fix/edhr-copy-integration-ontology-knowledge-junit.xml",
+      "path": "docs/development/branch-review-20261031-file-consistency/evidence/integration-validation/integration-ontology-pre-copy-fix/edhr-copy-integration-ontology-knowledge-junit.xml",
+      "sha256": "f2d57b833e0bd5901b1f864f9325cad720867dbd14f071fe6089a286739dd3d0",
+      "bytes": 20414
+    },
+    {
+      "origin": "/tmp/edhr-copy-integration-ontology-pre-copy-fix/edhr-copy-integration-ontology-knowledge-test.txt",
+      "path": "docs/development/branch-review-20261031-file-consistency/evidence/integration-validation/integration-ontology-pre-copy-fix/edhr-copy-integration-ontology-knowledge-test.txt",
+      "sha256": "f2037d019cc5596e4dc355f361cba2ac87377419ac1b58e58cfcf4f7f17ee24a",
+      "bytes": 2112
+    },
+    {
+      "origin": "/tmp/edhr-copy-integration-ontology-pre-copy-fix/edhr-copy-integration-ontology-integration-diff.txt",
+      "path": "docs/development/branch-review-20261031-file-consistency/evidence/integration-validation/integration-ontology-pre-copy-fix/edhr-copy-integration-ontology-integration-diff.txt",
+      "sha256": "c896abed8cb4d9ceb00cb2310b4577c1b512cfc6ccb2f73ce13099b1be2f310b",
+      "bytes": 45592
+    },
+    {
+      "origin": "/tmp/edhr-copy-integration-ontology-pre-copy-fix/edhr-copy-integration-ontology-pending-increment.json",
+      "path": "docs/development/branch-review-20261031-file-consistency/evidence/integration-validation/integration-ontology-pre-copy-fix/edhr-copy-integration-ontology-pending-increment.json",
+      "sha256": "43a129a6f3608cef623a04256280415c8263942f3e0a81f709f4e096a3bc8921",
+      "bytes": 100920
+    },
+    {
+      "origin": "/tmp/edhr-copy-integration-ontology-pre-copy-fix/edhr-copy-integration-ontology-review.md",
+      "path": "docs/development/branch-review-20261031-file-consistency/evidence/integration-validation/integration-ontology-pre-copy-fix/edhr-copy-integration-ontology-review.md",
+      "sha256": "689d12e237e7b5dad3ef7547109f148097a07695af85965d92297d8704b3e2c2",
+      "bytes": 2684
+    },
+    {
+      "origin": "/tmp/edhr-copy-integration-ontology-pre-copy-fix/edhr-copy-integration-ontology-review.json",
+      "path": "docs/development/branch-review-20261031-file-consistency/evidence/integration-validation/integration-ontology-pre-copy-fix/edhr-copy-integration-ontology-review.json",
+      "sha256": "091e42f766aa8c3f17c58d554b9ed25c675d9940535e35309bbf4d1ad3959629",
+      "bytes": 102575
+    },
+    {
+      "origin": "/tmp/edhr-copy-integration-ontology-pre-copy-fix/edhr-copy-integration-ontology-result.yaml",
+      "path": "docs/development/branch-review-20261031-file-consistency/evidence/integration-validation/integration-ontology-pre-copy-fix/edhr-copy-integration-ontology-result.yaml",
+      "sha256": "6c0f108a7726c3b31f2d23ce6e51182cf5b563b555f403e70a79d666b44a95ed",
+      "bytes": 2398
+    }
+  ],
+  "scope": "Source snapshots after direct WRITE/transferTo fix; initial source snapshots verified at Git ec4857; old failed originals retained. New666paths/44knowledge files/183IDcandidates remain pending."
+}

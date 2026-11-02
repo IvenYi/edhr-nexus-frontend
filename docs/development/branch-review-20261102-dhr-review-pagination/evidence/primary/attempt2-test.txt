@@ -1,0 +1,115 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] --------------------------< com.zencas:edhr >---------------------------
+[INFO] Building eDHR 0.0.1-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- exec:3.5.0:exec (dhr-print-renderer) @ edhr ---
+
+> edhr-frontend@0.0.1 build:dhr-print
+> vite build --config vite.dhr-print.config.ts
+
+vite v5.4.21 building for production...
+transforming...
+✓ 11665 modules transformed.
+rendering chunks...
+computing gzip size...
+../backend/target/generated-resources/dhr-print/renderer.js  662.45 kB │ gzip: 211.16 kB
+✓ built in 7.30s
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ edhr ---
+[INFO] Copying 10 resources from src/main/resources to target/classes
+[INFO] Copying 1 resource from target/generated-resources to target/classes
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ edhr ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ edhr ---
+[INFO] Copying 129 resources from src/test/resources to target/test-classes
+[INFO] 
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ edhr ---
+[INFO] Recompiling the module because of changed source code.
+[INFO] Compiling 167 source files with javac [debug parameters release 21] to target/test-classes
+[INFO] /workspace/edhr-nexus-frontend/gmp-platform/backend/src/test/java/com/zencas/edhr/common/config/CurrentDatabaseBaselinePostgresTest.java: Some input files use or override a deprecated API.
+[INFO] /workspace/edhr-nexus-frontend/gmp-platform/backend/src/test/java/com/zencas/edhr/common/config/CurrentDatabaseBaselinePostgresTest.java: Recompile with -Xlint:deprecation for details.
+[INFO] /workspace/edhr-nexus-frontend/gmp-platform/backend/src/test/java/com/zencas/edhr/identity/controller/LoginLogControllerTest.java: Some input files use unchecked or unsafe operations.
+[INFO] /workspace/edhr-nexus-frontend/gmp-platform/backend/src/test/java/com/zencas/edhr/identity/controller/LoginLogControllerTest.java: Recompile with -Xlint:unchecked for details.
+[INFO] 
+[INFO] --- surefire:3.2.5:test (default-test) @ edhr ---
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running com.zencas.edhr.production.service.DhrReviewPaginationPostgresTest
+Standard Commons Logging discovery in action with spring-jcl: please remove commons-logging.jar from classpath in order to avoid potential conflicts
+WARNING: A Java agent has been loaded dynamically (/workspace/.pr6-m2/net/bytebuddy/byte-buddy-agent/1.14.16/byte-buddy-agent-1.14.16.jar)
+WARNING: If a serviceability tool is in use, please run with -XX:+EnableDynamicAgentLoading to hide this warning
+WARNING: If a serviceability tool is not in use, please run with -Djdk.instrument.traceUsage for more information
+WARNING: Dynamic loading of agents will be disallowed by default in a future release
+OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+[ERROR] Tests run: 92, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 10.88 s <<< FAILURE! -- in com.zencas.edhr.production.service.DhrReviewPaginationPostgresTest
+[ERROR] com.zencas.edhr.production.service.DhrReviewPaginationPostgresTest.unrelatedHistoryDoesNotIncreaseStatementsOrTransferredRows -- Time elapsed: 0.074 s <<< ERROR!
+org.springframework.dao.DuplicateKeyException: 
+StatementCallback; SQL [INSERT INTO dhr_summary_version SELECT 100000+i,tenant_id,dhr_instance_id,version_no,status,review_mode,
+  review_workflow_definition_id,review_workflow_version_id,base_directory_snapshot,overlay_directory_snapshot,candidate_snapshot,
+  snapshot_hash,submitted_by,submitted_at,created_at,check_result_snapshot,attachment_snapshot
+FROM dhr_summary_version CROSS JOIN generate_series(1,5000) i WHERE id=10
+]; ERROR: duplicate key value violates unique constraint "uk_dhr_summary_version_hash"
+  Detail: Key (tenant_id, dhr_instance_id, snapshot_hash)=(default, 10, hash) already exists.
+	at org.springframework.jdbc.support.SQLStateSQLExceptionTranslator.doTranslate(SQLStateSQLExceptionTranslator.java:116)
+	at org.springframework.jdbc.support.AbstractFallbackSQLExceptionTranslator.translate(AbstractFallbackSQLExceptionTranslator.java:107)
+	at org.springframework.jdbc.support.AbstractFallbackSQLExceptionTranslator.translate(AbstractFallbackSQLExceptionTranslator.java:116)
+	at org.springframework.jdbc.core.JdbcTemplate.translateException(JdbcTemplate.java:1548)
+	at org.springframework.jdbc.core.JdbcTemplate.execute(JdbcTemplate.java:408)
+	at org.springframework.jdbc.core.JdbcTemplate.execute(JdbcTemplate.java:444)
+	at com.zencas.edhr.production.service.DhrReviewPaginationPostgresTest.unrelatedHistoryDoesNotIncreaseStatementsOrTransferredRows(DhrReviewPaginationPostgresTest.java:165)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+Caused by: org.postgresql.util.PSQLException: ERROR: duplicate key value violates unique constraint "uk_dhr_summary_version_hash"
+  Detail: Key (tenant_id, dhr_instance_id, snapshot_hash)=(default, 10, hash) already exists.
+	at org.postgresql.core.v3.QueryExecutorImpl.receiveErrorResponse(QueryExecutorImpl.java:2725)
+	at org.postgresql.core.v3.QueryExecutorImpl.processResults(QueryExecutorImpl.java:2412)
+	at org.postgresql.core.v3.QueryExecutorImpl.execute(QueryExecutorImpl.java:371)
+	at org.postgresql.jdbc.PgStatement.executeInternal(PgStatement.java:502)
+	at org.postgresql.jdbc.PgStatement.execute(PgStatement.java:419)
+	at org.postgresql.jdbc.PgStatement.executeWithFlags(PgStatement.java:341)
+	at org.postgresql.jdbc.PgStatement.executeCachedSql(PgStatement.java:326)
+	at org.postgresql.jdbc.PgStatement.executeWithFlags(PgStatement.java:302)
+	at org.postgresql.jdbc.PgStatement.execute(PgStatement.java:297)
+	at org.springframework.jdbc.core.JdbcTemplate$1ExecuteStatementCallback.doInStatement(JdbcTemplate.java:435)
+	at org.springframework.jdbc.core.JdbcTemplate.execute(JdbcTemplate.java:393)
+	... 5 more
+
+[INFO] 
+[INFO] Results:
+[INFO] 
+[ERROR] Errors: 
+[ERROR]   DhrReviewPaginationPostgresTest.unrelatedHistoryDoesNotIncreaseStatementsOrTransferredRows:165 » DuplicateKey StatementCallback; SQL [INSERT INTO dhr_summary_version SELECT 100000+i,tenant_id,dhr_instance_id,version_no,status,review_mode,
+  review_workflow_definition_id,review_workflow_version_id,base_directory_snapshot,overlay_directory_snapshot,candidate_snapshot,
+  snapshot_hash,submitted_by,submitted_at,created_at,check_result_snapshot,attachment_snapshot
+FROM dhr_summary_version CROSS JOIN generate_series(1,5000) i WHERE id=10
+]; ERROR: duplicate key value violates unique constraint "uk_dhr_summary_version_hash"
+  Detail: Key (tenant_id, dhr_instance_id, snapshot_hash)=(default, 10, hash) already exists.
+[INFO] 
+[ERROR] Tests run: 92, Failures: 0, Errors: 1, Skipped: 0
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  29.879 s
+[INFO] Finished at: 2026-11-02T04:11:40Z
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-surefire-plugin:3.2.5:test (default-test) on project edhr: 
+[ERROR] 
+[ERROR] Please refer to /workspace/edhr-nexus-frontend/gmp-platform/backend/target/surefire-reports for the individual test results.
+[ERROR] Please refer to dump files (if any exist) [date].dump, [date]-jvmRun[N].dump and [date].dumpstream.
+[ERROR] -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException

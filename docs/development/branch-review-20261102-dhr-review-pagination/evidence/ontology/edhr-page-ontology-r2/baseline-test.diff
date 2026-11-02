@@ -1,0 +1,23 @@
+diff --git a/gmp-platform/backend/src/test/java/com/zencas/edhr/common/config/CurrentDatabaseBaselinePostgresTest.java b/gmp-platform/backend/src/test/java/com/zencas/edhr/common/config/CurrentDatabaseBaselinePostgresTest.java
+index 8fcc4cd6..c3d6edff 100644
+--- a/gmp-platform/backend/src/test/java/com/zencas/edhr/common/config/CurrentDatabaseBaselinePostgresTest.java
++++ b/gmp-platform/backend/src/test/java/com/zencas/edhr/common/config/CurrentDatabaseBaselinePostgresTest.java
+@@ -47,7 +47,8 @@ class CurrentDatabaseBaselinePostgresTest {
+     @Test void freshInstallIsCurrentCompleteAndRepeatableWithoutBusinessBackfills() throws Exception {
+         install();
+         connection.setAutoCommit(true);
+-        assertThat(scalar("SELECT count(*) FROM databasechangelog")).isEqualTo("9");
++        assertThat(scalar("SELECT count(*) FROM databasechangelog")).isEqualTo("11");
++        assertThat(scalar("SELECT count(*) FROM pg_index i JOIN pg_class c ON c.oid=i.indexrelid WHERE c.relnamespace='public'::regnamespace AND c.relname IN ('idx_dhr_review_pending_workflow','idx_workflow_task_done_assignee_id') AND i.indisvalid")).isEqualTo("2");
+         assertThat(scalar("SELECT name FROM permission WHERE code='workflow.instances'")).isEqualTo("流程日志");
+         assertThat(scalar("SELECT name||':'||type FROM permission WHERE code='workflow.intervene'")).isEqualTo("流程干预:PAGE");
+         assertThat(scalar("SELECT count(*) FROM pg_constraint WHERE connamespace='public'::regnamespace AND NOT convalidated")).isEqualTo("0");
+@@ -76,7 +77,7 @@ class CurrentDatabaseBaselinePostgresTest {
+         String before = scalar("SELECT md5(string_agg(row_to_json(p)::text,',' ORDER BY id)) FROM permission p");
+         install();
+         connection.setAutoCommit(true);
+-        assertThat(scalar("SELECT count(*) FROM databasechangelog")).isEqualTo("9");
++        assertThat(scalar("SELECT count(*) FROM databasechangelog")).isEqualTo("11");
+         assertThat(scalar("SELECT md5(string_agg(row_to_json(p)::text,',' ORDER BY id)) FROM permission p")).isEqualTo(before);
+ 
+         // First release stores the original bytes, not the normalized JSONB representation.

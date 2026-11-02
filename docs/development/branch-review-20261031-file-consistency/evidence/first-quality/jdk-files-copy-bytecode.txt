@@ -1,0 +1,111 @@
+  public static long copy(java.io.InputStream, java.nio.file.Path, java.nio.file.CopyOption...) throws java.io.IOException;
+    Code:
+       0: aload_0
+       1: invokestatic  #176                // Method java/util/Objects.requireNonNull:(Ljava/lang/Object;)Ljava/lang/Object;
+       4: pop
+       5: iconst_0
+       6: istore_3
+       7: aload_2
+       8: astore        4
+      10: aload         4
+      12: arraylength
+      13: istore        5
+      15: iconst_0
+      16: istore        6
+      18: iload         6
+      20: iload         5
+      22: if_icmpge     96
+      25: aload         4
+      27: iload         6
+      29: aaload
+      30: astore        7
+      32: aload         7
+      34: getstatic     #567                // Field java/nio/file/StandardCopyOption.REPLACE_EXISTING:Ljava/nio/file/StandardCopyOption;
+      37: if_acmpne     45
+      40: iconst_1
+      41: istore_3
+      42: goto          90
+      45: aload         7
+      47: ifnonnull     61
+      50: new           #389                // class java/lang/NullPointerException
+      53: dup
+      54: ldc_w         #573                // String options contains \'null\'
+      57: invokespecial #575                // Method java/lang/NullPointerException."<init>":(Ljava/lang/String;)V
+      60: athrow
+      61: new           #340                // class java/lang/UnsupportedOperationException
+      64: dup
+      65: new           #79                 // class java/lang/StringBuilder
+      68: dup
+      69: invokespecial #81                 // Method java/lang/StringBuilder."<init>":()V
+      72: aload         7
+      74: invokevirtual #576                // Method java/lang/StringBuilder.append:(Ljava/lang/Object;)Ljava/lang/StringBuilder;
+      77: ldc_w         #579                // String  not supported
+      80: invokevirtual #84                 // Method java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+      83: invokevirtual #88                 // Method java/lang/StringBuilder.toString:()Ljava/lang/String;
+      86: invokespecial #581                // Method java/lang/UnsupportedOperationException."<init>":(Ljava/lang/String;)V
+      89: athrow
+      90: iinc          6, 1
+      93: goto          18
+      96: aconst_null
+      97: astore        4
+      99: iload_3
+     100: ifeq          117
+     103: aload_1
+     104: invokestatic  #582                // Method deleteIfExists:(Ljava/nio/file/Path;)Z
+     107: pop
+     108: goto          117
+     111: astore        5
+     113: aload         5
+     115: astore        4
+     117: aload_1
+     118: iconst_2
+     119: anewarray     #237                // class java/nio/file/OpenOption
+     122: dup
+     123: iconst_0
+     124: getstatic     #583                // Field java/nio/file/StandardOpenOption.CREATE_NEW:Ljava/nio/file/StandardOpenOption;
+     127: aastore
+     128: dup
+     129: iconst_1
+     130: getstatic     #589                // Field java/nio/file/StandardOpenOption.WRITE:Ljava/nio/file/StandardOpenOption;
+     133: aastore
+     134: invokestatic  #554                // Method newOutputStream:(Ljava/nio/file/Path;[Ljava/nio/file/OpenOption;)Ljava/io/OutputStream;
+     137: astore        5
+     139: goto          155
+     142: astore        6
+     144: aload         4
+     146: ifnull        152
+     149: aload         4
+     151: athrow
+     152: aload         6
+     154: athrow
+     155: aload         5
+     157: astore        6
+     159: aload_0
+     160: aload         6
+     162: invokevirtual #591                // Method java/io/InputStream.transferTo:(Ljava/io/OutputStream;)J
+     165: lstore        7
+     167: aload         6
+     169: ifnull        177
+     172: aload         6
+     174: invokevirtual #595                // Method java/io/OutputStream.close:()V
+     177: lload         7
+     179: lreturn
+     180: astore        7
+     182: aload         6
+     184: ifnull        204
+     187: aload         6
+     189: invokevirtual #595                // Method java/io/OutputStream.close:()V
+     192: goto          204
+     195: astore        8
+     197: aload         7
+     199: aload         8
+     201: invokevirtual #255                // Method java/lang/Throwable.addSuppressed:(Ljava/lang/Throwable;)V
+     204: aload         7
+     206: athrow
+    Exception table:
+       from    to  target type
+         103   108   111   Class java/lang/SecurityException
+         117   139   142   Class java/nio/file/FileAlreadyExistsException
+         159   167   180   Class java/lang/Throwable
+         187   192   195   Class java/lang/Throwable
+

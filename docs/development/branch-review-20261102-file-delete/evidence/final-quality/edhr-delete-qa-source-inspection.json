@@ -1,0 +1,379 @@
+{
+  "status": "FINAL",
+  "baseCommit": "6ec9812f1bb1f7980654510f53c5fa568cfd83fb",
+  "headCommit": "bd71f6cfb05f211863fcca4382d74445003aa26c",
+  "readContractCommit": "bd71f6cfb05f211863fcca4382d74445003aa26c",
+  "productChange": "Only FileController.delete transaction orchestration and UncheckedIOException import",
+  "guardsTextPreserved": true,
+  "uploadHelperByteTextUnchanged": true,
+  "readUploadPrefixUnchangedExceptImport": true,
+  "currentTests": {
+    "tests": 84,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "oldControl": {
+    "tests": 21,
+    "failures": 13,
+    "errors": 0,
+    "skipped": 0
+  },
+  "cases": [
+    {
+      "run": "current",
+      "class": "FileDeleteTransactionIntegrationTest",
+      "name": "outerCommitWaitsBeforeDeletingOriginal",
+      "failed": false,
+      "errored": false,
+      "failureType": null
+    },
+    {
+      "run": "current",
+      "class": "FileDeleteTransactionIntegrationTest",
+      "name": "beforeCommitFailurePreservesRecordAndOriginal",
+      "failed": false,
+      "errored": false,
+      "failureType": null
+    },
+    {
+      "run": "current",
+      "class": "FileDeleteTransactionIntegrationTest",
+      "name": "postCommitCleanupFailureIsNotReportedAsHttpSuccess",
+      "failed": false,
+      "errored": false,
+      "failureType": null
+    },
+    {
+      "run": "current",
+      "class": "FileDeleteTransactionIntegrationTest",
+      "name": "successfulCommitDeletesRecordAndOnlyItsOriginal",
+      "failed": false,
+      "errored": false,
+      "failureType": null
+    },
+    {
+      "run": "current",
+      "class": "FileDeleteTransactionIntegrationTest",
+      "name": "protectedOriginalsStillRejectDeletion(String)[1]",
+      "failed": false,
+      "errored": false,
+      "failureType": null
+    },
+    {
+      "run": "current",
+      "class": "FileDeleteTransactionIntegrationTest",
+      "name": "protectedOriginalsStillRejectDeletion(String)[2]",
+      "failed": false,
+      "errored": false,
+      "failureType": null
+    },
+    {
+      "run": "current",
+      "class": "FileDeleteTransactionIntegrationTest",
+      "name": "sqlDeleteRefusalPreservesRegisteredOriginal",
+      "failed": false,
+      "errored": false,
+      "failureType": null
+    },
+    {
+      "run": "current",
+      "class": "FileDeleteTransactionIntegrationTest",
+      "name": "outerRollbackPreservesRecordAndOriginal",
+      "failed": false,
+      "errored": false,
+      "failureType": null
+    },
+    {
+      "run": "current",
+      "class": "FileDeleteTransactionIntegrationTest",
+      "name": "alreadyMissingOriginalStillAllowsMetadataDeletion",
+      "failed": false,
+      "errored": false,
+      "failureType": null
+    },
+    {
+      "run": "old",
+      "class": "FileDeleteTransactionIntegrationTest",
+      "name": "outerCommitWaitsBeforeDeletingOriginal",
+      "failed": true,
+      "errored": false,
+      "failureType": "java.lang.AssertionError"
+    },
+    {
+      "run": "old",
+      "class": "FileDeleteTransactionIntegrationTest",
+      "name": "beforeCommitFailurePreservesRecordAndOriginal",
+      "failed": true,
+      "errored": false,
+      "failureType": "java.lang.AssertionError"
+    },
+    {
+      "run": "old",
+      "class": "FileDeleteTransactionIntegrationTest",
+      "name": "postCommitCleanupFailureIsNotReportedAsHttpSuccess",
+      "failed": true,
+      "errored": false,
+      "failureType": "org.opentest4j.AssertionFailedError"
+    },
+    {
+      "run": "old",
+      "class": "FileDeleteTransactionIntegrationTest",
+      "name": "successfulCommitDeletesRecordAndOnlyItsOriginal",
+      "failed": false,
+      "errored": false,
+      "failureType": null
+    },
+    {
+      "run": "old",
+      "class": "FileDeleteTransactionIntegrationTest",
+      "name": "protectedOriginalsStillRejectDeletion(String)[1]",
+      "failed": false,
+      "errored": false,
+      "failureType": null
+    },
+    {
+      "run": "old",
+      "class": "FileDeleteTransactionIntegrationTest",
+      "name": "protectedOriginalsStillRejectDeletion(String)[2]",
+      "failed": false,
+      "errored": false,
+      "failureType": null
+    },
+    {
+      "run": "old",
+      "class": "FileDeleteTransactionIntegrationTest",
+      "name": "sqlDeleteRefusalPreservesRegisteredOriginal",
+      "failed": true,
+      "errored": false,
+      "failureType": "java.lang.AssertionError"
+    },
+    {
+      "run": "old",
+      "class": "FileDeleteTransactionIntegrationTest",
+      "name": "outerRollbackPreservesRecordAndOriginal",
+      "failed": true,
+      "errored": false,
+      "failureType": "java.lang.AssertionError"
+    },
+    {
+      "run": "old",
+      "class": "FileDeleteTransactionIntegrationTest",
+      "name": "alreadyMissingOriginalStillAllowsMetadataDeletion",
+      "failed": false,
+      "errored": false,
+      "failureType": null
+    },
+    {
+      "run": "current",
+      "class": "FileDeleteTransactionPostgresTest",
+      "name": "outerCommitWaitsBeforeDeletingOriginal",
+      "failed": false,
+      "errored": false,
+      "failureType": null
+    },
+    {
+      "run": "current",
+      "class": "FileDeleteTransactionPostgresTest",
+      "name": "beforeCommitFailurePreservesRecordAndOriginal",
+      "failed": false,
+      "errored": false,
+      "failureType": null
+    },
+    {
+      "run": "current",
+      "class": "FileDeleteTransactionPostgresTest",
+      "name": "postCommitCleanupFailureIsNotReportedAsHttpSuccess",
+      "failed": false,
+      "errored": false,
+      "failureType": null
+    },
+    {
+      "run": "current",
+      "class": "FileDeleteTransactionPostgresTest",
+      "name": "successfulCommitDeletesRecordAndOnlyItsOriginal",
+      "failed": false,
+      "errored": false,
+      "failureType": null
+    },
+    {
+      "run": "current",
+      "class": "FileDeleteTransactionPostgresTest",
+      "name": "protectedOriginalsStillRejectDeletion(String)[1]",
+      "failed": false,
+      "errored": false,
+      "failureType": null
+    },
+    {
+      "run": "current",
+      "class": "FileDeleteTransactionPostgresTest",
+      "name": "protectedOriginalsStillRejectDeletion(String)[2]",
+      "failed": false,
+      "errored": false,
+      "failureType": null
+    },
+    {
+      "run": "current",
+      "class": "FileDeleteTransactionPostgresTest",
+      "name": "sqlDeleteRefusalPreservesRegisteredOriginal",
+      "failed": false,
+      "errored": false,
+      "failureType": null
+    },
+    {
+      "run": "current",
+      "class": "FileDeleteTransactionPostgresTest",
+      "name": "outerRollbackPreservesRecordAndOriginal",
+      "failed": false,
+      "errored": false,
+      "failureType": null
+    },
+    {
+      "run": "current",
+      "class": "FileDeleteTransactionPostgresTest",
+      "name": "alreadyMissingOriginalStillAllowsMetadataDeletion",
+      "failed": false,
+      "errored": false,
+      "failureType": null
+    },
+    {
+      "run": "current",
+      "class": "FileDeleteTransactionPostgresTest",
+      "name": "deferredForeignKeyFailureAtActualCommitPreservesOriginal",
+      "failed": false,
+      "errored": false,
+      "failureType": null
+    },
+    {
+      "run": "old",
+      "class": "FileDeleteTransactionPostgresTest",
+      "name": "outerCommitWaitsBeforeDeletingOriginal",
+      "failed": true,
+      "errored": false,
+      "failureType": "java.lang.AssertionError"
+    },
+    {
+      "run": "old",
+      "class": "FileDeleteTransactionPostgresTest",
+      "name": "beforeCommitFailurePreservesRecordAndOriginal",
+      "failed": true,
+      "errored": false,
+      "failureType": "java.lang.AssertionError"
+    },
+    {
+      "run": "old",
+      "class": "FileDeleteTransactionPostgresTest",
+      "name": "postCommitCleanupFailureIsNotReportedAsHttpSuccess",
+      "failed": true,
+      "errored": false,
+      "failureType": "org.opentest4j.AssertionFailedError"
+    },
+    {
+      "run": "old",
+      "class": "FileDeleteTransactionPostgresTest",
+      "name": "successfulCommitDeletesRecordAndOnlyItsOriginal",
+      "failed": false,
+      "errored": false,
+      "failureType": null
+    },
+    {
+      "run": "old",
+      "class": "FileDeleteTransactionPostgresTest",
+      "name": "protectedOriginalsStillRejectDeletion(String)[1]",
+      "failed": false,
+      "errored": false,
+      "failureType": null
+    },
+    {
+      "run": "old",
+      "class": "FileDeleteTransactionPostgresTest",
+      "name": "protectedOriginalsStillRejectDeletion(String)[2]",
+      "failed": false,
+      "errored": false,
+      "failureType": null
+    },
+    {
+      "run": "old",
+      "class": "FileDeleteTransactionPostgresTest",
+      "name": "sqlDeleteRefusalPreservesRegisteredOriginal",
+      "failed": true,
+      "errored": false,
+      "failureType": "java.lang.AssertionError"
+    },
+    {
+      "run": "old",
+      "class": "FileDeleteTransactionPostgresTest",
+      "name": "outerRollbackPreservesRecordAndOriginal",
+      "failed": true,
+      "errored": false,
+      "failureType": "java.lang.AssertionError"
+    },
+    {
+      "run": "old",
+      "class": "FileDeleteTransactionPostgresTest",
+      "name": "alreadyMissingOriginalStillAllowsMetadataDeletion",
+      "failed": false,
+      "errored": false,
+      "failureType": null
+    },
+    {
+      "run": "old",
+      "class": "FileDeleteTransactionPostgresTest",
+      "name": "deferredForeignKeyFailureAtActualCommitPreservesOriginal",
+      "failed": true,
+      "errored": false,
+      "failureType": "java.lang.AssertionError"
+    },
+    {
+      "run": "current",
+      "class": "FileDeleteTransactionFailureTest",
+      "name": "unavailableTransactionDoesNotTouchRegisteredOriginal",
+      "failed": false,
+      "errored": false,
+      "failureType": null
+    },
+    {
+      "run": "current",
+      "class": "FileDeleteTransactionFailureTest",
+      "name": "unknownCommitRetainsPossiblyRegisteredOriginal",
+      "failed": false,
+      "errored": false,
+      "failureType": null
+    },
+    {
+      "run": "old",
+      "class": "FileDeleteTransactionFailureTest",
+      "name": "unavailableTransactionDoesNotTouchRegisteredOriginal",
+      "failed": true,
+      "errored": false,
+      "failureType": "java.lang.AssertionError"
+    },
+    {
+      "run": "old",
+      "class": "FileDeleteTransactionFailureTest",
+      "name": "unknownCommitRetainsPossiblyRegisteredOriginal",
+      "failed": true,
+      "errored": false,
+      "failureType": "java.lang.AssertionError"
+    }
+  ],
+  "a23Review": {
+    "transactionRequired": "Real failure red cases demonstrate need; REQUIRED joins outer transaction rather than independent delete commit",
+    "unknownRetention": "Actual synchronization lifecycle test, synthetic doCommit failure; no guessing rollback",
+    "cleanupError": "Real nonempty directory IO error; propagated 500 after database already committed",
+    "noSpeculativeFramework": true,
+    "performance": "Single ID lookup and deletion using existing PK and current persistence context; no newly introduced collection query, SQL loop, N+1, in-memory paging or index requirement; no measured SLA claim",
+    "extraction": "FileDeletionService owns transaction/guards/completion; FileReadService resource reads; registration owns upload; shared policy awaits ACL decisions; no broad refactor done"
+  },
+  "ontologyReview": {
+    "version": "0.3.25",
+    "schema": "1.2.0",
+    "result": "not-applicable",
+    "finiteExistingIds": 9,
+    "wholeFile": 0,
+    "newUnique": null,
+    "sourceOnlyGuard": "SIGNATURE_EVIDENCE retained from code, not newly user-confirmed policy",
+    "DhrUnlink": "Separate active-flag/reason/audit flow preserves originals; no generic blanket-policy inference"
+  },
+  "excluded": "No complete concurrent binding/ACL/runtime browser/full migration certification; old queues remain open"
+}

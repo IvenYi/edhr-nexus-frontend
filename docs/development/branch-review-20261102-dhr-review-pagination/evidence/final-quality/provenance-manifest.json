@@ -1,0 +1,65 @@
+{
+  "roleState": "FINAL",
+  "result": "passed",
+  "scope": "auxiliary read-only provenance, not runtime or whole-audit certification",
+  "baseCommit": "1ad6300918bd0059049eab3c415ca31162dd5115",
+  "headCommit": "b07fc1ca5dd7e4a37b2584c19377495b86b5536a",
+  "capturedAt": "2026-11-02T12:42:25.817352+08:00",
+  "artifacts": [
+    {
+      "path": "/tmp/edhr-page-q1-inventory/coverage.csv",
+      "bytes": 1818404,
+      "sha256": "7853c44797fac03b93a82b2c4027eb8e29bed9dce58de6484d490dbc2381c888"
+    },
+    {
+      "path": "/tmp/edhr-page-q1-inventory/entrypoints.csv",
+      "bytes": 161809,
+      "sha256": "c4356f335f792499336b523659cc3e78f81eec7beb5338a079308f8f72610df9"
+    },
+    {
+      "path": "/tmp/edhr-page-q1-inventory/inventory-summary.json",
+      "bytes": 1044,
+      "sha256": "4991ac9a271b294ae9d4cea9edff2854a871197c121c6cb36e4264bc984db528"
+    },
+    {
+      "path": "/tmp/edhr-page-q1-inventory/migrations.csv",
+      "bytes": 34482,
+      "sha256": "f5682fa9e08dfad2afac65905f02f8c7a866610803a083628679c685d0567ab9"
+    },
+    {
+      "path": "/tmp/edhr-page-q1-provenance-diff.json",
+      "bytes": 18428,
+      "sha256": "cb4f3650625da9412637e69d8a391e4e179aed4aa28aafc2034e42fd8929e34a"
+    },
+    {
+      "path": "/tmp/edhr-page-q1-provenance-finalize.py",
+      "bytes": 2334,
+      "sha256": "0e47b8180ee968fb0422d6fb06cd8e544cd3e60f7261f235d33fa44939164dba"
+    },
+    {
+      "path": "/tmp/edhr-page-q1-provenance-inventory-build.txt",
+      "bytes": 934,
+      "sha256": "5e10a715c943d6efe5cd50a63c3b467d19656a38b02565db915d8be1707ae578"
+    },
+    {
+      "path": "/tmp/edhr-page-q1-provenance-revision-check.json",
+      "bytes": 355,
+      "sha256": "99ffa736f5f008ac91e2d428ce5a4b7eb1ad140be4d719e4738af500a281a1c7"
+    },
+    {
+      "path": "/tmp/edhr-page-q1-provenance-whitespace.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/tmp/edhr-page-q1-provenance.json",
+      "bytes": 52441,
+      "sha256": "4cc9cacca590de6f926562c6d0ddf815d75e37d005456ce235c8bae069cc7267"
+    },
+    {
+      "path": "/tmp/edhr-page-q1-provenance.py",
+      "bytes": 7440,
+      "sha256": "f22fcf5f7ff65ffb2db5279d3a99426f956ee7910a1f5f0b450190942a6b3328"
+    }
+  ]
+}

@@ -1,0 +1,49 @@
+ontologyResult:
+  result: not-applicable
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: 032b83e9d5b8a25bee6d5b59c45d86892f672d00
+    targetBranch: edhr-dev
+    targetCommit: 032b83e9d5b8a25bee6d5b59c45d86892f672d00
+    contractReadCommit: 032b83e9d5b8a25bee6d5b59c45d86892f672d00
+    uncommittedContractPaths: []
+  reason: 本次仅新文件路径所有权、失败清理和既有JWT审计主体贯通的工程补正，不改已确认文件政策、权限、冻结或历史。CREATE_NEW取得所有权后才进入清理，冲突原件不删除；复制/第二流关闭失败只清理本次路径，cleanup失败保留suppressed。uploadedBy取既有AuditContext，直接内部旧system兜底不宣称认证增强。共享文件ACL三处产品边界另列futureScopeQuestions、未实施也不算完成，不依赖此批纠错。10既有ID有限核对，无新unique或成熟度；303知识/契约字节未变。
+  changedArtifacts: []
+  knowledgeSync: []
+  conflicts: []
+  questions: []
+  validationEvidence:
+  - id: validation.file-consistency.source-and-policy
+    checkType: evidence-path
+    command: Read actual decision package, FileController working-tree diff, AuditContext/JWT
+      and limited real ACL source paths; preserve separate future ACL questions
+    outcome: passed
+    evidence:
+    - /tmp/edhr-file-consistency-ontology-review.json
+    - /tmp/edhr-file-consistency-ontology-review.md
+    - /tmp/edhr-file-consistency-ontology-product-diff.txt
+  - id: validation.file-consistency.knowledge89
+    checkType: schema
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f tools/knowledge-model/pom.xml
+      test
+    outcome: passed
+    evidence:
+    - /tmp/edhr-file-consistency-ontology-knowledge-test.txt
+    - /tmp/edhr-file-consistency-ontology-knowledge-junit.xml
+    - 89 tests, 0 failures/errors/skipped
+  - id: validation.file-consistency.byte-provenance
+    checkType: reference
+    command: Hash all303 tracked knowledge files against Git032b83e9; inspect no knowledge/contracts/architecture/tool
+      changes
+    outcome: passed
+    evidence:
+    - /tmp/edhr-file-consistency-ontology-review.json
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages:
+    - P1
+    - P2
+    - P3

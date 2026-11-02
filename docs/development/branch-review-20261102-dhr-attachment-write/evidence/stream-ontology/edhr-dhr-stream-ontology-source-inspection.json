@@ -1,0 +1,26 @@
+{
+  "status": "FINAL",
+  "baseCommit": "e3e49784eda6bc01e7e5c686d6f79dc5a600d5ae",
+  "initialWriteCandidate": "6012672aa8be4d0d0c8f35a01b0dee0dd4af2882",
+  "combinedSourceCommit": "320a4c74717dd913d44d6e01e6c5a6f2993d4695",
+  "normalizedStreamOnlyDeltaMatchesInitialService": true,
+  "controllerAndUiDelta": "",
+  "retainedEffects": [
+    "Path SHA-256 reads to EOF using8KiB and compares full digest before file() returns resource path",
+    "Original metadata SQL,controller,response construction/error strings unchanged",
+    "verify still uses byte[] for required parsing",
+    "Summary attachment collection/submit checks,Archive original-file resolution and task downloads share file() verification; no lock/approval/frozen membership change"
+  ],
+  "userConfirmedEngineeringChoice": {
+    "quote": "流式摘要会有什么影响吗？会和现在展示效果有什么不一样吗？如果对用户来说没什么体验差距，那么就做流式摘要优化",
+    "source": "Main provided current-session user confirmation, retained in actual decisionPackage inference.bounded-download-digest",
+    "classification": "conditional implementation choice, not a new business rule",
+    "evidenceBounds": "Actual response-head/output-byte assertions and no controller/UI source delta are finite compatibility evidence; not browser/complete HTTP authorization or latency SLA."
+  },
+  "runtimeEvidenceOwnership": "Main reports127+capacity1/12groups84requests on matching source; ontology role did not execute product/capacity tests. New combination needs fresh independent QA; initial601 QA is historical only.",
+  "preservedWriteManifest": {
+    "path": "/tmp/edhr-dhr-write-ontology-manifest.json",
+    "sha256": "470b0b8adaa2b9e4eb30dd05b0950ced70a4948463919142b6a044b88c4671a2",
+    "all12OriginalsUnchanged": true
+  }
+}

@@ -1,0 +1,265 @@
+qualityResult:
+  result: passed
+  baseCommit: 6ec9812f1bb1f7980654510f53c5fa568cfd83fb
+  headCommit: bd71f6cfb05f211863fcca4382d74445003aa26c
+  contractBaseline:
+    sourceCommit: bd71f6cfb05f211863fcca4382d74445003aa26c
+    targetBranch: edhr-dev
+    targetCommit: 6ec9812f1bb1f7980654510f53c5fa568cfd83fb
+    contractReadCommit: bd71f6cfb05f211863fcca4382d74445003aa26c
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: clean
+    includedPaths: []
+    excludedPaths: []
+    untrackedPaths: []
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+  - id: check.baseline-contract
+    required: true
+    category: documentation
+    description: 实际base/head、clean候选与已读契约无差异
+    method: inspection
+    command: git rev-parse; git status; git diff base head -- AGENTS.md docs/agents
+      codeplzreadme.md
+    outcome: passed
+    evidence:
+    - /tmp/edhr-delete-qa-evidence-check.json
+    - /tmp/edhr-delete-qa-source-inspection.json
+    - target=6ec9812f1bb1f7980654510f53c5fa568cfd83fb; feature head=tested candidate=bd71f6cfb05f211863fcca4382d74445003aa26c;
+      no uncommitted contracts
+  - id: check.scope-business-boundary
+    required: true
+    category: requirements
+    description: 决策包L2影响与实现相符，无新增删除资格/ACL/历史恢复
+    method: inspection
+    command: Read decision package, source diff and applicable DEC0058/0063/0074
+    outcome: passed
+    evidence:
+    - /tmp/edhr-delete-qa-source-inspection.json
+    - Existing target guards and separate DHR unlink retained; technical sequencing
+      is inference
+  - id: check.source-a23
+    required: true
+    category: regression
+    description: 有限方法、事务生命周期、错误传播、A23及具体拆分方案核验
+    method: inspection
+    command: Review FileController.delete, actual transaction synchronization and
+      unchanged upload/read helpers
+    outcome: passed
+    evidence:
+    - /tmp/edhr-delete-qa-source.diff
+    - /tmp/edhr-delete-qa-source-inspection.json
+    - Single-id bounded path, no new N+1/paging/SQL loop or schema/index; no global
+      robustness claim
+  - id: check.current84
+    required: true
+    category: integration
+    description: 独立单次十二类84项，包括21删除执行及63既有回归
+    method: automated-test
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f gmp-platform/backend/pom.xml
+      -Dtest=FileControllerTest,FileCopyOwnershipTest,FileHttpBoundaryTest,FileUploadResourceTest,FileUploadTransactionIntegrationTest,FileUploadTransactionPostgresTest,FileUploadTransactionFailureTest,FileDeleteTransactionIntegrationTest,FileDeleteTransactionPostgresTest,FileDeleteTransactionFailureTest,DhrFormFilesTest,ExecutionAccessTest
+      test
+    outcome: passed
+    evidence:
+    - /tmp/edhr-delete-qa-current-command.json
+    - /tmp/edhr-delete-qa-current-summary.json
+    - /tmp/edhr-delete-qa-current-test.txt
+    - 84 tests, 0 failures/errors/skips; fresh twelve XML; actual H2 and native PostgreSQL
+  - id: check.native-commit
+    required: true
+    category: database
+    description: 原生PG真实COMMIT延迟约束拒绝保留记录/原件
+    method: automated-test
+    command: FileDeleteTransactionPostgresTest.deferredForeignKeyFailureAtActualCommitPreservesOriginal
+    outcome: passed
+    evidence:
+    - /tmp/edhr-delete-qa-current-FileDeleteTransactionPostgresTest.xml
+    - /tmp/edhr-delete-qa-current-database.json
+    - Canonical file_object DDL/PK plus test-only FK injection, not production FK
+      policy or full migrations
+  - id: check.http-protection-outcome
+    required: true
+    category: api
+    description: 真实JWT/filter/MVC与磁盘，原保护保留，提交后清理失败500且DB已删
+    method: automated-test
+    command: FileDeleteTransactionIntegrationTest + FileHttpBoundaryTest
+    outcome: passed
+    evidence:
+    - /tmp/edhr-delete-qa-current-FileDeleteTransactionIntegrationTest.xml
+    - /tmp/edhr-delete-qa-current-FileHttpBoundaryTest.xml
+    - Not browser, socket/server or complete object/RBAC/tenant ACL certification
+  - id: check.synthetic-unknown
+    required: true
+    category: unit
+    description: 启动不可用及合成提交UNKNOWN下原件保留
+    method: automated-test
+    command: FileDeleteTransactionFailureTest
+    outcome: passed
+    evidence:
+    - /tmp/edhr-delete-qa-current-FileDeleteTransactionFailureTest.xml
+    - Actual AbstractPlatformTransactionManager synchronization lifecycle; not real
+      network disconnect or crash recovery
+  - id: check.old-counterfactual
+    required: true
+    category: regression
+    description: 同源最终三类21执行旧源控制为13断言红8正，无环境error/skip
+    method: automated-test
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f gmp-platform/backend/pom.xml
+      -Dtest=FileDeleteTransactionIntegrationTest,FileDeleteTransactionPostgresTest,FileDeleteTransactionFailureTest
+      test
+    outcome: passed
+    evidence:
+    - /tmp/edhr-delete-qa-old-source.json
+    - /tmp/edhr-delete-qa-old-command.json
+    - /tmp/edhr-delete-qa-old-summary.json
+    - /tmp/edhr-delete-qa-old-test.txt
+    - Tests copied verbatim from tested head to actual old 6ec9812f1bb1f7980654510f53c5fa568cfd83fb;
+      previous vite failure retained separately and not counted as red
+  - id: check.knowledge89
+    required: true
+    category: ontology
+    description: 独立实际知识89项结构/引用等校验通过
+    method: automated-test
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f tools/knowledge-model/pom.xml
+      test
+    outcome: passed
+    evidence:
+    - /tmp/edhr-delete-qa-knowledge-command.json
+    - /tmp/edhr-delete-qa-knowledge-summary.json
+    - /tmp/edhr-delete-qa-knowledge-test.txt
+    - 89 tests, 0 failures/errors/skips; not all-ID semantics
+  - id: check.limited-ontology
+    required: true
+    category: ontology
+    description: 9既有ID有限保留边界与本体NA/FINAL核验、330知识不变
+    method: inspection
+    command: Review ontology result/finite semantic record against cited original
+      decisions and source
+    outcome: passed
+    evidence:
+    - /tmp/edhr-delete-qa-source-inspection.json
+    - /tmp/edhr-delete-qa-evidence-check.json
+    - 9 finite re-reviewed IDs; wholeFile0, newUnique unknown; SIGNATURE_EVIDENCE
+      code evidence only; maturity/P0 unchanged
+  - id: check.original-evidence
+    required: true
+    category: documentation
+    description: 59归档原件raw/stored、6源码快照、本体12+manifest及24源指纹一致
+    method: command
+    command: Independent artifact hashes, decompression and source fingerprint comparison
+    outcome: passed
+    evidence:
+    - /tmp/edhr-delete-qa-evidence-check.json
+    - Subordinate read-only evidence verifier FINAL passed; 1453 boolean checks passed
+  - id: check.fixed-inventory
+    required: true
+    category: documentation
+    description: 固定base重建四份盘点逐字节一致
+    method: command
+    command: python3 scripts/build-branch-review-inventory.py --ref 6ec9812f1bb1f7980654510f53c5fa568cfd83fb
+      --out /tmp/edhr-delete-qa-evidence-inventory
+    outcome: passed
+    evidence:
+    - /tmp/edhr-delete-qa-evidence-check.json
+    - 6370 paths/135 SQL/464 HTTP/216 routes are inventory, not whole-file audit coverage
+  - id: check.resource-cleanup
+    required: true
+    category: documentation
+    description: 仅自有PG和旧worktree已清理，主树clean；失败编排原件保留
+    method: inspection
+    command: docker inspect own resource; git worktree remove own clean tree; git
+      status
+    outcome: passed
+    evidence:
+    - /tmp/edhr-delete-qa-cleanup.json
+    - /tmp/edhr-delete-qa-attempt1-failure.json
+    - /tmp/edhr-delete-qa-attempt1-removal-observation.json
+    - /tmp/edhr-delete-qa-run2-output.txt
+    - /tmp/edhr-delete-qa-attempt2-cleanup.json
+    - /tmp/edhr-delete-qa-attempt3-old-test.txt
+    - /tmp/edhr-delete-qa-attempt3-cleanup.json
+    - First two DB metadata/readiness probes and old vite dependency failure occurred
+      before product assertions, not product red; no CI/Actions queried or triggered
+  findings:
+  - id: QF-FILE-DELETE-ORIGINAL-LOSS
+    severity: high
+    scope: FileController.delete database failure and outer transaction outcome
+    summary: 旧源在数据库拒绝或回滚前已不可逆删除磁盘原件；当前仅确认提交后清理
+    reproductionSteps:
+    - Use canonical file_object row plus actual original
+    - Refuse DELETE by SQL or deferred COMMIT FK, inject beforeCommit failure, or
+      roll back outer transaction
+    - Inspect row and exact original bytes after final transaction outcome
+    expectedResult: Database rollback/refusal retains registered original; deletion
+      in outer transaction waits for actual commit
+    actualResult: Old source13 total red includes these lost-original assertions;
+      fixed current same21 all pass
+    evidence:
+    - /tmp/edhr-delete-qa-old-summary.json
+    - /tmp/edhr-delete-qa-old-test.txt
+    - /tmp/edhr-delete-qa-current-summary.json
+    - /tmp/edhr-delete-qa-source-inspection.json
+    resolutionStatus: resolved
+    resolutionEvidence:
+    - type: commit
+      reference: bd71f6cfb05f211863fcca4382d74445003aa26c
+    - type: command
+      reference: /tmp/edhr-delete-qa-current-summary.json
+    - type: document
+      reference: /tmp/edhr-delete-qa-source-inspection.json
+  - id: QF-FILE-DELETE-FALSE-SUCCESS
+    severity: medium
+    scope: FileController.delete post-commit filesystem cleanup result
+    summary: 旧源吞磁盘IO异常仍返回200；当前明确500并记录ID/path，此时DB已提交
+    reproductionSteps:
+    - Replace registered original with a nonempty directory to force real delete IOException
+    - Issue authenticated DELETE through actual JWT/filter/MVC
+    - Check HTTP response, remaining directory bytes and committed row count
+    expectedResult: No false HTTP success on cleanup failure; disclose committed DB
+      and retained physical original
+    actualResult: Old H2/PG return200 and fail assertions; current HTTP500, row0 and
+      original child retained
+    evidence:
+    - /tmp/edhr-delete-qa-old-FileDeleteTransactionIntegrationTest.xml
+    - /tmp/edhr-delete-qa-current-FileDeleteTransactionIntegrationTest.xml
+    resolutionStatus: resolved
+    resolutionEvidence:
+    - type: commit
+      reference: bd71f6cfb05f211863fcca4382d74445003aa26c
+    - type: command
+      reference: /tmp/edhr-delete-qa-current-summary.json
+  residualRisks:
+  - id: risk.cross-resource-cleanup
+    description: AfterCommit IO failure or process crash may leave original without
+      metadata; HTTP500 does not undo committed DB and retry may404.
+    impact: No atomic DB/filesystem outcome or durable cleanup guarantee.
+    mitigation: Preserve id/path logs and discuss explicit persistent reconciliation/outbox
+      separately; no automatic history restore or orphan deletion.
+  - id: risk.shared-reference-acl
+    description: Concurrent rebind/shared physical paths and three shared-file ACL
+      questions remain separate audit/decision scopes.
+    impact: Current passed result does not certify complete reference-safe deletion
+      or object/tenant authorization.
+    mitigation: Do not infer rules from targetType; continue dedicated source/runtime
+      audit and user decisions.
+  - id: risk.adjacent-dhr-callback
+    description: DhrAttachmentService adjacent UNKNOWN cleanup/IO behavior remains
+      a separate source candidate.
+    impact: This generic DELETE fix cannot close that service consistency scope.
+    mitigation: Next independent finite audit/reproduction before deterministic fix;
+      no speculative modification.
+  - id: risk.limited-runtime
+    description: Native canonical-single-table slice and JWT/MVC/filesystem only;
+      no full application schema/migrations, real network disconnect, crash recovery,
+      browser, full RBAC/UI/recipient certification.
+    impact: Do not expand tests into complete production acceptance.
+    mitigation: Keep explicit evidence bounds and continue applicable W5-W7 validation.
+  - id: risk.audit-remaining
+    description: Whole audit W3/W4/W5 crossing, W2 remainder and W6 old-reviewed A23/W7
+      increments; 666 paths/44knowledge/183ID, old two DHR highs/A12/four gaps and
+      paused friend signature page/production dialog remain open.
+    impact: Local finding closure does not finish full audit or resolve old blockers.
+    mitigation: Continue ledger queues and latest-target incremental audit; finite
+      nine IDs/wholeFile0/newUnique unknown.
+  blockingConditions: []

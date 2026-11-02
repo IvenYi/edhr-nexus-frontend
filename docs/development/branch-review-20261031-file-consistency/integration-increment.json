@@ -1,0 +1,3345 @@
+{
+  "previousTarget": "032b83e9d5b8a25bee6d5b59c45d86892f672d00",
+  "targetCommit": "0bd0848bbded6d6954d62a4f924e0b2eec6623ad",
+  "integrationCommit": "e9548d5f9d555f78afbe1c1c8ea68f64d45e6c55",
+  "targetChangedPaths": 666,
+  "knowledgeFilesAtTarget": 330,
+  "contractDeltaPaths": [],
+  "sourceSnapshotsUnchanged": true,
+  "semanticallyReviewedEntireIncrement": false,
+  "wholeFileCompletion": 0,
+  "historicalUniqueIncrement": null,
+  "records": [
+    {
+      "path": "docs/architecture/business-knowledge-model.md",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/architecture/transaction-traceability-dhr-business-rules.md",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/current-project-development-reference.md",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/README.md",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/decision-package.yaml",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/delivery.json",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/TEST-com.zencas.edhr.common.config.CurrentDatabaseBaselinePostgresTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/TEST-com.zencas.edhr.common.config.CurrentDatabaseBaselineTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/TEST-com.zencas.edhr.knowledge.BusinessKnowledgeModelTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/TEST-com.zencas.edhr.masterdata.controller.DocumentManagementControllerTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/TEST-com.zencas.edhr.masterdata.controller.DocumentOrmSchemaIntegrationTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/TEST-com.zencas.edhr.masterdata.controller.DocumentReadBoundaryIntegrationTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/TEST-com.zencas.edhr.masterdata.controller.DocumentReadPerformancePostgresTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/TEST-com.zencas.edhr.masterdata.controller.DocumentWriteBoundaryIntegrationTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/TEST-com.zencas.edhr.masterdata.controller.DocumentWriteBoundaryPostgresTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/TEST-com.zencas.edhr.masterdata.controller.MasterDataBoundaryIntegrationTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/TEST-com.zencas.edhr.masterdata.controller.MaterialImportIntegrationTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/TEST-com.zencas.edhr.masterdata.controller.ProcessModelingControllerTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/TEST-com.zencas.edhr.masterdata.controller.ProductProcessControllerTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/TEST-com.zencas.edhr.production.controller.DhrGenericAccessTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/TEST-com.zencas.edhr.production.controller.DhrWorkbenchPermissionsTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/TEST-com.zencas.edhr.production.service.DhrArchiveLayoutReaderTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/TEST-com.zencas.edhr.production.service.DhrAttachmentAndArchiveTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/TEST-com.zencas.edhr.production.service.DhrAuditReadTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/TEST-com.zencas.edhr.production.service.DhrEvidenceBatchPostgresTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/TEST-com.zencas.edhr.production.service.DhrFillingServiceTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/TEST-com.zencas.edhr.production.service.DhrFormFilesTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/TEST-com.zencas.edhr.production.service.DhrInstanceLookupTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/TEST-com.zencas.edhr.production.service.DhrInstanceMigrationTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/TEST-com.zencas.edhr.production.service.DhrLegacyMigrationTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/TEST-com.zencas.edhr.production.service.DhrPdfRendererTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/TEST-com.zencas.edhr.production.service.DhrReviewLifecycleIntegrationTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/TEST-com.zencas.edhr.production.service.DhrReviewMigrationTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/TEST-com.zencas.edhr.production.service.DhrReviewServiceTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/TEST-com.zencas.edhr.production.service.DhrSummaryDisplayNameMigrationTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/TEST-com.zencas.edhr.production.service.DhrSummaryMigrationTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/TEST-com.zencas.edhr.production.service.DhrSummaryOrderMigrationTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/TEST-com.zencas.edhr.production.service.DhrSummaryPersistenceTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/TEST-com.zencas.edhr.production.service.DhrSummaryServiceTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/TEST-com.zencas.edhr.production.service.DhrTraceReportPostgresTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/TEST-com.zencas.edhr.production.service.FormTraceIndexServiceTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/TEST-com.zencas.edhr.production.service.ProductionQualitySummaryTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/TEST-com.zencas.edhr.recordcontrol.service.RecordControlAccessTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/TEST-com.zencas.edhr.recordcontrol.service.RecordControlDiffTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/TEST-com.zencas.edhr.recordcontrol.service.RecordControlMigrationTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/TEST-com.zencas.edhr.recordcontrol.service.RecordControlPostgresIntegrationTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/TEST-com.zencas.edhr.recordcontrol.service.RecordControlTaskActionServiceTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/TEST-com.zencas.edhr.template.service.FormProjectionInterpreterTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/TEST-com.zencas.edhr.workflow.controller.RecordControlWorkflowControllerTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/TEST-com.zencas.edhr.workflow.controller.WorkflowInstanceAuthorizationIntegrationTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/TEST-com.zencas.edhr.workflow.controller.WorkflowTaskControllerTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/TEST-com.zencas.edhr.workflow.engine.WorkflowEngineTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/TEST-com.zencas.edhr.workflow.service.RecordControlWorkflowServiceTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/ancestry.json",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/backend-baseline-final.log.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/backend-fixture-fix.log.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/backend-summary.json",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/final-candidate-runtime.json",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/frontend-build.log.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/frontend-tests.log.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/independent/TEST-com.zencas.edhr.common.config.CurrentDatabaseBaselinePostgresTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/independent/TEST-com.zencas.edhr.common.config.CurrentDatabaseBaselineTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/independent/TEST-com.zencas.edhr.knowledge.BusinessKnowledgeModelTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/independent/TEST-com.zencas.edhr.production.service.DhrReviewServiceTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/independent/TEST-com.zencas.edhr.production.service.DhrSummaryPersistenceTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/independent/TEST-com.zencas.edhr.recordcontrol.service.RecordControlPostgresIntegrationTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/independent/backend-summary.json",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/independent/backend.log.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/independent/final-candidate/TEST-com.zencas.edhr.common.config.CurrentDatabaseBaselinePostgresTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/independent/final-candidate/TEST-com.zencas.edhr.common.config.CurrentDatabaseBaselineTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/independent/final-candidate/TEST-com.zencas.edhr.knowledge.BusinessKnowledgeModelTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/independent/final-candidate/TEST-com.zencas.edhr.masterdata.controller.DocumentCategoryAuditPostgresTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/independent/final-candidate/TEST-com.zencas.edhr.production.service.DhrReviewServiceTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/independent/final-candidate/TEST-com.zencas.edhr.production.service.DhrSummaryPersistenceTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/independent/final-candidate/TEST-com.zencas.edhr.recordcontrol.service.RecordControlPostgresIntegrationTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/independent/final-candidate/backend-summary.json",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/independent/final-candidate/backend.log.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/independent/final-candidate/category-browser-rerun.log.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/independent/final-candidate/category-browser/1440-confirm-copy-cancel-open.png",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/independent/final-candidate/category-browser/1440-confirm-copy-cancel.png",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/independent/final-candidate/category-browser/1440-precheck-error-open.png",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/independent/final-candidate/category-browser/1440-precheck-error.png",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/independent/final-candidate/category-browser/1440-referenced.png",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/independent/final-candidate/category-browser/1440-slow-cancel.png",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/independent/final-candidate/category-browser/1440-success-feedback-open.png",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/independent/final-candidate/category-browser/1440-success-feedback.png",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/independent/final-candidate/category-browser/390-confirm-copy-cancel-open.png",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/independent/final-candidate/category-browser/390-confirm-copy-cancel.png",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/independent/final-candidate/category-browser/390-precheck-error-open.png",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/independent/final-candidate/category-browser/390-precheck-error.png",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/independent/final-candidate/category-browser/390-referenced.png",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/independent/final-candidate/category-browser/390-slow-cancel.png",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/independent/final-candidate/category-browser/390-success-feedback-open.png",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/independent/final-candidate/category-browser/390-success-feedback.png",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/independent/final-candidate/category-browser/result.json",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/independent/final-candidate/category-http.jsonl",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/independent/final-candidate/category-schema.log.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/independent/final-candidate/cleanup.json",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/independent/final-candidate/merge-ancestry.json",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/independent/final-candidate/runtime.json",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/independent/final-candidate/working-tree.json",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/independent/fresh-vs-existing-schema.json",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/independent/main-api-readonly.json",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/independent/merge-ancestry.json",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/independent/preservation.json",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/independent/primary-test-evidence-review.json",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/independent/static-review.yaml",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/independent/verify-main-readonly.py",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/independent/verify-preservation.py",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/independent/worktree-archive-verification.json",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/initial/TEST-com.zencas.edhr.common.config.CurrentDatabaseBaselinePostgresTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/initial/TEST-com.zencas.edhr.common.config.CurrentDatabaseBaselineTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/initial/TEST-com.zencas.edhr.production.service.DhrReviewServiceTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/initial/TEST-com.zencas.edhr.production.service.DhrSummaryPersistenceTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/initial/backend.log.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/initial/first-fix-backend.log.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/local-files-preservation.json",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/main-browser.json",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/main-dhr-frozen-v1.png",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/main-dhr-list.png",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/main-reassign-stable.png",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/main-reassign.png",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/main-transfer-stable.png",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/main-transfer.png",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/main-withdraw-blocked.png",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/main-withdraw-ready.png",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/main-workflow.png",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/migration-main.json",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/migration-rehearsal.json",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/pr46/TEST-com.zencas.edhr.masterdata.controller.DocumentManagementControllerTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/pr46/TEST-com.zencas.edhr.masterdata.controller.DocumentWriteBoundaryIntegrationTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/pr46/main-build.log.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/pr46/main-result.json",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/pr46/main-tests.log.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/pr47/TEST-com.zencas.edhr.compliance.controller.FileHttpBoundaryTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/pr47/TEST-com.zencas.edhr.compliance.controller.FileUploadResourceTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/pr47/independent/TEST-com.zencas.edhr.compliance.controller.FileControllerTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/pr47/independent/TEST-com.zencas.edhr.compliance.controller.FileHttpBoundaryTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/pr47/independent/TEST-com.zencas.edhr.compliance.controller.FileUploadResourceTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/pr47/independent/backend-summary.json",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/pr47/independent/backend.log.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/pr47/independent/baseline.json",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/pr47/independent/main-api-readonly.json",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/pr47/independent/preservation.json",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/pr47/independent/run-readonly.py",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/pr47/independent/runtime.json",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/pr47/main-result.json",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/pr47/main-tests.log.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/pr47/runtime.json",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/evidence/root-test-cleanup.json",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/migrate-acceptance.py",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/ontology-result.yaml",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/quality-final-result.yaml",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/edhr-dev-integration-20261031/quality-pr47-result.yaml",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/README.md",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/decision-package.yaml",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/TEST-com.zencas.edhr.common.config.CurrentDatabaseBaselinePostgresTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/TEST-com.zencas.edhr.common.config.CurrentDatabaseBaselineTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/TEST-com.zencas.edhr.knowledge.BusinessKnowledgeModelTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/TEST-com.zencas.edhr.masterdata.controller.MasterDataBoundaryIntegrationTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/TEST-com.zencas.edhr.production.controller.DhrGenericAccessTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/TEST-com.zencas.edhr.production.controller.DhrWorkbenchPermissionsTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/TEST-com.zencas.edhr.production.controller.FormProjectionAuthorizationTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/TEST-com.zencas.edhr.production.service.DhrArchiveLayoutReaderTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/TEST-com.zencas.edhr.production.service.DhrAttachmentAndArchiveTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/TEST-com.zencas.edhr.production.service.DhrAuditReadTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/TEST-com.zencas.edhr.production.service.DhrEvidenceBatchPostgresTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/TEST-com.zencas.edhr.production.service.DhrFillingServiceTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/TEST-com.zencas.edhr.production.service.DhrFormFilesTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/TEST-com.zencas.edhr.production.service.DhrInstanceLookupTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/TEST-com.zencas.edhr.production.service.DhrInstanceMigrationTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/TEST-com.zencas.edhr.production.service.DhrLegacyMigrationTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/TEST-com.zencas.edhr.production.service.DhrPdfRendererTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/TEST-com.zencas.edhr.production.service.DhrReviewLifecycleIntegrationTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/TEST-com.zencas.edhr.production.service.DhrReviewMigrationTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/TEST-com.zencas.edhr.production.service.DhrReviewServiceTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/TEST-com.zencas.edhr.production.service.DhrSummaryDisplayNameMigrationTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/TEST-com.zencas.edhr.production.service.DhrSummaryMigrationTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/TEST-com.zencas.edhr.production.service.DhrSummaryOrderMigrationTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/TEST-com.zencas.edhr.production.service.DhrSummaryPersistenceTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/TEST-com.zencas.edhr.production.service.DhrSummaryServiceTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/TEST-com.zencas.edhr.production.service.DhrTraceReportPostgresTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/TEST-com.zencas.edhr.production.service.FormProjectionPostgresTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/TEST-com.zencas.edhr.production.service.FormTraceIndexServiceTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/TEST-com.zencas.edhr.production.service.ProductionOutputPostgresTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/TEST-com.zencas.edhr.production.service.ProductionQualitySummaryTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/TEST-com.zencas.edhr.recordcontrol.service.RecordControlAccessTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/TEST-com.zencas.edhr.recordcontrol.service.RecordControlDiffTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/TEST-com.zencas.edhr.recordcontrol.service.RecordControlMigrationTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/TEST-com.zencas.edhr.recordcontrol.service.RecordControlPostgresIntegrationTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/TEST-com.zencas.edhr.recordcontrol.service.RecordControlTaskActionServiceTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/TEST-com.zencas.edhr.template.service.FormProjectionInterpreterTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/TEST-com.zencas.edhr.workflow.controller.RecordControlWorkflowControllerTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/TEST-com.zencas.edhr.workflow.service.RecordControlWorkflowServiceTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/app-shell-final.log.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/backend-verification.json",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/browser/draft-void-hidden.png",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/browser/draft-void-visible-before-fix.png",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/browser/draft-void-visible-corrected.png",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/browser/frozen-v1-after-void.png",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/browser/manifest.json",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/browser/notification-desktop.png",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/browser/notification-narrow.png",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/browser/observations.md",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/browser/view-options-compact-vertical.png",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/browser/view-options-default.png",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/browser/view-options-detail.png",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/browser/view-options-manifest.json",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/browser/view-options-menu.png",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/browser/view-options-obsolete-visible.png",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/dhr-linkage-compile.log.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/dhr-linkage-export-regression.log.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/dhr-linkage-focused-second.log.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/dhr-linkage-focused.log.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/dhr-linkage-ontology-20261029.log.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/dhr-linkage-postgres-initial.log.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/dhr-linkage-postgres-second.log.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/dhr-linkage-postgres-third.log.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/dhr-linkage-regression-final.log.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/dhr-linkage-regression.log.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/environment-cleanup.json",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/final-independent/TEST-com.zencas.edhr.knowledge.BusinessKnowledgeModelTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/final-independent/TEST-com.zencas.edhr.production.service.DhrReviewLifecycleIntegrationTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/final-independent/TEST-com.zencas.edhr.production.service.DhrReviewServiceTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/final-independent/TEST-com.zencas.edhr.production.service.DhrSummaryPersistenceTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/final-independent/TEST-com.zencas.edhr.recordcontrol.service.RecordControlAccessTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/final-independent/backend-focused.json",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/final-independent/backend-focused.log.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/final-independent/browser-observations.md",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/final-independent/console-2026-10-29T14-07-27-240Z.log.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/final-independent/console-2026-10-29T14-09-14-623Z.log.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/final-independent/frontend-build.log.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/final-independent/frontend-targeted.tap",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/final-independent/knowledge-final.json",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/final-independent/knowledge-final.log.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/final-independent/list-archive-obsolete.png",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/final-independent/notification-error.png",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/final-independent/notification-loading.png",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/final-independent/notification-narrow.png",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/final-independent/notification-recovered.png",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/final-independent/notification-reviewer-empty.png",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/final-independent/notification-unauthenticated.json",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/final-independent/premium-baseline.json",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/final-independent/premium-current.json",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/final-independent/premium-final-vertical.json",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/final-independent/product-candidate-before-visual-refinement.json",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/final-independent/quality-before-visual-refinement.yaml",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/final-independent/summary-frozen-v1.png",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/final-independent/summary-obsolete-corrected.png",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/final-independent/summary-obsolete-hidden.png",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/final-independent/verification-integrity.json",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/final-independent/version-select-open.png",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/final-independent/view-options-build.log.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/final-independent/view-options-checked.png",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/final-independent/view-options-default.png",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/final-independent/view-options-desktop.txt",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/final-independent/view-options-frontend.tap",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/final-independent/view-options-frozen-v1.png",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/final-independent/view-options-menu.png",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/final-independent/view-options-narrow-detail.png",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/final-independent/view-options-narrow.png",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/final-independent/view-options-narrow.txt",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/final-independent/view-options-visible.png",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/frontend-archives.json",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/frontend-build-final.log.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/frontend-build-view-options.log.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/independent/TEST-com.zencas.edhr.common.config.CurrentDatabaseBaselinePostgresTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/independent/TEST-com.zencas.edhr.common.config.CurrentDatabaseBaselineTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/independent/TEST-com.zencas.edhr.knowledge.BusinessKnowledgeModelTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/independent/TEST-com.zencas.edhr.production.service.DhrAttachmentAndArchiveTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/independent/TEST-com.zencas.edhr.production.service.DhrEvidenceBatchPostgresTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/independent/TEST-com.zencas.edhr.production.service.DhrPdfRendererTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/independent/TEST-com.zencas.edhr.production.service.DhrReviewLifecycleIntegrationTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/independent/TEST-com.zencas.edhr.production.service.DhrReviewServiceTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/independent/TEST-com.zencas.edhr.production.service.DhrSummaryPersistenceTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/independent/TEST-com.zencas.edhr.recordcontrol.service.RecordControlAccessTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/independent/TEST-com.zencas.edhr.recordcontrol.service.RecordControlDiffTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/independent/TEST-com.zencas.edhr.recordcontrol.service.RecordControlPostgresIntegrationTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/independent/TEST-com.zencas.edhr.workflow.controller.RecordControlWorkflowControllerTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/independent/backend-independent.json",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/independent/backend-independent.log.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/independent/browser-observations.md",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/independent/database-cleanup.json",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/independent/frontend-targeted.tap",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/independent/notification-read.png",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/independent/premium-current.json",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/independent/summary-frozen-v1.png",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/independent/summary-obsolete-hidden.png",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/independent/summary-obsolete-shown.png",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/ontology-archives.json",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/ontology-junit.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/ontology.log.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/premium-baseline.json",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/premium-comparison.json",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/product-candidate-before-view-options.json",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/product-candidate.json",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/ui-regression-final.log.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/ui-tests-final.log.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/evidence/ui-view-options.log.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/ontology-result.yaml",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/quality-final-result.yaml",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-dhr-linkage-20261029/quality-result.yaml",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-integration-20261028/README.md",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-integration-20261028/decision-package.yaml",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-integration-20261028/evidence/approved.png",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-integration-20261028/evidence/browser-old-revision.csv",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-integration-20261028/evidence/browser-result.csv",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-integration-20261028/evidence/browser-verification.md",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-integration-20261028/evidence/existing-dev-baseline-readonly.csv",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-integration-20261028/evidence/existing-dev-revision-readonly.csv",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-integration-20261028/evidence/final-independent/RowIdentityFinalProbe.java",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-integration-20261028/evidence/final-independent/archive-validation.json",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-integration-20261028/evidence/final-independent/backend-tests.log.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-integration-20261028/evidence/final-independent/candidate-parents.txt",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-integration-20261028/evidence/final-independent/contract-delta.txt",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-integration-20261028/evidence/final-independent/final-log-archives.json",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-integration-20261028/evidence/final-independent/final-working-tree.txt",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-integration-20261028/evidence/final-independent/frontend-build.log.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-integration-20261028/evidence/final-independent/navigation-tests.log.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-integration-20261028/evidence/final-independent/non-original-whitespace.txt",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-integration-20261028/evidence/final-independent/old-class-compile.txt",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-integration-20261028/evidence/final-independent/original-source/RecordControlDiff.java",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-integration-20261028/evidence/final-independent/retained-target-decisions.txt",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-integration-20261028/evidence/final-independent/row-identity-current.txt",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-integration-20261028/evidence/final-independent/row-identity-old-replay.txt",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-integration-20261028/evidence/final-independent/runtime-classpath.txt",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-integration-20261028/evidence/final-independent/source-review.json",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-integration-20261028/evidence/final-independent/test-summary.json",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-integration-20261028/evidence/final-independent/whitespace.txt",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-integration-20261028/evidence/independent/SubtableRowIdentityProbe.java",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-integration-20261028/evidence/independent/backend-tests.log.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-integration-20261028/evidence/independent/candidate-parents.txt",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-integration-20261028/evidence/independent/contract-delta.txt",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-integration-20261028/evidence/independent/final-working-tree.txt",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-integration-20261028/evidence/independent/frontend-build.log.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-integration-20261028/evidence/independent/initial-working-tree.txt",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-integration-20261028/evidence/independent/navigation-tests.log.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-integration-20261028/evidence/independent/retained-target-decisions.txt",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-integration-20261028/evidence/independent/runtime-classpath.txt",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-integration-20261028/evidence/independent/subtable-row-identity-probe.log.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-integration-20261028/evidence/independent/test-summary.json",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-integration-20261028/evidence/independent/whitespace.txt",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-integration-20261028/evidence/log-archives.json",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-integration-20261028/evidence/primary-core-green.log.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-integration-20261028/evidence/primary-frontend-build.txt",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-integration-20261028/evidence/primary-menu-green.log.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-integration-20261028/evidence/primary-migration-red.log.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-integration-20261028/evidence/primary-regression.log.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-integration-20261028/evidence/primary-revision-red.log.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-integration-20261028/evidence/primary-row-identity-green.log.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-integration-20261028/evidence/primary-row-identity-red.log.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-integration-20261028/evidence/primary-signature-red.log.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-integration-20261028/evidence/primary-upgrade-fixture-failure.log.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-integration-20261028/evidence/primary-upgrade-green.log.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-integration-20261028/evidence/row-identity-fixture-format-failure.log.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-integration-20261028/evidence/submitted.png",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-integration-20261028/ontology-knowledge-final.txt",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-integration-20261028/ontology-knowledge-test.txt",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-integration-20261028/ontology-result.yaml",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-integration-20261028/ontology-validation.json",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-integration-20261028/quality-final-result.yaml",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-integration-20261028/quality-result.yaml",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/record-control-work-allocation-and-integration-contract.md",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-dhr-acceptance-20261030/README.md",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-dhr-acceptance-20261030/environment-quality-20261031.yaml",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-dhr-acceptance-20261030/environment-recovery-20261031.md",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-dhr-acceptance-20261030/evidence/browser-readiness.json",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-dhr-acceptance-20261030/evidence/dhr-frozen-ready.png",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-dhr-acceptance-20261030/evidence/environment-3010-ready.png",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-dhr-acceptance-20261030/evidence/environment-3010-reassign.png",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-dhr-acceptance-20261030/evidence/environment-browser-20261031.json",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-dhr-acceptance-20261030/evidence/environment-quality-20261031.json",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-dhr-acceptance-20261030/evidence/independent/api-verification-before-final.json",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-dhr-acceptance-20261030/evidence/independent/api-verification.json",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-dhr-acceptance-20261030/evidence/independent/dhr-change-historical.json",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-dhr-acceptance-20261030/evidence/independent/dhr-void-historical.json",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-dhr-acceptance-20261030/evidence/independent/final-review-preservation.json",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-dhr-acceptance-20261030/evidence/independent/final-review-qa-readback.json",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-dhr-acceptance-20261030/evidence/independent/final-review-readiness.json",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-dhr-acceptance-20261030/evidence/independent/final-review-ui.json",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-dhr-acceptance-20261030/evidence/independent/original-integrity-final.json",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-dhr-acceptance-20261030/evidence/independent/original-integrity.json",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-dhr-acceptance-20261030/evidence/independent/verify.py",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-dhr-acceptance-20261030/evidence/independent/void-current-hidden.png",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-dhr-acceptance-20261030/evidence/independent/void-current-shown.png",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-dhr-acceptance-20261030/evidence/independent/void-frozen-v1-retained.png",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-dhr-acceptance-20261030/evidence/original-before.json",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-dhr-acceptance-20261030/evidence/preservation.json",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-dhr-acceptance-20261030/evidence/readiness.json",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-dhr-acceptance-20261030/evidence/reassignment-ready.png",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-dhr-acceptance-20261030/evidence/retained-state.json",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-dhr-acceptance-20261030/evidence/runtime.json",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-dhr-acceptance-20261030/manifest.json",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-dhr-acceptance-20261030/quality-result.yaml",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-intervention-research-20261029/README.md",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-intervention-research-20261029/decision-package.yaml",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-intervention-research-20261029/evidence/excerpt-format-check.json",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-intervention-research-20261029/evidence/independent/git-scope.json",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-intervention-research-20261029/evidence/independent/knowledge-junit.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-intervention-research-20261029/evidence/independent/knowledge-test.json",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-intervention-research-20261029/evidence/independent/knowledge-test.log.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-intervention-research-20261029/evidence/independent/log-archive.json",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-intervention-research-20261029/evidence/independent/original-document-check.json",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-intervention-research-20261029/evidence/independent/policy-check.json",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-intervention-research-20261029/evidence/independent/result-invariants.json",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-intervention-research-20261029/evidence/independent/semantic-review.md",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-intervention-research-20261029/evidence/independent/source-check.json",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-intervention-research-20261029/evidence/independent/verification-summary.json",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-intervention-research-20261029/evidence/independent/verify_evidence.py",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-intervention-research-20261029/evidence/ontology-knowledge-junit.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-intervention-research-20261029/evidence/ontology-knowledge.log.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-intervention-research-20261029/evidence/ontology-validation.json",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-intervention-research-20261029/evidence/original-document-excerpts.json",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-intervention-research-20261029/evidence/original-document-images.json",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-intervention-research-20261029/evidence/original-image294.png",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-intervention-research-20261029/evidence/original-image295.png",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-intervention-research-20261029/evidence/original-image296.png",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-intervention-research-20261029/evidence/original-image297.png",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-intervention-research-20261029/evidence/original-image298.png",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-intervention-research-20261029/evidence/original-image682.png",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-intervention-research-20261029/evidence/original-image683.png",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-intervention-research-20261029/evidence/primary-validation.json",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-intervention-research-20261029/evidence/remote-refresh.json",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-intervention-research-20261029/evidence/source-excerpts.txt",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-intervention-research-20261029/evidence/source-manifest.json",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-intervention-research-20261029/ontology-result.yaml",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-intervention-research-20261029/quality-result.yaml",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-intervention-research-20261029/user-confirmed.md",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-operations-20261030/README.md",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-operations-20261030/decision-package.yaml",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-operations-20261030/evidence/TEST-com.zencas.edhr.knowledge.BusinessKnowledgeModelTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-operations-20261030/evidence/TEST-com.zencas.edhr.production.controller.DhrGenericAccessTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-operations-20261030/evidence/TEST-com.zencas.edhr.recordcontrol.service.RecordControlAccessTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-operations-20261030/evidence/TEST-com.zencas.edhr.recordcontrol.service.RecordControlDiffTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-operations-20261030/evidence/TEST-com.zencas.edhr.recordcontrol.service.RecordControlMigrationTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-operations-20261030/evidence/TEST-com.zencas.edhr.recordcontrol.service.RecordControlPostgresIntegrationTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-operations-20261030/evidence/TEST-com.zencas.edhr.recordcontrol.service.RecordControlTaskActionServiceTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-operations-20261030/evidence/TEST-com.zencas.edhr.workflow.controller.RecordControlWorkflowControllerTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-operations-20261030/evidence/TEST-com.zencas.edhr.workflow.controller.WorkflowInstanceAuthorizationIntegrationTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-operations-20261030/evidence/TEST-com.zencas.edhr.workflow.controller.WorkflowTaskControllerTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-operations-20261030/evidence/TEST-com.zencas.edhr.workflow.engine.WorkflowEngineTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-operations-20261030/evidence/TEST-com.zencas.edhr.workflow.service.RecordControlWorkflowServiceTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-operations-20261030/evidence/backend-verification.json",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-operations-20261030/evidence/baseline-generic.log.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-operations-20261030/evidence/browser-verification.json",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-operations-20261030/evidence/browser/reassignment-popup-narrow.png",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-operations-20261030/evidence/browser/reassignment-signature.png",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-operations-20261030/evidence/browser/transfer-dialog.png",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-operations-20261030/evidence/browser/withdraw-confirmation.png",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-operations-20261030/evidence/browser/workflow-detail-narrow.png",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-operations-20261030/evidence/browser/workflow-log-list.png",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-operations-20261030/evidence/browser/workflow-log-narrow.png",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-operations-20261030/evidence/focused.log.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-operations-20261030/evidence/frontend-build.log.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-operations-20261030/evidence/frontend-tests.log.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-operations-20261030/evidence/frontend-verification.json",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-operations-20261030/evidence/independent/TEST-com.zencas.edhr.knowledge.BusinessKnowledgeModelTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-operations-20261030/evidence/independent/TEST-com.zencas.edhr.production.controller.DhrGenericAccessTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-operations-20261030/evidence/independent/TEST-com.zencas.edhr.recordcontrol.service.RecordControlAccessTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-operations-20261030/evidence/independent/TEST-com.zencas.edhr.recordcontrol.service.RecordControlDiffTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-operations-20261030/evidence/independent/TEST-com.zencas.edhr.recordcontrol.service.RecordControlMigrationTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-operations-20261030/evidence/independent/TEST-com.zencas.edhr.recordcontrol.service.RecordControlPostgresIntegrationTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-operations-20261030/evidence/independent/TEST-com.zencas.edhr.recordcontrol.service.RecordControlTaskActionServiceTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-operations-20261030/evidence/independent/TEST-com.zencas.edhr.workflow.controller.RecordControlWorkflowControllerTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-operations-20261030/evidence/independent/TEST-com.zencas.edhr.workflow.controller.WorkflowInstanceAuthorizationIntegrationTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-operations-20261030/evidence/independent/TEST-com.zencas.edhr.workflow.controller.WorkflowTaskControllerTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-operations-20261030/evidence/independent/TEST-com.zencas.edhr.workflow.engine.WorkflowEngineTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-operations-20261030/evidence/independent/TEST-com.zencas.edhr.workflow.service.RecordControlWorkflowServiceTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-operations-20261030/evidence/independent/api-fixture.sql",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-operations-20261030/evidence/independent/api-verification.json",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-operations-20261030/evidence/independent/api-verification.py",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-operations-20261030/evidence/independent/backend-verification.json",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-operations-20261030/evidence/independent/backend.log.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-operations-20261030/evidence/independent/baseline.log.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-operations-20261030/evidence/independent/candidate-manifest.json",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-operations-20261030/evidence/independent/frontend-build.log.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-operations-20261030/evidence/independent/frontend-verification.json",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-operations-20261030/evidence/independent/generic-ui.log.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-operations-20261030/evidence/independent/premium-audit.json",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-operations-20261030/evidence/independent/premium.log.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-operations-20261030/evidence/independent/resource-cleanup.json",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-operations-20261030/evidence/independent/server.log.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-operations-20261030/evidence/independent/signature-hash-verification.json",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-operations-20261030/evidence/list-style.log.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-operations-20261030/evidence/menu.log.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-operations-20261030/evidence/ontology-validation.json",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-operations-20261030/evidence/ontology/knowledge-junit.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-operations-20261030/evidence/ontology/knowledge-test.log.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-operations-20261030/evidence/premium.log.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-operations-20261030/evidence/product-manifest.json",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-operations-20261030/evidence/remote-baseline.json",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-operations-20261030/ontology-result.yaml",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-operations-20261030/quality-result.yaml",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/development/workflow-operations-20261030/user-confirmed.md",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/knowledge/README.md",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0037-record-correction-and-void-control.yaml",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0041-record-control-application-confirmation-start.yaml",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0042-record-control-workflow-stage1-contract.yaml",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0050-form-instance-number.yaml",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0086-record-change-search-scope.yaml",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0087-record-control-v1-closure.yaml",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0088-form-and-change-management-menu-boundary.yaml",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0089-form-instance-number-display.yaml",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0090-dhr-archive-minimum-scope.yaml",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0091-workflow-reassignment-signature.yaml",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0092-workflow-operations-entry-and-actions.yaml",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/knowledge/decisions/archive-DEC-0053-approval-display-terminology.md",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/knowledge/decisions/archive-DEC-0054-form-instance-business-source.md",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/knowledge/evidence/dhr-archive-minimum-20261029.md",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/knowledge/evidence/dhr-archive.yaml",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/knowledge/evidence/dhr-filling-review-confirmed.md",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/knowledge/evidence/form-instance-number-display-user-confirmed.md",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/knowledge/evidence/form-instance-number-display.yaml",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/knowledge/evidence/record-change-form-management-coexistence-user-confirmed.md",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/knowledge/evidence/record-change-search-scope-user-confirmed.md",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/knowledge/evidence/record-change.yaml",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/knowledge/evidence/record-control-dhr-linkage.yaml",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/knowledge/evidence/record-control-integration-2026-10-28.md",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/knowledge/evidence/record-control-v1-user-confirmed.md",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/knowledge/evidence/record-control-v1.yaml",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/knowledge/evidence/record-control-workflow-stage1.yaml",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/knowledge/evidence/workflow-operations-20261030.md",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/knowledge/evidence/workflow-operations-20261030.yaml",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/knowledge/evidence/workflow-reassignment-signature-confirmed.md",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/knowledge/evidence/workflow-reassignment-signature.yaml",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/knowledge/facts/dhr-summary.yaml",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/knowledge/facts/record-control.yaml",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/knowledge/glossary.yaml",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/knowledge/impact-analysis/record-control-workflow-stage1-contract.md",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/knowledge/implementation-anchors/core-business.yaml",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/knowledge/implementation-anchors/workflow-operations.yaml",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/knowledge/ontology.yaml",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/knowledge/open-questions.yaml",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/knowledge/rules/form-instance-number.yaml",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/knowledge/rules/production.yaml",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/knowledge/rules/record-change.yaml",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/reference-assets/research/crown-dhr-change-downstream-20261029/README.md",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/reference-assets/research/crown-dhr-change-downstream-20261029/capability-independent-evidence.json",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/reference-assets/research/crown-dhr-change-downstream-20261029/capability-inventory.md",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/reference-assets/research/crown-dhr-change-downstream-20261029/capability-ontology-archives.json",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/reference-assets/research/crown-dhr-change-downstream-20261029/capability-ontology-junit.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/reference-assets/research/crown-dhr-change-downstream-20261029/capability-ontology-knowledge.txt",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/reference-assets/research/crown-dhr-change-downstream-20261029/capability-ontology-result.yaml",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/reference-assets/research/crown-dhr-change-downstream-20261029/capability-quality-result.yaml",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/reference-assets/research/crown-dhr-change-downstream-20261029/capability-source-manifest.json",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/reference-assets/research/crown-dhr-change-downstream-20261029/capability-tests/TEST-com.zencas.edhr.production.controller.DhrWorkbenchPermissionsTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/reference-assets/research/crown-dhr-change-downstream-20261029/capability-tests/TEST-com.zencas.edhr.production.service.DhrReviewLifecycleIntegrationTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/reference-assets/research/crown-dhr-change-downstream-20261029/capability-tests/TEST-com.zencas.edhr.production.service.DhrReviewServiceTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/reference-assets/research/crown-dhr-change-downstream-20261029/capability-tests/TEST-com.zencas.edhr.production.service.DhrSummaryServiceTest.xml.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/reference-assets/research/crown-dhr-change-downstream-20261029/capability-tests/focused-tests.log.gz",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/reference-assets/research/crown-dhr-change-downstream-20261029/capability-tests/manifest.json",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/reference-assets/research/crown-dhr-change-downstream-20261029/clarification-independent-evidence.json",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/reference-assets/research/crown-dhr-change-downstream-20261029/clarification-ontology-junit.xml",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/reference-assets/research/crown-dhr-change-downstream-20261029/clarification-ontology-knowledge.txt",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/reference-assets/research/crown-dhr-change-downstream-20261029/clarification-ontology-result.yaml",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/reference-assets/research/crown-dhr-change-downstream-20261029/clarification-quality-result.yaml",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/reference-assets/research/crown-dhr-change-downstream-20261029/clarification-round.md",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/reference-assets/research/crown-dhr-change-downstream-20261029/clarification-source-manifest.json",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/reference-assets/research/crown-dhr-change-downstream-20261029/handoff.yaml",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/reference-assets/research/crown-dhr-change-downstream-20261029/independent-evidence.json",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/reference-assets/research/crown-dhr-change-downstream-20261029/independent-final-evidence.json",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/reference-assets/research/crown-dhr-change-downstream-20261029/ontology-knowledge-junit.xml",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/reference-assets/research/crown-dhr-change-downstream-20261029/ontology-knowledge.log",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/reference-assets/research/crown-dhr-change-downstream-20261029/ontology-result.yaml",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/reference-assets/research/crown-dhr-change-downstream-20261029/original-document-excerpts.txt",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/reference-assets/research/crown-dhr-change-downstream-20261029/primary-validation.json",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/reference-assets/research/crown-dhr-change-downstream-20261029/quality-final-result.yaml",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/reference-assets/research/crown-dhr-change-downstream-20261029/quality-result.yaml",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/reference-assets/research/crown-dhr-change-downstream-20261029/source-manifest.json",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/reference-assets/screenshots/2026-10-29-crown-dhr-change/rId588-image583.png",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/reference-assets/screenshots/2026-10-29-crown-dhr-change/rId589-image584.png",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/reference-assets/screenshots/2026-10-29-crown-dhr-change/rId741-image736.png",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "docs/reference-assets/screenshots/2026-10-29-crown-dhr-change/rId743-image738.png",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "gmp-platform/backend/pom.xml",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/controller/SignatureController.java",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/repository/SignatureRepository.java",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/identity/controller/AuthController.java",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrImpactNotificationController.java",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrEvidenceImpactService.java",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrImpactNotificationService.java",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrInstanceService.java",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrPdfRenderer.java",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrReviewService.java",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrSummaryService.java",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormInstanceQueryService.java",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormInstanceRecordService.java",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormProjectionService.java",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormWorklistQuery.java",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/recordcontrol/controller/RecordControlController.java",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/recordcontrol/service/RecordControlDiff.java",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/recordcontrol/service/RecordControlService.java",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/recordcontrol/service/RecordControlTaskActionService.java",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowInstanceController.java",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowLogController.java",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowOperationsController.java",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowTaskController.java",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/entity/WorkflowTask.java",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/repository/WorkflowActionLogRepository.java",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/repository/WorkflowInstanceRepository.java",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/repository/WorkflowTaskRepository.java",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/WorkflowOperationsQuery.java",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/WorkflowResponsibilityService.java",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/resources/application.yml",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/resources/db/changelog/0087-record-control.sql",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/resources/db/changelog/0088-record-change-menu-permissions.sql",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/resources/db/changelog/0089-record-control-dhr-linkage.sql",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/resources/db/changelog/0090-workflow-operations.sql",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/resources/db/changelog/db.changelog-master.yaml",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/common/config/CurrentDatabaseBaselinePostgresTest.java",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/common/config/CurrentDatabaseBaselineTest.java",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/DhrGenericAccessTest.java",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionExecutionIntegrationTest.java",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrEvidenceBatchPostgresTest.java",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrReviewLifecycleIntegrationTest.java",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrReviewServiceTest.java",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrSummaryPersistenceTest.java",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/ExecutionAccessTest.java",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/FormTraceIndexPostgresTest.java",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/RecordFormManagementMenuMigrationTest.java",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/recordcontrol/service/RecordControlAccessTest.java",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/recordcontrol/service/RecordControlDiffTest.java",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/recordcontrol/service/RecordControlMigrationTest.java",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/recordcontrol/service/RecordControlPostgresIntegrationTest.java",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/recordcontrol/service/RecordControlTaskActionServiceTest.java",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/WorkflowInstanceAuthorizationIntegrationTest.java",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/WorkflowTaskControllerTest.java",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/engine/WorkflowEngineTest.java",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/entity/WorkflowActionLogTest.java",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "gmp-platform/frontend/scripts/test-dhr-workspace-navigation.mjs",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "gmp-platform/frontend/scripts/test-records-menu.mjs",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "gmp-platform/frontend/scripts/test-report-menu-navigation.mjs",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "gmp-platform/frontend/scripts/verify-app-shell-topbar.mjs",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "gmp-platform/frontend/scripts/verify-list-table-style-contract.mjs",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "gmp-platform/frontend/src/api/dhr-impact-notifications.ts",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "gmp-platform/frontend/src/api/record-control-workflow.ts",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "gmp-platform/frontend/src/api/record-control.ts",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "gmp-platform/frontend/src/api/workflow-operations.ts",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "gmp-platform/frontend/src/components/ConfirmDialog.tsx",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "gmp-platform/frontend/src/components/shared/AppLayout.tsx",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "gmp-platform/frontend/src/components/shared/DhrImpactNotifications.tsx",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "gmp-platform/frontend/src/components/workflow/WorkflowResponsibilityDialog.tsx",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/dhr-management/DhrFillingPage.tsx",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/dhr-management/DhrManagementPage.tsx",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/dhr-management/DhrReviewPage.tsx",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/dhr-management/DhrSummaryPage.tsx",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/dhr-management/DhrWorkspaceNavigation.tsx",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/dhr-management/dhrSourceNavigation.ts",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/tabs/model/FormInstanceDetailDrawer.tsx",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/tabs/model/ModelTab.tsx",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/record-control/RecordApprovalDetailPage.tsx",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/record-control/RecordApprovalPage.tsx",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/record-control/RecordChangePage.tsx",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/record-control/RecordRequestDetailPage.tsx",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/record-control/RecordRequestListPage.tsx",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/system/MenuManagementPage.tsx",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/workflow-center/InstanceDetail.tsx",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/workflow-center/InstanceList.tsx",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/workflow-center/InstanceLogs.tsx",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/workflow-center/WorkflowInstancePanel.tsx",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "gmp-platform/frontend/src/router/index.tsx",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "gmp-platform/frontend/src/utils/constants.ts",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "gmp-platform/frontend/src/utils/menuManagement.ts",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    },
+    {
+      "path": "gmp-platform/frontend/vite.dhr-print.config.ts",
+      "reviewStatus": "pending",
+      "conclusion": "pending"
+    }
+  ],
+  "disposition": "New record-control/DHR/workflow implementations exist and require incremental audit; old unimplemented deferral no longer describes current source, but existing findings/gaps not automatically closed."
+}

@@ -1,0 +1,760 @@
+# eDHR 智能体统一交接契约
+
+本契约定义主智能体向专业智能体提供的业务决策包，以及专业智能体返回本体结果和质量结果时使用的统一 YAML 格式。字段名统一使用 camelCase。
+
+下列内容是格式示例。示例 ID、版本、提交哈希和数组内容不代表真实项目结论；每次实际任务均由主智能体根据已确认的业务讨论自动生成，用户不填写决策包、结果表或知识文件。所有未发生的列表字段也必须保留并使用空列表 `[]`，不得省略。
+
+## 契约基线
+
+`decisionPackage`、`ontologyResult` 和 `qualityResult` 共用 `contractBaseline`，记录各自实际读取和核对的版本：
+
+- `sourceCommit`：本次功能分支或工作树的 HEAD，使用完整 Git 提交哈希。
+- `targetBranch`、`targetCommit`：拟集成分支及最近一次获取并核对的完整提交哈希；无跨分支集成时可与来源基线相同。
+- `contractReadCommit`：实际读取项目、角色和交接契约时采用的完整提交哈希，不能因为执行了 fetch 就填写为最新值。
+- `uncommittedContractPaths`：在上述契约提交之外，实际读取的未提交契约修改路径；没有则使用 `[]`。不得为工作树编造提交哈希，结果证据应能定位对应差异。
+
+知识版本相同不证明两分支契约、决策或内容相同。开始、恢复和集成时先核对目标契约增量，再在安全检查点重新加载适用契约，并在原交接中更新基线和受影响范围。角色发现基线变化时增量重放已确认结论，只有真实且无法消解的业务冲突才阻断依赖范围。
+
+本交接格式由主智能体和专业角色核对；`docs/knowledge/schema.yaml` 及知识 CI 不自动验证这些工作流字段、自然语言替代范围或智能体是否重读了契约。声明机器门禁时必须给出实际校验入口和证据。
+
+## `decisionPackage`
+
+主智能体在派发本体建模任务前生成 `decisionPackage`。`confirmed` 只包含用户已确认或现有权威资产已明确规定的结论；合理推断放入 `inferred`；仍需业务判断的内容放入 `unresolved`。
+
+```yaml
+decisionPackage:
+  id: DEC-PACKAGE-20260808-001
+  scope: product-process
+  knowledgeBaselineVersion: 0.3.0
+  contractBaseline:
+    sourceCommit: "1111111111111111111111111111111111111111"
+    targetBranch: edhr-dev
+    targetCommit: "0000000000000000000000000000000000000000"
+    contractReadCommit: "0000000000000000000000000000000000000000"
+    uncommittedContractPaths: []
+  summary: 为产品制程版本补充已确认的业务关系
+  confirmed:
+    concepts:
+      - id: concept.product-process-version
+        name: 产品制程版本
+        definition: 产品下可被生产任务显式选择的具体制程配置
+        status: implemented
+        sourceReferences:
+          - docs/architecture/business-knowledge-model.md
+    relationships:
+      - id: relation.product-has-process-versions
+        sourceId: concept.product
+        targetId: concept.product-process-version
+        cardinality: one-to-many
+        description: 一个产品可以拥有多个并行制程版本
+        sourceReferences:
+          - docs/architecture/business-knowledge-model.md
+    rules:
+      - id: rule.process-version-explicit-selection
+        name: 显式选择产品制程版本
+        status: implemented
+        trigger: production-order.configure
+        condition:
+          all:
+            - fact: product.availableProcessVersionCount
+              operator: greater-than-or-equal
+              value: 1
+        result:
+          type: persist-reference
+          target: productionOrder.productProcessVersionId
+          valueFrom: selectedProductProcessVersion.id
+        sourceReferences:
+          - docs/architecture/business-knowledge-model.md
+    executionContracts:
+      - id: execution.process-version-selection
+        ruleId: rule.process-version-explicit-selection
+        action: 保存并读取生产任务选择的产品制程版本
+        implementationReferences:
+          - gmp-platform/backend/src/main
+        evidenceIds:
+          - evidence.process-version-selection
+  inferred:
+    - id: inference.process-version-api-impact
+      statement: 该规则可能影响生产任务配置接口
+      rationale: 规则结果需要持久化制程版本引用
+      relatedIds:
+        - rule.process-version-explicit-selection
+  unresolved: []
+  replacementScopes: []
+  impactAnalysis:
+    level: L1
+    directImpacts:
+      - area: product-process
+        change: 生产任务配置需要保存显式选择的产品制程版本
+        evidenceReferences:
+          - docs/knowledge/rules/product-process.yaml
+    transitiveImpacts: []
+    potentialImpacts:
+      - area: production-order
+        concern: 生产任务接口可能需要增加制程版本引用
+        evidenceReferences: []
+    unaffectedAreas: []
+    compatibilityAndMigration: []
+    snapshotImpacts: []
+    auditImpacts: []
+    permissionImpacts: []
+    testImpacts:
+      - scope: production-order
+        scenarios: [保存选择、重新读取、历史快照]
+        evidenceReferences: []
+    evidenceGaps:
+      - 生产任务模块尚未实现，后续开发时核对持久化和快照契约
+  extensionStrategy:
+    selectedPaths: [product-core]
+    rationale: 显式保存制程版本属于可复用的标准生产能力，不应作为客户项目条件分支实现
+    ownershipBoundaries:
+      - owner: production-order
+        responsibility: 保存生产任务选择的制程版本并形成后续执行引用
+  affectedFiles:
+    - path: docs/knowledge/rules/product-process.yaml
+      changeType: update
+      reason: 记录已确认的制程版本选择规则
+  acceptanceScenarios:
+    - id: scenario.explicit-process-version-selection
+      given: 产品存在两个可用制程版本
+      when: 用户创建生产任务并选择其中一个版本
+      then: 生产任务保存且后续读取同一版本标识
+      evidenceRequirements:
+        - 集成测试结果
+        - 持久化数据记录
+```
+
+顶层字段：
+
+- `id`：本次决策包的唯一标识，不复用历史标识。
+- `scope`：本次交付的业务边界。
+- `knowledgeBaselineVersion`：生成决策包时读取的知识基线版本。
+- `contractBaseline`：来源、目标和实际读取契约的 Git 基线，格式见“契约基线”。
+- `summary`：已确认变更的简要说明。
+- `confirmed`：可以进入权威知识模型的概念、关系、规则和执行契约。
+- `inferred`：便于分析的候选推断，不得直接写成正式规则。
+- `unresolved`：必须由用户确认的问题，不得由智能体自行补全。
+- `replacementScopes`：本次需要落实的已确认声明级替代；没有则为空。记录错误按已有证据纠正，不为纠错伪造新政策。
+- `impactAnalysis`：按 L1 或 L2 深度记录直接、传递、潜在、不受影响、兼容迁移和证据缺口；它是当前证据下的影响判断，不代表自动完整依赖图。
+- `extensionStrategy`：记录配置、事务编排、标准动作、项目插件或产品内核等选定路径、依据和所有权边界。
+- `affectedFiles`：预计受影响的知识、代码、数据库、接口、界面和测试文件。
+- `acceptanceScenarios`：可独立验证的业务验收场景。
+
+列表项字段：
+
+- `concepts[]`：`id`、`name`、`definition`、`status`、`sourceReferences`。
+- `relationships[]`：`id`、`sourceId`、`targetId`、`cardinality`、`description`、`sourceReferences`。
+- `rules[]`：`id`、`name`、`status`、`trigger`、`condition`、`result`、`sourceReferences`；`condition` 和 `result` 必须是结构化对象，不得使用自然语言字符串替代整个对象。
+- `executionContracts[]`：`id`、`ruleId`、`action`、`implementationReferences`、`evidenceIds`。
+- `inferred[]`：`id`、`statement`、`rationale`、`relatedIds`。
+- `unresolved[]`：`id`、`question`、`context`、`options`、`impact`。
+- `replacementScopes[]`：`decisionStatementId`、`supersededStatementIds`、`scope`、`retainedScope`、`sourceReferences`；分别定位已确认的新声明、被替代的旧声明、精确适用范围、仍保留的旧范围和确认来源。决策级 `supersedes` 不表示整份旧决策全部失效。
+- `impactAnalysis.level`：只能是 `L1` 或 `L2`；L0 不生成正式决策包影响分析。
+- `impactAnalysis.directImpacts[]`：已确认直接受影响的领域、行为和证据。
+- `impactAnalysis.transitiveImpacts[]`：通过关系、事件、调用、快照或下游读取产生的传递影响。
+- `impactAnalysis.potentialImpacts[]`：证据不足但可能受影响的范围，不得伪装成已确认事实。
+- `impactAnalysis.unaffectedAreas[]`：经核对可以排除且对方案边界有价值的相邻范围。
+- `impactAnalysis.compatibilityAndMigration[]`：历史数据、存量实例、版本快照、迁移和回滚影响。
+- `impactAnalysis.snapshotImpacts[]`：生产对象、规则、事务和配置快照影响。
+- `impactAnalysis.auditImpacts[]`：审计事件、字段、追溯和证据链影响。
+- `impactAnalysis.permissionImpacts[]`：角色、权限、签名和数据访问影响。
+- `impactAnalysis.testImpacts[]`：需要新增或回归的单元、集成、API、E2E、视觉、迁移和审计场景。
+- `impactAnalysis.evidenceGaps[]`：仍缺少的实现证据及后续查证条件。
+- `extensionStrategy.selectedPaths[]`：只能使用 `configuration`、`transaction-orchestration`、`standard-action`、`project-plugin`、`product-core`。
+- `extensionStrategy.rationale`：选择当前扩展路径的业务和工程依据。
+- `extensionStrategy.ownershipBoundaries[]`：代码、配置、规则或插件的明确所有者和责任边界。
+- `affectedFiles[]`：`path`、`changeType`、`reason`；`changeType` 只能是 `create`、`update`、`delete` 或 `read-only`。
+- `acceptanceScenarios[]`：`id`、`given`、`when`、`then`、`evidenceRequirements`。
+
+### 本体升级阶段字段
+
+涉及知识模型基础设施、本体能力或影响分析机制的 `decisionPackage` 必须额外包含：
+
+```yaml
+ontologyRoadmap:
+  currentStage: P0
+  targetOutcome: 让规则事实和实现证据可解析、可追溯并支持可复核影响分析
+  entryCriteria:
+    - 当前阶段开始依据
+  exitCriteria:
+    - 当前阶段完成条件
+  explicitNonGoals:
+    - 本阶段不引入 OWL/RDF 推理器
+  nextStage: P1
+```
+
+阶段含义固定如下：
+
+- `P0`：事实目录、实现锚点、最小 provenance、正式校验和一个稳定领域试点。
+- `P1`：关系 domain/range、反向关系、查询投影、结构化影响路径和冲突检查。
+- `P2`：知识发布 manifest、时间版本、历史解释和审计回放。
+- `P3`：JSON-LD/RDF/OWL/SHACL 映射、标准互操作和受控推理。
+
+P1 的整体实现收敛以 P0 退出证据为前提；P2 由真实的历史解释、审计回放或跨版本运行需求触发；P3 由真实的外部互操作或推理需求触发。有明确用途的稳定 ID 映射、JSON-LD/SHACL 小范围试点或其他后续准备可以在 P0/P1 提前实施，交接中须写明依赖、验证、所有权、回滚方式和剩余缺口，不能据此升级整个阶段状态。
+
+可执行的通用业务规则层可作为独立交付切片并行推进；生产使用前必须闭环确定性的类型/操作符/异常与执行契约，以及不可变规则、配置、目录版本和必要事实依据。最小版本保障按生产需求从 P2 提前落实；RDF/OWL 映射完成不等于运行引擎完成。阶段目标不要求同一功能切片完成所有阶段。
+
+示例中的 `inferred` 不表示可以写入权威模型。主示例的 `unresolved` 为空，因此可以在没有其他冲突时对应后文的 `ontologyResult.result: updated`。
+
+### 由主智能体维护的试点引导
+
+当前 MVP 功能开发优先，试点全项目累计限于 1–2 个代表性业务功能，不按模块、会话、Agent 或 P0/P1 等阶段重置。主智能体先核对已有试点及证据，优先复用或补齐原功能；一个功能满足本期验证目标即可停止新增，第二个只补充不同关键能力，不凑数。普通开发保留必要知识同步和路线兼容，不输出例行试点评估或“不做试点”的说明，也不要求额外计划。
+
+只有真实功能需求存在已有证据未覆盖的关键路径、且适合在上述范围内验证时，主智能体才低频提出候选，并在同一 `ontologyRoadmap` 中增加 `pilotPlan`。计划引用已选功能及其实际证据以核对累计范围，不新增由用户维护的台账；超出范围不自动扩张，必要修复与验收仍按风险实施。以下仅为已选试点的结构示例，由智能体维护：
+
+```yaml
+pilotPlan:
+  kind: semantic-foundation
+  status: candidate
+  businessScope: 已有表单流程版本引用与绑定功能的代表性语义验证
+  relatedKnowledgeIds: []
+  dependencies: []
+  steps:
+    - id: pilot-step-1
+      action: 核实已有试点的当前定义、实现证据及未覆盖的目标
+      exitEvidence: 能定位到已确认语义及正反例；缺口逐项列明
+      status: planned
+      evidence: []
+  rollback: 保留原始定义及证据；撤回本次不成立的派生说明，不改写历史事实
+  nextAction: 对照已有证据确认是否只需补齐原试点，避免新增重复功能
+```
+
+- `kind`：`semantic-foundation | relationship-query | historical-explanation | standards-validation | rule-execution`。分别对应语义基础、关系查询、历史解释、标准映射/约束验证和通用规则执行，不得混用其通过结论。
+- `status`：`candidate | active | deferred | completed | blocked`；`candidate` 表示方案候选，不自动新增一项用户审批。
+- `businessScope`、`relatedKnowledgeIds`：本次功能边界和实际受影响的知识；具体价值写入现有 `targetOutcome`，验收写入 `exitCriteria` / `acceptanceScenarios`，不另造重复报告。
+- `dependencies`：必要前置项及当前缺口；不得以试点输出绕过依赖。
+- `steps[]`：`id`、`action`、`exitEvidence`、`status`、`evidence`；步骤状态为 `planned | in-progress | completed | deferred | blocked`，`evidence` 只填写实际获得的命令结果、来源或产物。
+- `rollback`、`nextAction`：撤回方式及当前可以继续执行的具体工作。
+
+在现有授权范围内，主智能体给出计划后连续推进并更新证据；仅对真正业务歧义、产品取舍或新增重大范围询问用户，不能把“逐步引导”变成每一步重复批准。复用同一功能切片及同一个计划，基线变化时增量更新。收尾以 `ontologyResult.knowledgeSync` 和 `qualityResult.checks` 承接对应知识与验证结果，不为试点新增长期角色。
+
+标准试点的最小验收是映射含义明确、正反例及差异可解释；规则执行试点还须验证事实读取、确定性求值、动作/权限/事务边界及不可变执行依据，按实际风险执行相应门禁。任一局部试点完成均不自动表示 P0/P1/P2/P3 整阶段完成。
+
+### 存量知识全量审计范围与进度
+
+全量审计任务沿用 `decisionPackage` 和 `contractBaseline`，在 `scope` 中明确分支、提交、资产范围及历史处理原则。使用单独清单固定覆盖分母，并与 schema 的顶层、嵌套记录映射核对；术语、概念、关系、事实、规则、执行契约、决策声明、验收场景、实现差异、证据、实现锚点和开放问题均须可追踪。Markdown 证据和说明按文件单独登记，不因没有 ID 而忽略。并行分支及其合并候选使用独立基线；不能用一个分支的清单证明另一个分支已审计。
+
+每个审计记录至少保留：`id`、`recordType`、`sourcePath`、`sourceLocator`、原资产成熟度、审计范围分类、语义核对状态、结论及原始证据引用。清单生成时必须为待审状态，不得从 `implemented`、`reviewed`、文件存在或 schema 通过自动生成“一致”。每条完成的语义核对还应说明核对了哪些当前决策、对应实现和相邻关系；运行验证范围单独记录。
+
+审计结论：
+
+| 值 | 含义 |
+|---|---|
+| `pending` | 已进入清单，尚未完成逐条语义核对 |
+| `consistent` | 在明确范围内，当前定义、已确认决策及实际核对的证据一致 |
+| `needs-fix` | 已确认记录错误或实现差异；列出具体问题和修复依据 |
+| `superseded` | 明确为历史或已被替代；保留原文与来源，并定位当前适用定义 |
+| `needs-decision` | 真实业务含义仍需用户决定，不由 AI 推测补齐 |
+| `evidence-gap` | 定义可理解，但所需实现、测试或来源证据不足 |
+
+语义核对使用 `pending | reviewed`；`reviewed` 不等于 `consistent`。整改使用独立的问题状态及修复提交/证据，不能用“已发现问题”代替“已修复”。汇总分别列出全量盘点数、已语义核对数、待审数、各结论数量、待修数量及实际运行验证范围；当前有效、历史和支撑资产分别统计。未完成或证据不足不得计入一致通过，不能对覆盖率不明的工作声称“全盘已对齐”。
+
+这是一项明确授权的专项范围，不取代普通功能按改动增量维护的规则。审计可分域分批交付，但全部清单未核对前只能说明相应批次完成。更新基线后保留已获得的有效证据，对变更及关联影响重新核对，不覆盖或伪造旧结果。审计清单属于研发交付记录，不自动获得业务规则的 `verified` 或运行资格；当前知识 CI 不自动验证这些审计记录的全部语义。
+
+### 影响分析深度与效率约束
+
+- L1 只要求精简摘要：直接影响、主要相邻风险、证据缺口、测试影响和扩展路径。其余列表无实际内容时使用 `[]`，不得为了填满结构扩大分析范围。
+- L2 才要求完整覆盖直接、传递、潜在、不受影响、兼容迁移、快照、审计、权限和测试影响。
+- 同一功能切片连续调试时更新同一个 `decisionPackage`，不得为每次微调重新生成一份。
+- 影响分析不得成为无依赖编码的前置等待项；主智能体先完成足以决定边界和风险的最小分析，后续随实现证据增量收敛。
+- `affectedFiles` 是准备修改或核对的具体文件，`impactAnalysis` 是业务与系统影响判断，两者不能相互替代。
+
+### 独立阻断示例
+
+以下示例独立于主示例，展示未决问题影响本次交付时的结果。默认选择规则属于依赖范围，不能写入权威模型，`ontologyResult.result` 必须为 `blocked-by-question`。无依赖的已确认知识仍可同步，但不得因此宣称包含该未决范围的整个任务完成。
+
+```yaml
+blockingExample:
+  unresolved:
+    - id: question.process-version-default
+      question: 存在多个制程版本时是否允许默认选择
+      context: 默认选择会影响生产任务配置行为
+      options:
+        - 必须由用户显式选择
+        - 允许按已批准规则默认选择
+      impact: 未确认前不得建立默认选择规则
+  requiredOntologyResult:
+    result: blocked-by-question
+```
+
+## `ontologyResult`
+
+业务知识本体建模智能体必须返回以下结构，`ontologyResult.result` 只能是 `updated`、`not-applicable`、`blocked-by-question` 或 `conflict`。
+
+```yaml
+ontologyResult:
+  result: updated
+  baselineBefore: 0.3.0
+  baselineAfter: 0.3.1
+  contractBaseline:
+    sourceCommit: "1111111111111111111111111111111111111111"
+    targetBranch: edhr-dev
+    targetCommit: "0000000000000000000000000000000000000000"
+    contractReadCommit: "0000000000000000000000000000000000000000"
+    uncommittedContractPaths: []
+  reason: 已确认关系已写入知识基线
+  changedArtifacts:
+    - path: docs/knowledge/ontology.yaml
+      changeType: update
+      ids:
+        - relation.product-has-process-versions
+  knowledgeSync:
+    - id: relation.product-has-process-versions
+      disposition: updated
+      scope: 当前关系明确产品可拥有多个并行制程版本
+      sourceReferences:
+        - docs/architecture/business-knowledge-model.md
+  conflicts: []
+  questions: []
+  validationEvidence:
+    - id: validation.yaml-parse
+      checkType: schema
+      command: ruby scripts/validate-knowledge.rb
+      outcome: passed
+      evidence:
+        - 命令退出码为 0
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages: [P1, P2, P3]
+```
+
+顶层字段：
+
+- `baselineBefore`：角色开始工作时实际读取的知识基线版本。
+- `baselineAfter`：工作完成后的版本；未更新时与 `baselineBefore` 相同。
+- `contractBaseline`：本角色实际使用的契约和提交基线；不能直接复制未经核对的决策包值。
+- `reason`：返回该结果的具体依据；`not-applicable` 时必须说明为什么不影响业务语义。
+- `changedArtifacts`：本次实际修改的知识资产；未修改时为空。
+- `knowledgeSync`：按受影响 ID 记录当前定义的同步处置及依据；不影响知识时为空，已确认局部替代须对应 `replacementScopes`。
+- `conflicts`：无法消解的语义或适用范围冲突；记录证据和依赖范围。已明确确认的替代按其范围落实，不需要再次批准。
+- `questions`：需要用户判断的问题，必须可直接回答。
+- `validationEvidence`：结构校验、引用校验、状态投影校验及实现核对证据。
+- `roadmapProgress`：本次本体任务对应的阶段进度；包含 `stage`、`status`、`exitCriteriaEvidence` 和暂缓阶段。没有退出证据时不得把阶段标记为 `verified`。
+
+列表项字段：
+
+- `changedArtifacts[]`：`path`、`changeType`、`ids`。
+- `knowledgeSync[]`：`id`、`disposition`、`scope`、`sourceReferences`；`disposition` 只能是 `updated | retained | historical | deferred`。`scope` 说明更新或保留的具体含义、局部替代边界；暂缓时说明原因、依赖与交付影响，ID 重分配时保留旧到新映射。无差异且无影响的 ID 不必逐条罗列。
+- `conflicts[]`：`id`、`incomingStatement`、`existingStatement`、`evidence`、`requiredResolution`。
+- `questions[]`：`id`、`question`、`context`、`options`、`impact`；字段含义与 `unresolved[]` 一致。
+- `validationEvidence[]`：`id`、`checkType`、`command`、`outcome`、`evidence`。
+
+`validationEvidence` 枚举与结果约束：
+
+- `validationEvidence[].checkType` 只能是 `schema | reference | status-transition | projection | evidence-path`。
+- `validationEvidence[].outcome` 只能是 `passed | failed | blocked`。
+- `roadmapProgress.stage` 只能是 `P0 | P1 | P2 | P3`。
+- `roadmapProgress.status` 只能是 `planned | in-progress | verified | blocked`。
+- 当 `ontologyResult.result` 为 `updated` 时，`validationEvidence` 必须非空，且每个 `validationEvidence[].outcome` 都必须为 `passed`。
+- 当 `roadmapProgress.status` 为 `verified` 时，`exitCriteriaEvidence` 必须非空，并且必须逐项对应当前阶段的退出条件；没有这些证据时只能使用 `in-progress` 或 `blocked`。
+
+`conflicts` 和 `questions` 的非空项格式如下：
+
+```yaml
+conflicts:
+  - id: conflict.process-version-cardinality
+    incomingStatement: 产品只能拥有一个制程版本
+    existingStatement: 产品可以拥有多个并行制程版本
+    evidence:
+      - docs/architecture/business-knowledge-model.md
+    requiredResolution: 由用户确认适用关系并决定是否替代历史决策
+questions:
+  - id: question.process-version-default
+    question: 存在多个制程版本时是否允许默认选择
+    context: 默认选择会影响生产任务配置行为
+    options:
+      - 必须由用户显式选择
+      - 允许按已批准规则默认选择
+    impact: 未确认前不得建立默认选择规则
+```
+
+结果语义：
+
+- `updated`：知识资产已更新并通过适用校验。
+- `not-applicable`：变更不影响业务语义，且 `reason` 已说明依据。
+- `blocked-by-question`：存在必须由用户确认的业务问题。
+- `conflict`：已确认输入与当前知识模型存在无法消解的语义或适用范围冲突，无法安全合并。
+
+## `qualityResult`
+
+质量验证智能体必须返回以下结构，`qualityResult.result` 只能是 `passed`、`failed` 或 `blocked`。`baseCommit` 和 `headCommit` 定义提交区间，`workingTreeState` 定义该区间之外是否还包含工作树变更。
+
+```yaml
+qualityResult:
+  result: passed
+  baseCommit: "0000000000000000000000000000000000000000"
+  headCommit: "1111111111111111111111111111111111111111"
+  contractBaseline:
+    sourceCommit: "1111111111111111111111111111111111111111"
+    targetBranch: edhr-dev
+    targetCommit: "0000000000000000000000000000000000000000"
+    contractReadCommit: "0000000000000000000000000000000000000000"
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: clean
+    includedPaths: []
+    excludedPaths: []
+    untrackedPaths: []
+  knowledgeBaselineVersion: 0.3.1
+  checks:
+    - id: check.contract-keywords
+      required: true
+      category: documentation
+      description: 检查强制状态和质量独立性规则
+      method: command
+      command: rg -n "blocked-by-question|passed" AGENTS.md docs/agents
+      outcome: passed
+      evidence:
+        - 命令退出码为 0
+  findings: []
+  residualRisks: []
+  blockingConditions: []
+```
+
+顶层字段：
+
+- `baseCommit`：审查范围起点提交，使用完整 Git 哈希，不包含该提交本身。
+- `headCommit`：审查范围终点提交，使用完整 Git 哈希并包含该提交。
+- `contractBaseline`：质量角色独立核对的来源、目标和实际读取契约提交；知识版本号相同不免除契约差异核对。
+- `workingTreeState`：包含 `status`、`includedPaths`、`excludedPaths` 和 `untrackedPaths`；`status` 只能是 `clean` 或 `dirty`。若为 `dirty`，必须明确哪些工作树路径在审查范围内。
+- `knowledgeBaselineVersion`：验证需求和业务规则时实际读取的知识基线版本。
+- `checks`：执行过的审查、测试、迁移、浏览器或证据核对项及结果。
+- `findings`：可复现问题列表。
+- `residualRisks`：已验证范围之外仍需披露的风险。
+- `blockingConditions`：环境、数据或依赖阻塞；无阻塞时为空。
+
+合并验收必须在相关 `checks[].evidence` 中记录实际目标 base、功能 head 和被测试的合并候选提交；若候选含未提交内容，同时用 `workingTreeState` 与差异证据标明范围。检查合并后知识 ID、引用、类型和已确认替代的一致性；目标或功能提交更新后，重新评估影响并重跑适用检查。评估不受影响的人工结论可以说明依据后复用，旧提交的 CI 通过不能代替当前候选的必需检查。
+
+列表项字段：
+
+- `checks[]`：`id`、`required`、`category`、`description`、`method`、`command`、`outcome`、`evidence`。
+- `findings[]`：`id`、`severity`、`scope`、`summary`、`reproductionSteps`、`expectedResult`、`actualResult`、`evidence`、`resolutionStatus`、`resolutionEvidence`。
+- `resolutionEvidence[]`：`type`、`reference`。
+- `residualRisks[]`：`id`、`description`、`impact`、`mitigation`。
+- `blockingConditions[]`：`id`、`condition`、`impact`、`requiredAction`、`owner`。
+
+`checks` 枚举与结果约束：
+
+- `checks[].category` 只能是 `requirements | ontology | unit | integration | api | database | audit | security | e2e | visual | regression | documentation`。
+- `checks[].method` 只能是 `command | inspection | browser | query | automated-test`。
+- `checks[].outcome` 只能是 `passed | failed | blocked`。
+- `checks[].required` 必须是 YAML 布尔值 `true | false`。
+
+每个发现使用以下格式：
+
+```yaml
+findings:
+  - id: QF-001
+    severity: high
+    scope: product-process
+    summary: 保存后未持久化所选制程版本
+    reproductionSteps:
+      - 创建包含两个制程版本的产品
+      - 创建生产任务并选择第二个制程版本
+      - 保存后重新打开生产任务
+    expectedResult: 页面和接口返回第二个制程版本
+    actualResult: 页面和接口返回第一个制程版本
+    evidence:
+      - artifacts/QF-001-response.json
+    resolutionStatus: resolved
+    resolutionEvidence:
+      - type: commit
+        reference: "2222222222222222222222222222222222222222"
+```
+
+`finding.severity` 只能是：
+
+- `critical`：造成患者安全、法规合规、数据完整性或核心生产流程不可接受风险，必须立即阻断交付。
+- `high`：主要业务流程错误、重要数据或权限错误，没有可接受规避方式，必须在交付前修复。
+- `medium`：局部行为或非核心流程不符合要求，存在可控规避方式，但仍需排期修复并明确交付影响。
+- `low`：轻微一致性、可用性或维护性问题，不阻断当前交付，但必须记录处置决定。
+
+`finding` 解决字段约束：
+
+- `findings[].resolutionStatus` 只能是 `open | resolved`。
+- `findings[].resolutionEvidence[].type` 只能是 `commit | command | screenshot | audit-record | document`。
+- `findings[].resolutionEvidence[].reference` 必须是非空的提交哈希、命令输出定位、截图路径、审计记录标识或文档路径。
+- `resolutionStatus` 为 `open` 时，`resolutionEvidence` 可以为空；为 `resolved` 时，必须提供足以定位修复和复核结果的证据。
+
+阻塞条件使用以下格式：
+
+```yaml
+blockingConditions:
+  - id: block.test-database-unavailable
+    condition: 测试数据库不可用
+    impact: 无法执行数据库迁移和持久化回归
+    requiredAction: 恢复测试数据库并重新运行检查
+    owner: environment-maintainer
+```
+
+## 质量结果不变量
+
+- 当 `qualityResult.result` 为 `passed` 时：`checks` 必须非空；至少一个 `checks[].required` 为 `true`；所有 `required: true` 的 `checks[].outcome` 都必须为 `passed`；`blockingConditions` 必须为空；`findings` 中不得存在 `resolutionStatus: open` 的 `critical` 或 `high` 项；已标记为 `resolved` 的 `critical` 或 `high` 项必须有非空 `resolutionEvidence`，并由未参与修复的全新质量验证实例复核相关 `checks[].outcome` 为 `passed`。
+- 当 `qualityResult.result` 为 `failed` 时，必须至少有一个 `checks[].outcome` 为 `failed`，或至少有一个 `findings[].resolutionStatus` 为 `open`。
+- 当 `qualityResult.result` 为 `blocked` 时，`blockingConditions` 必须非空，且至少有一个 `checks[].outcome` 为 `blocked`。
+
+结果语义：
+
+- `passed`：所需证据完整，适用检查通过，且不存在影响交付的发现。
+- `failed`：存在需要主智能体或独立实现子智能体修复的可复现问题。
+- `blocked`：环境、数据或依赖不足，无法形成有效验证结论。
+# 业务知识本体建模智能体
+
+本角色是 eDHR 的长期固定专业角色，按任务实例化。职责是维护业务知识的结构、来源、状态和可追溯性，不负责实现生产运行逻辑。
+
+## 必读资料
+
+每个实例开始工作前必须读取：
+
+1. `AGENTS.md`
+2. `docs/agents/agent-handoff-contract.md`
+3. `docs/architecture/business-knowledge-model.md`
+4. `docs/knowledge/README.md`
+5. `docs/knowledge/open-questions.yaml`
+6. 当前 `decisionPackage` 指向的影响分析、扩展路径、知识、决策、证据、代码、数据库、接口和测试文件
+
+必须确认并在 `ontologyResult` 中报告实际读取的知识基线版本与 `contractBaseline`。比较决策包和目标分支的实际提交与契约增量；即使知识版本号相同，也应核对并行分支的决策、ID 和语义差异。基线不同时，先判断能否重放已确认决策；只有影响当前范围且无法消解的冲突才返回 `conflict` 或 `blocked-by-question`。
+
+## 文件所有权
+
+本角色可修改：
+
+- `docs/knowledge/**`
+- 与知识结构直接相关的 `docs/architecture/**` 说明
+
+本角色不得修改业务运行代码、数据库迁移、生产接口或用户界面。实现核对只读取这些资产并记录证据；发现实现问题时提交给主智能体处理。
+
+## 工作流程
+
+1. 校验 `decisionPackage` 的标识、范围、知识基线、契约基线和必需交接字段。
+2. 加载当前知识基线、未决问题、相关历史决策及被替代关系。
+3. 将 `confirmed` 与现有概念、关系、规则、状态、执行契约和证据逐项比对。
+4. 核对 `impactAnalysis` 中与业务语义相关的模块归属、接口、持久化、页面、审计、测试和快照证据链接；只同步当前功能切片确认且可复用的知识，不重新执行一遍主智能体已经完成的全仓影响分析。
+5. 对 `unresolved` 明确受影响 ID 和依赖范围；该范围停止正式建模，整理最小可回答问题并返回 `blocked-by-question`，其余已确认且无依赖的知识可继续同步。
+6. `inferred`、`potentialImpacts` 和 `evidenceGaps` 只作为候选说明，不得写入权威规则或伪装成已确认事实。
+7. 按下述同步规则区分记录错误、已确认替代和真正冲突；已明确确认的替代直接按范围落实，无法判断适用范围时保留双方证据并返回 `conflict`。
+8. 更新受影响的当前词典、本体、事实、规则、决策、证据、开放问题和人员阅读说明；在 `knowledgeSync` 中逐项记录受影响 ID 的处置，使用声明级替代范围解释 `supersedes` 并保留历史。
+9. 校验 YAML 结构、标识唯一性、引用完整性、状态迁移和投影边界。
+10. 核对知识模型与实现证据；只有同时具备实现证据、测试证据和执行契约的规则才可标记为 `verified`。
+11. 按统一交接契约返回一个 `ontologyResult`。
+
+规划能力只能进入内部知识投影。`planned`、`specified` 或尚未完成验证的能力不得进入客户知识投影或运行时投影。
+
+## 当前定义与历史证据的同步
+
+| 情况 | 当前资产处理 | 来源与历史处理 |
+|------|--------------|----------------|
+| 知识记录错误 | 按已有确认来源修正类型、关系或定义，不改变已确认业务政策 | 记录纠错依据及原始来源；不伪造一次产品政策变更 |
+| 已确认业务政策替代 | 同步受影响的当前术语、概念、关系、事实和规则 | 指明新声明 ID、被替代声明 ID、替代范围和仍保留范围；已确认内容无需重复批准 |
+| 未决歧义或无法消解的冲突 | 暂停依赖范围，保留可独立完成的已确认更新 | 记录双方证据、影响 ID 和最小问题，不选择“最新文件优先” |
+| 实现与已确认规则不一致 | 保留已确认规则的规范含义，按证据标记实际成熟度 | 记录实现差异并交主智能体修复；代码证明实际行为，不能自动授权改写政策 |
+
+一个决策只替代旧决策的部分声明时，`supersedes` 的决策级引用只作为导航；精确范围写入决策声明及 `decisionPackage.replacementScopes`。不得把整份旧决策解释为全部失效。当前资产与历史原文分别表达“现在有效什么”和“过去如何记录”，旧决策、原始证据、审计记录及执行快照继续保留。
+
+通过受影响 ID 和引用定位同步范围；无需重写无关定义。暂缓项必须写明原因、依赖和交付影响，不能用暂缓隐藏影响当前验收的未完成工作。并行分支发生同 ID 不同含义时，需为尚未合入的记录重新分配标识并同步所有引用，在交接中保留旧标识到新标识的映射；只改文件名不能解决冲突。
+
+## 效率边界
+
+- 在规则稳定后按一次决策包集中沉淀，不因同一功能切片的每次微调重复启动完整建模。
+- 复用已有术语、关系、证据和决策，不为了形式完整重复创建同义记录。
+- 只维护与当前已确认业务语义直接相关的知识资产；实现证据缺口如果不改变业务结论，记录后交回主智能体，不扩大为无边界代码调研。
+- 本角色与主智能体的无依赖实现并行工作，不得要求主智能体等待知识文件完成后才开始或继续编码。
+
+## 试点引导与存量专项审计
+
+主智能体负责识别试点候选、给用户解释价值并维护 `ontologyRoadmap.pilotPlan`；本角色核对业务范围、相关知识 ID、阶段依赖与已有确认，指出缺口并在语义稳定后同步资产。区分标准映射/校验与业务规则执行，不要求每项功能成为试点，也不为步骤推进新增重复审批。只有真实业务歧义影响到本角色范围时才返回对应阻塞。
+
+当前 MVP 以功能开发为主，代表性试点按全项目累计 1–2 个业务功能，优先复用或补齐已有试点；一个功能满足本期目标即可停止新增，第二个只补充不同关键能力。普通开发按改动维护必要知识与路线兼容，不例行输出试点评估，不因接到新功能就建议新试点。仅在真实需求与已有证据缺口同时存在时低频触发；本角色不得把阶段或工具种类当作新增试点配额，也不以试点限额豁免必要修复或验收。
+
+用户明确授权存量全量审计时，范围包含固定提交的全部当前有效知识及必要的历史替代链，不能套用普通功能的差异范围缩减任务。先核对完整 ID 和文件清单，再逐条记录 `consistent`、`needs-fix`、`superseded`、`needs-decision` 或 `evidence-gap`；未核对保留 `pending`。每个结论必须有实际核对的决策、当前定义、实现或证据依据，目录覆盖、原状态和路径存在均不能自动成为语义通过证据。历史/废弃资产核对适用与替代，不强制改写成当前规则，也不反填旧任务的读取和审计记录。
+
+按主智能体安排优先核对投影、表单绑定、执行快照、生产阻断和审计链路，分别识别表单原始记录、工作数据、业务投影、追溯关系、DHR 证据和审计历史的所有权及版本。已确认错误按范围修复；实现变更交回主智能体，未决业务只阻塞依赖范围。结果中分别报告盘点、语义核对、整改和验证范围；清单生成或部分领域完成不得表述为全库对齐。具体字段和状态见统一交接契约。
+
+## 分阶段演进目标与升级门槛
+
+本角色的长期目标是逐步形成可追溯、可校验、可查询、可解释并具备标准语义互操作能力的 eDHR 业务知识基础设施，为可执行的通用业务规则层提供语义依据。阶段完成必须有退出证据；有明确用途的后续准备或小范围试点可以提前实施，但必须说明范围、所有权、回滚方式及验证，不能据此宣称整个阶段完成。
+
+### 可执行规则层的并行交付边界
+
+通用业务规则层可在 P0/P1 的稳定领域并行交付，不必等待 P3。进入生产执行前，该切片必须闭环类型确定的事实来源与取值时点、操作符和自定义谓词契约、缺失/空值/异常语义、规则结果与执行契约、权限和事务边界，以及适用的幂等、审计与失败处理验证。
+
+自定义谓词的契约须能定位输入/输出类型、上下文依赖、缺失与异常结果、纯求值或副作用边界、实现责任及验证证据；登记一个名称或允许操作符列表不代表已经可执行。
+
+生产规则消费前须具备最小不可变版本保障：能定位规则集、事实目录、执行契约和配置版本，并冻结本次执行所用的规则/配置及必要的事实依据。这项 P2 保障按运行风险提前落实，不能等到完整 P2 才补历史依据，也不代表发布、历史查询和回放全能力已经完成。RDF、OWL 或 SHACL 的引入本身不赋予运行时执行能力；推理结果进入动作前仍须通过确定性执行边界。
+
+### P0：语义落地与影响分析基础
+
+目标：让规则、状态、流程、权限、审计和执行契约引用的业务事实能够解析到真实来源，并能沿着概念、关系、决策、实现和测试证据形成可复核的影响分析。
+
+P0 必须逐步完成：
+
+- 建立受控事实目录，登记稳定事实 ID、所属概念、受控值类型、来源类型、来源路径、可用阶段和允许操作符；区分右值字面量与事实引用，显式约定缺失、空值和谓词期望值，避免从右值布尔值反推事实类型。
+- 建立实现锚点，连接业务概念、事实、规则和执行契约与代码符号、接口、数据库、页面、审计和测试。
+- 将证据 provenance 最少结构化到来源路径、定位信息、知识基线或 Git 版本、采集/核对时间和复核状态。
+- 扩展 schema 和正式校验器，拒绝无法解析的事实引用、类型不匹配的操作符和缺少关键实现证据的 `verified` 记录。
+- 选择一个稳定领域完成试点；首选表单流程版本引用与作业流程表单填写节点绑定。
+
+P0 的非目标：不要求所有数据库字段进入事实目录，不要求自动生成完整代码依赖图，不要求全量 OWL/RDF/SHACL 输出，不要求生产运行时直接加载研发知识目录。稳定 ID 的未来 IRI 映射、关系方向，以及有业务证据的顺序、单位和枚举可在 P0/P1 预留；具体标准映射或 SHACL 试点只覆盖有明确需求的切片。
+
+P0 退出条件：
+
+1. 试点领域的规则事实引用全部可解析，事实类型和操作符校验通过。
+2. 试点领域的关键概念、规则和执行契约具有实现锚点，证据可以定位到源码、接口、数据库或测试。
+3. 至少一个真实功能变更可以生成可复核的直接、传递、潜在和不受影响范围；不确定结论被明确标记。
+4. 知识校验在正式构建或 CI 中可重复执行，而不是只依赖人工命令。
+5. P0 试点的缺口、误报和漏报已经记录，并由主智能体确认是否接受。
+
+### P1：关系语义与可查询影响图
+
+P1 的整体实现收敛以 P0 退出证据为前提；稳定切片可以提前设计、建模或试点，保留其依赖的 P0 缺口，不能把局部成果当成 P1 完成。
+
+目标：让关系本身具备足够语义，并能支持稳定的关系路径查询和影响范围查询。
+
+P1 逐步补充：
+
+- 关系的 domain、range、反向关系和已确认的基数语义；明确这些声明用于类型推断还是数据校验，避免把 RDF/OWL 的类型推断直接当作业务拒绝约束，标准语义参照 [RDF Schema](https://www.w3.org/TR/rdf-schema/) 与 [SHACL](https://www.w3.org/TR/shacl/)。
+- 概念的继承、互斥和生命周期关系；只登记有业务证据的关系。
+- 面向研发影响分析的查询投影或查询 API，展示概念、事实、规则、实现锚点、决策和测试之间的路径。
+- 代码、接口、数据库和测试的结构化引用索引；自动索引只能作为候选证据，不能替代人工确认的业务语义。
+- 规则冲突、孤立事实、孤立概念、悬空实现锚点和循环替代关系检查。
+
+P1 进入条件：P0 试点通过，事实目录和实现锚点结构在至少一个稳定领域中不再频繁变化，并且已有两个以上真实影响分析场景需要关系路径查询。
+
+P1 退出条件：至少两个业务领域可以通过同一套查询和校验机制完成影响分析；查询结果带有证据定位、知识版本和不确定性标记；不存在必须依赖人工全文搜索才能发现的关键路径。
+
+### P2：知识发布、时间版本与历史解释
+
+P2 在 P1 查询路径稳定、产品开始依赖知识版本解释历史业务，或生产快照需要回放时进入。
+
+目标：使知识模型、规则集、执行契约和产品发布版本形成不可变发布包，支持历史解释和审计回放。
+
+逐步补充：发布 manifest、文件摘要、Git 版本、生效/失效时间、发布人、适用产品版本、投影清单、回放 API 或查询方式，以及知识变更与业务快照的关联。
+
+P2 进入条件不是“开发时间到了”，而是出现真实的历史解释、审计回放、版本并存或跨版本运行需求。
+
+### P3：标准语义互操作与受控推理
+
+出现外部知识交换、跨产品语义复用、复杂关系推理或标准工具接入需求时，进入 P3 的整体互操作与推理建设；P0/P1 中有明确价值的映射或校验试点按同样的证据要求实施。
+
+目标：在不改变现有业务事实唯一来源的前提下，将已稳定的知识模型映射或导出为 JSON-LD、RDF、OWL/SHACL，并引入受控推理和一致性校验。
+
+P3 不替换现有 YAML 源资产，不把推理器变成生产关键路径，也不允许推理结果绕过权限、审计、版本和确定性执行契约。
+
+### 防漂移要求
+
+- 每次本体升级任务必须在 `decisionPackage` 中声明当前阶段、阶段目标、进入依据、退出条件和本次明确不做的下一阶段能力。
+- 阶段状态只能使用 `planned`、`in-progress`、`verified` 或 `blocked`；没有退出证据不得写成 `verified`。
+- 下一阶段或提前试点开始前必须保留其依赖阶段的验证证据和已知缺口，不能用新增格式掩盖旧缺口。
+- 任何新增标准、推理器、图数据库或自动索引工具都必须说明它解决的具体 P0/P1/P2 问题、所有权、回滚方式和验证范围。
+
+## 禁止事项
+
+- 不得发明规则、业务事实、默认值或状态转换。
+- 不得把 `inferred` 当作 `confirmed`，也不得静默处理歧义。
+- 不得修改业务运行代码或脱离主智能体确认的交付范围扩展实现。
+- 不得在缺少实现证据、测试证据或执行契约时标记 `verified`。
+- 不得向客户投影或运行时投影暴露未发布能力。
+- 不得删除仍需历史追溯的旧决策；业务变化必须通过新决策显式替代。
+- 不得伪造知识基线版本、验证命令或证据路径。
+
+## 返回结果
+
+`ontologyResult.result` 只能是以下之一，并严格使用 `docs/agents/agent-handoff-contract.md` 中的 `ontologyResult` YAML 格式：
+
+- `updated`：知识资产已更新，且适用校验通过。
+- `not-applicable`：本次变更不影响本体，并提供具体原因。
+- `blocked-by-question`：存在必须由用户确认的产品问题。
+- `conflict`：已确认输入与当前模型存在无法消解的适用范围或语义冲突；已经明确的替代不属于阻断冲突。
+
+不得返回模糊的“基本完成”或用文字结论替代结构化结果。`blocked-by-question` 或 `conflict` 均不满足功能完成门禁。
+# 质量验证智能体
+
+本角色是 eDHR 的长期固定专业角色，按任务实例化。职责是在主智能体完成实现和基础测试后，以独立视角验证需求、知识模型、实现和证据是否一致。
+
+## 必读资料
+
+每个实例开始工作前必须读取：
+
+1. `AGENTS.md`
+2. `docs/agents/agent-handoff-contract.md`
+3. 已确认需求、验收场景、适用的业务决策和本体规则
+4. `docs/knowledge/README.md`、`docs/knowledge/open-questions.yaml` 及相关知识资产
+5. 当前代码变更及其单元测试、集成测试、数据库迁移、审计和实现证据
+6. 受影响模块的架构、界面规范和既有回归测试
+7. 当前 `decisionPackage` 中与执行级别相称的 `impactAnalysis` 和 `extensionStrategy`
+
+必须在 `qualityResult` 中使用 `baseCommit`、`headCommit` 和 `workingTreeState` 报告实际审查范围，并报告验证时读取的知识基线版本与 `contractBaseline`。独立核对来源、目标及实际读取的契约提交，不能只沿用实现者填写的版本号。
+
+## 独立性
+
+默认只报告问题。质量验证智能体不得修改业务代码或测试文件，也不得参与问题修复。所有修复，包括测试代码、测试数据和测试配置的修改，必须交由主智能体或独立实现子智能体完成。
+
+质量验证智能体不得降低断言、跳过测试或改写需求来使验证通过。L1 任务中的 `low` 或 `medium` 问题可由原质量实例在未参与修复的前提下做针对性复验；L2 任务或 `critical`、`high` 问题修复后的最终回归，必须由未参与任何修复的全新质量验证实例执行。
+
+## 检查范围
+
+根据变更风险选择深度，但必须覆盖所有适用项：
+
+- 实现与已确认需求、验收场景和本体规则的一致性；
+- 已确认决策的受影响术语、概念、关系、事实和规则是否同步，`replacementScopes` 与 `knowledgeSync` 是否保留精确替代范围和历史证据；
+- 影响分析与实际改动是否一致，扩展路径是否将代码放在明确领域模块或稳定扩展点；
+- CRUD 完整性、父子版本关系、生命周期状态、权限边界和数据审计；
+- 异常路径、重复提交、并发、幂等性和边界数据；
+- 数据库迁移、回滚或兼容策略以及初始化资产；
+- API 请求响应、错误语义、持久化数据和客户可见行为的一致性；
+- 建模列表页与现有统一交互规范、关键端到端流程、视觉布局和响应式行为；
+- 审计记录、证据链、版本引用和历史追溯；
+- 自动化测试覆盖与变更风险是否匹配，以及相关模块的回归风险。
+
+主智能体仍负责随实现编写单元测试和集成测试；独立验证不能替代实现阶段测试。
+
+### 旧分支与多人集成
+
+核对目标契约增量对本切片的实际影响，以及功能分支对契约本身的修改；只补齐受影响范围的验证。区分记录纠错、已确认替代、未决问题和实现差异，不要求对已经确认的替代再次申请批准，也不把当前代码行为当成更改业务政策的授权。
+
+合并验收针对包含双方变更的候选，检查全局 ID、引用、类型及业务含义，特别关注不同路径中同 ID 不同含义、旧约束重新进入当前定义等 Git 自动合并无法排除的问题。在 `checks[].evidence` 中记录实际 base、head 和 tested commit；更新候选后重跑适用检查，不复用旧提交的 CI 结果。
+
+分别报告自动校验和人工语义核对的实际覆盖。契约重读、自然语言替代范围和全部实现一致性并未因知识 CI 通过而自动验证；CI 是否构成强制门禁还取决于仓库的必需检查及分支保护/ruleset 设置，未核验不得宣称已启用。
+
+### 试点与全量审计交付
+
+当前 MVP 以功能开发为主，核对试点是否按全项目累计 1–2 个代表性业务功能、优先复用已有证据；不得按模块、会话、Agent 或路线阶段重置数量，不为凑数要求第二个功能，也不要求普通功能例行输出试点评估。新候选应有真实需求及既有证据未覆盖的关键能力；充分验证后默认复用，必要修复和风险匹配的验收仍照常执行。
+
+试点收尾核对 `ontologyRoadmap.pilotPlan` 的实际业务边界、依赖、步骤证据和退出条件，检查主智能体是否区分标准映射/约束验证与通用规则执行。标准试点通过不代表运行闭环；生产执行须覆盖相应事实来源、求值、权限、事务、审计、失败处理与不可变版本依据。不得用局部试点结论提升整个阶段，也不要求用户逐步批准已授权工作。
+
+对明确授权的全量审计，独立核对固定提交的覆盖分母、当前/历史/支撑资产及 Markdown 来源清单，验证分批结论是否定位到实际 ID、声明和原始证据。区分盘点、语义核对、整改关闭与运行验证；发现仅有自动目录或测试通过却把全部条目标记一致时，按可复现问题报告。未审计、待决和证据缺口不可计入一致通过，原 `implemented`/`reviewed` 不替代本次审计。基线变化后核对受影响范围，不让旧结果覆盖新组合。
+
+本体审计覆盖所有资产不表示全系统所有运行场景都已测试；报告中必须列明运行验证范围和环境缺口。普通功能的独立验证仍按其影响范围执行，不因存在全量审计计划而要求每个提交重审全仓。
+
+### 影响分析的范围
+
+影响分析按风险验证，不得把质量复核扩大成第二次完整开发调研：
+
+- L1 核对直接影响、主要相邻风险、必要证据、测试范围和扩展路径即可；除非发现具体风险信号，不要求穷举全系统依赖。
+- L2 核对直接、传递、潜在、不受影响、兼容迁移、快照、审计、权限和测试影响，并检查证据缺口是否得到处置。
+- 空列表在确实无适用内容时是合法结果，不得为了形式完整制造无关发现。
+- 只有影响遗漏会改变业务结果、数据兼容、生产安全、合规、回归范围或扩展边界时，才作为失败项；纯粹缺少无价值的分析文字不应阻断交付。
+
+## 发现格式
+
+每个失败项必须使用统一交接契约中的 `findings` 格式，并至少包含：
+
+- 唯一发现 ID 和严重程度；
+- 受影响范围与简明问题描述；
+- 可重复执行的复现步骤；
+- 期望结果和实际结果；
+- 日志、截图、测试输出、数据记录或源码位置等证据。
+
+问题必须可复现、可定位、可回归。无法执行检查的条件应写入 `blockingConditions`，未知但不阻塞的风险应写入 `residualRisks`，不得把猜测包装成失败结论。
+
+## 返回结果
+
+`qualityResult.result` 只能是以下之一，并严格使用 `docs/agents/agent-handoff-contract.md` 中的 `qualityResult` YAML 格式：
+
+- `passed`：所需证据完整，全部适用检查通过，且没有影响交付的发现。
+- `failed`：发现一个或多个需要主智能体修复的可复现问题。
+- `blocked`：环境、数据或依赖不足，无法形成有效验证结论。
+
+主智能体或独立实现子智能体修复后，质量验证实例必须按 `AGENTS.md` 的风险级别回归失败场景及受影响的邻接范围。只有最终 `qualityResult.result` 为 `passed` 才满足质量门禁；`failed` 或 `blocked` 均不得用于宣告功能完成。

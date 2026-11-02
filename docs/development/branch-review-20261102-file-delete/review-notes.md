@@ -1,0 +1,29 @@
+# 源码与剩余边界
+
+## 根因与当前行为
+
+旧删除将不可逆的磁盘删除放在数据库删除之前，repository调用自身的事务失败并不能撤销磁盘副作用。外层事务还可能在Controller返回后回滚。仅调整repository调用位置不足以覆盖外层提交结果，必须由最终事务完成事件决定。
+
+当前复用已注入PlatformTransactionManager的TransactionTemplate，默认REQUIRED。findById与deleteById参与同一JPA上下文；两个原target guard先于Path解析与删除登记，不新增资格。成功提交才调用afterCommit，物理删除成功后记录成功日志；IOException记录ID/路径并抛UncheckedIOException，正常HTTP收到500。UNKNOWN只报告原件未由本次回调清理；不以!=COMMITTED当可删依据，不推断数据库一定回滚。
+
+afterCommit错误与beforeCommit错误不同：前者DB已提交，不尝试回滚/重建元数据，文件清理需要核对；后者及外层rollback保留元数据和原件。缺原件按已有deleteIfExists语义可删除残余登记。没有业务审计补造、历史恢复或定时重试。
+
+## 实际验证与限制
+
+新H2九项、PG十项、合成启动/UNKNOWN两项共21；当前84另含原63回归。PG延迟外键在DELETE SQL已flush且本事务见0行后，于实际COMMIT拒绝，随后检查原件与记录仍在；这是测试故障，不证明产品已有所有引用约束。非空目录用于确定性注入真实文件系统删除异常，真实磁盘操作未mock。UNKNOWN由实际AbstractPlatformTransactionManager同步生命周期加合成commit异常验证，不叫真实网络断连或崩溃恢复。
+
+旧源同21为13真断言红8正、无error/skip。初始19与首current84夹具失败都保留，不混作新缺陷/唯一覆盖。原ExecutionAccessTest只把空manager换为实际轻量事务管理器，生产附件不能删及never deleteById断言均保留。
+
+原件删除是unlink，不把150MiB读到内存或为大复制开启长事务。无逐任务SQL循环、全量内存分页或新增用户/引用查询；JPA同事务已加载实体可复用，不以源码判断冒称已量出SQL条数或生产SLA。H2/PG只加载canonical单表DDL与PK，不代表全库/所有历史迁移。未改前端，无浏览器/视觉认证。
+
+## A23判断
+
+afterCommit是避免原件早于提交丢失所必需；afterCompletion.UNKNOWN保留与日志是保守对待真实不确定结果所必需，二者不抽成deleteOnCommit布尔框架。Path在登记前解析可避免非法路径到提交后才被发现；原保护guard保持，不追加未确认类型/ACL。IOException不能像旧实现吞掉再报200；但抛错不意味着DB回滚。REQUIRED参与外层避免独立提交突破调用方回滚。
+
+没有为暂未证实的失败增加全局catch重试、复制备份、扫描清理或第二套状态机。原上传补偿逻辑不动：上传回滚清理与删除提交清理分别拥有不同原件，不因同是文件操作强行共用一个事务工具。
+
+## 具体拆分方案与下一步
+
+FileController后续可逐入口分出FileDeletionService.delete(id)，独占现有事务、既有保护检查与提交后清理结果；HTTP映射、异常映射保持，先固定本轮回归再委托，不把整类搬家。FileReadService分别拥有下载/私有预览/公开实际引用判断，FileRegistration拥有新上传原件登记/补偿；共享FileAccessPolicy须等ACL三问题确认，不能从targetType推导全局业务权限。
+
+持久清理outbox/墓碑与崩溃后对账会引入状态、重试/告警和保存边界，当前未实现；本批只有限解决DB失败先丢原件与清理失败伪成功。并发重绑/重复path引用互斥尚无完整运行认证，DhrAttachmentService相邻回调另有UNKNOWN/吞IO源候选，下一批需专用复验。两DHR旧high与全量审计剩余不因本轮修复消失。

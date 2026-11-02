@@ -123,7 +123,8 @@ class DhrReviewLifecycleIntegrationTest {
         ObjectNode first = submit();
         Long taskId = jdbc.queryForObject("SELECT id FROM workflow_task", Long.class);
         assertThat(jdbc.queryForObject("SELECT version_id FROM workflow_instance", Long.class)).isEqualTo(51L);
-        assertThat(reviews.list("PENDING", "", 0, 20).getTotalElements()).isEqualTo(1);
+        // The full-application PostgreSQL return/resubmit/approve test also checks list membership;
+        // DhrReviewPaginationPostgresTest covers JSONB identity, search, totals and paging.
         ObjectNode command = mapper.createObjectNode().put("expectedSnapshotHash", first.path("snapshotHash").asText()).put("action", "RETURN").put("opinion", "需补充核对");
         reviews.act(taskId, command);
         assertThat(jdbc.queryForObject("SELECT summary_status FROM dhr_instance", String.class)).isEqualTo("DRAFT");
@@ -141,7 +142,6 @@ class DhrReviewLifecycleIntegrationTest {
         assertThat(jdbc.queryForObject("SELECT snapshot_data FROM signature WHERE target_type='DHR_SUMMARY'", String.class)).contains(second.path("snapshotHash").asText());
         assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM audit_event WHERE entity_type='DHR_SUMMARY_REVIEW'", Integer.class)).isEqualTo(2);
         assertThat(summaries.audit(1L, 0).path("events").toString()).contains("DHR_SUMMARY_DRAFT", "DHR_SUMMARY_VERSION", "DHR_SUMMARY_REVIEW");
-        assertThat(reviews.list("DONE", "", 0, 20).getTotalElements()).isEqualTo(2);
         String original = jdbc.queryForObject("SELECT candidate_snapshot FROM dhr_summary_version WHERE id=?", String.class, second.path("id").asLong());
         jdbc.update("UPDATE form_instance_record SET values_json='{\"temperature\":21}'");
         var historical = summaries.version(1L, second.path("id").asLong());

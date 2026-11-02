@@ -1,0 +1,64 @@
+{
+  "commit": "0bd0848bbded6d6954d62a4f924e0b2eec6623ad",
+  "exit": 1,
+  "copiedTests": [
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/compliance/controller/FileCopyOwnershipTest.java",
+      "sha256": "bc545b8a4bb0648d081ba375afaf1d83049fde8ca6d435f7a72e0221dc7ffa83",
+      "bytes": 5522
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/compliance/controller/FileHttpBoundaryTest.java",
+      "sha256": "07223295278b8bacc9b8b1ad6fd3c810a980ca96d0f277d00fe54cf333210f5d",
+      "bytes": 6186
+    }
+  ],
+  "suites": [
+    {
+      "suite": "FileCopyOwnershipTest",
+      "tests": 5,
+      "failures": 4,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "FileHttpBoundaryTest",
+      "tests": 11,
+      "failures": 2,
+      "errors": 0,
+      "skipped": 0
+    }
+  ],
+  "totals": {
+    "tests": 16,
+    "failures": 6,
+    "errors": 0,
+    "skipped": 0
+  },
+  "failures": [
+    {
+      "name": "failedCopyRemovesOnlyItsOwnedFileAndNeverRegisters(String)[1]",
+      "message": "\nExpecting value to be false but was true"
+    },
+    {
+      "name": "failedCopyRemovesOnlyItsOwnedFileAndNeverRegisters(String)[2]",
+      "message": "\nExpecting value to be false but was true"
+    },
+    {
+      "name": "existingStoredPathIsNeitherOverwrittenNorCleanedUp",
+      "message": "\nExpecting code to raise a throwable."
+    },
+    {
+      "name": "failedCleanupPreservesOriginalFailureAndReportsTheCleanupFailure",
+      "message": "\nMultiple Failures (1 failure)\n-- failure 1 --\nExpected size: 1 but was: 0 in:\n[]\nat FileCopyOwnershipTest.lambda$failedCleanupPreservesOriginalFailureAndReportsTheCleanupFailure$3(FileCopyOwnershipTest.java:73)"
+    },
+    {
+      "name": "uploadedByUsesAuthenticatedUserIdRatherThanSystemOrSubmittedIdentity(String)[1]",
+      "message": "\nexpected: \"uploader-A\"\n but was: \"system\""
+    },
+    {
+      "name": "uploadedByUsesAuthenticatedUserIdRatherThanSystemOrSubmittedIdentity(String)[2]",
+      "message": "\nexpected: \"uploader-B\"\n but was: \"system\""
+    }
+  ]
+}

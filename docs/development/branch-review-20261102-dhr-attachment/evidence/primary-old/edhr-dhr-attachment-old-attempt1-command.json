@@ -1,0 +1,27 @@
+{
+  "cmd": [
+    "bash",
+    "/workspace/.edhr-cloud-tools/mvn-edhr",
+    "-f",
+    "gmp-platform/backend/pom.xml",
+    "-Dtest=DhrAttachmentTransactionPostgresTest",
+    "test"
+  ],
+  "startedEpoch": 1793622764.7487962,
+  "cwd": "/workspace/edhr-nexus-frontend",
+  "head": "ab5adafb9629b94f95eb88825ec0a4ea06f4efb1",
+  "sourceSnapshot": [
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrAttachmentService.java",
+      "bytes": 15991,
+      "sha256": "6493a32d00fd20d864bc37ee633babecc2001a001e9e54d4aba5b798295363d1"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrAttachmentTransactionPostgresTest.java",
+      "bytes": 15572,
+      "sha256": "de1b1705d3eec75c385524f9874518ca4a5376d30f74aeeadf81f164e81aed40"
+    }
+  ],
+  "dhrUrl": "jdbc:postgresql://127.0.0.1:32768/edhr_dhr_attachment_transaction_test",
+  "uploadUrl": "jdbc:postgresql://127.0.0.1:32768/edhr_upload_transaction_test"
+}

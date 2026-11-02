@@ -37,7 +37,7 @@ class FileControllerTest {
         iconAssetRepository = mock(IconAssetRepository.class);
         systemSettingRepository = mock(SystemSettingRepository.class);
         userAccountRepository = mock(UserAccountRepository.class);
-        controller = new FileController(fileObjectRepository, iconAssetRepository, systemSettingRepository, userAccountRepository, mock(SnowflakeIdGenerator.class));
+        controller = new FileController(fileObjectRepository, iconAssetRepository, systemSettingRepository, userAccountRepository, mock(SnowflakeIdGenerator.class), FileTestTransactions.manager());
         tempDir = Files.createTempDirectory("edhr-file-preview-test");
     }
 
@@ -129,7 +129,7 @@ class FileControllerTest {
                 iconAssetRepository,
                 systemSettingRepository,
                 userAccountRepository,
-                uploadIdGenerator);
+                uploadIdGenerator, FileTestTransactions.manager());
         org.springframework.test.util.ReflectionTestUtils.setField(controller, "storagePath", tempDir.toString());
         MockMultipartFile file = new MockMultipartFile("file", "id-card-front.png", "image/png", new byte[] {1, 2, 3});
 
@@ -152,7 +152,7 @@ class FileControllerTest {
                 iconAssetRepository,
                 systemSettingRepository,
                 userAccountRepository,
-                uploadIdGenerator);
+                uploadIdGenerator, FileTestTransactions.manager());
         org.springframework.test.util.ReflectionTestUtils.setField(controller, "storagePath", tempDir.toString());
         MockMultipartFile file = new MockMultipartFile("file", "id-card-back.png", "image/png", new byte[] {1, 2, 3});
 

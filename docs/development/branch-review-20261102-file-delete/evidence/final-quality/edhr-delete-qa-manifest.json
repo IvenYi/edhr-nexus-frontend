@@ -1,0 +1,323 @@
+{
+  "status": "FINAL",
+  "baseCommit": "6ec9812f1bb1f7980654510f53c5fa568cfd83fb",
+  "headCommit": "bd71f6cfb05f211863fcca4382d74445003aa26c",
+  "generatedAt": "2026-11-02T09:33:01.493457+00:00",
+  "independence": "No participation in fixes; source/test unchanged; one read-only evidence subordinate FINAL",
+  "sourceSnapshot": [
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/controller/FileController.java",
+      "bytes": 20066,
+      "sha256": "45b7f380ea681e47551e37da8cd01325d0a29b375c40d1f47f0bce032be82f10"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/compliance/controller/FileDeleteTransactionIntegrationTest.java",
+      "bytes": 6892,
+      "sha256": "a3d2e8357185a1ba63e299c99e33bfc19493955bbbd56bbd8bc59d1fdf1c6ac7"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/compliance/controller/FileDeleteTransactionPostgresTest.java",
+      "bytes": 1940,
+      "sha256": "3ade7ab60e7da5283545ab2b719ca552d75bdb35ff13663b1c7a97faca4ce72c"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/compliance/controller/FileDeleteTransactionFailureTest.java",
+      "bytes": 3273,
+      "sha256": "b903ac0dfd1ea5ed47fee42869ccbf2f207a0e557b0464a9f0e18c8026513f72"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/ExecutionAccessTest.java",
+      "bytes": 18291,
+      "sha256": "c7efe184b2f1e04369308f9c69a7023a6b18a4d44e38b02296c42d2c16276eb8"
+    }
+  ],
+  "files": [
+    {
+      "path": "/tmp/edhr-delete-qa-attempt1-cleanup.json",
+      "bytes": 110,
+      "sha256": "4a8e5636828e8058703ed7b8460736f845f61e49ef54a7dc38f3cdbf82bec7ec"
+    },
+    {
+      "path": "/tmp/edhr-delete-qa-attempt1-failure.json",
+      "bytes": 530,
+      "sha256": "593564127a410882752f6aa25ccb9db5c08327389b1219398838991e9e15aeee"
+    },
+    {
+      "path": "/tmp/edhr-delete-qa-attempt1-removal-observation.json",
+      "bytes": 140,
+      "sha256": "3be3691b8937f13fb7539aca47f56651b828472c505a0d9ec39aaeffe373d4a8"
+    },
+    {
+      "path": "/tmp/edhr-delete-qa-attempt1-run.py",
+      "bytes": 5989,
+      "sha256": "121915a86d7bfcdaed765008041214e55df52de96a7fde1ac17dc7d0152b2fce"
+    },
+    {
+      "path": "/tmp/edhr-delete-qa-attempt2-cleanup.json",
+      "bytes": 109,
+      "sha256": "124964e7f3884909f33f7f4fbe0fccaa8bf4251327524be59fff9cf98904d6a7"
+    },
+    {
+      "path": "/tmp/edhr-delete-qa-attempt2-run.py",
+      "bytes": 6200,
+      "sha256": "fdbc27d6fc3fbd005c96b8975e535b3b056c18a1fd6232c3ef3d56ca24ee1d97"
+    },
+    {
+      "path": "/tmp/edhr-delete-qa-attempt3-cleanup.json",
+      "bytes": 171,
+      "sha256": "47ecd241d169eb0a4b4eb20c68a4758b4d58d0ba5ffaa4631de868ea5c8580a0"
+    },
+    {
+      "path": "/tmp/edhr-delete-qa-attempt3-database.json",
+      "bytes": 505,
+      "sha256": "6216b2ecc9f6f39718497a6cec788fbcc91253da54e7dafa020860ba0e05e7ee"
+    },
+    {
+      "path": "/tmp/edhr-delete-qa-attempt3-failure.json",
+      "bytes": 244,
+      "sha256": "0129367154c3bad2de6ebcb87f5ef4fab629c309ac4a1300d2c6109fb47a444d"
+    },
+    {
+      "path": "/tmp/edhr-delete-qa-attempt3-old-command.json",
+      "bytes": 524,
+      "sha256": "c1b979faa62312592f6359cc6c2dedc2813444b45254ea784e349407f1c74bf9"
+    },
+    {
+      "path": "/tmp/edhr-delete-qa-attempt3-old-source.json",
+      "bytes": 1327,
+      "sha256": "8ef16ee45cd56ed53a8f59f7d4f65601587477d0a5644c2d0d5bfbf22586e96e"
+    },
+    {
+      "path": "/tmp/edhr-delete-qa-attempt3-old-test.txt",
+      "bytes": 4056,
+      "sha256": "fc7070f0dc2d1b6bd7d5f84f7656d7d6d09b4ddb33f411b492722443a5b59404"
+    },
+    {
+      "path": "/tmp/edhr-delete-qa-attempt3-run.py",
+      "bytes": 6217,
+      "sha256": "edd5f69035023f847c79a36d44e1e9c01f2ca025847a67c13e6f44e935fea902"
+    },
+    {
+      "path": "/tmp/edhr-delete-qa-cleanup.json",
+      "bytes": 171,
+      "sha256": "47ecd241d169eb0a4b4eb20c68a4758b4d58d0ba5ffaa4631de868ea5c8580a0"
+    },
+    {
+      "path": "/tmp/edhr-delete-qa-current-DhrFormFilesTest.xml",
+      "bytes": 32965,
+      "sha256": "d244c50d6adad1ad70be029e8f838d28927620ac10d0c79971532e7960187265"
+    },
+    {
+      "path": "/tmp/edhr-delete-qa-current-ExecutionAccessTest.xml",
+      "bytes": 34822,
+      "sha256": "220d01d39726872d739e4d59c13e70cbd0a991afbdb4b655a8f95152714a835a"
+    },
+    {
+      "path": "/tmp/edhr-delete-qa-current-FileControllerTest.xml",
+      "bytes": 34757,
+      "sha256": "aff51d9b997e9632512314e4aed089f36336922cf78b2e350773ac5793e3e0eb"
+    },
+    {
+      "path": "/tmp/edhr-delete-qa-current-FileCopyOwnershipTest.xml",
+      "bytes": 42092,
+      "sha256": "57ef427813925cae98c1a514bc6f49e734a0f9823358921165bc5df5c78a569d"
+    },
+    {
+      "path": "/tmp/edhr-delete-qa-current-FileDeleteTransactionFailureTest.xml",
+      "bytes": 33602,
+      "sha256": "834954264de9a89b67b1594ebac9cb3807198a30cbebf8021d972b1fe56629cf"
+    },
+    {
+      "path": "/tmp/edhr-delete-qa-current-FileDeleteTransactionIntegrationTest.xml",
+      "bytes": 102498,
+      "sha256": "b62af3f0481f8e838e4e476c066107388b3101e41af23bee8db1ec42abe273e2"
+    },
+    {
+      "path": "/tmp/edhr-delete-qa-current-FileDeleteTransactionPostgresTest.xml",
+      "bytes": 104203,
+      "sha256": "52c311ab56d019f8825cc07f8825c0be7d58fe27b7febbebdbd8116a42d19a45"
+    },
+    {
+      "path": "/tmp/edhr-delete-qa-current-FileHttpBoundaryTest.xml",
+      "bytes": 47568,
+      "sha256": "bc0198f6cdef408312ff2f68c2f6c0acbd6e6c7ecc2a90576641bc0abe76fd76"
+    },
+    {
+      "path": "/tmp/edhr-delete-qa-current-FileUploadResourceTest.xml",
+      "bytes": 34411,
+      "sha256": "752b28c15ed54f1171cf7b9c2e1e5e90bbfc3366a3b80390124011e6927706a5"
+    },
+    {
+      "path": "/tmp/edhr-delete-qa-current-FileUploadTransactionFailureTest.xml",
+      "bytes": 45743,
+      "sha256": "f3ea258368fc02f6e61e3ceb24a305f17444f075299617c2f2ffd5e7986caac8"
+    },
+    {
+      "path": "/tmp/edhr-delete-qa-current-FileUploadTransactionIntegrationTest.xml",
+      "bytes": 122356,
+      "sha256": "03b35898112367610ed42c3e4a643b3b3e4570cb95828d3053a373132daf0376"
+    },
+    {
+      "path": "/tmp/edhr-delete-qa-current-FileUploadTransactionPostgresTest.xml",
+      "bytes": 123766,
+      "sha256": "4ec18e2222b09084db1f8440eb40a31142cd5bd22233fe303dbe7c99583e549d"
+    },
+    {
+      "path": "/tmp/edhr-delete-qa-current-command.json",
+      "bytes": 746,
+      "sha256": "1a8ea895b512daacde04b6bf82a5144030fb4ff27de302975d8f715cbe1ad344"
+    },
+    {
+      "path": "/tmp/edhr-delete-qa-current-database.json",
+      "bytes": 505,
+      "sha256": "6216b2ecc9f6f39718497a6cec788fbcc91253da54e7dafa020860ba0e05e7ee"
+    },
+    {
+      "path": "/tmp/edhr-delete-qa-current-summary.json",
+      "bytes": 1752,
+      "sha256": "24373c531caa6dff4f52fcdcd016ef5cb3e4432762d8a23be39522fce483ab6f"
+    },
+    {
+      "path": "/tmp/edhr-delete-qa-current-test.txt",
+      "bytes": 357850,
+      "sha256": "c95ca3ac95d20f4c9dc286796ebce4359bcad2cf7a2bd2a56a329bfc79adddb4"
+    },
+    {
+      "path": "/tmp/edhr-delete-qa-database.json",
+      "bytes": 505,
+      "sha256": "2e9346364f7d24c1129b771beafc33fee0426f6f73d56a25ad28a511137335c2"
+    },
+    {
+      "path": "/tmp/edhr-delete-qa-evidence-check.json",
+      "bytes": 163867,
+      "sha256": "2337983b49c1b77c18fc7844c4982fc0b3eb2253d939547a14faf54e05301cfd"
+    },
+    {
+      "path": "/tmp/edhr-delete-qa-evidence-inventory/coverage.csv",
+      "bytes": 1929595,
+      "sha256": "127c64a3786dbfeec5e2fde9df28c153a54eff462f96d8303e3aa6c2a3217b06"
+    },
+    {
+      "path": "/tmp/edhr-delete-qa-evidence-inventory/entrypoints.csv",
+      "bytes": 161809,
+      "sha256": "0e8d618cba05df20d8bc04bac0b74dce5f1ef9bf5254a8e807e5c720732e12b2"
+    },
+    {
+      "path": "/tmp/edhr-delete-qa-evidence-inventory/inventory-summary.json",
+      "bytes": 1044,
+      "sha256": "5faa0c10631e2bc9764d4fef60d13efaa0068127aad26509d4318a44b7f2ef79"
+    },
+    {
+      "path": "/tmp/edhr-delete-qa-evidence-inventory/migrations.csv",
+      "bytes": 34737,
+      "sha256": "8d535db20792631610f4ca80c743f3fb14ce2ab8876ec397b6af3bfb6d488eed"
+    },
+    {
+      "path": "/tmp/edhr-delete-qa-finalize.py",
+      "bytes": 19354,
+      "sha256": "d51b2b08145e7678637611283104bde702dc0d346a631d2e472a7f3a25aa3a46"
+    },
+    {
+      "path": "/tmp/edhr-delete-qa-knowledge-TEST-com.zencas.edhr.knowledge.BusinessKnowledgeModelTest.xml",
+      "bytes": 20413,
+      "sha256": "d3d5574cdfa576615a69b60ce52257ccf9fc59f830f6e31380f38e7126346614"
+    },
+    {
+      "path": "/tmp/edhr-delete-qa-knowledge-command.json",
+      "bytes": 139,
+      "sha256": "370fc4429d9592a908e7076872043f92ba6b784d38a5b3a323755186184774de"
+    },
+    {
+      "path": "/tmp/edhr-delete-qa-knowledge-summary.json",
+      "bytes": 284,
+      "sha256": "0ddeb2faea606aa774f5047c8cdbe96a7277b62f701d81a812c80fce7a103af1"
+    },
+    {
+      "path": "/tmp/edhr-delete-qa-knowledge-test.txt",
+      "bytes": 2112,
+      "sha256": "85f5c4d33acedd2f04df06470d9881ea500ebed7bb88cb385436e1e64512eb13"
+    },
+    {
+      "path": "/tmp/edhr-delete-qa-old-FileDeleteTransactionFailureTest.xml",
+      "bytes": 34286,
+      "sha256": "fda35b3be694e15a2f5e574faef175abb7df5e13fbd37aeacd311a35e59c760b"
+    },
+    {
+      "path": "/tmp/edhr-delete-qa-old-FileDeleteTransactionIntegrationTest.xml",
+      "bytes": 88283,
+      "sha256": "fbbcfc2da768c0cd829edeac11ee8ccf7965922f04de37e5d11ad6ddfdf4b9c3"
+    },
+    {
+      "path": "/tmp/edhr-delete-qa-old-FileDeleteTransactionPostgresTest.xml",
+      "bytes": 91813,
+      "sha256": "ba920678c2edf9ababa0cc17bff0937ffa6860bce9e1b336f79a2d57eaf97a78"
+    },
+    {
+      "path": "/tmp/edhr-delete-qa-old-command.json",
+      "bytes": 525,
+      "sha256": "17c17d0b9fae3cc43ae159927006d74799caa630e539608600c2fd776469ff74"
+    },
+    {
+      "path": "/tmp/edhr-delete-qa-old-source.json",
+      "bytes": 1327,
+      "sha256": "8ef16ee45cd56ed53a8f59f7d4f65601587477d0a5644c2d0d5bfbf22586e96e"
+    },
+    {
+      "path": "/tmp/edhr-delete-qa-old-summary.json",
+      "bytes": 553,
+      "sha256": "001850b39753a4f1ba00893e49555f72e3e0f9d2367ab61a7a2c34ee895d1924"
+    },
+    {
+      "path": "/tmp/edhr-delete-qa-old-test.txt",
+      "bytes": 121231,
+      "sha256": "c19d4863fd5ba4d42739b4c06090c60605eced08e898b741caeaf335a045742e"
+    },
+    {
+      "path": "/tmp/edhr-delete-qa-qualityResult.yaml",
+      "bytes": 12615,
+      "sha256": "7ba1a7d8ef3b44c6c6a59e5073e979ce26ad5fe55065c11edb4e70af4756ee4c"
+    },
+    {
+      "path": "/tmp/edhr-delete-qa-report.md",
+      "bytes": 3703,
+      "sha256": "f98c834d6882f437979760aa576d0e63cf003f55ce6b813eb8b3f030ab7bbe0a"
+    },
+    {
+      "path": "/tmp/edhr-delete-qa-run-complete.json",
+      "bytes": 171,
+      "sha256": "7e62a19881311cdf88cf7e6debfd47b25522cd9da6f533c07322fbe8e05cfcf4"
+    },
+    {
+      "path": "/tmp/edhr-delete-qa-run.py",
+      "bytes": 6432,
+      "sha256": "cb0d52aa59c86a8634256ad52fed76c6bc100e1f55231f2b2289da48cff34c83"
+    },
+    {
+      "path": "/tmp/edhr-delete-qa-run2-output.txt",
+      "bytes": 2108,
+      "sha256": "f9624e23e59c4d263006ea99e1ef4b21bb1cd4bebcf054853bfa9a3531c7980b"
+    },
+    {
+      "path": "/tmp/edhr-delete-qa-run3-output.txt",
+      "bytes": 2293,
+      "sha256": "cbd4dc3417fef4f6ef7b3faa215f477d640ac06b4da0cf0cf23f00d8bc99b406"
+    },
+    {
+      "path": "/tmp/edhr-delete-qa-run4-output.txt",
+      "bytes": 1985,
+      "sha256": "afe95b52397181d524480631e4d1405e33951c862b7a051a372c132c7d57918d"
+    },
+    {
+      "path": "/tmp/edhr-delete-qa-source-inspection.json",
+      "bytes": 11744,
+      "sha256": "8616fce0eefe71806a5fb0e88c67de583117d4f9509f47ab844d6782a26958ca"
+    },
+    {
+      "path": "/tmp/edhr-delete-qa-source.diff",
+      "bytes": 18701,
+      "sha256": "394531f3379ab76322d9b10371f3c80e5671f1e28f97e9bfc719a177d991b20a"
+    }
+  ],
+  "manifestSelfExcluded": true,
+  "firstAttemptEvidenceNote": "Initial unredirected tool response session50271 is original in tool history; failure.json records observed command/status/message, not a claimed captured raw stream."
+}

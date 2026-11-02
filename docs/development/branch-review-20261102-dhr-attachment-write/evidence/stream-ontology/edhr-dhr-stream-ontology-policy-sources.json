@@ -1,0 +1,391 @@
+{
+  "status": "FINAL",
+  "scope": "Read-only original policy source review; implementation final verification belongs to parent ontology/main QA",
+  "capturedAt": "2026-11-02T13:36:53.471919+00:00",
+  "baseCommit": "e3e49784eda6bc01e7e5c686d6f79dc5a600d5ae",
+  "contractBaseline": {
+    "sourceCommit": "e3e49784eda6bc01e7e5c686d6f79dc5a600d5ae",
+    "targetBranch": "edhr-dev",
+    "targetCommit": "e3e49784eda6bc01e7e5c686d6f79dc5a600d5ae",
+    "contractReadCommit": "e3e49784eda6bc01e7e5c686d6f79dc5a600d5ae",
+    "uncommittedContractPaths": []
+  },
+  "knowledgeModelVersion": "0.3.25",
+  "records": [
+    {
+      "id": "DEC-0063-10",
+      "recordType": "decision-statement",
+      "sourcePath": "docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml",
+      "sourceLocator": "id DEC-0063-10; line 45",
+      "originalMaturity": {
+        "status": "specified",
+        "visibility": "internal"
+      },
+      "auditScope": "finite-retained-normative-boundary",
+      "semanticReview": "reviewed",
+      "conclusion": "consistent",
+      "rationale": "原件、SHA256、核验、冻结引用和带原因解除关联保留历史；本次未登记残片清理不替代这些业务义务。",
+      "sourceRecord": {
+        "id": "DEC-0063-10",
+        "statement": "user-confirmed；手工补充附件与纸质扫描件须核验来源、对应生产对象及内容关联，并保留关联与核验追溯；它们是受控附件证据，不虚构为第四种表单实例业务来源。保留 PDF/PNG/JPEG，新增 DOC/DOCX/XLS/XLSX；单文件上限 50MB，定义为 50*1024*1024=52428800 字节且含边界。Office 仅原文件上传下载，不在线预览、编辑或转换；保留原件字节及 SHA-256、受控核验、原权限与冻结引用。附件在 DHR 导航底部提供独立入口，零份附件仍可打开；汇总及冻结查看点击该入口后以附件列表作为右侧主内容，沿用原上传元信息、核验、下载及带原因解除关联，历史文件不物理删除；冻结查看只读，其他工作区不增加写权限。本次不新增附件接口，不改变证据范围或冻结版本边界。",
+        "status": "specified",
+        "visibility": "internal"
+      },
+      "originalExcerpt": "      - id: DEC-0063-10\n        statement: user-confirmed；手工补充附件与纸质扫描件须核验来源、对应生产对象及内容关联，并保留关联与核验追溯；它们是受控附件证据，不虚构为第四种表单实例业务来源。保留 PDF/PNG/JPEG，新增 DOC/DOCX/XLS/XLSX；单文件上限 50MB，定义为 50*1024*1024=52428800 字节且含边界。Office 仅原文件上传下载，不在线预览、编辑或转换；保留原件字节及 SHA-256、受控核验、原权限与冻结引用。附件在 DHR 导航底部提供独立入口，零份附件仍可打开；汇总及冻结查看点击该入口后以附件列表作为右侧主内容，沿用原上传元信息、核验、下载及带原因解除关联，历史文件不物理删除；冻结查看只读，其他工作区不增加写权限。本次不新增附件接口，不改变证据范围或冻结版本边界。\n        status: specified\n        visibility: internal"
+    },
+    {
+      "id": "term.dhr-controlled-attachment",
+      "recordType": "term",
+      "sourcePath": "docs/knowledge/glossary.yaml",
+      "sourceLocator": "id term.dhr-controlled-attachment; line 177",
+      "originalMaturity": {
+        "status": "specified",
+        "visibility": "internal"
+      },
+      "auditScope": "finite-retained-normative-boundary",
+      "semanticReview": "reviewed",
+      "conclusion": "consistent",
+      "rationale": "术语以与生产对象DHR建立可追溯关联为边界；未完成登记的本次写入残片不变成第四种表单来源或已冻结历史附件。",
+      "sourceRecord": {
+        "id": "term.dhr-controlled-attachment",
+        "name": "DHR 受控附件",
+        "definition": "与生产对象 DHR 建立可追溯关联的手工文件或纸质记录扫描件；记录来源、内容摘要、核验与关联历史，冻结版本保留其当时引用。它不是表单实例的第四种业务来源。",
+        "aliases": [
+          "DHR 附件证据",
+          "纸质扫描附件"
+        ],
+        "status": "specified",
+        "visibility": "internal"
+      },
+      "originalExcerpt": "  - id: term.dhr-controlled-attachment\n    name: DHR 受控附件\n    definition: 与生产对象 DHR 建立可追溯关联的手工文件或纸质记录扫描件；记录来源、内容摘要、核验与关联历史，冻结版本保留其当时引用。它不是表单实例的第四种业务来源。\n    aliases: [DHR 附件证据, 纸质扫描附件]\n    status: specified\n    visibility: internal"
+    },
+    {
+      "id": "concept.dhr-controlled-attachment",
+      "recordType": "concept",
+      "sourcePath": "docs/knowledge/ontology.yaml",
+      "sourceLocator": "id concept.dhr-controlled-attachment; line 177",
+      "originalMaturity": {
+        "status": "specified",
+        "visibility": "internal"
+      },
+      "auditScope": "finite-retained-normative-boundary",
+      "semanticReview": "reviewed",
+      "conclusion": "consistent",
+      "rationale": "现行runtime-fact概念保持specified/internal，工程文件流所有权不新增概念或运行成熟度。",
+      "sourceRecord": {
+        "id": "concept.dhr-controlled-attachment",
+        "termId": "term.dhr-controlled-attachment",
+        "kind": "runtime-fact",
+        "status": "specified",
+        "visibility": "internal",
+        "evidenceIds": [
+          "evidence.dhr-summary-user-confirmed",
+          "evidence.dhr-summary-attachment-service"
+        ]
+      },
+      "originalExcerpt": "  - id: concept.dhr-controlled-attachment\n    termId: term.dhr-controlled-attachment\n    kind: runtime-fact\n    status: specified\n    visibility: internal\n    evidenceIds: [evidence.dhr-summary-user-confirmed, evidence.dhr-summary-attachment-service]"
+    },
+    {
+      "id": "relation.dhr-summary-version-contains-controlled-attachments",
+      "recordType": "relationship",
+      "sourcePath": "docs/knowledge/ontology.yaml",
+      "sourceLocator": "id relation.dhr-summary-version-contains-controlled-attachments; line 902",
+      "originalMaturity": {
+        "status": "specified",
+        "visibility": "internal"
+      },
+      "auditScope": "finite-retained-normative-boundary",
+      "semanticReview": "reviewed",
+      "conclusion": "consistent",
+      "rationale": "冻结版本到受控附件的零到多成员关系保留；性能实验不得把当前附件和冻结成员混同。",
+      "sourceRecord": {
+        "id": "relation.dhr-summary-version-contains-controlled-attachments",
+        "source": "concept.dhr-summary-version",
+        "target": "concept.dhr-controlled-attachment",
+        "cardinality": "one-to-zero-or-many",
+        "status": "specified",
+        "visibility": "internal",
+        "evidenceIds": [
+          "evidence.dhr-summary-user-confirmed",
+          "evidence.dhr-summary-attachment-service"
+        ]
+      },
+      "originalExcerpt": "  - id: relation.dhr-summary-version-contains-controlled-attachments\n    source: concept.dhr-summary-version\n    target: concept.dhr-controlled-attachment\n    cardinality: one-to-zero-or-many\n    status: specified\n    visibility: internal\n    evidenceIds: [evidence.dhr-summary-user-confirmed, evidence.dhr-summary-attachment-service]"
+    },
+    {
+      "id": "rule.dhr-summary-controlled-attachment-upload",
+      "recordType": "rule",
+      "sourcePath": "docs/knowledge/rules/dhr-summary.yaml",
+      "sourceLocator": "id rule.dhr-summary-controlled-attachment-upload; line 167",
+      "originalMaturity": {
+        "status": "specified",
+        "visibility": "internal"
+      },
+      "auditScope": "finite-retained-normative-boundary",
+      "semanticReview": "reviewed",
+      "conclusion": "consistent",
+      "rationale": "50MiB含边界、原件字节/SHA256、冻结引用及unlinkDeletesOriginalFile=false保持；流IOException补偿属于工程推导，不能删已登记历史原件。",
+      "sourceRecord": {
+        "id": "rule.dhr-summary-controlled-attachment-upload",
+        "name": "DHR 受控附件格式与单文件容量边界",
+        "status": "specified",
+        "visibility": "internal",
+        "trigger": "dhr-summary.attachment-upload",
+        "scope": "dhr-summary",
+        "condition": {
+          "fact": "fact.dhr-summary.production-complete",
+          "operator": "equals",
+          "value": true
+        },
+        "result": {
+          "type": "allow-with-governance",
+          "action": "upload-controlled-attachment",
+          "supportedFormats": [
+            "PDF",
+            "PNG",
+            "JPEG",
+            "DOC",
+            "DOCX",
+            "XLS",
+            "XLSX"
+          ],
+          "maxFileSizeBytes": 52428800,
+          "maxFileSizeInclusive": true,
+          "officeHandling": "original-file-upload-and-download",
+          "officeOnlinePreview": false,
+          "officeOnlineEdit": false,
+          "officeConversion": false,
+          "preserveOriginalBytes": true,
+          "originalDigestAlgorithm": "SHA-256",
+          "unlinkDeletesOriginalFile": false,
+          "preserveFrozenReferences": true
+        },
+        "explanation": "DEC-0063-10 与 officeAttachmentSupport 的已确认范围；50MB 为 50*1024*1024 字节，含边界，超出一字节拒绝。保留既有 PDF/PNG/JPEG，新增四种 Office 原文件上传下载；原件字节、摘要、核验、权限、冻结引用及带原因解除关联保留原文件的规则不变。生产完成仅为前置条件，仍须满足原汇总编辑授权和可编辑状态；格式与容量合格不等于来源、生产对象或内容核验通过。此规则为 specified/internal，不证明实现、迁移或整体验证已通过。",
+        "evidenceIds": [
+          "evidence.dhr-summary-user-confirmed",
+          "evidence.dhr-summary-attachment-service"
+        ]
+      },
+      "originalExcerpt": "  - id: rule.dhr-summary-controlled-attachment-upload\n    name: DHR 受控附件格式与单文件容量边界\n    status: specified\n    visibility: internal\n    trigger: dhr-summary.attachment-upload\n    scope: dhr-summary\n    condition: {fact: fact.dhr-summary.production-complete, operator: equals, value: true}\n    result:\n      type: allow-with-governance\n      action: upload-controlled-attachment\n      supportedFormats: [PDF, PNG, JPEG, DOC, DOCX, XLS, XLSX]\n      maxFileSizeBytes: 52428800\n      maxFileSizeInclusive: true\n      officeHandling: original-file-upload-and-download\n      officeOnlinePreview: false\n      officeOnlineEdit: false\n      officeConversion: false\n      preserveOriginalBytes: true\n      originalDigestAlgorithm: SHA-256\n      unlinkDeletesOriginalFile: false\n      preserveFrozenReferences: true\n    explanation: DEC-0063-10 与 officeAttachmentSupport 的已确认范围；50MB 为 50*1024*1024 字节，含边界，超出一字节拒绝。保留既有 PDF/PNG/JPEG，新增四种 Office 原文件上传下载；原件字节、摘要、核验、权限、冻结引用及带原因解除关联保留原文件的规则不变。生产完成仅为前置条件，仍须满足原汇总编辑授权和可编辑状态；格式与容量合格不等于来源、生产对象或内容核验通过。此规则为 specified/internal，不证明实现、迁移或整体验证已通过。\n    evidenceIds: [evidence.dhr-summary-user-confirmed, evidence.dhr-summary-attachment-service]"
+    },
+    {
+      "id": "rule.dhr-review-task-frozen-attachment-download",
+      "recordType": "rule",
+      "sourcePath": "docs/knowledge/rules/dhr-summary.yaml",
+      "sourceLocator": "id rule.dhr-review-task-frozen-attachment-download; line 190",
+      "originalMaturity": {
+        "status": "specified",
+        "visibility": "internal"
+      },
+      "auditScope": "finite-retained-normative-boundary",
+      "semanticReview": "reviewed",
+      "conclusion": "consistent",
+      "rationale": "任务授权与任务绑定冻结版本成员双边界保留；只读容量数据不能授权跳过摘要/成员校验，也不是完整任务HTTP验收。",
+      "sourceRecord": {
+        "id": "rule.dhr-review-task-frozen-attachment-download",
+        "name": "审批任务附件仅供任务授权主体按冻结版本下载",
+        "status": "specified",
+        "visibility": "internal",
+        "trigger": "dhr-review.attachment-download",
+        "scope": "dhr-summary-review",
+        "condition": {
+          "fact": "fact.dhr-summary.review-task-attachment-authorized",
+          "operator": "equals",
+          "value": true
+        },
+        "result": {
+          "type": "allow-with-governance",
+          "action": "download-frozen-version-attachment",
+          "taskScope": "current-pending-or-own-handled-task",
+          "attachmentScope": "task-bound-frozen-version",
+          "liveDhrViewPermissionSubstitute": false
+        },
+        "explanation": "审批页附件下载必须经过任务处理权或本人已办授权，并仅返回任务绑定版本快照中 id 与摘要匹配的附件；仅有 DHR 查看权或其他任务权限不能扩大下载范围。",
+        "evidenceIds": [
+          "evidence.dhr-summary-user-confirmed",
+          "evidence.dhr-review-controller",
+          "evidence.dhr-review-service",
+          "evidence.dhr-summary-attachment-service",
+          "evidence.dhr-review-attachment-permission-tests"
+        ]
+      },
+      "originalExcerpt": "  - id: rule.dhr-review-task-frozen-attachment-download\n    name: 审批任务附件仅供任务授权主体按冻结版本下载\n    status: specified\n    visibility: internal\n    trigger: dhr-review.attachment-download\n    scope: dhr-summary-review\n    condition: {fact: fact.dhr-summary.review-task-attachment-authorized, operator: equals, value: true}\n    result:\n      type: allow-with-governance\n      action: download-frozen-version-attachment\n      taskScope: current-pending-or-own-handled-task\n      attachmentScope: task-bound-frozen-version\n      liveDhrViewPermissionSubstitute: false\n    explanation: 审批页附件下载必须经过任务处理权或本人已办授权，并仅返回任务绑定版本快照中 id 与摘要匹配的附件；仅有 DHR 查看权或其他任务权限不能扩大下载范围。\n    evidenceIds: [evidence.dhr-summary-user-confirmed, evidence.dhr-review-controller, evidence.dhr-review-service, evidence.dhr-summary-attachment-service, evidence.dhr-review-attachment-permission-tests]"
+    },
+    {
+      "id": "fact.dhr-summary.review-task-attachment-authorized",
+      "recordType": "fact",
+      "sourcePath": "docs/knowledge/facts/dhr-summary.yaml",
+      "sourceLocator": "id fact.dhr-summary.review-task-attachment-authorized; line 67",
+      "originalMaturity": {
+        "status": "specified",
+        "visibility": "internal"
+      },
+      "auditScope": "finite-retained-normative-boundary",
+      "semanticReview": "reviewed",
+      "conclusion": "consistent",
+      "rationale": "派生授权事实仍由任务和冻结版本判定，不由文件存在、吞吐量或直接调用服务推断。",
+      "sourceRecord": {
+        "id": "fact.dhr-summary.review-task-attachment-authorized",
+        "name": "审批任务对冻结版本附件的下载已授权",
+        "conceptId": "concept.dhr-controlled-attachment",
+        "valueType": "boolean",
+        "sourceType": "derived",
+        "sourcePath": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrReviewController.java",
+        "aliases": [
+          "dhrSummary.reviewTaskAttachmentAuthorized"
+        ],
+        "availability": "runtime",
+        "allowedOperators": [
+          "equals"
+        ],
+        "status": "specified",
+        "visibility": "internal",
+        "evidenceIds": [
+          "evidence.dhr-review-controller",
+          "evidence.dhr-review-service",
+          "evidence.dhr-summary-attachment-service",
+          "evidence.dhr-review-attachment-permission-tests"
+        ],
+        "sourceRevision": "working-tree",
+        "sourceLocator": "审批专属下载先通过任务 detail 判定当前待办候选或本人已办，再校验附件 id 与摘要属于任务绑定的冻结版本；不复用宽泛 DHR 查看授权",
+        "capturedAt": "2026-09-25",
+        "reviewStatus": "reviewed"
+      },
+      "originalExcerpt": "  - id: fact.dhr-summary.review-task-attachment-authorized\n    name: 审批任务对冻结版本附件的下载已授权\n    conceptId: concept.dhr-controlled-attachment\n    valueType: boolean\n    sourceType: derived\n    sourcePath: gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrReviewController.java\n    aliases: [dhrSummary.reviewTaskAttachmentAuthorized]\n    availability: runtime\n    allowedOperators: [equals]\n    status: specified\n    visibility: internal\n    evidenceIds: [evidence.dhr-review-controller, evidence.dhr-review-service, evidence.dhr-summary-attachment-service, evidence.dhr-review-attachment-permission-tests]\n    sourceRevision: working-tree\n    sourceLocator: 审批专属下载先通过任务 detail 判定当前待办候选或本人已办，再校验附件 id 与摘要属于任务绑定的冻结版本；不复用宽泛 DHR 查看授权\n    capturedAt: '2026-09-25'\n    reviewStatus: reviewed"
+    },
+    {
+      "id": "evidence.dhr-summary-user-confirmed",
+      "recordType": "evidence",
+      "sourcePath": "docs/knowledge/evidence/dhr-summary.yaml",
+      "sourceLocator": "id evidence.dhr-summary-user-confirmed; line 3",
+      "originalMaturity": {
+        "status": null,
+        "visibility": "internal"
+      },
+      "auditScope": "finite-retained-normative-boundary",
+      "semanticReview": "reviewed",
+      "conclusion": "consistent",
+      "rationale": "文档索引指向原始用户确认记录；旧基线/旧运行证据保持其当时范围，不作为本轮性能SLA或产品已验收依据。",
+      "sourceRecord": {
+        "id": "evidence.dhr-summary-user-confirmed",
+        "type": "document",
+        "path": "docs/knowledge/evidence/dhr-summary-user-confirmed.md",
+        "description": "user-confirmed；完整证据自动归集、人工核查冻结、目录仅展示及审批/附件/ZIP边界保留；同包原位补正四工作区双视图、附件右侧主内容、冻结成员混选ZIP和正常发起修订。revisionPrintableExport 确认列表纯图标与弹窗直接修订，先建草稿再提交生成下一冻结版，草稿及历史版通过版本选择可达；中文ZIP含档案顺序总PDF、来源分类单实例原模板版式PDF、实例附件、根级汇总附件及追溯JSON，附件内容不合入总PDF仅索引，Office不转换，同版输出且部分包不冒充完整。技术选型/字段文件识别/默认联选留作inference；竞品源码和ZIP条目直接证据与平台合并、非空附件证据缺口分开。旧汇总转换保留可用编排和正常version_no，不覆盖当前冻结/草稿、不伪造核查、不删除源表单/生产/签署/审计/终止快照；迁移与Office各时点证据独立保留，旧通过记录不证明本轮PDF及修订入口已验收。0.3.24及specified/internal不变，不新增替代DEC或宣称整体合规。",
+        "visibility": "internal"
+      },
+      "originalExcerpt": "  - id: evidence.dhr-summary-user-confirmed\n    type: document\n    path: docs/knowledge/evidence/dhr-summary-user-confirmed.md\n    description: user-confirmed；完整证据自动归集、人工核查冻结、目录仅展示及审批/附件/ZIP边界保留；同包原位补正四工作区双视图、附件右侧主内容、冻结成员混选ZIP和正常发起修订。revisionPrintableExport 确认列表纯图标与弹窗直接修订，先建草稿再提交生成下一冻结版，草稿及历史版通过版本选择可达；中文ZIP含档案顺序总PDF、来源分类单实例原模板版式PDF、实例附件、根级汇总附件及追溯JSON，附件内容不合入总PDF仅索引，Office不转换，同版输出且部分包不冒充完整。技术选型/字段文件识别/默认联选留作inference；竞品源码和ZIP条目直接证据与平台合并、非空附件证据缺口分开。旧汇总转换保留可用编排和正常version_no，不覆盖当前冻结/草稿、不伪造核查、不删除源表单/生产/签署/审计/终止快照；迁移与Office各时点证据独立保留，旧通过记录不证明本轮PDF及修订入口已验收。0.3.24及specified/internal不变，不新增替代DEC或宣称整体合规。\n    visibility: internal"
+    },
+    {
+      "id": "evidence.dhr-summary-attachment-service",
+      "recordType": "evidence",
+      "sourcePath": "docs/knowledge/evidence/dhr-summary.yaml",
+      "sourceLocator": "id evidence.dhr-summary-attachment-service; line 153",
+      "originalMaturity": {
+        "status": null,
+        "visibility": "internal"
+      },
+      "auditScope": "finite-retained-normative-boundary",
+      "semanticReview": "reviewed",
+      "conclusion": "consistent",
+      "rationale": "代码证据锚点保留；其2026-09-28初核25MB描述明确是历史时点，不能外推当前大小或发布级文件保全已通过。",
+      "sourceRecord": {
+        "id": "evidence.dhr-summary-attachment-service",
+        "type": "code",
+        "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrAttachmentService.java",
+        "description": "original-evidence；working-tree 附件上传、内容类型/可读性校验、摘要、核验、解除关联及审计路径；downloadableFile 对指定冻结版本核对附件 id 与 sha256，已解除关联附件仅可由包含它的冻结版本读取。2026-09-28本体初核仍为25MB及PDF/PNG/JPEG，源码指纹见确认证据首节；Office/50MB由主开发并行实现，初核不证明后续实现状态。未证明病毒扫描、跨版本拒绝端到端测试、外部原件 SOP 或发布级文件保全。",
+        "visibility": "internal"
+      },
+      "originalExcerpt": "  - id: evidence.dhr-summary-attachment-service\n    type: code\n    path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrAttachmentService.java\n    description: original-evidence；working-tree 附件上传、内容类型/可读性校验、摘要、核验、解除关联及审计路径；downloadableFile 对指定冻结版本核对附件 id 与 sha256，已解除关联附件仅可由包含它的冻结版本读取。2026-09-28本体初核仍为25MB及PDF/PNG/JPEG，源码指纹见确认证据首节；Office/50MB由主开发并行实现，初核不证明后续实现状态。未证明病毒扫描、跨版本拒绝端到端测试、外部原件 SOP 或发布级文件保全。\n    visibility: internal"
+    }
+  ],
+  "originalUserRecordReferences": [
+    {
+      "sourcePath": "docs/knowledge/evidence/dhr-summary-user-confirmed.md",
+      "sourceLocator": "line 55",
+      "originalExcerpt": "- `user-confirmed`：受控来源/生产对象/内容关联核验、原权限、原件 SHA-256、冻结引用、带原因解除关联并保留原文件继续适用；格式扩展不改变生产对象、三类表单来源、审批及放行规则。原件不因 Office 类型而转换后另算摘要，冻结 ZIP 保留原始字节。"
+    },
+    {
+      "sourcePath": "docs/knowledge/evidence/dhr-summary-user-confirmed.md",
+      "sourceLocator": "line 56",
+      "originalExcerpt": "- `inference`：扩展名与真实结构一致性校验、拒绝含宏/加密/损坏 Office、限制 ZIP 展开及解析资源开销是工程防护，不是用户直接规定的业务规则。只放在内部工程证据说明，不作为已确认规则条件；格式检查既不保证无恶意软件，也不替代人工受控核验。具体阈值、解析器及异常处理由主开发实现和验证。"
+    },
+    {
+      "sourcePath": "docs/knowledge/evidence/dhr-summary-user-confirmed.md",
+      "sourceLocator": "line 73",
+      "originalExcerpt": "- 汇总及冻结查看的附件入口将右侧主内容切换为附件列表；原上传元信息、来源核验、下载和带原因解除关联保持，历史文件不物理删除。冻结查看只读，不增加其他工作区写权或附件接口。"
+    },
+    {
+      "sourcePath": "docs/knowledge/evidence/dhr-summary-user-confirmed.md",
+      "sourceLocator": "line 114",
+      "originalExcerpt": "- 手工附件及纸质扫描核验来源、对象及内容关系；保存文件版本、来源/核验、上传信息及原件追溯，区分原记录形成时间和扫描时间。替换/解除关联受权限、审计及版本影响控制，旧冻结版本仍可追溯。"
+    },
+    {
+      "sourcePath": "docs/knowledge/evidence/dhr-summary-user-confirmed.md",
+      "sourceLocator": "line 118",
+      "originalExcerpt": "- 审批任务专属附件下载必须经过任务级授权，且只能下载本任务绑定冻结版本包含的附件；通用 DHR 查看权和其他任务资格不扩展此范围。"
+    }
+  ],
+  "sourceFingerprints": [
+    {
+      "path": "docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml",
+      "bytes": 23213,
+      "sha256": "11e70ec27862eb971a2ad01cd928e8c2ecba36be4df70e170bd1f5296c4e0253",
+      "matchesBase": true
+    },
+    {
+      "path": "docs/knowledge/evidence/dhr-summary-user-confirmed.md",
+      "bytes": 36542,
+      "sha256": "51dc528c6fe38671023cec25cfbe6bf1f0a8dcf2fc088f7894524a2d5f035642",
+      "matchesBase": true
+    },
+    {
+      "path": "docs/knowledge/evidence/dhr-summary.yaml",
+      "bytes": 19543,
+      "sha256": "b121656c1c69b13066dbb34e2fed6f080140663c668c55ba5faf61a993b1b389",
+      "matchesBase": true
+    },
+    {
+      "path": "docs/knowledge/facts/dhr-summary.yaml",
+      "bytes": 11160,
+      "sha256": "cef00d62cf06832395bf1249c2802dce8d731776f3ea3c33022bd9d6e7c1a5ed",
+      "matchesBase": true
+    },
+    {
+      "path": "docs/knowledge/glossary.yaml",
+      "bytes": 71650,
+      "sha256": "ebec2f3f7345b05eaa16e6bde89ab61448fbe04e72133b071d6944b61fad6f15",
+      "matchesBase": true
+    },
+    {
+      "path": "docs/knowledge/ontology.yaml",
+      "bytes": 96031,
+      "sha256": "c9c97162d8232196bcb47ad574c03783e2406c6ac530cfa27b1156b00bd8c8c6",
+      "matchesBase": true
+    },
+    {
+      "path": "docs/knowledge/rules/dhr-summary.yaml",
+      "bytes": 17985,
+      "sha256": "7fc2b4b15bf79624a142721b6f3f2eb7b0dadae6f2a662c627bee836facf6154",
+      "matchesBase": true
+    }
+  ],
+  "counts": {
+    "finiteExistingIds": 9,
+    "wholeFilesCompleted": 0,
+    "newHistoricalUnique": null
+  },
+  "engineeringInferences": [
+    "只有CREATE_NEW成功返回本次写入流才确认当前文件所有权；写入/关闭IOException清理本次未登记残片，碰撞失败保留原有路径。",
+    "清理失败保留原IOException、suppressed和ID/path定位；不构成普通业务删除、历史扫删或恢复审计。",
+    "1/4/16并发、50MiB有效/损坏当前/冻结只读实验是工程诊断参数；实际数据不变成业务阈值、发布资格或生产SLA。"
+  ],
+  "conflicts": [],
+  "questions": [],
+  "knowledgeChanges": [],
+  "testsRun": [],
+  "limitations": [
+    "未修改仓库，未运行产品或性能测试，未冻结主审尚在开发的最终源码。",
+    "未知提交/持久对账/崩溃/完整HTTP、RBAC、浏览器及真实磁盘满不由本任务证明。",
+    "旧两DHRhigh/A12/四gap/666路径44知识183ID、W6含旧已审A23/W7及原暂缓/ACL仍保留。"
+  ]
+}

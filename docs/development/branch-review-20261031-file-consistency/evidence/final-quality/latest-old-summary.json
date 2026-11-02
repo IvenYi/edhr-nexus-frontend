@@ -1,0 +1,67 @@
+{
+  "commit": "0bd0848bbded6d6954d62a4f924e0b2eec6623ad",
+  "exit": 1,
+  "suites": [
+    {
+      "suite": "FileCopyOwnershipTest",
+      "tests": 6,
+      "failures": 5,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "FileHttpBoundaryTest",
+      "tests": 11,
+      "failures": 2,
+      "errors": 0,
+      "skipped": 0
+    }
+  ],
+  "totals": {
+    "tests": 17,
+    "failures": 7,
+    "errors": 0,
+    "skipped": 0
+  },
+  "failures": [
+    {
+      "case": "failedCopyRemovesOnlyItsOwnedFileAndNeverRegisters(String)[1]",
+      "kind": "failure",
+      "message": "\nExpecting value to be false but was true"
+    },
+    {
+      "case": "failedCopyRemovesOnlyItsOwnedFileAndNeverRegisters(String)[2]",
+      "kind": "failure",
+      "message": "\nExpecting value to be false but was true"
+    },
+    {
+      "case": "existingStoredPathIsNeitherOverwrittenNorCleanedUp",
+      "kind": "failure",
+      "message": "\nExpecting code to raise a throwable."
+    },
+    {
+      "case": "copyKeepsTheReservedFileObjectRatherThanUnlinkingAndRecreatingIt",
+      "kind": "failure",
+      "message": "[copy must start with an owned reserved path] \nExpecting value to be true but was false"
+    },
+    {
+      "case": "failedCleanupPreservesOriginalFailureAndReportsTheCleanupFailure",
+      "kind": "failure",
+      "message": "\nMultiple Failures (1 failure)\n-- failure 1 --\nExpected size: 1 but was: 0 in:\n[]\nat FileCopyOwnershipTest.lambda$failedCleanupPreservesOriginalFailureAndReportsTheCleanupFailure$3(FileCopyOwnershipTest.java:77)"
+    },
+    {
+      "case": "uploadedByUsesAuthenticatedUserIdRatherThanSystemOrSubmittedIdentity(String)[1]",
+      "kind": "failure",
+      "message": "\nexpected: \"uploader-A\"\n but was: \"system\""
+    },
+    {
+      "case": "uploadedByUsesAuthenticatedUserIdRatherThanSystemOrSubmittedIdentity(String)[2]",
+      "kind": "failure",
+      "message": "\nexpected: \"uploader-B\"\n but was: \"system\""
+    }
+  ],
+  "testSha256": {
+    "FileCopyOwnershipTest": "c1007f99c8981472318c00e0af793d0342cb998814387fcc8a8fb54af49cbf02",
+    "FileHttpBoundaryTest": "07223295278b8bacc9b8b1ad6fd3c810a980ca96d0f277d00fe54cf333210f5d"
+  }
+}

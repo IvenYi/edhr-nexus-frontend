@@ -1,0 +1,244 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] --------------------------< com.zencas:edhr >---------------------------
+[INFO] Building eDHR 0.0.1-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- exec:3.5.0:exec (dhr-print-renderer) @ edhr ---
+
+> edhr-frontend@0.0.1 build:dhr-print
+> vite build --config vite.dhr-print.config.ts
+
+vite v5.4.21 building for production...
+transforming...
+✓ 11665 modules transformed.
+rendering chunks...
+computing gzip size...
+../backend/target/generated-resources/dhr-print/renderer.js  662.45 kB │ gzip: 211.16 kB
+✓ built in 8.72s
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ edhr ---
+[INFO] Copying 10 resources from src/main/resources to target/classes
+[INFO] Copying 1 resource from target/generated-resources to target/classes
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ edhr ---
+[INFO] Recompiling the module because of changed source code.
+[INFO] Compiling 343 source files with javac [debug parameters release 21] to target/classes
+[INFO] /workspace/edhr-nexus-frontend/gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/controller/AuditController.java: Some input files use or override a deprecated API.
+[INFO] /workspace/edhr-nexus-frontend/gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/controller/AuditController.java: Recompile with -Xlint:deprecation for details.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ edhr ---
+[INFO] Copying 129 resources from src/test/resources to target/test-classes
+[INFO] 
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ edhr ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 162 source files with javac [debug parameters release 21] to target/test-classes
+[INFO] /workspace/edhr-nexus-frontend/gmp-platform/backend/src/test/java/com/zencas/edhr/common/config/CurrentDatabaseBaselinePostgresTest.java: Some input files use or override a deprecated API.
+[INFO] /workspace/edhr-nexus-frontend/gmp-platform/backend/src/test/java/com/zencas/edhr/common/config/CurrentDatabaseBaselinePostgresTest.java: Recompile with -Xlint:deprecation for details.
+[INFO] /workspace/edhr-nexus-frontend/gmp-platform/backend/src/test/java/com/zencas/edhr/identity/controller/LoginLogControllerTest.java: Some input files use unchecked or unsafe operations.
+[INFO] /workspace/edhr-nexus-frontend/gmp-platform/backend/src/test/java/com/zencas/edhr/identity/controller/LoginLogControllerTest.java: Recompile with -Xlint:unchecked for details.
+[INFO] 
+[INFO] --- surefire:3.2.5:test (default-test) @ edhr ---
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running com.zencas.edhr.compliance.controller.FileControllerTest
+OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+WARNING: A Java agent has been loaded dynamically (/workspace/.pr6-m2/net/bytebuddy/byte-buddy-agent/1.14.16/byte-buddy-agent-1.14.16.jar)
+WARNING: If a serviceability tool is in use, please run with -XX:+EnableDynamicAgentLoading to hide this warning
+WARNING: If a serviceability tool is not in use, please run with -Djdk.instrument.traceUsage for more information
+WARNING: Dynamic loading of agents will be disallowed by default in a future release
+Standard Commons Logging discovery in action with spring-jcl: please remove commons-logging.jar from classpath in order to avoid potential conflicts
+08:05:57.195 [main] INFO com.zencas.edhr.compliance.controller.FileController -- File uploaded: id=341657966238777345, originalName=id-card-back.png, size=3
+08:05:57.209 [main] INFO com.zencas.edhr.compliance.controller.FileController -- File uploaded: id=341657966238777344, originalName=id-card-front.png, size=3
+[INFO] Tests run: 9, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.392 s -- in com.zencas.edhr.compliance.controller.FileControllerTest
+[INFO] Running com.zencas.edhr.compliance.controller.FileHttpBoundaryTest
+08:05:57.300 [main] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [com.zencas.edhr.compliance.controller.FileHttpBoundaryTest]: FileHttpBoundaryTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+08:05:57.486 [main] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration com.zencas.edhr.EdhrApplication for test class com.zencas.edhr.compliance.controller.FileHttpBoundaryTest
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.3.0)
+
+2026-10-31T08:05:57.899Z  INFO 15694 --- [edhr] [           main] c.z.e.c.controller.FileHttpBoundaryTest  : Starting FileHttpBoundaryTest using Java 21.0.12.1 with PID 15694 (started by agent in /workspace/edhr-nexus-frontend/gmp-platform/backend)
+2026-10-31T08:05:57.900Z DEBUG 15694 --- [edhr] [           main] c.z.e.c.controller.FileHttpBoundaryTest  : Running with Spring Boot v3.3.0, Spring v6.1.8
+2026-10-31T08:05:57.901Z  INFO 15694 --- [edhr] [           main] c.z.e.c.controller.FileHttpBoundaryTest  : The following 1 profile is active: "dev"
+2026-10-31T08:05:58.943Z  WARN 15694 --- [edhr] [           main] .s.s.UserDetailsServiceAutoConfiguration : 
+
+Using generated security password: 376f9905-7d19-4fa2-a2fd-bacdab2ba427
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+2026-10-31T08:05:58.949Z  INFO 15694 --- [edhr] [           main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+2026-10-31T08:05:59.147Z  INFO 15694 --- [edhr] [           main] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@176054b7, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@531bec12, org.springframework.security.web.context.SecurityContextHolderFilter@af94b0b, org.springframework.security.web.header.HeaderWriterFilter@1e7113f8, org.springframework.web.filter.CorsFilter@24563809, org.springframework.security.web.authentication.logout.LogoutFilter@857f1a7, com.zencas.edhr.identity.security.JwtAuthenticationFilter@2ee095c9, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@1831447c, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@37a0fc8c, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@41d84abb, org.springframework.security.web.session.SessionManagementFilter@787a4519, org.springframework.security.web.access.ExceptionTranslationFilter@4891d727, org.springframework.security.web.access.intercept.AuthorizationFilter@6f95654c]
+2026-10-31T08:05:59.335Z DEBUG 15694 --- [edhr] [           main] c.z.e.i.s.JwtAuthenticationFilter        : Filter 'jwtAuthenticationFilter' configured for use
+2026-10-31T08:05:59.339Z  INFO 15694 --- [edhr] [           main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-10-31T08:05:59.339Z  INFO 15694 --- [edhr] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-10-31T08:05:59.340Z  INFO 15694 --- [edhr] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 1 ms
+2026-10-31T08:05:59.362Z  INFO 15694 --- [edhr] [           main] c.z.e.c.controller.FileHttpBoundaryTest  : Started FileHttpBoundaryTest in 1.806 seconds (process running for 4.077)
+2026-10-31T08:05:59.403Z DEBUG 15694 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/files/77/public-preview
+2026-10-31T08:05:59.408Z DEBUG 15694 --- [edhr] [           main] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-10-31T08:05:59.409Z DEBUG 15694 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/files/77/public-preview
+2026-10-31T08:05:59.425Z  WARN 15694 --- [edhr] [           main] c.z.e.c.e.GlobalExceptionHandler         : Business exception: code=GENERAL-003, message=文件不允许公开预览, path=/api/v1/files/77/public-preview
+2026-10-31T08:05:59.465Z DEBUG 15694 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/files/77/public-preview
+2026-10-31T08:05:59.465Z DEBUG 15694 --- [edhr] [           main] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-10-31T08:05:59.465Z DEBUG 15694 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/files/77/public-preview
+2026-10-31T08:05:59.485Z DEBUG 15694 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/files/77/public-preview
+2026-10-31T08:05:59.485Z DEBUG 15694 --- [edhr] [           main] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-10-31T08:05:59.485Z DEBUG 15694 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/files/77/public-preview
+2026-10-31T08:05:59.486Z  WARN 15694 --- [edhr] [           main] c.z.e.c.e.GlobalExceptionHandler         : Business exception: code=GENERAL-003, message=文件不允许公开预览, path=/api/v1/files/77/public-preview
+2026-10-31T08:05:59.488Z DEBUG 15694 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/files/77/public-preview
+2026-10-31T08:05:59.489Z DEBUG 15694 --- [edhr] [           main] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-10-31T08:05:59.489Z DEBUG 15694 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/files/77/public-preview
+2026-10-31T08:05:59.496Z DEBUG 15694 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/files/77/public-preview
+2026-10-31T08:05:59.497Z DEBUG 15694 --- [edhr] [           main] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-10-31T08:05:59.497Z DEBUG 15694 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/files/77/public-preview
+2026-10-31T08:05:59.498Z  WARN 15694 --- [edhr] [           main] c.z.e.c.e.GlobalExceptionHandler         : Business exception: code=GENERAL-003, message=文件不允许公开预览, path=/api/v1/files/77/public-preview
+2026-10-31T08:05:59.499Z DEBUG 15694 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/files/77/public-preview
+2026-10-31T08:05:59.500Z DEBUG 15694 --- [edhr] [           main] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-10-31T08:05:59.500Z DEBUG 15694 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/files/77/public-preview
+2026-10-31T08:05:59.506Z DEBUG 15694 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/files/77/public-preview
+2026-10-31T08:05:59.507Z DEBUG 15694 --- [edhr] [           main] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-10-31T08:05:59.507Z DEBUG 15694 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/files/77/public-preview
+2026-10-31T08:05:59.507Z  WARN 15694 --- [edhr] [           main] c.z.e.c.e.GlobalExceptionHandler         : Business exception: code=GENERAL-003, message=文件不允许公开预览, path=/api/v1/files/77/public-preview
+2026-10-31T08:05:59.509Z DEBUG 15694 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/files/77/public-preview
+2026-10-31T08:05:59.509Z DEBUG 15694 --- [edhr] [           main] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-10-31T08:05:59.509Z DEBUG 15694 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/files/77/public-preview
+2026-10-31T08:05:59.515Z DEBUG 15694 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing DELETE /api/v1/files/77
+2026-10-31T08:05:59.515Z DEBUG 15694 --- [edhr] [           main] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-10-31T08:05:59.519Z DEBUG 15694 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/files
+2026-10-31T08:05:59.519Z DEBUG 15694 --- [edhr] [           main] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-10-31T08:05:59.522Z DEBUG 15694 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/files/upload
+2026-10-31T08:05:59.523Z DEBUG 15694 --- [edhr] [           main] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-10-31T08:05:59.586Z DEBUG 15694 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/files/upload
+2026-10-31T08:05:59.615Z DEBUG 15694 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/files/upload
+2026-10-31T08:05:59.623Z  INFO 15694 --- [edhr] [           main] c.z.e.c.controller.FileController        : File uploaded: id=88, originalName=evidence.txt, size=8
+2026-10-31T08:05:59.635Z DEBUG 15694 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/files/upload
+2026-10-31T08:05:59.639Z DEBUG 15694 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/files/upload
+2026-10-31T08:05:59.639Z  INFO 15694 --- [edhr] [           main] c.z.e.c.controller.FileController        : File uploaded: id=88, originalName=evidence.txt, size=8
+2026-10-31T08:05:59.645Z DEBUG 15694 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/files/77/public-preview
+2026-10-31T08:05:59.646Z DEBUG 15694 --- [edhr] [           main] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-10-31T08:05:59.646Z DEBUG 15694 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/files/77/public-preview
+2026-10-31T08:05:59.646Z  WARN 15694 --- [edhr] [           main] c.z.e.c.e.GlobalExceptionHandler         : Business exception: code=GENERAL-003, message=文件不允许公开预览, path=/api/v1/files/77/public-preview
+2026-10-31T08:05:59.677Z DEBUG 15694 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/files/77/download
+2026-10-31T08:05:59.677Z DEBUG 15694 --- [edhr] [           main] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-10-31T08:05:59.679Z DEBUG 15694 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/files/77/download
+2026-10-31T08:05:59.682Z DEBUG 15694 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/files/77/download
+2026-10-31T08:05:59.689Z DEBUG 15694 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/files/77/preview
+2026-10-31T08:05:59.689Z DEBUG 15694 --- [edhr] [           main] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-10-31T08:05:59.691Z DEBUG 15694 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/files/77/preview
+2026-10-31T08:05:59.694Z DEBUG 15694 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/files/77/preview
+2026-10-31T08:05:59.699Z DEBUG 15694 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/files/77/page-preview
+2026-10-31T08:05:59.700Z DEBUG 15694 --- [edhr] [           main] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-10-31T08:05:59.701Z DEBUG 15694 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/files/77/page-preview
+2026-10-31T08:05:59.704Z DEBUG 15694 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/files/77/page-preview
+[INFO] Tests run: 11, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 2.481 s -- in com.zencas.edhr.compliance.controller.FileHttpBoundaryTest
+[INFO] Running com.zencas.edhr.compliance.controller.FileUploadResourceTest
+2026-10-31T08:05:59.797Z  INFO 15694 --- [edhr] [           main] c.z.e.c.controller.FileController        : File uploaded: id=77, originalName=sample.pdf, size=3
+[INFO] Tests run: 9, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.090 s -- in com.zencas.edhr.compliance.controller.FileUploadResourceTest
+[INFO] Running com.zencas.edhr.compliance.controller.FileCopyOwnershipTest
+2026-10-31T08:05:59.821Z  INFO 15694 --- [edhr] [           main] c.z.e.c.controller.FileController        : File uploaded: id=77, originalName=paper.pdf, size=3
+2026-10-31T08:05:59.824Z  WARN 15694 --- [edhr] [           main] c.z.e.c.controller.FileController        : Failed to remove incomplete upload: /tmp/junit15759051094496257447/77_paper.pdf
+
+java.nio.file.DirectoryNotEmptyException: /tmp/junit15759051094496257447/77_paper.pdf
+	at java.base/sun.nio.fs.UnixFileSystemProvider.implDelete(UnixFileSystemProvider.java:289) ~[na:na]
+	at java.base/sun.nio.fs.AbstractFileSystemProvider.deleteIfExists(AbstractFileSystemProvider.java:110) ~[na:na]
+	at java.base/java.nio.file.Files.deleteIfExists(Files.java:1192) ~[na:na]
+	at com.zencas.edhr.compliance.controller.FileController.upload(FileController.java:133) ~[classes/:na]
+	at com.zencas.edhr.compliance.controller.FileCopyOwnershipTest.lambda$failedCleanupPreservesOriginalFailureAndReportsTheCleanupFailure$2(FileCopyOwnershipTest.java:75) ~[test-classes/:na]
+	at org.assertj.core.api.ThrowableAssert.catchThrowable(ThrowableAssert.java:63) ~[assertj-core-3.25.3.jar:na]
+	at org.assertj.core.api.AssertionsForClassTypes.catchThrowable(AssertionsForClassTypes.java:892) ~[assertj-core-3.25.3.jar:na]
+	at org.assertj.core.api.Assertions.catchThrowable(Assertions.java:1365) ~[assertj-core-3.25.3.jar:na]
+	at org.assertj.core.api.Assertions.assertThatThrownBy(Assertions.java:1209) ~[assertj-core-3.25.3.jar:na]
+	at com.zencas.edhr.compliance.controller.FileCopyOwnershipTest.failedCleanupPreservesOriginalFailureAndReportsTheCleanupFailure(FileCopyOwnershipTest.java:75) ~[test-classes/:na]
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580) ~[na:na]
+	at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:728) ~[junit-platform-commons-1.10.2.jar:1.10.2]
+	at org.junit.jupiter.engine.execution.MethodInvocation.proceed(MethodInvocation.java:60) ~[junit-jupiter-engine-5.10.2.jar:5.10.2]
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain$ValidatingInvocation.proceed(InvocationInterceptorChain.java:131) ~[junit-jupiter-engine-5.10.2.jar:5.10.2]
+	at org.junit.jupiter.engine.extension.TimeoutExtension.intercept(TimeoutExtension.java:156) ~[junit-jupiter-engine-5.10.2.jar:5.10.2]
+	at org.junit.jupiter.engine.extension.TimeoutExtension.interceptTestableMethod(TimeoutExtension.java:147) ~[junit-jupiter-engine-5.10.2.jar:5.10.2]
+	at org.junit.jupiter.engine.extension.TimeoutExtension.interceptTestMethod(TimeoutExtension.java:86) ~[junit-jupiter-engine-5.10.2.jar:5.10.2]
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker$ReflectiveInterceptorCall.lambda$ofVoidMethod$0(InterceptingExecutableInvoker.java:103) ~[junit-jupiter-engine-5.10.2.jar:5.10.2]
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker.lambda$invoke$0(InterceptingExecutableInvoker.java:93) ~[junit-jupiter-engine-5.10.2.jar:5.10.2]
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain$InterceptedInvocation.proceed(InvocationInterceptorChain.java:106) ~[junit-jupiter-engine-5.10.2.jar:5.10.2]
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain.proceed(InvocationInterceptorChain.java:64) ~[junit-jupiter-engine-5.10.2.jar:5.10.2]
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain.chainAndInvoke(InvocationInterceptorChain.java:45) ~[junit-jupiter-engine-5.10.2.jar:5.10.2]
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain.invoke(InvocationInterceptorChain.java:37) ~[junit-jupiter-engine-5.10.2.jar:5.10.2]
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker.invoke(InterceptingExecutableInvoker.java:92) ~[junit-jupiter-engine-5.10.2.jar:5.10.2]
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker.invoke(InterceptingExecutableInvoker.java:86) ~[junit-jupiter-engine-5.10.2.jar:5.10.2]
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.lambda$invokeTestMethod$7(TestMethodTestDescriptor.java:218) ~[junit-jupiter-engine-5.10.2.jar:5.10.2]
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73) ~[junit-platform-engine-1.10.2.jar:1.10.2]
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.invokeTestMethod(TestMethodTestDescriptor.java:214) ~[junit-jupiter-engine-5.10.2.jar:5.10.2]
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.execute(TestMethodTestDescriptor.java:139) ~[junit-jupiter-engine-5.10.2.jar:5.10.2]
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.execute(TestMethodTestDescriptor.java:69) ~[junit-jupiter-engine-5.10.2.jar:5.10.2]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:151) ~[junit-platform-engine-1.10.2.jar:1.10.2]
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73) ~[junit-platform-engine-1.10.2.jar:1.10.2]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:141) ~[junit-platform-engine-1.10.2.jar:1.10.2]
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137) ~[junit-platform-engine-1.10.2.jar:1.10.2]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:139) ~[junit-platform-engine-1.10.2.jar:1.10.2]
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73) ~[junit-platform-engine-1.10.2.jar:1.10.2]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:138) ~[junit-platform-engine-1.10.2.jar:1.10.2]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:95) ~[junit-platform-engine-1.10.2.jar:1.10.2]
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596) ~[na:na]
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:41) ~[junit-platform-engine-1.10.2.jar:1.10.2]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:155) ~[junit-platform-engine-1.10.2.jar:1.10.2]
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73) ~[junit-platform-engine-1.10.2.jar:1.10.2]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:141) ~[junit-platform-engine-1.10.2.jar:1.10.2]
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137) ~[junit-platform-engine-1.10.2.jar:1.10.2]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:139) ~[junit-platform-engine-1.10.2.jar:1.10.2]
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73) ~[junit-platform-engine-1.10.2.jar:1.10.2]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:138) ~[junit-platform-engine-1.10.2.jar:1.10.2]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:95) ~[junit-platform-engine-1.10.2.jar:1.10.2]
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596) ~[na:na]
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:41) ~[junit-platform-engine-1.10.2.jar:1.10.2]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:155) ~[junit-platform-engine-1.10.2.jar:1.10.2]
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73) ~[junit-platform-engine-1.10.2.jar:1.10.2]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:141) ~[junit-platform-engine-1.10.2.jar:1.10.2]
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137) ~[junit-platform-engine-1.10.2.jar:1.10.2]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:139) ~[junit-platform-engine-1.10.2.jar:1.10.2]
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73) ~[junit-platform-engine-1.10.2.jar:1.10.2]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:138) ~[junit-platform-engine-1.10.2.jar:1.10.2]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:95) ~[junit-platform-engine-1.10.2.jar:1.10.2]
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.submit(SameThreadHierarchicalTestExecutorService.java:35) ~[junit-platform-engine-1.10.2.jar:1.10.2]
+	at org.junit.platform.engine.support.hierarchical.HierarchicalTestExecutor.execute(HierarchicalTestExecutor.java:57) ~[junit-platform-engine-1.10.2.jar:1.10.2]
+	at org.junit.platform.engine.support.hierarchical.HierarchicalTestEngine.execute(HierarchicalTestEngine.java:54) ~[junit-platform-engine-1.10.2.jar:1.10.2]
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:198) ~[junit-platform-launcher-1.10.2.jar:1.10.2]
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:169) ~[junit-platform-launcher-1.10.2.jar:1.10.2]
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:93) ~[junit-platform-launcher-1.10.2.jar:1.10.2]
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.lambda$execute$0(EngineExecutionOrchestrator.java:58) ~[junit-platform-launcher-1.10.2.jar:1.10.2]
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.withInterceptedStreams(EngineExecutionOrchestrator.java:141) ~[junit-platform-launcher-1.10.2.jar:1.10.2]
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:57) ~[junit-platform-launcher-1.10.2.jar:1.10.2]
+	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:103) ~[junit-platform-launcher-1.10.2.jar:1.10.2]
+	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:85) ~[junit-platform-launcher-1.10.2.jar:1.10.2]
+	at org.junit.platform.launcher.core.DelegatingLauncher.execute(DelegatingLauncher.java:47) ~[junit-platform-launcher-1.10.2.jar:1.10.2]
+	at org.apache.maven.surefire.junitplatform.LazyLauncher.execute(LazyLauncher.java:56) ~[surefire-junit-platform-3.2.5.jar:3.2.5]
+	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.execute(JUnitPlatformProvider.java:184) ~[surefire-junit-platform-3.2.5.jar:3.2.5]
+	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.invokeAllTests(JUnitPlatformProvider.java:148) ~[surefire-junit-platform-3.2.5.jar:3.2.5]
+	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.invoke(JUnitPlatformProvider.java:122) ~[surefire-junit-platform-3.2.5.jar:3.2.5]
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:385) ~[surefire-booter-3.2.5.jar:3.2.5]
+	at org.apache.maven.surefire.booter.ForkedBooter.execute(ForkedBooter.java:162) ~[surefire-booter-3.2.5.jar:3.2.5]
+	at org.apache.maven.surefire.booter.ForkedBooter.run(ForkedBooter.java:507) ~[surefire-booter-3.2.5.jar:3.2.5]
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:495) ~[surefire-booter-3.2.5.jar:3.2.5]
+
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.028 s -- in com.zencas.edhr.compliance.controller.FileCopyOwnershipTest
+[INFO] Running com.zencas.edhr.production.service.DhrFormFilesTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.024 s -- in com.zencas.edhr.production.service.DhrFormFilesTest
+[INFO] 
+[INFO] Results:
+[INFO] 
+[INFO] Tests run: 37, Failures: 0, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  32.750 s
+[INFO] Finished at: 2026-10-31T08:05:59Z
+[INFO] ------------------------------------------------------------------------

@@ -1,0 +1,167 @@
+{
+  "executionLevel": "L2",
+  "status": "passed",
+  "baseCommit": "6ec9812f1bb1f7980654510f53c5fa568cfd83fb",
+  "runtimeTestedCommit": "bd71f6cfb05f211863fcca4382d74445003aa26c",
+  "allFormalRoles": "FINAL",
+  "qualityResult": "evidence/final-quality/edhr-delete-qa-qualityResult.yaml",
+  "independentReview": "evidence/final-quality/edhr-delete-qa-report.md",
+  "requiredPassed": 13,
+  "requiredTotal": 13,
+  "findings": [
+    {
+      "id": "QF-FILE-DELETE-ORIGINAL-LOSS",
+      "severity": "high",
+      "scope": "FileController.delete database failure and outer transaction outcome",
+      "summary": "旧源在数据库拒绝或回滚前已不可逆删除磁盘原件；当前仅确认提交后清理",
+      "reproductionSteps": [
+        "Use canonical file_object row plus actual original",
+        "Refuse DELETE by SQL or deferred COMMIT FK, inject beforeCommit failure, or roll back outer transaction",
+        "Inspect row and exact original bytes after final transaction outcome"
+      ],
+      "expectedResult": "Database rollback/refusal retains registered original; deletion in outer transaction waits for actual commit",
+      "actualResult": "Old source13 total red includes these lost-original assertions; fixed current same21 all pass",
+      "evidence": [
+        "/tmp/edhr-delete-qa-old-summary.json",
+        "/tmp/edhr-delete-qa-old-test.txt",
+        "/tmp/edhr-delete-qa-current-summary.json",
+        "/tmp/edhr-delete-qa-source-inspection.json"
+      ],
+      "resolutionStatus": "resolved",
+      "resolutionEvidence": [
+        {
+          "type": "commit",
+          "reference": "bd71f6cfb05f211863fcca4382d74445003aa26c"
+        },
+        {
+          "type": "command",
+          "reference": "/tmp/edhr-delete-qa-current-summary.json"
+        },
+        {
+          "type": "document",
+          "reference": "/tmp/edhr-delete-qa-source-inspection.json"
+        }
+      ]
+    },
+    {
+      "id": "QF-FILE-DELETE-FALSE-SUCCESS",
+      "severity": "medium",
+      "scope": "FileController.delete post-commit filesystem cleanup result",
+      "summary": "旧源吞磁盘IO异常仍返回200；当前明确500并记录ID/path，此时DB已提交",
+      "reproductionSteps": [
+        "Replace registered original with a nonempty directory to force real delete IOException",
+        "Issue authenticated DELETE through actual JWT/filter/MVC",
+        "Check HTTP response, remaining directory bytes and committed row count"
+      ],
+      "expectedResult": "No false HTTP success on cleanup failure; disclose committed DB and retained physical original",
+      "actualResult": "Old H2/PG return200 and fail assertions; current HTTP500, row0 and original child retained",
+      "evidence": [
+        "/tmp/edhr-delete-qa-old-FileDeleteTransactionIntegrationTest.xml",
+        "/tmp/edhr-delete-qa-current-FileDeleteTransactionIntegrationTest.xml"
+      ],
+      "resolutionStatus": "resolved",
+      "resolutionEvidence": [
+        {
+          "type": "commit",
+          "reference": "bd71f6cfb05f211863fcca4382d74445003aa26c"
+        },
+        {
+          "type": "command",
+          "reference": "/tmp/edhr-delete-qa-current-summary.json"
+        }
+      ]
+    }
+  ],
+  "independentRuns": {
+    "current": {
+      "tests": 84,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "knowledge": {
+      "tests": 89,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "oldCounterfactual": {
+      "tests": 21,
+      "failures": 13,
+      "errors": 0,
+      "skipped": 0
+    },
+    "oldPositiveControls": 8
+  },
+  "countingBoundary": "Single84 includes21 deletion executions and63 existing regressions; repeated engines/runs are not unique scenarios. Initialold19 and fixture-failed84 are retained, not summed. Three independent orchestration failures are environment/tool-only, not product red.",
+  "ontology": {
+    "result": "not-applicable",
+    "roleState": "FINAL",
+    "version": "0.3.25",
+    "finiteExistingIds": 9,
+    "knowledgeFilesUnchanged": 330,
+    "maturityChanged": false
+  },
+  "inventory": {
+    "fixedCommit": "6ec9812f1bb1f7980654510f53c5fa568cfd83fb",
+    "paths": 6370,
+    "sql": 135,
+    "httpCandidates": 464,
+    "routeCandidates": 216,
+    "status": "inventory-only"
+  },
+  "coverage": {
+    "wholeFileCompletion": 0,
+    "newHistoricalUniqueCount": null,
+    "sourceReview": "source-review.json",
+    "historicalQueuesRetained": true
+  },
+  "evidence": {
+    "primaryOriginals": 59,
+    "primarySourceSnapshots": 6,
+    "ontologySourceFingerprints": 24,
+    "finalQualityOriginalsIncludingManifest": 58,
+    "archive": "final-evidence-manifest.json"
+  },
+  "scopeReview": {
+    "noDrift": true,
+    "actualUserCommunicationBeforePrCreation": true,
+    "document": "scope-review.md"
+  },
+  "residualRisks": [
+    {
+      "id": "risk.cross-resource-cleanup",
+      "description": "AfterCommit IO failure or process crash may leave original without metadata; HTTP500 does not undo committed DB and retry may404.",
+      "impact": "No atomic DB/filesystem outcome or durable cleanup guarantee.",
+      "mitigation": "Preserve id/path logs and discuss explicit persistent reconciliation/outbox separately; no automatic history restore or orphan deletion."
+    },
+    {
+      "id": "risk.shared-reference-acl",
+      "description": "Concurrent rebind/shared physical paths and three shared-file ACL questions remain separate audit/decision scopes.",
+      "impact": "Current passed result does not certify complete reference-safe deletion or object/tenant authorization.",
+      "mitigation": "Do not infer rules from targetType; continue dedicated source/runtime audit and user decisions."
+    },
+    {
+      "id": "risk.adjacent-dhr-callback",
+      "description": "DhrAttachmentService adjacent UNKNOWN cleanup/IO behavior remains a separate source candidate.",
+      "impact": "This generic DELETE fix cannot close that service consistency scope.",
+      "mitigation": "Next independent finite audit/reproduction before deterministic fix; no speculative modification."
+    },
+    {
+      "id": "risk.limited-runtime",
+      "description": "Native canonical-single-table slice and JWT/MVC/filesystem only; no full application schema/migrations, real network disconnect, crash recovery, browser, full RBAC/UI/recipient certification.",
+      "impact": "Do not expand tests into complete production acceptance.",
+      "mitigation": "Keep explicit evidence bounds and continue applicable W5-W7 validation."
+    },
+    {
+      "id": "risk.audit-remaining",
+      "description": "Whole audit W3/W4/W5 crossing, W2 remainder and W6 old-reviewed A23/W7 increments; 666 paths/44knowledge/183ID, old two DHR highs/A12/four gaps and paused friend signature page/production dialog remain open.",
+      "impact": "Local finding closure does not finish full audit or resolve old blockers.",
+      "mitigation": "Continue ledger queues and latest-target incremental audit; finite nine IDs/wholeFile0/newUnique unknown."
+    }
+  ],
+  "blockingConditions": [],
+  "recommendMergeForThisBatch": true,
+  "nextAction": "Fetch actual merge and all target increments; prioritize DhrAttachmentService completion callback, record-control increment and W6 robustness/performance/A23 whole pass including previously reviewed files. Do not invent pending ACL policy.",
+  "deliveryPolicy": "Manual merge only; no deploy, historical restore, CI/Actions queries/triggers or shared-history rewrite."
+}

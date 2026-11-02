@@ -1,0 +1,199 @@
+qualityResult:
+  result: failed
+  baseCommit: 032b83e9d5b8a25bee6d5b59c45d86892f672d00
+  headCommit: ec4857bef2c9ebb5a1b1d1b7f3c767d2cb63666a
+  contractBaseline:
+    sourceCommit: ec4857bef2c9ebb5a1b1d1b7f3c767d2cb63666a
+    targetBranch: edhr-dev
+    targetCommit: 0bd0848bbded6d6954d62a4f924e0b2eec6623ad
+    contractReadCommit: ec4857bef2c9ebb5a1b1d1b7f3c767d2cb63666a
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: dirty
+    includedPaths: []
+    excludedPaths:
+    - docs/development/branch-review-20261015/NEXT.md
+    - docs/development/branch-review-20261031-file-consistency/README.md
+    - docs/development/branch-review-20261031-file-consistency/decision-package.yaml
+    - docs/development/branch-review-20261031-file-consistency/review-notes.md
+    - docs/development/branch-review-20261031-file-consistency/source-review.json
+    - gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/controller/FileController.java
+    - gmp-platform/backend/src/test/java/com/zencas/edhr/compliance/controller/FileCopyOwnershipTest.java
+    untrackedPaths:
+    - docs/development/branch-review-20261031-file-consistency/evidence/initial-decision-package.yaml
+    - docs/development/branch-review-20261031-file-consistency/integration-increment.json
+    - docs/development/branch-review-20261031-file-consistency/inventory-current/coverage.csv
+    - docs/development/branch-review-20261031-file-consistency/inventory-current/entrypoints.csv
+    - docs/development/branch-review-20261031-file-consistency/inventory-current/inventory-summary.json
+    - docs/development/branch-review-20261031-file-consistency/inventory-current/migrations.csv
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+  - id: q1.initial-baseline-and-target-evolution
+    required: true
+    category: documentation
+    description: 原冻结候选及实时新增目标、契约/来源边界独立核对
+    method: inspection
+    command: git fetch origin edhr-dev; git diff / source inspection
+    outcome: passed
+    evidence:
+    - /tmp/edhr-copy-q1-inspection.json
+    - Original frozenec4857/base032b; target advanced0bd and parent merged e954, no
+      final acceptance of that integration.
+  - id: q1.rules-and-limited-scope
+    required: true
+    category: requirements
+    description: 路径所有权/真实认证ID符合原要求，DB补偿及ACL独立后续
+    method: inspection
+    command: Read decision package / source / knowledge / source-review / A23
+    outcome: passed
+    evidence:
+    - /tmp/edhr-copy-q1-inspection.json
+    - No new business ACL policy; DHR attachment independent storage; original deferrals
+      must be incrementally rechecked after new target.
+  - id: q1.primary-provenance
+    required: true
+    category: documentation
+    description: 18原件、3源码、303知识及7本体原件在原提交逐字节核对
+    method: command
+    command: Recompute sha256/bytes against original Git ec4857 objects
+    outcome: passed
+    evidence:
+    - /tmp/edhr-copy-q1-initial-provenance.json
+  - id: q1.initial-inventory
+    required: true
+    category: documentation
+    description: 重建原5173/130固定清单，当前目标新增范围不借旧分母
+    method: command
+    command: python3 scripts/build-branch-review-inventory.py --ref 032b83e9d5b8a25bee6d5b59c45d86892f672d00
+      --out /tmp/edhr-copy-q1-inventory
+    outcome: passed
+    evidence:
+    - /tmp/edhr-copy-q1-inventory-build.txt
+    - /tmp/edhr-copy-q1-inventory-check.json
+  - id: q1.current36-initial-candidate
+    required: true
+    category: regression
+    description: 原候选五类36执行实际通过
+    method: automated-test
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f gmp-platform/backend/pom.xml
+      -Dtest=FileCopyOwnershipTest,FileHttpBoundaryTest,FileUploadResourceTest,FileControllerTest,DhrFormFilesTest
+      test
+    outcome: passed
+    evidence:
+    - /tmp/edhr-copy-q1-initial-current-test.txt
+    - /tmp/edhr-copy-q1-initial-current-summary.json
+    - 36 executions 0 failures/errors/skipped at initial frozen candidate; not claimed
+      as final merged candidate runtime.
+  - id: q1.old032b-real-red16
+    required: true
+    category: regression
+    description: 实际旧032b同源16为6真实红10正向
+    method: automated-test
+    command: python3 /tmp/edhr-copy-q1-initial-run-old.py
+    outcome: passed
+    evidence:
+    - /tmp/edhr-copy-q1-old-test.txt
+    - /tmp/edhr-copy-q1-old-summary.json
+    - /tmp/edhr-copy-q1-old-command.json
+  - id: q1.latest0bd-real-red16
+    required: true
+    category: regression
+    description: 实际最新目标0bd同源16亦6真实红10正向
+    method: automated-test
+    command: python3 /tmp/edhr-copy-q1-run-old.py 0bd0848bbded6d6954d62a4f924e0b2eec6623ad
+      /tmp/edhr-copy-q1-latest-old-
+    outcome: passed
+    evidence:
+    - /tmp/edhr-copy-q1-latest-old-old-test.txt
+    - /tmp/edhr-copy-q1-latest-old-old-summary.json
+    - /tmp/edhr-copy-q1-latest-old-old-command.json
+  - id: q1.initial-knowledge89
+    required: true
+    category: ontology
+    description: 原候选知识89另实际通过，非新知识增量认证
+    method: automated-test
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f tools/knowledge-model/pom.xml
+      test
+    outcome: passed
+    evidence:
+    - /tmp/edhr-copy-q1-initial-knowledge-test.txt
+    - /tmp/edhr-copy-q1-initial-knowledge-junit.xml
+  - id: q1.reserved-file-object-retention
+    required: true
+    category: integration
+    description: 真实控制器成功上传必须保留预占文件对象，不能先删再建释放所有权窗口
+    method: command
+    command: Compile and run /tmp/edhr-copy-q1-OwnedReservationProbe.java against
+      real compiled FileController runtime
+    outcome: failed
+    evidence:
+    - /tmp/edhr-copy-q1-reservation-probe.txt
+    - /tmp/edhr-copy-q1-reservation-probe-command.json
+    - /tmp/edhr-copy-q1-OwnedReservationProbe.java
+    - /tmp/edhr-copy-q1-jdk-files-copy-bytecode.txt
+    - Expected17 bytes through held reserved FileChannel; actual-1 EOF while path17
+      bytes correct; AssertionError exit1.
+  - id: q1.owned-old-worktree-cleanup
+    required: true
+    category: documentation
+    description: 两个自有旧工作树正常移除，无prune他人
+    method: command
+    command: git worktree remove on own paths after exact test restore/link cleanup
+    outcome: passed
+    evidence:
+    - /tmp/edhr-copy-q1-cleanup.json
+    - /tmp/edhr-copy-q1-latest-old-cleanup.json
+  findings:
+  - id: AUD-W5-FILE-COPY-OWNERSHIP-001
+    severity: medium
+    scope: FileController.upload createFile reservation and REPLACE_EXISTING copy
+    summary: 预占后仍替换复制，成功上传会删除并重建预占文件，所有权窗口仍被释放。
+    reproductionSteps:
+    - Use actual FileController with owned temp directory and synthetic MultipartFile.
+    - On second getInputStream call, after reservation and before copy, hold READ
+      FileChannel to reserved target.
+    - Complete upload successfully, read path bytes and held channel.
+    expectedResult: 成功上传写入同一预占文件对象，原持有句柄读到17字节；不会通过先删除再创建释放预占。
+    actualResult: 路径内容正确17字节，但原预占句柄EOF(-1)，sameReservedFileObject=false，AssertionError/exit1；JDK字节码显示REPLACE_EXISTING删除后CREATE_NEW。尚未冒称实际并发请求丢文件已复现。
+    evidence:
+    - /tmp/edhr-copy-q1-reservation-probe.txt
+    - /tmp/edhr-copy-q1-OwnedReservationProbe.java
+    - /tmp/edhr-copy-q1-jdk-files-copy-bytecode.txt
+    resolutionStatus: open
+    resolutionEvidence: []
+  - id: AUD-W4-FILE-UPLOADER-001
+    severity: medium
+    scope: authenticated upload metadata
+    summary: 原system占位已在原候选真实双JWT上传回归验证修正。
+    reproductionSteps:
+    - Actualold032b/0bd same actor tests fail2 with system.
+    - Initial candidate actualHTTP two user IDs and spoofed uploadedBy parameter pass.
+    expectedResult: Metadata uses authenticated userId, not submitted actor or system
+      placeholder.
+    actualResult: Initial36 passed including both actor scenarios; final integration/repair
+      still requires fresh QA.
+    evidence:
+    - /tmp/edhr-copy-q1-initial-current-FileHttpBoundaryTest.xml
+    - /tmp/edhr-copy-q1-old-FileHttpBoundaryTest.xml
+    - /tmp/edhr-copy-q1-latest-old-old-FileHttpBoundaryTest.xml
+    resolutionStatus: resolved
+    resolutionEvidence:
+    - type: commit
+      reference: ec4857bef2c9ebb5a1b1d1b7f3c767d2cb63666a
+    - type: command
+      reference: /tmp/edhr-copy-q1-initial-current-test.txt
+  residualRisks:
+  - id: risk.new-target-integration
+    description: Latest target0bd includes record-control/DHR/workflow/knowledge changes;
+      parent merged e954 and now repairs. Initial cleanec4857 evidence is historical;
+      live dirty product/test/docs excluded.
+    impact: No passed conclusion for merged or repaired candidate.
+    mitigation: Parent integrates and fixes, then use fresh independent L2 QA for
+      actual frozen candidate.
+  - id: risk.remaining-file-scope
+    description: DBsave/commit/delete compensation, full shared objectACL, PDF capacity
+      and other audited-domain queues remain outside this finite runtime.
+    impact: No whole subsystem or all-business pass.
+    mitigation: Preserve explicit candidates, business questions, latest-target incremental
+      pending and production limits.
+  blockingConditions: []

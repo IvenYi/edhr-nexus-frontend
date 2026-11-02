@@ -1,0 +1,49 @@
+{
+  "observedAt": "2026-11-02T15:30:45.375609+00:00",
+  "pullRequest": {
+    "baseCommit": "8ec8391721858a7f96d73a5d293d93f43679118a",
+    "baseRef": "edhr-dev",
+    "headCommit": "e1de615de79eb8c43834d3c8d6c630581ab129d2",
+    "headRef": "audit/edhr-dev-dhr-attachment-query-review-20261102",
+    "html_url": "https://github.com/IvenYi/edhr-nexus-frontend/pull/55",
+    "mergeable": true,
+    "mergeable_state": "clean",
+    "merged": false,
+    "number": 55,
+    "state": "open"
+  },
+  "observedSourceHead": "e1de615de79eb8c43834d3c8d6c630581ab129d2",
+  "targetCommit": "8ec8391721858a7f96d73a5d293d93f43679118a",
+  "testedCandidate": "ec72883796766eba1c693b2d023bf8d112d86564",
+  "protectedPaths": 6796,
+  "protectedRawBytesStillEqual": true,
+  "archives": [
+    {
+      "manifest": "evidence-manifest.json",
+      "rawArtifacts": 32,
+      "archive": {
+        "path": "evidence/primary-and-ontology.tar.gz",
+        "bytes": 158989,
+        "sha256": "6e8a4d020fb3c3b1d20fb5c29ff89e46b1d3834a2268cbab5ba4b2402e7ce8a0"
+      },
+      "membersVerified": true
+    },
+    {
+      "manifest": "final-quality-manifest.json",
+      "rawArtifacts": 38,
+      "archive": {
+        "path": "evidence/final-independent.tar.gz",
+        "bytes": 200544,
+        "sha256": "ff5561594681876478b874aa7a112d7c05f39003a7df64eae7e23bc6df3d822f"
+      },
+      "membersVerified": true
+    }
+  ],
+  "ontologyResult": "not-applicable",
+  "qualityResult": "passed",
+  "allDispatchedRolesFinal": true,
+  "executionLevel": "L2; only L0 append after candidate",
+  "performanceImplementation": false,
+  "wholeAuditComplete": false,
+  "note": "This is the pre-registry observation. The following commit only appends this delivery record and NEXT; later push/PR head is checked by the main agent. No CI/Actions checks, auto merge/deploy or historical restoration."
+}

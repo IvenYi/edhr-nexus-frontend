@@ -1,0 +1,58 @@
+{
+  "observedAt": "2026-11-02T16:17:02.248553+00:00",
+  "pullRequest": {
+    "baseCommit": "8ec8391721858a7f96d73a5d293d93f43679118a",
+    "baseRef": "edhr-dev",
+    "headCommit": "a1109d6e921f7b41633ba87be4ef51341a5964a9",
+    "headRef": "audit/edhr-dev-dhr-attachment-query-review-20261102",
+    "html_url": "https://github.com/IvenYi/edhr-nexus-frontend/pull/55",
+    "mergeable": true,
+    "mergeable_state": "clean",
+    "merged": false,
+    "number": 55,
+    "state": "open",
+    "title": "perf(dhr): 复用附件下载元数据并验证查询与锁"
+  },
+  "observedSourceHead": "a1109d6e921f7b41633ba87be4ef51341a5964a9",
+  "testedCandidate": "b5cbdf076dbb55e57ba1ae93837d721da4940778",
+  "codeCommit": "b5cbdf076dbb55e57ba1ae93837d721da4940778",
+  "targetCommit": "8ec8391721858a7f96d73a5d293d93f43679118a",
+  "executionLevel": "L2; L0-only archive/acceptance/delivery after tested candidate",
+  "ontologyResult": "not-applicable",
+  "qualityResult": "passed",
+  "requiredChecks": 13,
+  "allDispatchedRolesFinal": true,
+  "candidateTrackedPaths": 6812,
+  "existingCandidateDelta": [
+    "docs/development/branch-review-20261015/NEXT.md"
+  ],
+  "allOtherExistingCandidatePathsUnchanged": true,
+  "runtimeSourceFingerprintsChecked": 11,
+  "archives": [
+    {
+      "manifest": "evidence-manifest.json",
+      "rawArtifacts": 96,
+      "archive": {
+        "path": "evidence/primary-and-ontology.tar.gz",
+        "bytes": 3970318,
+        "sha256": "f3efcf4a3a57cd912fb78c62017fd21f470a262e93ff056f0c23aac778b82fa6"
+      },
+      "allMembersVerified": true
+    },
+    {
+      "manifest": "final-quality-manifest.json",
+      "rawArtifacts": 107,
+      "archive": {
+        "path": "evidence/final-independent.tar.gz",
+        "bytes": 4310158,
+        "sha256": "e88f903538e35cf7308e658114953f41ac8170b241d12d5e190dde9ecf4e5fa0"
+      },
+      "allMembersVerified": true
+    }
+  ],
+  "performanceImplemented": "Only filename metadata reuse: effective current/frozen5/6→4/5; all previous eligibility and complete SHA retained.",
+  "wholeAuditComplete": false,
+  "remaining": "Summary5+2N/ZIP memory, old high/A12/gaps and all audit/user-pause queues retained.",
+  "pullRequestUpdateMethod": "REST PATCH title/body succeeded after legacy gh pr edit GraphQL Projects-classic deprecation; no product issue or test error.",
+  "note": "Pre-registry observation; the following commit only appends this file and NEXT. Final remote/head/clean checked after push, without claiming new tests on appended documentation. No CI/Actions query/trigger, automatic merge/deploy or historical restore."
+}

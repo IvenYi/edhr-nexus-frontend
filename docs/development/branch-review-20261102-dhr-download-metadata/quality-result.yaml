@@ -1,0 +1,203 @@
+qualityResult:
+  result: passed
+  baseCommit: 8ec8391721858a7f96d73a5d293d93f43679118a
+  headCommit: b5cbdf076dbb55e57ba1ae93837d721da4940778
+  contractBaseline:
+    sourceCommit: b5cbdf076dbb55e57ba1ae93837d721da4940778
+    targetBranch: edhr-dev
+    targetCommit: 8ec8391721858a7f96d73a5d293d93f43679118a
+    contractReadCommit: b5cbdf076dbb55e57ba1ae93837d721da4940778
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: clean
+    includedPaths: []
+    excludedPaths:
+    - gmp-platform/frontend/node_modules (temporary untracked tooling symlink; removed before final clean
+      worktree removal)
+    untrackedPaths: []
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+  - id: check.actual-contract-and-candidate
+    required: true
+    category: documentation
+    description: 独立读取契约并fetch最新目标；clean b5组合含原query诊断与本次名字复用，目标8ec、契约/知识无增量。
+    method: command
+    command: git fetch/rev-parse/status/diff; read actual AGENTS/handoff/quality role
+    outcome: passed
+    evidence:
+    - baseline-inspection.json
+    - final-baseline.json
+    - base=8ec8391721858a7f96d73a5d293d93f43679118a
+    - tested candidate/head=b5cbdf076dbb55e57ba1ae93837d721da4940778
+  - id: check.authorization-and-impact
+    required: true
+    category: requirements
+    description: 用户只确认末尾名字复用，三个产品文件/两个旧测试适配和新原生测试符合决策包；无汇总批读、UI/迁移/索引/业务政策扩展。
+    method: inspection
+    command: Compare raw source diff and current decisionPackage impact/ownership
+    outcome: passed
+    evidence:
+    - source-inspection.json
+    - baseline-inspection.json
+  - id: check.original-integrity-and-read-moments
+    required: true
+    category: security
+    description: 两DHR、active或冻结id+SHA、完整流式SHA后返回与原错误保留；名字有意合并到摘要前末次元数据，file仍Path/原两列SQL。
+    method: inspection
+    command: Inspect DhrAttachmentService and both controller consumer paths
+    outcome: passed
+    evidence:
+    - source-inspection.json
+    - artifact-role/source-fingerprint-check.json
+  - id: check.native-response-query-and-boundaries
+    required: true
+    category: api
+    description: 独立原生11例实际4/5查询、两个DHR读取、原件名/头/完整字节；缺失/损坏、解除后历史、成员id/SHA、DHR/版本和当前tenant谓词负例均过。进程内Controller/Resource，不冒称完整HTTP。
+    method: automated-test
+    command: DhrAttachmentDownloadMetadataPostgresTest
+    outcome: passed
+    evidence:
+    - commands.json
+    - backend-surefire/TEST-com.zencas.edhr.production.service.DhrAttachmentDownloadMetadataPostgresTest.xml
+    - download-observations/
+    - observation-check.json
+  - id: check.task-qualification-before-original
+    required: true
+    category: security
+    description: method-security代理9例含任务拒绝先于原件读取；原DhrReviewService detail实际当前待办/本人已办资格未改。9例包含在80内。
+    method: automated-test
+    command: DhrWorkbenchPermissionsTest and original DhrReviewService source inspection
+    outcome: passed
+    evidence:
+    - backend-surefire/TEST-com.zencas.edhr.production.controller.DhrWorkbenchPermissionsTest.xml
+    - source-inspection.json
+  - id: check.actual-focused-regression
+    required: true
+    category: regression
+    description: 自有detached候选/PG独立10类80项，全部0失败错误跳过；包括附件/ZIP/事务/写失败/Summary/Review/文件访问邻接。
+    method: command
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f gmp-platform/backend/pom.xml -Dtest=DhrAttachmentDownloadMetadataPostgresTest,DhrWorkbenchPermissionsTest,DhrAttachmentAndArchiveTest,DhrAttachmentTransactionPostgresTest,DhrSummaryServiceTest,DhrAttachmentQueryObservationPostgresTest,DhrAttachmentWriteFailureTest,DhrReviewLifecycleIntegrationTest,DhrFormFilesTest,ExecutionAccessTest
+      test
+    outcome: passed
+    evidence:
+    - commands.json
+    - backend.log
+    - backend-surefire/
+    - test-summary.json
+  - id: check.summary-prefix-and-parent-lock-retained
+    required: true
+    category: database
+    description: 实际公开submit受控前缀仍5/7/25/205/605，真实PG父锁阻塞合法unlink及释放后历史原件保留；非完整成功冻结提交。2例已含80内。
+    method: automated-test
+    command: DhrAttachmentQueryObservationPostgresTest
+    outcome: passed
+    evidence:
+    - query-observations/
+    - observation-check.json
+    - backend-surefire/TEST-com.zencas.edhr.production.service.DhrAttachmentQueryObservationPostgresTest.xml
+  - id: check.capacity-full-bytes-and-raw-jfr
+    required: true
+    category: database
+    description: 独立容量单项12组84请求：42完整50MiB+SHA/头，42损坏输出前拒绝；当前/冻结4/5，12原始JFR另行重解析验证有效100MiB/损坏50MiB每请求逻辑读。
+    method: command
+    command: DhrAttachmentDownloadCapacityPostgresTest -DargLine=-Xmx2g; independent ReplayReads on12
+      raw JFR recordings
+    outcome: passed
+    evidence:
+    - capacity.log
+    - capacity-surefire/
+    - capacity-observations/
+    - observation-check.json
+    - ReplayReads.java
+    - reparse-commands.json
+  - id: check.independent-old-source-control
+    required: true
+    category: regression
+    description: 独立旧源子角色实跑eb9同字节11例：2真实查询断言红、9正控、0error/skip；旧当前5/冻结6。该分项passed仅表示负控符合预期。
+    method: automated-test
+    command: Exact candidate controller-level test port on old eb9; actual native PG/Maven
+    outcome: passed
+    evidence:
+    - old-role/quality-result.yaml
+    - old-role/maven.log
+    - old-role/sql-evidence.json
+    - old-role/test-summary.json
+    - old-role/source-preservation.json
+  - id: check.knowledge-and-unchanged-policy
+    required: true
+    category: ontology
+    description: 本实例正式知识89/89，原本体NA/FINAL、14相关ID与25来源/330知识字节保持；0.3.25/schema1.2.0/P0不提升，不制造永久改名禁令。
+    method: command
+    command: Formal knowledge Maven suite plus original DEC0063/task rules and ontology-artifact scope
+      inspection
+    outcome: passed
+    evidence:
+    - knowledge.log
+    - knowledge-surefire/
+    - test-summary.json
+    - artifact-role/knowledge-byte-check.json
+    - artifact-role/source-fingerprint-check.json
+    - source-inspection.json
+  - id: check.raw-artifacts-and-fixed-inventory
+    required: true
+    category: audit
+    description: 97当前包成员/96原件、11当前快照、25本体指纹/330知识及固定8ec6785路径/135迁移/689入口候选源行核对；旧ec6796保护条目按旧Git核，当前有意5路径变化不误报漂移。
+    method: command
+    command: Read-only artifact-role raw SHA/tar/Git/CSV/XML verification
+    outcome: passed
+    evidence:
+    - artifact-role/result.json
+    - artifact-role/artifact-byte-check.json
+    - artifact-role/source-fingerprint-check.json
+    - artifact-role/inventory-check.json
+    - artifact-role/old-stage-check.json
+  - id: check.a23-extraction-and-full-audit-boundary
+    required: true
+    category: requirements
+    description: 有限A23保留必要守卫、落实内部载体/私有校验方法抽取，无通用框架/缓存/兼容wrapper；原high/A12/四gap、W6旧已审/W7及用户暂缓保持。
+    method: inspection
+    command: Review current notes/performance/source map/NEXT against raw product and policy
+    outcome: passed
+    evidence:
+    - source-inspection.json
+    - baseline-inspection.json
+    - artifact-role/result.json
+  - id: check.independence-protection-and-cleanup
+    required: true
+    category: documentation
+    description: 无产品/测试/fixture修复参与；本实例及两个子角色均FINAL，自有PG/工作树/工具链接正常清理，保护字节保持且cr-at-eol检查过。原件角色首CSV工具错误及修正保留，不算产品失败。
+    method: command
+    command: Actual cleanup/manifest/subrole FINAL and source preservation checks
+    outcome: passed
+    evidence:
+    - cleanup.json
+    - source-preservation.json
+    - final-baseline.json
+    - protected-manifest.json
+    - subroles.json
+    - old-role/cleanup.json
+    - artifact-role/result.json
+    - whitespace.json
+  findings: []
+  residualRisks:
+  - id: risk.summary-performance-still-open
+    description: 本次仅省下载末尾一次查询；Summary5+2N循环查询仍存在，Archive数组/PDF累计和无等价外层父锁问题仍独立。
+    impact: 不能把本项通过当全部性能风险resolved。
+    mitigation: 后续按用户讨论与实际规模、资格/锁/完整性保护逐批处理。
+  - id: risk.native-scope-not-full-system
+    description: 四canonical表/PK、受控原生数据、进程内Controller/proxy/Resource及method-security测试，不是完整HTTP/JWT/浏览器/账号矩阵或全部迁移/FK安装。
+    impact: 有限负例不认证完整多租户或全部部署运行场景。
+    mitigation: 保留全量账号/入口与部署矩阵，按后续变更补必要验收。
+  - id: risk.capacity-measurement-boundary
+    description: 暖缓存填充PNG、2GiBJVM/Hikari和1/4/16并发；JFR是逻辑读取，heap不含RSS/直接内存，不是生产SLA或完整物理IO。
+    impact: 不能据此保证单次下载更快或任意生产容量安全。
+    mitigation: 仅确认SQL减一次、全字节/SHA/头及拒绝边界；生产容量另测。
+  - id: risk.name-timing-future-writers
+    description: 名字有意在末次原件元数据读取提前；当前没有改名/重绑入口只是现有源码事实，不是永久政策。
+    impact: 未来新增元数据写者会影响该上下文的时序论证。
+    mitigation: 对新增写入和关联变更做增量审计，不能静默扩大复用范围。
+  - id: risk.full-freeze-index-and-audit-open
+    description: 实际公开Summary诊断停在原人工guard，未证明完整成功冻结；索引未在完整安装混合分布EXPLAIN，原high/A12/四gap、全审及暂停项保持。
+    impact: 本批passed不代表P0退出、全分支审计完成、部署或产品放行认证。
+    mitigation: 按持续台账推进W2余项/W3-W5/W6健壮性性能A23含旧已审/W7增量，不自动merge/deploy/恢复历史。
+  blockingConditions: []

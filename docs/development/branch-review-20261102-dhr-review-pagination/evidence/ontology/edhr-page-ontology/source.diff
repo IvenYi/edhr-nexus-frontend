@@ -1,0 +1,439 @@
+diff --git a/gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrReviewService.java b/gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrReviewService.java
+index cf754c8e..ca24617c 100644
+--- a/gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrReviewService.java
++++ b/gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrReviewService.java
+@@ -36,38 +36,78 @@ public class DhrReviewService {
+     private final SnowflakeIdGenerator ids;
+     private final DhrEvidenceImpactService impacts;
+ 
++    private static final String FROM = """
++        FROM dhr_summary_review r JOIN workflow_task t ON t.instance_id=r.workflow_instance_id
++        JOIN workflow_node n ON n.id=t.node_id JOIN dhr_summary_version v ON v.id=r.summary_version_id
++        JOIN dhr_instance d ON d.id=v.dhr_instance_id WHERE v.tenant_id='default'
++        """;
+     private static final String SELECT = """
+         SELECT t.id AS task_id,t.status AS task_status,t.assignee_id,t.candidate_snapshot,t.opinion,t.action,
+           t.created_at,t.completed_at,n.name AS node_name,n.properties,v.id AS version_id,v.version_no,v.snapshot_hash,
+           v.check_result_snapshot,
+           v.dhr_instance_id,v.submitted_by,v.submitted_at,d.dhr_no,d.object_no,d.object_type,
+           d.work_order_no,d.product_name,r.status AS review_status,r.workflow_instance_id
+-        FROM dhr_summary_review r JOIN workflow_task t ON t.instance_id=r.workflow_instance_id
+-        JOIN workflow_node n ON n.id=t.node_id JOIN dhr_summary_version v ON v.id=r.summary_version_id
+-        JOIN dhr_instance d ON d.id=v.dhr_instance_id WHERE v.tenant_id='default'
+-        """;
++        """ + FROM;
++    private static final String LIST_SELECT = """
++        SELECT t.id AS task_id,t.status AS task_status,t.opinion,t.action,t.created_at,t.completed_at,n.name AS node_name,
++          v.id AS version_id,v.version_no,v.snapshot_hash,v.dhr_instance_id,v.submitted_by,v.submitted_at,
++          d.dhr_no,d.object_no,d.work_order_no,d.product_name
++        """ + FROM;
+ 
+     @Transactional(readOnly = true)
+     public PageResult<ObjectNode> list(String view, String keyword, int page, int size) {
+         if (!Set.of("PENDING", "DONE").contains(view)) throw invalid("不支持的审批视图");
+         String actor = actor();
+         page = Math.max(0, page); size = Math.max(1, Math.min(200, size));
+-        List<ObjectNode> result = new ArrayList<>();
+-        long count = 0, lastId = Long.MAX_VALUE;
++        List<Object> args = new ArrayList<>();
++        String visibility;
++        if (view.equals("DONE")) {
++            visibility = " AND t.status IN ('COMPLETED','REJECTED') AND t.assignee_id=?";
++            args.add(actor);
++        } else {
++            visibility = """
++                 AND r.status='PENDING_REVIEW' AND t.status IN ('PENDING','PROCESSING') AND (
++                   CASE jsonb_typeof(t.candidate_snapshot->'unrestricted')
++                     WHEN 'boolean' THEN t.candidate_snapshot->>'unrestricted'='true'
++                     WHEN 'string' THEN regexp_replace(t.candidate_snapshot->>'unrestricted',
++                       '^[\\x01-\\x20]+|[\\x01-\\x20]+$', '', 'g')='true'
++                     WHEN 'number' THEN t.candidate_snapshot->>'unrestricted' ~ '^-?[0-9]+$'
++                       AND (t.candidate_snapshot->>'unrestricted')::numeric<>0
++                     ELSE FALSE END
++                   OR CASE
++                     WHEN (jsonb_typeof(t.candidate_snapshot->'userIds')='array' AND t.candidate_snapshot->'userIds'<>'[]'::jsonb)
++                       OR (jsonb_typeof(t.candidate_snapshot->'userIds')='object' AND t.candidate_snapshot->'userIds'<>'{}'::jsonb)
++                     THEN EXISTS (
++                       SELECT 1 FROM (
++                         SELECT value FROM jsonb_array_elements(CASE WHEN jsonb_typeof(t.candidate_snapshot->'userIds')='array'
++                           THEN t.candidate_snapshot->'userIds' ELSE '[]'::jsonb END)
++                         UNION ALL
++                         SELECT value FROM jsonb_each(CASE WHEN jsonb_typeof(t.candidate_snapshot->'userIds')='object'
++                           THEN t.candidate_snapshot->'userIds' ELSE '{}'::jsonb END)
++                       ) candidates WHERE jsonb_typeof(value) NOT IN ('object','array')
++                         AND COALESCE(value#>>'{}','null')=?
++                     ) ELSE t.assignee_id=? END
++                 )
++                """;
++            args.add(actor); args.add(actor);
++        }
+         String needle = keyword == null ? "" : keyword.strip().toLowerCase(Locale.ROOT);
+-        while (true) {
+-            var batch = jdbc.queryForList(SELECT + " AND t.id<? ORDER BY t.id DESC LIMIT 64", lastId);
+-            if (batch.isEmpty()) break;
+-            for (var row : batch) {
+-                lastId = ((Number) row.get("task_id")).longValue();
+-                boolean pending = pending(row);
+-                if (view.equals("PENDING") ? !pending || !eligible(row, actor) : pending || !handled(row, actor)) continue;
+-                if (!needle.isEmpty() && !List.of("dhr_no", "object_no", "work_order_no", "product_name", "submitted_by")
+-                        .stream().anyMatch(k -> text(row, k).toLowerCase(Locale.ROOT).contains(needle))) continue;
+-                if (count >= (long) page * size && result.size() < size) result.add(project(row));
+-                count++;
+-            }
++        String search = "";
++        if (!needle.isEmpty()) {
++            // ICU root casing preserves Locale.ROOT expansion and contextual casing (e.g. İ, ΟΣ).
++            search = " AND (" + String.join(" OR ", List.of("d.dhr_no", "d.object_no", "d.work_order_no", "d.product_name", "v.submitted_by")
++                    .stream().map(column -> "strpos(lower(COALESCE(" + column + ",'') COLLATE \"und-x-icu\"),?)>0").toList()) + ")";
++            for (int i = 0; i < 5; i++) args.add(needle);
+         }
++        args.add(size); args.add((long) page * size);
++        // Both branches use one MVCC statement snapshot. The total row survives an empty/deep page.
++        var rows = jdbc.queryForList("WITH visible AS NOT MATERIALIZED (" + LIST_SELECT + visibility + search + """
++                ), page AS (SELECT * FROM visible ORDER BY task_id DESC LIMIT ? OFFSET ?)
++                SELECT page.*,totals.total FROM (SELECT COUNT(*) AS total FROM visible) totals
++                LEFT JOIN page ON TRUE ORDER BY page.task_id DESC
++                """, args.toArray());
++        long count = ((Number) rows.getFirst().get("total")).longValue();
++        List<ObjectNode> result = rows.stream().filter(row -> row.get("task_id") != null).map(this::project).toList();
+         return PageResult.of(result, page, size, count);
+     }
+ 
+diff --git a/gmp-platform/backend/src/main/resources/db/changelog/db.changelog-master.yaml b/gmp-platform/backend/src/main/resources/db/changelog/db.changelog-master.yaml
+index b39d1483..cd3d7314 100644
+--- a/gmp-platform/backend/src/main/resources/db/changelog/db.changelog-master.yaml
++++ b/gmp-platform/backend/src/main/resources/db/changelog/db.changelog-master.yaml
+@@ -11,3 +11,5 @@ databaseChangeLog:
+       file: db/changelog/0089-record-control-dhr-linkage.sql
+   - include:
+       file: db/changelog/0090-workflow-operations.sql
++  - include:
++      file: db/changelog/0091-dhr-review-query-indexes.sql
+diff --git a/gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrReviewLifecycleIntegrationTest.java b/gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrReviewLifecycleIntegrationTest.java
+index 540729bd..387abe50 100644
+--- a/gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrReviewLifecycleIntegrationTest.java
++++ b/gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrReviewLifecycleIntegrationTest.java
+@@ -123,7 +123,8 @@ class DhrReviewLifecycleIntegrationTest {
+         ObjectNode first = submit();
+         Long taskId = jdbc.queryForObject("SELECT id FROM workflow_task", Long.class);
+         assertThat(jdbc.queryForObject("SELECT version_id FROM workflow_instance", Long.class)).isEqualTo(51L);
+-        assertThat(reviews.list("PENDING", "", 0, 20).getTotalElements()).isEqualTo(1);
++        // The full-application PostgreSQL return/resubmit/approve test also checks list membership;
++        // DhrReviewPaginationPostgresTest covers JSONB identity, search, totals and paging.
+         ObjectNode command = mapper.createObjectNode().put("expectedSnapshotHash", first.path("snapshotHash").asText()).put("action", "RETURN").put("opinion", "需补充核对");
+         reviews.act(taskId, command);
+         assertThat(jdbc.queryForObject("SELECT summary_status FROM dhr_instance", String.class)).isEqualTo("DRAFT");
+@@ -141,7 +142,6 @@ class DhrReviewLifecycleIntegrationTest {
+         assertThat(jdbc.queryForObject("SELECT snapshot_data FROM signature WHERE target_type='DHR_SUMMARY'", String.class)).contains(second.path("snapshotHash").asText());
+         assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM audit_event WHERE entity_type='DHR_SUMMARY_REVIEW'", Integer.class)).isEqualTo(2);
+         assertThat(summaries.audit(1L, 0).path("events").toString()).contains("DHR_SUMMARY_DRAFT", "DHR_SUMMARY_VERSION", "DHR_SUMMARY_REVIEW");
+-        assertThat(reviews.list("DONE", "", 0, 20).getTotalElements()).isEqualTo(2);
+         String original = jdbc.queryForObject("SELECT candidate_snapshot FROM dhr_summary_version WHERE id=?", String.class, second.path("id").asLong());
+         jdbc.update("UPDATE form_instance_record SET values_json='{\"temperature\":21}'");
+         var historical = summaries.version(1L, second.path("id").asLong());
+diff --git a/gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrReviewServiceTest.java b/gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrReviewServiceTest.java
+index 1db93c7c..7099eaf5 100644
+--- a/gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrReviewServiceTest.java
++++ b/gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrReviewServiceTest.java
+@@ -90,10 +90,9 @@ class DhrReviewServiceTest {
+         assertThat(service.evidenceChanges(2L, false)).hasSize(1);
+     }
+ 
+-    @Test void personalListAndDetailCannotLeakAnotherUsersTask() {
+-        assertThat(service.list("PENDING", "B1", 0, 20).getTotalElements()).isEqualTo(1);
++    @Test void personalDetailCannotLeakAnotherUsersTask() {
++        // List authority and paging execute against actual JSONB in DhrReviewPaginationPostgresTest.
+         AuditContext.setOperator("8", "其他人");
+-        assertThat(service.list("PENDING", "", 0, 20).getTotalElements()).isZero();
+         assertThatThrownBy(() -> service.detail(5L)).isInstanceOf(AccessDeniedException.class);
+         assertThatThrownBy(() -> service.act(5L, command("APPROVE"))).isInstanceOf(AccessDeniedException.class);
+         verifyNoInteractions(engine);
+diff --git a/gmp-platform/backend/src/test/java/com/zencas/edhr/recordcontrol/service/RecordControlPostgresIntegrationTest.java b/gmp-platform/backend/src/test/java/com/zencas/edhr/recordcontrol/service/RecordControlPostgresIntegrationTest.java
+index 1489bce3..277a514e 100644
+--- a/gmp-platform/backend/src/test/java/com/zencas/edhr/recordcontrol/service/RecordControlPostgresIntegrationTest.java
++++ b/gmp-platform/backend/src/test/java/com/zencas/edhr/recordcontrol/service/RecordControlPostgresIntegrationTest.java
+@@ -157,6 +157,27 @@ class RecordControlPostgresIntegrationTest {
+         finally { actor(); }
+     }
+ 
++    @Test void personalDhrListsFollowActualReturnResubmitAndApproval() {
++        dhr(true); summaries.submit(1000L, summaryCommand());
++        assertThat(reviews.list("PENDING", "", 0, 20).getTotalElements()).isZero();
++        AuditContext.setOperator("42", "审批人");
++        assertThat(reviews.list("PENDING", "DHR-LINKAGE", 0, 20).getTotalElements()).isEqualTo(1);
++        assertThat(reviews.list("DONE", "", 0, 20).getTotalElements()).isZero();
++        review(dhrTask(), "RETURN");
++        AuditContext.setOperator("42", "审批人");
++        assertThat(reviews.list("PENDING", "", 0, 20).getTotalElements()).isZero();
++        assertThat(reviews.list("DONE", "", 0, 20).getTotalElements()).isEqualTo(1);
++        actor(); summaries.submit(1000L, summaryCommand());
++        AuditContext.setOperator("42", "审批人");
++        assertThat(reviews.list("PENDING", "", 0, 20).getTotalElements()).isEqualTo(1);
++        review(dhrTask(), "APPROVE");
++        AuditContext.setOperator("42", "审批人");
++        assertThat(reviews.list("PENDING", "", 0, 20).getTotalElements()).isZero();
++        var done = reviews.list("DONE", "", 0, 20);
++        assertThat(done.getTotalElements()).isEqualTo(2);
++        assertThat(done.getContent()).extracting(row -> row.path("status").asText()).containsExactly("COMPLETED", "REJECTED");
++    }
++
+     private ObjectNode report() {
+         org.springframework.security.core.context.SecurityContextHolder.getContext().setAuthentication(
+                 new org.springframework.security.authentication.UsernamePasswordAuthenticationToken("41", null,
+
+diff --git a/gmp-platform/backend/src/main/resources/db/changelog/0091-dhr-review-query-indexes.sql b/gmp-platform/backend/src/main/resources/db/changelog/0091-dhr-review-query-indexes.sql
+new file mode 100644
+index 00000000..5d078769
+--- /dev/null
++++ b/gmp-platform/backend/src/main/resources/db/changelog/0091-dhr-review-query-indexes.sql
+@@ -0,0 +1,17 @@
++--liquibase formatted sql
++
++--changeset edhr:0091-dhr-review-pending-index runInTransaction:false
++--preconditions onFail:HALT onError:HALT
++--precondition-sql-check expectedResult:1 SELECT COUNT(*) FROM pg_catalog.pg_collation WHERE collnamespace='pg_catalog'::regnamespace AND collname='und-x-icu' AND collprovider='i'
++-- Historical reviews stay outside this small current-work index.
++CREATE INDEX CONCURRENTLY idx_dhr_review_pending_workflow
++    ON dhr_summary_review(workflow_instance_id)
++    WHERE status = 'PENDING_REVIEW';
++--rollback DROP INDEX CONCURRENTLY idx_dhr_review_pending_workflow;
++
++--changeset edhr:0091-dhr-review-done-index runInTransaction:false
++-- Keep the existing all-status assignee index for the other workflow queries.
++CREATE INDEX CONCURRENTLY idx_workflow_task_done_assignee_id
++    ON workflow_task(assignee_id, id DESC) INCLUDE (instance_id, node_id)
++    WHERE status IN ('COMPLETED', 'REJECTED');
++--rollback DROP INDEX CONCURRENTLY idx_workflow_task_done_assignee_id;
+
+diff --git a/gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrReviewPaginationPostgresTest.java b/gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrReviewPaginationPostgresTest.java
+new file mode 100644
+index 00000000..4a73945f
+--- /dev/null
++++ b/gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrReviewPaginationPostgresTest.java
+@@ -0,0 +1,226 @@
++package com.zencas.edhr.production.service;
++
++import com.fasterxml.jackson.databind.JsonNode;
++import com.fasterxml.jackson.databind.ObjectMapper;
++import com.zencas.edhr.common.audit.AuditContext;
++import com.zencas.edhr.common.util.SnowflakeIdGenerator;
++import org.junit.jupiter.api.*;
++import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
++import org.junit.jupiter.params.ParameterizedTest;
++import org.junit.jupiter.params.provider.Arguments;
++import org.junit.jupiter.params.provider.MethodSource;
++import org.springframework.jdbc.core.JdbcTemplate;
++import org.springframework.jdbc.datasource.DriverManagerDataSource;
++
++import java.nio.charset.StandardCharsets;
++import java.nio.file.*;
++import java.util.*;
++import java.util.regex.Pattern;
++import java.util.stream.Stream;
++
++import static org.assertj.core.api.Assertions.*;
++import static org.mockito.Mockito.mock;
++
++/** Actual PostgreSQL JSON/collation/CTE execution against canonical read-table DDL and indexes.
++ * This does not replace the full-application workflow/approval tests. */
++@TestInstance(TestInstance.Lifecycle.PER_CLASS)
++@EnabledIfEnvironmentVariable(named = "RECORD_CONTROL_TEST_DATABASE_URL",
++        matches = "jdbc:postgresql://(?:localhost|127\\.0\\.0\\.1):[0-9]+/edhr_record_control_test_[a-z0-9_]+")
++class DhrReviewPaginationPostgresTest {
++    private static final String SCHEMA = "dhr_review_page_test";
++    private static final List<String> TABLES = List.of("dhr_instance", "dhr_summary_version", "dhr_summary_review", "workflow_node", "workflow_task");
++    private final ObjectMapper mapper = new ObjectMapper();
++    private JdbcTemplate jdbc;
++    private CountingJdbc counted;
++    private DhrReviewService service;
++    private List<Map<String, Object>> originalRows;
++
++    static class CountingJdbc extends JdbcTemplate {
++        int calls, rows;
++        String sql;
++        Object[] args;
++        CountingJdbc(DriverManagerDataSource source) { super(source); }
++        @Override public List<Map<String, Object>> queryForList(String sql, Object... args) {
++            this.sql = sql; this.args = args.clone(); calls++;
++            var result = super.queryForList(sql, args); rows += result.size(); return result;
++        }
++        void reset() { calls = 0; rows = 0; }
++    }
++
++    @BeforeAll void setup() throws Exception {
++        String url = System.getenv("RECORD_CONTROL_TEST_DATABASE_URL");
++        if (url == null || !url.matches("jdbc:postgresql://(?:localhost|127\\.0\\.0\\.1):[0-9]+/edhr_record_control_test_[a-z0-9_]+"))
++            throw new IllegalStateException("A disposable test database is required");
++        var admin = new JdbcTemplate(new DriverManagerDataSource(url, System.getenv("PGUSER"), ""));
++        admin.execute("DROP SCHEMA IF EXISTS " + SCHEMA + " CASCADE");
++        admin.execute("CREATE SCHEMA " + SCHEMA);
++        var source = new DriverManagerDataSource(url + "?currentSchema=" + SCHEMA, System.getenv("PGUSER"), "");
++        jdbc = new JdbcTemplate(source); counted = new CountingJdbc(source);
++        String ddl;
++        try (var input = getClass().getResourceAsStream("/db/changelog/baseline/0001-current-schema.sql")) {
++            ddl = new String(Objects.requireNonNull(input).readAllBytes(), StandardCharsets.UTF_8);
++        }
++        for (String table : TABLES) {
++            var tableDdl = Pattern.compile("CREATE TABLE public\\." + table + " \\(.*?\\n\\);", Pattern.DOTALL).matcher(ddl);
++            assertThat(tableDdl.find()).as(table).isTrue();
++            jdbc.execute(tableDdl.group().replace("public.", ""));
++        }
++        for (String statement : ddl.split(";")) {
++            String sql = statement.strip();
++            if (TABLES.stream().anyMatch(table -> sql.startsWith("ALTER TABLE ONLY public." + table + "\n"))
++                    && (sql.contains("PRIMARY KEY") || sql.contains("UNIQUE ("))) jdbc.execute(sql.replace("public.", ""));
++            if (sql.startsWith("CREATE ") && sql.contains("INDEX ") && TABLES.stream().anyMatch(table -> sql.contains(" ON public." + table + " ")))
++                jdbc.execute(sql.replace("public.", ""));
++        }
++        jdbc.update("INSERT INTO workflow_node(id,version_id,node_type,name,properties) VALUES(1,1,'APPROVAL','质量审批','{}')");
++        var snapshots = Arrays.asList(null, "{}", "null", "[]", "{\"userIds\":[]}", "{\"userIds\":{}}",
++                "{\"userIds\":null}", "{\"userIds\":\"8\"}", "{\"userIds\":[\"7\"]}", "{\"userIds\":[\"8\"]}",
++                "{\"userIds\":[\"7\",\"8\"]}", "{\"userIds\":[7]}", "{\"userIds\":{\"a\":\"7\"}}",
++                "{\"userIds\":[null,{},[],7.0]}", "{\"unrestricted\":true}", "{\"unrestricted\":false,\"userIds\":[\"8\"]}",
++                "{\"unrestricted\":\" true \",\"userIds\":[\"8\"]}", "{\"unrestricted\":\"TRUE\"}",
++                "{\"unrestricted\":\"\\ttrue\\u001f\"}",
++                "{\"unrestricted\":1}", "{\"unrestricted\":0}", "{\"unrestricted\":-1}", "{\"unrestricted\":1.0}",
++                "{\"unrestricted\":9223372036854775808}");
++        long id = 10;
++        for (String candidate : snapshots) for (String status : List.of("PENDING", "PROCESSING", "COMPLETED", "REJECTED", "TRANSFERRED"))
++            for (String review : List.of("PENDING_REVIEW", "APPROVED", "RETURNED")) {
++                seed(id, id % 7 == 0 ? "other" : "default", candidate, id % 4 == 0 ? null : id % 2 == 0 ? "7" : "8", status, review);
++                id++;
++            }
++        originalRows = jdbc.queryForList(oracleSelect());
++        service = new DhrReviewService(counted, mapper, mock(DhrSummaryService.class), mock(com.zencas.edhr.workflow.engine.WorkflowEngine.class),
++                mock(com.zencas.edhr.workflow.repository.WorkflowInstanceRepository.class), mock(ExecutionAccess.class),
++                mock(com.zencas.edhr.compliance.repository.AuditEventRepository.class), new SnowflakeIdGenerator(2), mock(DhrEvidenceImpactService.class));
++    }
++
++    private void seed(long id, String tenant, String snapshot, String assignee, String taskStatus, String reviewStatus) {
++        jdbc.update("""
++            INSERT INTO dhr_instance(id,tenant_id,dhr_no,production_object_id,object_no,object_type,work_order_id,work_order_no,
++              product_id,process_version_id,route_version_id,dhr_template_id,dhr_template_version_id,context_snapshot,directory_snapshot,
++              status,created_at,updated_at,product_name)
++            VALUES(?,?,?, ?,?,'BATCH',1,?,1,1,1,1,1,'{}','{}','COMPLETED',CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,?)
++            """, id, tenant, "DHR-" + id, id, "批次_100%", "WO\\literal", id % 2 == 0 ? "İ ΟΣ ÄBC 产品" : null);
++        jdbc.update("""
++            INSERT INTO dhr_summary_version(id,tenant_id,dhr_instance_id,version_no,status,review_mode,base_directory_snapshot,
++              overlay_directory_snapshot,candidate_snapshot,snapshot_hash,submitted_by,submitted_at,created_at,check_result_snapshot)
++            VALUES(?,?,?,1,'PENDING_REVIEW','NONE','{}','{}','[]','hash',?,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,'{}')
++            """, id, tenant, id, id % 3 == 0 ? null : "提交人 Alice");
++        jdbc.update("INSERT INTO dhr_summary_review VALUES(?,?,?,'9',CURRENT_TIMESTAMP)", id, id, reviewStatus);
++        jdbc.update("INSERT INTO workflow_task(id,instance_id,node_id,status,assignee_id,candidate_snapshot) VALUES(?,?,1,?,?,?::jsonb)",
++                id, id, taskStatus, assignee, snapshot);
++    }
++
++    static Stream<Arguments> searches() {
++        return Stream.of("PENDING", "DONE").flatMap(view -> Stream.of("7", "8", "9").flatMap(actor ->
++                Arrays.asList(null, "", "  DHR-  ", "\u2003DHR-\u2003", "100%", "_100", "\\literal", "alice", "产品", "i\u0307", "ος", "ÄBC", "no-match", "' OR 1=1 --")
++                        .stream().map(keyword -> Arguments.of(view, actor, keyword))));
++    }
++
++    @ParameterizedTest @MethodSource("searches")
++    void nativeQueryMatchesPreviousJavaAuthorityAndLiteralSearch(String view, String actor, String keyword) throws Exception {
++        compare(view, actor, keyword, 0, 20);
++        compare(view, actor, keyword, 1, 20);
++    }
++
++    static Stream<Arguments> pages() {
++        return Stream.of("PENDING", "DONE").flatMap(view -> Stream.of(new int[]{-1, 0}, new int[]{0, -1}, new int[]{0, 201},
++                new int[]{1, 1}, new int[]{5000, 20}, new int[]{Integer.MAX_VALUE, 200}).map(p -> Arguments.of(view, p[0], p[1])));
++    }
++    @ParameterizedTest @MethodSource("pages")
++    void countAndPageBoundariesMatchPreviousJava(String view, int page, int size) throws Exception { compare(view, "7", "", page, size); }
++
++    private void compare(String view, String actor, String keyword, int page, int size) throws Exception {
++        AuditContext.setOperator(actor, "普通账号"); counted.reset();
++        var actual = service.list(view, keyword, page, size);
++        String needle = keyword == null ? "" : keyword.strip().toLowerCase(Locale.ROOT);
++        var expected = new ArrayList<String>();
++        for (var row : originalRows) {
++            boolean pending = "PENDING_REVIEW".equals(row.get("review_status")) && Set.of("PENDING", "PROCESSING").contains(row.get("status"));
++            JsonNode candidate = row.get("candidate_snapshot") == null ? mapper.createObjectNode() : mapper.readTree(row.get("candidate_snapshot").toString());
++            boolean eligible = candidate.path("unrestricted").asBoolean();
++            if (!eligible && !candidate.path("userIds").isEmpty()) {
++                for (JsonNode user : candidate.path("userIds")) if (actor.equals(user.asText())) eligible = true;
++            } else if (!eligible) eligible = actor.equals(row.get("assignee_id"));
++            boolean handled = actor.equals(row.get("assignee_id")) && Set.of("COMPLETED", "REJECTED").contains(row.get("status"));
++            if (view.equals("PENDING") ? !pending || !eligible : pending || !handled) continue;
++            if (!needle.isEmpty() && List.of("dhr_no", "object_no", "work_order_no", "product_name", "submitted_by").stream()
++                    .noneMatch(k -> Objects.toString(row.get(k), "").toLowerCase(Locale.ROOT).contains(needle))) continue;
++            expected.add(row.get("id").toString());
++        }
++        int normalizedPage = Math.max(0, page), normalizedSize = Math.max(1, Math.min(200, size));
++        long offset = (long) normalizedPage * normalizedSize;
++        var expectedPage = expected.stream().skip(offset).limit(normalizedSize).toList();
++        assertThat(actual.getContent().stream().map(row -> row.path("id").asText())).containsExactlyElementsOf(expectedPage);
++        assertThat(actual.getTotalElements()).isEqualTo(expected.size());
++        assertThat(actual.getPage()).isEqualTo(normalizedPage); assertThat(actual.getSize()).isEqualTo(normalizedSize);
++        assertThat(actual.getTotalPages()).isEqualTo((int) Math.ceil((double) expected.size() / normalizedSize));
++        assertThat(counted.calls).as("one statement, including accurate totals on empty pages").isEqualTo(1);
++        assertThat(counted.rows).isEqualTo(Math.max(1, expectedPage.size()));
++    }
++
++    @Test void unrelatedHistoryDoesNotIncreaseStatementsOrTransferredRows() throws Exception {
++        AuditContext.setOperator("7", "普通账号");
++        var before = service.list("PENDING", "", 0, 20);
++        // Different instances respect the actual unique active-instance/node index.
++        jdbc.execute("""
++            INSERT INTO dhr_summary_version SELECT 100000+i,tenant_id,dhr_instance_id,i+1,status,review_mode,
++              review_workflow_definition_id,review_workflow_version_id,base_directory_snapshot,overlay_directory_snapshot,candidate_snapshot,
++              md5(i::text),submitted_by,submitted_at,created_at,check_result_snapshot,attachment_snapshot
++            FROM dhr_summary_version CROSS JOIN generate_series(1,5000) i WHERE id=10
++            """);
++        jdbc.execute("INSERT INTO dhr_summary_review SELECT 100000+i,100000+i,'PENDING_REVIEW','9',CURRENT_TIMESTAMP FROM generate_series(1,5000) i");
++        jdbc.execute("INSERT INTO workflow_task(id,instance_id,node_id,status,assignee_id,candidate_snapshot) SELECT 100000+i,100000+i,1,'PENDING','99','{\"userIds\":[\"99\"]}'::jsonb FROM generate_series(1,5000) i");
++        try {
++            counted.reset(); var after = service.list("PENDING", "", 0, 20);
++            String output = System.getProperty("edhr.audit.dhrPageOutput");
++            if (output != null) {
++                Files.writeString(Path.of(output), mapper.createObjectNode().put("otherTasksAdded", 5000).put("sqlCalls", counted.calls)
++                        .put("rowsTransferred", counted.rows).put("personalTotal", after.getTotalElements()).toString() + "\n");
++                Files.writeString(Path.of(output + ".sql"), counted.sql);
++                Files.writeString(Path.of(output + ".args.json"), mapper.writeValueAsString(counted.args));
++                Files.writeString(Path.of(output + ".plan.json"), jdbc.queryForObject("EXPLAIN (ANALYZE,BUFFERS,FORMAT JSON) " + counted.sql, String.class, counted.args));
++            }
++            assertThat(after).isEqualTo(before); assertThat(counted.calls).isEqualTo(1); assertThat(counted.rows).isEqualTo(20);
++        } finally {
++            jdbc.update("DELETE FROM workflow_task WHERE id>100000"); jdbc.update("DELETE FROM dhr_summary_review WHERE summary_version_id>100000");
++            jdbc.update("DELETE FROM dhr_summary_version WHERE id>100000");
++        }
++    }
++
++    @Test void invalidViewAndMissingActorDoNotExecuteSql() {
++        counted.reset(); AuditContext.clear();
++        assertThatThrownBy(() -> service.list("PENDING", "", 0, 20)).isInstanceOf(org.springframework.security.access.AccessDeniedException.class);
++        AuditContext.setOperator("7", "普通账号");
++        assertThatThrownBy(() -> service.list("INVALID", "", 0, 20)).hasMessageContaining("不支持");
++        assertThat(counted.calls).isZero();
++    }
++
++    @Test void concurrentIndexesUpgradeRollbackAndReapplyWithoutChangingTasks() throws Exception {
++        long count = jdbc.queryForObject("SELECT COUNT(*) FROM workflow_task", Long.class);
++        var source = Objects.requireNonNull(jdbc.getDataSource());
++        try (var connection = source.getConnection()) {
++            var database = liquibase.database.DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new liquibase.database.jvm.JdbcConnection(connection));
++            database.setDefaultSchemaName(SCHEMA); database.setLiquibaseSchemaName(SCHEMA);
++            try (var migration = new liquibase.Liquibase("db/changelog/0091-dhr-review-query-indexes.sql", new liquibase.resource.ClassLoaderResourceAccessor(), database)) {
++                migration.update(new liquibase.Contexts());
++                assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM pg_index i JOIN pg_class c ON c.oid=i.indexrelid WHERE c.relnamespace=?::regnamespace AND c.relname IN ('idx_dhr_review_pending_workflow','idx_workflow_task_done_assignee_id') AND i.indisvalid", Integer.class, SCHEMA)).isEqualTo(2);
++                migration.rollback(2, "");
++                assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM pg_indexes WHERE schemaname=? AND indexname IN ('idx_dhr_review_pending_workflow','idx_workflow_task_done_assignee_id')", Integer.class, SCHEMA)).isZero();
++                migration.update(new liquibase.Contexts());
++            }
++        }
++        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM workflow_task", Long.class)).isEqualTo(count);
++        compare("PENDING", "7", "", 0, 20);
++    }
++
++    private String oracleSelect() {
++        return """
++            SELECT t.id,t.status,t.assignee_id,t.candidate_snapshot,r.status review_status,d.dhr_no,d.object_no,d.work_order_no,
++              d.product_name,v.submitted_by FROM workflow_task t JOIN dhr_summary_review r ON r.workflow_instance_id=t.instance_id
++              JOIN dhr_summary_version v ON v.id=r.summary_version_id JOIN dhr_instance d ON d.id=v.dhr_instance_id
++              JOIN workflow_node n ON n.id=t.node_id WHERE v.tenant_id='default' ORDER BY t.id DESC
++            """;
++    }
++    @AfterEach void clear() { AuditContext.clear(); }
++    @AfterAll void cleanup() { if (jdbc != null) jdbc.execute("DROP SCHEMA " + SCHEMA + " CASCADE"); }
++}

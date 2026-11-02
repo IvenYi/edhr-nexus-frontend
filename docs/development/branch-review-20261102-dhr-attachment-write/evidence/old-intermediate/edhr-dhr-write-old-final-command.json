@@ -1,0 +1,15 @@
+{
+  "sourceCommit": "e3e49784eda6bc01e7e5c686d6f79dc5a600d5ae",
+  "cwd": "/tmp/edhr-dhr-write-old-20261102",
+  "cmd": [
+    "bash",
+    "/workspace/.edhr-cloud-tools/mvn-edhr",
+    "-f",
+    "gmp-platform/backend/pom.xml",
+    "-Dtest=DhrAttachmentWriteFailureTest",
+    "test"
+  ],
+  "startedEpoch": 1793626687.522818,
+  "testSha256": "254154ac2f5c7892273392e091815acdd9fce84b92aa382048a92a34c6105c81",
+  "copySha256": "254154ac2f5c7892273392e091815acdd9fce84b92aa382048a92a34c6105c81"
+}

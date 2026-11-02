@@ -1,0 +1,39 @@
+{
+  "executionLevel": "L2",
+  "baseCommit": "8ec8391721858a7f96d73a5d293d93f43679118a",
+  "testedCandidate": "b5cbdf076dbb55e57ba1ae93837d721da4940778",
+  "authorization": "User explicitly selected only last original filename metadata reuse; PR55 appended, not a new business rule.",
+  "ontologyResult": "not-applicable",
+  "qualityResult": "passed",
+  "requiredChecks": 13,
+  "mainTests": 80,
+  "knowledgeTests": 89,
+  "capacity": {
+    "tests": 1,
+    "groups": 12,
+    "requests": 84,
+    "validFull50MiB": 42,
+    "corruptRejected": 42
+  },
+  "oldSame11": {
+    "queryAssertionFailures": 2,
+    "positiveControls": 9,
+    "errors": 0,
+    "skipped": 0
+  },
+  "implemented": "Effective current/frozen download5/6→4/5 explicit Jdbc queries, preserving existing eligibility and complete SHA before resource. Name read intentionally combined with final metadata.",
+  "changedProductPaths": 3,
+  "changedOldTests": 2,
+  "addedTests": 1,
+  "unaffected": "file Path/SQL, Summary/Archive logic, upload/verify/unlink, business rules/permissions/HTTP/UI/indexes/knowledge",
+  "oldQueryStage": "ec728837 quality only applied to old diagnostics; current fresh result covers new combination. Old protected manifests checked against their pinned Git commit.",
+  "residualRisks": [
+    "Summary5+2N and ZIP attachment arrays/PDF accumulation remain pending discussion",
+    "No full HTTP/JWT/browser/accounts/complete freeze/all migration/production SLA certification",
+    "Two old DHR highs/A12/four gaps and original all-audit/user-pause queues retained",
+    "W2 remainder,W3/W4/W5 crossing,W6 robustness/performance/extraction/A23 old-reviewed whole pass,W7 increments"
+  ],
+  "wholeAuditComplete": false,
+  "recommendedMerge": "Only current finite PR55 combination, manually; no automatic merge/deploy/history restoration.",
+  "qaResultMember": "quality-result.yaml"
+}

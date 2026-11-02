@@ -1,0 +1,261 @@
+{
+  "completed": true,
+  "beforeCandidate": "6012672aa8be4d0d0c8f35a01b0dee0dd4af2882",
+  "afterSourceCommit": "6c5dd9f6a6afbd44960167e8bc44957a4cef3e99",
+  "combinedSourceCommit": "320a4c74717dd913d44d6e01e6c5a6f2993d4695",
+  "cases": [
+    {
+      "label": "current-good-1",
+      "concurrency": 1,
+      "queriesPerRequest": [
+        5
+      ],
+      "logicalReadMiBPerRequest": 100.0,
+      "beforeAllocatedMiB": [
+        51.77295684814453,
+        51.77295684814453
+      ],
+      "afterAllocatedMiB": [
+        2.0519790649414062,
+        2.0519790649414062
+      ],
+      "beforeHeapIncreaseMiB": 53.0,
+      "afterHeapIncreaseMiB": 2.0,
+      "beforeWallMillis": 524.461017,
+      "afterWallMillis": 506.65712,
+      "visibleOutputAndRejectionChecksPassed": true
+    },
+    {
+      "label": "current-good-4",
+      "concurrency": 4,
+      "queriesPerRequest": [
+        5
+      ],
+      "logicalReadMiBPerRequest": 100.0,
+      "beforeAllocatedMiB": [
+        50.196205139160156,
+        50.20360565185547
+      ],
+      "afterAllocatedMiB": [
+        0.20815277099609375,
+        0.21672821044921875
+      ],
+      "beforeHeapIncreaseMiB": 206.07862854003906,
+      "afterHeapIncreaseMiB": 2.0,
+      "beforeWallMillis": 632.023762,
+      "afterWallMillis": 309.983925,
+      "visibleOutputAndRejectionChecksPassed": true
+    },
+    {
+      "label": "current-good-16",
+      "concurrency": 16,
+      "queriesPerRequest": [
+        5
+      ],
+      "logicalReadMiBPerRequest": 100.0,
+      "beforeAllocatedMiB": [
+        50.19438171386719,
+        50.20416259765625
+      ],
+      "afterAllocatedMiB": [
+        0.20551300048828125,
+        0.2140655517578125
+      ],
+      "beforeHeapIncreaseMiB": 820.0935974121094,
+      "afterHeapIncreaseMiB": 4.0,
+      "beforeWallMillis": 1667.013749,
+      "afterWallMillis": 730.734318,
+      "visibleOutputAndRejectionChecksPassed": true
+    },
+    {
+      "label": "current-corrupt-1",
+      "concurrency": 1,
+      "queriesPerRequest": [
+        4
+      ],
+      "logicalReadMiBPerRequest": 50.0,
+      "beforeAllocatedMiB": [
+        50.27113342285156,
+        50.27113342285156
+      ],
+      "afterAllocatedMiB": [
+        0.2774658203125,
+        0.2774658203125
+      ],
+      "beforeHeapIncreaseMiB": 51.020301818847656,
+      "afterHeapIncreaseMiB": 0.0,
+      "beforeWallMillis": 251.160404,
+      "afterWallMillis": 79.569282,
+      "visibleOutputAndRejectionChecksPassed": true
+    },
+    {
+      "label": "current-corrupt-4",
+      "concurrency": 4,
+      "queriesPerRequest": [
+        4
+      ],
+      "logicalReadMiBPerRequest": 50.0,
+      "beforeAllocatedMiB": [
+        50.08770751953125,
+        50.088783264160156
+      ],
+      "afterAllocatedMiB": [
+        0.09331512451171875,
+        0.09552001953125
+      ],
+      "beforeHeapIncreaseMiB": 205.0362091064453,
+      "afterHeapIncreaseMiB": 1.0,
+      "beforeWallMillis": 361.733983,
+      "afterWallMillis": 151.704955,
+      "visibleOutputAndRejectionChecksPassed": true
+    },
+    {
+      "label": "current-corrupt-16",
+      "concurrency": 16,
+      "queriesPerRequest": [
+        4
+      ],
+      "logicalReadMiBPerRequest": 50.0,
+      "beforeAllocatedMiB": [
+        50.08409118652344,
+        50.08885955810547
+      ],
+      "afterAllocatedMiB": [
+        0.092559814453125,
+        0.10019683837890625
+      ],
+      "beforeHeapIncreaseMiB": 818.1049575805664,
+      "afterHeapIncreaseMiB": 2.0,
+      "beforeWallMillis": 1673.32052,
+      "afterWallMillis": 610.112151,
+      "visibleOutputAndRejectionChecksPassed": true
+    },
+    {
+      "label": "frozen-good-1",
+      "concurrency": 1,
+      "queriesPerRequest": [
+        6
+      ],
+      "logicalReadMiBPerRequest": 100.0,
+      "beforeAllocatedMiB": [
+        50.485206604003906,
+        50.485206604003906
+      ],
+      "afterAllocatedMiB": [
+        0.5276718139648438,
+        0.5276718139648438
+      ],
+      "beforeHeapIncreaseMiB": 52.03092956542969,
+      "afterHeapIncreaseMiB": 1.0,
+      "beforeWallMillis": 1018.837216,
+      "afterWallMillis": 182.148734,
+      "visibleOutputAndRejectionChecksPassed": true
+    },
+    {
+      "label": "frozen-good-4",
+      "concurrency": 4,
+      "queriesPerRequest": [
+        6
+      ],
+      "logicalReadMiBPerRequest": 100.0,
+      "beforeAllocatedMiB": [
+        50.21216583251953,
+        50.214134216308594
+      ],
+      "afterAllocatedMiB": [
+        0.22687530517578125,
+        0.2288665771484375
+      ],
+      "beforeHeapIncreaseMiB": 207.07382202148438,
+      "afterHeapIncreaseMiB": 1.0,
+      "beforeWallMillis": 813.510453,
+      "afterWallMillis": 208.026811,
+      "visibleOutputAndRejectionChecksPassed": true
+    },
+    {
+      "label": "frozen-good-16",
+      "concurrency": 16,
+      "queriesPerRequest": [
+        6
+      ],
+      "logicalReadMiBPerRequest": 100.0,
+      "beforeAllocatedMiB": [
+        50.20934295654297,
+        50.21442413330078
+      ],
+      "afterAllocatedMiB": [
+        0.22080230712890625,
+        0.22564697265625
+      ],
+      "beforeHeapIncreaseMiB": 820.1384582519531,
+      "afterHeapIncreaseMiB": 3.0,
+      "beforeWallMillis": 2506.509098,
+      "afterWallMillis": 704.537441,
+      "visibleOutputAndRejectionChecksPassed": true
+    },
+    {
+      "label": "frozen-corrupt-1",
+      "concurrency": 1,
+      "queriesPerRequest": [
+        5
+      ],
+      "logicalReadMiBPerRequest": 50.0,
+      "beforeAllocatedMiB": [
+        50.10590362548828,
+        50.10590362548828
+      ],
+      "afterAllocatedMiB": [
+        0.1119384765625,
+        0.1119384765625
+      ],
+      "beforeHeapIncreaseMiB": 51.01820373535156,
+      "afterHeapIncreaseMiB": 0.0,
+      "beforeWallMillis": 302.229602,
+      "afterWallMillis": 63.716758,
+      "visibleOutputAndRejectionChecksPassed": true
+    },
+    {
+      "label": "frozen-corrupt-4",
+      "concurrency": 4,
+      "queriesPerRequest": [
+        5
+      ],
+      "logicalReadMiBPerRequest": 50.0,
+      "beforeAllocatedMiB": [
+        50.10424041748047,
+        50.10498809814453
+      ],
+      "afterAllocatedMiB": [
+        0.10986328125,
+        0.112030029296875
+      ],
+      "beforeHeapIncreaseMiB": 205.06988525390625,
+      "afterHeapIncreaseMiB": 1.0,
+      "beforeWallMillis": 431.403555,
+      "afterWallMillis": 173.607163,
+      "visibleOutputAndRejectionChecksPassed": true
+    },
+    {
+      "label": "frozen-corrupt-16",
+      "concurrency": 16,
+      "queriesPerRequest": [
+        5
+      ],
+      "logicalReadMiBPerRequest": 50.0,
+      "beforeAllocatedMiB": [
+        50.10315704345703,
+        50.10572814941406
+      ],
+      "afterAllocatedMiB": [
+        0.1100311279296875,
+        0.11309814453125
+      ],
+      "beforeHeapIncreaseMiB": 818.1613922119141,
+      "afterHeapIncreaseMiB": 3.0,
+      "beforeWallMillis": 1554.829005,
+      "afterWallMillis": 504.441103,
+      "visibleOutputAndRejectionChecksPassed": true
+    }
+  ],
+  "notes": "Initial write candidate127/capacity and QA601 not final streaming validation. Source new127/capacity tested in isolated dirty601 tree, code hashes checked against cherry-picked combined320. Actual 2GiB JVM, warmed file cache/sparse PNG, Hikari10, process-local controller/service/resource; headers and output SHA asserted. JFR logical IO, no direct/RSS/network or production SLA/latency guarantee."
+}

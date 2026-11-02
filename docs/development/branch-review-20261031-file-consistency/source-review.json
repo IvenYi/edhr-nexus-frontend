@@ -1,0 +1,31 @@
+{
+  "baseCommit":"032b83e9d5b8a25bee6d5b59c45d86892f672d00",
+  "currentTargetCommit":"0bd0848bbded6d6954d62a4f924e0b2eec6623ad",
+  "targetIncrement":"integration-increment.json; 666 paths pending, current file ownership/uploader source hashes unchanged; new knowledge and implementation context separately rechecked",
+  "scopeType":"limited-method-and-authority-source-ranges",
+  "wholeFileCompletion":0,
+  "historicalUniqueIncrement":null,
+  "records":[
+    {"path":"gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/controller/FileController.java","scope":"upload/owned path/copy cleanup/uploadedBy，read/delete事务边界仅源观察，不声称全部CRUD安全"},
+    {"path":"gmp-platform/backend/src/main/java/com/zencas/edhr/common/audit/AuditContext.java","scope":"operatorId原ThreadLocal读取与JWT filter设置/清理生命周期；两用户HTTP身份回归"},
+    {"path":"gmp-platform/backend/src/main/java/com/zencas/edhr/common/config/SecurityConfig.java","scope":"共享文件只认证与公开真实引用的现有边界，非完整对象ACL认证"},
+    {"path":"gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/DocumentManagementController.java","scope":"文档页面权限与文件引用来源，不能将文档页权一刀切到生产SOP"},
+    {"path":"gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrReviewController.java","scope":"本体角色核DHR任务附件资格/冻结版本成员专用链，与通用FileObject区分；非完整DHR回归"},
+    {"path":"gmp-platform/backend/src/main/java/com/zencas/edhr/identity/controller/AuthController.java","scope":"个人认证/头像等用途路径仅定位，跨用途权限及相邻上传另待审"}
+  ],
+  "a23":{
+    "records":[
+      {"symbol":"atomic path reservation","status":"necessary","reason":"Files.exists后再写不能保证所有权；createFile失败不进入清理，碰撞旧原件不动"},
+      {"symbol":"owned-copy failure cleanup","status":"necessary","reason":"失败只处理当前预占路径，无全目录扫描或历史删除"},
+      {"symbol":"cleanup failure suppression","status":"necessary","reason":"保留原错误及附加清理故障，不用默认成功覆盖失败；真实磁盘非空目录故障验证"},
+      {"symbol":"AuditContext uploader","status":"obsolete-placeholder-corrected","reason":"已有JWT主体可复用，不固定伪记system，不另查用户表"},
+      {"symbol":"non-HTTP system fallback","status":"limited-compatibility-retained","reason":"保留原直接内部调用语义；真实HTTP由现有JWT认证，非新增匿名上传授权，后续全量可按真实调用图再评估"},
+      {"symbol":"shared targetType authority inference","status":"rejected-as-unproven-policy","reason":"上传参数可声明但不代表实际业务访问资格，等待独立规则边界而非堆叠默认放行"}
+    ],
+    "historicalLanguageQueue":856,"previousFeatureAddedPending":1,"separateSqlQueue":130,"sqlChecked":0,
+    "currentChangedPending":["FileController.java","FileHttpBoundaryTest.java"],
+    "currentAddedPending":["FileCopyOwnershipTest.java"],
+    "wholeFileCompletion":0,
+    "remaining":"W6全量包括旧已审，W7最新增量；所有历史队列保持"
+  }
+}

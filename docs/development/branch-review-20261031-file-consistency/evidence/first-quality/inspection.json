@@ -1,0 +1,46 @@
+{
+  "initialFrozenHead": "ec4857bef2c9ebb5a1b1d1b7f3c767d2cb63666a",
+  "initialBase": "032b83e9d5b8a25bee6d5b59c45d86892f672d00",
+  "latestTarget": "0bd0848bbded6d6954d62a4f924e0b2eec6623ad",
+  "currentSharedHead": "e9548d5f9d555f78afbe1c1c8ea68f64d45e6c55",
+  "currentSharedStatus": "M docs/development/branch-review-20261015/NEXT.md\n M docs/development/branch-review-20261031-file-consistency/README.md\n M docs/development/branch-review-20261031-file-consistency/decision-package.yaml\n M docs/development/branch-review-20261031-file-consistency/review-notes.md\n M docs/development/branch-review-20261031-file-consistency/source-review.json\n M gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/controller/FileController.java\n M gmp-platform/backend/src/test/java/com/zencas/edhr/compliance/controller/FileCopyOwnershipTest.java\n?? docs/development/branch-review-20261031-file-consistency/evidence/initial-decision-package.yaml\n?? docs/development/branch-review-20261031-file-consistency/integration-increment.json\n?? docs/development/branch-review-20261031-file-consistency/inventory-current/",
+  "originalRuntime36": {
+    "tests": 36,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "originalKnowledge89": "actual initial run passed",
+  "oldActual16": {
+    "tests": 16,
+    "failures": 6,
+    "errors": 0,
+    "skipped": 0
+  },
+  "latestTargetActual16": {
+    "tests": 16,
+    "failures": 6,
+    "errors": 0,
+    "skipped": 0
+  },
+  "currentSourceAndTestRepairExcluded": [
+    "docs/development/branch-review-20261015/NEXT.md",
+    "docs/development/branch-review-20261031-file-consistency/README.md",
+    "docs/development/branch-review-20261031-file-consistency/decision-package.yaml",
+    "docs/development/branch-review-20261031-file-consistency/review-notes.md",
+    "docs/development/branch-review-20261031-file-consistency/source-review.json",
+    "gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/controller/FileController.java",
+    "gmp-platform/backend/src/test/java/com/zencas/edhr/compliance/controller/FileCopyOwnershipTest.java",
+    "docs/development/branch-review-20261031-file-consistency/evidence/initial-decision-package.yaml",
+    "docs/development/branch-review-20261031-file-consistency/integration-increment.json",
+    "docs/development/branch-review-20261031-file-consistency/inventory-current/coverage.csv",
+    "docs/development/branch-review-20261031-file-consistency/inventory-current/entrypoints.csv",
+    "docs/development/branch-review-20261031-file-consistency/inventory-current/inventory-summary.json",
+    "docs/development/branch-review-20261031-file-consistency/inventory-current/migrations.csv"
+  ],
+  "productTestOrFixtureEditsByVerifier": false,
+  "initialGovernanceCommitRead": "ec4857bef2c9ebb5a1b1d1b7f3c767d2cb63666a",
+  "targetGovernanceDeltaPaths": [],
+  "mergeCandidateAcceptance": "not performed; parent integration/repair in progress",
+  "probeScope": "real original FileController upload with synthetic multipart/repositories; successful copy replaces reserved file object, not a reproduced concurrent-loss HTTP test"
+}

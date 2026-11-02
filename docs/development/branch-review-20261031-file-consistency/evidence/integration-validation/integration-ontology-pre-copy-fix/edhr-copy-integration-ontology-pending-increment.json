@@ -1,0 +1,2152 @@
+{
+  "oldCommit": "032b83e9d5b8a25bee6d5b59c45d86892f672d00",
+  "targetCommit": "0bd0848bbded6d6954d62a4f924e0b2eec6623ad",
+  "knowledgeFileCountBefore": 303,
+  "knowledgeFileCountAfter": 330,
+  "changedFiles": 44,
+  "addedFiles": 27,
+  "modifiedFiles": 17,
+  "files": [
+    {
+      "path": "docs/knowledge/README.md",
+      "changeType": "M",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "note": "Full incremental semantic/source/runtime audit not completed by this batch."
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0037-record-correction-and-void-control.yaml",
+      "changeType": "M",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "note": "Full incremental semantic/source/runtime audit not completed by this batch."
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0041-record-control-application-confirmation-start.yaml",
+      "changeType": "M",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "note": "Full incremental semantic/source/runtime audit not completed by this batch."
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0042-record-control-workflow-stage1-contract.yaml",
+      "changeType": "M",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "note": "Full incremental semantic/source/runtime audit not completed by this batch."
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0050-form-instance-number.yaml",
+      "changeType": "M",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "note": "Full incremental semantic/source/runtime audit not completed by this batch."
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml",
+      "changeType": "M",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "note": "Full incremental semantic/source/runtime audit not completed by this batch."
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml",
+      "changeType": "M",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "note": "Full incremental semantic/source/runtime audit not completed by this batch."
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0086-record-change-search-scope.yaml",
+      "changeType": "A",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "note": "Full incremental semantic/source/runtime audit not completed by this batch."
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0087-record-control-v1-closure.yaml",
+      "changeType": "A",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "note": "Full incremental semantic/source/runtime audit not completed by this batch."
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0088-form-and-change-management-menu-boundary.yaml",
+      "changeType": "A",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "note": "Full incremental semantic/source/runtime audit not completed by this batch."
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0089-form-instance-number-display.yaml",
+      "changeType": "A",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "note": "Full incremental semantic/source/runtime audit not completed by this batch."
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0090-dhr-archive-minimum-scope.yaml",
+      "changeType": "A",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "note": "Full incremental semantic/source/runtime audit not completed by this batch."
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0091-workflow-reassignment-signature.yaml",
+      "changeType": "A",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "note": "Full incremental semantic/source/runtime audit not completed by this batch."
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0092-workflow-operations-entry-and-actions.yaml",
+      "changeType": "A",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "note": "Full incremental semantic/source/runtime audit not completed by this batch."
+    },
+    {
+      "path": "docs/knowledge/decisions/archive-DEC-0053-approval-display-terminology.md",
+      "changeType": "A",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "note": "Full incremental semantic/source/runtime audit not completed by this batch."
+    },
+    {
+      "path": "docs/knowledge/decisions/archive-DEC-0054-form-instance-business-source.md",
+      "changeType": "A",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "note": "Full incremental semantic/source/runtime audit not completed by this batch."
+    },
+    {
+      "path": "docs/knowledge/evidence/dhr-archive-minimum-20261029.md",
+      "changeType": "A",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "note": "Full incremental semantic/source/runtime audit not completed by this batch."
+    },
+    {
+      "path": "docs/knowledge/evidence/dhr-archive.yaml",
+      "changeType": "A",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "note": "Full incremental semantic/source/runtime audit not completed by this batch."
+    },
+    {
+      "path": "docs/knowledge/evidence/dhr-filling-review-confirmed.md",
+      "changeType": "M",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "note": "Full incremental semantic/source/runtime audit not completed by this batch."
+    },
+    {
+      "path": "docs/knowledge/evidence/form-instance-number-display-user-confirmed.md",
+      "changeType": "A",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "note": "Full incremental semantic/source/runtime audit not completed by this batch."
+    },
+    {
+      "path": "docs/knowledge/evidence/form-instance-number-display.yaml",
+      "changeType": "A",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "note": "Full incremental semantic/source/runtime audit not completed by this batch."
+    },
+    {
+      "path": "docs/knowledge/evidence/record-change-form-management-coexistence-user-confirmed.md",
+      "changeType": "A",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "note": "Full incremental semantic/source/runtime audit not completed by this batch."
+    },
+    {
+      "path": "docs/knowledge/evidence/record-change-search-scope-user-confirmed.md",
+      "changeType": "A",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "note": "Full incremental semantic/source/runtime audit not completed by this batch."
+    },
+    {
+      "path": "docs/knowledge/evidence/record-change.yaml",
+      "changeType": "A",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "note": "Full incremental semantic/source/runtime audit not completed by this batch."
+    },
+    {
+      "path": "docs/knowledge/evidence/record-control-dhr-linkage.yaml",
+      "changeType": "A",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "note": "Full incremental semantic/source/runtime audit not completed by this batch."
+    },
+    {
+      "path": "docs/knowledge/evidence/record-control-integration-2026-10-28.md",
+      "changeType": "A",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "note": "Full incremental semantic/source/runtime audit not completed by this batch."
+    },
+    {
+      "path": "docs/knowledge/evidence/record-control-v1-user-confirmed.md",
+      "changeType": "A",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "note": "Full incremental semantic/source/runtime audit not completed by this batch."
+    },
+    {
+      "path": "docs/knowledge/evidence/record-control-v1.yaml",
+      "changeType": "A",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "note": "Full incremental semantic/source/runtime audit not completed by this batch."
+    },
+    {
+      "path": "docs/knowledge/evidence/record-control-workflow-stage1.yaml",
+      "changeType": "M",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "note": "Full incremental semantic/source/runtime audit not completed by this batch."
+    },
+    {
+      "path": "docs/knowledge/evidence/workflow-operations-20261030.md",
+      "changeType": "A",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "note": "Full incremental semantic/source/runtime audit not completed by this batch."
+    },
+    {
+      "path": "docs/knowledge/evidence/workflow-operations-20261030.yaml",
+      "changeType": "A",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "note": "Full incremental semantic/source/runtime audit not completed by this batch."
+    },
+    {
+      "path": "docs/knowledge/evidence/workflow-reassignment-signature-confirmed.md",
+      "changeType": "A",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "note": "Full incremental semantic/source/runtime audit not completed by this batch."
+    },
+    {
+      "path": "docs/knowledge/evidence/workflow-reassignment-signature.yaml",
+      "changeType": "A",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "note": "Full incremental semantic/source/runtime audit not completed by this batch."
+    },
+    {
+      "path": "docs/knowledge/facts/dhr-summary.yaml",
+      "changeType": "M",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "note": "Full incremental semantic/source/runtime audit not completed by this batch."
+    },
+    {
+      "path": "docs/knowledge/facts/record-control.yaml",
+      "changeType": "A",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "note": "Full incremental semantic/source/runtime audit not completed by this batch."
+    },
+    {
+      "path": "docs/knowledge/glossary.yaml",
+      "changeType": "M",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "note": "Full incremental semantic/source/runtime audit not completed by this batch."
+    },
+    {
+      "path": "docs/knowledge/impact-analysis/record-control-workflow-stage1-contract.md",
+      "changeType": "M",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "note": "Full incremental semantic/source/runtime audit not completed by this batch."
+    },
+    {
+      "path": "docs/knowledge/implementation-anchors/core-business.yaml",
+      "changeType": "M",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "note": "Full incremental semantic/source/runtime audit not completed by this batch."
+    },
+    {
+      "path": "docs/knowledge/implementation-anchors/workflow-operations.yaml",
+      "changeType": "A",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "note": "Full incremental semantic/source/runtime audit not completed by this batch."
+    },
+    {
+      "path": "docs/knowledge/ontology.yaml",
+      "changeType": "M",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "note": "Full incremental semantic/source/runtime audit not completed by this batch."
+    },
+    {
+      "path": "docs/knowledge/open-questions.yaml",
+      "changeType": "M",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "note": "Full incremental semantic/source/runtime audit not completed by this batch."
+    },
+    {
+      "path": "docs/knowledge/rules/form-instance-number.yaml",
+      "changeType": "M",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "note": "Full incremental semantic/source/runtime audit not completed by this batch."
+    },
+    {
+      "path": "docs/knowledge/rules/production.yaml",
+      "changeType": "M",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "note": "Full incremental semantic/source/runtime audit not completed by this batch."
+    },
+    {
+      "path": "docs/knowledge/rules/record-change.yaml",
+      "changeType": "A",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "note": "Full incremental semantic/source/runtime audit not completed by this batch."
+    }
+  ],
+  "changedIdCandidateLocations": [
+    {
+      "id": "DEC-0037",
+      "sourcePath": "docs/knowledge/decisions/DEC-0037-record-correction-and-void-control.yaml",
+      "sourceLocator": "$.decisions[0]",
+      "changeType": "modified",
+      "originalMaturity": "specified",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "DEC-0037-06",
+      "sourcePath": "docs/knowledge/decisions/DEC-0037-record-correction-and-void-control.yaml",
+      "sourceLocator": "$.decisions[0].decisionStatements[5]",
+      "changeType": "modified",
+      "originalMaturity": "specified",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "scenario.record-correction-creates-new-revision",
+      "sourcePath": "docs/knowledge/decisions/DEC-0037-record-correction-and-void-control.yaml",
+      "sourceLocator": "$.decisions[0].acceptanceScenarios[1]",
+      "changeType": "modified",
+      "originalMaturity": "not-present",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "scenario.record-control-intervention-audit",
+      "sourcePath": "docs/knowledge/decisions/DEC-0037-record-correction-and-void-control.yaml",
+      "sourceLocator": "$.decisions[0].acceptanceScenarios[4]",
+      "changeType": "modified",
+      "originalMaturity": "not-present",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "discrepancy.record-control-p0-runtime-not-implemented",
+      "sourcePath": "docs/knowledge/decisions/DEC-0037-record-correction-and-void-control.yaml",
+      "sourceLocator": "$.decisions[0].implementationDiscrepancies[0]",
+      "changeType": "modified",
+      "originalMaturity": "accepted",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "discrepancy.record-control-no-database-migration",
+      "sourcePath": "docs/knowledge/decisions/DEC-0037-record-correction-and-void-control.yaml",
+      "sourceLocator": "$.decisions[0].implementationDiscrepancies[1]",
+      "changeType": "modified",
+      "originalMaturity": "accepted",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "DEC-0041",
+      "sourcePath": "docs/knowledge/decisions/DEC-0041-record-control-application-confirmation-start.yaml",
+      "sourceLocator": "$.decisions[0]",
+      "changeType": "modified",
+      "originalMaturity": "specified",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "DEC-0041-04",
+      "sourcePath": "docs/knowledge/decisions/DEC-0041-record-control-application-confirmation-start.yaml",
+      "sourceLocator": "$.decisions[0].decisionStatements[3]",
+      "changeType": "modified",
+      "originalMaturity": "specified",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "DEC-0042",
+      "sourcePath": "docs/knowledge/decisions/DEC-0042-record-control-workflow-stage1-contract.yaml",
+      "sourceLocator": "$.decisions[0]",
+      "changeType": "modified",
+      "originalMaturity": "implemented",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "DEC-0042-04",
+      "sourcePath": "docs/knowledge/decisions/DEC-0042-record-control-workflow-stage1-contract.yaml",
+      "sourceLocator": "$.decisions[0].decisionStatements[3]",
+      "changeType": "modified",
+      "originalMaturity": "implemented",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "DEC-0042-05",
+      "sourcePath": "docs/knowledge/decisions/DEC-0042-record-control-workflow-stage1-contract.yaml",
+      "sourceLocator": "$.decisions[0].decisionStatements[4]",
+      "changeType": "modified",
+      "originalMaturity": "implemented",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "scenario.record-control-final-approval",
+      "sourcePath": "docs/knowledge/decisions/DEC-0042-record-control-workflow-stage1-contract.yaml",
+      "sourceLocator": "$.decisions[0].acceptanceScenarios[2]",
+      "changeType": "added",
+      "originalMaturity": "not-present",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "scenario.record-control-final-return",
+      "sourcePath": "docs/knowledge/decisions/DEC-0042-record-control-workflow-stage1-contract.yaml",
+      "sourceLocator": "$.decisions[0].acceptanceScenarios[3]",
+      "changeType": "added",
+      "originalMaturity": "not-present",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "scenario.record-control-intermediate-approval",
+      "sourcePath": "docs/knowledge/decisions/DEC-0042-record-control-workflow-stage1-contract.yaml",
+      "sourceLocator": "$.decisions[0].acceptanceScenarios[4]",
+      "changeType": "added",
+      "originalMaturity": "not-present",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "discrepancy.record-control-stage1-application-integration-pending",
+      "sourcePath": "docs/knowledge/decisions/DEC-0042-record-control-workflow-stage1-contract.yaml",
+      "sourceLocator": "$.decisions[0].implementationDiscrepancies[0]",
+      "changeType": "modified",
+      "originalMaturity": "resolved",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "discrepancy.record-control-stage1-result-delivery-pending",
+      "sourcePath": "docs/knowledge/decisions/DEC-0042-record-control-workflow-stage1-contract.yaml",
+      "sourceLocator": "$.decisions[0].implementationDiscrepancies[1]",
+      "changeType": "modified",
+      "originalMaturity": "resolved",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "DEC-0050",
+      "sourcePath": "docs/knowledge/decisions/DEC-0050-form-instance-number.yaml",
+      "sourceLocator": "$.decisions[0]",
+      "changeType": "modified",
+      "originalMaturity": "specified",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "DEC-0063",
+      "sourcePath": "docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml",
+      "sourceLocator": "$.decisions[0]",
+      "changeType": "modified",
+      "originalMaturity": "specified",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "DEC-0063-04",
+      "sourcePath": "docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml",
+      "sourceLocator": "$.decisions[0].decisionStatements[3]",
+      "changeType": "modified",
+      "originalMaturity": "specified",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "DEC-0063-16",
+      "sourcePath": "docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml",
+      "sourceLocator": "$.decisions[0].decisionStatements[15]",
+      "changeType": "added",
+      "originalMaturity": "specified",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "scenario.dhr-obsolete-default-hidden-evidence-retained",
+      "sourcePath": "docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml",
+      "sourceLocator": "$.decisions[0].acceptanceScenarios[1]",
+      "changeType": "added",
+      "originalMaturity": "not-present",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "DEC-0068",
+      "sourcePath": "docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml",
+      "sourceLocator": "$.decisions[0]",
+      "changeType": "modified",
+      "originalMaturity": "specified",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "DEC-0068-02",
+      "sourcePath": "docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml",
+      "sourceLocator": "$.decisions[0].decisionStatements[1]",
+      "changeType": "modified",
+      "originalMaturity": "specified",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "DEC-0068-04",
+      "sourcePath": "docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml",
+      "sourceLocator": "$.decisions[0].decisionStatements[3]",
+      "changeType": "modified",
+      "originalMaturity": "specified",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "DEC-0068-12",
+      "sourcePath": "docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml",
+      "sourceLocator": "$.decisions[0].decisionStatements[11]",
+      "changeType": "added",
+      "originalMaturity": "specified",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "DEC-0068-13",
+      "sourcePath": "docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml",
+      "sourceLocator": "$.decisions[0].decisionStatements[12]",
+      "changeType": "added",
+      "originalMaturity": "specified",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "DEC-0068-14",
+      "sourcePath": "docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml",
+      "sourceLocator": "$.decisions[0].decisionStatements[13]",
+      "changeType": "added",
+      "originalMaturity": "specified",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "scenario.dhr-effective-form-impact-in-app-recipients",
+      "sourcePath": "docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml",
+      "sourceLocator": "$.decisions[0].acceptanceScenarios[5]",
+      "changeType": "added",
+      "originalMaturity": "not-present",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "scenario.dhr-pending-record-control-blocks-finalization",
+      "sourcePath": "docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml",
+      "sourceLocator": "$.decisions[0].acceptanceScenarios[6]",
+      "changeType": "added",
+      "originalMaturity": "not-present",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "scenario.dhr-review-blocks-new-record-control",
+      "sourcePath": "docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml",
+      "sourceLocator": "$.decisions[0].acceptanceScenarios[7]",
+      "changeType": "added",
+      "originalMaturity": "not-present",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "discrepancy.dhr-review-complete-evidence-impact-gap",
+      "sourcePath": "docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml",
+      "sourceLocator": "$.decisions[0].implementationDiscrepancies[0]",
+      "changeType": "modified",
+      "originalMaturity": "open",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "discrepancy.dhr-review-effective-source-integration",
+      "sourcePath": "docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml",
+      "sourceLocator": "$.decisions[0].implementationDiscrepancies[1]",
+      "changeType": "modified",
+      "originalMaturity": "open",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "DEC-0086",
+      "sourcePath": "docs/knowledge/decisions/DEC-0086-record-change-search-scope.yaml",
+      "sourceLocator": "$.decisions[0]",
+      "changeType": "added",
+      "originalMaturity": "specified",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "DEC-0086-01",
+      "sourcePath": "docs/knowledge/decisions/DEC-0086-record-change-search-scope.yaml",
+      "sourceLocator": "$.decisions[0].decisionStatements[0]",
+      "changeType": "added",
+      "originalMaturity": "deprecated",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "DEC-0086-02",
+      "sourcePath": "docs/knowledge/decisions/DEC-0086-record-change-search-scope.yaml",
+      "sourceLocator": "$.decisions[0].decisionStatements[1]",
+      "changeType": "added",
+      "originalMaturity": "specified",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "DEC-0086-03",
+      "sourcePath": "docs/knowledge/decisions/DEC-0086-record-change-search-scope.yaml",
+      "sourceLocator": "$.decisions[0].decisionStatements[2]",
+      "changeType": "added",
+      "originalMaturity": "specified",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "DEC-0086-04",
+      "sourcePath": "docs/knowledge/decisions/DEC-0086-record-change-search-scope.yaml",
+      "sourceLocator": "$.decisions[0].decisionStatements[3]",
+      "changeType": "added",
+      "originalMaturity": "specified",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "scenario.record-change-search-by-form-serial",
+      "sourcePath": "docs/knowledge/decisions/DEC-0086-record-change-search-scope.yaml",
+      "sourceLocator": "$.decisions[0].acceptanceScenarios[0]",
+      "changeType": "added",
+      "originalMaturity": "not-present",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "scenario.record-change-batch-or-sn-deferred-v1",
+      "sourcePath": "docs/knowledge/decisions/DEC-0086-record-change-search-scope.yaml",
+      "sourceLocator": "$.decisions[0].acceptanceScenarios[1]",
+      "changeType": "added",
+      "originalMaturity": "not-present",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "scenario.record-change-no-dedicated-dhr-or-notebook-search-v1",
+      "sourcePath": "docs/knowledge/decisions/DEC-0086-record-change-search-scope.yaml",
+      "sourceLocator": "$.decisions[0].acceptanceScenarios[2]",
+      "changeType": "added",
+      "originalMaturity": "not-present",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "DEC-0087",
+      "sourcePath": "docs/knowledge/decisions/DEC-0087-record-control-v1-closure.yaml",
+      "sourceLocator": "$.decisions[0]",
+      "changeType": "added",
+      "originalMaturity": "specified",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "DEC-0087-01",
+      "sourcePath": "docs/knowledge/decisions/DEC-0087-record-control-v1-closure.yaml",
+      "sourceLocator": "$.decisions[0].decisionStatements[0]",
+      "changeType": "added",
+      "originalMaturity": "specified",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "DEC-0087-02",
+      "sourcePath": "docs/knowledge/decisions/DEC-0087-record-control-v1-closure.yaml",
+      "sourceLocator": "$.decisions[0].decisionStatements[1]",
+      "changeType": "added",
+      "originalMaturity": "specified",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "DEC-0087-03",
+      "sourcePath": "docs/knowledge/decisions/DEC-0087-record-control-v1-closure.yaml",
+      "sourceLocator": "$.decisions[0].decisionStatements[2]",
+      "changeType": "added",
+      "originalMaturity": "specified",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "DEC-0087-04",
+      "sourcePath": "docs/knowledge/decisions/DEC-0087-record-control-v1-closure.yaml",
+      "sourceLocator": "$.decisions[0].decisionStatements[3]",
+      "changeType": "added",
+      "originalMaturity": "specified",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "DEC-0087-05",
+      "sourcePath": "docs/knowledge/decisions/DEC-0087-record-control-v1-closure.yaml",
+      "sourceLocator": "$.decisions[0].decisionStatements[4]",
+      "changeType": "added",
+      "originalMaturity": "specified",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "DEC-0087-06",
+      "sourcePath": "docs/knowledge/decisions/DEC-0087-record-control-v1-closure.yaml",
+      "sourceLocator": "$.decisions[0].decisionStatements[5]",
+      "changeType": "added",
+      "originalMaturity": "specified",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "DEC-0087-07",
+      "sourcePath": "docs/knowledge/decisions/DEC-0087-record-control-v1-closure.yaml",
+      "sourceLocator": "$.decisions[0].decisionStatements[6]",
+      "changeType": "added",
+      "originalMaturity": "specified",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "DEC-0087-08",
+      "sourcePath": "docs/knowledge/decisions/DEC-0087-record-control-v1-closure.yaml",
+      "sourceLocator": "$.decisions[0].decisionStatements[7]",
+      "changeType": "added",
+      "originalMaturity": "specified",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "DEC-0087-09",
+      "sourcePath": "docs/knowledge/decisions/DEC-0087-record-control-v1-closure.yaml",
+      "sourceLocator": "$.decisions[0].decisionStatements[8]",
+      "changeType": "added",
+      "originalMaturity": "implemented",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "DEC-0087-10",
+      "sourcePath": "docs/knowledge/decisions/DEC-0087-record-control-v1-closure.yaml",
+      "sourceLocator": "$.decisions[0].decisionStatements[9]",
+      "changeType": "added",
+      "originalMaturity": "implemented",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "scenario.record-control-v1-menu-scope",
+      "sourcePath": "docs/knowledge/decisions/DEC-0087-record-control-v1-closure.yaml",
+      "sourceLocator": "$.decisions[0].acceptanceScenarios[0]",
+      "changeType": "added",
+      "originalMaturity": "not-present",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "scenario.record-control-v1-revision-approval",
+      "sourcePath": "docs/knowledge/decisions/DEC-0087-record-control-v1-closure.yaml",
+      "sourceLocator": "$.decisions[0].acceptanceScenarios[1]",
+      "changeType": "added",
+      "originalMaturity": "not-present",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "scenario.record-control-v1-return-reapply",
+      "sourcePath": "docs/knowledge/decisions/DEC-0087-record-control-v1-closure.yaml",
+      "sourceLocator": "$.decisions[0].acceptanceScenarios[2]",
+      "changeType": "added",
+      "originalMaturity": "not-present",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "scenario.record-control-v1-authenticated-access",
+      "sourcePath": "docs/knowledge/decisions/DEC-0087-record-control-v1-closure.yaml",
+      "sourceLocator": "$.decisions[0].acceptanceScenarios[3]",
+      "changeType": "added",
+      "originalMaturity": "not-present",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "scenario.record-control-v1-dhr-deferred",
+      "sourcePath": "docs/knowledge/decisions/DEC-0087-record-control-v1-closure.yaml",
+      "sourceLocator": "$.decisions[0].acceptanceScenarios[4]",
+      "changeType": "added",
+      "originalMaturity": "not-present",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "scenario.record-control-signature-generic-isolation",
+      "sourcePath": "docs/knowledge/decisions/DEC-0087-record-control-v1-closure.yaml",
+      "sourceLocator": "$.decisions[0].acceptanceScenarios[5]",
+      "changeType": "added",
+      "originalMaturity": "not-present",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "scenario.record-control-active-detail-boundary",
+      "sourcePath": "docs/knowledge/decisions/DEC-0087-record-control-v1-closure.yaml",
+      "sourceLocator": "$.decisions[0].acceptanceScenarios[6]",
+      "changeType": "added",
+      "originalMaturity": "not-present",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "scenario.record-control-approval-task-dedicated-pagination",
+      "sourcePath": "docs/knowledge/decisions/DEC-0087-record-control-v1-closure.yaml",
+      "sourceLocator": "$.decisions[0].acceptanceScenarios[7]",
+      "changeType": "added",
+      "originalMaturity": "not-present",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "discrepancy.record-control-v1-runtime-pending",
+      "sourcePath": "docs/knowledge/decisions/DEC-0087-record-control-v1-closure.yaml",
+      "sourceLocator": "$.decisions[0].implementationDiscrepancies[0]",
+      "changeType": "added",
+      "originalMaturity": "resolved",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "discrepancy.record-control-v1-workflow-permission-mismatch",
+      "sourcePath": "docs/knowledge/decisions/DEC-0087-record-control-v1-closure.yaml",
+      "sourceLocator": "$.decisions[0].implementationDiscrepancies[1]",
+      "changeType": "added",
+      "originalMaturity": "accepted",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "DEC-0088",
+      "sourcePath": "docs/knowledge/decisions/DEC-0088-form-and-change-management-menu-boundary.yaml",
+      "sourceLocator": "$.decisions[0]",
+      "changeType": "added",
+      "originalMaturity": "specified",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "DEC-0088-01",
+      "sourcePath": "docs/knowledge/decisions/DEC-0088-form-and-change-management-menu-boundary.yaml",
+      "sourceLocator": "$.decisions[0].decisionStatements[0]",
+      "changeType": "added",
+      "originalMaturity": "specified",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "DEC-0088-02",
+      "sourcePath": "docs/knowledge/decisions/DEC-0088-form-and-change-management-menu-boundary.yaml",
+      "sourceLocator": "$.decisions[0].decisionStatements[1]",
+      "changeType": "added",
+      "originalMaturity": "specified",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "scenario.record-menu-coexistence",
+      "sourcePath": "docs/knowledge/decisions/DEC-0088-form-and-change-management-menu-boundary.yaml",
+      "sourceLocator": "$.decisions[0].acceptanceScenarios[0]",
+      "changeType": "added",
+      "originalMaturity": "not-present",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "DEC-0089",
+      "sourcePath": "docs/knowledge/decisions/DEC-0089-form-instance-number-display.yaml",
+      "sourceLocator": "$.decisions[0]",
+      "changeType": "added",
+      "originalMaturity": "specified",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "DEC-0089-01",
+      "sourcePath": "docs/knowledge/decisions/DEC-0089-form-instance-number-display.yaml",
+      "sourceLocator": "$.decisions[0].decisionStatements[0]",
+      "changeType": "added",
+      "originalMaturity": "specified",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "DEC-0089-02",
+      "sourcePath": "docs/knowledge/decisions/DEC-0089-form-instance-number-display.yaml",
+      "sourceLocator": "$.decisions[0].decisionStatements[1]",
+      "changeType": "added",
+      "originalMaturity": "specified",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "scenario.form-instance-number-display-canonical",
+      "sourcePath": "docs/knowledge/decisions/DEC-0089-form-instance-number-display.yaml",
+      "sourceLocator": "$.decisions[0].acceptanceScenarios[0]",
+      "changeType": "added",
+      "originalMaturity": "not-present",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "scenario.form-instance-number-display-history",
+      "sourcePath": "docs/knowledge/decisions/DEC-0089-form-instance-number-display.yaml",
+      "sourceLocator": "$.decisions[0].acceptanceScenarios[1]",
+      "changeType": "added",
+      "originalMaturity": "not-present",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "DEC-0090",
+      "sourcePath": "docs/knowledge/decisions/DEC-0090-dhr-archive-minimum-scope.yaml",
+      "sourceLocator": "$.decisions[0]",
+      "changeType": "added",
+      "originalMaturity": "specified",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "DEC-0090-01",
+      "sourcePath": "docs/knowledge/decisions/DEC-0090-dhr-archive-minimum-scope.yaml",
+      "sourceLocator": "$.decisions[0].decisionStatements[0]",
+      "changeType": "added",
+      "originalMaturity": "specified",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "DEC-0090-02",
+      "sourcePath": "docs/knowledge/decisions/DEC-0090-dhr-archive-minimum-scope.yaml",
+      "sourceLocator": "$.decisions[0].decisionStatements[1]",
+      "changeType": "added",
+      "originalMaturity": "specified",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "DEC-0090-03",
+      "sourcePath": "docs/knowledge/decisions/DEC-0090-dhr-archive-minimum-scope.yaml",
+      "sourceLocator": "$.decisions[0].decisionStatements[2]",
+      "changeType": "added",
+      "originalMaturity": "specified",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "DEC-0090-04",
+      "sourcePath": "docs/knowledge/decisions/DEC-0090-dhr-archive-minimum-scope.yaml",
+      "sourceLocator": "$.decisions[0].decisionStatements[3]",
+      "changeType": "added",
+      "originalMaturity": "specified",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "scenario.dhr-archive-terminology-boundary",
+      "sourcePath": "docs/knowledge/decisions/DEC-0090-dhr-archive-minimum-scope.yaml",
+      "sourceLocator": "$.decisions[0].acceptanceScenarios[0]",
+      "changeType": "added",
+      "originalMaturity": "not-present",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "scenario.dhr-archive-minimum-evidence-and-access",
+      "sourcePath": "docs/knowledge/decisions/DEC-0090-dhr-archive-minimum-scope.yaml",
+      "sourceLocator": "$.decisions[0].acceptanceScenarios[1]",
+      "changeType": "added",
+      "originalMaturity": "not-present",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "scenario.dhr-archive-deferred-work-boundary",
+      "sourcePath": "docs/knowledge/decisions/DEC-0090-dhr-archive-minimum-scope.yaml",
+      "sourceLocator": "$.decisions[0].acceptanceScenarios[2]",
+      "changeType": "added",
+      "originalMaturity": "not-present",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "DEC-0091",
+      "sourcePath": "docs/knowledge/decisions/DEC-0091-workflow-reassignment-signature.yaml",
+      "sourceLocator": "$.decisions[0]",
+      "changeType": "added",
+      "originalMaturity": "specified",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "DEC-0091-01",
+      "sourcePath": "docs/knowledge/decisions/DEC-0091-workflow-reassignment-signature.yaml",
+      "sourceLocator": "$.decisions[0].decisionStatements[0]",
+      "changeType": "added",
+      "originalMaturity": "specified",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "DEC-0091-02",
+      "sourcePath": "docs/knowledge/decisions/DEC-0091-workflow-reassignment-signature.yaml",
+      "sourceLocator": "$.decisions[0].decisionStatements[1]",
+      "changeType": "added",
+      "originalMaturity": "specified",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "DEC-0091-03",
+      "sourcePath": "docs/knowledge/decisions/DEC-0091-workflow-reassignment-signature.yaml",
+      "sourceLocator": "$.decisions[0].decisionStatements[2]",
+      "changeType": "added",
+      "originalMaturity": "specified",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "scenario.workflow-reassignment-requires-signature",
+      "sourcePath": "docs/knowledge/decisions/DEC-0091-workflow-reassignment-signature.yaml",
+      "sourceLocator": "$.decisions[0].acceptanceScenarios[0]",
+      "changeType": "added",
+      "originalMaturity": "not-present",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "scenario.workflow-reassignment-policy-boundary",
+      "sourcePath": "docs/knowledge/decisions/DEC-0091-workflow-reassignment-signature.yaml",
+      "sourceLocator": "$.decisions[0].acceptanceScenarios[1]",
+      "changeType": "added",
+      "originalMaturity": "not-present",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "DEC-0092",
+      "sourcePath": "docs/knowledge/decisions/DEC-0092-workflow-operations-entry-and-actions.yaml",
+      "sourceLocator": "$.decisions[0]",
+      "changeType": "added",
+      "originalMaturity": "implemented",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "DEC-0092-01",
+      "sourcePath": "docs/knowledge/decisions/DEC-0092-workflow-operations-entry-and-actions.yaml",
+      "sourceLocator": "$.decisions[0].decisionStatements[0]",
+      "changeType": "added",
+      "originalMaturity": "specified",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "DEC-0092-02",
+      "sourcePath": "docs/knowledge/decisions/DEC-0092-workflow-operations-entry-and-actions.yaml",
+      "sourceLocator": "$.decisions[0].decisionStatements[1]",
+      "changeType": "added",
+      "originalMaturity": "specified",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "DEC-0092-03",
+      "sourcePath": "docs/knowledge/decisions/DEC-0092-workflow-operations-entry-and-actions.yaml",
+      "sourceLocator": "$.decisions[0].decisionStatements[2]",
+      "changeType": "added",
+      "originalMaturity": "specified",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "DEC-0092-04",
+      "sourcePath": "docs/knowledge/decisions/DEC-0092-workflow-operations-entry-and-actions.yaml",
+      "sourceLocator": "$.decisions[0].decisionStatements[3]",
+      "changeType": "added",
+      "originalMaturity": "specified",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "DEC-0092-05",
+      "sourcePath": "docs/knowledge/decisions/DEC-0092-workflow-operations-entry-and-actions.yaml",
+      "sourceLocator": "$.decisions[0].decisionStatements[4]",
+      "changeType": "added",
+      "originalMaturity": "specified",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "DEC-0092-06",
+      "sourcePath": "docs/knowledge/decisions/DEC-0092-workflow-operations-entry-and-actions.yaml",
+      "sourceLocator": "$.decisions[0].decisionStatements[5]",
+      "changeType": "added",
+      "originalMaturity": "implemented",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "scenario.workflow-operations-entry-names",
+      "sourcePath": "docs/knowledge/decisions/DEC-0092-workflow-operations-entry-and-actions.yaml",
+      "sourceLocator": "$.decisions[0].acceptanceScenarios[0]",
+      "changeType": "added",
+      "originalMaturity": "not-present",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "scenario.workflow-operations-action-identity",
+      "sourcePath": "docs/knowledge/decisions/DEC-0092-workflow-operations-entry-and-actions.yaml",
+      "sourceLocator": "$.decisions[0].acceptanceScenarios[1]",
+      "changeType": "added",
+      "originalMaturity": "not-present",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "scenario.workflow-operations-withdraw-before-decision",
+      "sourcePath": "docs/knowledge/decisions/DEC-0092-workflow-operations-entry-and-actions.yaml",
+      "sourceLocator": "$.decisions[0].acceptanceScenarios[2]",
+      "changeType": "added",
+      "originalMaturity": "not-present",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "scenario.workflow-operations-history-and-boundaries",
+      "sourcePath": "docs/knowledge/decisions/DEC-0092-workflow-operations-entry-and-actions.yaml",
+      "sourceLocator": "$.decisions[0].acceptanceScenarios[3]",
+      "changeType": "added",
+      "originalMaturity": "not-present",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "evidence.dhr-archive-minimum-user-confirmed",
+      "sourcePath": "docs/knowledge/evidence/dhr-archive.yaml",
+      "sourceLocator": "$.evidence[0]",
+      "changeType": "added",
+      "originalMaturity": "not-present",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "evidence.dhr-archive-prd-direction",
+      "sourcePath": "docs/knowledge/evidence/dhr-archive.yaml",
+      "sourceLocator": "$.evidence[1]",
+      "changeType": "added",
+      "originalMaturity": "not-present",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "evidence.form-instance-number-display-user-confirmed",
+      "sourcePath": "docs/knowledge/evidence/form-instance-number-display.yaml",
+      "sourceLocator": "$.evidence[0]",
+      "changeType": "added",
+      "originalMaturity": "not-present",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "evidence.record-change-form-management-coexistence-user-confirmed",
+      "sourcePath": "docs/knowledge/evidence/record-change.yaml",
+      "sourceLocator": "$.evidence[0]",
+      "changeType": "added",
+      "originalMaturity": "not-present",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "evidence.record-change-search-scope-user-confirmed",
+      "sourcePath": "docs/knowledge/evidence/record-change.yaml",
+      "sourceLocator": "$.evidence[1]",
+      "changeType": "added",
+      "originalMaturity": "not-present",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "evidence.record-change-existing-prd",
+      "sourcePath": "docs/knowledge/evidence/record-change.yaml",
+      "sourceLocator": "$.evidence[2]",
+      "changeType": "added",
+      "originalMaturity": "not-present",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "evidence.record-control-dhr-effective-orchestration",
+      "sourcePath": "docs/knowledge/evidence/record-control-dhr-linkage.yaml",
+      "sourceLocator": "$.evidence[0]",
+      "changeType": "added",
+      "originalMaturity": "not-present",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "evidence.dhr-record-control-linkage-source",
+      "sourcePath": "docs/knowledge/evidence/record-control-dhr-linkage.yaml",
+      "sourceLocator": "$.evidence[1]",
+      "changeType": "added",
+      "originalMaturity": "not-present",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "evidence.dhr-impact-notification-personal-source",
+      "sourcePath": "docs/knowledge/evidence/record-control-dhr-linkage.yaml",
+      "sourceLocator": "$.evidence[2]",
+      "changeType": "added",
+      "originalMaturity": "not-present",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "evidence.dhr-impact-linkage-migration",
+      "sourcePath": "docs/knowledge/evidence/record-control-dhr-linkage.yaml",
+      "sourceLocator": "$.evidence[3]",
+      "changeType": "added",
+      "originalMaturity": "not-present",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "evidence.dhr-linkage-backend-verification",
+      "sourcePath": "docs/knowledge/evidence/record-control-dhr-linkage.yaml",
+      "sourceLocator": "$.evidence[4]",
+      "changeType": "added",
+      "originalMaturity": "not-present",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "evidence.dhr-linkage-browser-verification",
+      "sourcePath": "docs/knowledge/evidence/record-control-dhr-linkage.yaml",
+      "sourceLocator": "$.evidence[5]",
+      "changeType": "added",
+      "originalMaturity": "not-present",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "evidence.dhr-linkage-frontend-verification",
+      "sourcePath": "docs/knowledge/evidence/record-control-dhr-linkage.yaml",
+      "sourceLocator": "$.evidence[6]",
+      "changeType": "added",
+      "originalMaturity": "not-present",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "evidence.dhr-linkage-initial-quality-result",
+      "sourcePath": "docs/knowledge/evidence/record-control-dhr-linkage.yaml",
+      "sourceLocator": "$.evidence[7]",
+      "changeType": "added",
+      "originalMaturity": "not-present",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "evidence.record-control-integration-20261028",
+      "sourcePath": "docs/knowledge/evidence/record-control-v1.yaml",
+      "sourceLocator": "$.evidence[0]",
+      "changeType": "added",
+      "originalMaturity": "not-present",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "evidence.record-control-v1-user-confirmed",
+      "sourcePath": "docs/knowledge/evidence/record-control-v1.yaml",
+      "sourceLocator": "$.evidence[1]",
+      "changeType": "added",
+      "originalMaturity": "not-present",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "evidence.record-control-v1-service",
+      "sourcePath": "docs/knowledge/evidence/record-control-v1.yaml",
+      "sourceLocator": "$.evidence[2]",
+      "changeType": "added",
+      "originalMaturity": "not-present",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "evidence.record-control-signature-generic-controller-boundary",
+      "sourcePath": "docs/knowledge/evidence/record-control-v1.yaml",
+      "sourceLocator": "$.evidence[3]",
+      "changeType": "added",
+      "originalMaturity": "not-present",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "evidence.record-control-signature-generic-list-boundary",
+      "sourcePath": "docs/knowledge/evidence/record-control-v1.yaml",
+      "sourceLocator": "$.evidence[4]",
+      "changeType": "added",
+      "originalMaturity": "not-present",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "evidence.record-control-signature-generic-crud-tests",
+      "sourcePath": "docs/knowledge/evidence/record-control-v1.yaml",
+      "sourceLocator": "$.evidence[5]",
+      "changeType": "added",
+      "originalMaturity": "not-present",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "evidence.record-control-signature-generic-list-tests",
+      "sourcePath": "docs/knowledge/evidence/record-control-v1.yaml",
+      "sourceLocator": "$.evidence[6]",
+      "changeType": "added",
+      "originalMaturity": "not-present",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "evidence.record-control-active-detail-access-tests",
+      "sourcePath": "docs/knowledge/evidence/record-control-v1.yaml",
+      "sourceLocator": "$.evidence[7]",
+      "changeType": "added",
+      "originalMaturity": "not-present",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "evidence.record-control-workflow-task-projection-repository",
+      "sourcePath": "docs/knowledge/evidence/record-control-v1.yaml",
+      "sourceLocator": "$.evidence[8]",
+      "changeType": "added",
+      "originalMaturity": "not-present",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "evidence.record-control-workflow-task-projection-service",
+      "sourcePath": "docs/knowledge/evidence/record-control-v1.yaml",
+      "sourceLocator": "$.evidence[9]",
+      "changeType": "added",
+      "originalMaturity": "not-present",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "evidence.record-control-workflow-task-projection-api",
+      "sourcePath": "docs/knowledge/evidence/record-control-v1.yaml",
+      "sourceLocator": "$.evidence[10]",
+      "changeType": "added",
+      "originalMaturity": "not-present",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "evidence.record-control-workflow-task-projection-ui",
+      "sourcePath": "docs/knowledge/evidence/record-control-v1.yaml",
+      "sourceLocator": "$.evidence[11]",
+      "changeType": "added",
+      "originalMaturity": "not-present",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "evidence.record-control-workflow-task-projection-tests",
+      "sourcePath": "docs/knowledge/evidence/record-control-v1.yaml",
+      "sourceLocator": "$.evidence[12]",
+      "changeType": "added",
+      "originalMaturity": "not-present",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "evidence.record-control-workflow-stage1-result-handler-boundary",
+      "sourcePath": "docs/knowledge/evidence/record-control-workflow-stage1.yaml",
+      "sourceLocator": "$.evidence[5]",
+      "changeType": "modified",
+      "originalMaturity": "not-present",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "evidence.record-control-workflow-result-delivery-adapter",
+      "sourcePath": "docs/knowledge/evidence/record-control-workflow-stage1.yaml",
+      "sourceLocator": "$.evidence[6]",
+      "changeType": "added",
+      "originalMaturity": "not-present",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "evidence.record-control-workflow-result-business-handler",
+      "sourcePath": "docs/knowledge/evidence/record-control-workflow-stage1.yaml",
+      "sourceLocator": "$.evidence[7]",
+      "changeType": "added",
+      "originalMaturity": "not-present",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "evidence.record-control-workflow-stage1-engine-tests",
+      "sourcePath": "docs/knowledge/evidence/record-control-workflow-stage1.yaml",
+      "sourceLocator": "$.evidence[10]",
+      "changeType": "modified",
+      "originalMaturity": "not-present",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "evidence.record-control-task-action-result-tests",
+      "sourcePath": "docs/knowledge/evidence/record-control-workflow-stage1.yaml",
+      "sourceLocator": "$.evidence[11]",
+      "changeType": "added",
+      "originalMaturity": "not-present",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "evidence.workflow-operations-20261030-user-confirmed",
+      "sourcePath": "docs/knowledge/evidence/workflow-operations-20261030.yaml",
+      "sourceLocator": "$.evidence[0]",
+      "changeType": "added",
+      "originalMaturity": "not-present",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "evidence.workflow-operations-responsibility-source",
+      "sourcePath": "docs/knowledge/evidence/workflow-operations-20261030.yaml",
+      "sourceLocator": "$.evidence[1]",
+      "changeType": "added",
+      "originalMaturity": "not-present",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "evidence.workflow-operations-withdrawal-source",
+      "sourcePath": "docs/knowledge/evidence/workflow-operations-20261030.yaml",
+      "sourceLocator": "$.evidence[2]",
+      "changeType": "added",
+      "originalMaturity": "not-present",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "evidence.workflow-operations-query-source",
+      "sourcePath": "docs/knowledge/evidence/workflow-operations-20261030.yaml",
+      "sourceLocator": "$.evidence[3]",
+      "changeType": "added",
+      "originalMaturity": "not-present",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "evidence.workflow-operations-ui-source",
+      "sourcePath": "docs/knowledge/evidence/workflow-operations-20261030.yaml",
+      "sourceLocator": "$.evidence[4]",
+      "changeType": "added",
+      "originalMaturity": "not-present",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "evidence.workflow-operations-postgres-tests",
+      "sourcePath": "docs/knowledge/evidence/workflow-operations-20261030.yaml",
+      "sourceLocator": "$.evidence[5]",
+      "changeType": "added",
+      "originalMaturity": "not-present",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "evidence.workflow-operations-main-verification",
+      "sourcePath": "docs/knowledge/evidence/workflow-operations-20261030.yaml",
+      "sourceLocator": "$.evidence[6]",
+      "changeType": "added",
+      "originalMaturity": "not-present",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "evidence.workflow-reassignment-signature-user-confirmed",
+      "sourcePath": "docs/knowledge/evidence/workflow-reassignment-signature.yaml",
+      "sourceLocator": "$.evidence[0]",
+      "changeType": "added",
+      "originalMaturity": "not-present",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "fact.dhr-summary.effective-evidence-change",
+      "sourcePath": "docs/knowledge/facts/dhr-summary.yaml",
+      "sourceLocator": "$.facts[10]",
+      "changeType": "modified",
+      "originalMaturity": "specified",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "fact.record-control-release-scope",
+      "sourcePath": "docs/knowledge/facts/record-control.yaml",
+      "sourceLocator": "$.facts[0]",
+      "changeType": "added",
+      "originalMaturity": "specified",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "fact.record-control-source-status",
+      "sourcePath": "docs/knowledge/facts/record-control.yaml",
+      "sourceLocator": "$.facts[1]",
+      "changeType": "added",
+      "originalMaturity": "specified",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "fact.record-control-current-revision-present",
+      "sourcePath": "docs/knowledge/facts/record-control.yaml",
+      "sourceLocator": "$.facts[2]",
+      "changeType": "added",
+      "originalMaturity": "specified",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "fact.record-control-active-application-present",
+      "sourcePath": "docs/knowledge/facts/record-control.yaml",
+      "sourceLocator": "$.facts[3]",
+      "changeType": "added",
+      "originalMaturity": "specified",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "fact.record-control-authenticated-user-present",
+      "sourcePath": "docs/knowledge/facts/record-control.yaml",
+      "sourceLocator": "$.facts[4]",
+      "changeType": "added",
+      "originalMaturity": "specified",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "fact.record-control-workflow-result",
+      "sourcePath": "docs/knowledge/facts/record-control.yaml",
+      "sourceLocator": "$.facts[5]",
+      "changeType": "added",
+      "originalMaturity": "implemented",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "fact.record-control-signature-target-type",
+      "sourcePath": "docs/knowledge/facts/record-control.yaml",
+      "sourceLocator": "$.facts[6]",
+      "changeType": "added",
+      "originalMaturity": "implemented",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "fact.record-control-request-status",
+      "sourcePath": "docs/knowledge/facts/record-control.yaml",
+      "sourceLocator": "$.facts[7]",
+      "changeType": "added",
+      "originalMaturity": "implemented",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "fact.record-control-workflow-task-authenticated-user-present",
+      "sourcePath": "docs/knowledge/facts/record-control.yaml",
+      "sourceLocator": "$.facts[8]",
+      "changeType": "added",
+      "originalMaturity": "implemented",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "term.dhr-archive",
+      "sourcePath": "docs/knowledge/glossary.yaml",
+      "sourceLocator": "$.terms[30]",
+      "changeType": "added",
+      "originalMaturity": "specified",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "term.form-instance-number",
+      "sourcePath": "docs/knowledge/glossary.yaml",
+      "sourceLocator": "$.terms[37]",
+      "changeType": "modified",
+      "originalMaturity": "specified",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "term.workflow-transfer-action",
+      "sourcePath": "docs/knowledge/glossary.yaml",
+      "sourceLocator": "$.terms[43]",
+      "changeType": "modified",
+      "originalMaturity": "implemented",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "term.workflow-reassignment-action",
+      "sourcePath": "docs/knowledge/glossary.yaml",
+      "sourceLocator": "$.terms[44]",
+      "changeType": "modified",
+      "originalMaturity": "implemented",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "term.workflow-return-action",
+      "sourcePath": "docs/knowledge/glossary.yaml",
+      "sourceLocator": "$.terms[45]",
+      "changeType": "modified",
+      "originalMaturity": "specified",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "term.record-control-workflow-integration",
+      "sourcePath": "docs/knowledge/glossary.yaml",
+      "sourceLocator": "$.terms[47]",
+      "changeType": "modified",
+      "originalMaturity": "implemented",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "term.record-correction-request",
+      "sourcePath": "docs/knowledge/glossary.yaml",
+      "sourceLocator": "$.terms[125]",
+      "changeType": "modified",
+      "originalMaturity": "specified",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "term.form-instance-revision",
+      "sourcePath": "docs/knowledge/glossary.yaml",
+      "sourceLocator": "$.terms[128]",
+      "changeType": "added",
+      "originalMaturity": "specified",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "term.workflow-event-log",
+      "sourcePath": "docs/knowledge/glossary.yaml",
+      "sourceLocator": "$.terms[132]",
+      "changeType": "modified",
+      "originalMaturity": "implemented",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "anchor.core.record-control-signature-generic-boundary",
+      "sourcePath": "docs/knowledge/implementation-anchors/core-business.yaml",
+      "sourceLocator": "$.implementationAnchors[13]",
+      "changeType": "added",
+      "originalMaturity": "implemented",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "anchor.core.record-control-active-detail-access",
+      "sourcePath": "docs/knowledge/implementation-anchors/core-business.yaml",
+      "sourceLocator": "$.implementationAnchors[14]",
+      "changeType": "added",
+      "originalMaturity": "implemented",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "anchor.core.record-control-workflow-task-projection",
+      "sourcePath": "docs/knowledge/implementation-anchors/core-business.yaml",
+      "sourceLocator": "$.implementationAnchors[15]",
+      "changeType": "added",
+      "originalMaturity": "implemented",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "anchor.workflow-operations.responsibility",
+      "sourcePath": "docs/knowledge/implementation-anchors/workflow-operations.yaml",
+      "sourceLocator": "$.implementationAnchors[0]",
+      "changeType": "added",
+      "originalMaturity": "implemented",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "anchor.workflow-operations.withdrawal-result",
+      "sourcePath": "docs/knowledge/implementation-anchors/workflow-operations.yaml",
+      "sourceLocator": "$.implementationAnchors[1]",
+      "changeType": "added",
+      "originalMaturity": "implemented",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "concept.dhr-archive",
+      "sourcePath": "docs/knowledge/ontology.yaml",
+      "sourceLocator": "$.concepts[31]",
+      "changeType": "added",
+      "originalMaturity": "specified",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "concept.form-instance-revision",
+      "sourcePath": "docs/knowledge/ontology.yaml",
+      "sourceLocator": "$.concepts[121]",
+      "changeType": "added",
+      "originalMaturity": "specified",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "concept.workflow-event-log",
+      "sourcePath": "docs/knowledge/ontology.yaml",
+      "sourceLocator": "$.concepts[125]",
+      "changeType": "modified",
+      "originalMaturity": "implemented",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "relation.record-correction-request-produces-revision",
+      "sourcePath": "docs/knowledge/ontology.yaml",
+      "sourceLocator": "$.relations[132]",
+      "changeType": "modified",
+      "originalMaturity": "specified",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "relation.form-instance-has-revisions",
+      "sourcePath": "docs/knowledge/ontology.yaml",
+      "sourceLocator": "$.relations[133]",
+      "changeType": "added",
+      "originalMaturity": "specified",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "relation.form-instance-current-revision",
+      "sourcePath": "docs/knowledge/ontology.yaml",
+      "sourceLocator": "$.relations[134]",
+      "changeType": "added",
+      "originalMaturity": "specified",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "relation.record-change-request-targets-source-instance",
+      "sourcePath": "docs/knowledge/ontology.yaml",
+      "sourceLocator": "$.relations[135]",
+      "changeType": "added",
+      "originalMaturity": "specified",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "relation.record-void-request-targets-source-instance",
+      "sourcePath": "docs/knowledge/ontology.yaml",
+      "sourceLocator": "$.relations[136]",
+      "changeType": "added",
+      "originalMaturity": "specified",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "question.form-projection-trace-index-effective-scope",
+      "sourcePath": "docs/knowledge/open-questions.yaml",
+      "sourceLocator": "$.questions[8]",
+      "changeType": "modified",
+      "originalMaturity": "not-present",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "question.record-control-active-form-void-boundary",
+      "sourcePath": "docs/knowledge/open-questions.yaml",
+      "sourceLocator": "$.questions[12]",
+      "changeType": "modified",
+      "originalMaturity": "not-present",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "rule.form-instance-stable-number",
+      "sourcePath": "docs/knowledge/rules/form-instance-number.yaml",
+      "sourceLocator": "$.rules[0]",
+      "changeType": "modified",
+      "originalMaturity": "specified",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "rule.record-correction.new-revision-only",
+      "sourcePath": "docs/knowledge/rules/production.yaml",
+      "sourceLocator": "$.rules[0]",
+      "changeType": "modified",
+      "originalMaturity": "specified",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "rule.record-control.explicit-published-workflow-selection",
+      "sourcePath": "docs/knowledge/rules/production.yaml",
+      "sourceLocator": "$.rules[2]",
+      "changeType": "modified",
+      "originalMaturity": "implemented",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "rule.record-control.application-confirmation-starts-review",
+      "sourcePath": "docs/knowledge/rules/production.yaml",
+      "sourceLocator": "$.rules[3]",
+      "changeType": "modified",
+      "originalMaturity": "specified",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "rule.record-control.source-record-remains-completed-during-review",
+      "sourcePath": "docs/knowledge/rules/production.yaml",
+      "sourceLocator": "$.rules[10]",
+      "changeType": "modified",
+      "originalMaturity": "specified",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "rule.record-control.intervention-preserves-path",
+      "sourcePath": "docs/knowledge/rules/production.yaml",
+      "sourceLocator": "$.rules[12]",
+      "changeType": "modified",
+      "originalMaturity": "implemented",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "rule.record-change-search-scope-v1",
+      "sourcePath": "docs/knowledge/rules/record-change.yaml",
+      "sourceLocator": "$.rules[0]",
+      "changeType": "added",
+      "originalMaturity": "specified",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "rule.record-control-source-eligibility-v1",
+      "sourcePath": "docs/knowledge/rules/record-change.yaml",
+      "sourceLocator": "$.rules[1]",
+      "changeType": "added",
+      "originalMaturity": "specified",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "rule.record-control-authenticated-access-v1",
+      "sourcePath": "docs/knowledge/rules/record-change.yaml",
+      "sourceLocator": "$.rules[2]",
+      "changeType": "added",
+      "originalMaturity": "specified",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "rule.record-control-signature-immutable-generic-boundary",
+      "sourcePath": "docs/knowledge/rules/record-change.yaml",
+      "sourceLocator": "$.rules[3]",
+      "changeType": "added",
+      "originalMaturity": "implemented",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "rule.record-control-active-detail-access",
+      "sourcePath": "docs/knowledge/rules/record-change.yaml",
+      "sourceLocator": "$.rules[4]",
+      "changeType": "added",
+      "originalMaturity": "implemented",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "rule.record-control-workflow-task-projection",
+      "sourcePath": "docs/knowledge/rules/record-change.yaml",
+      "sourceLocator": "$.rules[5]",
+      "changeType": "added",
+      "originalMaturity": "implemented",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "rule.record-control-return-terminates-request",
+      "sourcePath": "docs/knowledge/rules/record-change.yaml",
+      "sourceLocator": "$.rules[6]",
+      "changeType": "added",
+      "originalMaturity": "specified",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    },
+    {
+      "id": "rule.record-control-final-result-delivery",
+      "sourcePath": "docs/knowledge/rules/record-change.yaml",
+      "sourceLocator": "$.rules[7]",
+      "changeType": "added",
+      "originalMaturity": "implemented",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "Static id-dictionary candidate location within changed files; container and nested records overlap, not a unique reviewed semantic count."
+    }
+  ],
+  "countingBoundary": "44 changed files including27added17modified; dictionary-ID candidates include nested/container overlap and are all pending, not full new-ID semantic completion."
+}

@@ -1,0 +1,184 @@
+{
+  "baseCommit": "a98e60792554f7753d22406d02b274fd50ea2e6c",
+  "runtimeTestedCommit": "22a96503ce0eb7d40343453c28e3e6c174f5907b",
+  "reviewedCommit": "22a96503ce0eb7d40343453c28e3e6c174f5907b",
+  "executionLevel": "L2",
+  "status": "passed",
+  "qualityResult": "evidence/final-quality/quality-result.yaml",
+  "independentReview": "evidence/final-quality/quality-review.md",
+  "requiredPassed": 11,
+  "requiredTotal": 11,
+  "findings": [
+    {
+      "id": "AUD-W5-UPLOAD-REGISTRATION-ROLLBACK-001",
+      "severity": "medium",
+      "scope": "general FileController upload registration and current-file compensation",
+      "summary": "SQL/late/outer rollback leaves a new unregistered original on old code; actual transaction completion compensation now verified.",
+      "reproductionSteps": [
+        "Run final two integration classes unchanged on actuala98 with isolated canonical file_object table and native PG.",
+        "SQL CHECK failure, beforeCommit injected failure and explicit outer rollback each leave an original although metadata rolled back.",
+        "Run current candidate full63; same six red assertions pass with owned original removed on confirmed rollback; successful bytes/digest and cleanup-failure controls retained."
+      ],
+      "expectedResult": "A confirmed failed or rolled-back current registration cleans its own new original; committed/unknown outcome must not blindly delete; no false success.",
+      "actualResult": "Current63passed; actualold10=6real failure4positive. Transaction start failure cleans without repository call, unknown result preserves file/throws, rollback cleanup failure logs and preserves database failure.",
+      "evidence": [
+        "/tmp/edhr-upload-q1-old-summary.json",
+        "/tmp/edhr-upload-q1-current-summary.json",
+        "/tmp/edhr-upload-q1-current-FileUploadTransactionPostgresTest.xml",
+        "/tmp/edhr-upload-q1-current-FileUploadTransactionFailureTest.xml"
+      ],
+      "resolutionStatus": "resolved",
+      "resolutionEvidence": [
+        {
+          "type": "commit",
+          "reference": "22a96503ce0eb7d40343453c28e3e6c174f5907b"
+        },
+        {
+          "type": "command",
+          "reference": "/tmp/edhr-upload-q1-current-test.txt"
+        },
+        {
+          "type": "document",
+          "reference": "/tmp/edhr-upload-q1-old-summary.json"
+        }
+      ]
+    }
+  ],
+  "independentRuns": {
+    "backend": {
+      "tests": 63,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "knowledge": {
+      "tests": 89,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "oldActualTarget": {
+      "tests": 10,
+      "failures": 6,
+      "errors": 0,
+      "skipped": 0
+    },
+    "oldPositiveControls": 4
+  },
+  "countingBoundary": "Independent single63: realH2/PG5each, synthetic boundary3, previousfile37, ExecutionAccess13. Five scenarios repeat across engines, not63unique. Primary60+3 were two commands.",
+  "ontology": {
+    "result": "not-applicable",
+    "roleState": "FINAL",
+    "version": "0.3.25",
+    "limitedExistingIds": 8,
+    "knowledgeFileCount": 330,
+    "knowledgeAndContractChanges": 0,
+    "knowledgeTests": 89,
+    "finalQualitySeparatelyRan89": true,
+    "resultDocument": "evidence/ontology-result.yaml"
+  },
+  "sourceCoverage": {
+    "limitedGroups": 5,
+    "wholeFileCompletion": 0,
+    "historicalUniqueIncrement": null,
+    "document": "source-review.json"
+  },
+  "inventory": {
+    "fixedCommit": "a98e60792554f7753d22406d02b274fd50ea2e6c",
+    "trackedPaths": 5927,
+    "migrationRows": 134,
+    "httpAnnotationCandidates": 464,
+    "frontendRouteCandidates": 216,
+    "status": "inventory-only"
+  },
+  "a23": {
+    "methodRecords": 5,
+    "currentChangedPending": 6,
+    "currentAddedPending": 4,
+    "wholeFileCompletion": 0,
+    "historicalLanguageQueue": 856,
+    "previousFeatureAddedPending": 1,
+    "historicalSqlQueue": 130,
+    "newMigrationQueue": 4,
+    "sqlChecked": 0,
+    "historicalQueuesRetained": true,
+    "next": "W6 including previously reviewed source and W7 incremental recheck"
+  },
+  "evidence": {
+    "primaryOriginals": 33,
+    "sourceSnapshots": 10,
+    "ontologySourceSnapshots": 24,
+    "ontologyOriginalFilesIncludingManifest": 7,
+    "finalOriginalFilesIncludingManifest": 39,
+    "archive": "evidence/final-quality/archive-map.json",
+    "initialFixtureFailuresRetained": [
+      "inactive synchronization context",
+      "Mockito interface callRealMethod"
+    ],
+    "notCountedAsProductRed": true
+  },
+  "scopeReview": {
+    "allFormalRoles": "FINAL",
+    "noDrift": true,
+    "actualUserCommunicationBeforePrCreation": true,
+    "document": "scope-review.md"
+  },
+  "residualRisks": [
+    {
+      "id": "risk.single-table-synthetic-environment",
+      "description": "Native PG16.15/en_US.utf8 and H2 tests initialize verbatim canonical file_object table plusPK/testCHECK only; other repositories for UI asset lookups are mocks.",
+      "impact": "Not full production schema, migrations, complete multi-tenant or every business-reference certification.",
+      "mitigation": "Keep scope explicit; later real-domain and deployment validation separately."
+    },
+    {
+      "id": "risk.unknown-and-durable-reconciliation",
+      "description": "Unknown commit uses synthetic transaction-manager failure and preserves file; real network disconnect, process crash and durable reconciliation not implemented.",
+      "impact": "An orphan may remain; this is not filesystem/database distributed atomicity.",
+      "mitigation": "Preserve possibly registered originals and report id/path; separately design controlled reconciliation without historic deletion."
+    },
+    {
+      "id": "risk.cleanup-failure",
+      "description": "Physical rollback/start cleanup may fail and retain current file; late rollback cleanup logs rather than replacing database failure.",
+      "impact": "No guarantee all failed requests leave zero physical bytes under I/O failure.",
+      "mitigation": "Original request fails, retained error/log evidence; subsequent manual/controlled handling is separate."
+    },
+    {
+      "id": "risk.delete-and-related-dhr-callback",
+      "description": "General DELETE order and DhrAttachmentService noncommitted cleanup remain source candidates; not changed or certified here.",
+      "impact": "This batch does not close the whole file-consistency family or DHR controlled attachment lifecycle.",
+      "mitigation": "Prioritize actual constraints/failure tests on dedicated chains; do not copy !=COMMITTED semantics as policy."
+    },
+    {
+      "id": "risk.acl-and-prior-deferrals",
+      "description": "Three shared-file ACL boundaries still awaiting product answer; prior DHRhigh/A12remaining/gaps/TaskDetail and ownership deferrals remain.",
+      "impact": "No global object-access or original business-rule completion claim.",
+      "mitigation": "Continue independent work and wait only on dependent ACL implementation; keep personal identity originals distinct from frozen signature display."
+    },
+    {
+      "id": "risk.audit-coverage",
+      "description": "5927paths/134SQL inventory;5limited source/8existing ID overlaps; old666/44knowledge/183ID increment pending; A23old856+feature1/SQL130+4new andcurrent6changed4added pending.",
+      "impact": "No full-file completion, unique increment or whole-audit percentage established.",
+      "mitigation": "W6 includes previously reviewed code, W7 latest-target increments; retain historical queues."
+    },
+    {
+      "id": "risk.ui-and-performance-not-run",
+      "description": "No batch UI modification; no browser/full frontend build or global static UI rerun; PDF/export capacity not quantified here.",
+      "impact": "Old tooling results do not certify new integrated UI, production heap/GC or SLA.",
+      "mitigation": "Run scoped UI/capacity checks when relevant, discuss new performance optimizations first."
+    }
+  ],
+  "explicitLimits": [
+    "Uses actual canonical file_object table subset plusPK/testCHECK, not whole-schema/production migration certification.",
+    "UNKNOWN simulated through actual transaction synchronization lifecycle, no real network disconnection experiment or persistent reconciliation.",
+    "Current new file may remain if cleanup fails/UNKNOWN/process crashes; no claim of full cross-medium atomicity or historical deletion.",
+    "Existing outer internal transaction controls its final outcome; upload method returning does not mean outer commit complete.",
+    "DELETE, DHR sibling noncommitted cleanup, sharedACL three pending choices, missingfile policy and capacity risks remain open queues.",
+    "666 targetincrement paths/44knowledge changes/183IDcandidates remain pending; original DHRhigh/A12/gaps/TaskDetail not automatically closed.",
+    "No UI changes; browser/frontend full build not rerun, no old tooling result reused as current new-UI certification."
+  ],
+  "blockingConditions": [],
+  "recommendMergeForThisBatch": true,
+  "nextAction": "Fetch actual merge/increments; prioritize new record-control impacts on original DHR high risks, retain file deletion/UNKNOWN/ACL queues.",
+  "postQaVerification": "evidence/delivery-verification.json",
+  "deliveryPolicy": "Manual user merge only; no CI/Actions query/trigger, deploy, history restore or shared-history rewrite."
+}

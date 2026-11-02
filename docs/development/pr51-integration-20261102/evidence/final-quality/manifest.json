@@ -1,0 +1,156 @@
+{
+  "roleState": "FINAL",
+  "qualityResult": "passed",
+  "testedCommit": "775d8bb664211b77a7172db0436a9b31715a5439",
+  "targetCommit": "54c9a7ccfbb2a2a420f6f0e2f41636f4805cf67f",
+  "requiredPassed": 10,
+  "requiredTotal": 10,
+  "capturedAt": "2026-11-02T13:25:33.175527+08:00",
+  "artifacts": [
+    {
+      "path": "/tmp/edhr-pr51-q1-capacity.json",
+      "bytes": 78,
+      "sha256": "791acaf88588f82e80332807a54fa93569d102c3574dd1589c8ebde515db2a4b"
+    },
+    {
+      "path": "/tmp/edhr-pr51-q1-capacity.json.args.json",
+      "bytes": 14,
+      "sha256": "46ae1c74ef02e38951e3fb7f810c28453d3ed98dce740405289e08fb823b8938"
+    },
+    {
+      "path": "/tmp/edhr-pr51-q1-capacity.json.plan.json",
+      "bytes": 49905,
+      "sha256": "d61195eb81011ed49fda969486fe3e13c2b2946118d5557a3a13e325818a84da"
+    },
+    {
+      "path": "/tmp/edhr-pr51-q1-capacity.json.sql",
+      "bytes": 2070,
+      "sha256": "f1d7be2948fe1fb66962368ee952cc1885e1c9677cc65e71585fd5bc57cced4d"
+    },
+    {
+      "path": "/tmp/edhr-pr51-q1-cleanup.json",
+      "bytes": 231,
+      "sha256": "072b112c88d2e4515eeb3ae8972482f16d5012c9c91e95d75fbdf9a85a0b0fa8"
+    },
+    {
+      "path": "/tmp/edhr-pr51-q1-current-CurrentDatabaseBaselinePostgresTest.xml",
+      "bytes": 61546,
+      "sha256": "9701bbd1b1f0d9220f0d12afd514b2956fa6a2ba20d5f3552321bd7260652fde"
+    },
+    {
+      "path": "/tmp/edhr-pr51-q1-current-DhrReviewLifecycleIntegrationTest.xml",
+      "bytes": 287979,
+      "sha256": "ac7a296fcea16f9bd2e727eea1740a2b08bd7ec96db51aa21c9a90dfe260a008"
+    },
+    {
+      "path": "/tmp/edhr-pr51-q1-current-DhrReviewPaginationPostgresTest.xml",
+      "bytes": 433137,
+      "sha256": "2a6c762d786679cc1d13f0d7f6bb84e24c209b707d57abd06b73e1bae4d07369"
+    },
+    {
+      "path": "/tmp/edhr-pr51-q1-current-DhrReviewServiceTest.xml",
+      "bytes": 34571,
+      "sha256": "7263bfc4e876544d1954cf6862a364d92ecaaa4076e1b6defd0d63b8fd68e619"
+    },
+    {
+      "path": "/tmp/edhr-pr51-q1-current-RecordControlPostgresIntegrationTest.xml",
+      "bytes": 1649789,
+      "sha256": "c47c666817734c8c2a2d1a50183a7c58258666274db048869269c7bba5fee0ef"
+    },
+    {
+      "path": "/tmp/edhr-pr51-q1-current-command.json",
+      "bytes": 778,
+      "sha256": "bb0eccc1e986a0a56c05af8af9369da3472eac118f1bd1d90a6c2831787e4ae3"
+    },
+    {
+      "path": "/tmp/edhr-pr51-q1-current-summary.json",
+      "bytes": 946,
+      "sha256": "7c5f1cfab67df62d7e2af86604d7cff5532ceeac22deceece0e7316ae1092509"
+    },
+    {
+      "path": "/tmp/edhr-pr51-q1-current-test.txt",
+      "bytes": 2270316,
+      "sha256": "ce8075c3889455d92f7cd672855950aaf93e9149e6d7d59e5aed8e5ee5139a4a"
+    },
+    {
+      "path": "/tmp/edhr-pr51-q1-database-observation.json",
+      "bytes": 690,
+      "sha256": "13788c4c043e2ecc297796032a52615809d12b3a2b4a70ccd7dfc190c99b6dcb"
+    },
+    {
+      "path": "/tmp/edhr-pr51-q1-db.json",
+      "bytes": 402,
+      "sha256": "a4f26f2523bdb9a120a424b215e1e3dc89c16cdddf95645a41b88b7ed0d09a28"
+    },
+    {
+      "path": "/tmp/edhr-pr51-q1-finalize.py",
+      "bytes": 13710,
+      "sha256": "104bc36fadc7af64eca468490bd9f7b8a66238e7cc9dfe34cbaa53a9864bd9cc"
+    },
+    {
+      "path": "/tmp/edhr-pr51-q1-http.jsonl",
+      "bytes": 24588,
+      "sha256": "89be4bbe3b6c00f6fe720ea50c9e1448ffd363869aeb358910971c729a1d7d97"
+    },
+    {
+      "path": "/tmp/edhr-pr51-q1-inspection.json",
+      "bytes": 1727,
+      "sha256": "a7abee7013e257bd198025b466d56be4ca661e917518eeedf41689ce995791c0"
+    },
+    {
+      "path": "/tmp/edhr-pr51-q1-knowledge-TEST-com.zencas.edhr.knowledge.BusinessKnowledgeModelTest.xml",
+      "bytes": 20418,
+      "sha256": "26d8668e729ca2a7fd0625d44a68ac6481e533e59a3074120303cd37df2591a5"
+    },
+    {
+      "path": "/tmp/edhr-pr51-q1-knowledge-command.json",
+      "bytes": 140,
+      "sha256": "dd5f353f920015a14e2252bca32268873ca0a595dda789fd62df1367eed524d0"
+    },
+    {
+      "path": "/tmp/edhr-pr51-q1-knowledge-summary.json",
+      "bytes": 66,
+      "sha256": "6f1e6d1f625688dc897ea324bd6592f8895d1ef4a12354f96ac0b73163a657db"
+    },
+    {
+      "path": "/tmp/edhr-pr51-q1-knowledge-test.txt",
+      "bytes": 2112,
+      "sha256": "a74cbe15c2745793bd44c5438e2d9e84f1851d8f326e6a474b5e411cb594a8af"
+    },
+    {
+      "path": "/tmp/edhr-pr51-q1-provenance-manifest.json",
+      "bytes": 639,
+      "sha256": "f91cfd2498e3e5afd0412f0fdb0df7d93cdbb8b2d9b78a9b4d9bf5bbd4b5bd96"
+    },
+    {
+      "path": "/tmp/edhr-pr51-q1-provenance-whitespace.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/tmp/edhr-pr51-q1-provenance.json",
+      "bytes": 7800,
+      "sha256": "081b1a54418ff83453d41d45ec077b91d49c93f1b875b65c195b5f555ea34251"
+    },
+    {
+      "path": "/tmp/edhr-pr51-q1-provenance.py",
+      "bytes": 7244,
+      "sha256": "460ced04bce24c60af4f167fb63d05bd280a44aa6e7e26fb1136cfa3eb9383e8"
+    },
+    {
+      "path": "/tmp/edhr-pr51-q1-quality-result.yaml",
+      "bytes": 7614,
+      "sha256": "a8d11a76a3e147f991fd827b10faef15e61027bc0d67b8e44d5543e338990453"
+    },
+    {
+      "path": "/tmp/edhr-pr51-q1-quality-review.md",
+      "bytes": 2698,
+      "sha256": "012e14cc991e142cf1075ff3667b74b0500ab82c0c959e1c628fd997116696d5"
+    },
+    {
+      "path": "/tmp/edhr-pr51-q1-runtime-observation.json",
+      "bytes": 1396,
+      "sha256": "d490e6fb35c102ce20dc6ada66ff477d391eb0354f241c04a3b3471339c73264"
+    }
+  ]
+}

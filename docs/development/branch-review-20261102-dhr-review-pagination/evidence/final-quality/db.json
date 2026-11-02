@@ -1,0 +1,13 @@
+{
+  "container": "80e8f42c9e69ce24c505769f7febee33983ad18967cb1d1313fd8fce5e8672fe",
+  "owner": "edhr-dhr-page-q1-20261102",
+  "recordDatabase": "edhr_record_control_test_page_q1",
+  "baselineDatabase": "edhr_baseline_test_page_q1",
+  "recordUrl": "jdbc:postgresql://127.0.0.1:32772/edhr_record_control_test_page_q1",
+  "baselineUrl": "jdbc:postgresql://127.0.0.1:32772/edhr_baseline_test_page_q1",
+  "user": "edhr",
+  "readyChecks": {
+    "recordSelect1": true,
+    "baselineSelect1": true
+  }
+}

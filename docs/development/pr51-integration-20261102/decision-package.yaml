@@ -1,0 +1,62 @@
+decisionPackage:
+  id: DEC-PACKAGE-PR51-INTEGRATION-20261102
+  scope: 将已合PR50的最新目标合入现PR51分支并解决唯一台账冲突
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: 63f2244adcce90d944785c9e83617fff872e19c2
+    targetBranch: edhr-dev
+    targetCommit: 54c9a7ccfbb2a2a420f6f0e2f41636f4805cf67f
+    contractReadCommit: 63f2244adcce90d944785c9e83617fff872e19c2
+    uncommittedContractPaths: []
+  summary: merge保留双方提交历史；NEXT保留双方记录，测试自动合并，业务/迁移同PR51、知识/契约同双方；不新增政策或功能。
+  confirmed: {concepts: [], relationships: [], rules: [], executionContracts: []}
+  inferred: []
+  unresolved: []
+  replacementScopes: []
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - area: integration
+        change: 唯一NEXT文本冲突保留双方，新增当前状态；PR50九场景与PR51实际流程列表测试同时保留。
+        evidenceReferences: [docs/development/branch-review-20261015/NEXT.md, gmp-platform/backend/src/test/java/com/zencas/edhr/recordcontrol/service/RecordControlPostgresIntegrationTest.java]
+    transitiveImpacts:
+      - area: validation
+        change: 旧146不能覆盖新组合；新155=99原生PG+35完整应用含39JWT/MVC响应+18相邻+3安装。
+        evidenceReferences: []
+    potentialImpacts: []
+    unaffectedAreas:
+      - area: business-and-migrations
+        change: 产品源码/迁移相对PR51字节保持；知识、规则、契约和全部历史原件不改。
+        evidenceReferences: []
+    compatibilityAndMigration: []
+    snapshotImpacts: []
+    auditImpacts: []
+    permissionImpacts:
+      - area: ordinary-authority
+        change: 运行PR50普通账号矩阵验证PR51查询组合，不定义新权限。
+        evidenceReferences: []
+    testImpacts:
+      - scope: merged-candidate
+        scenarios: [普通JWT/MVC权限及个人通知, PG分页/Unicode/JSON资格, 真实退回重提批准列表, 冻结历史, 索引升级回滚重放, 基线安装升级]
+        evidenceReferences: []
+    evidenceGaps: [全部旧DHRhigh及账号/UI/收件人和规模/ICU部署等残余不因解决冲突关闭]
+  extensionStrategy:
+    selectedPaths: [product-core]
+    rationale: 仅集成既有授权变更，不新增扩展点或业务实现。
+    ownershipBoundaries: []
+  affectedFiles:
+    - path: docs/development/branch-review-20261015/NEXT.md
+      changeType: update
+      reason: 保留双方台账并补当前合入状态。
+    - path: gmp-platform/backend/src/test/java/com/zencas/edhr/recordcontrol/service/RecordControlPostgresIntegrationTest.java
+      changeType: update
+      reason: Git自动合并，保留两个父提交的独立场景。
+  acceptanceScenarios:
+    - id: scenario.pr51-combined-candidate
+      given: 实际最新PR50目标及已交付PR51来源
+      when: merge并保留所有测试/记录
+      then: 无冲突标记、业务及迁移字节保持、双方场景155实际通过、独立复验、推现PR51分支。
+      evidenceRequirements: [合并父提交, 自动合并测试证明, 主侧及独立155, 最新PR可合并元数据]
+ontologyResult:
+  result: not-applicable
+  reason: 本次没有新业务概念/规则/状态/执行契约/知识替代，只整合旧验证分支；与PR51的既有本体r2结果按相同产品字节有限复用，合并后的测试指纹另记录。

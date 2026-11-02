@@ -1,0 +1,170 @@
+{
+  "baseCommit": "1ad6300918bd0059049eab3c415ca31162dd5115",
+  "runtimeTestedCommit": "b07fc1ca5dd7e4a37b2584c19377495b86b5536a",
+  "reviewedCommit": "b07fc1ca5dd7e4a37b2584c19377495b86b5536a",
+  "executionLevel": "L2",
+  "status": "passed-limited-query-and-index-increment",
+  "qualityResult": "passed",
+  "independentReview": "fresh-instance-uninvolved-in-fixes",
+  "requiredPassed": 13,
+  "requiredTotal": 13,
+  "findings": [
+    {
+      "id": "AUD-W5-DHR-REVIEW-PAGING-001",
+      "qualityFindingId": "QF-DHR-PERSONAL-LIST-UNBOUNDED-JAVA-READ",
+      "severity": "medium",
+      "status": "resolved",
+      "scope": "Application scans/transfers all DHR review tasks to filter/count/page; not a claim to solve all large active-candidate CPU work",
+      "evidence": [
+        "evidence/final-quality/quality-result.yaml",
+        "evidence/final-quality/old-observation.json",
+        "evidence/final-quality/observation.json"
+      ]
+    }
+  ],
+  "independentRuns": {
+    "singleBackendTests": 146,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "nativePagination": 99,
+    "fullApplication": 26,
+    "adjacent": 18,
+    "databaseBaseline": 3,
+    "knowledgeSeparate": 89,
+    "oldSameFinalClass": {
+      "tests": 1,
+      "failures": 1,
+      "errors": 0,
+      "skipped": 0,
+      "sqlCalls": 84,
+      "rows": 5309,
+      "personalTotal": 21
+    },
+    "newCapacity": {
+      "sqlCalls": 1,
+      "rows": 20,
+      "personalTotal": 21
+    }
+  },
+  "countingBoundary": "Primary143 plus separate3, independent146 single command, knowledge89 separate. Reruns, loops and artifacts are not unique business or whole-file coverage.",
+  "ontology": {
+    "result": "not-applicable",
+    "roleState": "FINAL-r2",
+    "existingIds": 14,
+    "limitedConsistent": 12,
+    "evidenceGap": 2,
+    "assetsUnchanged": 330,
+    "knowledgeVersion": "0.3.25",
+    "document": "evidence/ontology/edhr-page-ontology-r2/result.yaml"
+  },
+  "sourceCoverage": {
+    "limitedGroups": 4,
+    "a23Judgments": 6,
+    "wholeFileCompletion": 0,
+    "historicalUniqueIncrement": null
+  },
+  "inventory": {
+    "sourceCommit": "1ad6300918bd0059049eab3c415ca31162dd5115",
+    "tree": "dc84ff3101bf62ef1da098a00e3040c3910a545b",
+    "trackedPaths": 6017,
+    "scopeCount": 6017,
+    "excludedPaths": [],
+    "assetTypes": {
+      "configuration-or-data": 3012,
+      "documentation": 437,
+      "binary-asset": 1034,
+      "source-or-tool": 816,
+      "knowledge": 330,
+      "test": 253,
+      "database-migration": 134,
+      "dependency-lock": 1
+    },
+    "workPackages": {
+      "W5": 711,
+      "W4": 253,
+      "W0-W7": 4481,
+      "W1": 142,
+      "W2": 225,
+      "W3": 205
+    },
+    "entrypointCandidates": {
+      "http-annotation": 464,
+      "state-definition-candidate": 8,
+      "background-candidate": 1,
+      "frontend-route-candidate": 216
+    },
+    "migrationFiles": 134,
+    "semanticReviewComplete": false,
+    "entrypointLimitations": "Static candidate locations include class annotations and dynamic route shapes; URLs, auth and worker activation require source review. No route execution claimed.",
+    "coverageSha256": "7853c44797fac03b93a82b2c4027eb8e29bed9dce58de6484d490dbc2381c888"
+  },
+  "a23": {
+    "historicalLanguageQueue": 856,
+    "previousFeaturePending": 1,
+    "historicalSqlQueue": 130,
+    "previousNewMigrationQueue": 4,
+    "currentNewMigration": 1,
+    "currentChangedPending": 6,
+    "currentAddedPending": 2,
+    "status": "All history and current overlays remain W6 whole including previously reviewed and W7 increments"
+  },
+  "scopeReview": {
+    "document": "scope-review.md",
+    "actuallyCommunicatedAfterAllFormalFinalBeforePr": true,
+    "drift": false,
+    "overallStage": "W3/W4/W5 crossing;W2 remainder,W6/W7 pending"
+  },
+  "evidence": {
+    "quality": "evidence/final-quality/quality-result.yaml",
+    "report": "evidence/final-quality/quality-review.md",
+    "archiveMap": "evidence/final-quality/archive-map.json",
+    "primary": "evidence/primary-verification.json",
+    "indexReport": "index-boundaries.md",
+    "originalsIncludingManifest": 87
+  },
+  "residualRisks": [
+    {
+      "id": "risk.large-active-count-and-search",
+      "description": "5万同时待审仍有JSON候选过滤/准确COUNT开销；深OFFSET和跨表任意子串不被两个索引变成常量工作。",
+      "impact": "本轮消除全局Java搬运与往返，不是全规模/生产SLA或堆峰值认证。",
+      "mitigation": "按实际活跃量/本人比例/搜索负载继续量化，再讨论规范投影或专用搜索索引，不直接增读模型。"
+    },
+    {
+      "id": "risk.runtime-capability",
+      "description": "实际验证PG16.15、ICU root153.136；部署目标库未连接，ICU/JDK升级及PG14未执行认证。",
+      "impact": "关键词依赖ICU root前置，缺失会HALT；并发建索引仍需IO/事务等待，失败可能留下invalid索引。",
+      "mitigation": "部署前核ICU及迁移版本/索引状态；按明确恢复流程处理失败，不用IF NOT EXISTS吞错；版本升级重跑等价矩阵。"
+    },
+    {
+      "id": "risk.finite-matrix-and-existing-highs",
+      "description": "两旧DHRhigh、全部外部质量事实/普通权限UI/账号状态/接收人及A12/四gap未关闭。新测试是原生SQL/服务和迁移，不含浏览器/socket/login-RBAC或所有Unicode/JSON可能输入。",
+      "impact": "本批通过不代表DHR全链、全项目审计或发布认证。",
+      "mitigation": "保持既有待审台账，继续按原始规则分批审查，不新增自动质判或权限政策。"
+    },
+    {
+      "id": "risk.shared-index-and-global-audit",
+      "description": "done部分索引承担所有共享流程符合状态的写入/存储成本；固定6017/134只是盘点，wholeFile0/unique未知，666/44/183、旧A23/W6含旧已审/W7、ACL三问、文件一致性与朋友页/生产弹窗暂缓继续。",
+      "impact": "局部代码/计划不能外推全部共享表生产分布或关闭全局待审。",
+      "mitigation": "保持所有旧索引和队列，跟随真实数据选择计划；PR50独立未合入及后续目标增量须重新集成验证。"
+    }
+  ],
+  "blockingConditions": [],
+  "explicitLimits": [
+    "Same JSON eligibility/search/order and frozen/action rules; no new business policy",
+    "ICU root is required, migration HALTs when missing; production database not connected",
+    "5-table native read slice plus separate full application, not all historic135 SQL paths",
+    "One statement/current page transfer does not make COUNT/offset/large active JSON filtering constant-cost",
+    "Two previous DHR high and all ordinary-account/UI/recipient/external-quality/A12 gaps remain open",
+    "PR50 remains an independent unmerged verification PR at target-read time; no automatic merge",
+    "6017/134/464/216 are fixed inventory,666/44/183 increment and all W6/W7 overlays pending",
+    "No browser/socket/login-RBAC certification, no CI endpoints, no merge/deploy/history restore"
+  ],
+  "recommendMergeForThisBatch": true,
+  "nextAction": "Fetch actual integration and increments; continue remaining ordinary permission/account matrix and file consistency/robustness; discuss observed large-active candidate CPU if relevant load.",
+  "postQaVerification": {
+    "document": "evidence/delivery-verification.json",
+    "protectedDeltaPaths": [],
+    "runtimeRetestClaimed": false
+  }
+}

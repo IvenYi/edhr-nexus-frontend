@@ -1,0 +1,218 @@
+qualityResult:
+  result: passed
+  baseCommit: a98e60792554f7753d22406d02b274fd50ea2e6c
+  headCommit: 22a96503ce0eb7d40343453c28e3e6c174f5907b
+  contractBaseline:
+    sourceCommit: 22a96503ce0eb7d40343453c28e3e6c174f5907b
+    targetBranch: edhr-dev
+    targetCommit: a98e60792554f7753d22406d02b274fd50ea2e6c
+    contractReadCommit: 22a96503ce0eb7d40343453c28e3e6c174f5907b
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: clean
+    includedPaths: []
+    excludedPaths: []
+    untrackedPaths: []
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+  - id: q1.baseline-contract
+    required: true
+    category: documentation
+    description: 实时目标、实际候选、祖先及契约增量核对
+    method: command
+    command: git fetch origin edhr-dev; git status; git merge-base; inspect contracts
+    outcome: passed
+    evidence:
+    - /tmp/edhr-upload-q1-inspection.json
+    - base=a98e60792554f7753d22406d02b274fd50ea2e6c; tested/head/contractRead=22a96503ce0eb7d40343453c28e3e6c174f5907b;
+      clean; target ancestor; no contract changes
+  - id: q1.rules-and-scope
+    required: true
+    category: requirements
+    description: 工程补偿与原件保留及任务附件授权边界核对
+    method: inspection
+    command: Read decision package, DEC0063-10/11, DEC0068-11, original confirmation, ontology result and actual
+      source
+    outcome: passed
+    evidence:
+    - /tmp/edhr-upload-q1-inspection.json
+    - Only confirmed rollback may clean this new upload. Unknown commit preserves original; no global ACL, DHR evidence,
+      format/size/hash or deletion policy rewrite.
+  - id: q1.provenance
+    required: true
+    category: documentation
+    description: 原33记录/10源码、本体24来源/330知识及原包哈希独立核对
+    method: command
+    command: python3 /tmp/edhr-upload-q1-inspect.py
+    outcome: passed
+    evidence:
+    - /tmp/edhr-upload-q1-inspection.json
+    - All 33 original records/10 source snapshots matched, ontology6+self7 originals and24source snapshots matched;330knowledge
+      unchanged against actual target.
+  - id: q1.inventory-a23
+    required: true
+    category: documentation
+    description: 四固定盘点及有限覆盖/A23未完成范围
+    method: command
+    command: python3 /tmp/edhr-upload-q1-inspect.py
+    outcome: passed
+    evidence:
+    - /tmp/edhr-upload-q1-inspection.json
+    - /tmp/edhr-upload-q1-inventory-build.txt
+    - Four inventories rebuilt byte-identical:5927paths/134migrations/464HTTP/216route candidates inventory-only;5source/8semantic
+      finite overlaps; wholefile0/unique null; A23 retained.
+  - id: q1.current-regression
+    required: true
+    category: regression
+    description: 当前9类实际单次63条
+    method: command
+    command: python3 /tmp/edhr-upload-q1-run.py
+    outcome: passed
+    evidence:
+    - /tmp/edhr-upload-q1-current-test.txt
+    - /tmp/edhr-upload-q1-current-summary.json
+    - 63/0fail/error/skip; H2/PG each5, synthetic transaction faults3, prior file37 andExecutionAccess13.
+  - id: q1.native-registration-lifecycle
+    required: true
+    category: database
+    description: 真实JPA/H2/PG登记与回滚/磁盘一致性
+    method: automated-test
+    command: Actual FileUploadTransactionIntegrationTest and PostgresTest with canonical file_object DDL plusPK/testCHECK
+    outcome: passed
+    evidence:
+    - /tmp/edhr-upload-q1-current-FileUploadTransactionIntegrationTest.xml
+    - /tmp/edhr-upload-q1-current-FileUploadTransactionPostgresTest.xml
+    - /tmp/edhr-upload-q1-db.json
+    - Actual SQL constraint rollback, after-save-before-commit failure, outer rollback, success exact bytes/MD5/JWT
+      identity, cleanup failure retain original error. Single canonical table subset, not full schema/migration
+      replay.
+  - id: q1.start-and-unknown-faults
+    required: true
+    category: unit
+    description: 事务启动/未知提交/启动清理失败
+    method: automated-test
+    command: Actual FileUploadTransactionFailureTest
+    outcome: passed
+    evidence:
+    - /tmp/edhr-upload-q1-current-FileUploadTransactionFailureTest.xml
+    - 3passed. Synthetic PlatformTransactionManager unknown result retains possibly committed original and throws;
+      no actual network-disconnect claim.
+  - id: q1.actual-old-target-red
+    required: true
+    category: regression
+    description: 实际旧a98原样两类红控
+    method: command
+    command: python3 /tmp/edhr-upload-q1-old.py
+    outcome: passed
+    evidence:
+    - /tmp/edhr-upload-q1-old-test.txt
+    - /tmp/edhr-upload-q1-old-summary.json
+    - /tmp/edhr-upload-q1-old-command.json
+    - Same final test hashes. H2/PG each5 =3real assertion failures/2positive; aggregate10=6red4positive,0error/skip;
+      no fixture-only errors counted as product red.
+  - id: q1.knowledge89
+    required: true
+    category: ontology
+    description: 当前知识89另实际运行
+    method: command
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f tools/knowledge-model/pom.xml test
+    outcome: passed
+    evidence:
+    - /tmp/edhr-upload-q1-knowledge-test.txt
+    - /tmp/edhr-upload-q1-knowledge-summary.json
+    - /tmp/edhr-upload-q1-knowledge-junit.xml
+    - 89/0fail/error/skip actual independent execution.
+  - id: q1.authored-whitespace
+    required: true
+    category: documentation
+    description: 本批手工路径空白检查
+    method: command
+    command: git diff --check base head -- authored paths
+    outcome: passed
+    evidence:
+    - /tmp/edhr-upload-q1-inspection.json
+    - /tmp/edhr-upload-q1-whitespace.txt
+    - 15 authored paths passed; immutable logs and inventories not reformatted.
+  - id: q1.owned-cleanup
+    required: true
+    category: documentation
+    description: 精确清理自有PG和detached旧worktree
+    method: command
+    command: docker stop exact owned container; git worktree remove exact own path; final git/head/base check
+    outcome: passed
+    evidence:
+    - /tmp/edhr-upload-q1-cleanup.json
+    - /tmp/edhr-upload-q1-old-cleanup.json
+    - Unique owned PG removed, own copied tests/link and detached worktree normally removed; no prune/force/other
+      resources touched.
+  findings:
+  - id: AUD-W5-UPLOAD-REGISTRATION-ROLLBACK-001
+    severity: medium
+    scope: general FileController upload registration and current-file compensation
+    summary: SQL/late/outer rollback leaves a new unregistered original on old code; actual transaction completion
+      compensation now verified.
+    reproductionSteps:
+    - Run final two integration classes unchanged on actuala98 with isolated canonical file_object table and native
+      PG.
+    - SQL CHECK failure, beforeCommit injected failure and explicit outer rollback each leave an original although
+      metadata rolled back.
+    - Run current candidate full63; same six red assertions pass with owned original removed on confirmed rollback;
+      successful bytes/digest and cleanup-failure controls retained.
+    expectedResult: A confirmed failed or rolled-back current registration cleans its own new original; committed/unknown
+      outcome must not blindly delete; no false success.
+    actualResult: Current63passed; actualold10=6real failure4positive. Transaction start failure cleans without
+      repository call, unknown result preserves file/throws, rollback cleanup failure logs and preserves database
+      failure.
+    evidence:
+    - /tmp/edhr-upload-q1-old-summary.json
+    - /tmp/edhr-upload-q1-current-summary.json
+    - /tmp/edhr-upload-q1-current-FileUploadTransactionPostgresTest.xml
+    - /tmp/edhr-upload-q1-current-FileUploadTransactionFailureTest.xml
+    resolutionStatus: resolved
+    resolutionEvidence:
+    - type: commit
+      reference: 22a96503ce0eb7d40343453c28e3e6c174f5907b
+    - type: command
+      reference: /tmp/edhr-upload-q1-current-test.txt
+    - type: document
+      reference: /tmp/edhr-upload-q1-old-summary.json
+  residualRisks:
+  - id: risk.single-table-synthetic-environment
+    description: Native PG16.15/en_US.utf8 and H2 tests initialize verbatim canonical file_object table plusPK/testCHECK
+      only; other repositories for UI asset lookups are mocks.
+    impact: Not full production schema, migrations, complete multi-tenant or every business-reference certification.
+    mitigation: Keep scope explicit; later real-domain and deployment validation separately.
+  - id: risk.unknown-and-durable-reconciliation
+    description: Unknown commit uses synthetic transaction-manager failure and preserves file; real network disconnect,
+      process crash and durable reconciliation not implemented.
+    impact: An orphan may remain; this is not filesystem/database distributed atomicity.
+    mitigation: Preserve possibly registered originals and report id/path; separately design controlled reconciliation
+      without historic deletion.
+  - id: risk.cleanup-failure
+    description: Physical rollback/start cleanup may fail and retain current file; late rollback cleanup logs rather
+      than replacing database failure.
+    impact: No guarantee all failed requests leave zero physical bytes under I/O failure.
+    mitigation: Original request fails, retained error/log evidence; subsequent manual/controlled handling is separate.
+  - id: risk.delete-and-related-dhr-callback
+    description: General DELETE order and DhrAttachmentService noncommitted cleanup remain source candidates; not
+      changed or certified here.
+    impact: This batch does not close the whole file-consistency family or DHR controlled attachment lifecycle.
+    mitigation: Prioritize actual constraints/failure tests on dedicated chains; do not copy !=COMMITTED semantics
+      as policy.
+  - id: risk.acl-and-prior-deferrals
+    description: Three shared-file ACL boundaries still awaiting product answer; prior DHRhigh/A12remaining/gaps/TaskDetail
+      and ownership deferrals remain.
+    impact: No global object-access or original business-rule completion claim.
+    mitigation: Continue independent work and wait only on dependent ACL implementation; keep personal identity
+      originals distinct from frozen signature display.
+  - id: risk.audit-coverage
+    description: 5927paths/134SQL inventory;5limited source/8existing ID overlaps; old666/44knowledge/183ID increment
+      pending; A23old856+feature1/SQL130+4new andcurrent6changed4added pending.
+    impact: No full-file completion, unique increment or whole-audit percentage established.
+    mitigation: W6 includes previously reviewed code, W7 latest-target increments; retain historical queues.
+  - id: risk.ui-and-performance-not-run
+    description: No batch UI modification; no browser/full frontend build or global static UI rerun; PDF/export
+      capacity not quantified here.
+    impact: Old tooling results do not certify new integrated UI, production heap/GC or SLA.
+    mitigation: Run scoped UI/capacity checks when relevant, discuss new performance optimizations first.
+  blockingConditions: []

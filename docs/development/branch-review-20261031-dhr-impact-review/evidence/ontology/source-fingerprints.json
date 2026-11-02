@@ -1,0 +1,120 @@
+{
+  "capturedAt": "2026-10-31T10:43:59.494062+00:00",
+  "sourceCommit": "1ad6300918bd0059049eab3c415ca31162dd5115",
+  "targetCommit": "1ad6300918bd0059049eab3c415ca31162dd5115",
+  "uncommittedReadPaths": [
+    "gmp-platform/backend/src/test/java/com/zencas/edhr/recordcontrol/service/RecordControlPostgresIntegrationTest.java"
+  ],
+  "files": [
+    {
+      "path": "AGENTS.md",
+      "bytes": 25065,
+      "sha256": "13dc7cdacea0b1bb0aef2abb268781f9c69584acd4879b204d2b7fd81a2927fc"
+    },
+    {
+      "path": "codeplzreadme.md",
+      "bytes": 3035,
+      "sha256": "7a1be8efffec596b034335058dca2860346d256622f899c8dac97c5172dd6df2"
+    },
+    {
+      "path": "docs/agents/business-knowledge-modeler.md",
+      "bytes": 15881,
+      "sha256": "9806c900f98e1cbcf4f8d68a998a07a5449369df037183c75ec08cd666bf56ae"
+    },
+    {
+      "path": "docs/agents/agent-handoff-contract.md",
+      "bytes": 31233,
+      "sha256": "3439a35dd1baa77ac723f1b5afa237a338d56e31386f06b02b4aacfd754e3a12"
+    },
+    {
+      "path": "docs/architecture/business-knowledge-model.md",
+      "bytes": 70441,
+      "sha256": "5fdc7d831d378816370250dfc02bfa0d0b18b5eecb461c9b8e503ba4c7952b6e"
+    },
+    {
+      "path": "docs/knowledge/README.md",
+      "bytes": 109946,
+      "sha256": "23d4aa15793b1fa1dbe54c3840e47a64602b3887c0ecbb5d79afa92e384474c5"
+    },
+    {
+      "path": "docs/knowledge/open-questions.yaml",
+      "bytes": 22420,
+      "sha256": "c7b3bdecd1a6ac164d95ff515b5412998a556a07e9b5fcb64b3643473aa6e2bf"
+    },
+    {
+      "path": "docs/development/branch-review-20261031-dhr-impact-review/decision-package.yaml",
+      "bytes": 4428,
+      "sha256": "3956f35d10009899ef28c609da01b5e34f503719506ff09ead242a2a239bd921"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml",
+      "bytes": 23213,
+      "sha256": "11e70ec27862eb971a2ad01cd928e8c2ecba36be4df70e170bd1f5296c4e0253"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml",
+      "bytes": 24432,
+      "sha256": "20104fef6e209a6ff4685489426ba63e4316d00eb9f2db291d08754a1dc303c3"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0087-record-control-v1-closure.yaml",
+      "bytes": 14242,
+      "sha256": "2d173a6be9461fa26bcc1538b43ed9d65459a1b35d21f057162f55cdb0a0ee83"
+    },
+    {
+      "path": "docs/knowledge/facts/dhr-summary.yaml",
+      "bytes": 11160,
+      "sha256": "cef00d62cf06832395bf1249c2802dce8d731776f3ea3c33022bd9d6e7c1a5ed"
+    },
+    {
+      "path": "docs/knowledge/rules/dhr-summary.yaml",
+      "bytes": 17985,
+      "sha256": "7fc2b4b15bf79624a142721b6f3f2eb7b0dadae6f2a662c627bee836facf6154"
+    },
+    {
+      "path": "docs/knowledge/evidence/dhr-summary-user-confirmed.md",
+      "bytes": 36542,
+      "sha256": "51dc528c6fe38671023cec25cfbe6bf1f0a8dcf2fc088f7894524a2d5f035642"
+    },
+    {
+      "path": "docs/knowledge/evidence/dhr-filling-review-confirmed.md",
+      "bytes": 54712,
+      "sha256": "d9b214c17fd2651885f0909a8be506866df7884bf147ecade470a8372d2d43e7"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrSummaryService.java",
+      "bytes": 44493,
+      "sha256": "20d96b976bd931ccf65c710204a01d8d571d51f8deebaf64bb0aaad8f7e24c3e"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrReviewService.java",
+      "bytes": 15793,
+      "sha256": "afbf44533270c535188d4c78a7481022ea7cc0126bded081ec86631f181b7282"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrEvidenceImpactService.java",
+      "bytes": 11774,
+      "sha256": "09ae4603a600df3a8cafb00e9e304e7cffbc840a2fab6b8b511f745822649c80"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrFrozenEvidenceIntegrity.java",
+      "bytes": 6277,
+      "sha256": "3dcf8632a2049d9a13e8e178e55ff5c24643f50f496410ba2ef3f8f71c054e66"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrImpactNotificationService.java",
+      "bytes": 2842,
+      "sha256": "2ec8ab10285cb55892fbf71ae8a3c7bab2bac9a73510c0d6f855d2102a9c38ce"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/recordcontrol/service/RecordControlService.java",
+      "bytes": 38791,
+      "sha256": "93507a91197f9a58dacfdb9b853d71c2cc0e4883babb5ad378ce7b153a672d44"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/recordcontrol/service/RecordControlPostgresIntegrationTest.java",
+      "bytes": 55446,
+      "sha256": "e9d1c32869967ec7cce6259b4f7435a892ac35be09443b5252de09f02b6a5f0b"
+    }
+  ]
+}

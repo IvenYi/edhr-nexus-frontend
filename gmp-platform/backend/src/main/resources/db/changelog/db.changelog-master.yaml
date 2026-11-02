@@ -11,3 +11,5 @@ databaseChangeLog:
       file: db/changelog/0089-record-control-dhr-linkage.sql
   - include:
       file: db/changelog/0090-workflow-operations.sql
+  - include:
+      file: db/changelog/0091-dhr-review-query-indexes.sql

@@ -1,0 +1,80 @@
+▲ [WARNING] "import.meta" is not available with the "cjs" output format and will be empty [empty-import-meta]
+
+    src/stores/authStore.ts:55:6:
+      55 │   if (import.meta.hot) {
+         ╵       ~~~~~~~~~~~
+
+  You need to set the output format to "esm" for "import.meta" to work correctly.
+
+▲ [WARNING] "import.meta" is not available with the "cjs" output format and will be empty [empty-import-meta]
+
+    src/stores/authStore.ts:56:4:
+      56 │     import.meta.hot.dispose(() => window.removeEventListener(AUTH_...
+         ╵     ~~~~~~~~~~~
+
+  You need to set the output format to "esm" for "import.meta" to work correctly.
+
+▲ [WARNING] "import.meta" is not available with the "cjs" output format and will be empty [empty-import-meta]
+
+    src/utils/sessionPolicy.ts:63:6:
+      63 │   if (import.meta.hot) {
+         ╵       ~~~~~~~~~~~
+
+  You need to set the output format to "esm" for "import.meta" to work correctly.
+
+▲ [WARNING] "import.meta" is not available with the "cjs" output format and will be empty [empty-import-meta]
+
+    src/utils/sessionPolicy.ts:64:4:
+      64 │     import.meta.hot.dispose(() => {
+         ╵     ~~~~~~~~~~~
+
+  You need to set the output format to "esm" for "import.meta" to work correctly.
+
+✔ legacy menus remain a draft until explicitly saved, including selected icons (2.265667ms)
+✔ server configuration replaces an older browser cache (0.584959ms)
+✔ failed save preserves the last saved state and the editable input (0.844125ms)
+✔ save uses the server response and still refreshes the shell when localStorage is unavailable (0.597667ms)
+✔ a delayed read cannot overwrite a completed save (0.598209ms)
+✔ reset persists target defaults and retains target production and workshop routes (1.330291ms)
+✔ legacy production execution becomes one workbench under preparation and survives save and reload (1.32225ms)
+✖ normalization preserves configured module and required-menu icons on repeated saves (1.159292ms)
+✔ equipment modeling restores saved menus and removes legacy duplicate equipment entries (0.716875ms)
+✔ equipment modeling exists in default menus and survives save and server reload (1.22225ms)
+✔ login rendering: loading (3241.514792ms)
+✔ login rendering: error (2.344458ms)
+✔ login rendering: retrying (0.920458ms)
+✔ login rendering: ready (5.608334ms)
+ℹ tests 14
+ℹ suites 0
+ℹ pass 13
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3371.8065
+
+✖ failing tests:
+
+test at scripts/test-generic-ui.mjs:137:1
+✖ normalization preserves configured module and required-menu icons on repeated saves (1.159292ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'FactCheck'
+  - 'asset:456'
+  
+      at TestContext.<anonymous> (file:///Users/ivenwang/Documents/edhr-nexus/gmp-platform/frontend/scripts/test-generic-ui.mjs:146:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1201:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:831:18)
+      at Test.postRun (node:internal/test_runner/test:1330:19)
+      at Test.run (node:internal/test_runner/test:1258:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'FactCheck',
+    expected: 'asset:456',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

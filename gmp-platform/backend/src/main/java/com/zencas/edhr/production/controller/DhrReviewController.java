@@ -47,9 +47,9 @@ public class DhrReviewController {
         var file = attachments.downloadableFile(dhrId, attachmentId, versionId);
         return ResponseEntity.ok().contentType(MediaType.APPLICATION_OCTET_STREAM)
                 .header(HttpHeaders.CONTENT_DISPOSITION, ContentDisposition.attachment()
-                        .filename(attachments.originalName(dhrId, attachmentId), java.nio.charset.StandardCharsets.UTF_8).build().toString())
+                        .filename(file.originalName(), java.nio.charset.StandardCharsets.UTF_8).build().toString())
                 .header("X-Content-Type-Options", "nosniff")
-                .body(new FileSystemResource(file));
+                .body(new FileSystemResource(file.path()));
     }
     @PostMapping("/{id}/actions")
     @PreAuthorize("hasAuthority('records.dhr-review') and hasAuthority('dhr.reviews.act')")

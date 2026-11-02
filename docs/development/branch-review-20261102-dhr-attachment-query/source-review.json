@@ -1,0 +1,105 @@
+{
+  "baseCommit": "8ec8391721858a7f96d73a5d293d93f43679118a",
+  "wholeFileCompletion": 0,
+  "historicalUniqueIncrement": null,
+  "records": [
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrAttachmentService.java",
+      "locator": "snapshot/active",
+      "result": "Activity-scoped metadata; snapshot JSON omits stored_path.",
+      "a23": "Retain tenant/DHR/active predicates; do not expose internal path for reuse."
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrAttachmentService.java",
+      "locator": "file/downloadableFile/originalName/ensureDhr",
+      "result": "Five/six-query download chain; full stream SHA; existing qualification/read moments preserved.",
+      "a23": "Final filename query reuse proposed only; two existence reads not simply deleted."
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrAttachmentService.java",
+      "locator": "upload/verify/unlink lock boundary and UPDATE fields",
+      "result": "All legitimate edit paths lock DHR first; only verification/unlink metadata updates observed.",
+      "a23": "No generic guard/cache/retry framework; name/path immutability is current source observation, not new policy."
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrAttachmentController.java",
+      "locator": "download",
+      "result": "Path then independent name query; bytes/content disposition/type/nosniff preserved.",
+      "a23": "Proposed internal resolved carrier, no UI/API change implemented."
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrReviewController.java",
+      "locator": "attachment",
+      "result": "Task detail authorization precedes frozen qualification; task-detail SQL additional.",
+      "a23": "No claim six queries is entire HTTP task request; never bypass task authorization."
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrSummaryService.java",
+      "locator": "submit/lockProductionObject/lockedCompletedDhr",
+      "result": "Public preflight measured in real outer transaction;5+2N before manual guard; parent lock actually blocks legal unlink.",
+      "a23": "Keep scope hash, revision, VERIFIED, SHA, manual guard and lock order; no batch implementation yet."
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrArchiveService.java",
+      "locator": "export attachment loop and formPdfs",
+      "result": "No surrounding transaction; file queries and byte array before frozen size/hash; formPdfs and combined PDF accumulate.",
+      "a23": "Separate potential IO/memory work; parent-lock evidence cannot transfer to archive."
+    }
+  ],
+  "sourceFingerprints": [
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrAttachmentController.java",
+      "bytes": 3471,
+      "sha256": "85452748ac5c956ce2330ee6e4327ad640bf442e35b14b2731cdf2b15b69a5f6"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrReviewController.java",
+      "bytes": 3309,
+      "sha256": "37f6af83e063e1593e15ac28e021ec719888c21fe45d314916c9f20975e2417e"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrArchiveService.java",
+      "bytes": 24562,
+      "sha256": "bf1d938746ebd3d4c4df7f94b54c0892647639cedefcc85633d6fa28cf402e08"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrAttachmentService.java",
+      "bytes": 17668,
+      "sha256": "c0759b9e78a6af005b395f7e14e34862f1c6ccb6a18efcaa07efe4e51d3d4a8f"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrSummaryService.java",
+      "bytes": 44493,
+      "sha256": "20d96b976bd931ccf65c710204a01d8d571d51f8deebaf64bb0aaad8f7e24c3e"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql",
+      "bytes": 106718,
+      "sha256": "61560f972ef9eeeb8f69620c947b54b2326ad9341d929b19385653bec81cf99b"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrAttachmentQueryObservationPostgresTest.java",
+      "bytes": 11520,
+      "sha256": "5866b4dc1d4713b9a4be456f03a748099e3af6324fe3c4ba2e34d4d8b1c22841"
+    }
+  ],
+  "indexReview": {
+    "scope": "canonical DDL only; isolated diagnostic adds PK, no full migration/EXPLAIN",
+    "existingCandidates": [
+      "attachment primary key(id)",
+      "idx_dhr_attachment_active(tenant_id,dhr_instance_id,active)",
+      "DHR/production_object primary key(id)",
+      "draft unique(tenant_id,dhr_instance_id)"
+    ],
+    "newIndex": false
+  },
+  "a23Queue": {
+    "currentChangedProduct": 0,
+    "currentAddedTest": 1,
+    "newSql": 0,
+    "includePreviouslyReviewedInW6": true,
+    "W7LatestIncrement": true
+  },
+  "performanceImplementation": false,
+  "remaining": "All prior whole audit/old highs/user pauses retained; filename reuse pending user, summary/archive batching not implemented."
+}

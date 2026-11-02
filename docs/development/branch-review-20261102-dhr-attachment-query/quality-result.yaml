@@ -1,0 +1,176 @@
+qualityResult:
+  result: passed
+  baseCommit: 8ec8391721858a7f96d73a5d293d93f43679118a
+  headCommit: ec72883796766eba1c693b2d023bf8d112d86564
+  contractBaseline:
+    sourceCommit: ec72883796766eba1c693b2d023bf8d112d86564
+    targetBranch: edhr-dev
+    targetCommit: 8ec8391721858a7f96d73a5d293d93f43679118a
+    contractReadCommit: ec72883796766eba1c693b2d023bf8d112d86564
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: clean
+    includedPaths: []
+    excludedPaths:
+    - gmp-platform/frontend/node_modules (temporary untracked tooling symlink, removed
+      before final clean/removal)
+    untrackedPaths: []
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+  - id: check.actual-contract-baseline
+    required: true
+    category: documentation
+    description: 独立fetch目标及读取契约；候选clean、PR54交付树相同、无契约增量。
+    method: command
+    command: git fetch origin edhr-dev; git rev-parse; git diff; read AGENTS/handoff/quality
+      role
+    outcome: passed
+    evidence:
+    - baseline-inspection.json
+    - base=8ec8391721858a7f96d73a5d293d93f43679118a
+    - tested candidate/head=ec72883796766eba1c693b2d023bf8d112d86564
+  - id: check.scope-and-product-preservation
+    required: true
+    category: requirements
+    description: 仅一个新诊断测试和文档/盘点，产品/迁移/前端/知识/契约不变；性能提案未实施。
+    method: inspection
+    command: git diff --name-only base head; decisionPackage/source review
+    outcome: passed
+    evidence:
+    - baseline-inspection.json
+    - source-inspection.json
+    - protected-manifest.json
+  - id: check.actual-public-prefix-query-growth
+    required: true
+    category: database
+    description: 公开submit真实事务前缀0/1/10/100/300附件查询5/7/25/205/605；SQL原件无unknown，既有人工guard拒绝、无版本写入。
+    method: automated-test
+    command: DhrAttachmentQueryObservationPostgresTest.observeActualSubmitPrefixAcrossAttachmentCounts
+    outcome: passed
+    evidence:
+    - commands.json
+    - backend-surefire/TEST-com.zencas.edhr.production.service.DhrAttachmentQueryObservationPostgresTest.xml
+    - summary-prefix.json
+    - actual-observation-check.json
+  - id: check.actual-parent-lock-concurrency
+    required: true
+    category: integration
+    description: 实际pg_stat_activity观察合法unlink等待DHR父锁，active在等待时保留，释放后提交且历史原件保留。
+    method: automated-test
+    command: DhrAttachmentQueryObservationPostgresTest.parentDhrLockActuallySerializesLegitimateUnlink
+    outcome: passed
+    evidence:
+    - parent-lock.json
+    - backend.log
+    - database.json
+  - id: check.focused-backend-regression
+    required: true
+    category: regression
+    description: 自有detached候选+自有PG独立4类34项全部0F/E/S；包括2诊断、13附件/ZIP、11真实事务、8Summary。
+    method: command
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f gmp-platform/backend/pom.xml
+      -Dtest=DhrAttachmentQueryObservationPostgresTest,DhrSummaryServiceTest,DhrAttachmentTransactionPostgresTest,DhrAttachmentAndArchiveTest
+      test
+    outcome: passed
+    evidence:
+    - commands.json
+    - backend.log
+    - backend-surefire/
+    - test-summary.json
+  - id: check.formal-knowledge-regression
+    required: true
+    category: ontology
+    description: 候选独立正式知识89项0F/E/S；不等于全库语义审计或P0退出。
+    method: command
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f tools/knowledge-model/pom.xml
+      test
+    outcome: passed
+    evidence:
+    - commands.json
+    - knowledge.log
+    - knowledge-surefire/
+    - test-summary.json
+  - id: check.unchanged-policy-and-ontology
+    required: true
+    category: ontology
+    description: 核原ontology NA/FINAL及19有限ID处置范围、关键DEC0063/0090原始规范和当前链；330知识字节不变、知识0.3.25/schema1.2.0/P0不升级。
+    method: inspection
+    command: Read raw knowledge decisions/rules, original ontology result, current
+      attachment/summary/archive/controllers
+    outcome: passed
+    evidence:
+    - source-inspection.json
+    - artifact-role/knowledge-byte-check.json
+    - artifact-role/source-fingerprint-check.json
+    - artifact-role/result.json
+  - id: check.raw-artifact-provenance
+    required: true
+    category: audit
+    description: 33安全唯一tar成员、32原件+manifest、原本体10证据摘要、7源快照/23本体源指纹全部匹配；不把主侧运行冒充独立运行。
+    method: command
+    command: Read-only artifact-check.py with SHA256/tar bytes and git blob comparison
+    outcome: passed
+    evidence:
+    - artifact-role/artifact-check.py
+    - artifact-role/artifact-byte-check.json
+    - artifact-role/archived-run-inspection.json
+  - id: check.fixed-inventory-denominator
+    required: true
+    category: documentation
+    description: base6785路径/blob、135迁移、689入口源行按实际范围匹配；coverage全部inventory-only/pending，无语义/整文件完成冒充。
+    method: command
+    command: Read-only git tree/CSV/source line verification
+    outcome: passed
+    evidence:
+    - artifact-role/inventory-check.json
+    - artifact-role/baseline.json
+  - id: check.a23-extraction-and-drift
+    required: true
+    category: requirements
+    description: 有限A23区分必要资格/SHA/人工守卫与名字/汇总复用候选，已有具体方法抽取及索引论证，W6旧已审/W7/原high和用户暂缓保持。
+    method: inspection
+    command: review-notes/performance/source-review/NEXT against actual source and
+      decisionPackage
+    outcome: passed
+    evidence:
+    - source-inspection.json
+    - baseline-inspection.json
+  - id: check.independence-cleanup-and-preservation
+    required: true
+    category: documentation
+    description: 未参与任何修复；自有PG/工具symlink/worktree正常清理，受测保护字节零变化，全部子角色FINAL，cr-at-eol空白检查通过。原cleanup保留--rm短暂延迟，followup确认已移除；首finalizer工具断言失败保留，不当产品红。
+    method: command
+    command: runner cleanup; follow-up docker ps; protected hashes; git diff --check;
+      subrole FINAL inspection
+    outcome: passed
+    evidence:
+    - cleanup.json
+    - cleanup-followup.json
+    - finalization-initial-error.json
+    - source-preservation.json
+    - protected-manifest.json
+    - subroles.json
+    - whitespace.json
+  findings: []
+  residualRisks:
+  - id: risk.performance-work-pending
+    description: 5+2N汇总查询仍存在；名字复用/汇总批读仅提案，本批没有性能实现。
+    impact: 性能问题未因诊断通过而resolved。
+    mitigation: 后续按用户讨论与资格/锁/完整校验保护实施。
+  - id: risk.prefix-scope
+    description: 小PNG、七表/PK、替身detail/impact/forms/workflow、实际公开submit至人工guard；没有完整成功冻结提交。
+    impact: 不能认证生产时延、大文件、完整HTTP/RBAC或全部并发入口。
+    mitigation: 后续实际变更时补成功冻结、失败、并发负例及完整安装计划。
+  - id: risk.archive-separate
+    description: Archive无外层父锁，单附件数组/formPdfs/combined PDF累计仍候选风险。
+    impact: 流式SHA不代表ZIP/PDF总内存有界。
+    mitigation: 单独量化讨论，不把Summary父锁证据移植。
+  - id: risk.whole-audit-open
+    description: W2余项/W3-W5交叉、W6健壮性性能A23含旧已审、W7增量，以及原high/A12/四gap/全账号UI/收件人/共享ACL引用和用户暂缓保持。
+    impact: 有限批次passed不等于全审/发布完成。
+    mitigation: 持续台账逐域推进并拉取增量；不合并、部署或恢复历史。
+  - id: risk.index-production-plan
+    description: 现有索引候选已源码核对，本次隔离诊断并未完整安装索引/迁移或生产EXPLAIN。
+    impact: 不能断言任意数据分布/后续批量方案均无需索引。
+    mitigation: 后续实际SQL方案在完整索引、混合分布上EXPLAIN ANALYZE。
+  blockingConditions: []

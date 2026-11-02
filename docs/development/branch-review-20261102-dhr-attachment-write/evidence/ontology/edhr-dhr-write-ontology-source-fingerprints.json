@@ -1,0 +1,171 @@
+{
+  "status": "FINAL for these exact working-tree bytes; re-review affected scope after source changes",
+  "capturedAt": "2026-11-02T13:50:25.463962+00:00",
+  "contractBaseline": {
+    "sourceCommit": "e3e49784eda6bc01e7e5c686d6f79dc5a600d5ae",
+    "targetBranch": "edhr-dev",
+    "targetCommit": "e3e49784eda6bc01e7e5c686d6f79dc5a600d5ae",
+    "contractReadCommit": "e3e49784eda6bc01e7e5c686d6f79dc5a600d5ae",
+    "uncommittedContractPaths": []
+  },
+  "branch": "audit/edhr-dev-dhr-attachment-write-20261102",
+  "uncommittedReadPaths": [
+    "docs/development/branch-review-20261102-dhr-attachment-write/decision-package.yaml",
+    "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrAttachmentService.java",
+    "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrAttachmentWriteFailureTest.java",
+    "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrAttachmentDownloadCapacityPostgresTest.java"
+  ],
+  "files": [
+    {
+      "path": "AGENTS.md",
+      "bytes": 25065,
+      "sha256": "13dc7cdacea0b1bb0aef2abb268781f9c69584acd4879b204d2b7fd81a2927fc",
+      "matchesSourceCommit": true
+    },
+    {
+      "path": "codeplzreadme.md",
+      "bytes": 3035,
+      "sha256": "7a1be8efffec596b034335058dca2860346d256622f899c8dac97c5172dd6df2",
+      "matchesSourceCommit": true
+    },
+    {
+      "path": "docs/agents/agent-handoff-contract.md",
+      "bytes": 31233,
+      "sha256": "3439a35dd1baa77ac723f1b5afa237a338d56e31386f06b02b4aacfd754e3a12",
+      "matchesSourceCommit": true
+    },
+    {
+      "path": "docs/agents/business-knowledge-modeler.md",
+      "bytes": 15881,
+      "sha256": "9806c900f98e1cbcf4f8d68a998a07a5449369df037183c75ec08cd666bf56ae",
+      "matchesSourceCommit": true
+    },
+    {
+      "path": "docs/agents/quality-verifier.md",
+      "bytes": 7519,
+      "sha256": "6b3de9323924fb4ba5ae87be76c5136d28e754810c46b22b8e3d1cdd6c2f826f",
+      "matchesSourceCommit": true
+    },
+    {
+      "path": "docs/architecture/business-knowledge-model.md",
+      "bytes": 70441,
+      "sha256": "5fdc7d831d378816370250dfc02bfa0d0b18b5eecb461c9b8e503ba4c7952b6e",
+      "matchesSourceCommit": true
+    },
+    {
+      "path": "docs/knowledge/README.md",
+      "bytes": 109946,
+      "sha256": "23d4aa15793b1fa1dbe54c3840e47a64602b3887c0ecbb5d79afa92e384474c5",
+      "matchesSourceCommit": true
+    },
+    {
+      "path": "docs/knowledge/schema.yaml",
+      "bytes": 13171,
+      "sha256": "e21dcf0b3cf15b540dc528b574e53202fe26b092017e00451afa326b59cfba84",
+      "matchesSourceCommit": true
+    },
+    {
+      "path": "docs/knowledge/open-questions.yaml",
+      "bytes": 22420,
+      "sha256": "c7b3bdecd1a6ac164d95ff515b5412998a556a07e9b5fcb64b3643473aa6e2bf",
+      "matchesSourceCommit": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-attachment-write/decision-package.yaml",
+      "bytes": 5477,
+      "sha256": "bc3e0f81d53738011505c6535d690bb9cecf3d0adfc11563c5cf56420b23392a",
+      "matchesSourceCommit": false
+    },
+    {
+      "path": "docs/knowledge/glossary.yaml",
+      "bytes": 71650,
+      "sha256": "ebec2f3f7345b05eaa16e6bde89ab61448fbe04e72133b071d6944b61fad6f15",
+      "matchesSourceCommit": true
+    },
+    {
+      "path": "docs/knowledge/ontology.yaml",
+      "bytes": 96031,
+      "sha256": "c9c97162d8232196bcb47ad574c03783e2406c6ac530cfa27b1156b00bd8c8c6",
+      "matchesSourceCommit": true
+    },
+    {
+      "path": "docs/knowledge/rules/dhr-summary.yaml",
+      "bytes": 17985,
+      "sha256": "7fc2b4b15bf79624a142721b6f3f2eb7b0dadae6f2a662c627bee836facf6154",
+      "matchesSourceCommit": true
+    },
+    {
+      "path": "docs/knowledge/facts/dhr-summary.yaml",
+      "bytes": 11160,
+      "sha256": "cef00d62cf06832395bf1249c2802dce8d731776f3ea3c33022bd9d6e7c1a5ed",
+      "matchesSourceCommit": true
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml",
+      "bytes": 23213,
+      "sha256": "11e70ec27862eb971a2ad01cd928e8c2ecba36be4df70e170bd1f5296c4e0253",
+      "matchesSourceCommit": true
+    },
+    {
+      "path": "docs/knowledge/evidence/dhr-summary.yaml",
+      "bytes": 19543,
+      "sha256": "b121656c1c69b13066dbb34e2fed6f080140663c668c55ba5faf61a993b1b389",
+      "matchesSourceCommit": true
+    },
+    {
+      "path": "docs/knowledge/evidence/dhr-summary-user-confirmed.md",
+      "bytes": 36542,
+      "sha256": "51dc528c6fe38671023cec25cfbe6bf1f0a8dcf2fc088f7894524a2d5f035642",
+      "matchesSourceCommit": true
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrAttachmentService.java",
+      "bytes": 17045,
+      "sha256": "15c0dda7257709ea7580e45421f59f50a04aa26f794abff26593a6d1ba38c3a1",
+      "matchesSourceCommit": false
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrAttachmentController.java",
+      "bytes": 3471,
+      "sha256": "85452748ac5c956ce2330ee6e4327ad640bf442e35b14b2731cdf2b15b69a5f6",
+      "matchesSourceCommit": true
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrReviewController.java",
+      "bytes": 3309,
+      "sha256": "37f6af83e063e1593e15ac28e021ec719888c21fe45d314916c9f20975e2417e",
+      "matchesSourceCommit": true
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrAttachmentWriteFailureTest.java",
+      "bytes": 7002,
+      "sha256": "6088d5bb120f1800da70d8542a16278a625f6efd5ea233c8b5e753013b81c69f",
+      "matchesSourceCommit": false
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrAttachmentDownloadCapacityPostgresTest.java",
+      "bytes": 13681,
+      "sha256": "b244f5861964fa0c54f7ff3ea0a73190b1c6e90137b95a3a1550801999a5ae66",
+      "matchesSourceCommit": false
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrAttachmentTransactionPostgresTest.java",
+      "bytes": 15572,
+      "sha256": "de1b1705d3eec75c385524f9874518ca4a5376d30f74aeeadf81f164e81aed40",
+      "matchesSourceCommit": true
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrAttachmentAndArchiveTest.java",
+      "bytes": 28987,
+      "sha256": "0c97af7b8707ebe68b0bfe4c442cdd3d433fe811b8aa3e087b3aaf695bb0dd73",
+      "matchesSourceCommit": true
+    },
+    {
+      "path": "gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql",
+      "bytes": 106718,
+      "sha256": "61560f972ef9eeeb8f69620c947b54b2326ad9341d929b19385653bec81cf99b",
+      "matchesSourceCommit": true
+    }
+  ],
+  "scope": "Fingerprints prove byte provenance only; finite source/semantic review, not whole-file or all-system certification"
+}
