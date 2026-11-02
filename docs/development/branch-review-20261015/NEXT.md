@@ -2,6 +2,8 @@
 
 ## PR52已合入：DHR附件上传事务结果
 
+已交付[PR53](https://github.com/IvenYi/edhr-nexus-frontend/pull/53)，audit/edhr-dev-dhr-attachment-transactions-20261102→edhr-dev，建议本批人工merge。受测a6f79945后仅L0原件/验收/交付登记，产品/测试/知识/模型/契约/决策包/source-review/四固定清单保持；交付观察见本批evidence/delivery-verification.json。下轮先fetch真实merge与增量，性能量化和写入中断等候选、所有旧high/全审队列/暂缓继续。
+
 实际fetch最新`edhr-dev@ab5adafb9629b94f95eb88825ec0a4ea06f4efb1`，PR52人工合入、整树同2d2238e2，无外部源码/知识/契约增量。新分支audit/edhr-dev-dhr-attachment-transactions-20261102，本轮L2只DhrAttachmentService.upload完成回调；[本批](../branch-review-20261102-dhr-attachment/README.md)全新独立对clean受测a6f79945出具passed/FINAL、13/13必需检查，单次122/122与知识89/89通过。同11旧源2真实断言红9正、0error/skip；两项按验收有限resolved，47最终原件含manifest归档。实际PG先COMMIT再合成确认失败，原件不再误删；此故障不是实际网络断连。
 
 仅确认回滚补偿本次原件，UNKNOWN保留并记录ID/path；回滚清理IO失败可定位且原事务错误保持。实际Spring代理/JPA审计/JDBC/三canonical表/磁盘，test-only拒绝CHECK不构成新业务约束或全库迁移证明。格式/50MiB/编辑资格/核验/冻结引用/带原因解除保留历史不动。本体NA/FINAL、12既有ID有限重审、知识89与330资产不变；40原件+3快照归档。6503/135/464/216只盘点，wholeFile0/unique未知。
