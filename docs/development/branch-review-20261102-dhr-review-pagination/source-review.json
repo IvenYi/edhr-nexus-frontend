@@ -1,0 +1,77 @@
+{
+  "baseCommit": "1ad6300918bd0059049eab3c415ca31162dd5115",
+  "wholeFileCompletion": 0,
+  "historicalUniqueIncrement": null,
+  "scopeType": "limited-personal-list-and-index-boundaries",
+  "records": [
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrReviewService.java",
+      "scope": "list,FROM,SELECT/LIST_SELECT projection; detail/act eligibility and lock/snapshot rules only checked for non-change"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/resources/db/changelog/db.changelog-master.yaml",
+      "scope": "append0091 only"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/resources/db/changelog/0091-dhr-review-query-indexes.sql",
+      "scope": "two concurrent partial index changesets and rollback/ICU precondition"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql",
+      "scope": "five query-table DDL, relevant PK/unique/index definitions; not whole schema audit"
+    }
+  ],
+  "a23": {
+    "records": [
+      {
+        "symbol": "JSON type CASE and existing coercions",
+        "status": "necessary-compatibility",
+        "reason": "Existing Java oracle, native scalar/object/array and boolean cases; no new default access"
+      },
+      {
+        "symbol": "Unicode root collation precondition",
+        "status": "necessary-compatibility",
+        "reason": "Default lower demonstrably differs for İ/ΟΣ; explicit native equivalence and migration HALT"
+      },
+      {
+        "symbol": "one-statement count/page plus empty total row",
+        "status": "necessary-consistency",
+        "reason": "Same MVCC snapshot and correct total on empty/deep pages"
+      },
+      {
+        "symbol": "long offset and existing bounds",
+        "status": "necessary-boundary",
+        "reason": "Int-max page times200 tested without overflow"
+      },
+      {
+        "symbol": "light projection and sharedFROM",
+        "status": "removed-redundant-transfer",
+        "reason": "No unused frozen check/properties/candidate payload on list, unchanged detail projection"
+      },
+      {
+        "symbol": "partial index choices",
+        "status": "evidence-bounded",
+        "reason": "Both useful in measured distributions; no forced plan, no duplicate GIN/trigram/read model; write/space/concurrent-failure costs explicit"
+      }
+    ],
+    "historicalLanguageQueue": 856,
+    "previousFeatureAddedPending": 1,
+    "historicalSqlQueue": 130,
+    "newMigrationQueuePrevious": 4,
+    "currentChangedPending": [
+      "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrReviewService.java",
+      "gmp-platform/backend/src/main/resources/db/changelog/db.changelog-master.yaml",
+      "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrReviewServiceTest.java",
+      "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrReviewLifecycleIntegrationTest.java",
+      "gmp-platform/backend/src/test/java/com/zencas/edhr/recordcontrol/service/RecordControlPostgresIntegrationTest.java",
+      "gmp-platform/backend/src/test/java/com/zencas/edhr/common/config/CurrentDatabaseBaselinePostgresTest.java"
+    ],
+    "currentAddedPending": [
+      "gmp-platform/backend/src/main/resources/db/changelog/0091-dhr-review-query-indexes.sql",
+      "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrReviewPaginationPostgresTest.java"
+    ],
+    "currentAddedMigrationCount": 1,
+    "wholeFileCompletion": 0,
+    "remaining": "W6 whole including previously reviewed and W7 increments; all old overlays and666/44/183 remain pending"
+  }
+}

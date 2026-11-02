@@ -1,0 +1,290 @@
+{
+  "phase": "FINAL limited existing contract review for fingerprinted candidate",
+  "knowledgeBaselineVersion": "0.3.25",
+  "sourceCommit": "1ad6300918bd0059049eab3c415ca31162dd5115",
+  "targetCommit": "1ad6300918bd0059049eab3c415ca31162dd5115",
+  "scope": "14 existing IDs;12 finite consistent+2 existing evidence-gap; no whole-file or unique full-audit coverage",
+  "engineeringCompatibilityNotNewPolicy": [
+    "unrestricted/userIds/assignee matching syntax from existing Java and actual producer",
+    "Locale.ROOT folding and ID-desc order are current behavior, not new user-confirmed policy",
+    "DB indexes, accurate count, snapshot consistency and PostgreSQL dialect are engineering acceptance, not ontology rule publication"
+  ],
+  "records": [
+    {
+      "id": "DEC-0068-01",
+      "recordType": "decision-statement",
+      "sourcePath": "docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml",
+      "sourceLocator": "DEC-0068-01",
+      "originalStatus": "specified",
+      "originalVisibility": "internal",
+      "reviewScope": "limited-current-query-contract-and-unchanged-adjacent-boundaries",
+      "semanticStatus": "reviewed",
+      "conclusion": "consistent",
+      "rationale": "个人待办/已办入口职责，列表优化不赋其他动作权",
+      "sourceSymbols": "DhrReviewController.list; DhrReviewService.list/detail",
+      "originalEvidenceReferences": [
+        "docs/knowledge/evidence/dhr-filling-review-confirmed.md:217",
+        "docs/knowledge/evidence/dhr-filling-review-confirmed.md:269",
+        "docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml"
+      ],
+      "statement": "user-confirmed；DHR 管理保留 DHR填报、DHR汇总、DHR审批、DHR列表四个菜单（客户展示沿用 DEC-0070）。填报承载来源表单的填报与受控追加，汇总整理并冻结版本，审核提供针对不可变汇总版本的个人待办/已办，列表承担查询与详情；不能因新增入口混淆职责或授予其他动作权限。"
+    },
+    {
+      "id": "DEC-0068-07",
+      "recordType": "decision-statement",
+      "sourcePath": "docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml",
+      "sourceLocator": "DEC-0068-07",
+      "originalStatus": "specified",
+      "originalVisibility": "internal",
+      "reviewScope": "limited-current-query-contract-and-unchanged-adjacent-boundaries",
+      "semanticStatus": "reviewed",
+      "conclusion": "consistent",
+      "rationale": "审批仍绑定冻结汇总版本和专属规则；列表优化不得转通用工作流或读当前未冻结证据",
+      "sourceSymbols": "DhrReviewService.requireTask/act; SELECT joins summary version",
+      "originalEvidenceReferences": [
+        "docs/knowledge/evidence/dhr-filling-review-confirmed.md:217",
+        "docs/knowledge/evidence/dhr-filling-review-confirmed.md:269",
+        "docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml"
+      ],
+      "statement": "user-confirmed；需要审核的汇总按生产开工时冻结的 DHR_SUMMARY 流程定义及版本显式启动，审核任务与结果绑定本次不可变汇总版本；不得自动追随最新流程、临时改用绑定规则或通过通用流程入口绕过 DHR 的权限、证据有效性和版本校验。NONE 仅不另启本系统汇总审批，不豁免源表单签署、适用法定审核或产品放行要求；审批对象必须包含完整证据及检查结果，不能只审批人工目录子集。"
+    },
+    {
+      "id": "DEC-0068-08",
+      "recordType": "decision-statement",
+      "sourcePath": "docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml",
+      "sourceLocator": "DEC-0068-08",
+      "originalStatus": "specified",
+      "originalVisibility": "internal",
+      "reviewScope": "limited-current-query-contract-and-unchanged-adjacent-boundaries",
+      "semanticStatus": "reviewed",
+      "conclusion": "consistent",
+      "rationale": "个人查询只读，不自动改生产/放行、旧批准或历史版本",
+      "sourceSymbols": "DhrReviewService.list readOnly",
+      "originalEvidenceReferences": [
+        "docs/knowledge/evidence/dhr-filling-review-confirmed.md:217",
+        "docs/knowledge/evidence/dhr-filling-review-confirmed.md:269",
+        "docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml"
+      ],
+      "statement": "user-confirmed；填报、追加、证据影响识别、退回、新版本重审与批准均不自动改变生产完成状态或产品放行状态；不新增产品放行规则或自动重开生产。错误旧汇总按 DEC-0063-09 转成待核查草稿或清理，不补造历史审核绑定、核查确认及审批事实，不覆盖已有当前模型冻结和草稿；正常发起修订仍保留原版本与批准。审批统一要求本次冻结核查结果，不能用旧模型分支绕过人工核查。"
+    },
+    {
+      "id": "DEC-0068-09",
+      "recordType": "decision-statement",
+      "sourcePath": "docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml",
+      "sourceLocator": "DEC-0068-09",
+      "originalStatus": "specified",
+      "originalVisibility": "internal",
+      "reviewScope": "limited-current-query-contract-and-unchanged-adjacent-boundaries",
+      "semanticStatus": "reviewed",
+      "conclusion": "consistent",
+      "rationale": "四列表共用交互及按原授权，当前查询优化不改UI或详情授权",
+      "sourceSymbols": "DhrReviewController.list/detail/audit",
+      "originalEvidenceReferences": [
+        "docs/knowledge/evidence/dhr-filling-review-confirmed.md:217",
+        "docs/knowledge/evidence/dhr-filling-review-confirmed.md:269",
+        "docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml"
+      ],
+      "statement": "user-confirmed；DHR 四列表复用当前共享组件规范。行点击打开右侧详情抽屉，包含数据信息、数据审计页签；独立业务按钮打开相应工作区，不与行点击互相触发，不在操作列重复提供同一对象的数据审计入口。移除业务工作区重复 DHR 数据审计按钮，保留四列表行详情审计；实例日志以表单管理为主入口，本轮不新增 DHR 实例日志 UI。详情和审计沿各入口原有读取授权，不额外授予工作区写动作；实例操作日志与 DHR 数据审计仍按 DEC-0063-12 分层关联。独立列表使用 ListTableShell、共享表格样式及 TableStateCell；普通新建编辑使用 FormDialog、FormDialogSection 与 FormDialogFieldGrid，确认使用 ConfirmDialog；预览和签名按既有专用组件边界处理。查看、填报、汇总、审批四工作区以分段按钮统一“档案目录/按来源”两视图，仅按来源视图显示来源分类，切换保持选择身份及未保存保护；填报默认按来源，其余默认档案目录；表单选择及实例窄栏布局一致，首次打开第一份，关闭实例面板保留已选实例，切换时保留填报未保存保护。导航统一称“DHR 导航”并压缩标题留白，范围说明移至工作区头部；整理切换位于导航标题行，整理只是档案编辑状态，完成返回档案浏览并保留当前目录和实例，不新增生命周期状态或提交动作。模式和实例栏以短过渡切换并支持减少动态效果；附件位于导航底部独立入口，零份仍可打开，不增加第四种表单来源；汇总及冻结查看以附件列表切换右侧主内容，原上传元信息、核验、下载及带原因解除关联保持，历史文件不物理删除，冻结查看只读，不新增附件接口或其他工作区写权。冻结版本统一导出入口支持完整 ZIP 或当前冻结成员内跨来源实例与附件混选的自定义 ZIP，部分包明确标记，切换版本清空选择，不改变证据范围。汇总编辑时来源位于目录旁边，组/单份沿用既有摆放规则；双视图不改变各页归集、权限、写入、节点动作或冻结只读边界。此为原设计补正，规范路径和验收要点见本决策证据，不另建 UI 规范。"
+    },
+    {
+      "id": "DEC-0068-10",
+      "recordType": "decision-statement",
+      "sourcePath": "docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml",
+      "sourceLocator": "DEC-0068-10",
+      "originalStatus": "specified",
+      "originalVisibility": "internal",
+      "reviewScope": "limited-current-query-contract-and-unchanged-adjacent-boundaries",
+      "semanticStatus": "reviewed",
+      "conclusion": "consistent",
+      "rationale": "product-core责任边界，保留configuration和transaction-orchestration，优化不新建客户分支",
+      "sourceSymbols": "decisionPackage.extensionStrategy",
+      "originalEvidenceReferences": [
+        "docs/knowledge/evidence/dhr-filling-review-confirmed.md:217",
+        "docs/knowledge/evidence/dhr-filling-review-confirmed.md:269",
+        "docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml"
+      ],
+      "statement": "user-confirmed；本次当前模型统一、旧汇总转换及工作区调整采用 product-core，DHR 主开发负责迁移、服务、UI 和测试，本体角色仅维护 DHR 知识。既有适用检查和审批策略的 configuration、流程编排的 transaction-orchestration 职责保留，朋友仍负责表单变更作废模块；本次不改变审批配置或权限，不增加客户条件分支。原审计保留并追加迁移事件，实例日志与 DHR 审计继续分层。"
+    },
+    {
+      "id": "DEC-0068-11",
+      "recordType": "decision-statement",
+      "sourcePath": "docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml",
+      "sourceLocator": "DEC-0068-11",
+      "originalStatus": "specified",
+      "originalVisibility": "internal",
+      "reviewScope": "limited-current-query-contract-and-unchanged-adjacent-boundaries",
+      "semanticStatus": "reviewed",
+      "conclusion": "consistent",
+      "rationale": "当前任务候选或本人已办身份；列表可见不扩大冻结附件权限",
+      "sourceSymbols": "DhrReviewController.attachment; DhrReviewService.detail",
+      "originalEvidenceReferences": [
+        "docs/knowledge/evidence/dhr-filling-review-confirmed.md:217",
+        "docs/knowledge/evidence/dhr-filling-review-confirmed.md:269",
+        "docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml"
+      ],
+      "statement": "user-confirmed；DHR 审批任务的专属附件下载只授权当前任务候选处理人或本人已办任务持有人，并且只可取得任务绑定冻结版本包含的附件；DHR 通用查看权或其他任务的资格不得替代任务授权，也不得越过版本附件快照。"
+    },
+    {
+      "id": "DEC-0063-05",
+      "recordType": "decision-statement",
+      "sourcePath": "docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml",
+      "sourceLocator": "DEC-0063-05",
+      "originalStatus": "specified",
+      "originalVisibility": "internal",
+      "reviewScope": "limited-current-query-contract-and-unchanged-adjacent-boundaries",
+      "semanticStatus": "reviewed",
+      "conclusion": "consistent",
+      "rationale": "既有完整冻结证据、来源及检查结果不改，查询关联到原版本",
+      "sourceSymbols": "DhrSummaryService.version; DhrFrozenEvidenceIntegrity",
+      "originalEvidenceReferences": [
+        "docs/knowledge/evidence/dhr-filling-review-confirmed.md:217",
+        "docs/knowledge/evidence/dhr-filling-review-confirmed.md:269",
+        "docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml"
+      ],
+      "statement": "user-confirmed；自动收集持续发生，但普通整理/提交仍限生产正常完成。提交时重核集合和来源版本并阻断陈旧提交，冻结全部实际关联证据及来源版本、状态、内容快照/哈希、附件引用、检查结果、基础及展示目录、逐实例位置/别名和审批绑定。审批、版本详情与导出读取同一冻结证据基准；来源导航报错修复只读取当前冻结版本 candidates，不以实时实例或草稿补齐冻结成员；后续变化不改写旧版，实时视图须明确区分。"
+    },
+    {
+      "id": "DEC-0063-07",
+      "recordType": "decision-statement",
+      "sourcePath": "docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml",
+      "sourceLocator": "DEC-0063-07",
+      "originalStatus": "specified",
+      "originalVisibility": "internal",
+      "reviewScope": "limited-current-query-contract-and-unchanged-adjacent-boundaries",
+      "semanticStatus": "reviewed",
+      "conclusion": "consistent",
+      "rationale": "针对不可变汇总版本的个人待办/已办，有限列表验收不提升整项完成",
+      "sourceSymbols": "DhrReviewService.list",
+      "originalEvidenceReferences": [
+        "docs/knowledge/evidence/dhr-filling-review-confirmed.md:217",
+        "docs/knowledge/evidence/dhr-filling-review-confirmed.md:269",
+        "docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml"
+      ],
+      "statement": "user-confirmed；DHR 审核提供针对完整冻结证据版本及检查结果的个人待办/已办，沿用 DEC-0068 的人工退回和新版本重审。当前已有审批代码但尚未满足本次新设计，不再把审核整体写成未开发，也不把旧 PENDING_REVIEW 或局部测试视为新能力验收。"
+    },
+    {
+      "id": "DEC-0063-12",
+      "recordType": "decision-statement",
+      "sourcePath": "docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml",
+      "sourceLocator": "DEC-0063-12",
+      "originalStatus": "specified",
+      "originalVisibility": "internal",
+      "reviewScope": "limited-current-query-contract-and-unchanged-adjacent-boundaries",
+      "semanticStatus": "reviewed",
+      "conclusion": "consistent",
+      "rationale": "查看/审批/附件/审计分权保持",
+      "sourceSymbols": "DhrReviewController class and action annotations",
+      "originalEvidenceReferences": [
+        "docs/knowledge/evidence/dhr-filling-review-confirmed.md:217",
+        "docs/knowledge/evidence/dhr-filling-review-confirmed.md:269",
+        "docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml"
+      ],
+      "statement": "user-confirmed；实例操作日志负责填报、签署、表单变更/作废及历史内容定位，以表单管理为主入口，本轮不新增 DHR 实例日志 UI；DHR 详情的数据审计记录目录、附件关联、核查、提交、审批和导出。移除业务工作区重复的 DHR 数据审计按钮，保留四列表行详情中的数据审计入口。两层沿证据身份和版本关联，不相互替代；查看、整理、附件、提交、审批、导出分权，入口调整不改变审计语义和原授权。"
+    },
+    {
+      "id": "fact.dhr-summary.review-task-attachment-authorized",
+      "recordType": "fact",
+      "sourcePath": "docs/knowledge/facts/dhr-summary.yaml",
+      "sourceLocator": "fact.dhr-summary.review-task-attachment-authorized",
+      "originalStatus": "specified",
+      "originalVisibility": "internal",
+      "reviewScope": "limited-current-query-contract-and-unchanged-adjacent-boundaries",
+      "semanticStatus": "reviewed",
+      "conclusion": "consistent",
+      "rationale": "规范任务授权事实不变，不把COUNT或列表资格当附件授权替代",
+      "sourceSymbols": "DhrReviewController.attachment",
+      "originalEvidenceReferences": [
+        "docs/knowledge/evidence/dhr-filling-review-confirmed.md:217",
+        "docs/knowledge/evidence/dhr-filling-review-confirmed.md:269",
+        "docs/knowledge/facts/dhr-summary.yaml"
+      ],
+      "statement": "审批专属下载先通过任务 detail 判定当前待办候选或本人已办，再校验附件 id 与摘要属于任务绑定的冻结版本；不复用宽泛 DHR 查看授权"
+    },
+    {
+      "id": "fact.dhr-summary.version-frozen",
+      "recordType": "fact",
+      "sourcePath": "docs/knowledge/facts/dhr-summary.yaml",
+      "sourceLocator": "fact.dhr-summary.version-frozen",
+      "originalStatus": "implemented",
+      "originalVisibility": "internal",
+      "reviewScope": "limited-current-query-contract-and-unchanged-adjacent-boundaries",
+      "semanticStatus": "reviewed",
+      "conclusion": "consistent",
+      "rationale": "冻结行存在或审批状态不等于质量合格；列表不改写摘要/成员",
+      "sourceSymbols": "DhrSummaryService.version",
+      "originalEvidenceReferences": [
+        "docs/knowledge/evidence/dhr-filling-review-confirmed.md:217",
+        "docs/knowledge/evidence/dhr-filling-review-confirmed.md:269",
+        "docs/knowledge/facts/dhr-summary.yaml"
+      ],
+      "statement": "dhr_summary_version 与 dhr_summary_evidence 保存业务冻结及位置，version_no 标识正常修订；正常冻结不可编辑。行存在或 FORMALIZED 不证明核查完成，缺 checkResult 的错误旧汇总按 DEC-0063-09 转换为待核查草稿或清理，不能直接改标记追认；本机0104迁移已由原始日志及只读查询验证，DHR3已转草稿但未重新核查提交；2026-10-21仅初始化定位维护（d405a9af工作树）：dhr_summary_version.version_no/check_result_snapshot NOT NULL、dhr_summary_evidence；当前直接建表，无evidence_model_version列或0104转换执行；上文迁移验证为2026-09-27历史记录。原sourceRevision/capturedAt仍标识先前实现核对，本注记不重做或提升其业务验收。"
+    },
+    {
+      "id": "rule.dhr-review-task-frozen-attachment-download",
+      "recordType": "rule",
+      "sourcePath": "docs/knowledge/rules/dhr-summary.yaml",
+      "sourceLocator": "rule.dhr-review-task-frozen-attachment-download",
+      "originalStatus": "specified",
+      "originalVisibility": "internal",
+      "reviewScope": "limited-current-query-contract-and-unchanged-adjacent-boundaries",
+      "semanticStatus": "reviewed",
+      "conclusion": "consistent",
+      "rationale": "任务主体和绑定版本双重范围保留",
+      "sourceSymbols": "DhrReviewController.attachment",
+      "originalEvidenceReferences": [
+        "docs/knowledge/evidence/dhr-filling-review-confirmed.md:217",
+        "docs/knowledge/evidence/dhr-filling-review-confirmed.md:269",
+        "docs/knowledge/rules/dhr-summary.yaml"
+      ],
+      "statement": "审批页附件下载必须经过任务处理权或本人已办授权，并仅返回任务绑定版本快照中 id 与摘要匹配的附件；仅有 DHR 查看权或其他任务权限不能扩大下载范围。"
+    },
+    {
+      "id": "discrepancy.dhr-review-complete-evidence-impact-gap",
+      "recordType": "implementation-discrepancy",
+      "sourcePath": "docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml",
+      "sourceLocator": "discrepancy.dhr-review-complete-evidence-impact-gap",
+      "originalStatus": "open",
+      "originalVisibility": "internal",
+      "reviewScope": "limited-current-query-contract-and-unchanged-adjacent-boundaries",
+      "semanticStatus": "reviewed",
+      "conclusion": "evidence-gap",
+      "rationale": "完整质量外部事实/变化矩阵仍缺证据，列表性能优化不关闭",
+      "sourceSymbols": "DEC-0068 implementationDiscrepancies",
+      "originalEvidenceReferences": [
+        "docs/knowledge/evidence/dhr-filling-review-confirmed.md:217",
+        "docs/knowledge/evidence/dhr-filling-review-confirmed.md:269",
+        "docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml"
+      ],
+      "statement": "original-evidence；e0b416a合并候选的固定压缩原件支持两向在审检查、修订影响、账号ID通知、人工退回、并发阻断及旧冻结不变，已有真实PG迁移/升级/重复与容量证据。当前来源变化提示、草稿作废默认隐藏及全量计数、低频查看和V1冻结状态也有部分真实UI原件。本项仍high/open的实质范围为质量检查结果变化的完整比较及尚未覆盖的全面矩阵；本轮最终独立结论另取docs/development/record-control-dhr-linkage-20261029/quality-final-result.yaml，不由本索引或初轮failed代替，不以局部PG/UI或知识检查关闭完整缺口，不自动退回或改旧冻结批准。"
+    },
+    {
+      "id": "discrepancy.dhr-review-effective-source-integration",
+      "recordType": "implementation-discrepancy",
+      "sourcePath": "docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml",
+      "sourceLocator": "discrepancy.dhr-review-effective-source-integration",
+      "originalStatus": "open",
+      "originalVisibility": "internal",
+      "reviewScope": "limited-current-query-contract-and-unchanged-adjacent-boundaries",
+      "semanticStatus": "reviewed",
+      "conclusion": "evidence-gap",
+      "rationale": "完整普通权限UI/账号/收件人矩阵仍未完成，列表优化不关闭",
+      "sourceSymbols": "DEC-0068 implementationDiscrepancies",
+      "originalEvidenceReferences": [
+        "docs/knowledge/evidence/dhr-filling-review-confirmed.md:217",
+        "docs/knowledge/evidence/dhr-filling-review-confirmed.md:269",
+        "docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml"
+      ],
+      "statement": "original-evidence与secondary-reference分列；旧报告为历史索引，当前固定backend-verification原件支持真实批准后索引、正式贡献切换、DHR影响和ID提醒，含回滚、重投、两类并发及重名隔离。控制器/服务授权负例已有原件，合成ADMIN浏览器已验证本人提醒/已读、低频作废查看及新草稿和旧冻结隔离；并非完全没有HTTP层或UI证据。剩余实质范围为未覆盖的完整普通权限UI、全部接收人/账号状态等全面矩阵；本轮最终独立结论另取docs/development/record-control-dhr-linkage-20261029/quality-final-result.yaml，初轮failed原件仅保留当时范围，不由本索引代替最终结论，本项仍high/open，不宣称全链或完整A12验收。"
+    }
+  ],
+  "wholeFileCompletion": 0,
+  "uniqueSemanticIncrement": null,
+  "historicalQueue": "666 paths/44 knowledge/183 ID candidates and W6/W7 remain pending",
+  "implementationInspection": {
+    "diff": "/tmp/edhr-page-ontology-source.diff",
+    "frozenSourceFingerprint": "/tmp/edhr-page-ontology-source-fingerprints.json",
+    "newSchemaEffects": "Two additive concurrent partial indexes plus ICU precondition; no task, candidate, audit or frozen evidence writes",
+    "queryEffects": "Read-only SQL visible set, one statement snapshot for page/count, lightweight projection; detail/act/eligible/handled unchanged",
+    "testSourceBoundary": "Read native query matrix, previous Java oracle and full-app return/resubmit/approve list coverage; ontology role did not execute product or migration tests"
+  }
+}

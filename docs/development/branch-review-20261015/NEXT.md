@@ -1,5 +1,15 @@
 # 持续推进台账
 
+## PR50待合并：DHR个人查询分页与索引
+
+已再次fetch`edhr-dev@1ad6300918bd0059049eab3c415ca31162dd5115`，PR50仍OPEN，保留其旧验收分支，本批从最新目标独立建`audit/edhr-dev-dhr-review-pagination-20261102`。用户明确同意DB筛选/计数/分页并评估索引边界；[本批](../branch-review-20261102-dhr-review-pagination/README.md)仅DHR查询、两项有计划证据的部分索引及测试/迁移接入，不改变业务政策、冻结、审批锁或签署。
+
+主侧最终单次143/143加另一次baseline3/3通过，知识89原实际通过、本体r2 NA/FINAL；14既有ID=12有限consistent+2旧high gap、330资产未改。旧同源capacity1条实际SQL次数断言红，84SQL/5309行→1SQL/20行，个人21总数/当前页不变；夹具/编译/工具错误原件保持不算产品红。当前准备全新独立QA，不提前resolved或宣告本批完成。
+
+索引原生11组计划包含5万DHR历史和10万其他业务待办，小待审索引、个人大量已审顺序索引有收益，保留全部旧索引。ICU root前置HALT避免默认lower改变Unicode；CONCURRENTLY两独立changeset实际升级/回滚/重放，基线测试更新9→11并保留原业务/数据断言。5万同时待审仍有JSON候选CPU、准确COUNT/深页/关键词及共享表写入/空间边界，见索引报告，不称生产SLA。
+
+6017路径/134迁移只是固定目标盘点；4有限源码组、6A23判断、整文件0/unique未知。旧666/44/183、A23旧856+feature1/SQL130+新4及本次新增0091另入队、全部历史队列继续W6含旧已审/W7。两DHR high/A12/四gap、完整账号/收件人/UI矩阵、ACL三问及文件DELETE/UNKNOWN/相邻DHR附件回调、朋友签署页/生产弹窗暂缓保持。全部角色FINAL后实际向用户做PR前漂移/阶段复核再建PR，不自动merge/deploy/恢复、不查询触发CI。
+
 ## PR48已合入：上传登记事务补偿
 
 已交付[PR49](https://github.com/IvenYi/edhr-nexus-frontend/pull/49)，audit/edhr-dev-upload-transactions-20261031→edhr-dev，登记时OPEN/MERGEABLE/CLEAN，建议本批人工合入。受测22a96503后b84faeed仅L0原件/验收/范围，当前只登记交付，受测保护路径保持。下轮fetch真实合入及外部增量，优先记录控制对原DHR高风险项影响；DELETE/相邻回调/UNKNOWN对账/ACL/666增量继续待审，不自动merge/deploy/恢复。

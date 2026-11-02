@@ -1,0 +1,92 @@
+decisionPackage:
+  id: DEC-PACKAGE-AUDIT-DHR-REVIEW-PAGING-20261102
+  scope: DHR个人审批列表数据库筛选计数分页及索引边界评估
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: 1ad6300918bd0059049eab3c415ca31162dd5115
+    targetBranch: edhr-dev
+    targetCommit: 1ad6300918bd0059049eab3c415ca31162dd5115
+    contractReadCommit: 1ad6300918bd0059049eab3c415ca31162dd5115
+    uncommittedContractPaths: []
+  summary: 用户明确授权将DHR个人待审/已审的过滤、准确计数与分页下推数据库，同时评估现有及必要索引。不改变冻结、审批、候选资格、关键词或排序规则；PR50仍OPEN且源码不含本次优化，本批从最新目标另建分支，不改旧PR。
+  confirmed: {concepts: [], relationships: [], rules: [], executionContracts: []}
+  inferred:
+    - id: inference.dhr-personal-query-equivalence
+      statement: 查询优化须以既有Java权限与搜索语义作独立等价基准，确认授权范围不等于新增可见范围。
+      rationale: 既有DEC0068与用户本轮明确要求保留原规则。
+      relatedIds: [DEC-0068-07, DEC-0068-11]
+  unresolved: []
+  replacementScopes: []
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - area: personal-list
+        change: DB过滤当前候选/已办归属、状态与关键词，准确COUNT及LIMIT/OFFSET，仅返回当前页。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrReviewService.java]
+    transitiveImpacts:
+      - area: database
+        change: 评估既有GIN、assignee/status/instance索引与实际计划，仅以证据决定必要迁移。
+        evidenceReferences: [gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql]
+    potentialImpacts:
+      - area: compatibility
+        concern: JSON类型/空集合回退、Unicode大小写与字面子串、PG/H2方言、精确总数/深页成本与并发读取快照需核对。
+        evidenceReferences: []
+    unaffectedAreas:
+      - area: policies
+        change: 冻结证据、审批动作和锁、签署、通知、表单/DHR业务政策、UI交互不改。
+        evidenceReferences: []
+    compatibilityAndMigration:
+      - concern: 0091追加两条runInTransaction=false的CREATE INDEX CONCURRENTLY，分别可独立回滚，不删除既有索引，不回填业务记录。
+        handling: 原生PG实际Liquibase升级/回滚/重放；第一条前置检查pg_catalog的ICU root collation，缺失则HALT，避免默认lower改变Unicode结果。
+        evidenceReferences: [gmp-platform/backend/src/main/resources/db/changelog/0091-dhr-review-query-indexes.sql]
+    snapshotImpacts:
+      - area: frozen-candidates
+        change: 只读已有任务候选快照；不重算、回填或改写历史。
+        evidenceReferences: []
+    auditImpacts: []
+    permissionImpacts:
+      - area: personal-authority
+        change: 保持unrestricted、非空userIds优先、空/缺失集合回退assignee以及已办归属。
+        evidenceReferences: []
+    testImpacts:
+      - scope: native-query
+        scenarios: [旧Java基准与DB等价矩阵, 状态与候选交叉负例, 字面关键词和Unicode边界, 负页与页大小及大偏移, 恒定SQL次数与有界结果, 原生PG计划与索引前后, 相邻审批与冻结回归]
+        evidenceReferences: []
+    evidenceGaps: [两个既有DHR high继续open, 非本轮完整浏览器及全账号/收件人认证, 666/44/183历史增量仍待审]
+  extensionStrategy:
+    selectedPaths: [product-core]
+    rationale: 在现有DHR专属查询内做局部优化，避免新增任务人员读模型、缓存或大模块重构。
+    ownershipBoundaries:
+      - owner: DhrReviewService
+        responsibility: 个人列表查询及既有审批规则的稳定边界。
+  affectedFiles:
+    - path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrReviewService.java
+      changeType: update
+      reason: 精确数据库过滤、计数与分页。
+    - path: gmp-platform/backend/src/main/resources/db/changelog/0091-dhr-review-query-indexes.sql
+      changeType: create
+      reason: 待审工作流小部分索引、已办处理人/ID倒序部分索引，以及真实Unicode运行前置。
+    - path: gmp-platform/backend/src/main/resources/db/changelog/db.changelog-master.yaml
+      changeType: update
+      reason: 追加0091，不重写历史迁移。
+    - path: gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrReviewPaginationPostgresTest.java
+      changeType: create
+      reason: 原生PG旧Java等价矩阵及真实Liquibase升级/回滚/重放。
+    - path: gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrReviewServiceTest.java
+      changeType: update
+      reason: 两条列表断言迁原生PG，保留详情与办理负例。
+    - path: gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrReviewLifecycleIntegrationTest.java
+      changeType: update
+      reason: 两条列表断言迁真实PG应用生命周期，保留H2工作流/签名/冻结断言。
+    - path: gmp-platform/backend/src/test/java/com/zencas/edhr/recordcontrol/service/RecordControlPostgresIntegrationTest.java
+      changeType: update
+      reason: 实际退回/重提/批准后的个人列表矩阵。
+    - path: gmp-platform/backend/src/test/java/com/zencas/edhr/common/config/CurrentDatabaseBaselinePostgresTest.java
+      changeType: update
+      reason: 两条新changeset后数量9改11并核有效索引，原安装/升级/拒绝已有业务表及重复安装断言不变。
+  acceptanceScenarios:
+    - id: scenario.personal-review-query-equivalence
+      given: 同一冻结任务、当前用户、状态、关键词和页参数
+      when: 优化前Java基准和优化后DB执行
+      then: 当前页ID/内容、排序和总数一致；其他用户任务增长不增加逐批SQL与Java读取行数。
+      evidenceRequirements: [原生PG等价矩阵, 查询次数与返回行数, 索引计划原件, 全新独立最终QA]

@@ -1,0 +1,56 @@
+ontologyResult:
+  result: not-applicable
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: 1ad6300918bd0059049eab3c415ca31162dd5115
+    targetBranch: edhr-dev
+    targetCommit: 1ad6300918bd0059049eab3c415ca31162dd5115
+    contractReadCommit: 1ad6300918bd0059049eab3c415ca31162dd5115
+    uncommittedContractPaths: []
+  reason: 本轮只将既有DHR个人待审/已审查询的权限、状态、关键词、准确计数和分页下推数据库，并追加两条并发部分索引及ICU兼容前置；未改变业务概念、生命周期、候选或已办归属、签署、冻结及审计规范。14既有ID仅12项有限一致+2旧high证据缺口，知识330资产与目标完全相同；无规范替代、无新事实或成熟度提升。JSON兼容和ICU大小写是保持旧结果的工程边界，不转写成用户逐字政策。
+  changedArtifacts: []
+  knowledgeSync: []
+  conflicts: []
+  questions: []
+  validationEvidence:
+  - id: validation.dhr-paging-knowledge-schema
+    checkType: schema
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f tools/knowledge-model/pom.xml
+      test
+    outcome: passed
+    evidence:
+    - /tmp/edhr-page-ontology-knowledge-test.txt
+    - /tmp/edhr-page-ontology-knowledge-test.xml
+    - /tmp/edhr-page-ontology-knowledge-summary.json
+    - 89 tests,0 failures/errors/skipped; actual ontology-role command, separate from
+      product and independent QA runs.
+  - id: validation.dhr-paging-limited-semantic-boundary
+    checkType: evidence-path
+    command: Read DEC0068/DEC0063 original confirmations and affected code/migration/test-source
+      diff; map finite IDs and engineering compatibility boundaries.
+    outcome: passed
+    evidence:
+    - /tmp/edhr-page-ontology-semantic-review.json
+    - /tmp/edhr-page-ontology-source-fingerprints.json
+    - /tmp/edhr-page-ontology-source.diff
+    - 14 existing IDs:12 finite consistent,2 evidence-gap; whole-file0,unique increment
+      unknown; no product/migration/browser tests executed by ontology.
+  - id: validation.dhr-paging-unchanged-knowledge-assets
+    checkType: projection
+    command: Fingerprint all 330 tracked knowledge assets against target and confirm
+      no knowledge/architecture/contract delta.
+    outcome: passed
+    evidence:
+    - /tmp/edhr-page-ontology-knowledge-inventory.json
+    - /tmp/edhr-page-ontology-knowledge.diff
+    - Knowledge0.3.25/schema1.2.0 and P0 in-progress retained; both previous DHR high/open
+      retained.
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages:
+    - P1
+    - P2
+    - P3
