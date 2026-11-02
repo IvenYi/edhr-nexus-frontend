@@ -1,5 +1,9 @@
 # 持续推进台账
 
+## PR50已合入：PR51冲突整合
+
+本次L2仅集成收尾：实际最新edhr-dev为`54c9a7ccfbb2a2a420f6f0e2f41636f4805cf67f`（PR50人工merge），PR51来源`63f2244adcce90d944785c9e83617fff872e19c2`。唯一文本冲突为本台账顶部，两段进度均保留；RecordControlPostgresIntegrationTest自动合并，保留PR50的9个普通JWT/MVC场景及PR51实际退回/重提/批准列表验证。产品源码/迁移及知识/契约未引入新变化，当前准备实际155项合并候选回归与全新独立QA，不沿用旧146认证新组合。详情见[集成记录](../pr51-integration-20261102/README.md)。以下PR50未合入等文字为原阶段历史，当前以本节为准；原件不回写。所有旧high/规模/ICU/全审矩阵与暂缓保持，不自动merge/deploy/恢复、不查询触发CI。
+
 ## PR50待合并：DHR个人查询分页与索引
 
 已交付[PR51](https://github.com/IvenYi/edhr-nexus-frontend/pull/51)，audit/edhr-dev-dhr-review-pagination-20261102→edhr-dev，登记时OPEN/MERGEABLE/CLEAN，建议本批人工合入。受测b07fc1ca后a89d184d仅L0原件/验收/范围，当前交付登记保持保护路径；PR50仍为独立未合入验收分支，后续实际组合需核对。下一批先fetch实际合入及新代码，继续剩余权限/账号/收件人矩阵和文件一致性/健壮性；大活跃候选/COUNT深页/关键词、ICU部署前置与两旧high/A12/四gap及W6/W7不关闭，不自动merge/deploy/恢复。
@@ -13,6 +17,20 @@
 索引原生11组计划包含5万DHR历史和10万其他业务待办，小待审索引、个人大量已审顺序索引有收益，保留全部旧索引。ICU root前置HALT避免默认lower改变Unicode；CONCURRENTLY两独立changeset实际升级/回滚/重放，基线测试更新9→11并保留原业务/数据断言。5万同时待审仍有JSON候选CPU、准确COUNT/深页/关键词及共享表写入/空间边界，见索引报告，不称生产SLA。
 
 6017路径/134迁移只是固定目标盘点；4有限源码组、6A23判断、整文件0/unique未知。旧666/44/183、A23旧856+feature1/SQL130+新4及本次新增0091另入队、全部历史队列继续W6含旧已审/W7。两DHR high/A12/四gap、完整账号/收件人/UI矩阵、ACL三问及文件DELETE/UNKNOWN/相邻DHR附件回调、朋友签署页/生产弹窗暂缓保持。全部角色FINAL后实际向用户做PR前漂移/阶段复核再建PR，不自动merge/deploy/恢复、不查询触发CI。
+
+## PR49已合入：DHR来源影响与普通账号验收
+
+已交付[PR50](https://github.com/IvenYi/edhr-nexus-frontend/pull/50)，audit/edhr-dev-dhr-impact-review-20261031→edhr-dev，登记时OPEN/MERGEABLE/CLEAN，待人工merge。受测977287f6后仅L0原件/验收/范围/交付，当前保护路径保持。下一批先fetch真实合入及新增代码，补剩余权限/账号/收件人矩阵，继续文件DELETE/DHR附件回调等一致性与健壮性；新性能优化仍待明确答复、旧high/A12/四gap/666增量及W6/W7不关闭，不自动merge/deploy/恢复。
+
+当前全新独立质量对clean `977287f6`正式passed/FINAL、12/12必需检查，独立单次52/52、知识89/89、39JWT/MVC响应匹配及容量机制复现，已清理自有PG。本体NA/FINAL、24ID=18有限consistent+6gap；[验收](../branch-review-20261031-dhr-impact-review/acceptance.json)只认可测试证据增量，两旧high继续open。全部正式角色FINAL后已实际向用户完成PR前无漂移/阶段/余项沟通，受测后仅L0原件/验收/范围/交付登记，保护路径不变。以下“准备QA”为主侧历史检查点。
+
+实际fetch最新`edhr-dev@1ad6300918bd0059049eab3c415ca31162dd5115`，PR49人工合入、整树同0405e826，无其他源码/知识/契约增量。新分支`audit/edhr-dev-dhr-impact-review-20261031`，本批L2只新增9个普通JWT/MVC/实际PG执行场景，产品源码不改。单次52/52通过（PG34含新9、服务12、生命周期6）；首轮8夹具schema error原件保留，不算产品红控。已准备全新独立QA，当前不提前宣告完成。
+
+本体NA/FINAL、24既有ID有限核对及知识89通过、330指纹留证。来源内质量值变化已有整值比较，冻结checkResult是人工凭证并有全版hash核验；外部质量事实精确定义仍缺，两旧DHRhigh继续open。普通菜单/动作/当前及已办身份、个人提醒/同名隔离和历史冻结读取本批补有限证据，不代表所有UI/账号/收件人矩阵。
+
+新增性能机制实测：个人21任务页20，系统21/521/5021任务读取21/521/5021行与2/10/80SQL；每批64有界但每页仍遍历全量。已向用户建议DB等价筛选/计数/分页，未明确答复前不实施。9有限源码组/5条A23判断、具体拆分方案与固定6017路径/134迁移盘点见[本批](../branch-review-20261031-dhr-impact-review/README.md)；整文件完成0、unique未知，不报全局通过率。
+
+整体W3/W4/W5交叉推进，666路径/44知识/183ID候选增量继续pending；W2余项、W6含旧已审全量健壮性/A23旧856+feature1/SQL130+新4迁移与所有历史队列、W7持续增量均未关闭。文件DELETE顺序/UNKNOWN对账/相邻DHR附件回调及ACL三规则待决、A12余项/四gap、朋友任务签署页和生产弹窗暂缓保持。全部正式角色FINAL后实际向用户复核范围/漂移/阶段，再生成PR；不自动merge/deploy/恢复、不查询触发CI。
 
 ## PR48已合入：上传登记事务补偿
 

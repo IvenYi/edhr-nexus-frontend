@@ -1,0 +1,55 @@
+ontologyResult:
+  result: not-applicable
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: 1ad6300918bd0059049eab3c415ca31162dd5115
+    targetBranch: edhr-dev
+    targetCommit: 1ad6300918bd0059049eab3c415ca31162dd5115
+    contractReadCommit: 1ad6300918bd0059049eab3c415ca31162dd5115
+    uncommittedContractPaths: []
+  reason: 本轮只为既有记录控制生效→DHR冻结/审批/站内提醒规范补充有限普通账号JWT/应用HTTP链验证并量化性能，不改变业务概念、状态、政策或执行契约。已核对现有质量人工确认与客观来源比较边界；未发明自动质量解释，两个既有high/open及完整质量/账号/UI/A12剩余保持。无需新增或改写知识，330资产与目标一致，知识0.3.25/schema1.2.0及P0成熟度不升。
+  changedArtifacts: []
+  knowledgeSync: []
+  conflicts: []
+  questions: []
+  validationEvidence:
+  - id: validation.dhr-impact-knowledge-89
+    checkType: schema
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f tools/knowledge-model/pom.xml
+      test
+    outcome: passed
+    evidence:
+    - /tmp/edhr-dhr-impact-ontology-knowledge-test.txt
+    - /tmp/edhr-dhr-impact-ontology-knowledge-test.xml
+    - 89 tests, 0 failures, 0 errors, 0 skipped; actual independent ontology-role
+      run.
+  - id: validation.dhr-impact-limited-semantic-review
+    checkType: evidence-path
+    command: Read cited DEC0063/0068/0087 original confirmation records, facts/rules
+      and current production symbols; record finite ID-specific review and fingerprints.
+    outcome: passed
+    evidence:
+    - /tmp/edhr-dhr-impact-ontology-semantic-review.json
+    - /tmp/edhr-dhr-impact-ontology-source-fingerprints.json
+    - /tmp/edhr-dhr-impact-ontology-source.diff
+    - No product tests executed by ontology role; parent/independent quality results
+      remain separate.
+  - id: validation.dhr-impact-asset-status-retained
+    checkType: projection
+    command: git diff origin/edhr-dev -- docs/knowledge docs/architecture/business-knowledge-model.md;
+      fingerprint all 330 current knowledge assets.
+    outcome: passed
+    evidence:
+    - /tmp/edhr-dhr-impact-ontology-knowledge-inventory.json
+    - /tmp/edhr-dhr-impact-ontology-knowledge.diff
+    - No knowledge delta, no status/visibility/version increase; two DHR high/open
+      remain.
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages:
+    - P1
+    - P2
+    - P3
