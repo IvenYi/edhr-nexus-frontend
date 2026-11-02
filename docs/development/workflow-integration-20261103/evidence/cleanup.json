@@ -1,0 +1,31 @@
+{
+  "ports": {
+    "3000": {
+      "listening": true,
+      "pids": [
+        "28943"
+      ]
+    },
+    "8081": {
+      "listening": true,
+      "pids": [
+        "57213"
+      ]
+    },
+    "13002": {
+      "listening": false,
+      "pids": []
+    },
+    "18082": {
+      "listening": false,
+      "pids": []
+    },
+    "55483": {
+      "listening": false,
+      "pids": []
+    }
+  },
+  "mainServerProcessesUnchanged": true,
+  "temporaryClusterStopped": "/tmp/edhr-workflow-integration-pg-20261103",
+  "mainMigrationOrDataReset": false
+}

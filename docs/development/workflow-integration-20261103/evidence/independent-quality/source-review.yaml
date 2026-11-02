@@ -1,0 +1,75 @@
+qualityResult:
+  result: passed
+  baseCommit: 5d1bdc82533b3178701b0bf3f9ab885d382f22bb
+  headCommit: 96ea63a1948110f1ff7ab4eccdcb2b87de48dda7
+  contractBaseline:
+    sourceCommit: 96ea63a1948110f1ff7ab4eccdcb2b87de48dda7
+    targetBranch: edhr-dev
+    targetCommit: 2ac66928046aa98dc196376ed2abb4f76f61e545
+    contractReadCommit: 96ea63a1948110f1ff7ab4eccdcb2b87de48dda7
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: dirty
+    includedPaths:
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/controller/FileController.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrAttachmentService.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrAttachmentController.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrReviewController.java
+      - docs/development/workflow-integration-20261103/evidence/independent-quality/source-review.yaml
+    excludedPaths: [output, premium-audit.json]
+    untrackedPaths:
+      - docs/development/workflow-integration-20261103/evidence/independent-quality/source-review.yaml
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+    - id: quality.integration-file-source-baseline
+      required: true
+      category: requirements
+      description: 核对实际合并候选、契约和受影响附件规则，范围仅为文件及附件只读源审子范围。
+      method: inspection
+      command: git rev-parse HEAD; git log -1 --format='%P'; 读取项目/角色/交接契约、decisionPackage与附件规则
+      outcome: passed
+      evidence:
+        - 候选96ea63a1的双父为feature5d1bdc82和远端2ac66928；实际工作文件四项均逐字等于候选内原件。
+        - rule.dhr-summary-controlled-attachment-upload与rule.dhr-review-task-frozen-attachment-download的原件保留、冻结成员及摘要资格保持；未引入归档或完整多租户政策。
+    - id: quality.integration-file-transaction-source
+      required: true
+      category: audit
+      description: 文件上传只清本次拥有的路径，删除只在提交后清原件，回滚及未知提交结果保留原件。
+      method: inspection
+      command: 对比FileController及FileCopyOwnershipTest、FileUploadTransactionFailureTest、FileDeleteTransactionFailureTest和对应集成测试源码
+      outcome: passed
+      evidence:
+        - upload先Files.createFile取得新路径所有权，失败不能替换或删除已有原件；流复制失败清本次文件。
+        - registerUploadedFile使用TransactionTemplate与afterCompletion；只在明确STATUS_ROLLED_BACK清本次上传，STATUS_UNKNOWN保留并记录，事务未启动时的清理只针对ownedPath。
+        - delete在数据库删除事务内注册afterCommit物理清理；SQL或提交失败不会先删原件；UNKNOWN保留，物理清理失败向调用方传播，不伪报成功。
+        - PRODUCTION_EXECUTION与SIGNATURE_EVIDENCE原保护判断仍先于删除；uploadedBy改为认证AuditContext身份，原内部调用fallback保持。
+    - id: quality.integration-dhr-attachment-source
+      required: true
+      category: security
+      description: DHR附件写入补偿、有界摘要及下载元数据复用保留既有资格与冻结边界。
+      method: inspection
+      command: 对比DhrAttachmentService、两个下载控制器及DhrAttachmentTransactionPostgresTest、DhrAttachmentWriteFailureTest、DhrAttachmentDownloadMetadataPostgresTest源码
+      outcome: passed
+      evidence:
+        - CREATE_NEW碰撞发生在清理拥有权取得前；IOException写入/关闭失败只清本次未注册片段，明确回滚清本次文件，UNKNOWN保留。
+        - 上传/核验/解除关联沿原@Transactional、DHR父锁、状态门禁和领域审计；解除关联只改active，不删历史文件。
+        - 下载仍两次检查DHR存在、按default租户及DHR身份读取附件、要求冻结版本同时匹配附件ID和sha256；非冻结下载拒绝已解除关联附件。
+        - verifiedFile用8192字节缓冲计算相同SHA-256，仍在返回Resource前检查文件存在及摘要；Download只在同次已验证元数据中携带path/originalName。
+        - DhrReviewController仍先service.detail按具体个人任务解析DHR和冻结版本，再调用受控附件下载；两控制器保留原权限、UTF-8原文件名、octet-stream及nosniff响应语义。
+        - 已核对测试源码覆盖原件缺失/损坏、解除关联后指定冻结版、错误成员/摘要/版本/租户、SQL/audit/提交失败回滚和UNKNOWN保留；本实例没有执行这些测试。
+    - id: quality.integration-file-source-hygiene
+      required: true
+      category: documentation
+      description: 受审四个产品文件的合并差异无空白错误且源与候选一致。
+      method: command
+      command: git diff --check 5d1bdc82..96ea63a1 -- 四个受审产品文件；Python逐字比较git show候选与工作文件
+      outcome: passed
+      evidence:
+        - 命令退出码0，四文件逐字一致；本实例只新增本回执，未修改产品、测试、知识或配置。
+  findings: []
+  residualRisks:
+    - id: residual.integration-file-source-runtime-not-executed
+      description: 本实例仅独立审查原始代码、测试断言和规则，未运行Maven、数据库、浏览器或真实文件故障注入。
+      impact: 此passed只覆盖文件/附件源审子范围，不能替代父质量实例的实际合并运行验证或总质量结果。
+      mitigation: 父质量实例另行执行当前候选的真实PG、前端与浏览器链路并汇总；未将源码断言写成已运行通过。
+  blockingConditions: []

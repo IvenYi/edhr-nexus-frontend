@@ -1,0 +1,61 @@
+ontologyResult:
+  result: not-applicable
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: 96ea63a1948110f1ff7ab4eccdcb2b87de48dda7
+    targetBranch: edhr-dev
+    targetCommit: 2ac66928046aa98dc196376ed2abb4f76f61e545
+    contractReadCommit: 96ea63a1948110f1ff7ab4eccdcb2b87de48dda7
+    uncommittedContractPaths: []
+  reason: 本次合并未新增或替代业务概念、关系、生命周期、签署/资格政策或审计含义。已按实际两父提交及原始源码核对远端DHR分页、文件事务与附件原件/元数据优化和本地集中责任扩展的交叉路径；当前候选保留原候选来源、仅新处理人可处理、专属DHR批准/退回和冻结证据边界。合并后的知识树与本地功能提交一致，远端没有契约/结构化知识增量，无需修改既有权威定义；不以此结果替代合并运行和独立质量验证。
+  changedArtifacts: []
+  knowledgeSync:
+    - id: rule.workflow-central-entry.domain-projection
+      disposition: retained
+      scope: 集中读取仍复用领域任务与持久化身份，DHR个人列表SQL分页不新增处理权、运行任务或作业/工艺路线范围。
+      sourceReferences: [docs/knowledge/rules/workflow-central-entry.yaml, gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/WorkflowOperationsQuery.java, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrReviewService.java]
+    - id: rule.workflow-central-entry.signed-responsibility-change
+      disposition: retained
+      scope: 当前userIds与assignee随签名改派切换为新目标，originSnapshot、冻结内容及决定保持；新分页和原详情/动作读取同一当前责任，DHR仍不开放本人转办或撤回。
+      sourceReferences: [docs/knowledge/rules/workflow-central-entry.yaml, docs/knowledge/decisions/DEC-0093-central-form-dhr-workflow-responsibility.yaml, gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/WorkflowResponsibilityService.java]
+    - id: rule.dhr-summary-freeze-version
+      disposition: retained
+      scope: 查询、当前责任变更及元数据复用不修改DHR冻结版本、来源内容、摘要或既有签署和批准；归档等明确暂缓范围保持。
+      sourceReferences: [docs/knowledge/rules/dhr-summary.yaml, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrReviewService.java]
+    - id: rule.dhr-summary-controlled-attachment-upload
+      disposition: retained
+      scope: 原件与冻结引用保持；补偿仅清理本次拥有且明确回滚的未注册文件，事务结果未知保留原件，解除关联不删除原件。
+      sourceReferences: [docs/knowledge/rules/dhr-summary.yaml, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrAttachmentService.java, gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/controller/FileController.java]
+    - id: rule.dhr-review-task-frozen-attachment-download
+      disposition: retained
+      scope: Download携带同次已授权核验的路径和原始文件名，仍要求具体任务及冻结版本成员和摘要匹配，不扩大读取范围。
+      sourceReferences: [docs/knowledge/rules/dhr-summary.yaml, gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrReviewController.java, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrAttachmentService.java]
+  conflicts: []
+  questions: []
+  validationEvidence:
+    - id: validation.workflow-integration-contract-and-ancestry
+      checkType: reference
+      command: git diff 0bd0848b..2ac66928 -- AGENTS.md codeplzreadme.md docs/agents docs/knowledge; git merge-base --is-ancestor for both parents; git rev-parse feature and candidate knowledge trees
+      outcome: passed
+      evidence: [docs/development/workflow-integration-20261103/evidence/ontology/source-proof.json, 双方提交均为候选祖先，远端契约/知识增量为空，当前知识树等于本地功能树]
+    - id: validation.workflow-integration-responsibility-and-review-source
+      checkType: status-transition
+      command: 读取DhrReviewService.list/eligible/detail/act与WorkflowResponsibilityService.change/requireActive/eligible及合并后的跨域测试源码
+      outcome: passed
+      evidence: [docs/development/workflow-integration-20261103/evidence/ontology/semantic-review.md, 改派后当前候选与处理人同步切换、原候选独立保留、旧人失权及DHR专属动作的声明一致]
+    - id: validation.workflow-integration-file-attachment-source
+      checkType: projection
+      command: 对比FileController、DhrAttachmentService及两下载控制器的原始差异，并核对受控附件与冻结版本规则
+      outcome: passed
+      evidence: [docs/development/workflow-integration-20261103/evidence/ontology/semantic-review.md, 同次授权核验的元数据复用与流式同算法摘要不改变冻结成员或内容；明确回滚及未知结果的原件保护保持]
+    - id: validation.workflow-integration-result-paths
+      checkType: evidence-path
+      command: ruby解析本轮ontology-result.yaml及核对sourceReferences和证据路径存在
+      outcome: passed
+      evidence: [docs/development/workflow-integration-20261103/evidence/ontology/validation.json, docs/development/workflow-integration-20261103/evidence/ontology/source-proof.json, 本轮只作增量原始源码/路径核对，不冒称Maven/数据库/浏览器已由本体执行]
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages: [P1, P2, P3]

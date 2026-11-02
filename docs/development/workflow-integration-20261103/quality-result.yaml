@@ -1,0 +1,139 @@
+qualityResult:
+  result: passed
+  baseCommit: 0bd0848bbded6d6954d62a4f924e0b2eec6623ad
+  headCommit: 96ea63a1948110f1ff7ab4eccdcb2b87de48dda7
+  contractBaseline:
+    sourceCommit: 96ea63a1948110f1ff7ab4eccdcb2b87de48dda7
+    targetBranch: edhr-dev
+    targetCommit: 2ac66928046aa98dc196376ed2abb4f76f61e545
+    contractReadCommit: 96ea63a1948110f1ff7ab4eccdcb2b87de48dda7
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: dirty
+    includedPaths:
+      - gmp-platform/backend/src/main
+      - gmp-platform/backend/src/test
+      - gmp-platform/frontend/src
+      - gmp-platform/frontend/scripts
+      - docs/knowledge
+      - docs/architecture/business-knowledge-model.md
+      - docs/frontend/list-page-guidelines.md
+      - docs/development/workflow-integration-20261103
+    excludedPaths: [output, gmp-platform/frontend/output, premium-audit.json]
+    untrackedPaths:
+      - docs/development/workflow-integration-20261103/ontology-result.yaml
+      - docs/development/workflow-integration-20261103/quality-result.yaml
+      - docs/development/workflow-integration-20261103/evidence
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+    - id: quality.integration-candidate-and-contract
+      required: true
+      category: requirements
+      description: 独立核对实际合并候选、双方祖先、契约增量及未提交产品漂移。
+      method: command
+      command: git rev-parse HEAD; git log -1 --format='%P'; git merge-base --is-ancestor for feature and target; git diff契约与产品；保存实际文件SHA256
+      outcome: passed
+      evidence:
+        - docs/development/workflow-integration-20261103/evidence/independent-quality/candidate-proof.json
+        - docs/development/workflow-integration-20261103/evidence/independent-quality/integration-and-ui-reuse.json
+        - 本地功能5d1bdc82533b3178701b0bf3f9ab885d382f22bb与远端2ac66928046aa98dc196376ed2abb4f76f61e545都是受测候选96ea63a1948110f1ff7ab4eccdcb2b87de48dda7的父提交；未重写协作者历史。
+        - 远端相对原基点0bd0848b未修改项目/角色/交接/schema契约或结构化知识；本次实际读取采用合并候选契约，未提交差异仅为集成报告与证据，产品及知识没有漂移。
+    - id: quality.integration-backend-real-postgres
+      required: true
+      category: integration
+      description: 在本轮独占PostgreSQL集群的新鲜隔离库运行合并候选受影响后端回归。
+      method: automated-test
+      command: Java21 mvn -q -Dtest=RecordControl*Test,Dhr*Test,Workflow*Test,File*Test,ExecutionAccessTest,ProductionExecutionEngineTest,BusinessKnowledgeModelTest,CurrentDatabaseBaselinePostgresTest test；显式测试URL使用127.0.0.1:55483的白名单库
+      outcome: passed
+      evidence:
+        - docs/development/workflow-integration-20261103/evidence/independent-quality/backend-summary.json
+        - docs/development/workflow-integration-20261103/evidence/independent-quality/com.zencas.edhr.recordcontrol.service.RecordControlPostgresIntegrationTest.txt
+        - docs/development/workflow-integration-20261103/evidence/independent-quality/com.zencas.edhr.production.service.DhrReviewPaginationPostgresTest.txt
+        - 59类621项，577通过、44因各自环境条件跳过、0失败/错误；跳过未计通过。RecordControl真实PG42和DHR分页99均无跳过，覆盖改派后个人列表/详情/实际处理权与原候选保留、责任及签名审计、竞争/回滚、旧冻结与过时批准门禁。
+        - 文件上传事务PG5、删除PG10、DHR附件事务PG11、下载元数据PG11及查询观察PG2均实际执行，连同相邻非PG故障测试保留双方原件/UNKNOWN/提交失败及同次下载资格断言。容量/SLA套件未开启。
+    - id: quality.integration-index-install-and-upgrade
+      required: true
+      category: database
+      description: 真实PG核对0091索引的当前安装基线及现有开发副本升级，不向主开发库执行迁移。
+      method: automated-test
+      command: CurrentDatabaseBaselinePostgresTest及新鲜恢复副本的当前应用启动；查询databasechangelog和pg_index
+      outcome: passed
+      evidence:
+        - docs/development/workflow-integration-20261103/evidence/independent-quality/com.zencas.edhr.common.config.CurrentDatabaseBaselinePostgresTest.txt
+        - docs/development/workflow-integration-20261103/evidence/independent-quality/integration-and-ui-reuse.json
+        - 基线3项通过；私有55483集群的独有基线库覆盖新装、重复运行与ICU前提阻断。5432上的独立live副本由原开发快照恢复，启动当前候选后changeset=11、两条0091索引均valid；主edhr_dev未执行该迁移或重置样本。
+    - id: quality.integration-frontend-unchanged-and-build
+      required: true
+      category: regression
+      description: 验证合并后前端构建、统一列表规范和数值归一化，并明确既有组件证据的复用边界。
+      method: automated-test
+      command: npm run build; node scripts/verify-list-table-style-contract.mjs; node --test scripts/test-execution-form-values.mjs; git rev-parse feature/HEAD前端树
+      outcome: passed
+      evidence:
+        - docs/development/workflow-integration-20261103/evidence/independent-quality/frontend-build.txt
+        - docs/development/workflow-integration-20261103/evidence/independent-quality/list-style.txt
+        - docs/development/workflow-integration-20261103/evidence/independent-quality/number-tests.txt
+        - docs/development/workflow-integration-20261103/evidence/independent-quality/integration-and-ui-reuse.json
+        - 当前候选构建、列表规范及数值工具2项通过；frontend/src与scripts树严格等于已验收feature。前轮40项合成API组件交互仅按该相同树复用，本实例未再执行40项，未将其记为本轮新增实跑或真实后端验证。
+    - id: quality.integration-live-end-to-end
+      required: true
+      category: e2e
+      description: 以维护页面、真实当前后端及新鲜恢复隔离数据库独立复跑完整业务链。
+      method: browser
+      command: 执行既有workflow-record-dhr-live-fixture.mjs后，在localhost:13002/18082运行test-workflow-record-dhr-live.mjs，WORKFLOW_LIVE_ONLY未设置
+      outcome: passed
+      evidence:
+        - docs/development/workflow-integration-20261103/evidence/independent-quality/live-result.json
+        - 独立副本edhr_record_control_test_closure_e2e_intqa_20261103；selectedSteps=all，12/12检查步骤通过，errors为空，没有业务API拦截。12步包含登录与服务初始化，不表述为12条独立业务流程。
+        - 普通已认证候选读取及匿名拒绝、签名变更/作废申请、受限撤回新号重提、退回终结、处理人转办和管理员签名改派、批准生效、DHR双向门禁、人工退回后V2重汇总、新责任人专属批准、原冻结正文/行摘要、站内通知与本人已读均有真实页面及持久化断言。
+        - 普通表单经过DHR填报保存0、个人填报小数1.25保存提交、转办/签名改派、退回重提和个人审批修改2.5并实际签署；最终断言COMPLETED:number:2.5。主库9张本范围业务表before/after指纹相同，不扩展为全数据库零变化。
+    - id: quality.integration-actual-domain-audit
+      required: true
+      category: visual
+      description: 实际查看独立复跑生成的表单与DHR数据审计页面，核对责任和签名呈现仍沿既有详情布局。
+      method: inspection
+      command: view_image独立live-dhr-v2-domain-audit.png与live-ordinary-form-domain-audit.png
+      outcome: passed
+      evidence:
+        - docs/development/workflow-integration-20261103/evidence/independent-quality/live-dhr-v2-domain-audit.png
+        - docs/development/workflow-integration-20261103/evidence/independent-quality/live-ordinary-form-domain-audit.png
+        - 两页面可见重新分配事件、原/新处理责任、原因、签署人及签名引用；DHR版本及具体表单份身份保持，使用既有详情抽屉和数据审计布局。本轮未新增窄屏视觉矩阵。
+    - id: quality.integration-source-and-ontology
+      required: true
+      category: security
+      description: 直接核对DHR分页与当前责任读取、签名改派及文件/附件事务和冻结下载的交叉路径，复核正式本体结果。
+      method: inspection
+      command: 读取DhrReviewService.list/detail/act/eligible、WorkflowResponsibilityService.change/eligible/requireActive与相关测试；并行只读文件/附件源审；读取本轮ontology-result与知识差异
+      outcome: passed
+      evidence:
+        - docs/development/workflow-integration-20261103/evidence/independent-quality/source-review.yaml
+        - docs/development/workflow-integration-20261103/ontology-result.yaml
+        - docs/development/workflow-integration-20261103/evidence/independent-quality/com.zencas.edhr.knowledge.BusinessKnowledgeModelTest.txt
+        - 改派重写当前唯一userIds/assignee并独立保留originSnapshot，SQL列表与原详情/批准使用当前责任；会话权限、实际签署人干预权限、租户/目标资格、活动任务及状态绑定检查保持，DHR本人转办/撤回及通用批准绕过仍不开放。
+        - 文件/附件子范围正式passed、无findings，未参与修复；其只读源审与本实例真实PG分别记录，不将源码断言冒称运行。知识89项通过、知识树等于feature；本体not-applicable理由、conflicts/questions为空及各适用校验passed已独立核对。无新增政策或成熟度提升。
+    - id: quality.integration-evidence-hygiene
+      required: true
+      category: documentation
+      description: 核对交付证据边界及产品/手写文档空白错误，不更改明确保留的原始输出。
+      method: command
+      command: git diff --check 2ac66928 -- . 排除README列明的source-excerpts.txt及generic.log；YAML.safe_load与必需字段/枚举检查
+      outcome: passed
+      evidence:
+        - docs/development/workflow-integration-20261103/README.md
+        - 原始参考带行号空行及generic.log的两处纯空白输出行已精确登记保留；只排除这两个原始证据文件。产品、知识、手写文档及其余差异无空白错误，不关闭全局源码检查。
+        - 本实例只生成本轮质量回执、运行证据和只读源审结果，未修改产品、测试、夹具、业务规则或配置；旧output、数据库备份和premium-audit.json未作为本轮提交范围，也未清理。
+  findings: []
+  residualRisks:
+    - id: residual.integration-skipped-and-release
+      description: 扩大后端44项条件跳过；容量/SLA、迁移降级/恢复及生产部署并未在本轮执行，GitHub分支保护/必需CI设置也未核验。
+      impact: 本轮本地合并候选通过不等于全部条件套件、所有容量/复杂模板或生产发布验收，未声称治理文字构成服务器强制门禁。
+      mitigation: 原始汇总逐类保留跳过；实际PG、基线与副本升级、真实页面整链分别有本候选证据，发布按对应环境另验。
+    - id: residual.integration-explicit-deferred
+      description: 归档、打印作废过滤、活动表单作废、完整放行后变更、通用质量/异常/源签署自动判读、通知/目录的剩余组合、A12、多租户及作业条件runtime仍按原边界保留。
+      impact: 当前指定MVP链通过不自动关闭全项目全部TODO或知识运行阶段。
+      mitigation: 当前知识、开放问题、原闭环清单与集成README保留范围，本轮没有新建政策或扩大运行能力。
+    - id: residual.integration-normal-environment
+      description: 主3000/8081继续原运行，本实例只在隔离服务和数据库验证合并代码；主库未应用0091索引。
+      impact: 本结果证明Git候选与隔离运行，不将其表述为已在用户主环境执行新迁移或生产部署。
+      mitigation: 正常启动后的迁移及运行由主方按实际交付范围处理，不重置既有验收样本；当前主9表指纹保护保持。
+  blockingConditions: []

@@ -1,0 +1,84 @@
+{
+  "candidate": "96ea63a1948110f1ff7ab4eccdcb2b87de48dda7",
+  "feature": "5d1bdc82533b3178701b0bf3f9ab885d382f22bb",
+  "target": "2ac66928046aa98dc196376ed2abb4f76f61e545",
+  "knowledgeBaselineVersion": "0.3.25",
+  "contractReadCommit": "96ea63a1948110f1ff7ab4eccdcb2b87de48dda7",
+  "featureAncestor": true,
+  "targetAncestor": true,
+  "upstreamContractAndKnowledgeDelta": [],
+  "knowledgeTreeMatchesFeature": true,
+  "sourceHashes": [
+    {
+      "path": "AGENTS.md",
+      "gitBlob": "8e62c2aee54a78468861bb01cfad4d7f77b11665",
+      "sha256": "13dc7cdacea0b1bb0aef2abb268781f9c69584acd4879b204d2b7fd81a2927fc"
+    },
+    {
+      "path": "docs/agents/agent-handoff-contract.md",
+      "gitBlob": "9b54a3610a5b5f835c95e2dcd31c3a60ac4886d4",
+      "sha256": "3439a35dd1baa77ac723f1b5afa237a338d56e31386f06b02b4aacfd754e3a12"
+    },
+    {
+      "path": "docs/agents/business-knowledge-modeler.md",
+      "gitBlob": "4832fd1f67d9125e9e24697add9c198d9eb8e0eb",
+      "sha256": "9806c900f98e1cbcf4f8d68a998a07a5449369df037183c75ec08cd666bf56ae"
+    },
+    {
+      "path": "docs/knowledge/rules/workflow-central-entry.yaml",
+      "gitBlob": "bc76551d050b84862d07d83fcafce84dcb1fe2ed",
+      "sha256": "877ad5e3d51e0a52815ad15a4e7810c929fe56d0f9fa32a9dd33be925005bc94"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0093-central-form-dhr-workflow-responsibility.yaml",
+      "gitBlob": "aab1a58f4fc8ca38bd10372bc8178fb860a89300",
+      "sha256": "cb692c88ae96c473b4c7a05705c3d386f5376c968bf177adc09c259e674c8004"
+    },
+    {
+      "path": "docs/knowledge/rules/dhr-summary.yaml",
+      "gitBlob": "95aeff4df336ba505df18cfa22c9a37865f83baa",
+      "sha256": "2a9240f5ecac5da9e1277e1f750d46695ab93097aa3229ab976f19c38934d601"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrReviewService.java",
+      "gitBlob": "ca24617ced284f241c3af09975b3aaecc7198c9a",
+      "sha256": "b49a1a9bdf6bdbb253565ec6e828166005094e8866412d50e6fab7bb9bfb8c42"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/WorkflowResponsibilityService.java",
+      "gitBlob": "ff5bb030f56bd636f90ef192edc0599d6ebe0279",
+      "sha256": "9fa3effdad0debb9a1f6a1b29e821d02bb0dd7e92b1e24c809676146af4fbb01"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/WorkflowOperationsQuery.java",
+      "gitBlob": "0120df68e6adec2df12405087b6028eeeda35f85",
+      "sha256": "b59d4d91b44b62081d45fc45fbafeab258300459282a6254819067b62d6f357b"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/controller/FileController.java",
+      "gitBlob": "5ad2314dd1c3c6047052fb4c41b58c4a23591a97",
+      "sha256": "45b7f380ea681e47551e37da8cd01325d0a29b375c40d1f47f0bce032be82f10"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrAttachmentService.java",
+      "gitBlob": "cfccd3daec5acdf71737021353599f9cfe202c21",
+      "sha256": "31db80b5e606b4fbe70d2dd3cf22309e7c3be82d6e47511c2df5cca10f45322b"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrReviewController.java",
+      "gitBlob": "ee1eb8e88e04e3d0fc155434708305f37850c2fa",
+      "sha256": "62a5bbdf40de4cb457c69b644fa4f2120bb9bd429ecd492579d5ec1ea3487e6c"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrAttachmentController.java",
+      "gitBlob": "bb5dc1198097823e88d93899017f60a5643c4dc4",
+      "sha256": "0120f55096608de86fe2c0080b90a8f1e666f7415ec2a63402a6ac0c85be7d62"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/resources/db/changelog/0091-dhr-review-query-indexes.sql",
+      "gitBlob": "5d078769b17c8f9f8004826b879229235fbfaff8",
+      "sha256": "37fc13923530d806f4c5d291ada0835d5a62edfd77b8702802e36cde19ee416e"
+    }
+  ],
+  "qualification": "Original source and test-source semantic inspection only; no Maven/database/browser run by ontology role."
+}
