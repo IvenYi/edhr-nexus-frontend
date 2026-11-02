@@ -1,0 +1,1170 @@
+{
+  "roleState": "FINAL",
+  "result": "passed",
+  "scope": "auxiliary read-only provenance/inventory check; not runtime or whole-audit certification",
+  "baseCommit": "1ad6300918bd0059049eab3c415ca31162dd5115",
+  "headCommit": "b07fc1ca5dd7e4a37b2584c19377495b86b5536a",
+  "contractReadCommit": "b07fc1ca5dd7e4a37b2584c19377495b86b5536a",
+  "workingTreeClean": true,
+  "primaryOriginals": 108,
+  "ontologyOriginals": 17,
+  "gzipOriginals": 16,
+  "originalRecords": [
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/primary/attempt1-DhrReviewLifecycleIntegrationTest.xml.gz",
+      "source": "/tmp/edhr-page-attempt1-DhrReviewLifecycleIntegrationTest.xml",
+      "encoding": "gzip",
+      "bytes": 287570,
+      "sha256": "20efeb0db0dc2d68b8e8aa3d5df0c93adcf14fa906894c12a395745afe1fd108",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/primary/attempt1-DhrReviewPaginationPostgresTest.xml",
+      "source": "/tmp/edhr-page-attempt1-DhrReviewPaginationPostgresTest.xml",
+      "encoding": "identity",
+      "bytes": 36152,
+      "sha256": "fff4571fa04942e4da98b8e735582f49e254edeaaaf744cd3be295721693b4da",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/primary/attempt1-DhrReviewServiceTest.xml",
+      "source": "/tmp/edhr-page-attempt1-DhrReviewServiceTest.xml",
+      "encoding": "identity",
+      "bytes": 34455,
+      "sha256": "3aea49b2e4b7b9bbe242f538782c9a4f63b7b15ce64deb85b433bf3c65b2aad5",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/primary/attempt1-RecordControlPostgresIntegrationTest.xml.gz",
+      "source": "/tmp/edhr-page-attempt1-RecordControlPostgresIntegrationTest.xml",
+      "encoding": "gzip",
+      "bytes": 1243234,
+      "sha256": "105cac626263cc1a791868d133ea20de5af5c392a17621dab15c66bb2db5ae87",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/primary/attempt1-command.json",
+      "source": "/tmp/edhr-page-attempt1-command.json",
+      "encoding": "identity",
+      "bytes": 440,
+      "sha256": "3c63e63b05a5ca0c45a34ffb79f19b15099bac7f75056d076fed5ad1dd6c95c4",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/primary/attempt1-summary.json",
+      "source": "/tmp/edhr-page-attempt1-summary.json",
+      "encoding": "identity",
+      "bytes": 591,
+      "sha256": "2795cf692ef1137e82f602f6390e0e53e819d00eb7f414bfc544a828014f2cec",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/primary/attempt1-test.txt.gz",
+      "source": "/tmp/edhr-page-attempt1-test.txt",
+      "encoding": "gzip",
+      "bytes": 1467018,
+      "sha256": "2fae58ae863229dca5bd9c023e96fe1a04c25f47343b138b848d3cdbe2ee050b",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/primary/attempt2-pagination.xml",
+      "source": "/tmp/edhr-page-attempt2-pagination.xml",
+      "encoding": "identity",
+      "bytes": 54034,
+      "sha256": "8b01a91a3894a5a2cd5d5f7d4293aa53f9e0e13668526c52bdb695a541a8cef5",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/primary/attempt2-summary.json",
+      "source": "/tmp/edhr-page-attempt2-summary.json",
+      "encoding": "identity",
+      "bytes": 66,
+      "sha256": "f0cbb15ae76e4362714a8f643be2c9fc0e33a55ecbec0d8ace169caff3fa5ecf",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/primary/attempt2-test.txt",
+      "source": "/tmp/edhr-page-attempt2-test.txt",
+      "encoding": "identity",
+      "bytes": 8346,
+      "sha256": "f9b5c4c3087927066cf72911cfa1dce65d19c0ed4bde0ee30b5941a3da6ee5f3",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/primary/baseline-cleanup.json",
+      "source": "/tmp/edhr-page-baseline-cleanup.json",
+      "encoding": "identity",
+      "bytes": 121,
+      "sha256": "13c20d64794288c65f53efd75e6bb4457cee508bf6c04cf5163dd3aef16fd7d1",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/primary/baseline-command.json",
+      "source": "/tmp/edhr-page-baseline-command.json",
+      "encoding": "identity",
+      "bytes": 259,
+      "sha256": "1f4b1db48acceb75e980c9ccfd8a0e0eac335eb50a97267ce77c4287daefaa86",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/primary/baseline-db.json",
+      "source": "/tmp/edhr-page-baseline-db.json",
+      "encoding": "identity",
+      "bytes": 270,
+      "sha256": "79ec721e2fe58060964180d7e90b7bd73fffa47454e6a2c6aaaa8c89e9076c81",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/primary/baseline-summary.json",
+      "source": "/tmp/edhr-page-baseline-summary.json",
+      "encoding": "identity",
+      "bytes": 65,
+      "sha256": "466813b8426e0f57b434c1ed32a55df134051d0e8148de4f33f746ba649c55c6",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/primary/baseline-test.txt",
+      "source": "/tmp/edhr-page-baseline-test.txt",
+      "encoding": "identity",
+      "bytes": 31610,
+      "sha256": "73a5387334aa6710253734839ec28f0a5ec780eca10462e856767228e5799a47",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/primary/baseline.xml",
+      "source": "/tmp/edhr-page-baseline.xml",
+      "encoding": "identity",
+      "bytes": 61249,
+      "sha256": "6a5f29b7232f0736fe623b3d5e15a16038801309c4971ba7f37fd2a3d1a724e6",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/primary/before-index-DhrReviewLifecycleIntegrationTest.xml.gz",
+      "source": "/tmp/edhr-page-before-index-DhrReviewLifecycleIntegrationTest.xml",
+      "encoding": "gzip",
+      "bytes": 287862,
+      "sha256": "4f685d759941cb5771fd7215d5e8a0e55166505bb23c26751395c1cfca7c5e0a",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/primary/before-index-DhrReviewPaginationPostgresTest.xml.gz",
+      "source": "/tmp/edhr-page-before-index-DhrReviewPaginationPostgresTest.xml",
+      "encoding": "gzip",
+      "bytes": 450955,
+      "sha256": "a126b8bbfb01bd6641047d43c3bd7426a946acbd2f43ec846796619d33ae6c7b",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/primary/before-index-DhrReviewServiceTest.xml",
+      "source": "/tmp/edhr-page-before-index-DhrReviewServiceTest.xml",
+      "encoding": "identity",
+      "bytes": 34454,
+      "sha256": "90d0e261a51cdad3ceba727a6b73f5bac3b14763e5e57bf76e294645edf14090",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/primary/before-index-RecordControlPostgresIntegrationTest.xml.gz",
+      "source": "/tmp/edhr-page-before-index-RecordControlPostgresIntegrationTest.xml",
+      "encoding": "gzip",
+      "bytes": 1309829,
+      "sha256": "e285fbb2ebf67f6dc72c5929d5a5a2ed3b5eec021c645d29957ba76f0d61c1fb",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/primary/before-index-command.json",
+      "source": "/tmp/edhr-page-before-index-command.json",
+      "encoding": "identity",
+      "bytes": 440,
+      "sha256": "3c63e63b05a5ca0c45a34ffb79f19b15099bac7f75056d076fed5ad1dd6c95c4",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/primary/before-index-observation.json",
+      "source": "/tmp/edhr-page-before-index-observation.json",
+      "encoding": "identity",
+      "bytes": 78,
+      "sha256": "791acaf88588f82e80332807a54fa93569d102c3574dd1589c8ebde515db2a4b",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/primary/before-index-observation.json.args.json",
+      "source": "/tmp/edhr-page-before-index-observation.json.args.json",
+      "encoding": "identity",
+      "bytes": 14,
+      "sha256": "46ae1c74ef02e38951e3fb7f810c28453d3ed98dce740405289e08fb823b8938",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/primary/before-index-observation.json.plan.json",
+      "source": "/tmp/edhr-page-before-index-observation.json.plan.json",
+      "encoding": "identity",
+      "bytes": 49906,
+      "sha256": "a19af63d43d1d6a0dea8d73bde2e2e6ac9eccb9e6dd7c9e61e2068cd4ca89728",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/primary/before-index-observation.json.sql",
+      "source": "/tmp/edhr-page-before-index-observation.json.sql",
+      "encoding": "identity",
+      "bytes": 2070,
+      "sha256": "f1d7be2948fe1fb66962368ee952cc1885e1c9677cc65e71585fd5bc57cced4d",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/primary/before-index-summary.json",
+      "source": "/tmp/edhr-page-before-index-summary.json",
+      "encoding": "identity",
+      "bytes": 682,
+      "sha256": "043a7468293a2e868f762ca36a6f1558404bce20f79e4323d1d6193b13d29618",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/primary/before-index-test.txt.gz",
+      "source": "/tmp/edhr-page-before-index-test.txt",
+      "encoding": "gzip",
+      "bytes": 1923037,
+      "sha256": "3133a363f7c0cc6f03101a19d30bee391f97afef5fd8b9be51293e08a08cd7dc",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/primary/index-attempt1.txt",
+      "source": "/tmp/edhr-page-index-attempt1.txt",
+      "encoding": "identity",
+      "bytes": 3001,
+      "sha256": "175ac441f754a9d810151ad3de09138722cabc0ea33a35c697cad7340d97f0cf",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/primary/index-compile-attempt-command.json",
+      "source": "/tmp/edhr-page-index-compile-attempt-command.json",
+      "encoding": "identity",
+      "bytes": 440,
+      "sha256": "3c63e63b05a5ca0c45a34ffb79f19b15099bac7f75056d076fed5ad1dd6c95c4",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/primary/index-compile-attempt-summary.json",
+      "source": "/tmp/edhr-page-index-compile-attempt-summary.json",
+      "encoding": "identity",
+      "bytes": 682,
+      "sha256": "6a255c98d5216a6ebbae1e91bd10d17bfc73815df91f5ad0cfd100715f9a37d2",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/primary/index-compile-attempt-test.txt",
+      "source": "/tmp/edhr-page-index-compile-attempt-test.txt",
+      "encoding": "identity",
+      "bytes": 5191,
+      "sha256": "9254d2b02b2263658273f908d9ac291723098cb18170654b21ceb40874ba34a3",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/primary/index-probe.txt",
+      "source": "/tmp/edhr-page-index-probe.txt",
+      "encoding": "identity",
+      "bytes": 3338,
+      "sha256": "3d300b94271867645a057f9462c4c3e6785fbc7114e197883458897ccc8b20ea",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/primary/main-DhrReviewLifecycleIntegrationTest.xml.gz",
+      "source": "/tmp/edhr-page-main-DhrReviewLifecycleIntegrationTest.xml",
+      "encoding": "gzip",
+      "bytes": 287863,
+      "sha256": "a0ebbdc5ed65f6cd48c8a703c856d992a0c6e4352a92ed896f8dda945880d975",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/primary/main-DhrReviewPaginationPostgresTest.xml.gz",
+      "source": "/tmp/edhr-page-main-DhrReviewPaginationPostgresTest.xml",
+      "encoding": "gzip",
+      "bytes": 433022,
+      "sha256": "5810d13a74024b0b08b74efbd28f005913d87b287094042e38b7a91ebbac20c2",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/primary/main-DhrReviewServiceTest.xml",
+      "source": "/tmp/edhr-page-main-DhrReviewServiceTest.xml",
+      "encoding": "identity",
+      "bytes": 34455,
+      "sha256": "81e68a3929a6a1cf63f3954de89a38e8ed2af039d041a0961d996866b7c40bc0",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/primary/main-RecordControlPostgresIntegrationTest.xml.gz",
+      "source": "/tmp/edhr-page-main-RecordControlPostgresIntegrationTest.xml",
+      "encoding": "gzip",
+      "bytes": 1309828,
+      "sha256": "677aab3d0fe64dc3467db0100ffab77698f7d0554e24b1dc56e87dbc2a3931f1",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/primary/main-cleanup.json",
+      "source": "/tmp/edhr-page-main-cleanup.json",
+      "encoding": "identity",
+      "bytes": 213,
+      "sha256": "ae662332f9022b0b89674c184e5e2742c08cabcee62a071cb7bd125ef661605c",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/primary/main-command.json",
+      "source": "/tmp/edhr-page-main-command.json",
+      "encoding": "identity",
+      "bytes": 476,
+      "sha256": "c0fa1dd355aaeee6886265e337639893a761ab10160d277d5804cf1dd6fdd663",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/primary/main-database-observation.json",
+      "source": "/tmp/edhr-page-main-database-observation.json",
+      "encoding": "identity",
+      "bytes": 690,
+      "sha256": "13788c4c043e2ecc297796032a52615809d12b3a2b4a70ccd7dfc190c99b6dcb",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/primary/main-db.json",
+      "source": "/tmp/edhr-page-main-db.json",
+      "encoding": "identity",
+      "bytes": 278,
+      "sha256": "9c0b7b112b7f767a793cc961ba65e5a4d2f9efb3bf7b54df0a5fbe88cde213fd",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/primary/main-observation.json",
+      "source": "/tmp/edhr-page-main-observation.json",
+      "encoding": "identity",
+      "bytes": 78,
+      "sha256": "791acaf88588f82e80332807a54fa93569d102c3574dd1589c8ebde515db2a4b",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/primary/main-observation.json.args.json",
+      "source": "/tmp/edhr-page-main-observation.json.args.json",
+      "encoding": "identity",
+      "bytes": 14,
+      "sha256": "46ae1c74ef02e38951e3fb7f810c28453d3ed98dce740405289e08fb823b8938",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/primary/main-observation.json.plan.json",
+      "source": "/tmp/edhr-page-main-observation.json.plan.json",
+      "encoding": "identity",
+      "bytes": 51971,
+      "sha256": "4737dedfae26b16020897ee59e7699ab21a1c63de2c13975d012a9731cbb9cf1",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/primary/main-observation.json.sql",
+      "source": "/tmp/edhr-page-main-observation.json.sql",
+      "encoding": "identity",
+      "bytes": 2070,
+      "sha256": "f1d7be2948fe1fb66962368ee952cc1885e1c9677cc65e71585fd5bc57cced4d",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/primary/main-summary.json",
+      "source": "/tmp/edhr-page-main-summary.json",
+      "encoding": "identity",
+      "bytes": 778,
+      "sha256": "681ac8bfb509360957236e4c0167c9f430e5c83f9a67d7fec1dbaf2f41f41ca1",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/primary/main-test.txt.gz",
+      "source": "/tmp/edhr-page-main-test.txt",
+      "encoding": "gzip",
+      "bytes": 1904011,
+      "sha256": "8a377d606c66bcc0ecfa3fad829fb8f954b2e3c5d63c30c0b8364a6bae780739",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/primary/old-cleanup.json",
+      "source": "/tmp/edhr-page-old-cleanup.json",
+      "encoding": "identity",
+      "bytes": 88,
+      "sha256": "c4c511d27f911ade907a36defbe84ffb72b472c55befdf0f256719b80986b18b",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/primary/old-command.json",
+      "source": "/tmp/edhr-page-old-command.json",
+      "encoding": "identity",
+      "bytes": 616,
+      "sha256": "140f9300065298786080d86fa09e0e8dd8092d15cb4728b54a004b6121c7159a",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/primary/old-env-attempt1.txt",
+      "source": "/tmp/edhr-page-old-env-attempt1.txt",
+      "encoding": "identity",
+      "bytes": 4056,
+      "sha256": "030cccb5ed728693d098f37191af14807149873fba2545d8536832f556cef83c",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/primary/old-observation.json",
+      "source": "/tmp/edhr-page-old-observation.json",
+      "encoding": "identity",
+      "bytes": 81,
+      "sha256": "56ce59af2f4cb6975016f470e37f6524d4a19f3ebdbd932c95d418d9bf373763",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/primary/old-observation.json.args.json",
+      "source": "/tmp/edhr-page-old-observation.json.args.json",
+      "encoding": "identity",
+      "bytes": 4,
+      "sha256": "41164c427f4cf681cc1b50eaf1a175e3574a1d015c6c90fbdaf77aea39d24086",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/primary/old-observation.json.plan.json",
+      "source": "/tmp/edhr-page-old-observation.json.plan.json",
+      "encoding": "identity",
+      "bytes": 17408,
+      "sha256": "49ef34d2e6e58e919ea34f395372fbde2ab9110186b33af1a546a03de230eb41",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/primary/old-observation.json.sql",
+      "source": "/tmp/edhr-page-old-observation.json.sql",
+      "encoding": "identity",
+      "bytes": 704,
+      "sha256": "b025106025ef2d6a1e756664953f492e6de5c3cd1a011f3275f377506ac24d23",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/primary/old-pagination.xml",
+      "source": "/tmp/edhr-page-old-pagination.xml",
+      "encoding": "identity",
+      "bytes": 33708,
+      "sha256": "22c464d14f55522b39f085ea38840291655afa9fbd336ed0a1583c6d07b109e3",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/primary/old-summary.json",
+      "source": "/tmp/edhr-page-old-summary.json",
+      "encoding": "identity",
+      "bytes": 117,
+      "sha256": "27b9b5f91856edfd224c8f7dcb3bb2c317f7ea8f2858e2680c0a8fd68fbd7f29",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/primary/old-test.txt",
+      "source": "/tmp/edhr-page-old-test.txt",
+      "encoding": "identity",
+      "bytes": 6072,
+      "sha256": "0cceec3a9fc514427254697d0f34e634a28610db911e6e220608de0351cda904",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/primary/precondition-before-command.json",
+      "source": "/tmp/edhr-page-precondition-before-command.json",
+      "encoding": "identity",
+      "bytes": 476,
+      "sha256": "5462021416d807930c7cf251e305f8971ea134a302425cf69f3108e2c0a775de",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/primary/precondition-before-summary.json",
+      "source": "/tmp/edhr-page-precondition-before-summary.json",
+      "encoding": "identity",
+      "bytes": 778,
+      "sha256": "681ac8bfb509360957236e4c0167c9f430e5c83f9a67d7fec1dbaf2f41f41ca1",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/primary/precondition-before-test.txt.gz",
+      "source": "/tmp/edhr-page-precondition-before-test.txt",
+      "encoding": "gzip",
+      "bytes": 1906462,
+      "sha256": "51d8287a8d72affabe08ed02defe862ef68ac9b67fe2d209424d2df0326f7599",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/primary/preprojection-DhrReviewLifecycleIntegrationTest.xml.gz",
+      "source": "/tmp/edhr-page-preprojection-DhrReviewLifecycleIntegrationTest.xml",
+      "encoding": "gzip",
+      "bytes": 287862,
+      "sha256": "4f685d759941cb5771fd7215d5e8a0e55166505bb23c26751395c1cfca7c5e0a",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/primary/preprojection-DhrReviewPaginationPostgresTest.xml.gz",
+      "source": "/tmp/edhr-page-preprojection-DhrReviewPaginationPostgresTest.xml",
+      "encoding": "gzip",
+      "bytes": 450955,
+      "sha256": "a126b8bbfb01bd6641047d43c3bd7426a946acbd2f43ec846796619d33ae6c7b",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/primary/preprojection-DhrReviewServiceTest.xml",
+      "source": "/tmp/edhr-page-preprojection-DhrReviewServiceTest.xml",
+      "encoding": "identity",
+      "bytes": 34454,
+      "sha256": "90d0e261a51cdad3ceba727a6b73f5bac3b14763e5e57bf76e294645edf14090",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/primary/preprojection-RecordControlPostgresIntegrationTest.xml.gz",
+      "source": "/tmp/edhr-page-preprojection-RecordControlPostgresIntegrationTest.xml",
+      "encoding": "gzip",
+      "bytes": 1309829,
+      "sha256": "e285fbb2ebf67f6dc72c5929d5a5a2ed3b5eec021c645d29957ba76f0d61c1fb",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/primary/preprojection-command.json",
+      "source": "/tmp/edhr-page-preprojection-command.json",
+      "encoding": "identity",
+      "bytes": 440,
+      "sha256": "3c63e63b05a5ca0c45a34ffb79f19b15099bac7f75056d076fed5ad1dd6c95c4",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/primary/preprojection-observation.json",
+      "source": "/tmp/edhr-page-preprojection-observation.json",
+      "encoding": "identity",
+      "bytes": 78,
+      "sha256": "791acaf88588f82e80332807a54fa93569d102c3574dd1589c8ebde515db2a4b",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/primary/preprojection-summary.json",
+      "source": "/tmp/edhr-page-preprojection-summary.json",
+      "encoding": "identity",
+      "bytes": 682,
+      "sha256": "043a7468293a2e868f762ca36a6f1558404bce20f79e4323d1d6193b13d29618",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/primary/preprojection-test.txt.gz",
+      "source": "/tmp/edhr-page-preprojection-test.txt",
+      "encoding": "gzip",
+      "bytes": 1923037,
+      "sha256": "3133a363f7c0cc6f03101a19d30bee391f97afef5fd8b9be51293e08a08cd7dc",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/primary/projection-pagination.xml",
+      "source": "/tmp/edhr-page-projection-pagination.xml",
+      "encoding": "identity",
+      "bytes": 51697,
+      "sha256": "3e1914ab9d4408bdd277e8cd1dab350d1f130abfa1390ab79d2fec4ce9b492ce",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/primary/projection-summary.json",
+      "source": "/tmp/edhr-page-projection-summary.json",
+      "encoding": "identity",
+      "bytes": 66,
+      "sha256": "822d029409ff337cf4cb4f617548002016e130972e406f04c53c841cea75eb4f",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/primary/projection-test.txt",
+      "source": "/tmp/edhr-page-projection-test.txt",
+      "encoding": "identity",
+      "bytes": 4334,
+      "sha256": "e7aaed4a8ab2c27cee1f2fdbd468031215c6dd26fdf6279dc041004c990cf51a",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/index/all-pending-index-7-PENDING.args.json",
+      "source": "/tmp/edhr-page-index/all-pending-index-7-PENDING.args.json",
+      "encoding": "identity",
+      "bytes": 14,
+      "sha256": "46ae1c74ef02e38951e3fb7f810c28453d3ed98dce740405289e08fb823b8938",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/index/all-pending-index-7-PENDING.plan.json",
+      "source": "/tmp/edhr-page-index/all-pending-index-7-PENDING.plan.json",
+      "encoding": "identity",
+      "bytes": 49586,
+      "sha256": "fb57232a237c320741951e4fb02173b02e6cd7737d4c5e029b48125e41e0f83e",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/index/all-pending-index-7-PENDING.sql",
+      "source": "/tmp/edhr-page-index/all-pending-index-7-PENDING.sql",
+      "encoding": "identity",
+      "bytes": 2070,
+      "sha256": "f1d7be2948fe1fb66962368ee952cc1885e1c9677cc65e71585fd5bc57cced4d",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/index/all-pending-without-index-7-PENDING.args.json",
+      "source": "/tmp/edhr-page-index/all-pending-without-index-7-PENDING.args.json",
+      "encoding": "identity",
+      "bytes": 14,
+      "sha256": "46ae1c74ef02e38951e3fb7f810c28453d3ed98dce740405289e08fb823b8938",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/index/all-pending-without-index-7-PENDING.plan.json",
+      "source": "/tmp/edhr-page-index/all-pending-without-index-7-PENDING.plan.json",
+      "encoding": "identity",
+      "bytes": 49947,
+      "sha256": "ec7a10d8ca4f8e27d599291c01b29849fcff046c2a1832fdf2f0177f412e9961",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/index/all-pending-without-index-7-PENDING.sql",
+      "source": "/tmp/edhr-page-index/all-pending-without-index-7-PENDING.sql",
+      "encoding": "identity",
+      "bytes": 2070,
+      "sha256": "f1d7be2948fe1fb66962368ee952cc1885e1c9677cc65e71585fd5bc57cced4d",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/index/existing-indexes.json",
+      "source": "/tmp/edhr-page-index/existing-indexes.json",
+      "encoding": "identity",
+      "bytes": 3756,
+      "sha256": "2f1541bca9cfd1fcb8dc89b9e60b1901b4c1bda09e08a82150b887f0d88de331",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/index/history-baseline-7-DONE.args.json",
+      "source": "/tmp/edhr-page-index/history-baseline-7-DONE.args.json",
+      "encoding": "identity",
+      "bytes": 10,
+      "sha256": "d2b68c79e5d8240c24e1b600694ea2eccdd57e4412e4d4e788edf4a8941bdf71",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/index/history-baseline-7-DONE.plan.json",
+      "source": "/tmp/edhr-page-index/history-baseline-7-DONE.plan.json",
+      "encoding": "identity",
+      "bytes": 33005,
+      "sha256": "02f3dda4e810c20a6c20f37424ec2e76638f9fb1a1f05a3fb463bffbdcb9cb00",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/index/history-baseline-7-DONE.sql",
+      "source": "/tmp/edhr-page-index/history-baseline-7-DONE.sql",
+      "encoding": "identity",
+      "bytes": 822,
+      "sha256": "89eb48ddacdb3ee6d0b1aa80e5aa4a4360ebcaeab5ad8e22d1c436e0782f8ce6",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/index/history-baseline-7-PENDING.args.json",
+      "source": "/tmp/edhr-page-index/history-baseline-7-PENDING.args.json",
+      "encoding": "identity",
+      "bytes": 14,
+      "sha256": "46ae1c74ef02e38951e3fb7f810c28453d3ed98dce740405289e08fb823b8938",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/index/history-baseline-7-PENDING.plan.json",
+      "source": "/tmp/edhr-page-index/history-baseline-7-PENDING.plan.json",
+      "encoding": "identity",
+      "bytes": 45954,
+      "sha256": "0d5939daeb53cf69710940e751607a157f0cada4dfb7830263e02608d5642613",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/index/history-baseline-7-PENDING.sql",
+      "source": "/tmp/edhr-page-index/history-baseline-7-PENDING.sql",
+      "encoding": "identity",
+      "bytes": 2070,
+      "sha256": "f1d7be2948fe1fb66962368ee952cc1885e1c9677cc65e71585fd5bc57cced4d",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/index/history-baseline-99-DONE.args.json",
+      "source": "/tmp/edhr-page-index/history-baseline-99-DONE.args.json",
+      "encoding": "identity",
+      "bytes": 11,
+      "sha256": "ad0712332ec5f8c6ae419a10511a4305119f9409252c6ad148536164c8e82567",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/index/history-baseline-99-DONE.plan.json",
+      "source": "/tmp/edhr-page-index/history-baseline-99-DONE.plan.json",
+      "encoding": "identity",
+      "bytes": 38423,
+      "sha256": "f1a1fb36fadb0959d37b7ec01046b71c5615dff1177f9feef69d19e66cc06599",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/index/history-baseline-99-DONE.sql",
+      "source": "/tmp/edhr-page-index/history-baseline-99-DONE.sql",
+      "encoding": "identity",
+      "bytes": 822,
+      "sha256": "89eb48ddacdb3ee6d0b1aa80e5aa4a4360ebcaeab5ad8e22d1c436e0782f8ce6",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/index/history-baseline-99-PENDING.args.json",
+      "source": "/tmp/edhr-page-index/history-baseline-99-PENDING.args.json",
+      "encoding": "identity",
+      "bytes": 16,
+      "sha256": "5aed0b3032ccc8b99745ad3f5289113e42b6cb5ab4d8f223ad155cd0ed071a5a",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/index/history-baseline-99-PENDING.plan.json",
+      "source": "/tmp/edhr-page-index/history-baseline-99-PENDING.plan.json",
+      "encoding": "identity",
+      "bytes": 45981,
+      "sha256": "66efa4d4b7234cdb1d1c861ec01568d3f628ab246b323242645db799c620a14e",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/index/history-baseline-99-PENDING.sql",
+      "source": "/tmp/edhr-page-index/history-baseline-99-PENDING.sql",
+      "encoding": "identity",
+      "bytes": 2070,
+      "sha256": "f1d7be2948fe1fb66962368ee952cc1885e1c9677cc65e71585fd5bc57cced4d",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/index/history-done-index-7-DONE.args.json",
+      "source": "/tmp/edhr-page-index/history-done-index-7-DONE.args.json",
+      "encoding": "identity",
+      "bytes": 10,
+      "sha256": "d2b68c79e5d8240c24e1b600694ea2eccdd57e4412e4d4e788edf4a8941bdf71",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/index/history-done-index-7-DONE.plan.json",
+      "source": "/tmp/edhr-page-index/history-done-index-7-DONE.plan.json",
+      "encoding": "identity",
+      "bytes": 33005,
+      "sha256": "5675e1f55e8fdbd21afd7c93ecd9bbc09c4850d30482811e85b17caf0da56ba9",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/index/history-done-index-7-DONE.sql",
+      "source": "/tmp/edhr-page-index/history-done-index-7-DONE.sql",
+      "encoding": "identity",
+      "bytes": 822,
+      "sha256": "89eb48ddacdb3ee6d0b1aa80e5aa4a4360ebcaeab5ad8e22d1c436e0782f8ce6",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/index/history-done-index-99-DONE.args.json",
+      "source": "/tmp/edhr-page-index/history-done-index-99-DONE.args.json",
+      "encoding": "identity",
+      "bytes": 11,
+      "sha256": "ad0712332ec5f8c6ae419a10511a4305119f9409252c6ad148536164c8e82567",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/index/history-done-index-99-DONE.plan.json",
+      "source": "/tmp/edhr-page-index/history-done-index-99-DONE.plan.json",
+      "encoding": "identity",
+      "bytes": 38339,
+      "sha256": "1ad6fbf3e03c27e58472cc6284a5a56d115e7286c5b052bf36c8fe71529bfaf4",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/index/history-done-index-99-DONE.sql",
+      "source": "/tmp/edhr-page-index/history-done-index-99-DONE.sql",
+      "encoding": "identity",
+      "bytes": 822,
+      "sha256": "89eb48ddacdb3ee6d0b1aa80e5aa4a4360ebcaeab5ad8e22d1c436e0782f8ce6",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/index/history-pending-index-7-PENDING.args.json",
+      "source": "/tmp/edhr-page-index/history-pending-index-7-PENDING.args.json",
+      "encoding": "identity",
+      "bytes": 14,
+      "sha256": "46ae1c74ef02e38951e3fb7f810c28453d3ed98dce740405289e08fb823b8938",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/index/history-pending-index-7-PENDING.plan.json",
+      "source": "/tmp/edhr-page-index/history-pending-index-7-PENDING.plan.json",
+      "encoding": "identity",
+      "bytes": 45904,
+      "sha256": "362265c94bc1921b4779a40b953e9393f02a933a27217fd70c7073dee90bf843",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/index/history-pending-index-7-PENDING.sql",
+      "source": "/tmp/edhr-page-index/history-pending-index-7-PENDING.sql",
+      "encoding": "identity",
+      "bytes": 2070,
+      "sha256": "f1d7be2948fe1fb66962368ee952cc1885e1c9677cc65e71585fd5bc57cced4d",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/index/history-pending-index-99-PENDING.args.json",
+      "source": "/tmp/edhr-page-index/history-pending-index-99-PENDING.args.json",
+      "encoding": "identity",
+      "bytes": 16,
+      "sha256": "5aed0b3032ccc8b99745ad3f5289113e42b6cb5ab4d8f223ad155cd0ed071a5a",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/index/history-pending-index-99-PENDING.plan.json",
+      "source": "/tmp/edhr-page-index/history-pending-index-99-PENDING.plan.json",
+      "encoding": "identity",
+      "bytes": 45919,
+      "sha256": "3f411c2c2c36555af1a372915cfbce0c60a77130c5d09c3e60f909bcf1da754b",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/index/history-pending-index-99-PENDING.sql",
+      "source": "/tmp/edhr-page-index/history-pending-index-99-PENDING.sql",
+      "encoding": "identity",
+      "bytes": 2070,
+      "sha256": "f1d7be2948fe1fb66962368ee952cc1885e1c9677cc65e71585fd5bc57cced4d",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/index/history-search-7-DONE.args.json",
+      "source": "/tmp/edhr-page-index/history-search-7-DONE.args.json",
+      "encoding": "identity",
+      "bytes": 40,
+      "sha256": "04716874954182a9c898c072cea7a5a999c3651c0683838cefc352999ec92b45",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/index/history-search-7-DONE.plan.json",
+      "source": "/tmp/edhr-page-index/history-search-7-DONE.plan.json",
+      "encoding": "identity",
+      "bytes": 34102,
+      "sha256": "d6e92be0856f9d80023401fd0d003d53c89f872925cab96f76dc937e8d6a7aa3",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/index/history-search-7-DONE.sql",
+      "source": "/tmp/edhr-page-index/history-search-7-DONE.sql",
+      "encoding": "identity",
+      "bytes": 1167,
+      "sha256": "8e54930f1d9cd6f03fcf237b050205c763e4eb58920aa42270e225eb41bed8d1",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/index/metadata.json",
+      "source": "/tmp/edhr-page-index/metadata.json",
+      "encoding": "identity",
+      "bytes": 151,
+      "sha256": "9b006736481ad5d59a89c1bbf65b4352f5429efe949cf6c7ce97deb9ac44a241",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/index/observations.json",
+      "source": "/tmp/edhr-page-index/observations.json",
+      "encoding": "identity",
+      "bytes": 3235,
+      "sha256": "209d3e2af5b1261a6622749da0b6f218434ceaf2ca530dccbac9a5f6c2a5778b",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/index/trial-index-sizes.json",
+      "source": "/tmp/edhr-page-index/trial-index-sizes.json",
+      "encoding": "identity",
+      "bytes": 93,
+      "sha256": "0caa3e36c31c076471712543de687ea1fd4910cbad71b89df35adb40b85bdb0a",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/index/EdhrDhrPageIndexProbe.java",
+      "source": "/tmp/EdhrDhrPageIndexProbe.java",
+      "encoding": "identity",
+      "bytes": 6759,
+      "sha256": "4de664f4558499daabc0241a22dcc780efd494e28c948c40e35214b95382523f",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/ontology/edhr-page-ontology/knowledge-command.json",
+      "source": "/tmp/edhr-page-ontology-knowledge-command.json",
+      "encoding": "identity",
+      "bytes": 151,
+      "sha256": "150b252d13bc750a23ed580e7058ebc97113cfda29ae175cc9cf384ae75c9c4d",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/ontology/edhr-page-ontology/knowledge-inventory.json",
+      "source": "/tmp/edhr-page-ontology-knowledge-inventory.json",
+      "encoding": "identity",
+      "bytes": 64692,
+      "sha256": "f59eb3b1e3f158a42d6579395a7279ad24d18e99016110c5f1611bf8f43e5d08",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/ontology/edhr-page-ontology/knowledge-summary.json",
+      "source": "/tmp/edhr-page-ontology-knowledge-summary.json",
+      "encoding": "identity",
+      "bytes": 66,
+      "sha256": "0357e2f0eddc2c11e6d014540c0ff131715c903d922f2e96b8c18626f776dc09",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/ontology/edhr-page-ontology/knowledge-test.txt",
+      "source": "/tmp/edhr-page-ontology-knowledge-test.txt",
+      "encoding": "identity",
+      "bytes": 2112,
+      "sha256": "3b7543fcf287234758f0b309a932749f45b36e5a0e9c2a35d2555e06ad06c1ee",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/ontology/edhr-page-ontology/knowledge-test.xml",
+      "source": "/tmp/edhr-page-ontology-knowledge-test.xml",
+      "encoding": "identity",
+      "bytes": 20418,
+      "sha256": "3ff75f07768e7405ca5b67ca8a616e51a6c5189e66f68b669b110d023aa6ef82",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/ontology/edhr-page-ontology/knowledge.diff",
+      "source": "/tmp/edhr-page-ontology-knowledge.diff",
+      "encoding": "identity",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/ontology/edhr-page-ontology/result.yaml",
+      "source": "/tmp/edhr-page-ontology-result.yaml",
+      "encoding": "identity",
+      "bytes": 2629,
+      "sha256": "dc12eb48afac6a06141b774284c15a3f7e2056fbcc90adada93774fc7f2e91bc",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/ontology/edhr-page-ontology/review.md",
+      "source": "/tmp/edhr-page-ontology-review.md",
+      "encoding": "identity",
+      "bytes": 3617,
+      "sha256": "833cc540f463540f80ba489ebac40cfe488892e212a266b9e1ee1bc18116fb16",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/ontology/edhr-page-ontology/semantic-review.json",
+      "source": "/tmp/edhr-page-ontology-semantic-review.json",
+      "encoding": "identity",
+      "bytes": 22756,
+      "sha256": "710aa688365ef3f0c28681e6b268d781b0389ef63f14aae8ed8ccaf65e2d02f7",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/ontology/edhr-page-ontology/source-fingerprints.json",
+      "source": "/tmp/edhr-page-ontology-source-fingerprints.json",
+      "encoding": "identity",
+      "bytes": 6143,
+      "sha256": "6445ee6e51c07b046104f9d306bb9538bf128f0b79feb622fe8558481b78e86a",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/ontology/edhr-page-ontology/source.diff",
+      "source": "/tmp/edhr-page-ontology-source.diff",
+      "encoding": "identity",
+      "bytes": 31579,
+      "sha256": "cc24c3dd14f1bdadc4b8fd5879249a3505f312a00123c04788fbee44e76da429",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/ontology/edhr-page-ontology/manifest.json",
+      "source": "/tmp/edhr-page-ontology-manifest.json",
+      "encoding": "identity",
+      "bytes": 2432,
+      "sha256": "13448176c111b5ae8959d3248aafbee781fe654f4069b701797c26fdf145ea6f",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/ontology/edhr-page-ontology-r2/source-fingerprints.json",
+      "source": "/tmp/edhr-page-ontology-r2-source-fingerprints.json",
+      "encoding": "identity",
+      "bytes": 7244,
+      "sha256": "ed56cc876ada276e1086ee4348891f3985e520629183591d5c3b25470f5692fd",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/ontology/edhr-page-ontology-r2/baseline-test.diff",
+      "source": "/tmp/edhr-page-ontology-r2-baseline-test.diff",
+      "encoding": "identity",
+      "bytes": 2184,
+      "sha256": "bbfc442eb5a81e0e6fc786560179cedebfcad26a38da909ea2cafef91400776c",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/ontology/edhr-page-ontology-r2/result.yaml",
+      "source": "/tmp/edhr-page-ontology-r2-result.yaml",
+      "encoding": "identity",
+      "bytes": 3286,
+      "sha256": "cd18fb467676ee184b45d97413399603ad2c832a961d84f4c674ad19c1cf182d",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/ontology/edhr-page-ontology-r2/review.md",
+      "source": "/tmp/edhr-page-ontology-r2-review.md",
+      "encoding": "identity",
+      "bytes": 1940,
+      "sha256": "7db85ef4f4118b28ddc6e70396ec39fba0bf86a83c97cdb788088564a95a2b6e",
+      "matched": true
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/evidence/ontology/edhr-page-ontology-r2/manifest.json",
+      "source": "/tmp/edhr-page-ontology-r2-manifest.json",
+      "encoding": "identity",
+      "bytes": 4042,
+      "sha256": "3a2559ac572b7fdfeadebf3417c71f61dfc485f1444609185e80355953dd03af",
+      "matched": true
+    }
+  ],
+  "sourceSnapshotsMatched": 9,
+  "r2SourceFingerprintsMatched": 25,
+  "knowledgeFilesUnchanged": 330,
+  "currentPackageSha256": "b54776a01de111bdc53f847cddf6e62e6a53807241e9eea12014020dc100d77c",
+  "r1PackageShaHistorical": "b166f7e09c3f33b81aecad0536a936985f4b45e9a1455f676199cac72df69c18",
+  "r1ManifestPreserved": "13448176c111b5ae8959d3248aafbee781fe654f4069b701797c26fdf145ea6f",
+  "affectedSourcePaths": [
+    "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrReviewService.java",
+    "gmp-platform/backend/src/main/resources/db/changelog/0091-dhr-review-query-indexes.sql",
+    "gmp-platform/backend/src/main/resources/db/changelog/db.changelog-master.yaml",
+    "gmp-platform/backend/src/test/java/com/zencas/edhr/common/config/CurrentDatabaseBaselinePostgresTest.java",
+    "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrReviewLifecycleIntegrationTest.java",
+    "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrReviewPaginationPostgresTest.java",
+    "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrReviewServiceTest.java",
+    "gmp-platform/backend/src/test/java/com/zencas/edhr/recordcontrol/service/RecordControlPostgresIntegrationTest.java"
+  ],
+  "sourceChanges": [
+    [
+      "M",
+      "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrReviewService.java"
+    ],
+    [
+      "A",
+      "gmp-platform/backend/src/main/resources/db/changelog/0091-dhr-review-query-indexes.sql"
+    ],
+    [
+      "M",
+      "gmp-platform/backend/src/main/resources/db/changelog/db.changelog-master.yaml"
+    ],
+    [
+      "M",
+      "gmp-platform/backend/src/test/java/com/zencas/edhr/common/config/CurrentDatabaseBaselinePostgresTest.java"
+    ],
+    [
+      "M",
+      "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrReviewLifecycleIntegrationTest.java"
+    ],
+    [
+      "A",
+      "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrReviewPaginationPostgresTest.java"
+    ],
+    [
+      "M",
+      "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrReviewServiceTest.java"
+    ],
+    [
+      "M",
+      "gmp-platform/backend/src/test/java/com/zencas/edhr/recordcontrol/service/RecordControlPostgresIntegrationTest.java"
+    ]
+  ],
+  "authoredWhitespacePaths": [
+    "docs/development/branch-review-20261015/NEXT.md",
+    "docs/development/branch-review-20261102-dhr-review-pagination/README.md",
+    "docs/development/branch-review-20261102-dhr-review-pagination/decision-package.yaml",
+    "docs/development/branch-review-20261102-dhr-review-pagination/index-boundaries.md",
+    "docs/development/branch-review-20261102-dhr-review-pagination/review-notes.md",
+    "docs/development/branch-review-20261102-dhr-review-pagination/source-review.json",
+    "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrReviewService.java",
+    "gmp-platform/backend/src/main/resources/db/changelog/0091-dhr-review-query-indexes.sql",
+    "gmp-platform/backend/src/main/resources/db/changelog/db.changelog-master.yaml",
+    "gmp-platform/backend/src/test/java/com/zencas/edhr/common/config/CurrentDatabaseBaselinePostgresTest.java",
+    "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrReviewLifecycleIntegrationTest.java",
+    "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrReviewPaginationPostgresTest.java",
+    "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrReviewServiceTest.java",
+    "gmp-platform/backend/src/test/java/com/zencas/edhr/recordcontrol/service/RecordControlPostgresIntegrationTest.java"
+  ],
+  "authoredWhitespaceExit": 0,
+  "inventory": {
+    "sourceCommit": "1ad6300918bd0059049eab3c415ca31162dd5115",
+    "tree": "dc84ff3101bf62ef1da098a00e3040c3910a545b",
+    "trackedPaths": 6017,
+    "scopeCount": 6017,
+    "excludedPaths": [],
+    "assetTypes": {
+      "configuration-or-data": 3012,
+      "documentation": 437,
+      "binary-asset": 1034,
+      "source-or-tool": 816,
+      "knowledge": 330,
+      "test": 253,
+      "database-migration": 134,
+      "dependency-lock": 1
+    },
+    "workPackages": {
+      "W5": 711,
+      "W4": 253,
+      "W0-W7": 4481,
+      "W1": 142,
+      "W2": 225,
+      "W3": 205
+    },
+    "entrypointCandidates": {
+      "http-annotation": 464,
+      "state-definition-candidate": 8,
+      "background-candidate": 1,
+      "frontend-route-candidate": 216
+    },
+    "migrationFiles": 134,
+    "semanticReviewComplete": false,
+    "entrypointLimitations": "Static candidate locations include class annotations and dynamic route shapes; URLs, auth and worker activation require source review. No route execution claimed.",
+    "coverageSha256": "7853c44797fac03b93a82b2c4027eb8e29bed9dce58de6484d490dbc2381c888"
+  },
+  "inventoryFiles": [
+    {
+      "name": "coverage.csv",
+      "bytes": 1818404,
+      "sha256": "7853c44797fac03b93a82b2c4027eb8e29bed9dce58de6484d490dbc2381c888"
+    },
+    {
+      "name": "entrypoints.csv",
+      "bytes": 161809,
+      "sha256": "c4356f335f792499336b523659cc3e78f81eec7beb5338a079308f8f72610df9"
+    },
+    {
+      "name": "inventory-summary.json",
+      "bytes": 1044,
+      "sha256": "4991ac9a271b294ae9d4cea9edff2854a871197c121c6cb36e4264bc984db528"
+    },
+    {
+      "name": "migrations.csv",
+      "bytes": 34482,
+      "sha256": "f5682fa9e08dfad2afac65905f02f8c7a866610803a083628679c685d0567ab9"
+    }
+  ],
+  "limitedSourceGroups": 4,
+  "limitedA23Judgments": 6,
+  "oldLanguageQueue": 856,
+  "oldFeatureQueue": 1,
+  "oldSqlQueue": 130,
+  "previousAddedMigrationQueue": 4,
+  "currentAddedMigrationQueue": 1,
+  "currentChangedPending": 6,
+  "currentAddedPending": 2,
+  "wholeFileCompletion": 0,
+  "uniqueSemanticIncrement": null,
+  "semanticRecords": 14,
+  "findings": [],
+  "limits": [
+    "Only byte/hash/provenance and fixed inventory; primary execution logs are not independent runtime pass",
+    "No Maven/browser/DB/CI/merge/deploy run; no repository edits",
+    "r1 package hash is historical; r2 used for current package",
+    "Known previous high and all old audit overlays remain open/pending"
+  ],
+  "ontologyRevisionCheck": {
+    "r1ToR2Changed": [
+      "docs/development/branch-review-20261102-dhr-review-pagination/decision-package.yaml"
+    ],
+    "r1ToR2Added": [
+      "gmp-platform/backend/src/test/java/com/zencas/edhr/common/config/CurrentDatabaseBaselinePostgresTest.java"
+    ],
+    "r1ToR2Removed": [],
+    "semanticDistribution": {
+      "consistent": 12,
+      "evidence-gap": 2
+    }
+  }
+}

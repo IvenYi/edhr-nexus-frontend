@@ -1,0 +1,160 @@
+qualityResult:
+  result: passed
+  baseCommit: 54c9a7ccfbb2a2a420f6f0e2f41636f4805cf67f
+  headCommit: 775d8bb664211b77a7172db0436a9b31715a5439
+  contractBaseline:
+    sourceCommit: 775d8bb664211b77a7172db0436a9b31715a5439
+    targetBranch: edhr-dev
+    targetCommit: 54c9a7ccfbb2a2a420f6f0e2f41636f4805cf67f
+    contractReadCommit: 775d8bb664211b77a7172db0436a9b31715a5439
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: clean
+    includedPaths: []
+    excludedPaths: []
+    untrackedPaths: []
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+  - id: check.live-baseline-and-history
+    required: true
+    category: documentation
+    description: 实际最新target、clean候选、merge双父和包含关系保持
+    method: command
+    command: git fetch origin edhr-dev; git rev-parse HEAD origin/edhr-dev; verify
+      merge parents and ancestor relationships
+    outcome: passed
+    evidence:
+    - /tmp/edhr-pr51-q1-provenance.json
+    - /tmp/edhr-pr51-q1-inspection.json
+    - target54c9a7cc;tested clean775d8bb6;merge b0c329c6 parents63f2244a/54c9a7cc
+  - id: check.conflict-ledger-and-auto-test-merge
+    required: true
+    category: integration
+    description: NEXT双方记录完整保留、测试自动合并整文件相同且无冲突标记
+    method: command
+    command: git merge-file -p <prior> <common> <target>; compare bytes and retained
+      NEXT top blocks
+    outcome: passed
+    evidence:
+    - /tmp/edhr-pr51-q1-provenance.json
+    - 72 target-added files preserved;4 combined test method definitions retained
+      exactly once
+  - id: check.unchanged-product-and-semantic-scope
+    required: true
+    category: ontology
+    description: 业务/迁移/知识/契约字节保持，本次NA与既有原件有限复用边界正确
+    method: inspection
+    command: Compare all backend src/main, contracts, knowledge against prior63f;
+      read integration decision and relevant DEC0068
+    outcome: passed
+    evidence:
+    - /tmp/edhr-pr51-q1-provenance.json
+    - /tmp/edhr-pr51-q1-inspection.json
+    - No new business rule, knowledge replacement, maturity or global coverage claim
+  - id: check.primary-raw-originals
+    required: true
+    category: documentation
+    description: 15主侧原件raw/stored与原/tmp三方哈希匹配，旧报告未改写
+    method: command
+    command: Decode gzip when present and verify raw bytes/SHA256 plus stored bytes/SHA256
+    outcome: passed
+    evidence:
+    - /tmp/edhr-pr51-q1-provenance.json
+    - /tmp/edhr-pr51-q1-provenance-manifest.json
+  - id: check.combined-native-and-regression-155
+    required: true
+    category: integration
+    description: 双独立PG库实际单次155全部通过，XML均本次fresh
+    method: automated-test
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f gmp-platform/backend/pom.xml
+      -Dtest=DhrReviewPaginationPostgresTest,DhrReviewServiceTest,DhrReviewLifecycleIntegrationTest,RecordControlPostgresIntegrationTest,CurrentDatabaseBaselinePostgresTest
+      -Dedhr.audit.dhrHttpOutput=/tmp/edhr-pr51-q1-http.jsonl -Dedhr.audit.dhrPageOutput=/tmp/edhr-pr51-q1-capacity.json
+      test
+    outcome: passed
+    evidence:
+    - /tmp/edhr-pr51-q1-current-command.json
+    - /tmp/edhr-pr51-q1-current-summary.json
+    - /tmp/edhr-pr51-q1-current-test.txt
+    - 99 native+35 full application+12 service+6 lifecycle+3 baseline=155;0failure/error/skip
+  - id: check.ordinary-jwt-http-and-page-bounds
+    required: true
+    category: api
+    description: 39普通JWT/MVC响应符合预期，个人权限与冻结历史/当前页边界共存
+    method: automated-test
+    command: Inspect actual emitted JSONL and native capacity output from unchanged
+      combined tests
+    outcome: passed
+    evidence:
+    - /tmp/edhr-pr51-q1-http.jsonl
+    - /tmp/edhr-pr51-q1-capacity.json
+    - /tmp/edhr-pr51-q1-runtime-observation.json
+    - 17x200,1x400,5x401,16x403;capacity1 SQL/20 rows/total21
+  - id: check.migration-and-install-composition
+    required: true
+    category: database
+    description: 索引升级/回滚/重放与新库/重复/旧基线升级在新组合通过
+    method: automated-test
+    command: Actual native Liquibase and CurrentDatabaseBaselinePostgresTest within
+      single155; query pg_index and databasechangelog
+    outcome: passed
+    evidence:
+    - /tmp/edhr-pr51-q1-database-observation.json
+    - /tmp/edhr-pr51-q1-current-summary.json
+    - 11 changesets;two new indexes indisvalid=true;PG16.15/ICU153.136;not all historical
+      SQL replay
+  - id: check.knowledge-89
+    required: true
+    category: ontology
+    description: 独立实际知识89项通过，不替代语义全盘审查
+    method: automated-test
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f tools/knowledge-model/pom.xml
+      test
+    outcome: passed
+    evidence:
+    - /tmp/edhr-pr51-q1-knowledge-command.json
+    - /tmp/edhr-pr51-q1-knowledge-summary.json
+    - /tmp/edhr-pr51-q1-knowledge-test.txt
+  - id: check.authored-whitespace-and-history-boundaries
+    required: true
+    category: documentation
+    description: 五个适用手写/自动合并路径空白检查通过，旧清单与残余不虚假关闭
+    method: command
+    command: git diff --check for five integration authored/merged paths; inspect
+      historical inventory refs
+    outcome: passed
+    evidence:
+    - /tmp/edhr-pr51-q1-provenance.json
+    - /tmp/edhr-pr51-q1-provenance-whitespace.txt
+    - Old inventory source1ad remains explicitly historical;whole-audit/high/ICU/scale
+      and all deferred items retained
+  - id: check.qa-owned-cleanup
+    required: true
+    category: database
+    description: 只清理本质量实例的PG容器并确认absent
+    method: command
+    command: docker stop <owned container>;docker inspect <owned container>
+    outcome: passed
+    evidence:
+    - /tmp/edhr-pr51-q1-db.json
+    - /tmp/edhr-pr51-q1-cleanup.json
+    - No worktree created by runtime QA;read-only auxiliary used and removed only
+      its tmp merge-file inputs
+  findings: []
+  residualRisks:
+  - id: risk.scope-is-integration-only
+    description: 旧两DHR high、完整账号/UI/接收人、外部质量事实、A12/四gap及全审W6/W7仍未完成。
+    impact: 本次passed只认证已确认的合并候选，不构成整体发布或合规放行认证。
+    mitigation: 保留原台账及后续分批审查，不把155或知识89当全局唯一覆盖。
+  - id: risk.scale-and-runtime-prerequisites
+    description: 原PR51大活跃JSON/COUNT/深页/关键词、共享索引写入/空间、ICU部署前置及并发索引失败恢复边界保留。
+    impact: 一条SQL和本次普通任务测试不能保证全部生产规模或目标生产库能力。
+    mitigation: 依据不变src/main字节有限复用原计划/红控，本轮不冒称重跑或生产DB核验；部署前满足ICU要求。
+  - id: risk.http-is-jwt-mvc
+    description: 39实际响应使用真实JWT过滤器和MockMvc，未认证浏览器、网络socket、登录/RBAC签发、全部停用锁定账号和所有接收人。
+    impact: 不能外推为完整用户矩阵或UI验收。
+    mitigation: 按原明确范围继续补验，朋友任务签署页/生产弹窗、ACL三问及文件一致性暂缓不自动关闭。
+  - id: risk.target-can-change
+    description: 本结果固定target54c9a7cc/head775d8bb6，未查询CI/Actions或强制状态检查配置。
+    impact: 后续目标或功能代码改变后原结果不自动覆盖新组合。
+    mitigation: 推送前再次fetch并核受影响范围，后续仅L0归档则按路径/字节校验说明复用。
+  blockingConditions: []

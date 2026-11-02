@@ -1,0 +1,38 @@
+{
+  "headCommit": "775d8bb664211b77a7172db0436a9b31715a5439",
+  "targetCommit": "54c9a7ccfbb2a2a420f6f0e2f41636f4805cf67f",
+  "clean": true,
+  "httpResponses": 39,
+  "allHttpStatusesExpected": true,
+  "statusCounts": {
+    "401": 5,
+    "403": 16,
+    "200": 17,
+    "400": 1
+  },
+  "capacity": {
+    "otherTasksAdded": 5000,
+    "sqlCalls": 1,
+    "rowsTransferred": 20,
+    "personalTotal": 21
+  },
+  "database": {
+    "serverVersion": "16.15",
+    "databaseCollation": "en_US.utf8",
+    "icuRoot": "153.136",
+    "changeSets": 11,
+    "indexes": [
+      {
+        "relname": "idx_dhr_review_pending_workflow",
+        "indisvalid": true,
+        "definition": "CREATE INDEX idx_dhr_review_pending_workflow ON public.dhr_summary_review USING btree (workflow_instance_id) WHERE ((status)::text = 'PENDING_REVIEW'::text)"
+      },
+      {
+        "relname": "idx_workflow_task_done_assignee_id",
+        "indisvalid": true,
+        "definition": "CREATE INDEX idx_workflow_task_done_assignee_id ON public.workflow_task USING btree (assignee_id, id DESC) INCLUDE (instance_id, node_id) WHERE ((status)::text = ANY ((ARRAY['COMPLETED'::character varying, 'REJECTED'::character varying])::text[]))"
+      }
+    ]
+  },
+  "reusedEvidenceBoundary": "Prior large index plans and old-source red control are not rerun; all backend src/main/migrations unchanged from prior PR51 is independently proven."
+}

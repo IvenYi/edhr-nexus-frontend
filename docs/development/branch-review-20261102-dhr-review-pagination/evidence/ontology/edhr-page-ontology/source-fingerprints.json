@@ -1,0 +1,140 @@
+{
+  "capturedAt": "2026-11-02T12:30:01.417188+08:00",
+  "sourceCommit": "1ad6300918bd0059049eab3c415ca31162dd5115",
+  "targetCommit": "1ad6300918bd0059049eab3c415ca31162dd5115",
+  "contractReadCommit": "1ad6300918bd0059049eab3c415ca31162dd5115",
+  "workingTreeState": "dirty, explicitly fingerprinted product/test/migration/package; not a fabricated commit",
+  "uncommittedReadPaths": [
+    "docs/development/branch-review-20261102-dhr-review-pagination/decision-package.yaml",
+    "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrReviewService.java",
+    "gmp-platform/backend/src/main/resources/db/changelog/0091-dhr-review-query-indexes.sql",
+    "gmp-platform/backend/src/main/resources/db/changelog/db.changelog-master.yaml",
+    "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrReviewLifecycleIntegrationTest.java",
+    "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrReviewPaginationPostgresTest.java",
+    "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrReviewServiceTest.java",
+    "gmp-platform/backend/src/test/java/com/zencas/edhr/recordcontrol/service/RecordControlPostgresIntegrationTest.java"
+  ],
+  "packageSha256": "b166f7e09c3f33b81aecad0536a936985f4b45e9a1455f676199cac72df69c18",
+  "files": [
+    {
+      "path": "AGENTS.md",
+      "bytes": 25065,
+      "sha256": "13dc7cdacea0b1bb0aef2abb268781f9c69584acd4879b204d2b7fd81a2927fc"
+    },
+    {
+      "path": "codeplzreadme.md",
+      "bytes": 3035,
+      "sha256": "7a1be8efffec596b034335058dca2860346d256622f899c8dac97c5172dd6df2"
+    },
+    {
+      "path": "docs/agents/agent-handoff-contract.md",
+      "bytes": 31233,
+      "sha256": "3439a35dd1baa77ac723f1b5afa237a338d56e31386f06b02b4aacfd754e3a12"
+    },
+    {
+      "path": "docs/agents/business-knowledge-modeler.md",
+      "bytes": 15881,
+      "sha256": "9806c900f98e1cbcf4f8d68a998a07a5449369df037183c75ec08cd666bf56ae"
+    },
+    {
+      "path": "docs/architecture/business-knowledge-model.md",
+      "bytes": 70441,
+      "sha256": "5fdc7d831d378816370250dfc02bfa0d0b18b5eecb461c9b8e503ba4c7952b6e"
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/decision-package.yaml",
+      "bytes": 4759,
+      "sha256": "b166f7e09c3f33b81aecad0536a936985f4b45e9a1455f676199cac72df69c18"
+    },
+    {
+      "path": "docs/knowledge/README.md",
+      "bytes": 109946,
+      "sha256": "23d4aa15793b1fa1dbe54c3840e47a64602b3887c0ecbb5d79afa92e384474c5"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml",
+      "bytes": 23213,
+      "sha256": "11e70ec27862eb971a2ad01cd928e8c2ecba36be4df70e170bd1f5296c4e0253"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml",
+      "bytes": 24432,
+      "sha256": "20104fef6e209a6ff4685489426ba63e4316d00eb9f2db291d08754a1dc303c3"
+    },
+    {
+      "path": "docs/knowledge/evidence/dhr-filling-review-confirmed.md",
+      "bytes": 54712,
+      "sha256": "d9b214c17fd2651885f0909a8be506866df7884bf147ecade470a8372d2d43e7"
+    },
+    {
+      "path": "docs/knowledge/evidence/dhr-summary-user-confirmed.md",
+      "bytes": 36542,
+      "sha256": "51dc528c6fe38671023cec25cfbe6bf1f0a8dcf2fc088f7894524a2d5f035642"
+    },
+    {
+      "path": "docs/knowledge/facts/dhr-summary.yaml",
+      "bytes": 11160,
+      "sha256": "cef00d62cf06832395bf1249c2802dce8d731776f3ea3c33022bd9d6e7c1a5ed"
+    },
+    {
+      "path": "docs/knowledge/open-questions.yaml",
+      "bytes": 22420,
+      "sha256": "c7b3bdecd1a6ac164d95ff515b5412998a556a07e9b5fcb64b3643473aa6e2bf"
+    },
+    {
+      "path": "docs/knowledge/rules/dhr-summary.yaml",
+      "bytes": 17985,
+      "sha256": "7fc2b4b15bf79624a142721b6f3f2eb7b0dadae6f2a662c627bee836facf6154"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrReviewController.java",
+      "bytes": 3309,
+      "sha256": "37f6af83e063e1593e15ac28e021ec719888c21fe45d314916c9f20975e2417e"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrReviewService.java",
+      "bytes": 18564,
+      "sha256": "b49a1a9bdf6bdbb253565ec6e828166005094e8866412d50e6fab7bb9bfb8c42"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java",
+      "bytes": 53872,
+      "sha256": "7b29f2a1d4f5d3997ddbc952ae256cda66fad7d5ce02b61558e72d6bb16a24fd"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/WorkflowResponsibilityService.java",
+      "bytes": 15220,
+      "sha256": "6abb3e1e7e1e1d0895657cce80e0954bc2320b5772c22778a767fffdf011f671"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/resources/db/changelog/0091-dhr-review-query-indexes.sql",
+      "bytes": 995,
+      "sha256": "37fc13923530d806f4c5d291ada0835d5a62edfd77b8702802e36cde19ee416e"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/resources/db/changelog/db.changelog-master.yaml",
+      "bytes": 512,
+      "sha256": "cb04b3aad4f84b09b1be7e63b0272187d73efac25735cf3ea95f80d60b4f6328"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrReviewLifecycleIntegrationTest.java",
+      "bytes": 24801,
+      "sha256": "acdeb57e22be54e5fdd8ed6fa815813032544c2fafd571e123c6173dc94d4bb6"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrReviewPaginationPostgresTest.java",
+      "bytes": 16228,
+      "sha256": "95040b0bb6b5f1a066b854062ea83b435e0919bb362716dddf70b439da5175a5"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrReviewServiceTest.java",
+      "bytes": 17085,
+      "sha256": "5a26e31275e2b502f4aca00a25b2be8b7743ee96192d8630b22372aea0cf2c55"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/recordcontrol/service/RecordControlPostgresIntegrationTest.java",
+      "bytes": 47826,
+      "sha256": "9f330e0abe12dcbf5f93c8413017e730cfcc451b7c1d774f48e88a770ac7ba24"
+    }
+  ]
+}

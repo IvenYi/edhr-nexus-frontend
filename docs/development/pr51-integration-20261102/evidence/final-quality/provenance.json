@@ -1,0 +1,210 @@
+{
+  "roleState": "FINAL",
+  "result": "passed",
+  "role": "read-only quality auxiliary provenance; not independent runtime certification",
+  "baseCommit": "54c9a7ccfbb2a2a420f6f0e2f41636f4805cf67f",
+  "headCommit": "775d8bb664211b77a7172db0436a9b31715a5439",
+  "contractReadCommit": "775d8bb664211b77a7172db0436a9b31715a5439",
+  "knowledgeBaselineVersion": "0.3.25",
+  "clean": true,
+  "mergeCommit": "b0c329c60e5bd9340a973e5d56009d91f3be10db",
+  "mergeParents": [
+    "63f2244adcce90d944785c9e83617fff872e19c2",
+    "54c9a7ccfbb2a2a420f6f0e2f41636f4805cf67f"
+  ],
+  "targetAndPriorAreAncestors": true,
+  "automaticTestMerge": {
+    "returnCode": 0,
+    "matchesWorkingFile": true,
+    "mergedSha256": "360e680aededafd5754df7efe752c0c450bb5de0ed14384a6fcdcbe7523a9050",
+    "retainedMethodDefinitions": [
+      "personalDhrListsFollowActualReturnResubmitAndApproval",
+      "ordinaryHttpReviewMatrixUsesMenuActionAndTaskIdentitySeparately",
+      "ordinaryHttpInboxIsPersonalAndDoesNotGrantDhrPageAccess",
+      "ordinaryHandledReviewerReadsFrozenValuesAfterEffectiveChangeWithoutReapproving"
+    ]
+  },
+  "ledgerTopBlocks": [
+    {
+      "ref": "63f2244adcce90d944785c9e83617fff872e19c2",
+      "originalTopBlockSha256": "0260214a779d338a0093ef0b15bfb18638ca450a6b9d99637a4029341efd2230",
+      "retainedVerbatim": true
+    },
+    {
+      "ref": "54c9a7ccfbb2a2a420f6f0e2f41636f4805cf67f",
+      "originalTopBlockSha256": "6badb75f83e8c5f46919f0b861601c57c04828d570a4db68e2419622754a8d9c",
+      "retainedVerbatim": true
+    }
+  ],
+  "conflictMarkersAbsentInResolvedFiles": true,
+  "srcMainKnowledgeContractsDeltaVsPrior": [],
+  "targetCodeKnowledgeContractDeltaVsCommonBase": [],
+  "targetAddedFilesPreserved": 72,
+  "primaryOriginals": [
+    {
+      "path": "docs/development/pr51-integration-20261102/evidence/primary/main-capacity.json",
+      "source": "/tmp/edhr-pr51-main-capacity.json",
+      "rawMatched": true,
+      "storedMatched": true,
+      "sourceMatched": true,
+      "encoding": "identity"
+    },
+    {
+      "path": "docs/development/pr51-integration-20261102/evidence/primary/main-capacity.json.args.json",
+      "source": "/tmp/edhr-pr51-main-capacity.json.args.json",
+      "rawMatched": true,
+      "storedMatched": true,
+      "sourceMatched": true,
+      "encoding": "identity"
+    },
+    {
+      "path": "docs/development/pr51-integration-20261102/evidence/primary/main-capacity.json.plan.json",
+      "source": "/tmp/edhr-pr51-main-capacity.json.plan.json",
+      "rawMatched": true,
+      "storedMatched": true,
+      "sourceMatched": true,
+      "encoding": "identity"
+    },
+    {
+      "path": "docs/development/pr51-integration-20261102/evidence/primary/main-cleanup.json",
+      "source": "/tmp/edhr-pr51-main-cleanup.json",
+      "rawMatched": true,
+      "storedMatched": true,
+      "sourceMatched": true,
+      "encoding": "identity"
+    },
+    {
+      "path": "docs/development/pr51-integration-20261102/evidence/primary/main-command.json",
+      "source": "/tmp/edhr-pr51-main-command.json",
+      "rawMatched": true,
+      "storedMatched": true,
+      "sourceMatched": true,
+      "encoding": "identity"
+    },
+    {
+      "path": "docs/development/pr51-integration-20261102/evidence/primary/main-db.json",
+      "source": "/tmp/edhr-pr51-main-db.json",
+      "rawMatched": true,
+      "storedMatched": true,
+      "sourceMatched": true,
+      "encoding": "identity"
+    },
+    {
+      "path": "docs/development/pr51-integration-20261102/evidence/primary/main-summary.json",
+      "source": "/tmp/edhr-pr51-main-summary.json",
+      "rawMatched": true,
+      "storedMatched": true,
+      "sourceMatched": true,
+      "encoding": "identity"
+    },
+    {
+      "path": "docs/development/pr51-integration-20261102/evidence/primary/merge-proof.json",
+      "source": "/tmp/edhr-pr51-merge-proof.json",
+      "rawMatched": true,
+      "storedMatched": true,
+      "sourceMatched": true,
+      "encoding": "identity"
+    },
+    {
+      "path": "docs/development/pr51-integration-20261102/evidence/primary/main-CurrentDatabaseBaselinePostgresTest.xml",
+      "source": "/tmp/edhr-pr51-main-CurrentDatabaseBaselinePostgresTest.xml",
+      "rawMatched": true,
+      "storedMatched": true,
+      "sourceMatched": true,
+      "encoding": "identity"
+    },
+    {
+      "path": "docs/development/pr51-integration-20261102/evidence/primary/main-DhrReviewLifecycleIntegrationTest.xml.gz",
+      "source": "/tmp/edhr-pr51-main-DhrReviewLifecycleIntegrationTest.xml",
+      "rawMatched": true,
+      "storedMatched": true,
+      "sourceMatched": true,
+      "encoding": "gzip"
+    },
+    {
+      "path": "docs/development/pr51-integration-20261102/evidence/primary/main-DhrReviewPaginationPostgresTest.xml.gz",
+      "source": "/tmp/edhr-pr51-main-DhrReviewPaginationPostgresTest.xml",
+      "rawMatched": true,
+      "storedMatched": true,
+      "sourceMatched": true,
+      "encoding": "gzip"
+    },
+    {
+      "path": "docs/development/pr51-integration-20261102/evidence/primary/main-DhrReviewServiceTest.xml",
+      "source": "/tmp/edhr-pr51-main-DhrReviewServiceTest.xml",
+      "rawMatched": true,
+      "storedMatched": true,
+      "sourceMatched": true,
+      "encoding": "identity"
+    },
+    {
+      "path": "docs/development/pr51-integration-20261102/evidence/primary/main-RecordControlPostgresIntegrationTest.xml.gz",
+      "source": "/tmp/edhr-pr51-main-RecordControlPostgresIntegrationTest.xml",
+      "rawMatched": true,
+      "storedMatched": true,
+      "sourceMatched": true,
+      "encoding": "gzip"
+    },
+    {
+      "path": "docs/development/pr51-integration-20261102/evidence/primary/main-test.txt.gz",
+      "source": "/tmp/edhr-pr51-main-test.txt",
+      "rawMatched": true,
+      "storedMatched": true,
+      "sourceMatched": true,
+      "encoding": "gzip"
+    },
+    {
+      "path": "docs/development/pr51-integration-20261102/evidence/primary/main-http.jsonl",
+      "source": "/tmp/edhr-pr51-main-http.jsonl",
+      "rawMatched": true,
+      "storedMatched": true,
+      "sourceMatched": true,
+      "encoding": "identity"
+    }
+  ],
+  "primaryTotals": {
+    "tests": 155,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "primaryHttpResponses": 39,
+  "primaryHttpStatuses": {
+    "401": 5,
+    "403": 16,
+    "200": 17,
+    "400": 1
+  },
+  "authoredWhitespacePaths": [
+    "docs/development/branch-review-20261015/NEXT.md",
+    "gmp-platform/backend/src/test/java/com/zencas/edhr/recordcontrol/service/RecordControlPostgresIntegrationTest.java",
+    "docs/development/pr51-integration-20261102/README.md",
+    "docs/development/pr51-integration-20261102/decision-package.yaml",
+    "docs/development/branch-review-20261102-dhr-review-pagination/README.md"
+  ],
+  "authoredWhitespaceExit": 0,
+  "historicalInventory": [
+    {
+      "path": "docs/development/branch-review-20261031-dhr-impact-review/inventory/inventory-summary.json",
+      "historicalSourceCommit": "1ad6300918bd0059049eab3c415ca31162dd5115",
+      "trackedPaths": 6017,
+      "scope": "retained historical inventory, not new target54c coverage"
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-review-pagination/inventory/inventory-summary.json",
+      "historicalSourceCommit": "1ad6300918bd0059049eab3c415ca31162dd5115",
+      "trackedPaths": 6017,
+      "scope": "retained historical inventory, not new target54c coverage"
+    }
+  ],
+  "reuseBoundary": "Original large index plans and old-source red-control remain limited prior evidence; product/src-main and migration bytes unchanged permit affected-scope reuse. This role does not rerun or newly certify them.",
+  "notPerformed": [
+    "Maven",
+    "database",
+    "CI/Actions",
+    "new global coverage inventory",
+    "browser",
+    "repository mutation",
+    "merge/push/deploy"
+  ]
+}

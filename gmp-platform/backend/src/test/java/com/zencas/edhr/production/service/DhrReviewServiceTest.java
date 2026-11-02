@@ -90,10 +90,9 @@ class DhrReviewServiceTest {
         assertThat(service.evidenceChanges(2L, false)).hasSize(1);
     }
 
-    @Test void personalListAndDetailCannotLeakAnotherUsersTask() {
-        assertThat(service.list("PENDING", "B1", 0, 20).getTotalElements()).isEqualTo(1);
+    @Test void personalDetailCannotLeakAnotherUsersTask() {
+        // List authority and paging execute against actual JSONB in DhrReviewPaginationPostgresTest.
         AuditContext.setOperator("8", "其他人");
-        assertThat(service.list("PENDING", "", 0, 20).getTotalElements()).isZero();
         assertThatThrownBy(() -> service.detail(5L)).isInstanceOf(AccessDeniedException.class);
         assertThatThrownBy(() -> service.act(5L, command("APPROVE"))).isInstanceOf(AccessDeniedException.class);
         verifyNoInteractions(engine);

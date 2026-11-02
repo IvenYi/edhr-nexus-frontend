@@ -1,0 +1,68 @@
+ontologyResult:
+  result: not-applicable
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: 1ad6300918bd0059049eab3c415ca31162dd5115
+    targetBranch: edhr-dev
+    targetCommit: 1ad6300918bd0059049eab3c415ca31162dd5115
+    contractReadCommit: 1ad6300918bd0059049eab3c415ca31162dd5115
+    uncommittedContractPaths: []
+  reason: r2仅复核相邻安装测试与交接元数据补齐：两处changeset数量9改11反映新增0091两条，并追加两索引indisvalid=2断言，原三项安装/重复/已有基线升级及拒绝已有业务数据路径保留；decisionPackage补全8实际修改路径。产品DhrReviewService、0091和master与已冻结r1完全相同，业务规范和知识零变化。沿用r1的14既有ID=12有限一致+2旧high证据缺口、330资产和实际89测试结果，不新增语义覆盖、政策、事实或成熟度，不重跑知识Maven。
+  changedArtifacts: []
+  knowledgeSync: []
+  conflicts: []
+  questions: []
+  validationEvidence:
+  - id: validation.dhr-paging-knowledge-schema
+    checkType: schema
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f tools/knowledge-model/pom.xml
+      test
+    outcome: passed
+    evidence:
+    - /tmp/edhr-page-ontology-knowledge-test.txt
+    - /tmp/edhr-page-ontology-knowledge-test.xml
+    - /tmp/edhr-page-ontology-knowledge-summary.json
+    - 89 tests,0 failures/errors/skipped; actual ontology-role command, separate from
+      product and independent QA runs.
+  - id: validation.dhr-paging-limited-semantic-boundary
+    checkType: evidence-path
+    command: Read DEC0068/DEC0063 original confirmations and affected code/migration/test-source
+      diff; map finite IDs and engineering compatibility boundaries.
+    outcome: passed
+    evidence:
+    - /tmp/edhr-page-ontology-semantic-review.json
+    - /tmp/edhr-page-ontology-source-fingerprints.json
+    - /tmp/edhr-page-ontology-source.diff
+    - 14 existing IDs:12 finite consistent,2 evidence-gap; whole-file0,unique increment
+      unknown; no product/migration/browser tests executed by ontology.
+  - id: validation.dhr-paging-unchanged-knowledge-assets
+    checkType: projection
+    command: Fingerprint all 330 tracked knowledge assets against target and confirm
+      no knowledge/architecture/contract delta.
+    outcome: passed
+    evidence:
+    - /tmp/edhr-page-ontology-knowledge-inventory.json
+    - /tmp/edhr-page-ontology-knowledge.diff
+    - Knowledge0.3.25/schema1.2.0 and P0 in-progress retained; both previous DHR high/open
+      retained.
+  - id: validation.dhr-paging-r2-adjacent-test-and-package
+    checkType: evidence-path
+    command: Read actual CurrentDatabaseBaselinePostgresTest diff and updated decisionPackage;
+      match eight affected paths and verify all other r1 source/330knowledge/original
+      hashes unchanged.
+    outcome: passed
+    evidence:
+    - /tmp/edhr-page-ontology-r2-source-fingerprints.json
+    - /tmp/edhr-page-ontology-r2-baseline-test.diff
+    - /tmp/edhr-page-ontology-r2-review.md
+    - r1 11 originals+manifest unchanged;14 semantic IDs retained; no product or baseline
+      database tests executed by ontology role.
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages:
+    - P1
+    - P2
+    - P3

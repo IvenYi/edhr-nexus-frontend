@@ -1,0 +1,15 @@
+{
+  "base": "1ad6300918bd0059049eab3c415ca31162dd5115",
+  "worktree": "/tmp/edhr-page-old-20261102",
+  "command": [
+    "bash",
+    "/workspace/.edhr-cloud-tools/mvn-edhr",
+    "-f",
+    "gmp-platform/backend/pom.xml",
+    "-Dtest=DhrReviewPaginationPostgresTest#unrelatedHistoryDoesNotIncreaseStatementsOrTransferredRows",
+    "-Dedhr.audit.dhrPageOutput=/tmp/edhr-page-old-observation.json",
+    "test"
+  ],
+  "url": "jdbc:postgresql://127.0.0.1:32770/edhr_record_control_test_page_old",
+  "copiedTest": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrReviewPaginationPostgresTest.java"
+}

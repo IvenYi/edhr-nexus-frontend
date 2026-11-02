@@ -1,0 +1,10 @@
+{
+  "command": [
+    "bash",
+    "/workspace/.edhr-cloud-tools/mvn-edhr",
+    "-f",
+    "tools/knowledge-model/pom.xml",
+    "test"
+  ],
+  "exit": 0
+}

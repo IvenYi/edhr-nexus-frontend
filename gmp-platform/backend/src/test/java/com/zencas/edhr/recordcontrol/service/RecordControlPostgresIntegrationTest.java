@@ -168,6 +168,27 @@ class RecordControlPostgresIntegrationTest {
         finally { actor(); }
     }
 
+    @Test void personalDhrListsFollowActualReturnResubmitAndApproval() {
+        dhr(true); summaries.submit(1000L, summaryCommand());
+        assertThat(reviews.list("PENDING", "", 0, 20).getTotalElements()).isZero();
+        AuditContext.setOperator("42", "审批人");
+        assertThat(reviews.list("PENDING", "DHR-LINKAGE", 0, 20).getTotalElements()).isEqualTo(1);
+        assertThat(reviews.list("DONE", "", 0, 20).getTotalElements()).isZero();
+        review(dhrTask(), "RETURN");
+        AuditContext.setOperator("42", "审批人");
+        assertThat(reviews.list("PENDING", "", 0, 20).getTotalElements()).isZero();
+        assertThat(reviews.list("DONE", "", 0, 20).getTotalElements()).isEqualTo(1);
+        actor(); summaries.submit(1000L, summaryCommand());
+        AuditContext.setOperator("42", "审批人");
+        assertThat(reviews.list("PENDING", "", 0, 20).getTotalElements()).isEqualTo(1);
+        review(dhrTask(), "APPROVE");
+        AuditContext.setOperator("42", "审批人");
+        assertThat(reviews.list("PENDING", "", 0, 20).getTotalElements()).isZero();
+        var done = reviews.list("DONE", "", 0, 20);
+        assertThat(done.getTotalElements()).isEqualTo(2);
+        assertThat(done.getContent()).extracting(row -> row.path("status").asText()).containsExactly("COMPLETED", "REJECTED");
+    }
+
     private ObjectNode report() {
         org.springframework.security.core.context.SecurityContextHolder.getContext().setAuthentication(
                 new org.springframework.security.authentication.UsernamePasswordAuthenticationToken("41", null,
