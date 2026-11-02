@@ -1,0 +1,32 @@
+{
+  "exit": 1,
+  "suites": [
+    {
+      "suite": "FileDeleteTransactionIntegrationTest",
+      "tests": 9,
+      "failures": 5,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "FileDeleteTransactionPostgresTest",
+      "tests": 10,
+      "failures": 6,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "FileDeleteTransactionFailureTest",
+      "tests": 2,
+      "failures": 2,
+      "errors": 0,
+      "skipped": 0
+    }
+  ],
+  "totals": {
+    "tests": 21,
+    "failures": 13,
+    "errors": 0,
+    "skipped": 0
+  }
+}
