@@ -1,0 +1,190 @@
+{
+  "roleState": "FINAL",
+  "result": "passed",
+  "baseCommit": "1ad6300918bd0059049eab3c415ca31162dd5115",
+  "headCommit": "b07fc1ca5dd7e4a37b2584c19377495b86b5536a",
+  "contractReadCommit": "b07fc1ca5dd7e4a37b2584c19377495b86b5536a",
+  "knowledgeVersion": "0.3.25",
+  "clean": true,
+  "authority": "PENDING retains r/t states, unrestricted and nonempty frozen collection priority, empty/scalar fallback, DONE actual assignee+completed/rejected; original detail/act/signer/locks untouched",
+  "search": "strip/Locale.ROOT parameter, native ICU root lower and strpos literal substring; finite Unicode matrix passed, no global Unicode/version certification",
+  "query": "single MVCC statement; accurate total row on empty/deep pages, long offset, light list projection keeps all project aliases and excludes unused large fields",
+  "migrations": "two separately tracked concurrent nontransactional indexes; native Liquibase update/rollback/reapply and three baseline install paths ran; ICU presence HALT; no historical backfill or old-index removal",
+  "tests": "four H2 list assertions relocated to PG native oracle and actual full-application return/resubmit/approve list test, existing H2 workflow/signature/frozen evidence assertions retained",
+  "nativeReadSlice": "five canonical query tables with original PK/unique/check/index, no claim of all FK/business model validity; full application is separate",
+  "nativeIndependentResults": {
+    "exit": 0,
+    "suites": [
+      {
+        "suite": "DhrReviewPaginationPostgresTest",
+        "xmlFresh": true,
+        "tests": 99,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "DhrReviewServiceTest",
+        "xmlFresh": true,
+        "tests": 12,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "DhrReviewLifecycleIntegrationTest",
+        "xmlFresh": true,
+        "tests": 6,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "RecordControlPostgresIntegrationTest",
+        "xmlFresh": true,
+        "tests": 26,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "CurrentDatabaseBaselinePostgresTest",
+        "xmlFresh": true,
+        "tests": 3,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    ],
+    "totals": {
+      "tests": 146,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  "knowledgeIndependentResult": {
+    "exit": 0,
+    "tests": 89,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "sameFinalClassOldRed": {
+    "exit": 1,
+    "base": "1ad6300918bd0059049eab3c415ca31162dd5115",
+    "tests": 1,
+    "failures": 1,
+    "errors": 0,
+    "skipped": 0
+  },
+  "oldTestSha256": "95040b0bb6b5f1a066b854062ea83b435e0919bb362716dddf70b439da5175a5",
+  "indexUses": {
+    "history-baseline-7-PENDING.plan.json": [
+      "uq_workflow_task_active_instance_node",
+      "dhr_summary_version_pkey",
+      "dhr_instance_pkey",
+      "uq_workflow_task_active_instance_node",
+      "dhr_summary_version_pkey",
+      "dhr_instance_pkey"
+    ],
+    "history-baseline-7-DONE.plan.json": [
+      "idx_wf_task_assignee",
+      "dhr_summary_review_workflow_instance_id_key",
+      "dhr_summary_version_pkey",
+      "dhr_instance_pkey",
+      "idx_wf_task_assignee",
+      "dhr_summary_review_workflow_instance_id_key",
+      "dhr_summary_version_pkey",
+      "dhr_instance_pkey"
+    ],
+    "history-baseline-99-PENDING.plan.json": [
+      "uq_workflow_task_active_instance_node",
+      "dhr_summary_version_pkey",
+      "dhr_instance_pkey",
+      "uq_workflow_task_active_instance_node",
+      "dhr_summary_version_pkey",
+      "dhr_instance_pkey"
+    ],
+    "history-baseline-99-DONE.plan.json": [
+      "idx_wf_task_status",
+      "workflow_task_pkey",
+      "dhr_summary_review_workflow_instance_id_key",
+      "dhr_summary_version_pkey",
+      "dhr_instance_pkey"
+    ],
+    "history-search-7-DONE.plan.json": [
+      "idx_wf_task_assignee",
+      "dhr_summary_review_workflow_instance_id_key",
+      "dhr_summary_version_pkey",
+      "dhr_instance_pkey",
+      "idx_wf_task_assignee",
+      "dhr_summary_review_workflow_instance_id_key",
+      "dhr_summary_version_pkey",
+      "dhr_instance_pkey"
+    ],
+    "history-pending-index-7-PENDING.plan.json": [
+      "trial_dhr_pending",
+      "uq_workflow_task_active_instance_node",
+      "dhr_summary_version_pkey",
+      "dhr_instance_pkey",
+      "trial_dhr_pending",
+      "uq_workflow_task_active_instance_node",
+      "dhr_summary_version_pkey",
+      "dhr_instance_pkey"
+    ],
+    "history-pending-index-99-PENDING.plan.json": [
+      "trial_dhr_pending",
+      "uq_workflow_task_active_instance_node",
+      "dhr_summary_version_pkey",
+      "dhr_instance_pkey",
+      "trial_dhr_pending",
+      "uq_workflow_task_active_instance_node",
+      "dhr_summary_version_pkey",
+      "dhr_instance_pkey"
+    ],
+    "history-done-index-7-DONE.plan.json": [
+      "idx_wf_task_assignee",
+      "dhr_summary_review_workflow_instance_id_key",
+      "dhr_summary_version_pkey",
+      "dhr_instance_pkey",
+      "idx_wf_task_assignee",
+      "dhr_summary_review_workflow_instance_id_key",
+      "dhr_summary_version_pkey",
+      "dhr_instance_pkey"
+    ],
+    "history-done-index-99-DONE.plan.json": [
+      "idx_wf_task_status",
+      "trial_task_done",
+      "dhr_summary_review_workflow_instance_id_key",
+      "dhr_summary_version_pkey",
+      "dhr_instance_pkey"
+    ],
+    "all-pending-index-7-PENDING.plan.json": [
+      "trial_dhr_pending",
+      "idx_wf_task_instance",
+      "workflow_task_pkey",
+      "trial_dhr_pending",
+      "dhr_summary_version_pkey",
+      "dhr_instance_pkey"
+    ],
+    "all-pending-without-index-7-PENDING.plan.json": [
+      "dhr_summary_review_workflow_instance_id_key",
+      "idx_wf_task_instance",
+      "workflow_task_pkey",
+      "dhr_summary_review_workflow_instance_id_key",
+      "dhr_summary_version_pkey",
+      "dhr_instance_pkey"
+    ]
+  },
+  "indexTrialFormalDefinitionEquivalence": "trial pending uses workflow_instance_id where PENDING_REVIEW; trial done uses assignee_id,id DESC INCLUDE(instance_id,node_id) where COMPLETED/REJECTED, identical to0091 except names and concurrent build options",
+  "sourceAndEvidenceAuxiliary": "125 original records,16gzip,9snapshots,r2 25 fingerprints,330unchanged knowledge,4 fixed inventories,14 authored whitespace paths verified by final read-only auxiliary",
+  "a23": "six finite engineering judgments; old queues and6changed2added/new0091 preserved; wholeFile0/unique null",
+  "limitations": [
+    "PG16.15/ICU153.136 only; no production database access",
+    "No browser/socket/login/RBAC/all account-state or recipient certification",
+    "50k allpending still has JSON/COUNT/offset costs, not all-capacity/SLA/heap proof",
+    "PR50 separate OPEN and not included; must re-evaluate actual later integrated target",
+    "Two existing DHR high and all old deferrals/666-44-183/W6/W7 remain open"
+  ]
+}
