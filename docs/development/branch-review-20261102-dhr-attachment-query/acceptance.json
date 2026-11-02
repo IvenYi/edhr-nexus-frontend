@@ -1,0 +1,30 @@
+{
+  "executionLevel": "L2",
+  "baseCommit": "8ec8391721858a7f96d73a5d293d93f43679118a",
+  "testedCandidate": "ec72883796766eba1c693b2d023bf8d112d86564",
+  "ontologyResult": "not-applicable",
+  "qualityResult": "passed",
+  "requiredChecks": 11,
+  "productChanges": [],
+  "newTest": "DhrAttachmentQueryObservationPostgresTest",
+  "scope": "Query/parent-lock observations only; public submit prefix to original manual guard, no performance implementation or complete successful freeze/HTTP certification.",
+  "primaryTests": {
+    "diagnostic": 2,
+    "neighbors": 32,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "knowledgeTests": 89,
+  "qaResultMember": "quality-result.yaml",
+  "remaining": [
+    "Filename reuse pending user choice; Summary/Archive batching not implemented",
+    "Archive arrays/PDF accumulation and full frozen submission/concurrency/HTTP matrices remain",
+    "Old two DHR highs/A12/four gaps and all original audit/user-pause queues retained",
+    "W2 remainder,W3/W4/W5 crossing,W6 robustness/performance/extraction/A23 including reviewed code,W7 increments"
+  ],
+  "mergeRecommendation": "This finite audit-evidence batch only; no automatic merge/deploy or whole-project release certification.",
+  "protectedCurrentBytesEqualTestedCandidate": true,
+  "protectedCount": 6796,
+  "protectedPathException": "Only NEXT.md may receive L0 status; new QA/evidence/acceptance/scope/delivery documents may be added after validation."
+}
