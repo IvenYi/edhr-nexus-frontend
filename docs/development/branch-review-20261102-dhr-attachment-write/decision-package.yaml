@@ -1,0 +1,86 @@
+decisionPackage:
+  id: DEC-PACKAGE-AUDIT-DHR-ATTACHMENT-WRITE-20261102
+  scope: DHR附件登记前写入/关闭失败的当前原件所有权，以及下载只读容量观测
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: e3e49784eda6bc01e7e5c686d6f79dc5a600d5ae
+    targetBranch: edhr-dev
+    targetCommit: e3e49784eda6bc01e7e5c686d6f79dc5a600d5ae
+    contractReadCommit: e3e49784eda6bc01e7e5c686d6f79dc5a600d5ae
+    uncommittedContractPaths: []
+  summary: PR53已合入且整树同2a0d9fd2，无外部增量；核验写盘中断发生在回调登记前的残片，创建失败不删除非本次文件。下载仅实测，不实施新性能方案。
+  confirmed: {concepts: [], relationships: [], rules: [], executionContracts: []}
+  inferred:
+    - id: inference.dhr-attachment-owned-write-failure
+      statement: CREATE_NEW成功取得写入流后才拥有当前新文件；写入或关闭IOException应清理本次残片，创建失败不能删除原有路径。
+      rationale: 文件所有权与登记前失败的工程一致性，不改变业务历史保留或删除资格。
+      relatedIds: []
+    - id: inference.dhr-attachment-cleanup-primary-error
+      statement: 清理失败须记录ID/path并作为suppressed保留，不替换最初写入错误，不返回成功。
+      rationale: 未登记前没有事务回调可依赖，原始故障及残片须可定位。
+      relatedIds: []
+  unresolved: []
+  replacementScopes: []
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - area: upload-write
+        change: 仅本次已创建流的写入/关闭失败补偿，保留创建碰撞路径。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrAttachmentService.java]
+    transitiveImpacts:
+      - area: registration-audit
+        change: 写入失败时不进入附件登记/LINK审计；既有提交/回滚/UNKNOWN回调保持。
+        evidenceReferences: []
+    potentialImpacts:
+      - area: cleanup-and-crash
+        concern: 清理失败或进程崩溃仍可能遗留原件，日志不等于持久对账；无事务直接调用仍另审。
+        evidenceReferences: []
+      - area: download-capacity
+        concern: 在自有测试库观测当前/冻结的有效/损坏50MiB和1/4/16并发，查询/读取/分配/堆/延迟只代表该环境。
+        evidenceReferences: []
+    unaffectedAreas:
+      - area: retained-policy
+        change: 不改变格式/50MiB/元信息、SHA256、资格、核验、解除保留历史、冻结版本成员、HTTP权限、数据库结构/索引或下载实现。
+        evidenceReferences: [docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml]
+    compatibilityAndMigration: []
+    snapshotImpacts: []
+    auditImpacts:
+      - area: failure-diagnostics
+        change: 补偿只留技术日志/原异常，不补造历史LINK审计或恢复记录。
+        evidenceReferences: []
+    permissionImpacts: []
+    testImpacts:
+      - scope: owned-stream-faults
+        scenarios: [部分写入IOException, 完整写入后关闭IOException, 清理失败, 已有文件/目录碰撞保护, 既有事务/附件回归]
+        evidenceReferences: []
+      - scope: read-only-capacity
+        scenarios: [当前/冻结, 有效/损坏, 50MiB, 并发1/4/16, 实际查询和内存观测]
+        evidenceReferences: []
+    evidenceGaps: [流故障注入不等于真实磁盘耗尽或网络故障, 三表/版本投影测试不等于完整迁移/HTTP/浏览器验收, 无跨资源原子/崩溃持久对账或完整幂等, 性能优化待实测后讨论, 所有旧high/全审队列保持]
+  extensionStrategy:
+    selectedPaths: [transaction-orchestration, product-core]
+    rationale: 当前服务局部文件流所有权补偿，不新增存储框架、业务状态或重试；性能仅诊断。
+    ownershipBoundaries:
+      - owner: DhrAttachmentService.upload
+        responsibility: 当前新文件的写入/关闭及登记前失败清理。
+  affectedFiles:
+    - path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrAttachmentService.java
+      changeType: update
+      reason: 防止登记前写入/关闭失败遗留本次残片，保护既有碰撞路径。
+    - path: gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrAttachmentWriteFailureTest.java
+      changeType: create
+      reason: 真实文件字节配合流IOException注入及创建碰撞控制。
+    - path: gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrAttachmentDownloadCapacityPostgresTest.java
+      changeType: create
+      reason: 自有原生PG下只读观测，不修改下载或业务校验。
+  acceptanceScenarios:
+    - id: scenario.owned-write-failure
+      given: 合法附件且尚未登记数据库
+      when: 创建失败或本次创建成功后写入/关闭失败
+      then: 仅清理本次残片，保留既有路径及原错误；无附件登记或LINK审计。
+      evidenceRequirements: [同源旧断言红, 当前正负控制, 全新独立最终质量]
+    - id: scenario.download-observation
+      given: 自有测试库当前/冻结50MiB附件
+      when: 有效或损坏文件的并发1/4/16读取
+      then: 记录实际查询/分配/读取/堆/耗时且保持完整摘要和冻结成员规则；只据测量提出方案。
+      evidenceRequirements: [原始指标/命令/环境, 明确进程内与真实HTTP/生产SLA的区别]

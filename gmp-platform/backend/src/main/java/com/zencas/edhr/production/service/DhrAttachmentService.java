@@ -98,7 +98,18 @@ public class DhrAttachmentService {
         Path directory = Path.of(storagePath).resolve("dhr");
         Files.createDirectories(directory);
         Path stored = directory.resolve(id + "." + extension);
-        Files.write(stored, bytes, java.nio.file.StandardOpenOption.CREATE_NEW);
+        var output = Files.newOutputStream(stored, java.nio.file.StandardOpenOption.CREATE_NEW);
+        try (output) {
+            for (int offset = 0; offset < bytes.length; offset += 8192)
+                output.write(bytes, offset, Math.min(8192, bytes.length - offset));
+        } catch (IOException writeFailure) {
+            try { Files.deleteIfExists(stored); }
+            catch (IOException cleanupFailure) {
+                writeFailure.addSuppressed(cleanupFailure);
+                log.error("Failed to remove incomplete DHR attachment: id={}, path={}", id, stored, cleanupFailure);
+            }
+            throw writeFailure;
+        }
         if (TransactionSynchronizationManager.isSynchronizationActive())
             TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
                 @Override public void afterCompletion(int status) {

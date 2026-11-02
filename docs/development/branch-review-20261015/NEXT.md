@@ -1,5 +1,15 @@
 # 持续推进台账
 
+## PR53已合入：DHR附件登记前写入失败与容量观测
+
+实际fetch最新`edhr-dev@e3e49784eda6bc01e7e5c686d6f79dc5a600d5ae`，PR53人工合入、整树同2a0d9fd2，无外部源码/知识/契约增量。新分支audit/edhr-dev-dhr-attachment-write-20261102，本轮L2只upload登记前的当前文件写入/关闭失败；[本批](../branch-review-20261102-dhr-attachment-write/README.md)主侧单次127/127通过，另容量1项含12组84请求通过，0error/skip。exact最终同5在真实旧e3为3真断言红2碰撞正控。首轮static stubbing提前open的3fail为夹具错误，原件/初版源码留存不计产品红；中间与最终旧控不相加。
+
+CREATE_NEW成功返回流才进入本次补偿，开流碰撞不删既有file/dir；写入/关闭IOException清理当前残片，清理失败suppressed+ID/path保留原错，尚未登记/LINK。维持原JDK8KiB分块，原事务回调和业务规则不动。当前待fresh最终质量，不提前resolved；本体NA/FINAL，14既有ID有限重审、25源指纹，知识89及330资产不变。6604/135/464/216仅盘点，wholeFile0/unique未知。
+
+容量实测有效当前/冻结5/6个显式Jdbc查询，损坏4/5；50MiB每请求堆分配约50MiB，16并发采样堆增量约820MiB；JFR有效每请求100MiB/损坏50MiB逻辑读取，非物理IO。2GiB测试JVM、暖缓存稀疏PNG、Hikari10、进程内Controller/service/resource，不代表HTTP/RBAC/直接内存/RSS或生产SLA。已把固定缓冲完整SHA后再输出的下一批建议问用户，未答不当批准；本批未做下载优化/索引，查询复用另核。当前typed调用仅注入Controller上传，未发现内部无事务入口，有限排除假设、不新增全局guard，不认证未来/动态入口。
+
+整体W3/W4/W5交叉，W2余项/W6健壮性性能A23含旧已审/W7增量、原666/44/183、旧两DHRhigh/A12/四gap、完整账号UI收件人/共享ACL引用并发及原暂缓保持；当前1改2增入队。崩溃/清理失败/UNKNOWN持久对账和幂等仍残余。全部正式角色FINAL后实际向用户完成PR前漂移/阶段复核再交付；不自动merge/deploy/历史恢复/孤儿扫删、不查询触发CI。
+
 ## PR52已合入：DHR附件上传事务结果
 
 已交付[PR53](https://github.com/IvenYi/edhr-nexus-frontend/pull/53)，audit/edhr-dev-dhr-attachment-transactions-20261102→edhr-dev，建议本批人工merge。受测a6f79945后仅L0原件/验收/交付登记，产品/测试/知识/模型/契约/决策包/source-review/四固定清单保持；交付观察见本批evidence/delivery-verification.json。下轮先fetch真实merge与增量，性能量化和写入中断等候选、所有旧high/全审队列/暂缓继续。

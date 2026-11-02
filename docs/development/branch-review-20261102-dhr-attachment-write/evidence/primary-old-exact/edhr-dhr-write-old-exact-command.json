@@ -1,0 +1,16 @@
+{
+  "sourceCommit": "e3e49784eda6bc01e7e5c686d6f79dc5a600d5ae",
+  "cwd": "/tmp/edhr-dhr-write-old-exact-20261102",
+  "cmd": [
+    "bash",
+    "/workspace/.edhr-cloud-tools/mvn-edhr",
+    "-f",
+    "gmp-platform/backend/pom.xml",
+    "-Dtest=DhrAttachmentWriteFailureTest",
+    "test"
+  ],
+  "startedEpoch": 1793627518.573636,
+  "testSha256": "6088d5bb120f1800da70d8542a16278a625f6efd5ea233c8b5e753013b81c69f",
+  "copySha256": "6088d5bb120f1800da70d8542a16278a625f6efd5ea233c8b5e753013b81c69f",
+  "exactFinalTestBytes": true
+}
