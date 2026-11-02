@@ -1,0 +1,75 @@
+decisionPackage:
+  id: DEC-PACKAGE-AUDIT-DHR-ATTACHMENT-TX-20261102
+  scope: DHR受控附件上传的UNKNOWN原件保留和已回滚清理失败可观测性
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: ab5adafb9629b94f95eb88825ec0a4ea06f4efb1
+    targetBranch: edhr-dev
+    targetCommit: ab5adafb9629b94f95eb88825ec0a4ea06f4efb1
+    contractReadCommit: ab5adafb9629b94f95eb88825ec0a4ea06f4efb1
+    uncommittedContractPaths: []
+  summary: PR52已合入且整树同2d2238e2，无额外增量；核验相邻DHR上传回调，不以未知结果猜测回滚并毁损可能已登记的原件。
+  confirmed: {concepts: [], relationships: [], rules: [], executionContracts: []}
+  inferred:
+    - id: inference.dhr-attachment-unknown-not-rollback
+      statement: UNKNOWN不能证明回滚；保留可能已登记原件并记录附件ID/路径，只有已确认回滚才补偿清理本次上传。
+      rationale: 原件完整性和实际事务完成状态的工程边界，不新增业务保留政策或上传资格。
+      relatedIds: []
+    - id: inference.dhr-attachment-cleanup-observable
+      statement: 补偿清理失败应留下定位证据且不能替换原事务错误，不伪造业务审计。
+      rationale: 当前回调吞IOException，故障没有可追查的原件定位。
+      relatedIds: []
+  unresolved: []
+  replacementScopes: []
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - area: DhrAttachmentService.upload
+        change: 仅确认回滚时清理本次原件，UNKNOWN保留并记录；清理异常可定位且原事务错误保持。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrAttachmentService.java]
+    transitiveImpacts:
+      - area: transaction-and-audit
+        change: 继续使用现有注解事务，外层事务决定最终完成状态；实际附件登记与LINK审计事务边界回归。
+        evidenceReferences: []
+    potentialImpacts:
+      - area: residual-files
+        concern: UNKNOWN或清理失败可能留下文件，日志不等于持久对账；写入中断/崩溃/无事务内部调用仍需另审。
+        evidenceReferences: []
+      - area: capacity
+        concern: 既有50MB附件全量字节及解析、下载多次查询/读取另行量化，不借一致性修复擅自性能重构。
+        evidenceReferences: []
+    unaffectedAreas:
+      - area: policy-and-files
+        change: 不改变上传格式/大小、来源信息、核验、解除关联保留历史、冻结版本成员下载、通用文件DELETE、共享ACL或DHR业务政策。
+        evidenceReferences: [docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml]
+    compatibilityAndMigration: []
+    snapshotImpacts: []
+    auditImpacts:
+      - area: technical-log
+        change: 仅技术日志记录异常/未知，不补造LINK审计、历史证据或恢复数据库。
+        evidenceReferences: []
+    permissionImpacts: []
+    testImpacts:
+      - scope: native-transaction-files-audit
+        scenarios: [提交保留原件, SQL或审计拒绝回滚, 提交前故障, 外层提交/回滚, 已实际提交后合成确认失败, 回滚清理IO失败可定位, 既有业务拒绝, 解除关联保留历史]
+        evidenceReferences: []
+    evidenceGaps: [真实网络断连及崩溃恢复/持久对账未实施, 全库迁移/完整HTTP权限和浏览器另验, 原件写入中断/共享引用与ACL仍待审, 旧DHRhigh和所有整体审计余项保持]
+  extensionStrategy:
+    selectedPaths: [transaction-orchestration, product-core]
+    rationale: 修正现有注解事务的局部同步回调，不新增磁盘事务框架、状态表、重试或全局守卫。
+    ownershipBoundaries:
+      - owner: DhrAttachmentService.upload
+        responsibility: 当前上传原件与既有事务结果的补偿和技术定位。
+  affectedFiles:
+    - path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrAttachmentService.java
+      changeType: update
+      reason: 区分UNKNOWN与已回滚并记录补偿失败。
+    - path: gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrAttachmentTransactionPostgresTest.java
+      changeType: create
+      reason: 实际代理/JPA审计/SQL/磁盘和已提交后合成确认失败、清理故障回归。
+  acceptanceScenarios:
+    - id: scenario.dhr-attachment-transaction-outcome
+      given: 既有DHR上传资格、有效附件和原生数据库事务
+      when: 提交、回滚、提交结果未知或清理失败
+      then: 提交/未知保留原件，仅已回滚补偿；失败可定位且原错误保持，不改变解除关联政策。
+      evidenceRequirements: [旧代码同源断言红, 原生PG与实际事务/审计/磁盘, 全新最终独立质量]

@@ -1,5 +1,13 @@
 # 持续推进台账
 
+## PR52已合入：DHR附件上传事务结果
+
+实际fetch最新`edhr-dev@ab5adafb9629b94f95eb88825ec0a4ea06f4efb1`，PR52人工合入、整树同2d2238e2，无外部源码/知识/契约增量。新分支audit/edhr-dev-dhr-attachment-transactions-20261102，本轮L2只DhrAttachmentService.upload完成回调；[本批](../branch-review-20261102-dhr-attachment/README.md)主侧单次122/122过，最终同11旧源2真实断言红9正、0error/skip。实际PG先COMMIT再合成确认失败，原件不再误删；此故障不是实际网络断连。当前待fresh独立最终质量，不提前resolved。
+
+仅确认回滚补偿本次原件，UNKNOWN保留并记录ID/path；回滚清理IO失败可定位且原事务错误保持。实际Spring代理/JPA审计/JDBC/三canonical表/磁盘，test-only拒绝CHECK不构成新业务约束或全库迁移证明。格式/50MiB/编辑资格/核验/冻结引用/带原因解除保留历史不动。本体NA/FINAL、12既有ID有限重审、知识89与330资产不变；40原件+3快照归档。6503/135/464/216只盘点，wholeFile0/unique未知。
+
+有限A23与具体拆分已记录；附件下载重复元数据查询和50MiB整数组并发风险仅源码候选/容量推算，先量化讨论不改性能或索引。写入中断/无事务内部调用、UNKNOWN重试/崩溃/持久对账、共享ACL/引用互斥仍待审。整体W3/W4/W5交叉，原666/44/183、两个DHR旧high/A12/四gap、完整账号UI收件人、W2余项与W6健壮性/性能/A23含旧已审/W7增量及所有历史队列保持，当前1改1增入队。全部角色FINAL后实际向用户做PR前漂移/阶段复核再交付，不自动merge/deploy/恢复/孤儿扫删或查询触发CI。
+
 ## PR51已合入：通用文件删除事务结果
 
 已交付[PR52](https://github.com/IvenYi/edhr-nexus-frontend/pull/52)，audit/edhr-dev-file-delete-transactions-20261102→edhr-dev，建议本批人工合入；交付观察见本批evidence/delivery-verification.json。受测bd71后仅L0归档/验收/登记，产品/测试/知识/契约/决策包/有限源码清单与固定盘点保持。下轮fetch真实合入和外部增量，所有全审余项/旧high/暂缓继续。

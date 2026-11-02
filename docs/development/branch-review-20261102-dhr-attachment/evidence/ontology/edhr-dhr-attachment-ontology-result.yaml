@@ -1,0 +1,56 @@
+ontologyResult:
+  result: not-applicable
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: ab5adafb9629b94f95eb88825ec0a4ea06f4efb1
+    targetBranch: edhr-dev
+    targetCommit: ab5adafb9629b94f95eb88825ec0a4ea06f4efb1
+    contractReadCommit: ab5adafb9629b94f95eb88825ec0a4ea06f4efb1
+    uncommittedContractPaths: []
+  reason: 本轮只修正DHR附件上传的事务结果补偿：UNKNOWN不再被当作回滚而删除可能已登记原件，已回滚清理失败记录ID/路径且保持原事务错误。仅当前新写入路径在确认回滚后补偿，不改变既有附件来源/大小/格式/核验、带原因解除关联保留历史、冻结版本成员或任务下载权限；技术日志不补造LINK审计。UNKNOWN保留是工程推导，不新增业务政策。330知识文件和业务模型/契约逐字节不变，0.3.25/schema1.2.0/P0成熟度不升；12个既有ID有限重审不表示全库对齐。
+  changedArtifacts: []
+  knowledgeSync: []
+  conflicts: []
+  questions: []
+  validationEvidence:
+  - id: validation.dhr-attachment-knowledge89
+    checkType: schema
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f tools/knowledge-model/pom.xml test
+    outcome: passed
+    evidence:
+    - /tmp/edhr-dhr-attachment-ontology-knowledge-command.json
+    - /tmp/edhr-dhr-attachment-ontology-knowledge-test.txt
+    - /tmp/edhr-dhr-attachment-ontology-knowledge-test.xml
+    - /tmp/edhr-dhr-attachment-ontology-knowledge-summary.json
+    - Actual ontology-role run:89 tests,0 failures/errors/skips; no product-test or all-ID semantic claim.
+  - id: validation.dhr-attachment-finite-semantics
+    checkType: evidence-path
+    command: Read DEC0063 original confirmations, retained definitions and final DhrAttachmentService/new test source;
+      freeze exact source fingerprints.
+    outcome: passed
+    evidence:
+    - /tmp/edhr-dhr-attachment-ontology-semantic-review.json
+    - /tmp/edhr-dhr-attachment-ontology-policy-sources.json
+    - /tmp/edhr-dhr-attachment-ontology-source-fingerprints.json
+    - /tmp/edhr-dhr-attachment-ontology-source.diff
+    - 12 existing finite IDs after10+9 with7 overlaps; wholeFiles0 and newHistoricalUnique unknown. Native test
+      source uses real COMMIT then synthetic acknowledgement failure; not actual network fault. Product runtime
+      independently validated elsewhere.
+  - id: validation.dhr-attachment-knowledge-provenance
+    checkType: projection
+    command: Compare all330 knowledge paths/bytes plus business model and contracts with actual ab5adafb target;
+      verify unchanged Git diff and versions.
+    outcome: passed
+    evidence:
+    - /tmp/edhr-dhr-attachment-ontology-knowledge-inventory.json
+    - /tmp/edhr-dhr-attachment-ontology-knowledge.diff
+    - No policy, visibility, maturity, stage or historical discrepancy closure.
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages:
+    - P1
+    - P2
+    - P3
