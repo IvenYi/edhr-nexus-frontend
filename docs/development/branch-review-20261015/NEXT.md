@@ -2,6 +2,8 @@
 
 ## PR50已合入：PR51冲突整合
 
+集成收尾已通过全新独立质量：clean775d8bb6、target54c9a7cc，10/10必需检查passed/FINAL，主侧及独立分别单次155全过，独立知识89、39JWT/MVC响应及迁移/安装验证通过，自有PG已清理。已正常推送原PR51，首次集成推送后OPEN/MERGEABLE/CLEAN，待人工merge。后续只L0原件/验收/状态登记，受测产品/测试字节不变；[新验收](../pr51-integration-20261102/acceptance.json)明确旧52/146不能覆盖新组合。下文准备验证为本轮历史检查点，所有原high/规模/全审/暂缓仍保留。
+
 本次L2仅集成收尾：实际最新edhr-dev为`54c9a7ccfbb2a2a420f6f0e2f41636f4805cf67f`（PR50人工merge），PR51来源`63f2244adcce90d944785c9e83617fff872e19c2`。唯一文本冲突为本台账顶部，两段进度均保留；RecordControlPostgresIntegrationTest自动合并，保留PR50的9个普通JWT/MVC场景及PR51实际退回/重提/批准列表验证。产品源码/迁移及知识/契约未引入新变化，当前准备实际155项合并候选回归与全新独立QA，不沿用旧146认证新组合。详情见[集成记录](../pr51-integration-20261102/README.md)。以下PR50未合入等文字为原阶段历史，当前以本节为准；原件不回写。所有旧high/规模/ICU/全审矩阵与暂缓保持，不自动merge/deploy/恢复、不查询触发CI。
 
 ## PR50待合并：DHR个人查询分页与索引

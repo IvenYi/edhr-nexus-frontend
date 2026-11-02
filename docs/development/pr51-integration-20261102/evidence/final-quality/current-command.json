@@ -1,0 +1,19 @@
+{
+  "cmd": [
+    "bash",
+    "/workspace/.edhr-cloud-tools/mvn-edhr",
+    "-f",
+    "gmp-platform/backend/pom.xml",
+    "-Dtest=DhrReviewPaginationPostgresTest,DhrReviewServiceTest,DhrReviewLifecycleIntegrationTest,RecordControlPostgresIntegrationTest,CurrentDatabaseBaselinePostgresTest",
+    "-Dedhr.audit.dhrHttpOutput=/tmp/edhr-pr51-q1-http.jsonl",
+    "-Dedhr.audit.dhrPageOutput=/tmp/edhr-pr51-q1-capacity.json",
+    "test"
+  ],
+  "startedEpoch": 1793596891.5879133,
+  "env": {
+    "RECORD_CONTROL_TEST_DATABASE_URL": "jdbc:postgresql://127.0.0.1:32774/edhr_record_control_test_pr51_q1",
+    "BASELINE_TEST_DATABASE_URL": "jdbc:postgresql://127.0.0.1:32774/edhr_baseline_test_pr51_q1",
+    "PGUSER": "edhr"
+  },
+  "testedHead": "775d8bb664211b77a7172db0436a9b31715a5439"
+}

@@ -1,6 +1,6 @@
 # DHR个人审批查询与索引
 
-PR50现已人工合入`edhr-dev@54c9a7cc`，本分支正做[PR51集成复验](../pr51-integration-20261102/README.md)：唯一NEXT冲突保留两侧记录，测试自动合并，主侧新155通过，待新独立QA。以下“PR50未合入”和旧146验收均保留当时基线与原件，不能覆盖新组合；业务与迁移字节保持。
+PR50现已人工合入`edhr-dev@54c9a7cc`，[PR51集成复验](../pr51-integration-20261102/README.md)已完成并正常推送原分支：唯一NEXT冲突保留两侧记录，测试自动合并，主侧及全新独立均单次155全过、独立10/10必需检查passed/FINAL，知识89及39JWT/MVC响应通过。GitHub首次集成推送后OPEN/MERGEABLE/CLEAN。以下“PR50未合入”和旧146验收均保留当时基线与原件，不能覆盖新组合；业务与迁移字节保持。
 
 已交付[PR51](https://github.com/IvenYi/edhr-nexus-frontend/pull/51)，`audit/edhr-dev-dhr-review-pagination-20261102`→`edhr-dev`，登记时OPEN/MERGEABLE/CLEAN，建议人工合入本批。实际受测b07fc1ca之后，a89d184d仅L0最终原件/验收/范围；当前只登记交付，保护路径保持，未冒称文档提交重跑。[交付记录](delivery.json)保存创建时实际远端，下一批先fetch实际集成和增量，PR50状态仍须实际核对。
 
