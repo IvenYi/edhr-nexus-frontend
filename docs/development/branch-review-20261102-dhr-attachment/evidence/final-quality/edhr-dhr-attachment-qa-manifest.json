@@ -1,0 +1,271 @@
+{
+  "status": "FINAL",
+  "baseCommit": "ab5adafb9629b94f95eb88825ec0a4ea06f4efb1",
+  "headCommit": "a6f799459eb105da5e98ab3d548d6b03d18d9e43",
+  "generatedAt": "2026-11-02T12:46:20.695339+00:00",
+  "independence": "No product/test/config fixes; one read-only evidence subordinate FINAL",
+  "sourceSnapshot": [
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrAttachmentService.java",
+      "bytes": 16473,
+      "sha256": "783c6f3338cd97b5b4cbfc0c3bc35c12707a7b0fc094912d28735a3b7c1a2bba"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrAttachmentTransactionPostgresTest.java",
+      "bytes": 15572,
+      "sha256": "de1b1705d3eec75c385524f9874518ca4a5376d30f74aeeadf81f164e81aed40"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrAttachmentController.java",
+      "bytes": 3471,
+      "sha256": "85452748ac5c956ce2330ee6e4327ad640bf442e35b14b2731cdf2b15b69a5f6"
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-attachment/decision-package.yaml",
+      "bytes": 4818,
+      "sha256": "d138e8e87b7eddd331616ad79b6a0714acf1d1585f2b419da15aa2a2b0d75296"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml",
+      "bytes": 23213,
+      "sha256": "11e70ec27862eb971a2ad01cd928e8c2ecba36be4df70e170bd1f5296c4e0253"
+    },
+    {
+      "path": "docs/knowledge/evidence/dhr-summary-user-confirmed.md",
+      "bytes": 36542,
+      "sha256": "51dc528c6fe38671023cec25cfbe6bf1f0a8dcf2fc088f7894524a2d5f035642"
+    }
+  ],
+  "files": [
+    {
+      "path": "/tmp/edhr-dhr-attachment-qa-cleanup.json",
+      "bytes": 171,
+      "sha256": "a46ed814027136b6c0f3079edf6fc7a6b7a1f9795bd9b15dcaa265e3826fd10a"
+    },
+    {
+      "path": "/tmp/edhr-dhr-attachment-qa-current-DhrAttachmentAndArchiveTest.xml",
+      "bytes": 36889,
+      "sha256": "d7d9db615497e0e85d8842eae2306e4229fd98972f7b78ba58eaeffbdb25c762"
+    },
+    {
+      "path": "/tmp/edhr-dhr-attachment-qa-current-DhrAttachmentTransactionPostgresTest.xml",
+      "bytes": 129972,
+      "sha256": "8f965b30a0bd7b95553e809fccdaab5ce11e759f50d5d89127d026eb6df157c8"
+    },
+    {
+      "path": "/tmp/edhr-dhr-attachment-qa-current-DhrFormFilesTest.xml",
+      "bytes": 33086,
+      "sha256": "5e2eea02909421e073b038c45b2c92fbeb66455e1d04b0d7e2b5a54c81cbfe30"
+    },
+    {
+      "path": "/tmp/edhr-dhr-attachment-qa-current-DhrReviewLifecycleIntegrationTest.xml",
+      "bytes": 286829,
+      "sha256": "031aee76c889ac3be5b995a9996f1c613dd769bd33bbf571abbfa4729656d72b"
+    },
+    {
+      "path": "/tmp/edhr-dhr-attachment-qa-current-DhrSummaryServiceTest.xml",
+      "bytes": 34038,
+      "sha256": "92866960398e4abbce36a226245afe12186c47a3c4cc68ea9a49f1c695ca4856"
+    },
+    {
+      "path": "/tmp/edhr-dhr-attachment-qa-current-ExecutionAccessTest.xml",
+      "bytes": 34946,
+      "sha256": "dd430dd8bf700c7e01932a63242b61a0da41ec5de31d343850b3ab60bc4c0e78"
+    },
+    {
+      "path": "/tmp/edhr-dhr-attachment-qa-current-FileControllerTest.xml",
+      "bytes": 34878,
+      "sha256": "3abd1d4cb45f213ad17fb4a0c8b795cfb66fc6dbf490775d41648e1d77750cee"
+    },
+    {
+      "path": "/tmp/edhr-dhr-attachment-qa-current-FileCopyOwnershipTest.xml",
+      "bytes": 42214,
+      "sha256": "a8fc65715dffedbff49b69ad91a81b37d5d341bfd5f8ca7f04096d39a9da95b3"
+    },
+    {
+      "path": "/tmp/edhr-dhr-attachment-qa-current-FileDeleteTransactionFailureTest.xml",
+      "bytes": 32970,
+      "sha256": "1dcbe64f45872422d118606cd0f604cc0dcac692c144571bc4eb75611ff81383"
+    },
+    {
+      "path": "/tmp/edhr-dhr-attachment-qa-current-FileDeleteTransactionIntegrationTest.xml",
+      "bytes": 102951,
+      "sha256": "21c5d5355a3e87f3b9cf2786b33ed3c5d25ab16b4a0120944bdf709496552d23"
+    },
+    {
+      "path": "/tmp/edhr-dhr-attachment-qa-current-FileDeleteTransactionPostgresTest.xml",
+      "bytes": 104319,
+      "sha256": "118043248dcca5e05119f6270b059fe2a9f038f9f97af1b6d9670ccadca16442"
+    },
+    {
+      "path": "/tmp/edhr-dhr-attachment-qa-current-FileHttpBoundaryTest.xml",
+      "bytes": 47756,
+      "sha256": "a60c1dd3761508090f8f256488677e739a2f949cd8ffe2a4d098bf503ff384af"
+    },
+    {
+      "path": "/tmp/edhr-dhr-attachment-qa-current-FileUploadResourceTest.xml",
+      "bytes": 34595,
+      "sha256": "71346cfe2b5aa881c352d2bf6011dd2ef565b6f6963d2ea32fa1b5fdac301a86"
+    },
+    {
+      "path": "/tmp/edhr-dhr-attachment-qa-current-FileUploadTransactionFailureTest.xml",
+      "bytes": 45927,
+      "sha256": "3e7a9a86b6720c9d664b94bea7313c025e2debcd4837be4aa3b819ac74013fe1"
+    },
+    {
+      "path": "/tmp/edhr-dhr-attachment-qa-current-FileUploadTransactionIntegrationTest.xml",
+      "bytes": 122140,
+      "sha256": "bee63d340ffa7b53d26fd788c8826817c34a8721e6026d61a24927fdbd23daf0"
+    },
+    {
+      "path": "/tmp/edhr-dhr-attachment-qa-current-FileUploadTransactionPostgresTest.xml",
+      "bytes": 123891,
+      "sha256": "2fc84f75487c5af0574921ffa3dd47bc5dd768e75564b457cef471db67deb655"
+    },
+    {
+      "path": "/tmp/edhr-dhr-attachment-qa-current-command.json",
+      "bytes": 966,
+      "sha256": "797fe85b05fda9b952dc08f805d38dbc2f48f58973aa0b2a551898c52812e79f"
+    },
+    {
+      "path": "/tmp/edhr-dhr-attachment-qa-current-summary.json",
+      "bytes": 2336,
+      "sha256": "ee850fc35a6578ffe3815d985ab0a8e41c17a6586b40e8a387a837162446ee29"
+    },
+    {
+      "path": "/tmp/edhr-dhr-attachment-qa-current-test.txt",
+      "bytes": 709649,
+      "sha256": "94369c649a6001ee8ba340d0e611a0b7de89f840b84aceb5317d8013abd45279"
+    },
+    {
+      "path": "/tmp/edhr-dhr-attachment-qa-database.json",
+      "bytes": 600,
+      "sha256": "d41b15fc3bd33a16c4bd1b78c6e370cbf4cef43a445e3bd46b4c02b8063a008e"
+    },
+    {
+      "path": "/tmp/edhr-dhr-attachment-qa-evidence-check.json",
+      "bytes": 326442,
+      "sha256": "ca906c4502689dcb88ff10c771a23f31bae1042dd07f706b8eef45920662cc55"
+    },
+    {
+      "path": "/tmp/edhr-dhr-attachment-qa-evidence-inventory-command.json",
+      "bytes": 372,
+      "sha256": "5339d0c8b1c65305f207b70df88cff1daeb20e1f00baeb752b9d783e22ece763"
+    },
+    {
+      "path": "/tmp/edhr-dhr-attachment-qa-evidence-inventory-stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/tmp/edhr-dhr-attachment-qa-evidence-inventory-stdout.txt",
+      "bytes": 934,
+      "sha256": "bd0403614fa8a60dff16ce3cd10fefcf5718fd4c2ff912a701c8f55d7ab59555"
+    },
+    {
+      "path": "/tmp/edhr-dhr-attachment-qa-evidence-verify.py",
+      "bytes": 7909,
+      "sha256": "1ab97177258ead9abed70da8b91dfd1db2882052bca8c25464cf5aa40a7ece08"
+    },
+    {
+      "path": "/tmp/edhr-dhr-attachment-qa-finalize.py",
+      "bytes": 16508,
+      "sha256": "17725c5f5fcb48b2f40c847db501b78f6694bf9f17a2eef2a9d617abd9f07f83"
+    },
+    {
+      "path": "/tmp/edhr-dhr-attachment-qa-knowledge-command.json",
+      "bytes": 232,
+      "sha256": "d9dd6a05ed41aa75172965eeff4e1f40460e42cec6055d6cf2e96c8ae9689f20"
+    },
+    {
+      "path": "/tmp/edhr-dhr-attachment-qa-knowledge-summary.json",
+      "bytes": 79,
+      "sha256": "49cdcd1b2522e3dd57105a28a389a8b8d1de06425d9856bc2d68fa47ac320e7e"
+    },
+    {
+      "path": "/tmp/edhr-dhr-attachment-qa-knowledge-test.txt",
+      "bytes": 2112,
+      "sha256": "b781ebaa129a085fae7331e6cf7fb0ee68932e85c85e8d3c5a1ef0d2dfd6ab0e"
+    },
+    {
+      "path": "/tmp/edhr-dhr-attachment-qa-knowledge-test.xml",
+      "bytes": 20422,
+      "sha256": "74c493068550711cb8b5c6c2283cbde6b6c98d741ef6b0ea6a2b82401e3de8a9"
+    },
+    {
+      "path": "/tmp/edhr-dhr-attachment-qa-old-DhrAttachmentTransactionPostgresTest.xml",
+      "bytes": 118726,
+      "sha256": "101ff425823dae0503382617cb994daf4123b1f09389aa040374d775080e2838"
+    },
+    {
+      "path": "/tmp/edhr-dhr-attachment-qa-old-command.json",
+      "bytes": 561,
+      "sha256": "3eba9e8b997e399d1f800816b446a568f8ec5fd22911fece733700ce1230d019"
+    },
+    {
+      "path": "/tmp/edhr-dhr-attachment-qa-old-source.json",
+      "bytes": 690,
+      "sha256": "c9d28a79aed1d7922e4bb951926a0843fe7ac9bfd954e88bce72bb78371cf7bd"
+    },
+    {
+      "path": "/tmp/edhr-dhr-attachment-qa-old-summary.json",
+      "bytes": 297,
+      "sha256": "849a6131219d0762a9a919ee985b7a4421a89913044ca7e2e90ca1fb23c1f828"
+    },
+    {
+      "path": "/tmp/edhr-dhr-attachment-qa-old-test.txt",
+      "bytes": 89291,
+      "sha256": "eefff31456ec1e7f4f1f0e9601c6891b87805c33fbe4f19da204e6ae749f266e"
+    },
+    {
+      "path": "/tmp/edhr-dhr-attachment-qa-qualityResult.yaml",
+      "bytes": 12672,
+      "sha256": "f3eeb06cad088d85b3e3d8c5c77aa3314e0d35c45fa426c073631ababd805705"
+    },
+    {
+      "path": "/tmp/edhr-dhr-attachment-qa-report.md",
+      "bytes": 3677,
+      "sha256": "bb1ca0556d00436c73bbb47d12a428660f81ac225638db91473d442d8cc9d1bb"
+    },
+    {
+      "path": "/tmp/edhr-dhr-attachment-qa-run-complete.json",
+      "bytes": 188,
+      "sha256": "2a1a3c10a24d0d4c3e2b375cd131630d96b1f49baa11b2925c1b1e78cf87cd87"
+    },
+    {
+      "path": "/tmp/edhr-dhr-attachment-qa-run.py",
+      "bytes": 6750,
+      "sha256": "7a97c4ee63913b6ea42b55fb05ae2586ba088596e5b5550c5ec0bb91f1903f66"
+    },
+    {
+      "path": "/tmp/edhr-dhr-attachment-qa-source-inspection.json",
+      "bytes": 4388,
+      "sha256": "f61dcf56dc9cc5b57362c36c814d2209d8c071164c06fa73edfc427743cb6342"
+    },
+    {
+      "path": "/tmp/edhr-dhr-attachment-qa-source.diff",
+      "bytes": 18686,
+      "sha256": "656016ff2889617df324d7541e36d63b624d6d8b46c9881fc51516b0170340e1"
+    },
+    {
+      "path": "/tmp/edhr-dhr-attachment-qa-evidence-inventory/coverage.csv",
+      "bytes": 1974844,
+      "sha256": "0a57e2993fbbdca2f04f07a6b0d5a114f5db6a890f1af2758807ebda03e4b6a9"
+    },
+    {
+      "path": "/tmp/edhr-dhr-attachment-qa-evidence-inventory/entrypoints.csv",
+      "bytes": 161809,
+      "sha256": "9043e4ea7787f1528ceec88b5da7a8e2ef633c0dff0cf8aabbac2e3373038fae"
+    },
+    {
+      "path": "/tmp/edhr-dhr-attachment-qa-evidence-inventory/inventory-summary.json",
+      "bytes": 1044,
+      "sha256": "46c4330648a5b4f6b133be05a6e3e2fe1a3a7caec6f7cd347d1e1c4bfed9d531"
+    },
+    {
+      "path": "/tmp/edhr-dhr-attachment-qa-evidence-inventory/migrations.csv",
+      "bytes": 34737,
+      "sha256": "12f1ca88a9312ef6fcbd3c68e28b5545c2b0aacc254a7b96a5fcfdbd683abe11"
+    }
+  ]
+}

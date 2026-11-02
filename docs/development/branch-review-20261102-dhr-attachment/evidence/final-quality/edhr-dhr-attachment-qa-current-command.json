@@ -1,0 +1,16 @@
+{
+  "cmd": [
+    "bash",
+    "/workspace/.edhr-cloud-tools/mvn-edhr",
+    "-f",
+    "gmp-platform/backend/pom.xml",
+    "-Dtest=DhrAttachmentTransactionPostgresTest,DhrAttachmentAndArchiveTest,DhrSummaryServiceTest,DhrReviewLifecycleIntegrationTest,FileControllerTest,FileCopyOwnershipTest,FileHttpBoundaryTest,FileUploadResourceTest,FileUploadTransactionIntegrationTest,FileUploadTransactionPostgresTest,FileUploadTransactionFailureTest,FileDeleteTransactionIntegrationTest,FileDeleteTransactionPostgresTest,FileDeleteTransactionFailureTest,DhrFormFilesTest,ExecutionAccessTest",
+    "test"
+  ],
+  "cwd": "/workspace/edhr-nexus-frontend",
+  "baseCommit": "ab5adafb9629b94f95eb88825ec0a4ea06f4efb1",
+  "headCommit": "a6f799459eb105da5e98ab3d548d6b03d18d9e43",
+  "startedEpoch": 1793623295.4875345,
+  "dhrUrl": "jdbc:postgresql://127.0.0.1:32769/edhr_dhr_attachment_transaction_test",
+  "uploadUrl": "jdbc:postgresql://127.0.0.1:32769/edhr_upload_transaction_test"
+}

@@ -2,11 +2,11 @@
 
 ## PR52已合入：DHR附件上传事务结果
 
-实际fetch最新`edhr-dev@ab5adafb9629b94f95eb88825ec0a4ea06f4efb1`，PR52人工合入、整树同2d2238e2，无外部源码/知识/契约增量。新分支audit/edhr-dev-dhr-attachment-transactions-20261102，本轮L2只DhrAttachmentService.upload完成回调；[本批](../branch-review-20261102-dhr-attachment/README.md)主侧单次122/122过，最终同11旧源2真实断言红9正、0error/skip。实际PG先COMMIT再合成确认失败，原件不再误删；此故障不是实际网络断连。当前待fresh独立最终质量，不提前resolved。
+实际fetch最新`edhr-dev@ab5adafb9629b94f95eb88825ec0a4ea06f4efb1`，PR52人工合入、整树同2d2238e2，无外部源码/知识/契约增量。新分支audit/edhr-dev-dhr-attachment-transactions-20261102，本轮L2只DhrAttachmentService.upload完成回调；[本批](../branch-review-20261102-dhr-attachment/README.md)全新独立对clean受测a6f79945出具passed/FINAL、13/13必需检查，单次122/122与知识89/89通过。同11旧源2真实断言红9正、0error/skip；两项按验收有限resolved，47最终原件含manifest归档。实际PG先COMMIT再合成确认失败，原件不再误删；此故障不是实际网络断连。
 
 仅确认回滚补偿本次原件，UNKNOWN保留并记录ID/path；回滚清理IO失败可定位且原事务错误保持。实际Spring代理/JPA审计/JDBC/三canonical表/磁盘，test-only拒绝CHECK不构成新业务约束或全库迁移证明。格式/50MiB/编辑资格/核验/冻结引用/带原因解除保留历史不动。本体NA/FINAL、12既有ID有限重审、知识89与330资产不变；40原件+3快照归档。6503/135/464/216只盘点，wholeFile0/unique未知。
 
-有限A23与具体拆分已记录；附件下载重复元数据查询和50MiB整数组并发风险仅源码候选/容量推算，先量化讨论不改性能或索引。写入中断/无事务内部调用、UNKNOWN重试/崩溃/持久对账、共享ACL/引用互斥仍待审。整体W3/W4/W5交叉，原666/44/183、两个DHR旧high/A12/四gap、完整账号UI收件人、W2余项与W6健壮性/性能/A23含旧已审/W7增量及所有历史队列保持，当前1改1增入队。全部角色FINAL后实际向用户做PR前漂移/阶段复核再交付，不自动merge/deploy/恢复/孤儿扫删或查询触发CI。
+全部正式角色FINAL后已实际向用户说明范围/阶段/余项、再次fetch目标不变并做PR前漂移复核；之后仅L0验收/原件/交付，受测保护路径保持。有限A23与具体拆分已记录；附件下载重复元数据查询和50MiB整数组并发风险仅源码候选/容量推算，先量化讨论不改性能或索引。写入中断/无事务内部调用、UNKNOWN重试/崩溃/持久对账、共享ACL/引用互斥仍待审。整体W3/W4/W5交叉，原666/44/183、两个DHR旧high/A12/四gap、完整账号UI收件人、W2余项与W6健壮性/性能/A23含旧已审/W7增量及所有历史队列保持，当前1改1增入队。下一批先fetch真实merge/增量，量化下载并核查写入中断；记录控制新实现继续审查，不自动merge/deploy/恢复/孤儿扫删或查询触发CI。
 
 ## PR51已合入：通用文件删除事务结果
 

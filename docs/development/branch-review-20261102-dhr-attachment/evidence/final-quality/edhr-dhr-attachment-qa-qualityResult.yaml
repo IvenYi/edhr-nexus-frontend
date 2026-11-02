@@ -1,0 +1,239 @@
+qualityResult:
+  result: passed
+  baseCommit: ab5adafb9629b94f95eb88825ec0a4ea06f4efb1
+  headCommit: a6f799459eb105da5e98ab3d548d6b03d18d9e43
+  contractBaseline:
+    sourceCommit: a6f799459eb105da5e98ab3d548d6b03d18d9e43
+    targetBranch: edhr-dev
+    targetCommit: ab5adafb9629b94f95eb88825ec0a4ea06f4efb1
+    contractReadCommit: a6f799459eb105da5e98ab3d548d6b03d18d9e43
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: clean
+    includedPaths: []
+    excludedPaths: []
+    untrackedPaths: []
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+  - id: check.baseline-contract
+    required: true
+    category: documentation
+    description: 独立固定base/head/clean候选与实际已读契约
+    method: inspection
+    command: git rev-parse; git status; git diff base head -- AGENTS.md codeplzreadme.md docs/agents docs/knowledge
+      model
+    outcome: passed
+    evidence:
+    - /tmp/edhr-dhr-attachment-qa-source-inspection.json
+    - /tmp/edhr-dhr-attachment-qa-evidence-check.json
+    - target/base=ab5adafb9629b94f95eb88825ec0a4ea06f4efb1; feature head=tested candidate=a6f799459eb105da5e98ab3d548d6b03d18d9e43
+  - id: check.scope-rules
+    required: true
+    category: requirements
+    description: 完整L2影响与局部实现相符，原业务资格/格式/冻结/历史保留不变
+    method: inspection
+    command: Read decision package, original DEC0063-10 and retained source guards
+    outcome: passed
+    evidence:
+    - /tmp/edhr-dhr-attachment-qa-source-inspection.json
+    - No new ACL, policy replacement, history restoration or audit fabrication
+  - id: check.source-a23
+    required: true
+    category: regression
+    description: 回调与日志以外源字节不变，有限健壮性/A23与具体拆分核验
+    method: inspection
+    command: Normalize only new logger and callback to old source; review actual source and concrete future extraction
+    outcome: passed
+    evidence:
+    - /tmp/edhr-dhr-attachment-qa-source-inspection.json
+    - /tmp/edhr-dhr-attachment-qa-source.diff
+    - No new N+1, memory paging, SQL loops, migration or index; performance numbers are source-only/inference
+  - id: check.current122
+    required: true
+    category: integration
+    description: 独立单次16类122执行通过，包括11新DHR/27既有DHR/84既有文件回归
+    method: automated-test
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f gmp-platform/backend/pom.xml -Dtest=DhrAttachmentTransactionPostgresTest,DhrAttachmentAndArchiveTest,DhrSummaryServiceTest,DhrReviewLifecycleIntegrationTest,FileControllerTest,FileCopyOwnershipTest,FileHttpBoundaryTest,FileUploadResourceTest,FileUploadTransactionIntegrationTest,FileUploadTransactionPostgresTest,FileUploadTransactionFailureTest,FileDeleteTransactionIntegrationTest,FileDeleteTransactionPostgresTest,FileDeleteTransactionFailureTest,DhrFormFilesTest,ExecutionAccessTest
+      test
+    outcome: passed
+    evidence:
+    - /tmp/edhr-dhr-attachment-qa-current-command.json
+    - /tmp/edhr-dhr-attachment-qa-current-summary.json
+    - /tmp/edhr-dhr-attachment-qa-current-test.txt
+    - Fresh16XML; 122 tests,0 failures/errors/skips
+  - id: check.native-unknown
+    required: true
+    category: database
+    description: 实际PG/JPA审计与附件COMMIT后合成确认错误，实际UNKNOWN下精确原件保留
+    method: automated-test
+    command: DhrAttachmentTransactionPostgresTest.unknownAfterActualDatabaseCommitRetainsRegisteredOriginal
+    outcome: passed
+    evidence:
+    - /tmp/edhr-dhr-attachment-qa-current-DhrAttachmentTransactionPostgresTest.xml
+    - /tmp/edhr-dhr-attachment-qa-database.json
+    - Actual DB commit followed by synthetic manager fault; not network disconnect and not inference all UNKNOWN
+      committed
+  - id: check.audit-outer-rollback
+    required: true
+    category: audit
+    description: 真实JPA AuditEvent与JDBC附件同事务、SQL/审计拒绝及外层最终状态回归
+    method: automated-test
+    command: DhrAttachmentTransactionPostgresTest
+    outcome: passed
+    evidence:
+    - /tmp/edhr-dhr-attachment-qa-current-DhrAttachmentTransactionPostgresTest.xml
+    - Canonical3table DDL/PK and test-only refusal CHECK; not full schema/FKs/migration
+  - id: check.cleanup-diagnostics
+    required: true
+    category: regression
+    description: 真实文件系统清理IO失败可定位且不替换原事务错误
+    method: automated-test
+    command: DhrAttachmentTransactionPostgresTest.rollbackCleanupFailureIsLoggedWithoutReplacingOriginalFailure
+    outcome: passed
+    evidence:
+    - /tmp/edhr-dhr-attachment-qa-current-DhrAttachmentTransactionPostgresTest.xml
+    - DirectoryNotEmptyException retained with id/path; original transaction failure preserved; unrelated file retained
+  - id: check.old11-counterfactual
+    required: true
+    category: regression
+    description: 最终同源新类移植实际旧ab5得到2真断言红9正，0error/skip
+    method: automated-test
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f gmp-platform/backend/pom.xml -Dtest=DhrAttachmentTransactionPostgresTest
+      test
+    outcome: passed
+    evidence:
+    - /tmp/edhr-dhr-attachment-qa-old-source.json
+    - /tmp/edhr-dhr-attachment-qa-old-command.json
+    - /tmp/edhr-dhr-attachment-qa-old-summary.json
+    - /tmp/edhr-dhr-attachment-qa-old-test.txt
+    - Expected Maven failure, not a falsely passing old implementation
+  - id: check.knowledge89
+    required: true
+    category: ontology
+    description: 独立实际知识89校验通过
+    method: automated-test
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f tools/knowledge-model/pom.xml test
+    outcome: passed
+    evidence:
+    - /tmp/edhr-dhr-attachment-qa-knowledge-command.json
+    - /tmp/edhr-dhr-attachment-qa-knowledge-summary.json
+    - /tmp/edhr-dhr-attachment-qa-knowledge-test.xml
+    - 89 tests,0 failures/errors/skips; not all-ID semantic audit
+  - id: check.finite-ontology
+    required: true
+    category: ontology
+    description: 本体NA/FINAL的12既有ID有限保留含义与当前源、330资产不变核验
+    method: inspection
+    command: Review original attachment evidence/definitions and finite ontology result against actual final source
+    outcome: passed
+    evidence:
+    - /tmp/edhr-dhr-attachment-qa-source-inspection.json
+    - /tmp/edhr-dhr-attachment-qa-evidence-check.json
+    - 0.3.25/schema1.2.0/P0 unchanged; wholeFile0/newHistoricalUnique unknown
+  - id: check.raw-evidence
+    required: true
+    category: documentation
+    description: 40原件raw/stored、3快照、本体12+manifest/25源指纹核验
+    method: command
+    command: Independent raw/stored hashes, decompression and exact source fingerprint comparison
+    outcome: passed
+    evidence:
+    - /tmp/edhr-dhr-attachment-qa-evidence-check.json
+    - Read-only subordinate FINAL passed;643 boolean checks passed
+  - id: check.fixed-inventory
+    required: true
+    category: documentation
+    description: 固定base四清单实际重建字节一致
+    method: command
+    command: python3 scripts/build-branch-review-inventory.py --ref ab5adafb9629b94f95eb88825ec0a4ea06f4efb1 --out
+      /tmp/edhr-dhr-attachment-qa-evidence-inventory
+    outcome: passed
+    evidence:
+    - /tmp/edhr-dhr-attachment-qa-evidence-check.json
+    - 6503 paths/135SQL/464HTTP/216routes are inventory only
+  - id: check.own-cleanup
+    required: true
+    category: documentation
+    description: 自有容器/旧worktree清理，主树clean及HEAD不变
+    method: inspection
+    command: docker inspect own container absence; git worktree remove own clean tree; git status
+    outcome: passed
+    evidence:
+    - /tmp/edhr-dhr-attachment-qa-cleanup.json
+    - No product/test/config fixes, CI/Actions access, merge/deploy/restore or force operations
+  findings:
+  - id: QF-DHR-ATTACHMENT-UNKNOWN-LOSS
+    severity: high
+    scope: DhrAttachmentService.upload transaction completion
+    summary: 旧UNKNOWN误当回滚删除可能已登记原件；当前保留并定位
+    reproductionSteps:
+    - Use actual proxied service and canonical native PostgreSQL/JPA audit/JDBC attachment registration
+    - Commit actual database then throw synthetic acknowledgement exception in manager, yielding actual STATUS_UNKNOWN
+      notification
+    - Inspect actual attachment and audit rows and exact original bytes after failed request
+    expectedResult: UNKNOWN must not destroy possibly committed original; retain and report identity/path without
+      guessing database rollback
+    actualResult: Old native control leaves attachment+audit rows but fails original existence; current same scenario
+      keeps exact bytes, status UNKNOWN and error log
+    evidence:
+    - /tmp/edhr-dhr-attachment-qa-old-DhrAttachmentTransactionPostgresTest.xml
+    - /tmp/edhr-dhr-attachment-qa-current-DhrAttachmentTransactionPostgresTest.xml
+    resolutionStatus: resolved
+    resolutionEvidence:
+    - type: commit
+      reference: a6f799459eb105da5e98ab3d548d6b03d18d9e43
+    - type: command
+      reference: /tmp/edhr-dhr-attachment-qa-current-summary.json
+    - type: document
+      reference: /tmp/edhr-dhr-attachment-qa-source-inspection.json
+  - id: QF-DHR-ATTACHMENT-CLEANUP-DIAGNOSTICS
+    severity: medium
+    scope: DhrAttachmentService.upload rollback compensation
+    summary: 旧回滚清理吞IO异常无文件定位；当前记录id/path及异常且保留原事务失败
+    reproductionSteps:
+    - Upload inside actual outer transaction
+    - Replace newly written original with nonempty directory, then throw original transaction error
+    - Inspect rollback result, retained directory child, unrelated file and service error logs
+    expectedResult: Rollback cleanup failure leaves identity/path/exception while original transaction error remains
+      primary
+    actualResult: Old same control fails absent diagnostic log; current logs DirectoryNotEmptyException with exact
+      id/path, row and audit rollback, original error and physical child preserved
+    evidence:
+    - /tmp/edhr-dhr-attachment-qa-old-DhrAttachmentTransactionPostgresTest.xml
+    - /tmp/edhr-dhr-attachment-qa-current-DhrAttachmentTransactionPostgresTest.xml
+    resolutionStatus: resolved
+    resolutionEvidence:
+    - type: commit
+      reference: a6f799459eb105da5e98ab3d548d6b03d18d9e43
+    - type: command
+      reference: /tmp/edhr-dhr-attachment-qa-current-summary.json
+  residualRisks:
+  - id: risk.unknown-retry-and-durable-reconcile
+    description: UNKNOWN can have either DB outcome; retained original, request error, retry duplicates and process
+      crash still require explicit durable reconciliation.
+    impact: No cross-resource atomicity or automatic recovery/idempotent retry guarantee.
+    mitigation: Preserve id/path and inspect registration before retry; do not automatically resubmit, restore history
+      or sweep/delete orphans.
+  - id: risk.pre-registration-write-and-direct-calls
+    description: Interrupted physical write before callback registration and unsynchronized direct/internal invocation
+      remain separate review scopes.
+    impact: Current passed result does not close entire attachment file-consistency family.
+    mitigation: Dedicated fault reproduction and ownership review before follow-up deterministic fix.
+  - id: risk.limited-runtime
+    description: New native test uses actual proxy/JPA audit/JDBC and three canonical table subset plus test-only
+      constraints; UNKNOWN manager fault is synthetic.
+    impact: No full schema/FK/migration, real socket fault, browser or complete DHR HTTP/RBAC/tenant/recipient certification.
+    mitigation: Keep exact evidence limits; run domain/deployment/UI checks when applicable.
+  - id: risk.download-capacity
+    description: Existing download repeated metadata reads and full readAllBytes are source candidates;5/6 explicit
+      JDBC path and50MiB concurrency capacity are source counts/inference.
+    impact: No actual heap/latency/GC/SLA conclusion; high concurrency may require bounded reading/context reuse.
+    mitigation: Measure isolated current/frozen good/corrupt50MiB requests before discussing optimization; preserve
+      digest/frozen membership checks.
+  - id: risk.audit-and-acl-remaining
+    description: Global ACL/reference concurrency, old two DHR highs/A12/four gaps,666paths/44knowledge/183ID, full
+      UI/accounts/recipient and paused friend signature page/production dialog remain.
+    impact: Local closure is not whole audit or production release completion.
+    mitigation: Continue W2 remainder and W3/W4/W5, W6 robustness/performance/A23 including prior-reviewed source
+      and W7 latest increments.
+  blockingConditions: []
