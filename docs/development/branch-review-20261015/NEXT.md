@@ -2,6 +2,8 @@
 
 ## PR51已合入：通用文件删除事务结果
 
+已交付[PR52](https://github.com/IvenYi/edhr-nexus-frontend/pull/52)，audit/edhr-dev-file-delete-transactions-20261102→edhr-dev，建议本批人工合入；交付观察见本批evidence/delivery-verification.json。受测bd71后仅L0归档/验收/登记，产品/测试/知识/契约/决策包/有限源码清单与固定盘点保持。下轮fetch真实合入和外部增量，所有全审余项/旧high/暂缓继续。
+
 实际fetch最新`edhr-dev@6ec9812f1bb1f7980654510f53c5fa568cfd83fb`，PR51人工合入、整树同b932，无其他业务/知识/契约增量。新分支audit/edhr-dev-file-delete-transactions-20261102，本批L2只FileController.delete的DB/磁盘顺序及失败结果；[本批](../branch-review-20261102-file-delete/README.md)已通过全新独立QA：clean受测bd71f6cf、passed/FINAL、13/13必需检查，单次84/84与知识89/89。独立同21旧源13真红8正、无error/skip，两个问题按验收有限resolved；58份最终原件含manifest归档。首主侧84的null经理夹具1fail及QA三次环境编排错误保留，不计产品红；原保护断言不改，最初旧19不加总唯一覆盖。
 
 afterCommit才删原件，回滚/UNKNOWN保留；提交后IO失败报500并留定位，不能说DB回滚/跨资源原子。原两target guard/上传规则不改，未借此制定未答ACL或引用删除政策。canonical单表/PK加test-only FK和PG真实延迟COMMIT拒绝、实际JWT/MVC/磁盘，不叫完整FK/全库/网络断连/浏览器认证。本体NA/FINAL、9既有ID有限重审、知识89通过与330不变；6370/135/464/216只盘点，wholeFile0/unique未知。
