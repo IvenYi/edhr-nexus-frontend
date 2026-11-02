@@ -1,5 +1,13 @@
 # 持续推进台账
 
+## PR54已合入：附件查询/汇总父锁实证审查
+
+实际fetch最新edhr-dev@8ec8391721858a7f96d73a5d293d93f43679118a，PR54人工merge、整树同6c52，无外部产品/知识/契约增量。新分支audit/edhr-dev-dhr-attachment-query-review-20261102；本批L2新增原生查询/锁诊断，未修改产品/迁移/UI/业务政策。[本批记录](../branch-review-20261102-dhr-attachment-query/README.md)主侧2/2通过：实际公开submit前缀至既有人工guard，0/1/10/100/300附件为5/7/25/205/605查询；真实pg_stat_activity Lock等待证实父锁阻塞合法unlink，释放后解除提交且历史原件保留。不是完整成功冻结提交、HTTP/RBAC/部署并发或大文件SLA。
+
+主侧相邻32/32回归通过，当前正做fresh独立收尾，尚未宣布质量门禁通过。本体NA/FINAL，19个既有ID有限重审、330知识文件不变、89正式知识测试通过，不计新unique或全库语义完成。32份主侧/本体原件含工具/7源快照另加manifest原样归档。下载末尾原件名复用提案尚待用户选择，汇总/导出批量读取尚未实施；保留两次DHR存在检查的时点、active/冻结id+SHA资格、完整流式摘要和全部人工/草稿guard。索引已有主键/活动集合候选，查询量不能靠重复加索引解决，未跑完整安装EXPLAIN；ZIP/PDF累计和原件数组另审。
+
+固定6785路径/135迁移/464HTTP注解/216前端候选仅盘点；整文件0、历史unique未知。A23有限方法复查及Path+名字内部载体、父锁内核查方法的具体抽取方案已记录，未大重构。整体W3/W4/W5交叉，W2余项/W6健壮性性能A23含旧已审/W7增量、原666/44/183、两旧DHRhigh/A12/四gap、完整账号UI收件人/共享ACL引用互斥/持久失败对账和原暂缓均保持；记录控制已实现待增量审查。不自动merge/deploy/恢复/孤儿扫删，不查询触发CI。全部角色FINAL后再实际进行PR前漂移和阶段复核。
+
 ## PR53已合入：DHR附件登记前写入失败与容量观测
 
 已交付[PR54](https://github.com/IvenYi/edhr-nexus-frontend/pull/54)，audit/edhr-dev-dhr-attachment-write-20261102→edhr-dev，建议本批人工merge。写入当前原件补偿和用户已确认的流式完整摘要一起完成fresh最终验收；受测5cb之后仅L0原件/验收/交付登记，保护路径保持，交付观察见本批evidence/delivery-verification.json。下轮先fetch实际merge/增量，再核重复元数据/汇总附件循环查询与资格时点；原high/全审/暂缓保持，不自动merge/deploy/恢复。
