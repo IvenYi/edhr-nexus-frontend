@@ -1,6 +1,8 @@
 # DHR附件写入失败与下载容量观测
 
-本轮L2，从最新`edhr-dev@e3e49784eda6bc01e7e5c686d6f79dc5a600d5ae`建立`audit/edhr-dev-dhr-attachment-write-20261102`。PR53人工合入且整树同2a0d9fd2，无外部源码/知识/契约增量。初候选601的127/127、容量1/12组84请求及fresh QA已过；用户随后明确“如果对用户来说没什么体验差距，那么就做流式摘要优化”，新增独立小提交后组合源码为320a4c74717dd913d44d6e01e6c5a6f2993d4695。组合主侧再次127/127及容量1/12组84请求通过，当前等待另一全新最终QA，旧601不覆盖新组合。
+本轮L2，从最新`edhr-dev@e3e49784eda6bc01e7e5c686d6f79dc5a600d5ae`建立`audit/edhr-dev-dhr-attachment-write-20261102`。PR53人工合入且整树同2a0d9fd2，无外部源码/知识/契约增量。用户本轮条件授权流式摘要后另作小提交，组合clean候选`5cb1636a23e09342b2d218bb986217a4325ea559`已获另一全新独立质量passed/FINAL、11/11必需检查；实际127/127、知识89/89及容量1/12组84请求均0F/E/S。按[验收](acceptance.json)有限完成当前写入补偿与完整流式摘要，整体审计未结束。
+
+最终独立原件171+manifest=172份完整打包，见[最终映射](final-quality-manifest.json)和[独立报告](evidence/final-quality/edhr-dhr-combined-qa-report.md)。本实例自行重解析before/after各12JFR；before明确复用初601合格独立原件，after实际本实例执行。常规请求约0.093–0.227MiB（首次current2.053/frozen0.529MiB初始化），16并发本次采样heap3–5MiB，旧独立818–821MiB；与主侧2–4MiB的观测差异保留，不设置精确阈值或SLA。全部正式角色FINAL后已实际向用户完成授权扩展/无漂移/阶段复核，最新目标未变；之后仅L0验收/归档/交付，受测保护路径不改。
 
 初QA114原件（113+manifest）以[初候选映射](initial-quality-manifest.json)完整打包；原evidence-manifest.json的87原件/5源码快照及最初本体源指纹均对应601阶段，校验该阶段Git/字节而非新stream代码，不能回写原件。本轮运行次数不累加为唯一业务覆盖。
 
@@ -16,6 +18,6 @@ file()还被汇总附件集合/提交核验、归档取原件和任务下载间�
 
 下载前后量化见[performance.md](performance.md)：原每请求约50MiB；流式后后续约0.1–0.23MiB（首次约2MiB），16并发采样堆增量约820MiB降到2–4MiB。当前/冻结有效5/6查询、坏4/5、有效100MiB/坏50MiB每请求逻辑读取不变。只代表本次2GiB JVM、暖文件缓存/稀疏PNG、Hikari池和进程内路径，不是物理IO、完整HTTP/RBAC、直接内存/RSS或生产SLA；不承诺单次更快。用户条件授权已按实际字节/头/拒绝回归满足，查询复用仍另核。
 
-本体NA/FINAL、14既有ID有限核对、25源指纹、知识89与330资产不变。6604路径/135SQL/464HTTP/216路由仅盘点，整文件完成0、历史unique未知。有限A23与具体拆分见[source-review.json](source-review.json)和[review-notes.md](review-notes.md)。当前生产显式upload调用仅注入Controller入口，未发现无事务内部上传，按有限源码证据排除该猜测，不新增全局防御；不等于认证所有动态/未来入口。
+原/增量本体均NA/FINAL、14既有ID不重复加unique；原25、组合27源指纹及知识89/330资产保持。6604路径/135SQL/464HTTP/216路由仅盘点，整文件完成0、历史unique未知。有限A23与具体拆分见[source-review.json](source-review.json)和[review-notes.md](review-notes.md)；其待QA文字保留为主侧阶段，最终处置由acceptance与本报告承接。当前显式生产upload仅注入Controller入口，未发现无事务内部上传，不新增假设防御，也不认证所有动态/未来入口。
 
-整体仍W3/W4/W5交叉；原666路径/44知识文件/183ID候选、W2余项、W6健壮性/性能/A23含旧已审/W7增量、两DHR旧high/A12/四gap、完整账号UI收件人/ACL引用并发与原暂缓保持。进程崩溃、补偿失败/UNKNOWN持久对账仍残余。全部正式角色FINAL后实际向用户做PR前漂移/阶段复核再交付；不自动merge/deploy/恢复/扫删孤儿，不查询触发CI/Actions。
+整体仍W3/W4/W5交叉；原666路径/44知识文件/183ID候选、W2余项、W6健壮性/性能/A23含旧已审/W7增量、两DHR旧high/A12/四gap、完整账号UI收件人/ACL引用并发与原暂缓保持。进程崩溃、补偿失败/UNKNOWN持久对账仍残余。下一批先fetch真实merge/增量，再核元数据复用、汇总附件循环查询及资格时点；不自动merge/deploy/恢复/扫删孤儿，不查询触发CI/Actions。

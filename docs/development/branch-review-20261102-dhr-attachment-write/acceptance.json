@@ -1,0 +1,90 @@
+{
+  "executionLevel": "L2",
+  "status": "passed",
+  "baseCommit": "e3e49784eda6bc01e7e5c686d6f79dc5a600d5ae",
+  "runtimeTestedCommit": "5cb1636a23e09342b2d218bb986217a4325ea559",
+  "allFormalRoles": "FINAL",
+  "qualityResult": "evidence/final-quality/edhr-dhr-combined-qa-quality-result.yaml",
+  "independentReview": "evidence/final-quality/edhr-dhr-combined-qa-report.md",
+  "requiredPassed": 11,
+  "requiredTotal": 11,
+  "findings": [],
+  "closedScope": [
+    "Current owned pre-registration write/close IOException cleanup and collision protection",
+    "User-authorized bounded full SHA before resource output, preserving bytes/name/headers/rejection/qualification"
+  ],
+  "countingBoundary": "Final fresh role actual127 +separatecapacity1(12groups84requests) +knowledge89 and exact old5(3red2positive). Counts are execution counts, not unique business coverage. Initial601 passed result and fixture/intermediate runs are historical only.",
+  "ontology": {
+    "original": "not-applicable/FINAL",
+    "streamDelta": "not-applicable/FINAL",
+    "knowledgeVersion": "0.3.25",
+    "unchangedAssets": 330,
+    "finiteExistingIds": 14,
+    "historicalUniqueIncrement": null,
+    "originalFingerprints": 25,
+    "combinedFingerprints": 27
+  },
+  "evidence": {
+    "initialPrimaryOriginals": 87,
+    "initialQualityIncludingManifest": 114,
+    "combinedPrimaryOriginals": 68,
+    "finalQualityIncludingManifest": 172,
+    "archive": "final-quality-manifest.json"
+  },
+  "performance": {
+    "userAuthorization": "If no user-visible experience difference, do streaming digest; fulfilled by same fullSHA/bytes/headers/rejection and unchanged UI/Controller/SQL",
+    "bufferBytes": 8192,
+    "queriesUnchanged": true,
+    "logicalReadsUnchanged": true,
+    "beforeRoot": "performance.md initial601 table",
+    "afterRoot": "performance.md stream table",
+    "productionSlaClaim": false,
+    "rawIndependentDetails": "final-quality archive"
+  },
+  "inventory": {
+    "fixedCommit": "e3e49784eda6bc01e7e5c686d6f79dc5a600d5ae",
+    "paths": 6604,
+    "sql": 135,
+    "httpCandidates": 464,
+    "routes": 216,
+    "status": "inventory-only",
+    "wholeFileCompletion": 0
+  },
+  "scopeReview": {
+    "userAuthorizedExtension": true,
+    "unauthorizedDrift": false,
+    "allFormalRoles": "FINAL",
+    "actualUserCommunicationBeforePrCreation": true,
+    "document": "scope-review.md"
+  },
+  "residualRisks": [
+    {
+      "id": "risk.remaining-write-reconciliation",
+      "description": "进程崩溃、清理失败及UNKNOWN结果仍可能保留原件；本次进程内补偿不提供持久对账或跨资源原子。",
+      "impact": "本次修复只闭合已取得流后的写关IOException，未确认的崩溃/幂等/持久对账仍留原队列。",
+      "mitigation": "保留ID/path与原异常；按既有W6/W7队列进一步核验，不做恢复或孤儿扫删。"
+    },
+    {
+      "id": "risk.capacity-observation-limits",
+      "description": "2GiB测试JVM、暖页缓存/稀疏paddedPNG、Hikari10、未全预热JIT与64KiB输出缓冲；包含JDBC/断言/JFR采样开销。",
+      "impact": "heap不含native/direct/RSS/network；JFR逻辑读取不是物理磁盘IO；无生产SLA/并发上限/单请求更快承诺。",
+      "mitigation": "报告原始数值和环境，不固定精确heap/latency阈值；仅确认摘要阶段内存有界和既有输出兼容。"
+    },
+    {
+      "id": "risk.finite-runtime-boundary",
+      "description": "此次进程内Controller/resource、既有MockMvc/权限回归及有限相邻27DHR用例，不是完整真实HTTP/RBAC、账号UI收件人矩阵或全部冻结业务流程。",
+      "impact": "动态/未来/部署入口、全局ACL/引用并发及完整任务下载认证未在此认证。",
+      "mitigation": "当前typed源码无无事务内部upload仅作为有限排除，保留原guard；继续原授权队列。"
+    },
+    {
+      "id": "risk.full-audit-queues-retained",
+      "description": "本批不是W0→W7全审完成；原666paths/44knowledge/183ID、两DHR旧high、A12、fourgap、W2余项、W3/W4/W5交叉、W6健壮性/性能/抽取/A23含旧已审重核、W7增量及朋友签署页/生产弹窗等暂停均保持。",
+      "impact": "不得把本组合passed提升为全系统/全语义通过或关闭旧高风险项。",
+      "mitigation": "主角色在所有FINAL后实际向用户复核授权扩展/无漂移/阶段，再执行L0归档PR交付；人工merge，不部署。"
+    }
+  ],
+  "blockingConditions": [],
+  "recommendMergeForThisBatch": true,
+  "nextAction": "Fetch actual merge/increments; inspect metadata reuse and summary/attachment query loops with concurrency/qualification timing; retain full W2-W7 and historical queues. No additional optimization policy inferred.",
+  "deliveryPolicy": "Manual merge only; no deploy, history restore, orphan sweep, CI/Actions queries/triggers or shared-history rewrite."
+}

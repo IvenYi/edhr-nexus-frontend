@@ -2,6 +2,8 @@
 
 ## PR53已合入：DHR附件登记前写入失败与容量观测
 
+组合最终fresh QA对clean5cb1636a正式passed/FINAL、11/11必需检查，实际127/89/capacity1全过；旧e3精确5=3真红2碰撞正控。172份最终原件含manifest打包归档，初601114及原87/5阶段留存，不把旧通过覆盖新stream。独立after常规分配.093–.227MiB（首current2.053/frozen.529），16并发heap3–5MiB，旧818–821MiB；主侧2–4MiB差异保留，不设精确阈值。响应字节/头/SQL/逻辑读取保持，非完整HTTP/生产SLA。原/增量本体NA/FINAL、14既有ID不加unique、25/27指纹、330知识不变。全部角色FINAL后已实际用户授权扩展/无漂移/阶段复核，目标仍e3；后续仅L0原件/验收/交付，受测保护路径保持。以下“待fresh”是原阶段历史，由本段承接当前结果。
+
 本轮用户进一步明确“如果对用户来说没什么体验差距，那么就做流式摘要优化”。初601 fresh质量passed（127/89/capacity1）及114原件含manifest保留为初阶段，不覆盖新组合。主审独立小提交流式完整SHA后整合为320a4c74，组合主侧再次127/127与容量1/12组84请求、文件名/下载类型/ContentType/nosniff及完整字节SHA/坏文件拒绝全部通过。后续每请求约0.1–0.23MiB（首次约2MiB），16并发采样heap增量2–4MiB，原约50MiB/820MiB；SQL和两遍逻辑读取不变，UI/Controller不动，不承诺单次更快。汇总/归档等file()读者摘要也有界，资格/锁/完整校验保持。当前正补本体增量与另一fresh最终组合QA，原初候选记录不回写。
 
 实际fetch最新`edhr-dev@e3e49784eda6bc01e7e5c686d6f79dc5a600d5ae`，PR53人工合入、整树同2a0d9fd2，无外部源码/知识/契约增量。新分支audit/edhr-dev-dhr-attachment-write-20261102，本轮L2只upload登记前的当前文件写入/关闭失败；[本批](../branch-review-20261102-dhr-attachment-write/README.md)主侧单次127/127通过，另容量1项含12组84请求通过，0error/skip。exact最终同5在真实旧e3为3真断言红2碰撞正控。首轮static stubbing提前open的3fail为夹具错误，原件/初版源码留存不计产品红；中间与最终旧控不相加。
