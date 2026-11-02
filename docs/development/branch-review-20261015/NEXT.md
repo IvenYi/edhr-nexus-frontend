@@ -2,6 +2,8 @@
 
 ## PR53已合入：DHR附件登记前写入失败与容量观测
 
+已交付[PR54](https://github.com/IvenYi/edhr-nexus-frontend/pull/54)，audit/edhr-dev-dhr-attachment-write-20261102→edhr-dev，建议本批人工merge。写入当前原件补偿和用户已确认的流式完整摘要一起完成fresh最终验收；受测5cb之后仅L0原件/验收/交付登记，保护路径保持，交付观察见本批evidence/delivery-verification.json。下轮先fetch实际merge/增量，再核重复元数据/汇总附件循环查询与资格时点；原high/全审/暂缓保持，不自动merge/deploy/恢复。
+
 组合最终fresh QA对clean5cb1636a正式passed/FINAL、11/11必需检查，实际127/89/capacity1全过；旧e3精确5=3真红2碰撞正控。172份最终原件含manifest打包归档，初601114及原87/5阶段留存，不把旧通过覆盖新stream。独立after常规分配.093–.227MiB（首current2.053/frozen.529），16并发heap3–5MiB，旧818–821MiB；主侧2–4MiB差异保留，不设精确阈值。响应字节/头/SQL/逻辑读取保持，非完整HTTP/生产SLA。原/增量本体NA/FINAL、14既有ID不加unique、25/27指纹、330知识不变。全部角色FINAL后已实际用户授权扩展/无漂移/阶段复核，目标仍e3；后续仅L0原件/验收/交付，受测保护路径保持。以下“待fresh”是原阶段历史，由本段承接当前结果。
 
 本轮用户进一步明确“如果对用户来说没什么体验差距，那么就做流式摘要优化”。初601 fresh质量passed（127/89/capacity1）及114原件含manifest保留为初阶段，不覆盖新组合。主审独立小提交流式完整SHA后整合为320a4c74，组合主侧再次127/127与容量1/12组84请求、文件名/下载类型/ContentType/nosniff及完整字节SHA/坏文件拒绝全部通过。后续每请求约0.1–0.23MiB（首次约2MiB），16并发采样heap增量2–4MiB，原约50MiB/820MiB；SQL和两遍逻辑读取不变，UI/Controller不动，不承诺单次更快。汇总/归档等file()读者摘要也有界，资格/锁/完整校验保持。当前正补本体增量与另一fresh最终组合QA，原初候选记录不回写。

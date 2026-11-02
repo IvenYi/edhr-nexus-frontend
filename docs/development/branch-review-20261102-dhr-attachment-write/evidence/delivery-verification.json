@@ -1,0 +1,59 @@
+{
+  "observedAt": "2026-11-02T14:37:39.605771+00:00",
+  "runtimeTestedCommit": "5cb1636a23e09342b2d218bb986217a4325ea559",
+  "observedDeliveryCommit": "328a346d7c241d0f0e5d6488bc45deeae3814192",
+  "workingTree": "clean before L0 delivery registration",
+  "pr": {
+    "number": 54,
+    "html_url": "https://github.com/IvenYi/edhr-nexus-frontend/pull/54",
+    "state": "open",
+    "draft": false,
+    "mergeable": true,
+    "mergeable_state": "clean",
+    "head": {
+      "ref": "audit/edhr-dev-dhr-attachment-write-20261102",
+      "sha": "328a346d7c241d0f0e5d6488bc45deeae3814192"
+    },
+    "base": {
+      "ref": "edhr-dev",
+      "sha": "e3e49784eda6bc01e7e5c686d6f79dc5a600d5ae"
+    }
+  },
+  "postQaOnlyL0": true,
+  "postQaChangedPaths": [
+    "docs/development/branch-review-20261015/NEXT.md",
+    "docs/development/branch-review-20261102-dhr-attachment-write/README.md",
+    "docs/development/branch-review-20261102-dhr-attachment-write/acceptance.json",
+    "docs/development/branch-review-20261102-dhr-attachment-write/evidence/final-quality/combined-independent-originals.tar.gz",
+    "docs/development/branch-review-20261102-dhr-attachment-write/evidence/final-quality/edhr-dhr-combined-qa-manifest.json",
+    "docs/development/branch-review-20261102-dhr-attachment-write/evidence/final-quality/edhr-dhr-combined-qa-quality-result.yaml",
+    "docs/development/branch-review-20261102-dhr-attachment-write/evidence/final-quality/edhr-dhr-combined-qa-report.md",
+    "docs/development/branch-review-20261102-dhr-attachment-write/final-quality-manifest.json",
+    "docs/development/branch-review-20261102-dhr-attachment-write/scope-review.md"
+  ],
+  "protectedPaths": [
+    "gmp-platform",
+    "docs/knowledge",
+    "docs/architecture/business-knowledge-model.md",
+    "AGENTS.md",
+    "codeplzreadme.md",
+    "docs/agents",
+    "scripts",
+    "tools",
+    "docs/development/branch-review-20261102-dhr-attachment-write/decision-package.yaml",
+    "docs/development/branch-review-20261102-dhr-attachment-write/source-review.json",
+    "docs/development/branch-review-20261102-dhr-attachment-write/inventory",
+    "docs/development/branch-review-20261102-dhr-attachment-write/performance.md"
+  ],
+  "protectedPathChanges": [],
+  "postQaVerification": {
+    "postQaOnlyL0": true,
+    "protectedPathChanges": [],
+    "allStageRawStoredMemberAndSourceHashesMatch": true,
+    "initialSourcesComparedWithGit601": true,
+    "combinedSourcesComparedWithCurrent": true
+  },
+  "ciActionsQueriedOrTriggered": false,
+  "mergeDeployRestorePerformed": false,
+  "note": "Actual observed pre-registration commit; following registration is documentation only, not new runtime validation. User conditional streaming choice implemented and final source independently verified."
+}

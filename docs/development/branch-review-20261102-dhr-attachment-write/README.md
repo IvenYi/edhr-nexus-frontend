@@ -1,5 +1,7 @@
 # DHR附件写入失败与下载容量观测
 
+已交付[PR54](https://github.com/IvenYi/edhr-nexus-frontend/pull/54)，本审查分支→edhr-dev，建议本批人工merge。交付观察见[evidence/delivery-verification.json](evidence/delivery-verification.json)，实际受测5cb后只有L0验收/归档/交付，受测产品/测试/知识/契约/决策包/有限源记录/固定盘点及性能原件保持。后续交付登记不冒称新运行验证。
+
 本轮L2，从最新`edhr-dev@e3e49784eda6bc01e7e5c686d6f79dc5a600d5ae`建立`audit/edhr-dev-dhr-attachment-write-20261102`。PR53人工合入且整树同2a0d9fd2，无外部源码/知识/契约增量。用户本轮条件授权流式摘要后另作小提交，组合clean候选`5cb1636a23e09342b2d218bb986217a4325ea559`已获另一全新独立质量passed/FINAL、11/11必需检查；实际127/127、知识89/89及容量1/12组84请求均0F/E/S。按[验收](acceptance.json)有限完成当前写入补偿与完整流式摘要，整体审计未结束。
 
 最终独立原件171+manifest=172份完整打包，见[最终映射](final-quality-manifest.json)和[独立报告](evidence/final-quality/edhr-dhr-combined-qa-report.md)。本实例自行重解析before/after各12JFR；before明确复用初601合格独立原件，after实际本实例执行。常规请求约0.093–0.227MiB（首次current2.053/frozen0.529MiB初始化），16并发本次采样heap3–5MiB，旧独立818–821MiB；与主侧2–4MiB的观测差异保留，不设置精确阈值或SLA。全部正式角色FINAL后已实际向用户完成授权扩展/无漂移/阶段复核，最新目标未变；之后仅L0验收/归档/交付，受测保护路径不改。
