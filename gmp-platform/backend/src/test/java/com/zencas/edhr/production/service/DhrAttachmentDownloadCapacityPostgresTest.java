@@ -133,6 +133,10 @@ class DhrAttachmentDownloadCapacityPostgresTest {
                 try {
                     var response = new DhrAttachmentController(attachments).download(1L, 77L, frozen ? 10L : null);
                     assertThat(corrupt).isFalse();
+                    assertThat(response.getHeaders().getContentDisposition().getFilename()).isEqualTo("capacity.png");
+                    assertThat(response.getHeaders().getContentDisposition().getType()).isEqualTo("attachment");
+                    assertThat(response.getHeaders().getContentType()).isEqualTo(org.springframework.http.MediaType.APPLICATION_OCTET_STREAM);
+                    assertThat(response.getHeaders().getFirst("X-Content-Type-Options")).isEqualTo("nosniff");
                     var hash = MessageDigest.getInstance("SHA-256"); byte[] buffer = new byte[65536]; int count;
                     try (var input = response.getBody().getInputStream()) {
                         while ((count = input.read(buffer)) >= 0) if (count > 0) { bytes += count; hash.update(buffer, 0, count); }

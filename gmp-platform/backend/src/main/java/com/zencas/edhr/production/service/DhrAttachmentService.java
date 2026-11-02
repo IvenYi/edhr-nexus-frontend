@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
 import java.util.HexFormat;
 import java.util.List;
@@ -174,7 +175,7 @@ public class DhrAttachmentService {
         if (rows.isEmpty()) throw invalid("附件不存在");
         Path file = Path.of(String.valueOf(rows.getFirst().get("stored_path")));
         try {
-            if (!Files.isRegularFile(file) || !sha256(Files.readAllBytes(file)).equals(rows.getFirst().get("sha256"))) throw invalid("附件丢失或摘要不一致");
+            if (!Files.isRegularFile(file) || !sha256(file).equals(rows.getFirst().get("sha256"))) throw invalid("附件丢失或摘要不一致");
         } catch (IOException ex) { throw invalid("附件无法读取"); }
         return file;
     }
@@ -260,6 +261,20 @@ public class DhrAttachmentService {
     private static String sha256(byte[] value) {
         try { return HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(value)); }
         catch (Exception ex) { throw new IllegalStateException("无法计算附件摘要", ex); }
+    }
+
+    private static String sha256(Path file) throws IOException {
+        try {
+            var digest = MessageDigest.getInstance("SHA-256");
+            try (var input = Files.newInputStream(file)) {
+                byte[] buffer = new byte[8192];
+                int count;
+                while ((count = input.read(buffer)) != -1) digest.update(buffer, 0, count);
+            }
+            return HexFormat.of().formatHex(digest.digest());
+        } catch (NoSuchAlgorithmException failure) {
+            throw new IllegalStateException("无法计算附件摘要", failure);
+        }
     }
 
     private static String actor() {
