@@ -1,0 +1,210 @@
+{
+  "status": "FINAL limited semantic review of fingerprinted working tree",
+  "capturedAt": "2026-11-02T09:17:38.257935+00:00",
+  "knowledgeBaselineVersion": "0.3.25",
+  "schemaVersion": "1.2.0",
+  "semanticReview": {
+    "limitedRecordCount": 9,
+    "conclusions": {
+      "consistent": 9,
+      "evidence-gap": 0
+    },
+    "records": [
+      {
+        "id": "DEC-0058-02",
+        "recordType": "decision-statement",
+        "sourcePath": "docs/knowledge/decisions/DEC-0058-production-field-signature.yaml",
+        "sourceLocator": "line 13; id=DEC-0058-02",
+        "originalMaturity": "specified/internal",
+        "auditScopeClassification": "limited-file-delete-retention-boundary",
+        "semanticReviewStatus": "reviewed",
+        "conclusion": "consistent",
+        "semanticFinding": "Historical field signatures and signed-content snapshots remain retained. This does not define all generic file deletion eligibility.",
+        "originalEvidenceReferences": [
+          "docs/knowledge/evidence/production-field-signature-confirmed.md:5-10"
+        ],
+        "limits": "Finite ID/source review only; no whole-file semantic coverage, no maturity increase or comprehensive policy/runtime certification."
+      },
+      {
+        "id": "DEC-0074-04",
+        "recordType": "decision-statement",
+        "sourcePath": "docs/knowledge/decisions/DEC-0074-shared-terminal-button-signature.yaml",
+        "sourceLocator": "line 21; id=DEC-0074-04",
+        "originalMaturity": "specified/internal",
+        "auditScopeClassification": "limited-file-delete-retention-boundary",
+        "semanticReviewStatus": "reviewed",
+        "conclusion": "consistent",
+        "semanticFinding": "Existing SIGN_FIELD personal certification, image and history-retention behavior remains; no button exception is propagated to file deletion.",
+        "originalEvidenceReferences": [
+          "docs/knowledge/evidence/production-field-signature-confirmed.md:5-10"
+        ],
+        "limits": "Finite ID/source review only; no whole-file semantic coverage, no maturity increase or comprehensive policy/runtime certification."
+      },
+      {
+        "id": "DEC-0063-05",
+        "recordType": "decision-statement",
+        "sourcePath": "docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml",
+        "sourceLocator": "line 25; id=DEC-0063-05",
+        "originalMaturity": "specified/internal",
+        "auditScopeClassification": "limited-file-delete-retention-boundary",
+        "semanticReviewStatus": "reviewed",
+        "conclusion": "consistent",
+        "semanticFinding": "Frozen evidence and attachment references must not be rewritten by later live changes; this delete-transaction fix introduces no freeze policy.",
+        "originalEvidenceReferences": [
+          "docs/knowledge/evidence/dhr-summary-user-confirmed.md"
+        ],
+        "limits": "Finite ID/source review only; no whole-file semantic coverage, no maturity increase or comprehensive policy/runtime certification."
+      },
+      {
+        "id": "DEC-0063-09",
+        "recordType": "decision-statement",
+        "sourcePath": "docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml",
+        "sourceLocator": "line 41; id=DEC-0063-09",
+        "originalMaturity": "specified/internal",
+        "auditScopeClassification": "limited-file-delete-retention-boundary",
+        "semanticReviewStatus": "reviewed",
+        "conclusion": "consistent",
+        "semanticFinding": "Narrow historical erroneous-summary migration preserves original files; it is not authorization for generic cleanup, historical restoration or migration in this batch.",
+        "originalEvidenceReferences": [
+          "docs/knowledge/evidence/dhr-summary-user-confirmed.md"
+        ],
+        "limits": "Finite ID/source review only; no whole-file semantic coverage, no maturity increase or comprehensive policy/runtime certification."
+      },
+      {
+        "id": "DEC-0063-10",
+        "recordType": "decision-statement",
+        "sourcePath": "docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml",
+        "sourceLocator": "line 45; id=DEC-0063-10",
+        "originalMaturity": "specified/internal",
+        "auditScopeClassification": "limited-file-delete-retention-boundary",
+        "semanticReviewStatus": "reviewed",
+        "conclusion": "consistent",
+        "semanticFinding": "Controlled DHR unlink with reason retains historical original files; it is a separate flow from generic DELETE, whose existing target guards are retained.",
+        "originalEvidenceReferences": [
+          "docs/knowledge/evidence/dhr-summary-user-confirmed.md:54-56",
+          "docs/knowledge/evidence/dhr-summary-user-confirmed.md:68-74",
+          "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrAttachmentService.java:137-148"
+        ],
+        "limits": "Finite ID/source review only; no whole-file semantic coverage, no maturity increase or comprehensive policy/runtime certification."
+      },
+      {
+        "id": "DEC-0063-11",
+        "recordType": "decision-statement",
+        "sourcePath": "docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml",
+        "sourceLocator": "line 49; id=DEC-0063-11",
+        "originalMaturity": "specified/internal",
+        "auditScopeClassification": "limited-file-delete-retention-boundary",
+        "semanticReviewStatus": "reviewed",
+        "conclusion": "consistent",
+        "semanticFinding": "Original files of frozen instances remain required evidence; missing or corrupt originals block complete archives. Local commit sequencing prevents an additional deterministic source-loss case but does not certify all archive integrity.",
+        "originalEvidenceReferences": [
+          "docs/knowledge/evidence/dhr-summary-user-confirmed.md"
+        ],
+        "limits": "Finite ID/source review only; no whole-file semantic coverage, no maturity increase or comprehensive policy/runtime certification."
+      },
+      {
+        "id": "DEC-0063-12",
+        "recordType": "decision-statement",
+        "sourcePath": "docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml",
+        "sourceLocator": "line 53; id=DEC-0063-12",
+        "originalMaturity": "specified/internal",
+        "auditScopeClassification": "limited-file-delete-retention-boundary",
+        "semanticReviewStatus": "reviewed",
+        "conclusion": "consistent",
+        "semanticFinding": "DHR and source-instance audit and permissions remain separate; technical cleanup logs do not replace business audit or establish new ACL.",
+        "originalEvidenceReferences": [
+          "docs/knowledge/evidence/dhr-summary-user-confirmed.md"
+        ],
+        "limits": "Finite ID/source review only; no whole-file semantic coverage, no maturity increase or comprehensive policy/runtime certification."
+      },
+      {
+        "id": "evidence.production-execution-file-preview-protection-source",
+        "recordType": "evidence",
+        "sourcePath": "docs/knowledge/evidence/production-execution.yaml",
+        "sourceLocator": "line 93; id=evidence.production-execution-file-preview-protection-source",
+        "originalMaturity": "code/internal",
+        "auditScopeClassification": "limited-file-delete-retention-boundary",
+        "semanticReviewStatus": "reviewed",
+        "conclusion": "consistent",
+        "semanticFinding": "Existing source evidence records PRODUCTION_EXECUTION generic-delete protection. Keep the guard; source evidence is not promoted to new user-confirmed generic file policy.",
+        "originalEvidenceReferences": [
+          "gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/controller/FileController.java"
+        ],
+        "limits": "Finite ID/source review only; no whole-file semantic coverage, no maturity increase or comprehensive policy/runtime certification."
+      },
+      {
+        "id": "evidence.production-execution-signature-protection-source",
+        "recordType": "evidence",
+        "sourcePath": "docs/knowledge/evidence/production-execution.yaml",
+        "sourceLocator": "line 88; id=evidence.production-execution-signature-protection-source",
+        "originalMaturity": "code/internal",
+        "auditScopeClassification": "limited-file-delete-retention-boundary",
+        "semanticReviewStatus": "reviewed",
+        "conclusion": "consistent",
+        "semanticFinding": "Adjacent generic signature CRUD protection of execution-signature records remains unchanged. This batch does not alter signature permissions or assert comprehensive evidence-ACL coverage.",
+        "originalEvidenceReferences": [
+          "gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/controller/SignatureController.java"
+        ],
+        "limits": "Finite ID/source review only; no whole-file semantic coverage, no maturity increase or comprehensive policy/runtime certification."
+      }
+    ]
+  },
+  "coverageAccounting": {
+    "newUniqueKnowledgeRecords": null,
+    "wholeFileSemanticCoverage": 0,
+    "reason": "Re-review of existing IDs; no complete global de-duplicated union recalculated. Inventory of 330 assets is byte-integrity only."
+  },
+  "sourceOnlyObservations": [
+    {
+      "id": null,
+      "classification": "original-evidence",
+      "finding": "SIGNATURE_EVIDENCE deletion guard exists in FileController. Its exact literal has no direct knowledge declaration; preserve existing implementation without calling it a new user-confirmed general file policy."
+    },
+    {
+      "id": null,
+      "classification": "inferred",
+      "finding": "Rollback retains the registered original and DB state; UNKNOWN retains original without asserting the DB result. Confirmed-commit-only cleanup is an engineering consistency choice, not a new business deletion-eligibility rule."
+    },
+    {
+      "id": null,
+      "classification": "residual-gap",
+      "finding": "After commit cleanup failure leaves DB deletion committed and original retained; an HTTP 500 cannot mean DB rollback. Persistent reconciliation/crash recovery remains open."
+    }
+  ],
+  "unaffectedOpenItems": [
+    "unanswered shared-file ACL three questions",
+    "concurrent reference rebinding",
+    "adjacent DHR attachment unknown-transaction cleanup callback",
+    "two historical DHR high findings",
+    "full quality/account/UI matrix/A12",
+    "four historical gaps",
+    "666/44/183 historical coverage anchors",
+    "W6/W7 history queue",
+    "production management modal redesign",
+    "friend-owned generic workflow signature page"
+  ],
+  "contractBaseline": {
+    "sourceCommit": "6ec9812f1bb1f7980654510f53c5fa568cfd83fb",
+    "targetBranch": "edhr-dev",
+    "targetCommit": "6ec9812f1bb1f7980654510f53c5fa568cfd83fb",
+    "contractReadCommit": "6ec9812f1bb1f7980654510f53c5fa568cfd83fb",
+    "uncommittedContractPaths": []
+  },
+  "knowledgeAssetsChanged": [],
+  "maturityChanges": [],
+  "finalProductAndTestSourceReview": {
+    "paths": [
+      "gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/controller/FileController.java",
+      "gmp-platform/backend/src/test/java/com/zencas/edhr/compliance/controller/FileDeleteTransactionIntegrationTest.java",
+      "gmp-platform/backend/src/test/java/com/zencas/edhr/compliance/controller/FileDeleteTransactionPostgresTest.java",
+      "gmp-platform/backend/src/test/java/com/zencas/edhr/compliance/controller/FileDeleteTransactionFailureTest.java",
+      "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/ExecutionAccessTest.java"
+    ],
+    "decisionPackagePath": "docs/development/branch-review-20261102-file-delete/decision-package.yaml",
+    "productChange": "Only UncheckedIOException import and FileController.delete transaction orchestration; existing two target guards retained; upload unchanged.",
+    "testChange": "Three new deletion tests; ExecutionAccessTest replaces null transaction manager with real H2 manager without changing original protection assertions.",
+    "postCommitFailure": "Ordinary HTTP 500 is observable cleanup failure after DB metadata deletion committed. Original remains. Does not mean rollback or atomic cross-resource deletion.",
+    "unknownOutcome": "Original retained; database commit result remains unknown. Synthetic lifecycle test is not real network-disconnect or process-crash certification.",
+    "otherPreservedBehavior": "Already-missing generic original continues to allow metadata deletion; this does not relax controlled DHR original-integrity rules."
+  }
+}

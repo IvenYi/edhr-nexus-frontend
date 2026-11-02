@@ -194,7 +194,9 @@ class ExecutionAccessTest {
     @Test void executionAttachmentsCannotBeDeletedThroughGenericFiles() {
         var files = mock(FileObjectRepository.class);
         when(files.findById(1L)).thenReturn(Optional.of(FileObject.builder().id(1L).targetType("PRODUCTION_EXECUTION").build()));
-        var controller = new FileController(files, null, null, null, null, null);
+        var manager = new org.springframework.jdbc.datasource.DataSourceTransactionManager(
+                new org.springframework.jdbc.datasource.DriverManagerDataSource("jdbc:h2:mem:execution-file-delete-guard", "sa", ""));
+        var controller = new FileController(files, null, null, null, null, manager);
         assertThatThrownBy(() -> controller.delete(1L)).hasMessageContaining("追溯证据");
         verify(files, never()).deleteById(any());
     }

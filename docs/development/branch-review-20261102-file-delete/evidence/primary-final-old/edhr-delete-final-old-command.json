@@ -1,0 +1,1 @@
+{"source": "6ec9812f1bb1f7980654510f53c5fa568cfd83fb", "cmd": ["bash", "/workspace/.edhr-cloud-tools/mvn-edhr", "-f", "gmp-platform/backend/pom.xml", "-Dtest=FileDeleteTransactionIntegrationTest,FileDeleteTransactionPostgresTest,FileDeleteTransactionFailureTest", "test"], "url": "jdbc:postgresql://127.0.0.1:32769/edhr_upload_transaction_test", "startedEpoch": 1793610831.8990045}

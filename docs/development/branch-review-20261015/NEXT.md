@@ -1,5 +1,13 @@
 # 持续推进台账
 
+## PR51已合入：通用文件删除事务结果
+
+实际fetch最新`edhr-dev@6ec9812f1bb1f7980654510f53c5fa568cfd83fb`，PR51人工合入、整树同b932，无其他业务/知识/契约增量。新分支audit/edhr-dev-file-delete-transactions-20261102，本批L2只FileController.delete的DB/磁盘顺序及失败结果；[本批](../branch-review-20261102-file-delete/README.md)主侧84/84通过，最终同21在旧源13真红8正、无error/skip。首84仅null经理夹具1fail保留，修fixture不改原保护断言；最初旧19不加总唯一覆盖。当前待全新独立QA，不提前resolved。
+
+afterCommit才删原件，回滚/UNKNOWN保留；提交后IO失败报500并留定位，不能说DB回滚/跨资源原子。原两target guard/上传规则不改，未借此制定未答ACL或引用删除政策。canonical单表/PK加test-only FK和PG真实延迟COMMIT拒绝、实际JWT/MVC/磁盘，不叫完整FK/全库/网络断连/浏览器认证。本体NA/FINAL、9既有ID有限重审、知识89通过与330不变；6370/135/464/216只盘点，wholeFile0/unique未知。
+
+原666/44/183、A23旧856+feature1/SQL130+前4+0091及全部历史队列继续W6全量含旧已审/W7；当前2改3增另入队。共享ACL/引用重绑互斥、持久清理对账与DHR相邻回调仍待审，旧DHRhigh/A12/四gap/完整UI账号收件人及朋友签署页/生产弹窗暂缓保持。全部正式角色FINAL后实际PR前漂移复核再交付，不自动merge/deploy/恢复、不查询触发CI。
+
 ## PR50已合入：PR51冲突整合
 
 集成收尾已通过全新独立质量：clean775d8bb6、target54c9a7cc，10/10必需检查passed/FINAL，主侧及独立分别单次155全过，独立知识89、39JWT/MVC响应及迁移/安装验证通过，自有PG已清理。已正常推送原PR51，首次集成推送后OPEN/MERGEABLE/CLEAN，待人工merge。后续只L0原件/验收/状态登记，受测产品/测试字节不变；[新验收](../pr51-integration-20261102/acceptance.json)明确旧52/146不能覆盖新组合。下文准备验证为本轮历史检查点，所有原high/规模/全审/暂缓仍保留。

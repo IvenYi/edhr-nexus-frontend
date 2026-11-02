@@ -34,6 +34,7 @@ import org.springframework.transaction.support.TransactionTemplate;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
@@ -280,24 +281,32 @@ public class FileController {
      */
     @DeleteMapping("/{id}")
     public ApiResponse<Void> delete(@PathVariable Long id) {
-        FileObject fileObject = fileObjectRepository.findById(id)
-                .orElseThrow(() -> new BusinessException(ErrorCode.FILE_001));
-        if ("PRODUCTION_EXECUTION".equals(fileObject.getTargetType()))
-            throw new BusinessException(ErrorCode.GENERAL_003, "生产执行附件作为追溯证据保留，不能删除");
-        if ("SIGNATURE_EVIDENCE".equals(fileObject.getTargetType()))
-            throw new BusinessException(ErrorCode.GENERAL_003, "电子签名认证材料作为追溯证据保留，不能删除");
-
-        // Delete physical file
-        try {
+        return new TransactionTemplate(transactionManager).execute(transaction -> {
+            FileObject fileObject = fileObjectRepository.findById(id)
+                    .orElseThrow(() -> new BusinessException(ErrorCode.FILE_001));
+            if ("PRODUCTION_EXECUTION".equals(fileObject.getTargetType()))
+                throw new BusinessException(ErrorCode.GENERAL_003, "生产执行附件作为追溯证据保留，不能删除");
+            if ("SIGNATURE_EVIDENCE".equals(fileObject.getTargetType()))
+                throw new BusinessException(ErrorCode.GENERAL_003, "电子签名认证材料作为追溯证据保留，不能删除");
             Path filePath = Path.of(fileObject.getStoredPath());
-            Files.deleteIfExists(filePath);
-        } catch (IOException e) {
-            log.warn("Failed to delete physical file: {}", fileObject.getStoredPath(), e);
-        }
-
-        fileObjectRepository.deleteById(id);
-        log.info("File deleted: id={}, originalName={}", id, fileObject.getOriginalName());
-        return ApiResponse.success(null);
+            TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+                @Override public void afterCommit() {
+                    try {
+                        Files.deleteIfExists(filePath);
+                        log.info("File deletion committed: id={}, originalName={}", id, fileObject.getOriginalName());
+                    } catch (IOException cleanupFailure) {
+                        log.error("File record deletion committed but original cleanup failed: id={}, path={}", id, filePath, cleanupFailure);
+                        throw new UncheckedIOException("File record deletion committed but original cleanup failed", cleanupFailure);
+                    }
+                }
+                @Override public void afterCompletion(int status) {
+                    if (status == STATUS_UNKNOWN)
+                        log.error("File deletion transaction outcome unknown; original retained: id={}, path={}", id, filePath);
+                }
+            });
+            fileObjectRepository.deleteById(id);
+            return ApiResponse.success(null);
+        });
     }
 
     // ======================== List ========================

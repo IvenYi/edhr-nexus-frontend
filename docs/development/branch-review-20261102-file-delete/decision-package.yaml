@@ -1,0 +1,80 @@
+decisionPackage:
+  id: DEC-PACKAGE-AUDIT-FILE-DELETE-20261102
+  scope: 通用文件删除的数据库失败/外层回滚原件丢失及提交后清理失败可观测性
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: 6ec9812f1bb1f7980654510f53c5fa568cfd83fb
+    targetBranch: edhr-dev
+    targetCommit: 6ec9812f1bb1f7980654510f53c5fa568cfd83fb
+    contractReadCommit: 6ec9812f1bb1f7980654510f53c5fa568cfd83fb
+    uncommittedContractPaths: []
+  summary: PR51已合入且整树同b932，无额外业务/知识/契约增量。旧DELETE先物理后数据库，拟以既有事务管理器登记删除并仅确认提交后清理；不替未决共享ACL制定规则。
+  confirmed: {concepts: [], relationships: [], rules: [], executionContracts: []}
+  inferred:
+    - id: inference.file-delete-no-original-loss-on-db-failure
+      statement: 数据库拒绝删除或事务回滚时不能先毁损仍存在记录的原件；提交未知时保留原件，不猜测已提交。
+      rationale: 既有证据完整性和PR49事务结果分界；本轮为工程一致性，不新增删除资格。
+      relatedIds: []
+  unresolved: []
+  replacementScopes: []
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - area: file-delete
+        change: 同事务读取既有记录/保护检查/删除元数据，COMMITTED后清理原件；失败不得伪报完整成功。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/controller/FileController.java]
+    transitiveImpacts:
+      - area: outer-transaction
+        change: 参与REQUIRED既有事务，等最终提交；回滚保留记录与原件。
+        evidenceReferences: []
+    potentialImpacts:
+      - area: filesystem-reconciliation
+        concern: 提交后IO失败或进程崩溃仍可能遗留原件，DB与磁盘非同一原子资源；日志定位不代替持久对账。
+        evidenceReferences: []
+      - area: concurrent-rebinding
+        concern: 文件重新绑定/删除互斥待另核，当前不宣称完整并发引用/ACL审查。
+        evidenceReferences: []
+    unaffectedAreas:
+      - area: existing-rules
+        change: 生产执行/认证原件拒绝删除、身份登录、共享ACL三问、冻结证据、附件格式/上传事务均保持。
+        evidenceReferences: []
+    compatibilityAndMigration: []
+    snapshotImpacts: []
+    auditImpacts:
+      - area: technical-outcomes
+        change: 成功日志在实际提交及清理后，未知或清理失败记录ID/路径；不造业务审计或恢复历史。
+        evidenceReferences: []
+    permissionImpacts: []
+    testImpacts:
+      - scope: actual-jpa-http-files
+        scenarios: [正常提交, SQL拒绝/延迟约束, 提交前故障, 外层提交/回滚, 原件缺失, 受保护类型拒绝, 提交后IO失败, 启动失败/未知结果]
+        evidenceReferences: []
+    evidenceGaps: [磁盘与数据库无跨资源原子提交, 真实网络断连未知与进程崩溃对账未完成, 全共享ACL/引用并发及DHR相邻回调未认证, 所有旧high/全审矩阵继续]
+  extensionStrategy:
+    selectedPaths: [transaction-orchestration, product-core]
+    rationale: 复用现有PlatformTransactionManager和局部同步回调，不新建磁盘事务框架、读模型或业务状态。
+    ownershipBoundaries:
+      - owner: FileController.delete
+        responsibility: 已授权通用删除与本次原件清理的事务结果边界。
+  affectedFiles:
+    - path: gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/controller/FileController.java
+      changeType: update
+      reason: 防数据库失败而先丢原件。
+    - path: gmp-platform/backend/src/test/java/com/zencas/edhr/compliance/controller/FileDeleteTransactionIntegrationTest.java
+      changeType: create
+      reason: 真实JPA/H2/JWT/MVC/磁盘及外层事务。
+    - path: gmp-platform/backend/src/test/java/com/zencas/edhr/compliance/controller/FileDeleteTransactionPostgresTest.java
+      changeType: create
+      reason: 同源原生PG与真实COMMIT延迟约束拒绝。
+    - path: gmp-platform/backend/src/test/java/com/zencas/edhr/compliance/controller/FileDeleteTransactionFailureTest.java
+      changeType: create
+      reason: 实际同步生命周期的启动/UNKNOWN合成故障。
+    - path: gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/ExecutionAccessTest.java
+      changeType: update
+      reason: 原保护断言保持，控制器不再传空事务管理器。
+  acceptanceScenarios:
+    - id: scenario.file-delete-transaction-result
+      given: 实际文件/元数据与真实事务
+      when: 删除失败、回滚、提交或未知
+      then: 失败/回滚/未知保留原件；仅确认提交清理；清理失败可见且不返回虚假HTTP成功。
+      evidenceRequirements: [同源旧红, 真实JPA/H2/PG及JWT/MVC/磁盘, 外层事务, 全新最终独立QA]
