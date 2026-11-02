@@ -1,0 +1,11 @@
+{
+  "rawPrefix": "/tmp/edhr-dhr-write-old-attempt1",
+  "classification": "fault setup creates path before upload because CALLS_REAL_METHODS executes during static stubbing",
+  "notProductRed": true,
+  "tests": 5,
+  "assertionFailures": 3,
+  "errors": 0,
+  "skipped": 0,
+  "originalSource": "/tmp/edhr-dhr-write-fixture-attempt1-source.java",
+  "requiredCorrection": "Use conditional default Answer without executing real open during stubbing; preserve same fault/ownership assertions"
+}

@@ -1,5 +1,21 @@
 # 持续推进台账
 
+## PR53已合入：DHR附件登记前写入失败与容量观测
+
+已交付[PR54](https://github.com/IvenYi/edhr-nexus-frontend/pull/54)，audit/edhr-dev-dhr-attachment-write-20261102→edhr-dev，建议本批人工merge。写入当前原件补偿和用户已确认的流式完整摘要一起完成fresh最终验收；受测5cb之后仅L0原件/验收/交付登记，保护路径保持，交付观察见本批evidence/delivery-verification.json。下轮先fetch实际merge/增量，再核重复元数据/汇总附件循环查询与资格时点；原high/全审/暂缓保持，不自动merge/deploy/恢复。
+
+组合最终fresh QA对clean5cb1636a正式passed/FINAL、11/11必需检查，实际127/89/capacity1全过；旧e3精确5=3真红2碰撞正控。172份最终原件含manifest打包归档，初601114及原87/5阶段留存，不把旧通过覆盖新stream。独立after常规分配.093–.227MiB（首current2.053/frozen.529），16并发heap3–5MiB，旧818–821MiB；主侧2–4MiB差异保留，不设精确阈值。响应字节/头/SQL/逻辑读取保持，非完整HTTP/生产SLA。原/增量本体NA/FINAL、14既有ID不加unique、25/27指纹、330知识不变。全部角色FINAL后已实际用户授权扩展/无漂移/阶段复核，目标仍e3；后续仅L0原件/验收/交付，受测保护路径保持。以下“待fresh”是原阶段历史，由本段承接当前结果。
+
+本轮用户进一步明确“如果对用户来说没什么体验差距，那么就做流式摘要优化”。初601 fresh质量passed（127/89/capacity1）及114原件含manifest保留为初阶段，不覆盖新组合。主审独立小提交流式完整SHA后整合为320a4c74，组合主侧再次127/127与容量1/12组84请求、文件名/下载类型/ContentType/nosniff及完整字节SHA/坏文件拒绝全部通过。后续每请求约0.1–0.23MiB（首次约2MiB），16并发采样heap增量2–4MiB，原约50MiB/820MiB；SQL和两遍逻辑读取不变，UI/Controller不动，不承诺单次更快。汇总/归档等file()读者摘要也有界，资格/锁/完整校验保持。当前正补本体增量与另一fresh最终组合QA，原初候选记录不回写。
+
+实际fetch最新`edhr-dev@e3e49784eda6bc01e7e5c686d6f79dc5a600d5ae`，PR53人工合入、整树同2a0d9fd2，无外部源码/知识/契约增量。新分支audit/edhr-dev-dhr-attachment-write-20261102，本轮L2只upload登记前的当前文件写入/关闭失败；[本批](../branch-review-20261102-dhr-attachment-write/README.md)主侧单次127/127通过，另容量1项含12组84请求通过，0error/skip。exact最终同5在真实旧e3为3真断言红2碰撞正控。首轮static stubbing提前open的3fail为夹具错误，原件/初版源码留存不计产品红；中间与最终旧控不相加。
+
+CREATE_NEW成功返回流才进入本次补偿，开流碰撞不删既有file/dir；写入/关闭IOException清理当前残片，清理失败suppressed+ID/path保留原错，尚未登记/LINK。维持原JDK8KiB分块，原事务回调和业务规则不动。当前待fresh最终质量，不提前resolved；本体NA/FINAL，14既有ID有限重审、25源指纹，知识89及330资产不变。6604/135/464/216仅盘点，wholeFile0/unique未知。
+
+容量实测有效当前/冻结5/6个显式Jdbc查询，损坏4/5；50MiB每请求堆分配约50MiB，16并发采样堆增量约820MiB；JFR有效每请求100MiB/损坏50MiB逻辑读取，非物理IO。2GiB测试JVM、暖缓存稀疏PNG、Hikari10、进程内Controller/service/resource，不代表HTTP/RBAC/直接内存/RSS或生产SLA。已把固定缓冲完整SHA后再输出的下一批建议问用户，未答不当批准；本批未做下载优化/索引，查询复用另核。当前typed调用仅注入Controller上传，未发现内部无事务入口，有限排除假设、不新增全局guard，不认证未来/动态入口。
+
+整体W3/W4/W5交叉，W2余项/W6健壮性性能A23含旧已审/W7增量、原666/44/183、旧两DHRhigh/A12/四gap、完整账号UI收件人/共享ACL引用并发及原暂缓保持；当前1改2增入队。崩溃/清理失败/UNKNOWN持久对账和幂等仍残余。全部正式角色FINAL后实际向用户完成PR前漂移/阶段复核再交付；不自动merge/deploy/历史恢复/孤儿扫删、不查询触发CI。
+
 ## PR52已合入：DHR附件上传事务结果
 
 已交付[PR53](https://github.com/IvenYi/edhr-nexus-frontend/pull/53)，audit/edhr-dev-dhr-attachment-transactions-20261102→edhr-dev，建议本批人工merge。受测a6f79945后仅L0原件/验收/交付登记，产品/测试/知识/模型/契约/决策包/source-review/四固定清单保持；交付观察见本批evidence/delivery-verification.json。下轮先fetch真实merge与增量，性能量化和写入中断等候选、所有旧high/全审队列/暂缓继续。

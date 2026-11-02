@@ -1,0 +1,718 @@
+{
+  "completed" : true,
+  "cases" : [ {
+    "label" : "current-good-1",
+    "concurrency" : 1,
+    "frozen" : false,
+    "corrupt" : false,
+    "requests" : [ {
+      "threadId" : 38,
+      "durationMillis" : 505.92605,
+      "allocatedBytes" : 2151656,
+      "bodyBytes" : 52428800,
+      "rejectedBeforeBody" : false,
+      "jdbcQueries" : [ "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT active,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT stored_path,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT original_name FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?" ]
+    } ],
+    "wallMillis" : 506.65712,
+    "heapBaselineBytes" : 40312224,
+    "sampledPeakHeapBytes" : 42409376,
+    "sampledHeapIncreaseBytes" : 2097152
+  }, {
+    "label" : "current-good-4",
+    "concurrency" : 4,
+    "frozen" : false,
+    "corrupt" : false,
+    "requests" : [ {
+      "threadId" : 40,
+      "durationMillis" : 260.492891,
+      "allocatedBytes" : 227256,
+      "bodyBytes" : 52428800,
+      "rejectedBeforeBody" : false,
+      "jdbcQueries" : [ "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT active,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT stored_path,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT original_name FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?" ]
+    }, {
+      "threadId" : 41,
+      "durationMillis" : 309.643802,
+      "allocatedBytes" : 224952,
+      "bodyBytes" : 52428800,
+      "rejectedBeforeBody" : false,
+      "jdbcQueries" : [ "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT active,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT stored_path,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT original_name FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?" ]
+    }, {
+      "threadId" : 42,
+      "durationMillis" : 277.595064,
+      "allocatedBytes" : 223296,
+      "bodyBytes" : 52428800,
+      "rejectedBeforeBody" : false,
+      "jdbcQueries" : [ "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT active,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT stored_path,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT original_name FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?" ]
+    }, {
+      "threadId" : 43,
+      "durationMillis" : 169.110323,
+      "allocatedBytes" : 218264,
+      "bodyBytes" : 52428800,
+      "rejectedBeforeBody" : false,
+      "jdbcQueries" : [ "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT active,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT stored_path,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT original_name FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?" ]
+    } ],
+    "wallMillis" : 309.983925,
+    "heapBaselineBytes" : 40787168,
+    "sampledPeakHeapBytes" : 42884320,
+    "sampledHeapIncreaseBytes" : 2097152
+  }, {
+    "label" : "current-good-16",
+    "concurrency" : 16,
+    "frozen" : false,
+    "corrupt" : false,
+    "requests" : [ {
+      "threadId" : 46,
+      "durationMillis" : 604.076635,
+      "allocatedBytes" : 216360,
+      "bodyBytes" : 52428800,
+      "rejectedBeforeBody" : false,
+      "jdbcQueries" : [ "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT active,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT stored_path,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT original_name FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?" ]
+    }, {
+      "threadId" : 47,
+      "durationMillis" : 444.793665,
+      "allocatedBytes" : 217424,
+      "bodyBytes" : 52428800,
+      "rejectedBeforeBody" : false,
+      "jdbcQueries" : [ "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT active,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT stored_path,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT original_name FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?" ]
+    }, {
+      "threadId" : 48,
+      "durationMillis" : 332.209372,
+      "allocatedBytes" : 217752,
+      "bodyBytes" : 52428800,
+      "rejectedBeforeBody" : false,
+      "jdbcQueries" : [ "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT active,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT stored_path,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT original_name FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?" ]
+    }, {
+      "threadId" : 49,
+      "durationMillis" : 583.405795,
+      "allocatedBytes" : 217016,
+      "bodyBytes" : 52428800,
+      "rejectedBeforeBody" : false,
+      "jdbcQueries" : [ "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT active,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT stored_path,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT original_name FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?" ]
+    }, {
+      "threadId" : 50,
+      "durationMillis" : 241.316467,
+      "allocatedBytes" : 215496,
+      "bodyBytes" : 52428800,
+      "rejectedBeforeBody" : false,
+      "jdbcQueries" : [ "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT active,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT stored_path,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT original_name FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?" ]
+    }, {
+      "threadId" : 51,
+      "durationMillis" : 472.372908,
+      "allocatedBytes" : 220792,
+      "bodyBytes" : 52428800,
+      "rejectedBeforeBody" : false,
+      "jdbcQueries" : [ "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT active,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT stored_path,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT original_name FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?" ]
+    }, {
+      "threadId" : 52,
+      "durationMillis" : 707.04753,
+      "allocatedBytes" : 216968,
+      "bodyBytes" : 52428800,
+      "rejectedBeforeBody" : false,
+      "jdbcQueries" : [ "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT active,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT stored_path,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT original_name FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?" ]
+    }, {
+      "threadId" : 53,
+      "durationMillis" : 582.860407,
+      "allocatedBytes" : 218264,
+      "bodyBytes" : 52428800,
+      "rejectedBeforeBody" : false,
+      "jdbcQueries" : [ "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT active,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT stored_path,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT original_name FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?" ]
+    }, {
+      "threadId" : 54,
+      "durationMillis" : 675.619492,
+      "allocatedBytes" : 215608,
+      "bodyBytes" : 52428800,
+      "rejectedBeforeBody" : false,
+      "jdbcQueries" : [ "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT active,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT stored_path,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT original_name FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?" ]
+    }, {
+      "threadId" : 55,
+      "durationMillis" : 688.748898,
+      "allocatedBytes" : 224464,
+      "bodyBytes" : 52428800,
+      "rejectedBeforeBody" : false,
+      "jdbcQueries" : [ "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT active,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT stored_path,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT original_name FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?" ]
+    }, {
+      "threadId" : 56,
+      "durationMillis" : 579.167462,
+      "allocatedBytes" : 222968,
+      "bodyBytes" : 52428800,
+      "rejectedBeforeBody" : false,
+      "jdbcQueries" : [ "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT active,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT stored_path,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT original_name FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?" ]
+    }, {
+      "threadId" : 57,
+      "durationMillis" : 661.881007,
+      "allocatedBytes" : 217520,
+      "bodyBytes" : 52428800,
+      "rejectedBeforeBody" : false,
+      "jdbcQueries" : [ "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT active,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT stored_path,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT original_name FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?" ]
+    }, {
+      "threadId" : 58,
+      "durationMillis" : 677.519494,
+      "allocatedBytes" : 222440,
+      "bodyBytes" : 52428800,
+      "rejectedBeforeBody" : false,
+      "jdbcQueries" : [ "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT active,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT stored_path,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT original_name FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?" ]
+    }, {
+      "threadId" : 59,
+      "durationMillis" : 719.441084,
+      "allocatedBytes" : 224104,
+      "bodyBytes" : 52428800,
+      "rejectedBeforeBody" : false,
+      "jdbcQueries" : [ "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT active,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT stored_path,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT original_name FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?" ]
+    }, {
+      "threadId" : 60,
+      "durationMillis" : 360.005969,
+      "allocatedBytes" : 217104,
+      "bodyBytes" : 52428800,
+      "rejectedBeforeBody" : false,
+      "jdbcQueries" : [ "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT active,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT stored_path,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT original_name FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?" ]
+    }, {
+      "threadId" : 61,
+      "durationMillis" : 621.739098,
+      "allocatedBytes" : 224400,
+      "bodyBytes" : 52428800,
+      "rejectedBeforeBody" : false,
+      "jdbcQueries" : [ "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT active,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT stored_path,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT original_name FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?" ]
+    } ],
+    "wallMillis" : 730.734318,
+    "heapBaselineBytes" : 40918008,
+    "sampledPeakHeapBytes" : 45112312,
+    "sampledHeapIncreaseBytes" : 4194304
+  }, {
+    "label" : "current-corrupt-1",
+    "concurrency" : 1,
+    "frozen" : false,
+    "corrupt" : true,
+    "requests" : [ {
+      "threadId" : 63,
+      "durationMillis" : 79.244682,
+      "allocatedBytes" : 290944,
+      "bodyBytes" : 0,
+      "rejectedBeforeBody" : true,
+      "jdbcQueries" : [ "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT active,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT stored_path,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?" ]
+    } ],
+    "wallMillis" : 79.569282,
+    "heapBaselineBytes" : 41255936,
+    "sampledPeakHeapBytes" : 41255936,
+    "sampledHeapIncreaseBytes" : 0
+  }, {
+    "label" : "current-corrupt-4",
+    "concurrency" : 4,
+    "frozen" : false,
+    "corrupt" : true,
+    "requests" : [ {
+      "threadId" : 65,
+      "durationMillis" : 151.293107,
+      "allocatedBytes" : 99640,
+      "bodyBytes" : 0,
+      "rejectedBeforeBody" : true,
+      "jdbcQueries" : [ "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT active,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT stored_path,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?" ]
+    }, {
+      "threadId" : 66,
+      "durationMillis" : 147.463575,
+      "allocatedBytes" : 100160,
+      "bodyBytes" : 0,
+      "rejectedBeforeBody" : true,
+      "jdbcQueries" : [ "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT active,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT stored_path,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?" ]
+    }, {
+      "threadId" : 67,
+      "durationMillis" : 145.384068,
+      "allocatedBytes" : 97848,
+      "bodyBytes" : 0,
+      "rejectedBeforeBody" : true,
+      "jdbcQueries" : [ "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT active,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT stored_path,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?" ]
+    }, {
+      "threadId" : 68,
+      "durationMillis" : 120.924362,
+      "allocatedBytes" : 99264,
+      "bodyBytes" : 0,
+      "rejectedBeforeBody" : true,
+      "jdbcQueries" : [ "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT active,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT stored_path,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?" ]
+    } ],
+    "wallMillis" : 151.704955,
+    "heapBaselineBytes" : 41278608,
+    "sampledPeakHeapBytes" : 42327184,
+    "sampledHeapIncreaseBytes" : 1048576
+  }, {
+    "label" : "current-corrupt-16",
+    "concurrency" : 16,
+    "frozen" : false,
+    "corrupt" : true,
+    "requests" : [ {
+      "threadId" : 70,
+      "durationMillis" : 601.036172,
+      "allocatedBytes" : 98888,
+      "bodyBytes" : 0,
+      "rejectedBeforeBody" : true,
+      "jdbcQueries" : [ "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT active,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT stored_path,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?" ]
+    }, {
+      "threadId" : 71,
+      "durationMillis" : 601.239688,
+      "allocatedBytes" : 100088,
+      "bodyBytes" : 0,
+      "rejectedBeforeBody" : true,
+      "jdbcQueries" : [ "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT active,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT stored_path,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?" ]
+    }, {
+      "threadId" : 72,
+      "durationMillis" : 216.548979,
+      "allocatedBytes" : 98488,
+      "bodyBytes" : 0,
+      "rejectedBeforeBody" : true,
+      "jdbcQueries" : [ "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT active,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT stored_path,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?" ]
+    }, {
+      "threadId" : 73,
+      "durationMillis" : 213.639961,
+      "allocatedBytes" : 98936,
+      "bodyBytes" : 0,
+      "rejectedBeforeBody" : true,
+      "jdbcQueries" : [ "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT active,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT stored_path,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?" ]
+    }, {
+      "threadId" : 74,
+      "durationMillis" : 576.335144,
+      "allocatedBytes" : 100784,
+      "bodyBytes" : 0,
+      "rejectedBeforeBody" : true,
+      "jdbcQueries" : [ "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT active,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT stored_path,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?" ]
+    }, {
+      "threadId" : 75,
+      "durationMillis" : 375.9557,
+      "allocatedBytes" : 98672,
+      "bodyBytes" : 0,
+      "rejectedBeforeBody" : true,
+      "jdbcQueries" : [ "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT active,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT stored_path,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?" ]
+    }, {
+      "threadId" : 76,
+      "durationMillis" : 568.161994,
+      "allocatedBytes" : 100752,
+      "bodyBytes" : 0,
+      "rejectedBeforeBody" : true,
+      "jdbcQueries" : [ "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT active,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT stored_path,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?" ]
+    }, {
+      "threadId" : 77,
+      "durationMillis" : 596.896781,
+      "allocatedBytes" : 99984,
+      "bodyBytes" : 0,
+      "rejectedBeforeBody" : true,
+      "jdbcQueries" : [ "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT active,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT stored_path,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?" ]
+    }, {
+      "threadId" : 78,
+      "durationMillis" : 558.317485,
+      "allocatedBytes" : 100376,
+      "bodyBytes" : 0,
+      "rejectedBeforeBody" : true,
+      "jdbcQueries" : [ "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT active,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT stored_path,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?" ]
+    }, {
+      "threadId" : 79,
+      "durationMillis" : 465.59273,
+      "allocatedBytes" : 100784,
+      "bodyBytes" : 0,
+      "rejectedBeforeBody" : true,
+      "jdbcQueries" : [ "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT active,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT stored_path,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?" ]
+    }, {
+      "threadId" : 80,
+      "durationMillis" : 218.871385,
+      "allocatedBytes" : 105064,
+      "bodyBytes" : 0,
+      "rejectedBeforeBody" : true,
+      "jdbcQueries" : [ "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT active,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT stored_path,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?" ]
+    }, {
+      "threadId" : 81,
+      "durationMillis" : 593.589667,
+      "allocatedBytes" : 99312,
+      "bodyBytes" : 0,
+      "rejectedBeforeBody" : true,
+      "jdbcQueries" : [ "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT active,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT stored_path,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?" ]
+    }, {
+      "threadId" : 82,
+      "durationMillis" : 348.561614,
+      "allocatedBytes" : 97056,
+      "bodyBytes" : 0,
+      "rejectedBeforeBody" : true,
+      "jdbcQueries" : [ "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT active,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT stored_path,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?" ]
+    }, {
+      "threadId" : 83,
+      "durationMillis" : 287.460586,
+      "allocatedBytes" : 97824,
+      "bodyBytes" : 0,
+      "rejectedBeforeBody" : true,
+      "jdbcQueries" : [ "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT active,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT stored_path,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?" ]
+    }, {
+      "threadId" : 84,
+      "durationMillis" : 439.400206,
+      "allocatedBytes" : 98184,
+      "bodyBytes" : 0,
+      "rejectedBeforeBody" : true,
+      "jdbcQueries" : [ "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT active,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT stored_path,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?" ]
+    }, {
+      "threadId" : 85,
+      "durationMillis" : 527.30105,
+      "allocatedBytes" : 99016,
+      "bodyBytes" : 0,
+      "rejectedBeforeBody" : true,
+      "jdbcQueries" : [ "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT active,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT stored_path,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?" ]
+    } ],
+    "wallMillis" : 610.112151,
+    "heapBaselineBytes" : 41289136,
+    "sampledPeakHeapBytes" : 43386288,
+    "sampledHeapIncreaseBytes" : 2097152
+  }, {
+    "label" : "frozen-good-1",
+    "concurrency" : 1,
+    "frozen" : true,
+    "corrupt" : false,
+    "requests" : [ {
+      "threadId" : 87,
+      "durationMillis" : 181.642654,
+      "allocatedBytes" : 553304,
+      "bodyBytes" : 52428800,
+      "rejectedBeforeBody" : false,
+      "jdbcQueries" : [ "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT active,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT attachment_snapshot FROM dhr_summary_version WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT stored_path,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT original_name FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?" ]
+    } ],
+    "wallMillis" : 182.148734,
+    "heapBaselineBytes" : 41295496,
+    "sampledPeakHeapBytes" : 42344072,
+    "sampledHeapIncreaseBytes" : 1048576
+  }, {
+    "label" : "frozen-good-4",
+    "concurrency" : 4,
+    "frozen" : true,
+    "corrupt" : false,
+    "requests" : [ {
+      "threadId" : 89,
+      "durationMillis" : 202.354211,
+      "allocatedBytes" : 239384,
+      "bodyBytes" : 52428800,
+      "rejectedBeforeBody" : false,
+      "jdbcQueries" : [ "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT active,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT attachment_snapshot FROM dhr_summary_version WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT stored_path,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT original_name FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?" ]
+    }, {
+      "threadId" : 90,
+      "durationMillis" : 114.344571,
+      "allocatedBytes" : 237896,
+      "bodyBytes" : 52428800,
+      "rejectedBeforeBody" : false,
+      "jdbcQueries" : [ "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT active,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT attachment_snapshot FROM dhr_summary_version WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT stored_path,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT original_name FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?" ]
+    }, {
+      "threadId" : 91,
+      "durationMillis" : 207.443182,
+      "allocatedBytes" : 239984,
+      "bodyBytes" : 52428800,
+      "rejectedBeforeBody" : false,
+      "jdbcQueries" : [ "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT active,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT attachment_snapshot FROM dhr_summary_version WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT stored_path,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT original_name FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?" ]
+    }, {
+      "threadId" : 92,
+      "durationMillis" : 179.46404,
+      "allocatedBytes" : 239272,
+      "bodyBytes" : 52428800,
+      "rejectedBeforeBody" : false,
+      "jdbcQueries" : [ "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT active,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT attachment_snapshot FROM dhr_summary_version WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT stored_path,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT original_name FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?" ]
+    } ],
+    "wallMillis" : 208.026811,
+    "heapBaselineBytes" : 41311000,
+    "sampledPeakHeapBytes" : 42359576,
+    "sampledHeapIncreaseBytes" : 1048576
+  }, {
+    "label" : "frozen-good-16",
+    "concurrency" : 16,
+    "frozen" : true,
+    "corrupt" : false,
+    "requests" : [ {
+      "threadId" : 94,
+      "durationMillis" : 339.872907,
+      "allocatedBytes" : 231560,
+      "bodyBytes" : 52428800,
+      "rejectedBeforeBody" : false,
+      "jdbcQueries" : [ "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT active,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT attachment_snapshot FROM dhr_summary_version WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT stored_path,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT original_name FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?" ]
+    }, {
+      "threadId" : 95,
+      "durationMillis" : 694.660066,
+      "allocatedBytes" : 233344,
+      "bodyBytes" : 52428800,
+      "rejectedBeforeBody" : false,
+      "jdbcQueries" : [ "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT active,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT attachment_snapshot FROM dhr_summary_version WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT stored_path,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT original_name FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?" ]
+    }, {
+      "threadId" : 96,
+      "durationMillis" : 641.577294,
+      "allocatedBytes" : 231528,
+      "bodyBytes" : 52428800,
+      "rejectedBeforeBody" : false,
+      "jdbcQueries" : [ "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT active,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT attachment_snapshot FROM dhr_summary_version WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT stored_path,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT original_name FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?" ]
+    }, {
+      "threadId" : 97,
+      "durationMillis" : 552.382848,
+      "allocatedBytes" : 233760,
+      "bodyBytes" : 52428800,
+      "rejectedBeforeBody" : false,
+      "jdbcQueries" : [ "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT active,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT attachment_snapshot FROM dhr_summary_version WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT stored_path,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT original_name FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?" ]
+    }, {
+      "threadId" : 98,
+      "durationMillis" : 427.190914,
+      "allocatedBytes" : 235384,
+      "bodyBytes" : 52428800,
+      "rejectedBeforeBody" : false,
+      "jdbcQueries" : [ "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT active,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT attachment_snapshot FROM dhr_summary_version WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT stored_path,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT original_name FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?" ]
+    }, {
+      "threadId" : 99,
+      "durationMillis" : 694.059527,
+      "allocatedBytes" : 236184,
+      "bodyBytes" : 52428800,
+      "rejectedBeforeBody" : false,
+      "jdbcQueries" : [ "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT active,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT attachment_snapshot FROM dhr_summary_version WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT stored_path,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT original_name FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?" ]
+    }, {
+      "threadId" : 100,
+      "durationMillis" : 191.425444,
+      "allocatedBytes" : 236608,
+      "bodyBytes" : 52428800,
+      "rejectedBeforeBody" : false,
+      "jdbcQueries" : [ "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT active,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT attachment_snapshot FROM dhr_summary_version WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT stored_path,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT original_name FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?" ]
+    }, {
+      "threadId" : 101,
+      "durationMillis" : 695.277531,
+      "allocatedBytes" : 234672,
+      "bodyBytes" : 52428800,
+      "rejectedBeforeBody" : false,
+      "jdbcQueries" : [ "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT active,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT attachment_snapshot FROM dhr_summary_version WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT stored_path,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT original_name FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?" ]
+    }, {
+      "threadId" : 102,
+      "durationMillis" : 451.93434,
+      "allocatedBytes" : 234592,
+      "bodyBytes" : 52428800,
+      "rejectedBeforeBody" : false,
+      "jdbcQueries" : [ "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT active,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT attachment_snapshot FROM dhr_summary_version WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT stored_path,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT original_name FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?" ]
+    }, {
+      "threadId" : 103,
+      "durationMillis" : 451.977022,
+      "allocatedBytes" : 233624,
+      "bodyBytes" : 52428800,
+      "rejectedBeforeBody" : false,
+      "jdbcQueries" : [ "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT active,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT attachment_snapshot FROM dhr_summary_version WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT stored_path,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT original_name FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?" ]
+    }, {
+      "threadId" : 104,
+      "durationMillis" : 646.994638,
+      "allocatedBytes" : 235072,
+      "bodyBytes" : 52428800,
+      "rejectedBeforeBody" : false,
+      "jdbcQueries" : [ "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT active,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT attachment_snapshot FROM dhr_summary_version WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT stored_path,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT original_name FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?" ]
+    }, {
+      "threadId" : 105,
+      "durationMillis" : 644.415778,
+      "allocatedBytes" : 234808,
+      "bodyBytes" : 52428800,
+      "rejectedBeforeBody" : false,
+      "jdbcQueries" : [ "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT active,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT attachment_snapshot FROM dhr_summary_version WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT stored_path,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT original_name FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?" ]
+    }, {
+      "threadId" : 106,
+      "durationMillis" : 696.36962,
+      "allocatedBytes" : 233840,
+      "bodyBytes" : 52428800,
+      "rejectedBeforeBody" : false,
+      "jdbcQueries" : [ "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT active,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT attachment_snapshot FROM dhr_summary_version WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT stored_path,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT original_name FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?" ]
+    }, {
+      "threadId" : 107,
+      "durationMillis" : 655.374469,
+      "allocatedBytes" : 232368,
+      "bodyBytes" : 52428800,
+      "rejectedBeforeBody" : false,
+      "jdbcQueries" : [ "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT active,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT attachment_snapshot FROM dhr_summary_version WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT stored_path,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT original_name FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?" ]
+    }, {
+      "threadId" : 108,
+      "durationMillis" : 667.043056,
+      "allocatedBytes" : 232056,
+      "bodyBytes" : 52428800,
+      "rejectedBeforeBody" : false,
+      "jdbcQueries" : [ "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT active,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT attachment_snapshot FROM dhr_summary_version WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT stored_path,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT original_name FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?" ]
+    }, {
+      "threadId" : 109,
+      "durationMillis" : 577.83357,
+      "allocatedBytes" : 232640,
+      "bodyBytes" : 52428800,
+      "rejectedBeforeBody" : false,
+      "jdbcQueries" : [ "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT active,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT attachment_snapshot FROM dhr_summary_version WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT stored_path,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT original_name FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?" ]
+    } ],
+    "wallMillis" : 704.537441,
+    "heapBaselineBytes" : 41323480,
+    "sampledPeakHeapBytes" : 44469208,
+    "sampledHeapIncreaseBytes" : 3145728
+  }, {
+    "label" : "frozen-corrupt-1",
+    "concurrency" : 1,
+    "frozen" : true,
+    "corrupt" : true,
+    "requests" : [ {
+      "threadId" : 111,
+      "durationMillis" : 63.09072,
+      "allocatedBytes" : 117376,
+      "bodyBytes" : 0,
+      "rejectedBeforeBody" : true,
+      "jdbcQueries" : [ "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT active,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT attachment_snapshot FROM dhr_summary_version WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT stored_path,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?" ]
+    } ],
+    "wallMillis" : 63.716758,
+    "heapBaselineBytes" : 41341016,
+    "sampledPeakHeapBytes" : 41341016,
+    "sampledHeapIncreaseBytes" : 0
+  }, {
+    "label" : "frozen-corrupt-4",
+    "concurrency" : 4,
+    "frozen" : true,
+    "corrupt" : true,
+    "requests" : [ {
+      "threadId" : 113,
+      "durationMillis" : 173.234354,
+      "allocatedBytes" : 115200,
+      "bodyBytes" : 0,
+      "rejectedBeforeBody" : true,
+      "jdbcQueries" : [ "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT active,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT attachment_snapshot FROM dhr_summary_version WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT stored_path,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?" ]
+    }, {
+      "threadId" : 114,
+      "durationMillis" : 139.29072,
+      "allocatedBytes" : 116656,
+      "bodyBytes" : 0,
+      "rejectedBeforeBody" : true,
+      "jdbcQueries" : [ "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT active,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT attachment_snapshot FROM dhr_summary_version WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT stored_path,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?" ]
+    }, {
+      "threadId" : 115,
+      "durationMillis" : 172.249483,
+      "allocatedBytes" : 116400,
+      "bodyBytes" : 0,
+      "rejectedBeforeBody" : true,
+      "jdbcQueries" : [ "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT active,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT attachment_snapshot FROM dhr_summary_version WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT stored_path,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?" ]
+    }, {
+      "threadId" : 116,
+      "durationMillis" : 138.637679,
+      "allocatedBytes" : 117472,
+      "bodyBytes" : 0,
+      "rejectedBeforeBody" : true,
+      "jdbcQueries" : [ "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT active,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT attachment_snapshot FROM dhr_summary_version WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT stored_path,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?" ]
+    } ],
+    "wallMillis" : 173.607163,
+    "heapBaselineBytes" : 41344904,
+    "sampledPeakHeapBytes" : 42393480,
+    "sampledHeapIncreaseBytes" : 1048576
+  }, {
+    "label" : "frozen-corrupt-16",
+    "concurrency" : 16,
+    "frozen" : true,
+    "corrupt" : true,
+    "requests" : [ {
+      "threadId" : 118,
+      "durationMillis" : 185.294223,
+      "allocatedBytes" : 115376,
+      "bodyBytes" : 0,
+      "rejectedBeforeBody" : true,
+      "jdbcQueries" : [ "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT active,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT attachment_snapshot FROM dhr_summary_version WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT stored_path,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?" ]
+    }, {
+      "threadId" : 119,
+      "durationMillis" : 473.299926,
+      "allocatedBytes" : 116192,
+      "bodyBytes" : 0,
+      "rejectedBeforeBody" : true,
+      "jdbcQueries" : [ "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT active,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT attachment_snapshot FROM dhr_summary_version WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT stored_path,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?" ]
+    }, {
+      "threadId" : 120,
+      "durationMillis" : 475.348506,
+      "allocatedBytes" : 115664,
+      "bodyBytes" : 0,
+      "rejectedBeforeBody" : true,
+      "jdbcQueries" : [ "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT active,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT attachment_snapshot FROM dhr_summary_version WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT stored_path,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?" ]
+    }, {
+      "threadId" : 121,
+      "durationMillis" : 467.987399,
+      "allocatedBytes" : 115568,
+      "bodyBytes" : 0,
+      "rejectedBeforeBody" : true,
+      "jdbcQueries" : [ "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT active,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT attachment_snapshot FROM dhr_summary_version WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT stored_path,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?" ]
+    }, {
+      "threadId" : 122,
+      "durationMillis" : 427.423708,
+      "allocatedBytes" : 118592,
+      "bodyBytes" : 0,
+      "rejectedBeforeBody" : true,
+      "jdbcQueries" : [ "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT active,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT attachment_snapshot FROM dhr_summary_version WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT stored_path,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?" ]
+    }, {
+      "threadId" : 123,
+      "durationMillis" : 184.310015,
+      "allocatedBytes" : 117288,
+      "bodyBytes" : 0,
+      "rejectedBeforeBody" : true,
+      "jdbcQueries" : [ "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT active,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT attachment_snapshot FROM dhr_summary_version WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT stored_path,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?" ]
+    }, {
+      "threadId" : 124,
+      "durationMillis" : 273.57113,
+      "allocatedBytes" : 117472,
+      "bodyBytes" : 0,
+      "rejectedBeforeBody" : true,
+      "jdbcQueries" : [ "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT active,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT attachment_snapshot FROM dhr_summary_version WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT stored_path,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?" ]
+    }, {
+      "threadId" : 125,
+      "durationMillis" : 413.698349,
+      "allocatedBytes" : 116216,
+      "bodyBytes" : 0,
+      "rejectedBeforeBody" : true,
+      "jdbcQueries" : [ "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT active,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT attachment_snapshot FROM dhr_summary_version WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT stored_path,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?" ]
+    }, {
+      "threadId" : 126,
+      "durationMillis" : 433.362402,
+      "allocatedBytes" : 116544,
+      "bodyBytes" : 0,
+      "rejectedBeforeBody" : true,
+      "jdbcQueries" : [ "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT active,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT attachment_snapshot FROM dhr_summary_version WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT stored_path,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?" ]
+    }, {
+      "threadId" : 127,
+      "durationMillis" : 177.789695,
+      "allocatedBytes" : 117816,
+      "bodyBytes" : 0,
+      "rejectedBeforeBody" : true,
+      "jdbcQueries" : [ "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT active,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT attachment_snapshot FROM dhr_summary_version WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT stored_path,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?" ]
+    }, {
+      "threadId" : 128,
+      "durationMillis" : 359.336933,
+      "allocatedBytes" : 117248,
+      "bodyBytes" : 0,
+      "rejectedBeforeBody" : true,
+      "jdbcQueries" : [ "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT active,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT attachment_snapshot FROM dhr_summary_version WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT stored_path,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?" ]
+    }, {
+      "threadId" : 129,
+      "durationMillis" : 418.705852,
+      "allocatedBytes" : 117760,
+      "bodyBytes" : 0,
+      "rejectedBeforeBody" : true,
+      "jdbcQueries" : [ "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT active,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT attachment_snapshot FROM dhr_summary_version WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT stored_path,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?" ]
+    }, {
+      "threadId" : 130,
+      "durationMillis" : 468.992699,
+      "allocatedBytes" : 116344,
+      "bodyBytes" : 0,
+      "rejectedBeforeBody" : true,
+      "jdbcQueries" : [ "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT active,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT attachment_snapshot FROM dhr_summary_version WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT stored_path,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?" ]
+    }, {
+      "threadId" : 131,
+      "durationMillis" : 425.186944,
+      "allocatedBytes" : 117272,
+      "bodyBytes" : 0,
+      "rejectedBeforeBody" : true,
+      "jdbcQueries" : [ "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT active,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT attachment_snapshot FROM dhr_summary_version WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT stored_path,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?" ]
+    }, {
+      "threadId" : 132,
+      "durationMillis" : 485.083756,
+      "allocatedBytes" : 117440,
+      "bodyBytes" : 0,
+      "rejectedBeforeBody" : true,
+      "jdbcQueries" : [ "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT active,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT attachment_snapshot FROM dhr_summary_version WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT stored_path,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?" ]
+    }, {
+      "threadId" : 133,
+      "durationMillis" : 353.001755,
+      "allocatedBytes" : 116928,
+      "bodyBytes" : 0,
+      "rejectedBeforeBody" : true,
+      "jdbcQueries" : [ "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT active,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT attachment_snapshot FROM dhr_summary_version WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", "SELECT stored_path,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?" ]
+    } ],
+    "wallMillis" : 504.441103,
+    "heapBaselineBytes" : 41354192,
+    "sampledPeakHeapBytes" : 44499920,
+    "sampledHeapIncreaseBytes" : 3145728
+  } ],
+  "bytesPerFile" : 52428800,
+  "javaVersion" : "21.0.12.1",
+  "jvmArgs" : [ "-Xmx2g" ],
+  "processors" : 4,
+  "database" : "PostgreSQL 16.15 on x86_64-pc-linux-musl, compiled by gcc (Alpine 15.2.0) 15.2.0, 64-bit",
+  "limits" : "Warm-page-cache synthetic padded PNG; four canonical tables/fixture version metadata; actual service proxy and controller/resource call, no HTTP/auth/network or production SLA. Allocations include JDBC/assertions/body checksum; heap/JFR sampling adds overhead. Explicit JdbcTemplate counts exclude driver/transaction setup. Body buffer64KiB. Query fixture snapshot does not certify full DHR freezing."
+}

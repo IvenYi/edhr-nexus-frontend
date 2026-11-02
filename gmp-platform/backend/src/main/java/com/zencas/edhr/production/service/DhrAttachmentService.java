@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
 import java.util.HexFormat;
 import java.util.List;
@@ -98,7 +99,18 @@ public class DhrAttachmentService {
         Path directory = Path.of(storagePath).resolve("dhr");
         Files.createDirectories(directory);
         Path stored = directory.resolve(id + "." + extension);
-        Files.write(stored, bytes, java.nio.file.StandardOpenOption.CREATE_NEW);
+        var output = Files.newOutputStream(stored, java.nio.file.StandardOpenOption.CREATE_NEW);
+        try (output) {
+            for (int offset = 0; offset < bytes.length; offset += 8192)
+                output.write(bytes, offset, Math.min(8192, bytes.length - offset));
+        } catch (IOException writeFailure) {
+            try { Files.deleteIfExists(stored); }
+            catch (IOException cleanupFailure) {
+                writeFailure.addSuppressed(cleanupFailure);
+                log.error("Failed to remove incomplete DHR attachment: id={}, path={}", id, stored, cleanupFailure);
+            }
+            throw writeFailure;
+        }
         if (TransactionSynchronizationManager.isSynchronizationActive())
             TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
                 @Override public void afterCompletion(int status) {
@@ -163,7 +175,7 @@ public class DhrAttachmentService {
         if (rows.isEmpty()) throw invalid("附件不存在");
         Path file = Path.of(String.valueOf(rows.getFirst().get("stored_path")));
         try {
-            if (!Files.isRegularFile(file) || !sha256(Files.readAllBytes(file)).equals(rows.getFirst().get("sha256"))) throw invalid("附件丢失或摘要不一致");
+            if (!Files.isRegularFile(file) || !sha256(file).equals(rows.getFirst().get("sha256"))) throw invalid("附件丢失或摘要不一致");
         } catch (IOException ex) { throw invalid("附件无法读取"); }
         return file;
     }
@@ -249,6 +261,20 @@ public class DhrAttachmentService {
     private static String sha256(byte[] value) {
         try { return HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(value)); }
         catch (Exception ex) { throw new IllegalStateException("无法计算附件摘要", ex); }
+    }
+
+    private static String sha256(Path file) throws IOException {
+        try {
+            var digest = MessageDigest.getInstance("SHA-256");
+            try (var input = Files.newInputStream(file)) {
+                byte[] buffer = new byte[8192];
+                int count;
+                while ((count = input.read(buffer)) != -1) digest.update(buffer, 0, count);
+            }
+            return HexFormat.of().formatHex(digest.digest());
+        } catch (NoSuchAlgorithmException failure) {
+            throw new IllegalStateException("无法计算附件摘要", failure);
+        }
     }
 
     private static String actor() {

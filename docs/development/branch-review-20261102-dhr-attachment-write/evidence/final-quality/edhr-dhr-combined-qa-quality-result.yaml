@@ -1,0 +1,196 @@
+qualityResult:
+  result: passed
+  baseCommit: e3e49784eda6bc01e7e5c686d6f79dc5a600d5ae
+  headCommit: 5cb1636a23e09342b2d218bb986217a4325ea559
+  contractBaseline:
+    sourceCommit: 5cb1636a23e09342b2d218bb986217a4325ea559
+    targetBranch: edhr-dev
+    targetCommit: e3e49784eda6bc01e7e5c686d6f79dc5a600d5ae
+    contractReadCommit: 5cb1636a23e09342b2d218bb986217a4325ea559
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: clean
+    includedPaths: []
+    excludedPaths: []
+    untrackedPaths: []
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+  - id: check.scope-contract-baseline
+    required: true
+    category: requirements
+    description: L2已确认范围、实际候选、契约及0.3.25知识基线独立核对；仅DhrAttachmentService产品变更。
+    method: inspection
+    command: Read AGENTS.md, codeplzreadme.md, docs/agents/{agent-handoff-contract,quality-verifier}.md, business model, knowledge
+      README/open questions, DEC0063 and original attachment confirmation; git diff e3e49784eda6bc01e7e5c686d6f79dc5a600d5ae..5cb1636a23e09342b2d218bb986217a4325ea559
+    outcome: passed
+    evidence:
+    - /tmp/edhr-dhr-combined-qa-source-review.json
+    - /tmp/edhr-dhr-combined-qa-start.json
+    - /tmp/edhr-dhr-combined-qa-final-commands.json
+    - base=e3e49784eda6bc01e7e5c686d6f79dc5a600d5ae; feature/tested candidate=5cb1636a23e09342b2d218bb986217a4325ea559; contractReadCommit=5cb1636a23e09342b2d218bb986217a4325ea559;
+      current tracked tree clean; no contract/knowledge delta
+  - id: check.source-behavior-and-a23
+    required: true
+    category: audit
+    description: 独立源码核验写关IO所有权补偿/碰撞/suppressed/日志、完整流式SHA先于输出、原错误及SQL/UI保持；Summary/Archive/Review传递调用与有限A23/拆分边界。
+    method: inspection
+    command: Source inspection and typed-call/method/SQL parity searches; 6 source-review checks
+    outcome: passed
+    evidence:
+    - /tmp/edhr-dhr-combined-qa-source-review.json
+    - /tmp/edhr-dhr-combined-qa-source-review.md
+    - CREATE_NEW open outside compensation catch; upload/file only original methods changed plus private Path SHA helper;
+      verify byte[] and original 8KiB upload preserved
+    - No new framework/guard/index/query reuse; source typed upload only injected Controller is a finite exclusion, not dynamic/future/deployment
+      entrypoint certification
+  - id: check.combined-regression-127
+    required: true
+    category: regression
+    description: 当前精确组合17类127执行，全部freshXML且0F/E/S；包含真实PG事务、27项相邻DHR及已有文件边界/权限回归。
+    method: automated-test
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f gmp-platform/backend/pom.xml -Dtest=DhrAttachmentWriteFailureTest,DhrAttachmentTransactionPostgresTest,DhrAttachmentAndArchiveTest,DhrSummaryServiceTest,DhrReviewLifecycleIntegrationTest,FileControllerTest,FileCopyOwnershipTest,FileHttpBoundaryTest,FileUploadResourceTest,FileUploadTransactionIntegrationTest,FileUploadTransactionPostgresTest,FileUploadTransactionFailureTest,FileDeleteTransactionIntegrationTest,FileDeleteTransactionPostgresTest,FileDeleteTransactionFailureTest,DhrFormFilesTest,ExecutionAccessTest
+      test
+    outcome: passed
+    evidence:
+    - /tmp/edhr-dhr-combined-qa-main-command.json
+    - /tmp/edhr-dhr-combined-qa-main-summary.json
+    - /tmp/edhr-dhr-combined-qa-main-test.txt
+    - 17 fresh XMLs at /tmp/edhr-dhr-combined-qa-main-<Class>.xml
+    - Archive13 actual Chromium PDF elapsed70.890s passed; other browser dependency warnings retained without product/environment
+      changes
+    - Counts are 127 total = new5 + existing122, not additive unique full-audit coverage
+  - id: check.owned-postgres-environment
+    required: true
+    category: database
+    description: 本实例专有PG16-alpine只绑定loopback trust；最终TCP pg_isready -h127.0.0.1，两个专用库，实际原生事务回归非skip。
+    method: query
+    command: docker run postgres:16-alpine; pg_isready -h 127.0.0.1; createdb -h 127.0.0.1; SELECT version(); SELECT datcollate
+      FROM pg_database
+    outcome: passed
+    evidence:
+    - /tmp/edhr-dhr-combined-qa-database.json
+    - /tmp/edhr-dhr-combined-qa-main-DhrAttachmentTransactionPostgresTest.xml
+    - PostgreSQL16.15 en_US.utf8; DHR transaction11 and upload/delete native PG tests passed; metadata read from pg_database
+  - id: check.capacity-combined-one
+    required: true
+    category: integration
+    description: 容量单项0F/E/S，12组84请求；42次完整52428800字节/SHA/filename/attachment/contentType/nosniff，42损坏输出前拒绝。
+    method: automated-test
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f gmp-platform/backend/pom.xml -Dtest=DhrAttachmentDownloadCapacityPostgresTest
+      -DargLine=-Xmx2g test
+    outcome: passed
+    evidence:
+    - /tmp/edhr-dhr-combined-qa-capacity-command.json
+    - /tmp/edhr-dhr-combined-qa-capacity-summary.json
+    - /tmp/edhr-dhr-combined-qa-capacity-DhrAttachmentDownloadCapacityPostgresTest.xml
+    - /tmp/edhr-dhr-combined-qa-capacity-test.txt
+    - /tmp/edhr-dhr-combined-qa-capacity/capacity.json
+    - 2GiB test JVM; current/frozen × good/corrupt × concurrency1/4/16; 1 test method, not84 business cases
+  - id: check.capacity-jfr-baseline-comparison
+    required: true
+    category: integration
+    description: 本实例重解析before/after各12JFR并逐请求核SQL/输出/分配；初601独立before原件复用，未声称本实例重跑before。
+    method: command
+    command: python3 /tmp/edhr-dhr-combined-qa-baseline-extract.py; java /tmp/edhr-dhr-combined-qa-JfrReads.java <12beforeJFR>;
+      python3 /tmp/edhr-dhr-combined-qa-compare.py
+    outcome: passed
+    evidence:
+    - /tmp/edhr-dhr-combined-qa-comparison.json
+    - /tmp/edhr-dhr-combined-qa-baseline-extract.json
+    - /tmp/edhr-dhr-combined-qa-baseline-jfr-reparsed.jsonl
+    - /tmp/edhr-dhr-combined-qa-after-jfr-reparsed.jsonl
+    - /tmp/edhr-dhr-combined-qa-after-jfr-command.json
+    - 'Exact SQL arrays unchanged: current/frozen good5/6, bad4/5. JFR logical read good100MiB/bad50MiB per request. Later
+      allocation about0.093–0.227MiB except first current2.053/frozen0.529MiB initialization; concurrency16 sampledheap3–5MiB
+      vs independent old818–821MiB; no exact heap/latency threshold'
+  - id: check.knowledge-89
+    required: true
+    category: ontology
+    description: 当前组合实际独立知识JUnit89，0F/E/S；330知识资产和6模型/契约文件与base无差异，本体not-applicable适用。
+    method: automated-test
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f tools/knowledge-model/pom.xml -Dtest=BusinessKnowledgeModelTest
+      test
+    outcome: passed
+    evidence:
+    - /tmp/edhr-dhr-combined-qa-knowledge-command.json
+    - /tmp/edhr-dhr-combined-qa-knowledge-summary.json
+    - /tmp/edhr-dhr-combined-qa-knowledge-BusinessKnowledgeModelTest.xml
+    - /tmp/edhr-dhr-combined-qa-knowledge-test.txt
+    - /tmp/edhr-dhr-combined-qa-evidence-review.json
+    - knowledge0.3.25/schema1.2.0; no maturity or whole-audit completion increase
+  - id: check.exact-final-old-negative-control
+    required: true
+    category: unit
+    description: own detached e3旧产品仅复制HEAD精确最终故障测试，5执行=3真实assertion红+2碰撞正控，0error/skip。
+    method: automated-test
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f gmp-platform/backend/pom.xml -Dtest=DhrAttachmentWriteFailureTest
+      test
+    outcome: passed
+    evidence:
+    - /tmp/edhr-dhr-combined-qa-old-source-copy.json
+    - /tmp/edhr-dhr-combined-qa-old-command.json
+    - /tmp/edhr-dhr-combined-qa-old-summary.json
+    - /tmp/edhr-dhr-combined-qa-old-DhrAttachmentWriteFailureTest.xml
+    - /tmp/edhr-dhr-combined-qa-old-test.txt
+    - Test source/copy7002B SHA2566088d5bb120f1800da70d8542a16278a625f6efd5ea233c8b5e753013b81c69f. Old productSHA equals
+      e3. Failures are retained fragment/absent suppressed, not fixture setup. Expected red command exit1 is a passed reproduction
+      check; repeated history stages not additive
+  - id: check.three-stage-artifacts
+    required: true
+    category: documentation
+    description: 原始/存储/member哈希与阶段源码映射全核，保留fixture-first及中间/精确旧控区别。
+    method: command
+    command: python3 /tmp/edhr-dhr-combined-qa-evidence-verify.py (final corrected schema-aware verifier); inspect raw artifacts
+      and Git source bytes
+    outcome: passed
+    evidence:
+    - /tmp/edhr-dhr-combined-qa-evidence-review.json
+    - /tmp/edhr-dhr-combined-qa-evidence-review.md
+    - 1321 mechanical checks passed. old87raw+5source vs601; stream68raw+5source vscurrent/same320; initialbundle114 members
+      plus embedded113artifact manifest vs601; old ontology12+manifest13/25fingerprints SHA470b0b8adaa2b9e4eb30dd05b0950ced70a4948463919142b6a044b88c4671a2;
+      stream13+manifest14/27 SHA129e5867b99befc3269a03944934d11ae865e779e56f30c2e36c5a22dfe18b7c
+    - Temporary verifier KeyError for optional baseSha256 and source regex first parser correction retained under /tmp; no
+      repo/test/fixture/config changes or reduced assertions
+  - id: check.fixed-inventory-and-review-counts
+    required: true
+    category: documentation
+    description: 从固定e3重建四盘点并逐字节对比；不把盘点及机械校验冒称语义全审。
+    method: command
+    command: Rebuild four task inventory artifacts from git e3e49784eda6bc01e7e5c686d6f79dc5a600d5ae and compare byte-for-byte
+    outcome: passed
+    evidence:
+    - /tmp/edhr-dhr-combined-qa-evidence-review.json
+    - 6604paths/135SQL/464HTTP annotation candidates/216route candidates; four outputs byte-identical; wholeFileCompletion0;
+      historicalUniqueCoverageunknown;14existingIDs retained, no unique increment
+  - id: check.clean-diff-and-owned-cleanup
+    required: true
+    category: documentation
+    description: 临时命令级CRLF whitespace检查通过；所有own资源正常清理，主树clean且HEAD不变。
+    method: command
+    command: git -c core.whitespace=cr-at-eol diff --check e3e49784eda6bc01e7e5c686d6f79dc5a600d5ae..5cb1636a23e09342b2d218bb986217a4325ea559;
+      docker stop/rm own container; unlink own tooling symlink; git worktree remove own clean trees; git status --porcelain=v1
+    outcome: passed
+    evidence:
+    - /tmp/edhr-dhr-combined-qa-cleanup.json
+    - /tmp/edhr-dhr-combined-qa-final-commands.json
+    - No force/global git config/product/test/fixture/config edits/CI or Actions queries/merge/deploy/history restore/orphan
+      sweep. Tooling-only frontend/node_modules symlink used in both detached trees, then unlinked
+  findings: []
+  residualRisks:
+  - id: risk.remaining-write-reconciliation
+    description: 进程崩溃、清理失败及UNKNOWN结果仍可能保留原件；本次进程内补偿不提供持久对账或跨资源原子。
+    impact: 本次修复只闭合已取得流后的写关IOException，未确认的崩溃/幂等/持久对账仍留原队列。
+    mitigation: 保留ID/path与原异常；按既有W6/W7队列进一步核验，不做恢复或孤儿扫删。
+  - id: risk.capacity-observation-limits
+    description: 2GiB测试JVM、暖页缓存/稀疏paddedPNG、Hikari10、未全预热JIT与64KiB输出缓冲；包含JDBC/断言/JFR采样开销。
+    impact: heap不含native/direct/RSS/network；JFR逻辑读取不是物理磁盘IO；无生产SLA/并发上限/单请求更快承诺。
+    mitigation: 报告原始数值和环境，不固定精确heap/latency阈值；仅确认摘要阶段内存有界和既有输出兼容。
+  - id: risk.finite-runtime-boundary
+    description: 此次进程内Controller/resource、既有MockMvc/权限回归及有限相邻27DHR用例，不是完整真实HTTP/RBAC、账号UI收件人矩阵或全部冻结业务流程。
+    impact: 动态/未来/部署入口、全局ACL/引用并发及完整任务下载认证未在此认证。
+    mitigation: 当前typed源码无无事务内部upload仅作为有限排除，保留原guard；继续原授权队列。
+  - id: risk.full-audit-queues-retained
+    description: 本批不是W0→W7全审完成；原666paths/44knowledge/183ID、两DHR旧high、A12、fourgap、W2余项、W3/W4/W5交叉、W6健壮性/性能/抽取/A23含旧已审重核、W7增量及朋友签署页/生产弹窗等暂停均保持。
+    impact: 不得把本组合passed提升为全系统/全语义通过或关闭旧高风险项。
+    mitigation: 主角色在所有FINAL后实际向用户复核授权扩展/无漂移/阶段，再执行L0归档PR交付；人工merge，不部署。
+  blockingConditions: []

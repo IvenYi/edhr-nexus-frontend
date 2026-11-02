@@ -1,0 +1,57 @@
+ontologyResult:
+  result: not-applicable
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: 320a4c74717dd913d44d6e01e6c5a6f2993d4695
+    targetBranch: edhr-dev
+    targetCommit: e3e49784eda6bc01e7e5c686d6f79dc5a600d5ae
+    contractReadCommit: e3e49784eda6bc01e7e5c686d6f79dc5a600d5ae
+    uncommittedContractPaths: []
+  reason: 同切片在用户保持体验的条件授权下新增私有Path流式SHA256重载：完整读至EOF并比较后才返回资源，原响应字节/文件名/头、SQL/错误映射、资格/格式/50MiB、冻结成员和历史保留不变；verify仍保留解析所需byte[]。Summary/Archive/任务下载共享file()的摘要阶段也有界，但不改变各自审批/锁/快照规则。此为工程实现选择，未新增本体业务政策、权限或SLA。330知识及模型/契约不变，知识0.3.25/schema1.2.0/P0不升；14既有ID增量保留不算新unique或整文件完成。原write所有原件/manifest保留，新stream指纹独立冻结；初601质量不能代替新组合fresh验收。
+  changedArtifacts: []
+  knowledgeSync: []
+  conflicts: []
+  questions: []
+  validationEvidence:
+  - id: validation.stream-knowledge89
+    checkType: schema
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f tools/knowledge-model/pom.xml test
+    outcome: passed
+    evidence:
+    - /tmp/edhr-dhr-stream-ontology-knowledge-command.json
+    - /tmp/edhr-dhr-stream-ontology-knowledge-test.txt
+    - /tmp/edhr-dhr-stream-ontology-knowledge-test.xml
+    - /tmp/edhr-dhr-stream-ontology-knowledge-summary.json
+    - Actual incremental ontology-role89,0failures/errors/skips; not product/capacity or all-ID semantic certification.
+  - id: validation.stream-finite-policy-and-source
+    checkType: evidence-path
+    command: Recheck unchanged14 original definitions against conditional engineering authorization,actual320 digest/test
+      delta and shared Summary/Archive callers; fingerprint27 exact source paths.
+    outcome: passed
+    evidence:
+    - /tmp/edhr-dhr-stream-ontology-semantic-review.json
+    - /tmp/edhr-dhr-stream-ontology-policy-sources.json
+    - /tmp/edhr-dhr-stream-ontology-source-inspection.json
+    - /tmp/edhr-dhr-stream-ontology-source-fingerprints.json
+    - /tmp/edhr-dhr-stream-ontology-source.diff
+    - Full SHA before resource output remains; no controller/UI source change. Header/bytes checks are finite, no
+      browser/full HTTP authorization/SLA claim.
+  - id: validation.stream-provenance-and-history
+    checkType: projection
+    command: Compare330 knowledge paths/bytes and business model/contracts with e3/320,verify every originalwrite
+      ontology raw hash without rewriting.
+    outcome: passed
+    evidence:
+    - /tmp/edhr-dhr-stream-ontology-knowledge-inventory.json
+    - /tmp/edhr-dhr-stream-ontology-knowledge.diff
+    - Old write manifest470b0b8adaa2b9e4eb30dd05b0950ced70a4948463919142b6a044b88c4671a2 and all12 original hashes
+      unchanged; no maturity or old audit-risk closure.
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages:
+    - P1
+    - P2
+    - P3

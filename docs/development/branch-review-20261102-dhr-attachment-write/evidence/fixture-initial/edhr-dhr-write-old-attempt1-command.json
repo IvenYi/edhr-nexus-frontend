@@ -1,0 +1,18 @@
+{
+  "sourceCommit": "e3e49784eda6bc01e7e5c686d6f79dc5a600d5ae",
+  "command": "bash /workspace/.edhr-cloud-tools/mvn-edhr -f gmp-platform/backend/pom.xml -Dtest=DhrAttachmentWriteFailureTest test",
+  "invocationEvidence": "exec session12872; command recorded in actual tool history",
+  "capturedAfterRun": "2026-11-02T13:37:03.926760+00:00",
+  "sourceSnapshot": [
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrAttachmentService.java",
+      "bytes": 16473,
+      "sha256": "783c6f3338cd97b5b4cbfc0c3bc35c12707a7b0fc094912d28735a3b7c1a2bba"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrAttachmentWriteFailureTest.java",
+      "bytes": 7193,
+      "sha256": "9a64d807640770900f2fbc1e152f9182f0fe2196b4d3aade6dee05c679b15d44"
+    }
+  ]
+}

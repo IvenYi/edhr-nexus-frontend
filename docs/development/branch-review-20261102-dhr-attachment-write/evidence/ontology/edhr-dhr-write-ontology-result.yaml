@@ -1,0 +1,56 @@
+ontologyResult:
+  result: not-applicable
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: e3e49784eda6bc01e7e5c686d6f79dc5a600d5ae
+    targetBranch: edhr-dev
+    targetCommit: e3e49784eda6bc01e7e5c686d6f79dc5a600d5ae
+    contractReadCommit: e3e49784eda6bc01e7e5c686d6f79dc5a600d5ae
+    uncommittedContractPaths: []
+  reason: 本轮只补偿CREATE_NEW成功取得流之后、数据库登记之前的当前写入/关闭IOException残片；创建失败不能删除既有路径，清理失败保留原异常及定位。已登记/冻结原件和带原因解除关联历史保留不变，原资格/格式/50MiB/SHA256/冻结成员/审计语义不变；只读下载容量观测不修改实现，也不形成业务阈值或生产SLA。文件所有权、suppressed与诊断属于工程推导，不新增业务政策。330知识文件、模型/契约字节不变，0.3.25/schema1.2.0/P0不升；14既有ID有限重审不表示全库对齐。
+  changedArtifacts: []
+  knowledgeSync: []
+  conflicts: []
+  questions: []
+  validationEvidence:
+  - id: validation.dhr-write-knowledge89
+    checkType: schema
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f tools/knowledge-model/pom.xml test
+    outcome: passed
+    evidence:
+    - /tmp/edhr-dhr-write-ontology-knowledge-command.json
+    - /tmp/edhr-dhr-write-ontology-knowledge-test.txt
+    - /tmp/edhr-dhr-write-ontology-knowledge-test.xml
+    - /tmp/edhr-dhr-write-ontology-knowledge-summary.json
+    - Actual ontology-role knowledge run89,0failures/errors/skips; no product-runtime or all-ID semantic claim.
+  - id: validation.dhr-write-finite-semantics
+    checkType: evidence-path
+    command: Read original DEC0063 confirmations,14 retained definitions and actual final product/two test classes;
+      freeze exact25 source fingerprints.
+    outcome: passed
+    evidence:
+    - /tmp/edhr-dhr-write-ontology-semantic-review.json
+    - /tmp/edhr-dhr-write-ontology-policy-sources.json
+    - /tmp/edhr-dhr-write-ontology-source-fingerprints.json
+    - /tmp/edhr-dhr-write-ontology-source.diff
+    - 12 main+9 source with7 overlaps=14 existing finite IDs; wholeFiles0/newHistoricalUnique unknown. Stream faults
+      are injected around real file bytes, not actual disk-full; capacity path is process-local, not HTTP/RBAC or
+      production SLA.
+  - id: validation.dhr-write-provenance
+    checkType: projection
+    command: Compare330 knowledge paths/bytes and business model/project/role contracts with actuale3e49784; retain
+      stages/versions and all historical residuals.
+    outcome: passed
+    evidence:
+    - /tmp/edhr-dhr-write-ontology-knowledge-inventory.json
+    - /tmp/edhr-dhr-write-ontology-knowledge.diff
+    - No knowledge,policy,maturity,visibility or stage change; no closure of oldhigh/A12/fourgap/full-audit queues.
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages:
+    - P1
+    - P2
+    - P3

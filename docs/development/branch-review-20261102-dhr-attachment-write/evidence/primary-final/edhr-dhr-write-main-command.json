@@ -1,0 +1,43 @@
+{
+  "cmd": [
+    "bash",
+    "/workspace/.edhr-cloud-tools/mvn-edhr",
+    "-f",
+    "gmp-platform/backend/pom.xml",
+    "-Dtest=DhrAttachmentWriteFailureTest,DhrAttachmentTransactionPostgresTest,DhrAttachmentAndArchiveTest,DhrSummaryServiceTest,DhrReviewLifecycleIntegrationTest,FileControllerTest,FileCopyOwnershipTest,FileHttpBoundaryTest,FileUploadResourceTest,FileUploadTransactionIntegrationTest,FileUploadTransactionPostgresTest,FileUploadTransactionFailureTest,FileDeleteTransactionIntegrationTest,FileDeleteTransactionPostgresTest,FileDeleteTransactionFailureTest,DhrFormFilesTest,ExecutionAccessTest",
+    "test"
+  ],
+  "startedEpoch": 1793626944.683145,
+  "head": "e3e49784eda6bc01e7e5c686d6f79dc5a600d5ae",
+  "sourceSnapshot": [
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrAttachmentService.java",
+      "bytes": 17045,
+      "sha256": "15c0dda7257709ea7580e45421f59f50a04aa26f794abff26593a6d1ba38c3a1"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrAttachmentWriteFailureTest.java",
+      "bytes": 7002,
+      "sha256": "6088d5bb120f1800da70d8542a16278a625f6efd5ea233c8b5e753013b81c69f"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrAttachmentDownloadCapacityPostgresTest.java",
+      "bytes": 13681,
+      "sha256": "b244f5861964fa0c54f7ff3ea0a73190b1c6e90137b95a3a1550801999a5ae66"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrAttachmentTransactionPostgresTest.java",
+      "bytes": 15572,
+      "sha256": "de1b1705d3eec75c385524f9874518ca4a5376d30f74aeeadf81f164e81aed40"
+    }
+  ],
+  "database": {
+    "container": "14f037adefe78fe62ad964f9faf82d1e446bab5bd8664fc147a0c0d8805a5cba",
+    "owner": "edhr-dhr-write-main-20261102",
+    "metadata": "PostgreSQL 16.15 on x86_64-pc-linux-musl, compiled by gcc (Alpine 15.2.0) 15.2.0, 64-bit\nen_US.utf8\n",
+    "mapping": "127.0.0.1:32768",
+    "dhrUrl": "jdbc:postgresql://127.0.0.1:32768/edhr_dhr_attachment_transaction_test",
+    "uploadUrl": "jdbc:postgresql://127.0.0.1:32768/edhr_upload_transaction_test"
+  },
+  "capacityOutput": null
+}

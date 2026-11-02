@@ -1,0 +1,213 @@
+qualityResult:
+  result: passed
+  baseCommit: e3e49784eda6bc01e7e5c686d6f79dc5a600d5ae
+  headCommit: 6012672aa8be4d0d0c8f35a01b0dee0dd4af2882
+  contractBaseline:
+    sourceCommit: 6012672aa8be4d0d0c8f35a01b0dee0dd4af2882
+    targetBranch: edhr-dev
+    targetCommit: e3e49784eda6bc01e7e5c686d6f79dc5a600d5ae
+    contractReadCommit: 6012672aa8be4d0d0c8f35a01b0dee0dd4af2882
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: clean
+    includedPaths: []
+    excludedPaths: []
+    untrackedPaths: []
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+  - id: qa.baseline-independence
+    required: true
+    category: documentation
+    description: 独立质量实例、固定提交与实际契约基线；受测树clean且无未提交范围。
+    method: command
+    command: git rev-parse HEAD; git status --porcelain=v1; git ls-remote --heads origin edhr-dev
+    outcome: passed
+    evidence:
+    - /tmp/edhr-dhr-write-qa-baseline.json
+    - /tmp/edhr-dhr-write-qa-final-baseline.json
+    - /tmp/edhr-dhr-write-qa-source-review.json
+    - Actual target/base e3e49784eda6bc01e7e5c686d6f79dc5a600d5ae; feature head and tested integration candidate
+      6012672aa8be4d0d0c8f35a01b0dee0dd4af2882; contractRead/source 6012672aa8be4d0d0c8f35a01b0dee0dd4af2882; uncommittedContractPaths=[].
+      Local old edhr-dev ref was not used as target.
+  - id: qa.owned-write-source-impact
+    required: true
+    category: requirements
+    description: CREATE_NEW所有权、8KiB写入/关闭IOException补偿、原错/suppressed及ID/path日志与已确认范围一致。
+    method: inspection
+    command: Inspect exact base/head production diff and current upload block; independently invoke wrapper JDK21
+      javap.
+    outcome: passed
+    evidence:
+    - /tmp/edhr-dhr-write-qa-source-review.json
+    - /tmp/edhr-dhr-write-qa-source-report.md
+    - /tmp/edhr-dhr-write-qa-source-product.diff
+    - /tmp/edhr-dhr-write-qa-source-snapshots/
+    - /tmp/edhr-dhr-write-qa-source-jdk-write-bytecode.txt
+    - Only original Files.write line replacement explains the entire production diff. Creation collision occurs
+      outside cleanup catch; INSERT/LINK follows successful stream close. Actual JDK21 Files.write extraction 1965
+      bytes exactly matches retained original and uses 8192-byte chunks.
+  - id: qa.a23-neighbor-boundaries
+    required: true
+    category: regression
+    description: 有限A23/调用链与既有事务、格式、SHA、资格、核验、unlink历史、冻结、下载和HTTP权限不变。
+    method: inspection
+    command: Inspect current typed production upload references and unchanged neighboring source against e3.
+    outcome: passed
+    evidence:
+    - /tmp/edhr-dhr-write-qa-source-review.json
+    - /tmp/edhr-dhr-write-qa-source-callers.txt
+    - /tmp/edhr-dhr-write-qa-source-report.md
+    - Typed explicit production upload found only injected Controller call; no internal unsynchronized upload was
+      found. This is finite source evidence, not dynamic/deployment/HTTP authentication certification. Existing
+      transaction guard retained. No new performance implementation, SQL/index, retry or storage framework.
+  - id: qa.native-postgres-regression-127
+    required: true
+    category: integration
+    description: 自有原生PG16上单次17类127项新故障及相邻回归。
+    method: automated-test
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f gmp-platform/backend/pom.xml -Dtest=DhrAttachmentWriteFailureTest,DhrAttachmentTransactionPostgresTest,DhrAttachmentAndArchiveTest,DhrSummaryServiceTest,DhrReviewLifecycleIntegrationTest,FileControllerTest,FileCopyOwnershipTest,FileHttpBoundaryTest,FileUploadResourceTest,FileUploadTransactionIntegrationTest,FileUploadTransactionPostgresTest,FileUploadTransactionFailureTest,FileDeleteTransactionIntegrationTest,FileDeleteTransactionPostgresTest,FileDeleteTransactionFailureTest,DhrFormFilesTest,ExecutionAccessTest
+      test
+    outcome: passed
+    evidence:
+    - /tmp/edhr-dhr-write-qa-database.json
+    - /tmp/edhr-dhr-write-qa-main-command.json
+    - /tmp/edhr-dhr-write-qa-main-execution-environment.json
+    - /tmp/edhr-dhr-write-qa-main-test.log
+    - /tmp/edhr-dhr-write-qa-main-summary.json
+    - 17 fresh XML suites; 127 tests, 0 failures, 0 errors, 0 skipped. Includes fault5, native DHR transaction11,
+      actual Chromium PDF archive13 and existing file/summary/lifecycle/access regression. Other-browser host-dependency
+      warning retained; Chromium run passed without product/environment changes.
+  - id: qa.exact-old-base-controls
+    required: true
+    category: unit
+    description: own detached e3旧产品仅加精确最终测试字节，验证3真产品断言红与2碰撞正控。
+    method: automated-test
+    command: cd /tmp/edhr-dhr-write-qa-old-worktree && bash /workspace/.edhr-cloud-tools/mvn-edhr -f gmp-platform/backend/pom.xml
+      -Dtest=DhrAttachmentWriteFailureTest test
+    outcome: passed
+    evidence:
+    - /tmp/edhr-dhr-write-qa-old-setup.json
+    - /tmp/edhr-dhr-write-qa-old-command.json
+    - /tmp/edhr-dhr-write-qa-old-test.log
+    - /tmp/edhr-dhr-write-qa-old-summary.json
+    - /tmp/edhr-dhr-write-qa-old-failure-classification.json
+    - /tmp/edhr-dhr-write-qa-old-exact-DhrAttachmentWriteFailureTest.java
+    - /tmp/edhr-dhr-write-qa-old-cleanup.json
+    - Exact final test 7002 bytes SHA256 6088d5bb120f1800da70d8542a16278a625f6efd5ea233c8b5e753013b81c69f. Old production
+      diff empty. Fresh XML:5 tests/3 assertion failures/0 errors/0 skipped; file and directory collisions pass.
+      Old worktree frontend node_modules linked at gmp-platform/frontend/node_modules. Expected red Maven exit1;
+      no fixture errors counted as product red; stages not additive unique coverage.
+  - id: qa.capacity-separate-observation
+    required: true
+    category: regression
+    description: 单独1项容量测试完成12组84请求；完整输出/摘要和坏文件输出前拒绝，独立重解析12JFR。
+    method: automated-test
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f gmp-platform/backend/pom.xml -Dtest=DhrAttachmentDownloadCapacityPostgresTest
+      -DargLine=-Xmx2g test; python3 /tmp/edhr-dhr-write-qa-capacity-verify.py
+    outcome: passed
+    evidence:
+    - /tmp/edhr-dhr-write-qa-capacity-command.json
+    - /tmp/edhr-dhr-write-qa-capacity-execution-environment.json
+    - /tmp/edhr-dhr-write-qa-capacity-test.log
+    - /tmp/edhr-dhr-write-qa-capacity-summary.json
+    - /tmp/edhr-dhr-write-qa-capacity/capacity.json
+    - /tmp/edhr-dhr-write-qa-capacity-verification.json
+    - /tmp/edhr-dhr-write-qa-capacity-independent-jfr-command.json
+    - /tmp/edhr-dhr-write-qa-capacity-independent-jfr.tsv
+    - Fresh XML 1/0/0/0.42 valid full 52428800-byte outputs with SHA256 assertion passed;42 corrupt rejected before
+      body.12 raw JFR and12 raw reads.json retained. Explicit successful JDBC queries current good/corrupt5/4 and
+      frozen6/5; independently parsed JFR logical bytes100MiB/50MiB per request. Thread allocations about50MiB/request;16-worker
+      sampled heap increase818-821MiB. No precise heap/latency threshold.
+  - id: qa.knowledge-89
+    required: true
+    category: ontology
+    description: 独立执行知识校验89项并核对本体NA及14既有ID有限语义。
+    method: automated-test
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f tools/knowledge-model/pom.xml test
+    outcome: passed
+    evidence:
+    - /tmp/edhr-dhr-write-qa-knowledge-command.json
+    - /tmp/edhr-dhr-write-qa-knowledge-test.log
+    - /tmp/edhr-dhr-write-qa-knowledge-summary.json
+    - /tmp/edhr-dhr-write-qa-source-knowledge-review.json
+    - /tmp/edhr-dhr-write-qa-source-knowledge-report.md
+    - 89 tests,0 failures/errors/skipped. Knowledge0.3.25/schema1.2.0;14 existing IDs=12+9-7 limited review; ontology
+      FINAL not-applicable unchanged. No knowledge maturity/stage promotion or full audit claim.
+  - id: qa.raw-evidence-inventory
+    required: true
+    category: documentation
+    description: 重建固定e3四盘点并核原始证据bytes/hash、快照及知识/契约未变。
+    method: command
+    command: python3 /tmp/edhr-dhr-write-qa-evidence-verify.py
+    outcome: passed
+    evidence:
+    - /tmp/edhr-dhr-write-qa-evidence-commands.json
+    - /tmp/edhr-dhr-write-qa-evidence-verification.json
+    - /tmp/edhr-dhr-write-qa-evidence-report.md
+    - /tmp/edhr-dhr-write-qa-evidence-manifest.json
+    - 469 mechanical checks passed. Four inventory outputs byte-identical:6604 paths/135SQL/464HTTP/216routes.87
+      primary raw/stored/source originals+5 source snapshots match. Ontology12+manifest13; manifest SHA256470b0b8adaa2b9e4eb30dd05b0950ced70a4948463919142b6a044b88c4671a2.25
+      source fingerprints;330 knowledge+6 model/governance paths unchanged from actual e3. WholeFile0; historical
+      unique unknown.
+  - id: qa.whitespace-classification
+    required: true
+    category: documentation
+    description: 保留默认diff-check的CSV CRLF结果；以命令级cr-at-eol核其余空白。
+    method: command
+    command: git -c core.whitespace=cr-at-eol diff --check e3e49784eda6bc01e7e5c686d6f79dc5a600d5ae 6012672aa8be4d0d0c8f35a01b0dee0dd4af2882
+    outcome: passed
+    evidence:
+    - /tmp/edhr-dhr-write-qa-baseline.json
+    - /tmp/edhr-dhr-write-qa-whitespace.json
+    - Default git diff --check exit2 only canonical generated CSV CRLF trailing-whitespace diagnostics retained
+      as original output; command-level CRLF classification exit0. No repository config or inventory byte normalization.
+  - id: qa.cleanup-and-role-finals
+    required: true
+    category: documentation
+    description: 自有容器/旧树正常清理，全部子角色FINAL，受测主树保持HEAD及clean。
+    method: command
+    command: python3 /tmp/edhr-dhr-write-qa-run.py cleanup; git status --porcelain=v1
+    outcome: passed
+    evidence:
+    - /tmp/edhr-dhr-write-qa-cleanup.json
+    - /tmp/edhr-dhr-write-qa-old-cleanup.json
+    - /tmp/edhr-dhr-write-qa-roles-final.json
+    - /tmp/edhr-dhr-write-qa-final-baseline.json
+    - Own docker stop and rm exit0 without force; no remaining own container. Own old worktree normal remove exit0.
+      No product/test/fixture/config mutations, no merge/deploy/history restore, no CI/Actions query or trigger.
+      All dispatched roles FINAL.
+  findings: []
+  residualRisks:
+  - id: risk.local-current-original-only
+    description: 结论仅覆盖本批当前新文件登记前写入/关闭IOException及既有邻接回归。
+    impact: 不证明跨资源原子、进程崩溃恢复、持久对账、完整重试幂等或所有失败零残片。
+    mitigation: 清理失败及UNKNOWN保留诊断；崩溃和持久对账留原队列，不扫删或恢复历史。
+  - id: risk.fault-injection
+    description: 新5项使用真实文件/流并显式注入IOException，非真实磁盘满或网络故障。
+    impact: 不能外推底层硬件/文件系统/网络全部故障。
+    mitigation: 保留准确故障机制及原始阶段，不把早期夹具失败当产品红。
+  - id: risk.capacity-limits
+    description: 容量是2GiB JVM、暖页缓存/稀疏padded PNG、未全预热JIT、Hikari10、64KiB输出校验缓冲的进程内Controller/service/resource观测；含断言/JFR开销。
+    impact: JFR为逻辑文件读取，allocation/采样heap不含native/direct/RSS/network，不代表HTTP/RBAC、完整冻结流程、物理IO或生产SLA。
+    mitigation: 按观测范围使用指标，不规定精确heap/延迟门槛，不承诺生产并发上限或单次更快。
+  - id: risk.explicit-source-caller-boundary
+    description: 当前typed源码只发现Controller上传入口；未发现内部无事务调用。
+    impact: 不认证反射/动态/未来入口、部署拓扑或完整HTTP认证。
+    mitigation: 保留原同步guard，后续新入口按W7核查；不为猜测新增全局防御。
+  - id: risk.authorization-concurrency
+    description: 本批不覆盖共享ACL、引用并发及完整账号/UI/RBAC/tenant/recipient矩阵。
+    impact: 局部资源所有权修复不能关闭更大授权与并发队列。
+    mitigation: 保留相应专项及已有DHR两项high/A12/四gap。
+  - id: risk.schema-migration-scope
+    description: 原生PG使用选定canonical表/手工版本元数据；不是完整schema/FK/migration/升级验收。
+    impact: 不能外推全量迁移或生产部署兼容。
+    mitigation: 仅报告实际代理/JDBC/JPA审计与文件路径；完整数据库路径继续待审。
+  - id: risk.audit-backlog
+    description: 6604paths/135SQL/464HTTP/216routes仅盘点；wholeFile0、历史unique未知。原666paths/44knowledge/183ID、W2余项/W3W4W5交叉/W6健壮性性能A23含旧已审全量/W7增量仍保留。
+    impact: 本批通过不等于整体W0-W7审计完成，也不关闭旧问题。
+    mitigation: 继续原队列，原记录控制已实现按增量审；朋友签署页与生产弹窗原暂缓保持。
+  - id: risk.candidate-drift
+    description: 本结果只适用clean601候选。用户随后确认的流式摘要优化由主审在独立树另行实施，本QA未覆盖。
+    impact: 新组合候选不能复用本结果声称已获最终质量通过。
+    mitigation: 主审在新候选重新评估影响并派全新独立QA，交付前实际漂移/阶段复核；人工merge/deploy。
+  blockingConditions: []

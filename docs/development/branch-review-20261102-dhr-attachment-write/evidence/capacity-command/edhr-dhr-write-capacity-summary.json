@@ -1,0 +1,190 @@
+{
+  "completed": true,
+  "cases": [
+    {
+      "label": "current-good-1",
+      "queriesPerRequest": [
+        5
+      ],
+      "allocatedMiBRange": [
+        51.77295684814453,
+        51.77295684814453
+      ],
+      "sampledHeapIncreaseMiB": 53.0,
+      "targetLogicalReadMiB": 100.0,
+      "jfrMeasurementAvailable": true,
+      "wallMillis": 524.461017,
+      "allRequestsIntegrityBehaviorCorrect": true
+    },
+    {
+      "label": "current-good-4",
+      "queriesPerRequest": [
+        5
+      ],
+      "allocatedMiBRange": [
+        50.196205139160156,
+        50.20360565185547
+      ],
+      "sampledHeapIncreaseMiB": 206.07862854003906,
+      "targetLogicalReadMiB": 400.0,
+      "jfrMeasurementAvailable": true,
+      "wallMillis": 632.023762,
+      "allRequestsIntegrityBehaviorCorrect": true
+    },
+    {
+      "label": "current-good-16",
+      "queriesPerRequest": [
+        5
+      ],
+      "allocatedMiBRange": [
+        50.19438171386719,
+        50.20416259765625
+      ],
+      "sampledHeapIncreaseMiB": 820.0935974121094,
+      "targetLogicalReadMiB": 1600.0,
+      "jfrMeasurementAvailable": true,
+      "wallMillis": 1667.013749,
+      "allRequestsIntegrityBehaviorCorrect": true
+    },
+    {
+      "label": "current-corrupt-1",
+      "queriesPerRequest": [
+        4
+      ],
+      "allocatedMiBRange": [
+        50.27113342285156,
+        50.27113342285156
+      ],
+      "sampledHeapIncreaseMiB": 51.020301818847656,
+      "targetLogicalReadMiB": 50.0,
+      "jfrMeasurementAvailable": true,
+      "wallMillis": 251.160404,
+      "allRequestsIntegrityBehaviorCorrect": true
+    },
+    {
+      "label": "current-corrupt-4",
+      "queriesPerRequest": [
+        4
+      ],
+      "allocatedMiBRange": [
+        50.08770751953125,
+        50.088783264160156
+      ],
+      "sampledHeapIncreaseMiB": 205.0362091064453,
+      "targetLogicalReadMiB": 200.0,
+      "jfrMeasurementAvailable": true,
+      "wallMillis": 361.733983,
+      "allRequestsIntegrityBehaviorCorrect": true
+    },
+    {
+      "label": "current-corrupt-16",
+      "queriesPerRequest": [
+        4
+      ],
+      "allocatedMiBRange": [
+        50.08409118652344,
+        50.08885955810547
+      ],
+      "sampledHeapIncreaseMiB": 818.1049575805664,
+      "targetLogicalReadMiB": 800.0,
+      "jfrMeasurementAvailable": true,
+      "wallMillis": 1673.32052,
+      "allRequestsIntegrityBehaviorCorrect": true
+    },
+    {
+      "label": "frozen-good-1",
+      "queriesPerRequest": [
+        6
+      ],
+      "allocatedMiBRange": [
+        50.485206604003906,
+        50.485206604003906
+      ],
+      "sampledHeapIncreaseMiB": 52.03092956542969,
+      "targetLogicalReadMiB": 100.0,
+      "jfrMeasurementAvailable": true,
+      "wallMillis": 1018.837216,
+      "allRequestsIntegrityBehaviorCorrect": true
+    },
+    {
+      "label": "frozen-good-4",
+      "queriesPerRequest": [
+        6
+      ],
+      "allocatedMiBRange": [
+        50.21216583251953,
+        50.214134216308594
+      ],
+      "sampledHeapIncreaseMiB": 207.07382202148438,
+      "targetLogicalReadMiB": 400.0,
+      "jfrMeasurementAvailable": true,
+      "wallMillis": 813.510453,
+      "allRequestsIntegrityBehaviorCorrect": true
+    },
+    {
+      "label": "frozen-good-16",
+      "queriesPerRequest": [
+        6
+      ],
+      "allocatedMiBRange": [
+        50.20934295654297,
+        50.21442413330078
+      ],
+      "sampledHeapIncreaseMiB": 820.1384582519531,
+      "targetLogicalReadMiB": 1600.0,
+      "jfrMeasurementAvailable": true,
+      "wallMillis": 2506.509098,
+      "allRequestsIntegrityBehaviorCorrect": true
+    },
+    {
+      "label": "frozen-corrupt-1",
+      "queriesPerRequest": [
+        5
+      ],
+      "allocatedMiBRange": [
+        50.10590362548828,
+        50.10590362548828
+      ],
+      "sampledHeapIncreaseMiB": 51.01820373535156,
+      "targetLogicalReadMiB": 50.0,
+      "jfrMeasurementAvailable": true,
+      "wallMillis": 302.229602,
+      "allRequestsIntegrityBehaviorCorrect": true
+    },
+    {
+      "label": "frozen-corrupt-4",
+      "queriesPerRequest": [
+        5
+      ],
+      "allocatedMiBRange": [
+        50.10424041748047,
+        50.10498809814453
+      ],
+      "sampledHeapIncreaseMiB": 205.06988525390625,
+      "targetLogicalReadMiB": 200.0,
+      "jfrMeasurementAvailable": true,
+      "wallMillis": 431.403555,
+      "allRequestsIntegrityBehaviorCorrect": true
+    },
+    {
+      "label": "frozen-corrupt-16",
+      "queriesPerRequest": [
+        5
+      ],
+      "allocatedMiBRange": [
+        50.10315704345703,
+        50.10572814941406
+      ],
+      "sampledHeapIncreaseMiB": 818.1613922119141,
+      "targetLogicalReadMiB": 800.0,
+      "jfrMeasurementAvailable": true,
+      "wallMillis": 1554.829005,
+      "allRequestsIntegrityBehaviorCorrect": true
+    }
+  ],
+  "limits": "Warm-page-cache synthetic padded PNG; four canonical tables/fixture version metadata; actual service proxy and controller/resource call, no HTTP/auth/network or production SLA. Allocations include JDBC/assertions/body checksum; heap/JFR sampling adds overhead. Explicit JdbcTemplate counts exclude driver/transaction setup. Body buffer64KiB. Query fixture snapshot does not certify full DHR freezing.",
+  "jvmArgs": [
+    "-Xmx2g"
+  ],
+  "note": "JFR logical file read bytes, not physical disk IO; heap and thread allocations exclude native/direct memory/RSS and network.16 requested concurrent workers may be limited by Hikari10 connections. One local batch, not latency SLA."
+}

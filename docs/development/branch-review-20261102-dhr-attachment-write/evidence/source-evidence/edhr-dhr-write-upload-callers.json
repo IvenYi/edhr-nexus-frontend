@@ -1,0 +1,28 @@
+{
+  "base": "e3e49784eda6bc01e7e5c686d6f79dc5a600d5ae",
+  "scope": "finite source scan and actual existing service proxy tests; not deployed full-app or future/dynamic entry certification",
+  "raw": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrAttachmentController.java:7:import com.zencas.edhr.production.service.DhrAttachmentService;\ngmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrAttachmentController.java:25:    private final DhrAttachmentService service;\ngmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrAttachmentController.java:39:        return ApiResponse.success(service.upload(dhrId, file, sourceKind, purpose, originalRecordedAt, custodyLocation));\ngmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrAttachmentService.java:36:public class DhrAttachmentService {\ngmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrArchiveService.java:42:    private final DhrAttachmentService attachments;\ngmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrArchiveService.java:144:                Path file = attachments.file(dhrId, Long.valueOf(id));\ngmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrReviewController.java:8:import com.zencas.edhr.production.service.DhrAttachmentService;\ngmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrReviewController.java:25:    private final DhrAttachmentService attachments;\ngmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrReviewController.java:47:        var file = attachments.downloadableFile(dhrId, attachmentId, versionId);\ngmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrReviewController.java:50:                        .filename(attachments.originalName(dhrId, attachmentId), java.nio.charset.StandardCharsets.UTF_8).build().toString())\ngmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrSummaryService.java:39:    private final DhrAttachmentService attachments;\ngmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrSummaryService.java:49:        ArrayNode currentAttachments = attachments.snapshot(dhrId);\ngmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrSummaryService.java:195:        ArrayNode currentAttachments = attachments.snapshot(dhrId);\ngmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrSummaryService.java:246:        ArrayNode attachmentSnapshot = attachments.snapshot(dhrId);\ngmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrSummaryService.java:252:            attachments.file(dhrId, Long.valueOf(attachment.path(\"id\").asText()));\ngmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrSummaryService.java:404:        String sourceScopeHash = scopeHash(candidates(dhrInstances.detail(dhrId)), attachments.snapshot(dhrId));\n",
+  "conclusion": "Current explicit production upload call is DhrAttachmentController injected service.upload; other typed consumers only read/verify association. No production new DhrAttachmentService or internal self-upload found. Do not add speculative global guard or count unsupported bypass as confirmed defect.",
+  "fingerprints": [
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrAttachmentController.java",
+      "sha256": "85452748ac5c956ce2330ee6e4327ad640bf442e35b14b2731cdf2b15b69a5f6"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrReviewController.java",
+      "sha256": "37f6af83e063e1593e15ac28e021ec719888c21fe45d314916c9f20975e2417e"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrSummaryService.java",
+      "sha256": "20d96b976bd931ccf65c710204a01d8d571d51f8deebaf64bb0aaad8f7e24c3e"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrArchiveService.java",
+      "sha256": "bf1d938746ebd3d4c4df7f94b54c0892647639cedefcc85633d6fa28cf402e08"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrAttachmentService.java",
+      "sha256": "15c0dda7257709ea7580e45421f59f50a04aa26f794abff26593a6d1ba38c3a1"
+    }
+  ]
+}
