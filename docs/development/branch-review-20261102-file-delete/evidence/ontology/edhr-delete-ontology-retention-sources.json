@@ -1,0 +1,88 @@
+{
+  "scope": "limited retention provenance check, read-only source/document inspection",
+  "head": "6ec9812f1bb1f7980654510f53c5fa568cfd83fb",
+  "knowledgeModelVersion": "0.3.25",
+  "findings": [
+    {
+      "id": "DEC-0063-10",
+      "classification": "user-confirmed",
+      "sourcePath": "docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml",
+      "locator": "decisionStatements.DEC-0063-10 (lines 45-48)",
+      "claim": "Controlled DHR attachments may be unlinked with a reason; historical original files are not physically deleted; frozen views read-only. Not a blanket generic file deletion policy.",
+      "support": [
+        {
+          "id": "evidence.dhr-summary-user-confirmed",
+          "sourcePath": "docs/knowledge/evidence/dhr-summary-user-confirmed.md",
+          "locator": "lines 54-56 and 68-74"
+        }
+      ]
+    },
+    {
+      "id": "DEC-0058-02",
+      "classification": "user-confirmed",
+      "sourcePath": "docs/knowledge/decisions/DEC-0058-production-field-signature.yaml",
+      "locator": "lines 13-16",
+      "claim": "After form content change, prior field signatures invalidated but historical signature and signed-content snapshot retained. Does not explicitly prescribe all personal-authentication file deletion eligibility.",
+      "support": [
+        {
+          "id": "evidence.production-field-signature-confirmed",
+          "sourcePath": "docs/knowledge/evidence/production-field-signature-confirmed.md",
+          "locator": "User confirmation (lines 5-10)"
+        },
+        {
+          "id": "DEC-0074-04",
+          "sourcePath": "docs/knowledge/decisions/DEC-0074-shared-terminal-button-signature.yaml",
+          "locator": "lines 21-24",
+          "claim": "Preserves existing SIGN_FIELD historical evidence rules; button authentication changes not propagated to field signature."
+        }
+      ]
+    },
+    {
+      "id": "evidence.production-execution-file-preview-protection-source",
+      "classification": "original-evidence",
+      "sourcePath": "docs/knowledge/evidence/production-execution.yaml",
+      "locator": "lines 93-97",
+      "claim": "Knowledge registers existing FileController PRODUCTION_EXECUTION delete rejection as code evidence, not a separate direct user confirmation.",
+      "actualSourcePath": "gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/controller/FileController.java",
+      "actualLocator": "baseline delete(), lines 282-299"
+    },
+    {
+      "id": null,
+      "classification": "original-evidence",
+      "sourcePath": "gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/controller/FileController.java",
+      "locator": "baseline delete(), lines 287-288",
+      "claim": "Existing SIGNATURE_EVIDENCE delete rejection; exact SIGNATURE_EVIDENCE / electronic-signature-authentication-material phrase not found under docs/knowledge. Do not promote guard to newly user-confirmed policy.",
+      "support": [
+        {
+          "sourcePath": "gmp-platform/backend/src/main/java/com/zencas/edhr/identity/controller/AuthController.java",
+          "locator": "requireSignatureEvidenceFile(), lines 566-581"
+        },
+        {
+          "sourcePath": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrFormFiles.java",
+          "locator": "validateValues()/validateOriginal(), lines 41-57",
+          "claim": "Signature image file is required original evidence for frozen DHR form validation; source observation only."
+        }
+      ]
+    },
+    {
+      "id": null,
+      "classification": "original-evidence",
+      "sourcePath": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrAttachmentService.java",
+      "locator": "unlink(), lines 137-148",
+      "claim": "Unlink changes active flag/reason/audit only; no physical deletion; the controlled attachment flow is separate from generic FileController deletion."
+    },
+    {
+      "id": null,
+      "classification": "inference",
+      "sourcePath": null,
+      "locator": null,
+      "claim": "Preserving originals on unknown transaction completion and postponing cleanup to committed DB state are engineering loss-avoidance choices; this limited provenance check found no direct user-confirmed transaction-synchronization algorithm."
+    }
+  ],
+  "limits": [
+    "No repo edits or tests; no ontologyResult or global business certification.",
+    "No new generic file delete ACL/eligibility decision; pending ACL questions remain open.",
+    "DHR legacy migration retention in DEC-0063-09 is a special conversion policy, not general generic-file delete eligibility.",
+    "No closure of two historical DHR high findings, full matrix/A12/four gaps, 666/44/183, or W6/W7 queues."
+  ]
+}

@@ -1,0 +1,59 @@
+ontologyResult:
+  result: not-applicable
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: 6ec9812f1bb1f7980654510f53c5fa568cfd83fb
+    targetBranch: edhr-dev
+    targetCommit: 6ec9812f1bb1f7980654510f53c5fa568cfd83fb
+    contractReadCommit: 6ec9812f1bb1f7980654510f53c5fa568cfd83fb
+    uncommittedContractPaths: []
+  reason: 本轮只修复既有通用文件DELETE在数据库拒绝/回滚前丢失原件、提交后清理失败被吞掉的问题。最终源码保留PRODUCTION_EXECUTION/SIGNATURE_EVIDENCE两类既有保护和原删除资格，未新增ACL、冻结、附件解除关联或认证政策。提交后清理、UNKNOWN保留原件是工程一致性推导；SIGNATURE_EVIDENCE
+    guard仅按既有源码证据保留，不提升为新用户确认知识。提交后清理500时数据库已删且原件保留，不能称数据库回滚、跨资源原子或持久对账闭环。知识330项逐字节无差异，0.3.25/schema1.2.0及P0成熟度不升；有限9条重审不表示全库语义覆盖。
+  changedArtifacts: []
+  knowledgeSync: []
+  conflicts: []
+  questions: []
+  validationEvidence:
+  - id: validation.file-delete-knowledge-89
+    checkType: schema
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f tools/knowledge-model/pom.xml test
+    outcome: passed
+    evidence:
+    - /tmp/edhr-delete-ontology-knowledge-command.json
+    - /tmp/edhr-delete-ontology-knowledge-test.txt
+    - /tmp/edhr-delete-ontology-knowledge-test.xml
+    - /tmp/edhr-delete-ontology-knowledge-summary.json
+    - 89 tests, 0 failures, 0 errors, 0 skipped; actual ontology-role run, not a claim about independent product
+      QA.
+  - id: validation.file-delete-limited-semantic-source-review
+    checkType: evidence-path
+    command: Read cited original DEC0058/0074/0063 confirmation records, two code-evidence IDs, final FileController
+      diff, three new tests and unchanged-assertion ExecutionAccessTest fixture update; fingerprint exact source.
+    outcome: passed
+    evidence:
+    - /tmp/edhr-delete-ontology-semantic-review.json
+    - /tmp/edhr-delete-ontology-retention-sources.json
+    - /tmp/edhr-delete-ontology-source-fingerprints.json
+    - /tmp/edhr-delete-ontology-source.diff
+    - 9 pre-existing ID records re-reviewed; no whole-file semantic coverage or newly unique knowledge-count claim.
+      No product tests executed by ontology role.
+  - id: validation.file-delete-asset-projection-retained
+    checkType: projection
+    command: Compare all 330 tracked knowledge asset bytes to 6ec9812f baseline; git diff baseline -- docs/knowledge
+      docs/architecture/business-knowledge-model.md; compare actual contract bytes.
+    outcome: passed
+    evidence:
+    - /tmp/edhr-delete-ontology-knowledge-inventory.json
+    - /tmp/edhr-delete-ontology-knowledge.diff
+    - /tmp/edhr-delete-ontology-source-fingerprints.json
+    - No knowledge/contract delta, status/visibility/version increase, policy replacement, or historical discrepancy
+      closure.
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages:
+    - P1
+    - P2
+    - P3

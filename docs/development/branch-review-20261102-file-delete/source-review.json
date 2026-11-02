@@ -1,0 +1,56 @@
+{
+  "targetCommit": "6ec9812f1bb1f7980654510f53c5fa568cfd83fb",
+  "scope": "Finite methods and tests only; no whole-file or full-system conclusion",
+  "wholeFilesReviewed": 0,
+  "newUniqueKnowledgeIdsReviewed": null,
+  "records": [
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/controller/FileController.java",
+      "locator": "delete:282-310; registerUploadedFile:347-379 adjacency",
+      "result": "Old DELETE loses original before failed database outcome; fixed ordering and cleanup error reporting. Upload callback unchanged and regressed.",
+      "robustness": "Actual SQL rejection, delayed COMMIT rejection, outer commit/rollback, unavailable manager, synthetic UNKNOWN and IO failure. Preserve original on rollback/UNKNOWN; no unconditional success after IO failure.",
+      "performance": "Single-id bounded lookup/delete, no collection pagination, SQL loop or N+1 introduced. Original find result reused for guards/path/log. No new indexes required by this narrow change.",
+      "a23": "TransactionTemplate and two completion branches justified by reproduced loss, actual outer transaction and UNKNOWN fault. No silent catch, arbitrary fallback, retry state or speculative framework added. Existing guards retained, not widened into reference policy.",
+      "extraction": "Concrete future FileDeletionService owns transaction/guards/completion; FileReadService owns resource reads; registration service owns upload persistence. Shared FileAccessPolicy awaits real ACL decisions. Do not perform broad extraction in this defect fix."
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/compliance/controller/FileDeleteTransactionIntegrationTest.java",
+      "locator": "nine H2 executions",
+      "result": "Real JPA/MVC/filesystem and canonical file_object DDL. Test-only FK injects refusal, not production reference rule.",
+      "a23": "Retained-bytes checks assert existence first; no skip, weakened assertion or swallowed IO. Unrelated file protection explicit."
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/compliance/controller/FileDeleteTransactionPostgresTest.java",
+      "locator": "ten native executions including deferred constraint",
+      "result": "Native PostgreSQL slice, not full migration or full application certification.",
+      "a23": "Loopback disposable DB guard prevents accidental use of a non-test database; actual database used and no skips in required runs."
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/compliance/controller/FileDeleteTransactionFailureTest.java",
+      "locator": "two synthetic lifecycle executions",
+      "result": "Startup unavailable and actual synchronization lifecycle with synthetic unknown commit. Not a real network disconnect.",
+      "a23": "Faults are explicit test managers only, no production defensive abstraction."
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/ExecutionAccessTest.java",
+      "locator": "executionAttachmentsCannotBeDeletedThroughGenericFiles",
+      "result": "Replace null manager fixture with real lightweight H2 manager; original guard and never-delete assertions preserved.",
+      "a23": "Required dependency setup only; no production bypass or lowered test standard."
+    }
+  ],
+  "a23Queue": {
+    "changedCurrentPaths": 2,
+    "addedCurrentPaths": 3,
+    "newSqlPaths": 0,
+    "historicalReviewedFilesStillRequireWholePass": true,
+    "historicalLanguageQueue": "856 plus feature 1; pending W6/W7",
+    "historicalSqlQueue": "130 plus prior 4 plus 0091; all 135 pending whole A23 review"
+  },
+  "remaining": [
+    "Crash or IO failure after database commit can leave original without row; no durable cleanup/reconcile implemented",
+    "Shared physical path, concurrent rebind and object ACL remain separate audit/decision scopes",
+    "DhrAttachmentService adjacent completion callback remains unreviewed candidate",
+    "Original 666-path increment, 44 knowledge files, 183 ID candidates and old DHR highs/A12/gaps remain pending",
+    "Whole-system W2 remainder, W3/W4/W5, W6 including prior-reviewed A23, and W7 increments remain open"
+  ]
+}

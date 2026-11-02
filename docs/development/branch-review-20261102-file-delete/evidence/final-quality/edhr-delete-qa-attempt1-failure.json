@@ -1,0 +1,19 @@
+{
+  "stage": "database metadata probe before product tests",
+  "source": "exec session 50271 returned exception",
+  "command": [
+    "docker",
+    "exec",
+    "71c19290d5d68f5b7657ba6c1dac4721e3d9fa9b8ad513d6db959852e72b2f1e",
+    "psql",
+    "-U",
+    "postgres",
+    "-d",
+    "edhr_upload_transaction_test",
+    "-Atc",
+    "SELECT version(); SHOW lc_collate;"
+  ],
+  "exit": 1,
+  "stderr": "ERROR:  unrecognized configuration parameter \"lc_collate\"",
+  "classification": "QA own metadata probe error, no product tests ran"
+}
