@@ -1,0 +1,69 @@
+decisionPackage:
+  id: DEC-PACKAGE-20261102-CENTRAL-FORM-DHR
+  scope: 普通表单与DHR集中流程查询、签名重新分配和业务数据审计
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: 0bd0848bbded6d6954d62a4f924e0b2eec6623ad
+    targetBranch: edhr-dev
+    targetCommit: 8ec8391721858a7f96d73a5d293d93f43679118a
+    contractReadCommit: 0bd0848bbded6d6954d62a4f924e0b2eec6623ad
+    uncommittedContractPaths: []
+  summary: 用户接受普通表单及DHR均加入日志和干预并补管理员签名改派，DHR不新增处理人转办，责任变化须在各自数据审计体现；作业/工艺路线不扩展。
+  confirmed:
+    concepts: []
+    relationships: []
+    rules: []
+    executionContracts: []
+  confirmedBusinessDecisions:
+    - user-confirmed：普通表单保留当前处理人转办，补管理员签名重新分配；DHR补管理员签名重新分配，本期不新增处理人主动转办；两者进入集中日志和干预，作业及工艺路线保持。
+    - user-confirmed：DHR和表单的数据审计必须体现本次责任变更。
+    - existing-policy：只改当前未处理审批任务的处理责任；原因、专门权限、有效目标、签名、并发状态和不可变审计强制；不推进节点，不修改内容/冻结版本/既有签名或决定。
+    - implementation-choice：普通表单以持久化表单实例及当前审批节点为身份，读取生产执行快照/结构化历史，不新建第二套运行任务；只读流程记录亦包含填报阶段，改派不扩大填报编辑资格。
+    - implementation-choice：DHR目标须同租户有效且具有DHR审批页面及动作权限；普通表单目标须具有生产执行及表单审批权限。管理签署人仍须workflow.intervene；原候选来源与当前责任分开保留。
+  inferred: []
+  unresolved: []
+  replacementScopes:
+    - decisionStatementId: DEC-0093-02
+      supersededStatementIds: [DEC-0092-05, DEC-0091-03, DEC-0081-04]
+      scope: 仅替代不开放普通表单及DHR管理员重新分配的范围；集中读取由DEC-0093-01补充入口范围，不替代DEC-0092-06的历史实现事实。
+      retainedScope: DHR处理人转办/撤回仍不开放，审批和退回整理仍由DHR领域处理；所有原冻结证据、资格、签署和禁止跳过/强制批准边界保留。
+      sourceReferences: [docs/development/workflow-central-entry-extension-20261102/user-confirmed.md]
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - {area: central-query, change: 工作流+DHR审批+普通表单只读投影同源分页，明确类型及独立身份, evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/WorkflowOperationsQuery.java]}
+      - {area: responsibility, change: 两领域专门权限/签名改派，目标资格、活动节点、版本竞争与回滚验证, evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/WorkflowResponsibilityService.java]}
+      - {area: domain-audit, change: DHR汇总版本数据审计及普通表单生产执行审计/结构化历史均可见责任变更, evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrSummaryService.java]}
+    transitiveImpacts:
+      - {area: pending-and-action-rights, change: 新目标成为唯一当前处理人，旧处理人与原候选不继续获得处理权，原候选来源保留, evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionAccess.java]}
+    potentialImpacts: []
+    unaffectedAreas:
+      - {area: work-route-and-release, reason: 不新增整条作业/工艺路线实例、归档、放行、跳过或批准动作。}
+    compatibilityAndMigration:
+      - concern: 复用现有JSON结构、任务、签名和审计表，无新数据库迁移；旧数值工作流身份保持，表单投影使用独立前缀身份。
+    snapshotImpacts:
+      - concern: DHR冻结汇总、表单版本与内容均不可被改派改变；只改有效责任及增加证据。
+    auditImpacts:
+      - concern: 记录业务、实例/版本/表单份、当前节点、原/新处理人、原因、实际签署人/会话人及签名引用，同事务提交。
+    permissionImpacts:
+      - concern: 原有普通转办范围保持；新增管理员改派须workflow.intervene，集中非管理读取沿业务可见范围，不因菜单授予审批或写入权。
+    testImpacts:
+      - scope: backend-and-ui
+        scenarios: [同源分页和类型身份, 管理/普通可见范围, 新旧处理权, 有效目标及签署权限, 缺签/错签/跨租户/结束/过期拒绝, 竞争及失败回滚, DHR冻结证据不变, 表单内容/节点/原候选不变, 各自数据审计可见, 原转办和记录控制回归, 图标/列设置/详情规范]
+        evidenceReferences: []
+    evidenceGaps:
+      - 外部冠骋仅作已完成调研参考；本轮不依赖其缺失平台实现。
+  extensionStrategy:
+    selectedPaths: [product-core, standard-action, transaction-orchestration]
+    rationale: 集中查询聚合领域投影，改派复用受控签署和领域事务，不建立第二套表单/DHR引擎或客户分支。
+    ownershipBoundaries:
+      - {owner: primary-agent, responsibility: 全部实现与聚焦测试、隔离库验证、UI交互及环境保护}
+      - {owner: ontology-agent, responsibility: 同步用户明确局部替代、规则/证据/解释，保留历史}
+      - {owner: quality-agent, responsibility: 最终独立验证，L2高风险修复后由全新实例复验}
+  affectedFiles:
+    - {path: gmp-platform/backend/src/main/java/com/zencas/edhr/workflow, changeType: update, reason: 集中读取和DHR受控改派}
+    - {path: gmp-platform/backend/src/main/java/com/zencas/edhr/production, changeType: update, reason: 普通表单领域投影/改派及审计}
+    - {path: gmp-platform/frontend/src/pages/workflow-center, changeType: update, reason: 类型/实例/任务及审计信息沿标准UI展示}
+  acceptanceScenarios:
+    - {id: scenario.central-responsibility, given: 有权管理员及当前未处理任务, when: 签名改派, then: 只有新目标可处理且节点/内容/既有决定不变，日志及领域审计含责任证据, evidenceRequirements: [隔离PG事务测试, 实际UI交互]}
+    - {id: scenario.central-rejection, given: 缺少签名/资格/合法目标或任务已变化, when: 读取目标或提交改派, then: 服务端拒绝且任务/签名/日志/领域审计无部分落地, evidenceRequirements: [负向测试, 竞争/回滚]}

@@ -13,8 +13,8 @@ facts:
     visibility: internal
     evidenceIds: [evidence.dhr-termination-user-confirmed, evidence.dhr-termination-working-tree-source]
     sourceRevision: working-tree
-    sourceLocator: dhr_instance.status；EARLY_TERMINATED 写入正在并行实现，终态查询与跨入口阻断尚未完成验证
-    capturedAt: '2026-09-23'
+    sourceLocator: dhr_instance.status；DhrInstanceService.terminateWithProductionObject及ProductionService.endObject已有同步EARLY_TERMINATED、快照保留和正常执行阻断实现，production/controller/ProductionExecutionIntegrationTest有对应源断言。此处纠正早期正在并行实现的当前定位，不补记本轮未执行的终止整链验收，也不批量提升该终态事实的知识运行成熟度。
+    capturedAt: '2026-11-03'
     reviewStatus: reviewed
   - id: fact.dhr-instance.has-summary-artifacts
     name: DHR 已有关联汇总草稿或版本

@@ -9,7 +9,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
 
@@ -23,17 +22,6 @@ class RecordControlWorkflowControllerTest {
 
     @Mock private RecordControlWorkflowPort workflowPort;
     @InjectMocks private RecordControlWorkflowController controller;
-
-    @Test
-    void candidateEndpointRequiresMatchingRecordControlCreatePermission() throws Exception {
-        PreAuthorize authorization = RecordControlWorkflowController.class
-                .getMethod("listCandidates", String.class)
-                .getAnnotation(PreAuthorize.class);
-
-        assertThat(authorization.value())
-                .contains("record-control.corrections.create")
-                .contains("record-control.voids.create");
-    }
 
     @Test
     void mapsChineseApplicationRequestToTypedPublishedCandidates() {

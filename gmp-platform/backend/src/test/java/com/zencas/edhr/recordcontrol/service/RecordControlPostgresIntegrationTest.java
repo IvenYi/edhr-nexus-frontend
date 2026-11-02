@@ -45,6 +45,11 @@ class RecordControlPostgresIntegrationTest {
     @Autowired RecordControlService requests;
     @Autowired com.zencas.edhr.workflow.service.WorkflowResponsibilityService responsibility;
     @Autowired com.zencas.edhr.workflow.service.WorkflowOperationsQuery operations;
+    @Autowired com.zencas.edhr.production.service.FormWorkflowOperations formOperations;
+    @Autowired com.zencas.edhr.production.service.ExecutionAccess executionAccess;
+    @Autowired com.zencas.edhr.production.service.FormWorklistService formWorklists;
+    @Autowired com.zencas.edhr.compliance.controller.AuditController auditController;
+    @Autowired com.zencas.edhr.common.util.SnowflakeIdGenerator ids;
     @Autowired com.zencas.edhr.workflow.repository.WorkflowTaskRepository taskRepository;
     @Autowired RecordControlTaskActionService actions;
     @Autowired com.zencas.edhr.production.service.DhrSummaryService summaries;
@@ -171,7 +176,7 @@ class RecordControlPostgresIntegrationTest {
         jdbc.update("INSERT INTO role(id,tenant_id,code,name) VALUES (4444,0,'WORKFLOW_OPERATIONS_TEST','干预测试') ON CONFLICT(id) DO NOTHING");
         jdbc.update("INSERT INTO role_permission(id,role_id,permission_id) SELECT 4444,4444,id FROM permission WHERE code='workflow.intervene' ON CONFLICT(id) DO NOTHING");
         jdbc.update("INSERT INTO user_role(id,user_id,role_id) VALUES (4444,44,4444) ON CONFLICT(id) DO NOTHING");
-        jdbc.update("UPDATE workflow_task SET candidate_snapshot='{\"userIds\":[\"42\",\"43\"]}'::jsonb WHERE id=?", taskId());
+        jdbc.update("UPDATE workflow_task SET candidate_snapshot='{\"userIds\":[\"42\",\"43\"]}'::jsonb WHERE instance_id IN (SELECT id FROM workflow_instance WHERE business_type IN ('CHANGE','OBSOLETE'))");
     }
     private void manager() {
         AuditContext.setOperator("44", "干预人");
@@ -280,6 +285,154 @@ class RecordControlPostgresIntegrationTest {
     }
     private long taskIdFromAny() { return jdbc.queryForObject("SELECT id FROM workflow_task LIMIT 1", Long.class); }
 
+    private void grant(long user, String... codes) {
+        long role = 6000 + user;
+        jdbc.update("INSERT INTO role(id,tenant_id,code,name) VALUES (?,0,?,?) ON CONFLICT(id) DO NOTHING", role,"CENTRAL_TEST_"+user,"集中流程验收");
+        jdbc.update("INSERT INTO user_role(id,user_id,role_id) VALUES (?,?,?) ON CONFLICT(id) DO NOTHING",role,user,role);
+        for (String code : codes) jdbc.update("INSERT INTO role_permission(id,role_id,permission_id) SELECT ?,?,id FROM permission WHERE code=? ON CONFLICT(role_id,permission_id) DO NOTHING",ids.nextId(),role,code);
+    }
+    private void login(String id, String... permissions) {
+        AuditContext.setOperator(id,"用户"+id);
+        org.springframework.security.core.context.SecurityContextHolder.getContext().setAuthentication(
+                new org.springframework.security.authentication.UsernamePasswordAuthenticationToken(id,null,
+                        org.springframework.security.core.authority.AuthorityUtils.createAuthorityList(permissions)));
+    }
+    private String activeForm() throws Exception {
+        snapshot = (ObjectNode)mapper.readTree(scalar("SELECT snapshot_json FROM production_execution"));
+        ObjectNode form = (ObjectNode)snapshot.path("operations").get(0).path("forms").get(0);
+        form.set("flow",mapper.readTree("""
+            {"nodes":[{"id":"fill","data":{"kind":"START","label":"填写"}},
+             {"id":"review","data":{"kind":"APPROVAL","label":"表单复核","config":{"approverSubjects":[{"type":"USER","id":"42"}]}}},
+             {"id":"end","data":{"kind":"END","label":"结束"}}],
+             "edges":[{"id":"a","source":"fill","target":"review"},{"id":"b","source":"review","target":"end"}]}
+            """));
+        state = (ObjectNode)mapper.readTree(scalar("SELECT state_json FROM production_execution"));
+        ((ObjectNode)state.path("operations").path("op")).put("status","IN_PROGRESS");
+        ObjectNode progress=(ObjectNode)state.path("operations").path("op").path("forms").path("form");
+        progress.put("status","ACTIVE").putArray("active").add("review");
+        progress.putArray("done").add("fill");
+        progress.putObject("approvers").putArray("review").add("42");
+        progress.putObject("restrictedApprovers").put("review",true); progress.putObject("transferAssignees");
+        state.putArray("history").addObject().put("operationId","op").put("formId","form").put("copyId","form").put("nodeId","fill")
+                .put("actionCode","SUBMIT").put("operator","41").put("operatorName","申请人").put("at","2026-11-02T10:00:00");
+        jdbc.update("UPDATE production_object SET status='IN_PROGRESS'");
+        jdbc.update("UPDATE production_execution SET snapshot_json=?,state_json=?",snapshot.toString(),state.toString());
+        return "form-"+scalar("SELECT id FROM form_instance_record");
+    }
+    @SuppressWarnings("unchecked") private com.zencas.edhr.workflow.service.WorkflowResponsibilityService.Command formCommand(String id) {
+        var tasks=(List<java.util.Map<String,Object>>)formOperations.detail(Long.parseLong(id.substring(5))).get("tasks");
+        return new com.zencas.edhr.workflow.service.WorkflowResponsibilityService.Command("43","值班审批人调整",tasks.getFirst().get("taskState").toString(),"rc-manager","test-signature-password");
+    }
+
+    @Test void centralDhrReassignmentPreservesEvidenceChangesHandlerAndAppearsInBothDomainAudits() throws Exception {
+        personnel(); grant(43,"records.dhr-review","dhr.reviews.act"); dhr(true); summaries.submit(1000L,summaryCommand()); manager();
+        long task=dhrTask(); long instance=taskRepository.findById(task).orElseThrow().getInstanceId();
+        String frozen=scalar("SELECT candidate_snapshot||snapshot_hash||base_directory_snapshot||overlay_directory_snapshot FROM dhr_summary_version");
+        String source=scalar("SELECT values_json FROM form_instance_record");
+        assertThat(operations.list(1,20,"DHR-LINKAGE","",false).getContent()).hasSize(1);
+        assertThat(operations.detail(instance).get("businessKey")).isEqualTo("DHR-LINKAGE · V1");
+        assertThat(responsibility.reassignmentTargets(task,"")).extracting(r->r.get("id")).containsExactly("43");
+        var command=reassignment(task,"43","test-signature-password"); responsibility.reassign(task,command);
+        assertThatThrownBy(()->responsibility.reassign(task,command)).hasMessageContaining("已变化");
+        assertThat(scalar("SELECT candidate_snapshot->>'originSnapshot' FROM workflow_task WHERE id="+task)).contains("42");
+        assertThat(scalar("SELECT candidate_snapshot||snapshot_hash||base_directory_snapshot||overlay_directory_snapshot FROM dhr_summary_version")).isEqualTo(frozen);
+        assertThat(scalar("SELECT values_json FROM form_instance_record")).isEqualTo(source);
+        assertThat(summaries.audit(1000L,0).path("events").toString()).contains("REASSIGN","新审批人","原处理人无法继续处理");
+        long version=jdbc.queryForObject("SELECT id FROM dhr_summary_version",Long.class);
+        assertThat(summaries.versionAudit(1000L,version,0).path("events").toString()).contains("REASSIGN","signatureId");
+        login("42","records.dhr-review");
+        assertThat(reviews.list("PENDING","",0,20).getTotalElements()).isZero();
+        assertThatThrownBy(()->reviews.detail(task)).isInstanceOf(org.springframework.security.access.AccessDeniedException.class);
+        login("43","records.dhr-review");
+        assertThat(reviews.list("PENDING","",0,20).getTotalElements()).isEqualTo(1);
+        assertThat(operations.list(1,20,"DHR-LINKAGE","",false).getTotalElements()).isEqualTo(1);
+        reviews.act(task,mapper.createObjectNode().put("action","RETURN").put("opinion","领域退回")
+                .put("expectedSnapshotHash",scalar("SELECT snapshot_hash FROM dhr_summary_version")));
+        assertThat(scalar("SELECT summary_status FROM dhr_instance")).isEqualTo("DRAFT");
+        manager(); assertThatThrownBy(()->responsibility.reassign(task,reassignment(task,"42","test-signature-password"))).hasMessageContaining("已结束");
+    }
+    @Test void dhrReassignmentRejectsBadSignatureTargetAndUnrelatedLogReadersAndRollsBackOnAuditFailure() {
+        personnel(); grant(43,"records.dhr-review","dhr.reviews.act"); dhr(true); summaries.submit(1000L,summaryCommand()); manager(); long task=dhrTask();
+        long signatures=count("signature"); String before=scalar("SELECT candidate_snapshot::text FROM workflow_task WHERE id="+task);
+        assertThatThrownBy(()->responsibility.reassign(task,reassignment(task,"43",""))).hasMessageContaining("密码");
+        assertThatThrownBy(()->responsibility.reassign(task,reassignment(task,"44","test-signature-password"))).hasMessageContaining("候选范围");
+        assertThatThrownBy(()->responsibility.reassign(task,reassignment(task,"45","test-signature-password"))).isInstanceOf(RuntimeException.class);
+        assertThatThrownBy(()->responsibility.transferContext(task)).hasMessageContaining("不支持处理人转办");
+        login("44","workflow.logs","records.dhr-review");
+        assertThat(operations.list(1,20,"DHR-LINKAGE","",false).getTotalElements()).isZero();
+        manager();
+        jdbc.execute("CREATE FUNCTION reject_workflow_action() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN IF NEW.action='REASSIGN' THEN RAISE EXCEPTION 'fixture rejection'; END IF; RETURN NEW; END $$");
+        jdbc.execute("CREATE TRIGGER reject_workflow_action BEFORE INSERT ON audit_event FOR EACH ROW EXECUTE FUNCTION reject_workflow_action()");
+        assertThatThrownBy(()->responsibility.reassign(task,reassignment(task,"43","test-signature-password"))).isInstanceOf(RuntimeException.class);
+        assertThat(count("signature")).isEqualTo(signatures); assertThat(count("workflow_intervention")).isZero();
+        assertThat(scalar("SELECT candidate_snapshot::text FROM workflow_task WHERE id="+task)).isEqualTo(before);
+    }
+    @Test void centralFormReassignmentIsSignedDoesNotAdvanceFlowAndIsVisibleInFormAudit() throws Exception {
+        personnel(); grant(43,"production.execution","form-management.review"); String id=activeForm(); manager(); String key=id+":review";
+        assertThat(operations.list(1,20,"","",true).getContent()).extracting(r->r.get("businessType")).containsExactly("FORM_PROCESS");
+        String record=scalar("SELECT snapshot_json||values_json FROM form_instance_record");
+        var command=formCommand(id); long signatures=count("signature");
+        assertThatThrownBy(()->formOperations.reassign(key,new com.zencas.edhr.workflow.service.WorkflowResponsibilityService.Command("43","原因",command.expectedTaskState(),"rc-manager",""))).hasMessageContaining("密码");
+        assertThat(formOperations.targets(key,"")).extracting(r->r.get("id")).containsExactly("43");
+        formOperations.reassign(key,command);
+        assertThat(count("signature")).isEqualTo(signatures+1);
+        assertThat(scalar("SELECT snapshot_json||values_json FROM form_instance_record")).isEqualTo(record);
+        var progress=mapper.readTree(scalar("SELECT state_json FROM production_execution")).path("operations").path("op").path("forms").path("form");
+        assertThat(progress.path("active").toString()).isEqualTo("[\"review\"]");
+        assertThat(progress.path("approvers").path("review").toString()).isEqualTo("[\"42\"]");
+        var form=snapshot.path("operations").get(0).path("forms").get(0); var node=form.path("flow").path("nodes").get(1);
+        assertThat(executionAccess.canAct(form,node,progress,"42")).isFalse(); assertThat(executionAccess.canAct(form,node,progress,"43")).isTrue();
+        assertThatThrownBy(()->formOperations.reassign(key,command)).hasMessageContaining("已变化");
+        assertThat(formOperations.detail(Long.parseLong(id.substring(5))).get("logs").toString()).contains("TASK_REASSIGN","新审批人");
+        var audit=auditController.list(1,20,"createdAt","desc","PRODUCTION_EXECUTION","109", "REASSIGN",null,null,null,null,null).getData().getContent();
+        assertThat(audit).hasSize(1); assertThat(audit.getFirst().getActionLabel()).isEqualTo("重新分配");
+        assertThat(audit.getFirst().getDataSummary()).isEqualTo("RC-BATCH · op");
+        assertThat(audit.getFirst().getContentAfter()).contains("formInstanceNo","previousAssigneeName","signatureId","signerName","值班审批人调整");
+        login("42","production.execution","form-management.review");
+        assertThat(formWorklists.list("REVIEW_PENDING",new org.springframework.util.LinkedMultiValueMap<>()).totalElements()).isZero();
+        login("43","production.execution","form-management.review");
+        assertThat(formWorklists.list("REVIEW_PENDING",new org.springframework.util.LinkedMultiValueMap<>()).totalElements()).isEqualTo(1);
+    }
+    @Test void centralFormScopeQualifiedTargetsAndBusinessLockRemainEnforced() throws Exception {
+        personnel(); grant(43,"production.execution","form-management.review"); String id=activeForm(); manager(); var command=formCommand(id); String key=id+":review";
+        assertThatThrownBy(()->formOperations.reassign(key,new com.zencas.edhr.workflow.service.WorkflowResponsibilityService.Command("45","原因",command.expectedTaskState(),"rc-manager","test-signature-password"))).isInstanceOf(RuntimeException.class);
+        assertThatThrownBy(()->formOperations.reassign(key,new com.zencas.edhr.workflow.service.WorkflowResponsibilityService.Command("44","原因",command.expectedTaskState(),"rc-manager","test-signature-password"))).hasMessageContaining("审批权限");
+        assertThatThrownBy(()->formOperations.reassign(id+":fill",command)).hasMessageContaining("已结束或尚未到达");
+        login("44","workflow.logs"); assertThat(operations.list(1,20,"","",false).getTotalElements()).isZero();
+        assertThatThrownBy(()->formOperations.detail(Long.parseLong(id.substring(5)))).isInstanceOf(org.springframework.security.access.AccessDeniedException.class);
+        login("42","production.execution","form-management.filling"); assertThat(operations.list(1,20,"","",false).getTotalElements()).isZero();
+        login("42","production.execution","form-management.review"); assertThat(operations.list(1,20,"","",false).getTotalElements()).isEqualTo(1);
+        manager(); dhr(false); jdbc.update("UPDATE dhr_instance SET summary_status='FORMALIZED'");
+        assertThat(operations.list(1,20,"","",true).getTotalElements()).isZero();
+        assertThatThrownBy(()->formOperations.reassign(key,command)).hasMessageContaining("已定稿");
+    }
+    @Test void centralUnionCountsFiltersAndPaginatesBothSourcesBeforeReturningRows() throws Exception {
+        requests.submit(command(BusinessType.CHANGE)); personnel(); String id=activeForm(); manager();
+        assertThat(operations.list(1,1,"","",false).getTotalElements()).isEqualTo(2);
+        var first=operations.list(1,1,"","",false).getContent().getFirst().get("id");
+        var second=operations.list(2,1,"","",false).getContent().getFirst().get("id");
+        assertThat(first).isNotEqualTo(second); assertThat(List.of(first,second)).contains(id);
+        assertThat(operations.list(1,20,id,"",false).getTotalElements()).isEqualTo(1);
+        assertThat(operations.list(1,20,"%","",false).getTotalElements()).isZero();
+        assertThat(operations.list(1,20,"","COMPLETED",false).getTotalElements()).isZero();
+    }
+    @Test void concurrentFormReassignmentsHaveOneWinnerAndAuditFailureRollsBack() throws Exception {
+        personnel(); grant(43,"production.execution","form-management.review"); String id=activeForm(); manager(); var command=formCommand(id); String key=id+":review";
+        String before=scalar("SELECT state_json FROM production_execution"); long signatures=count("signature");
+        jdbc.execute("CREATE FUNCTION reject_workflow_action() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN IF NEW.action='REASSIGN' THEN RAISE EXCEPTION 'fixture rejection'; END IF; RETURN NEW; END $$");
+        jdbc.execute("CREATE TRIGGER reject_workflow_action BEFORE INSERT ON audit_event FOR EACH ROW EXECUTE FUNCTION reject_workflow_action()");
+        assertThatThrownBy(()->formOperations.reassign(key,command)).isInstanceOf(RuntimeException.class);
+        assertThat(count("signature")).isEqualTo(signatures); assertThat(scalar("SELECT state_json FROM production_execution")).isEqualTo(before);
+        jdbc.execute("DROP FUNCTION reject_workflow_action() CASCADE");
+        var pool=Executors.newFixedThreadPool(2); var start=new CountDownLatch(1);
+        Callable<Boolean> action=()->{manager();try{start.await();formOperations.reassign(key,command);return true;}catch(RuntimeException e){return false;}finally{clearActor();}};
+        try {var a=pool.submit(action);var b=pool.submit(action);start.countDown();
+            assertThat(List.of(a.get(15,TimeUnit.SECONDS),b.get(15,TimeUnit.SECONDS))).containsExactlyInAnyOrder(true,false);
+            assertThat(count("signature")).isEqualTo(signatures+1);
+            assertThat(jdbc.queryForObject("SELECT count(*) FROM audit_event WHERE action='REASSIGN'",Long.class)).isEqualTo(1);
+        } finally {pool.shutdownNow();}
+    }
+
     @Test void genericReassignmentStillRequiresSignatureAndOriginalHandlingQualification() {
         requests.submit(command(BusinessType.CHANGE)); personnel(); manager(); long task = taskId();
         jdbc.update("UPDATE workflow_instance SET business_type='SYNTHETIC_CASE'");
@@ -315,6 +468,19 @@ class RecordControlPostgresIntegrationTest {
             assertThat(List.of(first.get(15, TimeUnit.SECONDS), second.get(15, TimeUnit.SECONDS))).containsExactlyInAnyOrder(true, false);
             assertThat(count("signature")).isEqualTo(signatures + 1); assertThat(count("workflow_intervention")).isEqualTo(1);
         } finally { pool.shutdownNow(); }
+    }
+    @Test void concurrentIdenticalSubmissionsCreateOneApplicationSignatureAndWorkflow() throws Exception {
+        var command=command(BusinessType.CHANGE); long signatures=count("signature");
+        var pool=Executors.newFixedThreadPool(2); var start=new CountDownLatch(1);
+        Callable<String> submit=()->{actor();try{start.await();return requests.submit(command).path("id").asText();}finally{AuditContext.clear();}};
+        try {
+            var first=pool.submit(submit);var second=pool.submit(submit);start.countDown();
+            assertThat(first.get(15,TimeUnit.SECONDS)).isEqualTo(second.get(15,TimeUnit.SECONDS));
+            assertThat(count("record_control_request")).isEqualTo(1);
+            assertThat(count("workflow_instance")).isEqualTo(1);
+            assertThat(count("signature")).isEqualTo(signatures+1);
+            assertThat(scalar("SELECT values_json::jsonb->>'value' FROM form_instance_record")).isEqualTo("old");
+        } finally {pool.shutdownNow();}
     }
     @Test void failedWithdrawalResultRestoresAllRuntimeAndBusinessState() {
         var request = requests.submit(command(BusinessType.CHANGE));

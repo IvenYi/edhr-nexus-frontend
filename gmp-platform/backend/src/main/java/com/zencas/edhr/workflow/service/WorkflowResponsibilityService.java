@@ -89,7 +89,7 @@ public class WorkflowResponsibilityService {
     public List<Map<String, String>> reassignmentTargets(Long taskId, String keyword) {
         WorkflowTask task = task(taskId);
         WorkflowInstance instance = instance(task.getInstanceId());
-        requireActive(instance, task);
+        requireActive(instance, task, true);
         return targets(instance, task, keyword, true);
     }
 
@@ -112,7 +112,7 @@ public class WorkflowResponsibilityService {
         entityManager.refresh(instance, LockModeType.PESSIMISTIC_WRITE);
         WorkflowTask task = tasks.findByIdForUpdate(taskId).orElseThrow(() -> invalid("任务不存在"));
         entityManager.refresh(task, LockModeType.PESSIMISTIC_WRITE);
-        requireActive(instance, task);
+        requireActive(instance, task, reassignment);
         if (!reassignment && !recordControl(instance)) throw invalid("请使用普通任务转办入口");
         if (!reassignment && !transferVisible(task)) throw invalid("当前节点未开放转办");
         if (!Objects.equals(taskState(task), command.expectedTaskState())) throw invalid("任务处理人或状态已变化，请刷新后重新操作");
@@ -147,8 +147,14 @@ public class WorkflowResponsibilityService {
         ObjectNode evidence = mapper.createObjectNode().put("instanceId", instance.getId().toString())
                 .put("taskId", taskId.toString()).put("nodeId", task.getNodeId().toString())
                 .put("workflowVersionId", instance.getVersionId().toString())
-                .put("previousAssigneeId", task.getAssigneeId()).put("targetUserId", target.getId().toString())
+                .put("previousAssigneeId", task.getAssigneeId()).put("targetUserId", target.getId().toString()).put("targetUserName", target.getDisplayName())
                 .put("reason", command.reason().strip()).put("taskState", taskState(task));
+        Map<String, Object> dhr = null;
+        if ("DHR_SUMMARY".equals(instance.getBusinessType())) {
+            dhr = jdbc.queryForMap("SELECT v.id AS version_id,v.dhr_instance_id,d.dhr_no FROM dhr_summary_review r JOIN dhr_summary_version v ON v.id=r.summary_version_id JOIN dhr_instance d ON d.id=v.dhr_instance_id WHERE r.workflow_instance_id=? AND v.tenant_id='default'", instance.getId());
+            evidence.put("summaryVersionId", dhr.get("version_id").toString()).put("dhrId", dhr.get("dhr_instance_id").toString());
+        }
+        evidence.put("sessionOperatorId", AuditContext.getOperatorId()).put("signerId", signer.id()).put("signerName", signer.name());
         evidence.put("previousAssigneeName", task.getAssigneeId() == null ? "候选人待处理"
                 : users.findById(Long.valueOf(task.getAssigneeId())).map(UserAccount::getDisplayName).orElse(task.getAssigneeId()));
         evidence.set("before", before.deepCopy());
@@ -179,10 +185,11 @@ public class WorkflowResponsibilityService {
         if (reassignment) interventions.save(WorkflowIntervention.builder().id(ids.nextId()).instanceId(instance.getId())
                 .action(action).operatorId(signer.id()).reason(command.reason().strip())
                 .signatureId(Long.valueOf(signatureId)).createdAt(now).build());
-        audits.save(AuditEvent.builder().id(ids.nextId()).tenantId("default").entityType("WORKFLOW_TASK")
-                .entityId(taskId.toString()).action(action).contentBefore(before.toString()).contentAfter(after.toString())
+        audits.save(AuditEvent.builder().id(ids.nextId()).tenantId("default").entityType(dhr == null ? "WORKFLOW_TASK" : "DHR_SUMMARY_REVIEW")
+                .entityId(dhr == null ? taskId.toString() : dhr.get("version_id").toString()).action(action).contentBefore(before.toString()).contentAfter(after.toString())
                 .operatorId(signer.id()).operatorName(signer.name()).operatorAccount(signer.account()).source("WORKFLOW")
-                .moduleName("流程中心").menuName(reassignment ? "流程干预" : "任务处理").functionName(action)
+                .moduleName("流程中心").menuName(reassignment ? "流程干预" : "任务处理").functionName(reassignment ? "重新分配" : "转办")
+                .dataSummary(dhr == null ? instance.getBusinessId() : Objects.toString(dhr.get("dhr_no"), ""))
                 .reason(command.reason().strip()).createdAt(now).build());
     }
 
@@ -193,6 +200,10 @@ public class WorkflowResponsibilityService {
     }
 
     private boolean eligible(WorkflowInstance instance, WorkflowTask task, String target, boolean reassignment) {
+        if ("DHR_SUMMARY".equals(instance.getBusinessType()) && reassignment) {
+            Integer permissions = jdbc.queryForObject("SELECT count(DISTINCT p.code) FROM user_role ur JOIN role_permission rp ON rp.role_id=ur.role_id JOIN permission p ON p.id=rp.permission_id WHERE ur.user_id=? AND p.code IN ('records.dhr-review','dhr.reviews.act')", Integer.class, Long.valueOf(target));
+            return permissions != null && permissions == 2;
+        }
         if (!recordControl(instance) && !reassignment) return true;
         if (recordControl(instance) && target.equals(instance.getInitiatorId())) return false;
         JsonNode origin = json(task.getCandidateSnapshot());
@@ -211,7 +222,15 @@ public class WorkflowResponsibilityService {
     }
 
     private void requireActive(WorkflowInstance instance, WorkflowTask task) {
-        if ("DHR_SUMMARY".equals(instance.getBusinessType())) throw invalid("DHR审核不支持通用转办或重新分配");
+        requireActive(instance, task, false);
+    }
+
+    private void requireActive(WorkflowInstance instance, WorkflowTask task, boolean reassignment) {
+        if ("DHR_SUMMARY".equals(instance.getBusinessType())) {
+            if (!reassignment) throw invalid("DHR审核不支持处理人转办");
+            Integer active = jdbc.queryForObject("SELECT count(*) FROM dhr_summary_review r JOIN dhr_summary_version v ON v.id=r.summary_version_id JOIN dhr_instance d ON d.id=v.dhr_instance_id WHERE r.workflow_instance_id=? AND v.tenant_id='default' AND r.status='PENDING_REVIEW' AND d.summary_status='PENDING_REVIEW'", Integer.class, instance.getId());
+            if (active == null || active != 1) throw invalid("DHR审核已结束，请刷新后查看");
+        }
         if (!"RUNNING".equals(instance.getStatus()) || !Set.of("PENDING", "PROCESSING").contains(task.getStatus()))
             throw invalid("任务已结束，请刷新后查看");
     }

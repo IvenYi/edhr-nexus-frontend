@@ -55,7 +55,7 @@ rules:
       actorSource: backend-authentication-context
       forbidClientActorOverride: true
     explanation: user-confirmed-and-original-evidence；本期不新增岗位、角色或模板级功能授权，但“我的变更”、变更审批及活动申请详情的数据范围仍由后端认证上下文强制执行；已结束历史继续对当前租户认证用户开放。
-    evidenceIds: [evidence.record-control-v1-user-confirmed, evidence.record-control-v1-service, evidence.record-control-active-detail-access-tests]
+    evidenceIds: [evidence.record-control-v1-user-confirmed, evidence.record-control-v1-service, evidence.record-control-active-detail-access-tests, evidence.record-control-authenticated-candidate-read-user-confirmed]
   - id: rule.record-control-signature-immutable-generic-boundary
     name: 记录控制签名证据通用接口隔离
     status: implemented
@@ -132,8 +132,8 @@ rules:
       sourceRevision: unchanged
       activeLock: released
       retrySemantics: new-request-and-workflow-instance
-    explanation: user-confirmed；退回即终结旧申请和流程，不能在旧申请上修改或重新提交；再次发起使用新编号和流程实例。该目标规则尚未进入运行时投影。
-    evidenceIds: [evidence.record-control-v1-user-confirmed]
+    explanation: user-confirmed；退回即终结旧申请和流程，不能在旧申请上修改或重新提交；再次发起使用新编号和流程实例。WorkflowEngine与RecordControlService已原子终结本轮、失效其他待办并释放活动申请约束，来源修订不落地拟变更；旧“尚未进入运行时投影”仅指本内部知识规则没有通用执行注册，不能再解释为产品退回功能待开发。实际运行和本轮整链证据分别保留。
+    evidenceIds: [evidence.record-control-v1-user-confirmed, evidence.record-control-workflow-result-delivery-adapter, evidence.record-control-v1-service, evidence.workflow-record-dhr-closure-source-review]
   - id: rule.record-control-final-result-delivery
     name: 记录控制最终审批结果同步落地
     status: implemented

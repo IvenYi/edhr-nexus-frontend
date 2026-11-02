@@ -1,0 +1,42 @@
+{
+  "candidate": "local edhr-dev HEAD plus preserved working tree",
+  "backend": "http://localhost:8081",
+  "frontend": "http://localhost:3000",
+  "authenticatedWithoutCreatePermission": true,
+  "candidateReads": {
+    "CHANGE": {
+      "code": 200,
+      "count": 2
+    },
+    "OBSOLETE": {
+      "code": 200,
+      "count": 1
+    }
+  },
+  "anonymousCode": 401,
+  "frontendStatus": 200,
+  "businessBefore": {
+    "record_control_request": "7:6c64df5abe2ccab0ea286cd940c13ad4",
+    "form_instance_record": "38:bc70dca85b1fa92344fc031f0d3aab1e",
+    "form_instance_revision": "38:82fa1f61d255b2e3dc703b54911051da",
+    "production_execution": "19:f9e5b97610af0be97064106fe4fa0d4a",
+    "dhr_instance": "15:c59f0c9057c27f976db0eff6d915d7fd",
+    "dhr_summary_version": "8:e0179c235e73a0c24a576f469625ccbb",
+    "dhr_summary_review": "3:e0134782732b1df895e4b7cf4ffcdd21",
+    "workflow_instance": "10:4e32b442a4899bfdc3581f906ab08f11",
+    "workflow_task": "11:31e4a84594e6fd7de78a6edef1382f74"
+  },
+  "businessAfter": {
+    "record_control_request": "7:6c64df5abe2ccab0ea286cd940c13ad4",
+    "form_instance_record": "38:bc70dca85b1fa92344fc031f0d3aab1e",
+    "form_instance_revision": "38:82fa1f61d255b2e3dc703b54911051da",
+    "production_execution": "19:f9e5b97610af0be97064106fe4fa0d4a",
+    "dhr_instance": "15:c59f0c9057c27f976db0eff6d915d7fd",
+    "dhr_summary_version": "8:e0179c235e73a0c24a576f469625ccbb",
+    "dhr_summary_review": "3:e0134782732b1df895e4b7cf4ffcdd21",
+    "workflow_instance": "10:4e32b442a4899bfdc3581f906ab08f11",
+    "workflow_task": "11:31e4a84594e6fd7de78a6edef1382f74"
+  },
+  "mainBusinessPreserved": true,
+  "qualification": "Main candidate reads only after backend reload; login updates expected authentication metadata. No business write or sample reset."
+}

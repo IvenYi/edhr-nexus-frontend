@@ -1,0 +1,73 @@
+decisionPackage:
+  id: DEC-PACKAGE-20261102-WORKFLOW-LIST-UI
+  scope: 流程日志和干预列表的业务识别、标准列设置与重新分配入口，以及同切片列表操作图标纠正
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: 0bd0848bbded6d6954d62a4f924e0b2eec6623ad
+    targetBranch: edhr-dev
+    targetCommit: e3e49784eda6bc01e7e5c686d6f79dc5a600d5ae
+    contractReadCommit: 0bd0848bbded6d6954d62a4f924e0b2eec6623ad
+    uncommittedContractPaths: []
+  summary: 复用现有表格/列偏好/签名弹窗，不改流程运行、权限、结果、接口或数据。
+  confirmed:
+    concepts: []
+    relationships: []
+    rules: []
+    executionContracts: []
+  confirmedBusinessDecisions:
+    - user-confirmed：流程干预列表新增操作列及重新分配按钮；两个列表补齐左上角列设置，遵循页面规范。
+    - user-confirmed：列表及详情需清楚识别流程属于哪类业务，并解释可展示的业务范围及当前任务是否可能多项。
+    - user-confirmed：变更管理及流程干预列表操作应遵守贴合动作的图标规范，纠正常驻文字按钮并解释此前校验覆盖缺口。
+    - existing-policy：DEC-0091/0092重新分配权限、必签、原因、目标资格、并发状态校验保持，DHR继续专属入口。
+    - original-evidence：查询排除DHR_SUMMARY而非硬限定两类；当前正常受控记录入口限定CHANGE/OBSOLETE；未知或缺失历史业务类型不得猜测归类。
+    - original-evidence：每个审批节点一个逻辑任务、多候选共享；并行审批可同时产生多分支任务，未激活后续步骤不算当前任务。
+  inferred: []
+  unresolved: []
+  replacementScopes: []
+  impactAnalysis:
+    level: L1
+    directImpacts:
+      - {area: workflow-list, change: 新增默认业务类型列、共享列显隐/顺序/宽度偏好，按用户和列表模式隔离, evidenceReferences: [docs/frontend/list-page-guidelines.md]}
+      - {area: reassignment-entry, change: 按需读取实例；单待办直接签名，多待办先选一项；上下文明确业务类型及编号, evidenceReferences: [gmp-platform/frontend/src/pages/workflow-center/WorkflowReassignmentEntry.tsx]}
+      - {area: detail, change: 流程信息分明展示类型/编号/名称，干预当前任务仅展示活动待办，日志保留历史, evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/WorkflowOperationsQuery.java]}
+      - {area: list-action-icons, change: 变更管理的我的变更/变更记录共用列表、待办/已办审批列表及流程干预操作统一IconButton和Tooltip；按最大图标数采用64/96px冻结操作列，复用标准表格壳与行/表头样式, evidenceReferences: [docs/frontend/list-page-guidelines.md]}
+      - {area: style-verification, change: 变更管理两个列表纳入现有公共表格检查，三个组件增加TSX语法树图标操作检查及反例探针，不宣称全仓按钮全覆盖, evidenceReferences: [gmp-platform/frontend/scripts/verify-list-table-style-contract.mjs]}
+    transitiveImpacts:
+      - {area: responsibility-dialog, change: 增加可选业务说明，不变更签名/目标/提交契约, evidenceReferences: [gmp-platform/frontend/src/components/workflow/WorkflowResponsibilityDialog.tsx]}
+    potentialImpacts: []
+    unaffectedAreas:
+      - {area: backend-and-data, reason: 无服务端、迁移、权限或审批路径变更；主库验收样例不消费。}
+    compatibilityAndMigration:
+      - concern: 仅新增浏览器列偏好，列配置版本2；无数据库迁移，旧行/页面查询与详情路由保持。
+    snapshotImpacts: []
+    auditImpacts: []
+    permissionImpacts:
+      - concern: 列表动作仅workflow.intervene可见；后端仍最终判权，未扩展普通用户或DHR干预范围。
+    testImpacts:
+      - scope: frontend
+        scenarios: [两列表列设置及隔离, 顺序显隐持久化, 列宽和冻结操作列, 单/多/无当前任务, 加载失败重试, 未授权入口, 业务类型及未知历史, 详情只读及当前/历史区分, 重新分配签名与目标任务绑定, 桌面和窄屏, 我的变更/变更记录查看图标与跳转, 审批待办/已办图标及跳转, 图标语义/提示/标签/64及96px宽度, 图标校验反例拦截]
+        evidenceReferences: []
+    evidenceGaps: []
+  extensionStrategy:
+    selectedPaths: [product-core]
+    rationale: 复用产品共享表格、列设置、弹窗与服务端契约；不增加客户分支或通用干预能力。
+    ownershipBoundaries:
+      - {owner: primary-agent, responsibility: 前端实现、聚焦测试和主环境只读验证}
+      - {owner: ontology-agent, responsibility: 核对现有含义及最小知识锚点/证据同步}
+      - {owner: quality-agent, responsibility: 收尾独立验证，不参与修复}
+  affectedFiles:
+    - {path: gmp-platform/frontend/src/pages/workflow-center/InstanceList.tsx, changeType: update, reason: 列设置与操作及业务类型}
+    - {path: gmp-platform/frontend/src/pages/workflow-center/WorkflowReassignmentEntry.tsx, changeType: create, reason: 单任务/多任务受控入口}
+    - {path: gmp-platform/frontend/src/pages/workflow-center/WorkflowInstancePanel.tsx, changeType: update, reason: 明确业务与当前任务}
+    - {path: gmp-platform/frontend/src/components/workflow/WorkflowResponsibilityDialog.tsx, changeType: update, reason: 可选业务身份说明}
+    - {path: gmp-platform/frontend/src/api/workflow-operations.ts, changeType: update, reason: 现有业务类型字段的显示映射及空历史类型兼容}
+    - {path: gmp-platform/frontend/src/pages/record-control/RecordRequestListPage.tsx, changeType: update, reason: 我的变更/变更记录的查看图标及标准表格样式}
+    - {path: gmp-platform/frontend/src/pages/record-control/RecordApprovalPage.tsx, changeType: update, reason: 待办/已办审批图标及标准表格样式}
+    - {path: gmp-platform/frontend/scripts/verify-list-table-style-contract.mjs, changeType: update, reason: 补齐当前列表及图标操作约束检查}
+    - {path: gmp-platform/frontend/scripts/test-workflow-list-ui-browser.mjs, changeType: create, reason: 同切片交互回归及图标呈现/跳转验证}
+    - {path: docs/frontend/list-page-guidelines.md, changeType: update, reason: 记录审批处理/重新分配图标映射，澄清文字按钮宽度不是列表图标规则的豁免}
+  acceptanceScenarios:
+    - {id: scenario.workflow-list-recognition, given: 可见业务实例, when: 打开列表和详情, then: 能直接识别业务类型及编号，DHR范围不扩大, evidenceRequirements: [浏览器, 原始查询源码]}
+    - {id: scenario.workflow-list-reassign, given: 有权限的运行实例, when: 从操作列重新分配, then: 单任务直接签名、多任务明确选择，原签名/并发提交契约保持, evidenceRequirements: [受控API浏览器用例]}
+    - {id: scenario.workflow-list-columns, given: 两个列表, when: 修改列偏好并重开, then: 标准显隐/排序/宽度持久化且模式和用户隔离，操作列右冻结, evidenceRequirements: [浏览器, 构建]}
+    - {id: scenario.workflow-list-icons, given: 变更管理及流程干预列表, when: 查看或键盘/鼠标点击操作图标, then: 纯图标带对应Tooltip和无障碍标签且64/96px居中冻结，仍进入原查看/处理/必签路径；静态检查能拒绝文字按钮及缺少提示/标签的图标, evidenceRequirements: [受控API浏览器用例, 样式检查反例探针, 主环境只读截图]}

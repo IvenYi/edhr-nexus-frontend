@@ -1,0 +1,175 @@
+qualityResult:
+  result: passed
+  baseCommit: 0bd0848bbded6d6954d62a4f924e0b2eec6623ad
+  headCommit: 0bd0848bbded6d6954d62a4f924e0b2eec6623ad
+  contractBaseline:
+    sourceCommit: 0bd0848bbded6d6954d62a4f924e0b2eec6623ad
+    targetBranch: edhr-dev
+    targetCommit: 8ec8391721858a7f96d73a5d293d93f43679118a
+    contractReadCommit: 0bd0848bbded6d6954d62a4f924e0b2eec6623ad
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: dirty
+    includedPaths:
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/controller/AuditController.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormWorkflowOperations.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/RecordControlWorkflowController.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowOperationsController.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/WorkflowOperationsQuery.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/WorkflowResponsibilityService.java
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/recordcontrol/service/RecordControlPostgresIntegrationTest.java
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/RecordControlCandidateAuthorizationTest.java
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/RecordControlWorkflowControllerTest.java
+      - gmp-platform/frontend/scripts/test-workflow-list-ui-browser.mjs
+      - gmp-platform/frontend/scripts/test-workflow-record-dhr-live.mjs
+      - gmp-platform/frontend/scripts/workflow-record-dhr-live-fixture.mjs
+      - gmp-platform/frontend/scripts/verify-list-table-style-contract.mjs
+      - gmp-platform/frontend/src/api/workflow-operations.ts
+      - gmp-platform/frontend/src/components/workflow/WorkflowResponsibilityDialog.tsx
+      - gmp-platform/frontend/src/pages/dhr-management/DhrFillingPage.tsx
+      - gmp-platform/frontend/src/pages/dhr-management/dhrAuditPresentation.ts
+      - gmp-platform/frontend/src/pages/form-management/FormFillingPage.tsx
+      - gmp-platform/frontend/src/pages/form-management/FormInstanceListPage.tsx
+      - gmp-platform/frontend/src/pages/form-management/FormReviewPage.tsx
+      - gmp-platform/frontend/src/pages/record-control/RecordApprovalPage.tsx
+      - gmp-platform/frontend/src/pages/record-control/RecordChangePage.tsx
+      - gmp-platform/frontend/src/pages/record-control/RecordRequestListPage.tsx
+      - gmp-platform/frontend/src/pages/workflow-center/InstanceList.tsx
+      - gmp-platform/frontend/src/pages/workflow-center/WorkflowInstancePanel.tsx
+      - gmp-platform/frontend/src/pages/workflow-center/WorkflowReassignmentEntry.tsx
+      - gmp-platform/frontend/src/utils/productionAudit.ts
+      - docs/knowledge
+      - docs/architecture/business-knowledge-model.md
+      - docs/frontend/list-page-guidelines.md
+      - docs/development/TODO.md
+      - docs/development/record-control-work-allocation-and-integration-contract.md
+      - docs/development/record-control-dhr-linkage-20261029/README.md
+      - docs/development/workflow-record-dhr-closure-20261102
+    excludedPaths:
+      - output/ansukang-e2e-2026-10-14
+      - output/ansukang-final-output-e2e-2026-10-15
+      - gmp-platform/frontend/output
+    untrackedPaths:
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormWorkflowOperations.java
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/RecordControlCandidateAuthorizationTest.java
+      - gmp-platform/frontend/scripts/test-workflow-list-ui-browser.mjs
+      - gmp-platform/frontend/scripts/test-workflow-record-dhr-live.mjs
+      - gmp-platform/frontend/scripts/workflow-record-dhr-live-fixture.mjs
+      - gmp-platform/frontend/src/pages/workflow-center/WorkflowReassignmentEntry.tsx
+      - docs/knowledge/decisions/DEC-0093-central-form-dhr-workflow-responsibility.yaml
+      - docs/knowledge/decisions/DEC-0094-record-control-authenticated-candidate-read.yaml
+      - docs/knowledge/rules/workflow-central-entry.yaml
+      - docs/knowledge/facts/workflow-central-entry.yaml
+      - docs/knowledge/implementation-anchors/workflow-central-entry.yaml
+      - docs/development/workflow-record-dhr-closure-20261102
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+    - id: quality.closure-contract-and-candidate
+      required: true
+      category: requirements
+      description: 独立核对契约、决策包和实际受测工作区，而非复用旧切片通过结果
+      method: inspection
+      command: git rev-parse HEAD origin/edhr-dev; git diff --name-only HEAD origin/edhr-dev -- AGENTS.md codeplzreadme.md docs/agents
+      outcome: passed
+      evidence:
+        - 本地HEAD为0bd0848bbded6d6954d62a4f924e0b2eec6623ad，目标为8ec8391721858a7f96d73a5d293d93f43679118a，相关契约增量为空；未合并目标，不声明远端集成或发布通过。
+        - docs/development/workflow-record-dhr-closure-20261102/evidence/independent-quality/candidate-review.json
+        - 27个产品候选文件、12个原始领域源码锚点及70个知识清单文件均保存SHA256；知识清单哈希差异为0。
+    - id: quality.closure-domain-state-and-security
+      required: true
+      category: security
+      description: 独立源审与运行核对候选读取、处理资格、签名、当前责任、业务锁及原候选保留
+      method: inspection
+      command: 受影响控制器与领域服务调用链、DEC0093/0094、当前规则和聚焦测试原件对照
+      outcome: passed
+      evidence:
+        - 候选GET采用isAuthenticated，仅返回类型匹配的当前发布版本；申请来源、有效修订、冲突申请和签名仍在原服务复核。真实方法安全3项和HTTP匿名/错误类型拒绝均通过。
+        - 管理改派同时复核会话及实际签署人的专门权限，普通表单和DHR目标各复核其业务资格；只更新当前责任，保留原候选、节点、内容、冻结版本和审批决定。
+        - 任务摘要或revision及领域锁防止过期改派，责任、签名、历史与领域审计同事务。旧处理人失权、拒绝负例、竞争和审计失败回滚有真实PG原件。
+        - 普通表单TRANSFER不新增签名；记录控制TRANSFER仍按冻结节点配置签署。DHR只增加管理员签名改派，批准/退回保持专属路径，不开放本人转办、撤回或通用批准绕过。
+    - id: quality.closure-independent-backend
+      required: true
+      category: integration
+      description: 在新建专属数据库独立执行受影响后端与跨域回归
+      method: automated-test
+      command: RECORD_CONTROL_TEST_DATABASE_URL=jdbc:postgresql://127.0.0.1:5432/edhr_record_control_test_closure_quality_20261103 PGUSER=ivenwang JAVA_HOME=/opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home mvn -q -Dtest=RecordControl*Test,Dhr*Test,Workflow*Test,ExecutionAccessTest,ProductionExecutionEngineTest,BusinessKnowledgeModelTest test
+      outcome: passed
+      evidence:
+        - docs/development/workflow-record-dhr-closure-20261102/evidence/independent-quality/backend-summary.json
+        - 409项中366通过、43因各自环境条件跳过，0失败/错误；跳过不计通过，也不与主侧轮次相加。
+        - 记录控制真实PG32项全部实跑，无跳过；覆盖同幂等键并发唯一申请/流程/签名、不同申请竞争、撤回批准竞争、责任改派签名/资格/过期/回滚、DHR双向阻断、生效与贡献切换、提醒隔离和失败回滚、两域审计。
+        - 新库Liquibase安装及重复启动成功；未执行迁移降级、备份恢复或所有历史数据库升级组合。
+    - id: quality.closure-independent-real-e2e
+      required: true
+      category: e2e
+      description: 恢复新鲜隔离副本后，独立执行真实维护页面到真实后端及PostgreSQL整链
+      method: browser
+      command: WORKFLOW_LIVE_DATABASE=edhr_record_control_test_closure_e2e_20261102 WORKFLOW_LIVE_URL=http://localhost:13002 WORKFLOW_LIVE_MANIFEST=/tmp/edhr-closure-quality-manifest.json WORKFLOW_LIVE_ARTIFACTS=/Users/ivenwang/Documents/edhr-nexus/output/playwright/workflow-closure-quality-live-20261103 NODE_PATH=/Users/ivenwang/.npm/_npx/31e32ef8478fbf80/node_modules node scripts/test-workflow-record-dhr-live.mjs
+      outcome: passed
+      evidence:
+        - docs/development/workflow-record-dhr-closure-20261102/evidence/independent-quality/live-result.json
+        - selectedSteps=all，12/12步骤通过，无业务API拦截、浏览器异常为空；步骤包含登录和经实际服务初始化冻结版，不称12条独立业务流程。
+        - 实际UI覆盖签名申请、受限撤回重提、RC转办/签名改派/退回批准、变更及作废生效、个人提醒、DHR修订及旧V1回读、原生退回/V2汇总/改派和新处理人原生批准、普通表单保存提交/转办/改派/退回重提/签署完成及两域审计。
+        - 变更拟值类型为JSON number；DHR填报0、个人填报1.25、个人审批完成后的2.5均有jsonb_typeof=number的真实持久化断言。
+        - mainBefore/mainAfter九张本范围主库业务表的计数与内容指纹相同；不据此宣称全库所有表无变化。
+    - id: quality.closure-frontend-and-component-regression
+      required: true
+      category: regression
+      description: 独立构建、数值工具、列表规范及两宽度的集中入口相邻交互检查
+      method: automated-test
+      command: npm run build; node scripts/verify-list-table-style-contract.mjs; node --test scripts/test-execution-form-values.mjs; CHROME_PATH='/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' WORKFLOW_LIST_ARTIFACTS=/Users/ivenwang/Documents/edhr-nexus/output/playwright/workflow-closure-quality-ui-20261103 NODE_PATH=/Users/ivenwang/.npm/_npx/31e32ef8478fbf80/node_modules node scripts/test-workflow-list-ui-browser.mjs
+      outcome: passed
+      evidence:
+        - docs/development/workflow-record-dhr-closure-20261102/evidence/independent-quality/frontend-build.txt
+        - docs/development/workflow-record-dhr-closure-20261102/evidence/independent-quality/component-ui-result.json
+        - 构建、列表规范、既有数值工具2项、1440/390两宽度组件40项全部通过。该组件组使用合成拦截API，与真实整链分列。
+        - 四入口仅复用已有executionFormValues，在冻结字段类型的提交边界转换；保留输入期间文本、小数、空值及原验证，不改共享控件、字段身份或历史签名。
+    - id: quality.closure-native-domain-audit-visual
+      required: true
+      category: visual
+      description: 独立查看真实表单与DHR数据审计，以及集中列表桌面/窄屏图标和列设置呈现
+      method: inspection
+      command: 查看本轮独立生成的实际浏览器截图
+      outcome: passed
+      evidence:
+        - docs/development/workflow-record-dhr-closure-20261102/evidence/independent-quality/live-ordinary-form-domain-audit.png
+        - docs/development/workflow-record-dhr-closure-20261102/evidence/independent-quality/live-dhr-v2-domain-audit.png
+        - 两域原生数据审计均显示责任变化、原/新处理人、原因、实际签署人和签名引用，并定位表单份或DHR版本；采用既有抽屉/数据审计布局。
+        - 已查看output/playwright/workflow-closure-quality-ui-20261103/form-1440.png与dhr-390.png，业务类型、列设置及图标操作符合现有骨架，窄屏表格保留容器内横向滚动。
+    - id: quality.closure-final-ontology-and-todo
+      required: true
+      category: ontology
+      description: 核对最终知识回执、精确替代范围、历史保留和当前TODO边界，冻结后独立重跑知识检查
+      method: automated-test
+      command: JAVA_HOME=/opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home mvn -q -Dtest=BusinessKnowledgeModelTest test; 读取最终ontology-result及inventory、差异和当前TODO
+      outcome: passed
+      evidence:
+        - docs/development/workflow-record-dhr-closure-20261102/evidence/independent-quality/final-BusinessKnowledgeModelTest.txt
+        - 冻结知识89项全部通过；ontologyResult.result=updated，conflicts/questions为空，5项validationEvidence均passed，知识0.3.25及P0阶段保持。
+        - 独立核对清单70文件681记录的分母、文件哈希和处置分类；617一致、42纠错、12历史、5gap和5未来待决相加为681，14邻接pending另列，不计通过。逐ID语义盘点由本体角色执行，质量复核当前差异、核心声明和源码/运行证据，不冒称重复手审全部历史记录。
+        - DEC0094仅结束候选读取协同的局部暂缓；DEC0093仅开放普通表单/DHR管理员签名改派，既有签署、写入资格和禁止动作边界保留。
+        - 当前TODO关闭已有实现和实跑支持的记录控制/DHR联动/流程建设，旧协同缺口明确收进历史区；归档等暂缓和精确未测组合没有被误关。
+    - id: quality.closure-diff-hygiene
+      required: true
+      category: documentation
+      description: 检查受影响工作区空白错误及本轮质量记录格式
+      method: command
+      command: git diff --check; ruby YAML.safe_load质量回执
+      outcome: passed
+      evidence:
+        - git diff --check退出码0；质量记录YAML可解析且规定必需字段及枚举有效。
+  findings: []
+  residualRisks:
+    - id: residual.closure-explicit-deferred-scope
+      description: 归档执行、打印作废过滤、活动表单作废、完整放行后变更、通用质量/异常/源签署自动判读、DHR目录交错整理及全部组合、A12历史检索/规则重建、多租户和作业条件runtime仍按各自范围保留。
+      impact: 本期明确MVP链路通过不等于全项目P0、所有业务、全部知识执行或所有复杂模板组合已闭环。
+      mitigation: 当前TODO、DEC0068与领域inventory保留精确边界；后续功能按对应决策实施和验收。
+    - id: residual.closure-skipped-and-release-validation
+      description: 后端扩大回归43项条件跳过，远端目标未合并，迁移降级/恢复、所有历史升级、真实业务部署及分支保护设置未在本轮执行。
+      impact: 不得使用本轮结果宣称所有条件套件、远端集成或生产发布验收通过。
+      mitigation: 原始汇总逐类记录跳过；真实PG32、方法安全、当前知识89和实际页面整链各自列出实跑证据，发布另按实际候选验证。
+    - id: residual.preexisting-workflow-log-name-projection
+      description: 既有运行日志显示名优先取账号当前display_name，本轮没有验证账号改名后的历史显示；该行为与HEAD相同，原始operatorName、签名和审计快照仍保留。
+      impact: 本轮不能证明所有历史运行日志显示名均按发生时冻结；不是本次新增责任审计或签名丢失。
+      mitigation: 保留为既有展示边界；如后续要求历史显示名完全冻结，再专项验证和处理。
+  blockingConditions: []

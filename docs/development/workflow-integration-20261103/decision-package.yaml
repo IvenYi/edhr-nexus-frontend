@@ -1,0 +1,56 @@
+decisionPackage:
+  id: DEC-PACKAGE-20261103-WORKFLOW-EDHR-DEV-INTEGRATION
+  scope: 提交既有流程功能并合入最新edhr-dev后验证及推送
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: 0bd0848bbded6d6954d62a4f924e0b2eec6623ad
+    targetBranch: edhr-dev
+    targetCommit: 2ac66928046aa98dc196376ed2abb4f76f61e545
+    contractReadCommit: 0bd0848bbded6d6954d62a4f924e0b2eec6623ad
+    uncommittedContractPaths: []
+  summary: 用户明确授权提交、拉取、合并和推送；保留协作者历史与现有开发数据，在主目录集成，不创建独立工作树。
+  confirmed:
+    concepts: []
+    relationships: []
+    rules: []
+    executionContracts: []
+  inferred: []
+  unresolved: []
+  replacementScopes: []
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - {area: workflow-record-dhr, change: 保存前轮已验收的集中流程、记录控制、DHR联动、责任审计及数值/候选读取修复, evidenceReferences: [docs/development/workflow-record-dhr-closure-20261102/README.md]}
+      - {area: upstream-integration, change: 保留远端文件事务安全、DHR分页和附件查询优化提交，与本地流程责任扩展共同验证, evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrReviewService.java]}
+    transitiveImpacts:
+      - {area: audit-and-review-access, change: 核对集中任务与DHR个人审批资格、冻结证据及事务回滚没有因合并失配, evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/WorkflowOperationsQuery.java]}
+    potentialImpacts: []
+    unaffectedAreas:
+      - {area: unrelated-local-artifacts, reason: 旧output、数据库备份和无关premium报告保留本地，不纳入本轮提交或清理。}
+    compatibilityAndMigration:
+      - concern: 远端新增0091查询索引迁移；隔离库验证安装/升级，主开发数据不重置。
+    snapshotImpacts:
+      - concern: 冻结DHR、表单修订与既有验收样本不可被Git集成和测试改写。
+    auditImpacts:
+      - concern: 责任改派及文件事务审计必须保留双方实现与失败回滚证据。
+    permissionImpacts:
+      - concern: 保持已认证候选读取、原申请及审批资格、改派必签与DHR专属动作边界。
+    testImpacts:
+      - {scope: merged-candidate, scenarios: [知识与契约增量, 后端聚焦回归及真实PG, 前端构建与列表规范, 真实浏览器整链], evidenceReferences: []}
+    evidenceGaps:
+      - 前轮通过只覆盖原本地候选，不能直接充当本次合并结果通过；需补针对实际候选的证据。
+  extensionStrategy:
+    selectedPaths: [product-core, standard-action, transaction-orchestration]
+    rationale: 沿既有模块合并，不另建流程运行时、客户分支或额外工作树。
+    ownershipBoundaries:
+      - {owner: primary-agent, responsibility: 提交、合并、冲突与兼容修复、主侧验证和推送}
+      - {owner: ontology-agent, responsibility: 增量语义与知识/实现锚点核对及正式回执}
+      - {owner: quality-agent, responsibility: 实际合并候选的独立验证及正式回执，只报告问题}
+  affectedFiles:
+    - {path: gmp-platform/backend, changeType: update, reason: 合入远端变更及必要测试冲突处理}
+    - {path: gmp-platform/frontend, changeType: update, reason: 提交此前验收的流程与数值提交修复}
+    - {path: docs/knowledge, changeType: update, reason: 提交此前完成的知识同步并核对合并增量}
+    - {path: docs/development/workflow-integration-20261103, changeType: create, reason: 固定实际集成基线、验证证据和结果}
+  acceptanceScenarios:
+    - {id: scenario.workflow-integration-preserves-both, given: 本地已验收功能及远端42项提交, when: 在主目录合并, then: 双方提交历史及运行能力保留，不覆盖协作者修改, evidenceRequirements: [祖先关系, 合并差异, 聚焦回归]}
+    - {id: scenario.workflow-integration-push, given: 实际合并候选适用门禁通过, when: 普通推送edhr-dev, then: 远端与本地提交一致且不重写共享历史, evidenceRequirements: [本体结果, 独立质量结果, 远端引用核对]}

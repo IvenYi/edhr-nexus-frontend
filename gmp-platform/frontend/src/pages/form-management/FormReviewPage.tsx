@@ -26,7 +26,8 @@ import {
 } from '@/api/production-execution';
 import { FormCanvasPreview } from '@/pages/master-data/DhrTemplateWorkspaceDialog';
 import { parseReactTemplateDesignerDocument } from '@/pages/master-data/template-designer-react/utils/document';
-import { toProductionAuditFields, type ProductionAuditField } from '@/utils/productionAudit';
+import { isAuditForForm, toProductionAuditFields, type ProductionAuditField } from '@/utils/productionAudit';
+import { executionFormValues } from '@/pages/production/executionFormValues';
 import WorkflowActionButtons from '@/components/workflow/WorkflowActionButtons';
 import ButtonSignatureCredentials from '@/components/workflow/ButtonSignatureCredentials';
 import type { PageResult } from '@/types/common';
@@ -92,7 +93,7 @@ function DetailField({ label, value }: { label: string; value: ReactNode }) {
 function AuditFieldBlock({ title, fields }: { title: string; fields: ProductionAuditField[] }) {
   return <Box sx={{ border: '1px solid #e4e7ed', borderRadius: 1, bgcolor: '#f8fafc', p: 1 }}><Typography variant="caption" sx={{ display: 'block', mb: 0.75, color: '#606266', fontWeight: 600 }}>{title}</Typography><Stack spacing={0.75}>{fields.length === 0 ? <Typography variant="caption" sx={{ color: '#909399' }}>无</Typography> : fields.map((field) => <Box key={field.key} sx={{ display: 'grid', gridTemplateColumns: '84px minmax(0, 1fr)', gap: 1 }}><Typography variant="caption" sx={{ color: '#606266' }}>{field.label}</Typography><Typography variant="caption" sx={{ color: '#303133', whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>{field.value}</Typography></Box>)}</Stack></Box>;
 }
-async function loadProductionAuditLogs(productionObjectId: string, operationId?: string): Promise<AuditLogItem[]> {
+async function loadProductionAuditLogs(productionObjectId: string, operationId: string, identity: FormWorklistIdentity): Promise<AuditLogItem[]> {
   const pageSize = 200;
   const firstResponse = await getAuditLogs({ entityType: 'PRODUCTION_EXECUTION', entityId: productionObjectId, page: 1, size: pageSize });
   const firstPage = (firstResponse.data.data as PageResult<AuditLogItem>) || { content: [], totalPages: 0 };
@@ -102,6 +103,7 @@ async function loadProductionAuditLogs(productionObjectId: string, operationId?:
     pages.push((response.data.data as PageResult<AuditLogItem>) || { content: [], totalPages: 0 });
   }
   return pages.flatMap((page) => page.content ?? []).filter((item) => {
+    if (!isAuditForForm(item, identity)) return false;
     if (!operationId) return true;
     const summary = item.dataSummary?.trim();
     if (!summary) return false;
@@ -158,7 +160,7 @@ function ReviewTaskDialog({ view, identity, readOnly, onClose, onChanged }: { vi
     if (!identity || !detail || busy) return;
     setBusy(true); setError('');
     try {
-      await executeProduction(identity.productionObjectId, { action: button.action, revision: detail.revision, operationId: identity.operationId, formId: identity.formId, instanceId: identity.copyId, values, ...signature });
+      await executeProduction(identity.productionObjectId, { action: button.action, revision: detail.revision, operationId: identity.operationId, formId: identity.formId, instanceId: identity.copyId, values: executionFormValues(detail.snapshot.fields, values), ...signature });
       setSigning(null); setAccount(''); setPassword(''); setOpinion('');
       showMessage(`${button.label}成功`, 'success'); onChanged(); onClose();
     } catch (reason) { setError(errorText(reason)); setPassword(''); }
@@ -213,7 +215,7 @@ export default function FormReviewPage() {
   const queryParams = useMemo(() => toQuery(filters, view, page, size), [filters, view, page, size]);
   const query = useQuery({ placeholderData: (previous, previousQuery) => previousQuery?.queryKey[1] === view ? previous : undefined, queryKey: ['form-review-worklist', view, queryParams], queryFn: () => listFormWorklist(view, queryParams), retry: false, refetchOnMount: 'always' });
   const detailQuery = useQuery({ queryKey: ['form-review-detail', view, detailIdentity], queryFn: () => getFormWorklistDetail(view, detailIdentity!), enabled: Boolean(detailIdentity), retry: false });
-  const auditQuery = useQuery({ queryKey: ['form-review-audit', detailIdentity], queryFn: () => loadProductionAuditLogs(detailIdentity!.productionObjectId, detailIdentity!.operationId), enabled: Boolean(detailIdentity && detailTab === 1), retry: false });
+  const auditQuery = useQuery({ queryKey: ['form-review-audit', detailIdentity], queryFn: () => loadProductionAuditLogs(detailIdentity!.productionObjectId, detailIdentity!.operationId, detailIdentity!), enabled: Boolean(detailIdentity && detailTab === 1), retry: false });
   const transferTargetsQuery = useQuery({
     queryKey: ['form-review-transfer-targets', transferIdentity, transferKeyword],
     queryFn: () => getExecutionTransferTargets(transferIdentity!.productionObjectId, transferIdentity!.operationId, transferIdentity!.formId, transferIdentity!.copyId, transferKeyword),
@@ -322,7 +324,7 @@ export default function FormReviewPage() {
         <Stack spacing={2}>
           <Box sx={{ p: 1.5, bgcolor: '#f8fafc', border: '1px solid #e4e7ed', borderRadius: 1 }}>
             <Typography variant="body2" sx={{ fontWeight: 600, color: '#303133' }}>当前审批任务</Typography>
-            <Typography variant="caption" color="text.secondary">仅可转办给当前审批节点授权范围内的其他启用用户</Typography>
+            <Typography variant="caption" color="text.secondary">可转办给本租户其他正常可用用户，原审批候选依据保留</Typography>
           </Box>
           <Autocomplete
             openOnFocus
@@ -341,7 +343,7 @@ export default function FormReviewPage() {
             onChange={(_, value) => setTransferTarget(value)}
             disabled={transferBusy}
             loadingText="正在加载可转办用户…"
-            noOptionsText={transferTargetsQuery.isError ? '候选用户加载失败，请稍后重试' : transferKeyword.trim() ? '没有找到匹配的可转办用户' : '当前授权范围内没有其他可转办用户'}
+            noOptionsText={transferTargetsQuery.isError ? '候选用户加载失败，请稍后重试' : transferKeyword.trim() ? '没有找到匹配的可转办用户' : '本租户没有其他可转办用户'}
             renderOption={(props, option) => (
               <Box component="li" {...props} key={option.id} sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start !important', gap: 0.25 }}>
                 <Typography variant="body2" sx={{ color: '#303133' }}>{option.name}</Typography>
@@ -355,11 +357,11 @@ export default function FormReviewPage() {
                 required
                 placeholder="输入姓名或账号查询"
                 error={transferTargetsQuery.isError}
-                helperText={transferTargetsQuery.isError ? '请检查网络或稍后重试' : '审批节点配置的部门/角色会先解析为具体用户，转办时选择一名用户'}
+                helperText={transferTargetsQuery.isError ? '请检查网络或稍后重试' : '请选择本租户已启用且未锁定的其他用户，不限原审批候选人'}
               />
             )}
           />
-          {transferTargetsQuery.isSuccess && transferTargetsQuery.data.length === 0 ? <Alert severity="warning" variant="outlined">{transferKeyword.trim() ? '没有找到匹配的可转办用户，请尝试其他姓名或账号。' : '当前审批主体范围内没有可转办的其他用户。请检查审批节点的用户、部门或角色成员是否已启用；不能转办给当前处理人。'}</Alert> : null}
+          {transferTargetsQuery.isSuccess && transferTargetsQuery.data.length === 0 ? <Alert severity="warning" variant="outlined">{transferKeyword.trim() ? '没有找到匹配的可转办用户，请尝试其他姓名或账号。' : '本租户没有其他正常可用的用户；不能转办给当前处理人。'}</Alert> : null}
           <TextField label="转办原因" required value={transferReason} onChange={(event) => setTransferReason(event.target.value)} multiline minRows={3} inputProps={{ maxLength: 500 }} helperText={`${transferReason.length}/500`} disabled={transferBusy} />
           <Alert severity="info">转办不会推进审批流程，也不会修改表单内容；受让人处理后，流程才会继续。</Alert>
           {transferError ? <Alert severity="error">{transferError}</Alert> : null}

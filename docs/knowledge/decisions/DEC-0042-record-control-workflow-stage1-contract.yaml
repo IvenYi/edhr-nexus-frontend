@@ -4,7 +4,7 @@ decisions:
     title: 记录控制公共流程阶段一契约与实现边界
     status: implemented
     visibility: internal
-    context: "provenance: user-confirmed-and-original-evidence；本决策补充 DEC-0037 与 DEC-0041，保留记录控制申请域和公共流程域的阶段一共享边界。2026-10-28 来支已有申请确认、审批/退回和结果落地源码，当前定义按声明区分阶段一与后续实现；迁移注册、首次完成修订及实际合并候选验收另取集成切片证据，不能据此外推撤回、转办、重新分配或完整 DHR/A12。"
+    context: "provenance: user-confirmed-and-original-evidence；本决策补充DEC-0037与DEC-0041，保留记录控制申请域和公共流程域的阶段一共享边界。2026-10-28来支已有申请确认、审批/退回和结果落地源码，不能仅用该阶段证据外推撤回、转办、重新分配或完整DHR/A12。2026-11-03本轮PG32与四角色真实应用all链已另补基本流程和争用证据；05末的发布级待验是原阶段一时点，当前通过与未测范围依本文件差异和本轮原件分列，历史迁移升级本轮未重跑。候选读取对齐见DEC-0094；02中按创建权限码读取是阶段一REST历史实现，不能据此恢复当前已结束的权限协同暂缓，原显式版本启动和最终申请/审批资格保持。"
     decisionStatements:
       - id: DEC-0042-01
         statement: "provenance: user-confirmed；记录控制域拥有申请、来源资格、申请人签名和批准后业务落地；公共流程域拥有候选流程、显式版本启动、路由、任务和流程运行日志。记录控制域不得复制公共流程引擎或任务模型，公共流程域不得直接读取或修改记录控制来源数据。"
@@ -70,8 +70,8 @@ decisions:
         visibility: internal
         path: gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/contract/RecordControlWorkflowPort.java
         lineHint: 1
-        summary: "provenance: original-and-test-evidence；记录控制申请确认事务已经复核来源资格、当前修订和活动锁，使用专用签署能力生成申请证据，显式启动公共流程并回写冻结引用；申请、审批和活动详情的数据范围由认证上下文强制执行。真实 PostgreSQL 历史升级、并发争用和双账号浏览器 E2E 仍保留为发布验证。"
-        evidenceIds: [evidence.record-control-workflow-stage1-port, evidence.record-control-workflow-stage1-integration-contract, evidence.record-control-v1-service, evidence.record-control-active-detail-access-tests, evidence.record-control-signature-generic-crud-tests, evidence.record-control-signature-generic-list-tests]
+        summary: "provenance: original-and-test-evidence；记录控制申请确认事务已经复核来源资格、当前修订和活动锁，使用专用签署能力生成申请证据，显式启动公共流程并回写冻结引用；申请、审批和活动详情的数据范围由认证上下文强制执行。旧发布验证描述保留当时时点：历史升级采用既有独立迁移证据，本轮未再运行历史升级；2026-11-03真实PG32和四角色真实UI已覆盖本范围争用与基本链路，不再笼统列为没有并发或多账号E2E。未覆盖的未来角色/复杂模板/部署组合仍不得推为已验证。"
+        evidenceIds: [evidence.record-control-workflow-stage1-port, evidence.record-control-workflow-stage1-integration-contract, evidence.record-control-v1-service, evidence.record-control-active-detail-access-tests, evidence.record-control-signature-generic-crud-tests, evidence.record-control-signature-generic-list-tests, evidence.workflow-record-dhr-closure-postgres-verification, evidence.workflow-record-dhr-closure-live-verification]
       - id: discrepancy.record-control-stage1-result-delivery-pending
         status: resolved
         severity: high
@@ -81,10 +81,10 @@ decisions:
         summary: "provenance: original-evidence；2026-10-23 已接通最终批准/退回的同步结果投递和记录控制业务处理：中间节点不投递，最终结果按确定性 eventId 幂等消费，业务落地失败向外传播并回滚审批动作。撤回仍按独立能力证据判断。"
         evidenceIds: [evidence.record-control-workflow-stage1-contract-types, evidence.record-control-workflow-stage1-result-handler-boundary, evidence.record-control-workflow-result-delivery-adapter, evidence.record-control-workflow-result-business-handler, evidence.record-control-workflow-stage1-engine-tests, evidence.record-control-task-action-result-tests]
       - id: discrepancy.record-control-stage1-permission-and-concurrency-verification-pending
-        status: accepted
+        status: resolved
         severity: medium
         visibility: internal
         path: gmp-platform/backend/src/test/resources/db/changelog/0080-record-control-workflow-contract.sql
         lineHint: 1
-        summary: "provenance: original-evidence-and-evidence-gap；本地真实迁移、三列、唯一索引、6 个权限码、ADMIN 六项关联及认证候选空列表已验证；尚未执行唯一索引并发争用和非管理员组合账号 CHANGE/OBSOLETE 权限矩阵。"
-        evidenceIds: [evidence.record-control-workflow-stage1-migration, evidence.record-control-workflow-stage1-api-tests, evidence.record-control-workflow-stage1-local-validation]
+        summary: "provenance: historical-and-original-test-evidence；原accepted时点及迁移/权限初始化验证保留。2026-11-03本轮真实PG32项中concurrentIdenticalSubmissionsCreateOneApplicationSignatureAndWorkflow已断言同幂等键并发返回同一申请且申请、流程及申请签名各一，另有不同申请竞争及撤回/批准、改派竞争。候选查询按DEC-0094当前全认证读取政策，通过3项真实方法安全及真实HTTP验证无两类create权限的普通账号可读CHANGE/OBSOLETE、匿名及DHR_SUMMARY拒绝；申请来源、签署和审批实际资格仍由各服务检查。该首阶段候选/唯一争用缺口关闭，不把已被替代的额外候选创建权限矩阵继续列为待办，也不宣称所有未来角色或多租户组合已测试。"
+        evidenceIds: [evidence.record-control-workflow-stage1-migration, evidence.record-control-workflow-stage1-api-tests, evidence.record-control-workflow-stage1-local-validation, evidence.record-control-authenticated-candidate-method-security, evidence.workflow-record-dhr-closure-postgres-verification, evidence.workflow-record-dhr-closure-live-verification]

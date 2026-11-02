@@ -51,7 +51,7 @@ import {
 } from '@/api/form-instance-records';
 import { FormCanvasPreview } from '@/pages/master-data/DhrTemplateWorkspaceDialog';
 import { parseReactTemplateDesignerDocument } from '@/pages/master-data/template-designer-react/utils/document';
-import { toProductionAuditFields, type ProductionAuditField } from '@/utils/productionAudit';
+import { isAuditForForm, toProductionAuditFields, type ProductionAuditField } from '@/utils/productionAudit';
 import type { PageResult } from '@/types/common';
 import {
   formListAdvancedGridSx,
@@ -170,7 +170,7 @@ function AuditFieldBlock({ title, fields }: { title: string; fields: ProductionA
   return <Box sx={{ border: '1px solid #e4e7ed', borderRadius: 1, bgcolor: '#f8fafc', p: 1, minWidth: 0 }}><Typography variant="caption" sx={{ display: 'block', mb: 0.75, color: '#606266', fontWeight: 600 }}>{title}</Typography><Stack spacing={0.75}>{fields.length === 0 ? <Typography variant="caption" sx={{ color: '#909399' }}>无</Typography> : fields.map((field) => <Box key={field.key} sx={{ display: 'grid', gridTemplateColumns: '84px minmax(0, 1fr)', gap: 1 }}><Typography variant="caption" sx={{ color: '#606266' }}>{field.label}</Typography><Typography variant="caption" sx={{ color: '#303133', whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>{field.value}</Typography></Box>)}</Stack></Box>;
 }
 
-async function loadProductionAuditLogs(productionObjectId: string, operationId?: string): Promise<AuditLogItem[]> {
+async function loadProductionAuditLogs(productionObjectId: string, operationId: string | undefined, recordId: string): Promise<AuditLogItem[]> {
   const pageSize = 200;
   const firstResponse = await getAuditLogs({ entityType: 'PRODUCTION_EXECUTION', entityId: productionObjectId, page: 1, size: pageSize });
   const firstPage = (firstResponse.data.data as PageResult<AuditLogItem>) || { content: [], totalPages: 0 };
@@ -179,7 +179,7 @@ async function loadProductionAuditLogs(productionObjectId: string, operationId?:
     const response = await getAuditLogs({ entityType: 'PRODUCTION_EXECUTION', entityId: productionObjectId, page, size: pageSize });
     pages.push((response.data.data as PageResult<AuditLogItem>) || { content: [], totalPages: 0 });
   }
-  const content = pages.flatMap((page) => page.content ?? []);
+  const content = pages.flatMap((page) => page.content ?? []).filter(item => isAuditForForm(item, { formInstanceId: recordId }));
   if (!operationId) return content;
   return content.filter((item) => {
     const summary = item.dataSummary?.trim();
@@ -196,7 +196,7 @@ function FormInstanceDetailDrawer({ recordId, tab, onTabChange, onClose }: { rec
   const operationId = detailQuery.data?.source.operationId;
   const auditQuery = useQuery({
     queryKey: ['form-instance-audit', recordId, productionObjectId, operationId], enabled: Boolean(recordId && productionObjectId && tab === 1),
-    queryFn: () => loadProductionAuditLogs(productionObjectId!, operationId),
+    queryFn: () => loadProductionAuditLogs(productionObjectId!, operationId, recordId!),
   });
   const detail = detailQuery.data;
   const document = useMemo(() => {

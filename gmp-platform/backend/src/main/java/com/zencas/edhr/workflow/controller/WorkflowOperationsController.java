@@ -4,6 +4,7 @@ import com.zencas.edhr.common.dto.ApiResponse;
 import com.zencas.edhr.common.dto.PageResult;
 import com.zencas.edhr.workflow.service.WorkflowOperationsQuery;
 import com.zencas.edhr.workflow.service.WorkflowResponsibilityService;
+import com.zencas.edhr.production.service.FormWorkflowOperations;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +16,7 @@ import java.util.*;
 public class WorkflowOperationsController {
     private final WorkflowOperationsQuery query;
     private final WorkflowResponsibilityService responsibility;
+    private final FormWorkflowOperations forms;
 
     @GetMapping("/instances")
     @PreAuthorize("hasAnyAuthority('workflow.instances','workflow.logs','workflow.intervene')")
@@ -26,7 +28,9 @@ public class WorkflowOperationsController {
 
     @GetMapping("/instances/{id}")
     @PreAuthorize("hasAnyAuthority('workflow.instances','workflow.logs','workflow.intervene')")
-    public ApiResponse<Map<String, Object>> detail(@PathVariable Long id) { return ApiResponse.success(query.detail(id)); }
+    public ApiResponse<Map<String, Object>> detail(@PathVariable String id) {
+        return ApiResponse.success(id.startsWith("form-") ? forms.detail(Long.parseLong(id.substring(5))) : query.detail(Long.valueOf(id)));
+    }
 
     @GetMapping("/tasks/{id}/transfer-context")
     public ApiResponse<Map<String,Object>> context(@PathVariable Long id) { return ApiResponse.success(responsibility.transferContext(id)); }
@@ -38,13 +42,14 @@ public class WorkflowOperationsController {
 
     @GetMapping("/tasks/{id}/reassignment-targets")
     @PreAuthorize("hasAuthority('workflow.intervene')")
-    public ApiResponse<List<Map<String,String>>> targets(@PathVariable Long id,@RequestParam(required=false) String keyword) {
-        return ApiResponse.success(responsibility.reassignmentTargets(id,keyword));
+    public ApiResponse<List<Map<String,String>>> targets(@PathVariable String id,@RequestParam(required=false) String keyword) {
+        return ApiResponse.success(id.startsWith("form-") ? forms.targets(id,keyword) : responsibility.reassignmentTargets(Long.valueOf(id),keyword));
     }
 
     @PostMapping("/tasks/{id}/reassign")
     @PreAuthorize("hasAuthority('workflow.intervene')")
-    public ApiResponse<Void> reassign(@PathVariable Long id,@RequestBody WorkflowResponsibilityService.Command command) {
-        responsibility.reassign(id,command); return ApiResponse.success(null);
+    public ApiResponse<Void> reassign(@PathVariable String id,@RequestBody WorkflowResponsibilityService.Command command) {
+        if (id.startsWith("form-")) forms.reassign(id,command); else responsibility.reassign(Long.valueOf(id),command);
+        return ApiResponse.success(null);
     }
 }

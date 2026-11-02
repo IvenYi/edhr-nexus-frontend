@@ -1,0 +1,369 @@
+{
+  "qualification": "Maintained application on dedicated Vite, real backend and disposable PostgreSQL; no business API mocking.",
+  "database": "edhr_record_control_test_closure_e2e_20261102",
+  "base": "http://localhost:13002",
+  "selectedSteps": "all",
+  "checks": [
+    {
+      "name": "actual-login-four-roles",
+      "passed": true,
+      "milliseconds": 4140
+    },
+    {
+      "name": "authenticated-candidates-without-create-authorities-and-anonymous-rejection",
+      "passed": true,
+      "milliseconds": 49
+    },
+    {
+      "name": "prepare-real-frozen-dhr-fixtures-through-services",
+      "passed": true,
+      "milliseconds": 523
+    },
+    {
+      "name": "signed-request-withdraw-releases-lock-and-allows-new-request",
+      "passed": true,
+      "milliseconds": 4104
+    },
+    {
+      "name": "handler-transfer-signed-manager-reassignment-and-original-approval",
+      "passed": true,
+      "milliseconds": 4981
+    },
+    {
+      "name": "return-finishes-old-request-and-requires-new-number",
+      "passed": true,
+      "milliseconds": 5028
+    },
+    {
+      "name": "change-effective-frozen-history-current-contribution-and-notice",
+      "passed": true,
+      "milliseconds": 3637
+    },
+    {
+      "name": "formalized-dhr-revision-creates-draft-and-old-body-remains-readable",
+      "passed": true,
+      "milliseconds": 5305
+    },
+    {
+      "name": "obsolete-effective-and-frozen-version-remains-original",
+      "passed": true,
+      "milliseconds": 4485
+    },
+    {
+      "name": "dhr-pending-blocks-change-then-native-return-allows-request",
+      "passed": true,
+      "milliseconds": 4193
+    },
+    {
+      "name": "native-summary-resubmit-v2-signed-dhr-reassign-and-native-approval-with-audit",
+      "passed": true,
+      "milliseconds": 4139
+    },
+    {
+      "name": "ordinary-form-real-fill-save-submit-transfer-reassign-and-sign-approve",
+      "passed": true,
+      "milliseconds": 10024
+    }
+  ],
+  "network": [
+    {
+      "role": "applicant",
+      "method": "POST",
+      "path": "/api/v1/record-control/requests",
+      "status": 200
+    },
+    {
+      "role": "applicant",
+      "method": "POST",
+      "path": "/api/v1/record-control/requests/392746773242568704/withdraw",
+      "status": 200
+    },
+    {
+      "role": "applicant",
+      "method": "POST",
+      "path": "/api/v1/record-control/requests",
+      "status": 200
+    },
+    {
+      "role": "applicant",
+      "method": "POST",
+      "path": "/api/v1/record-control/requests",
+      "status": 200
+    },
+    {
+      "role": "reviewer",
+      "method": "POST",
+      "path": "/api/v1/record-control/workflow-tasks/392746790732816384/transfer",
+      "status": 200
+    },
+    {
+      "role": "reviewer",
+      "method": "POST",
+      "path": "/api/v1/record-control/requests/for-my-workflow-tasks",
+      "status": 200
+    },
+    {
+      "role": "reviewer",
+      "method": "POST",
+      "path": "/api/v1/record-control/requests/for-my-workflow-tasks",
+      "status": 200
+    },
+    {
+      "role": "manager",
+      "method": "POST",
+      "path": "/api/v1/workflow/operations/tasks/392746790732816384/reassign",
+      "status": 200
+    },
+    {
+      "role": "reviewer",
+      "method": "POST",
+      "path": "/api/v1/record-control/workflow-tasks/392746790732816384/approve",
+      "status": 200
+    },
+    {
+      "role": "reviewer",
+      "method": "POST",
+      "path": "/api/v1/record-control/requests/for-my-workflow-tasks",
+      "status": 200
+    },
+    {
+      "role": "reviewer",
+      "method": "POST",
+      "path": "/api/v1/record-control/requests/for-my-workflow-tasks",
+      "status": 200
+    },
+    {
+      "role": "applicant",
+      "method": "POST",
+      "path": "/api/v1/record-control/requests",
+      "status": 200
+    },
+    {
+      "role": "reviewer",
+      "method": "POST",
+      "path": "/api/v1/record-control/workflow-tasks/392746812144738304/reject",
+      "status": 200
+    },
+    {
+      "role": "reviewer",
+      "method": "POST",
+      "path": "/api/v1/record-control/requests/for-my-workflow-tasks",
+      "status": 200
+    },
+    {
+      "role": "reviewer",
+      "method": "POST",
+      "path": "/api/v1/record-control/requests/for-my-workflow-tasks",
+      "status": 200
+    },
+    {
+      "role": "applicant",
+      "method": "POST",
+      "path": "/api/v1/record-control/requests",
+      "status": 200
+    },
+    {
+      "role": "reviewer",
+      "method": "POST",
+      "path": "/api/v1/record-control/workflow-tasks/392746822810853376/approve",
+      "status": 200
+    },
+    {
+      "role": "reviewer",
+      "method": "POST",
+      "path": "/api/v1/record-control/requests/for-my-workflow-tasks",
+      "status": 200
+    },
+    {
+      "role": "reviewer",
+      "method": "POST",
+      "path": "/api/v1/record-control/requests/for-my-workflow-tasks",
+      "status": 200
+    },
+    {
+      "role": "applicant",
+      "method": "POST",
+      "path": "/api/v1/record-control/requests",
+      "status": 200
+    },
+    {
+      "role": "reviewer",
+      "method": "POST",
+      "path": "/api/v1/record-control/workflow-tasks/392746833921564672/approve",
+      "status": 200
+    },
+    {
+      "role": "reviewer",
+      "method": "POST",
+      "path": "/api/v1/record-control/requests/for-my-workflow-tasks",
+      "status": 200
+    },
+    {
+      "role": "reviewer",
+      "method": "POST",
+      "path": "/api/v1/record-control/requests/for-my-workflow-tasks",
+      "status": 200
+    },
+    {
+      "role": "applicant",
+      "method": "POST",
+      "path": "/api/v1/dhr-impact-notifications/1/read",
+      "status": 200
+    },
+    {
+      "role": "applicant",
+      "method": "POST",
+      "path": "/api/v1/dhr-instances/883020004003/summary/reorganize",
+      "status": 200
+    },
+    {
+      "role": "applicant",
+      "method": "POST",
+      "path": "/api/v1/record-control/requests",
+      "status": 200
+    },
+    {
+      "role": "reviewer",
+      "method": "POST",
+      "path": "/api/v1/record-control/workflow-tasks/392746872374943744/approve",
+      "status": 200
+    },
+    {
+      "role": "reviewer",
+      "method": "POST",
+      "path": "/api/v1/record-control/requests/for-my-workflow-tasks",
+      "status": 200
+    },
+    {
+      "role": "reviewer",
+      "method": "POST",
+      "path": "/api/v1/record-control/requests/for-my-workflow-tasks",
+      "status": 200
+    },
+    {
+      "role": "reviewer",
+      "method": "POST",
+      "path": "/api/v1/dhr-reviews/392746766087086080/actions",
+      "status": 200
+    },
+    {
+      "role": "applicant",
+      "method": "POST",
+      "path": "/api/v1/record-control/requests",
+      "status": 200
+    },
+    {
+      "role": "reviewer",
+      "method": "POST",
+      "path": "/api/v1/record-control/workflow-tasks/392746899075883008/approve",
+      "status": 200
+    },
+    {
+      "role": "reviewer",
+      "method": "POST",
+      "path": "/api/v1/record-control/requests/for-my-workflow-tasks",
+      "status": 200
+    },
+    {
+      "role": "reviewer",
+      "method": "POST",
+      "path": "/api/v1/record-control/requests/for-my-workflow-tasks",
+      "status": 200
+    },
+    {
+      "role": "applicant",
+      "method": "PUT",
+      "path": "/api/v1/dhr-instances/883020004005/summary/draft",
+      "status": 200
+    },
+    {
+      "role": "applicant",
+      "method": "POST",
+      "path": "/api/v1/dhr-instances/883020004005/summary/submit",
+      "status": 200
+    },
+    {
+      "role": "manager",
+      "method": "POST",
+      "path": "/api/v1/workflow/operations/tasks/392746908169134080/reassign",
+      "status": 200
+    },
+    {
+      "role": "target",
+      "method": "POST",
+      "path": "/api/v1/dhr-reviews/392746908169134080/actions",
+      "status": 200
+    },
+    {
+      "role": "applicant",
+      "method": "POST",
+      "path": "/api/v1/dhr-filling/883020004006/actions",
+      "status": 200
+    },
+    {
+      "role": "applicant",
+      "method": "POST",
+      "path": "/api/v1/production/execution/883020001006/actions",
+      "status": 200
+    },
+    {
+      "role": "applicant",
+      "method": "POST",
+      "path": "/api/v1/production/execution/883020001006/actions",
+      "status": 200
+    },
+    {
+      "role": "reviewer",
+      "method": "POST",
+      "path": "/api/v1/production/execution/883020001006/actions",
+      "status": 200
+    },
+    {
+      "role": "manager",
+      "method": "POST",
+      "path": "/api/v1/workflow/operations/tasks/form-883020002006%3Areview/reassign",
+      "status": 200
+    },
+    {
+      "role": "reviewer",
+      "method": "POST",
+      "path": "/api/v1/production/execution/883020001006/actions",
+      "status": 200
+    },
+    {
+      "role": "applicant",
+      "method": "POST",
+      "path": "/api/v1/production/execution/883020001006/actions",
+      "status": 200
+    },
+    {
+      "role": "reviewer",
+      "method": "POST",
+      "path": "/api/v1/production/execution/883020001006/actions",
+      "status": 200
+    }
+  ],
+  "errors": [],
+  "mainBefore": {
+    "record_control_request": "7:6c64df5abe2ccab0ea286cd940c13ad4",
+    "form_instance_record": "38:bc70dca85b1fa92344fc031f0d3aab1e",
+    "form_instance_revision": "38:82fa1f61d255b2e3dc703b54911051da",
+    "production_execution": "19:f9e5b97610af0be97064106fe4fa0d4a",
+    "dhr_instance": "15:c59f0c9057c27f976db0eff6d915d7fd",
+    "dhr_summary_version": "8:e0179c235e73a0c24a576f469625ccbb",
+    "dhr_summary_review": "3:e0134782732b1df895e4b7cf4ffcdd21",
+    "workflow_instance": "10:4e32b442a4899bfdc3581f906ab08f11",
+    "workflow_task": "11:31e4a84594e6fd7de78a6edef1382f74"
+  },
+  "mainAfter": {
+    "record_control_request": "7:6c64df5abe2ccab0ea286cd940c13ad4",
+    "form_instance_record": "38:bc70dca85b1fa92344fc031f0d3aab1e",
+    "form_instance_revision": "38:82fa1f61d255b2e3dc703b54911051da",
+    "production_execution": "19:f9e5b97610af0be97064106fe4fa0d4a",
+    "dhr_instance": "15:c59f0c9057c27f976db0eff6d915d7fd",
+    "dhr_summary_version": "8:e0179c235e73a0c24a576f469625ccbb",
+    "dhr_summary_review": "3:e0134782732b1df895e4b7cf4ffcdd21",
+    "workflow_instance": "10:4e32b442a4899bfdc3581f906ab08f11",
+    "workflow_task": "11:31e4a84594e6fd7de78a6edef1382f74"
+  }
+}

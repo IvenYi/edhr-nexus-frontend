@@ -63,8 +63,8 @@ rules:
       type: freeze-execution-snapshot
       references: [workflowDefinitionId, workflowVersionId]
       blockWhenNoCandidate: true
-    explanation: P0 变更和作废不预绑定、不自动代选；申请人必须从有对应发起权限且动作类型匹配的当前已发布流程版本中显式选择。公共流程阶段一已实现候选查询和显式版本启动，启动时重新校验定义类型、申请类型和当前已发布版本，冻结定义、版本、上下文和流程快照摘要；草稿、历史非当前版本和停用模板不可用于发起。来支已提供记录控制域的来源资格、签名、申请确认事务和流程引用回写实现；当前集成候选的迁移、首次完成修订和实际运行验证另取本切片证据，不由该实现说明宣称完整 P0 通过。
-    evidenceIds: [evidence.record-correction-void-design, evidence.record-control-start-entry-user-confirmed, evidence.record-control-workflow-stage1-candidate-service, evidence.record-control-workflow-stage1-candidate-api, evidence.record-control-workflow-stage1-explicit-start-engine, evidence.record-control-workflow-stage1-engine-tests, evidence.record-control-workflow-stage1-service-tests, evidence.record-control-workflow-stage1-api-tests]
+    explanation: P0 变更和作废不预绑定、不自动代选；申请人必须显式选择动作类型匹配的当前已发布具体流程版本，候选只读查询按DEC-0094统一为认证用户访问，不再另要求创建权限码。启动时仍复核定义类型、申请类型、当前已发布版本及来源/实际签署资格，冻结定义、版本、上下文和流程快照摘要；草稿、历史非当前版本和停用模板不可用于发起。当前实现和各轮运行证据分别保留，候选可读不授予写或审批权，不由局部通过宣称完整P0。
+    evidenceIds: [evidence.record-correction-void-design, evidence.record-control-start-entry-user-confirmed, evidence.record-control-workflow-stage1-candidate-service, evidence.record-control-workflow-stage1-candidate-api, evidence.record-control-workflow-stage1-explicit-start-engine, evidence.record-control-workflow-stage1-engine-tests, evidence.record-control-workflow-stage1-service-tests, evidence.record-control-workflow-stage1-api-tests, evidence.record-control-authenticated-candidate-read-user-confirmed, evidence.record-control-authenticated-candidate-read-source]
   - id: rule.record-control.application-confirmation-starts-review
     name: 记录控制申请确认即启动审批
     status: specified
@@ -94,10 +94,10 @@ rules:
       freezeReferences: [workflowDefinitionId, workflowVersionId]
       target: firstApprovalNode
       startNodeTask: none
-    explanation: 申请内容准备完成、申请人电子签名验证通过且显式选择匹配的已发布流程后，点击确认即构成一次发起动作；系统应在同一确定性事务中创建审批实例、冻结流程版本并直接推进到首个审批节点，不产生开始节点待办或二次保存、提交动作。公共流程 Java 端口及记录控制申请适配器已有源码和聚焦断言；本条更广业务规则保留 specified/internal，当前集成运行证据不覆盖非管理员完整矩阵、撤回/转办/重新分配及完整 DHR/A12 生命周期。
-    evidenceIds: [evidence.record-control-start-entry-user-confirmed, evidence.record-correction-void-design, evidence.record-control-workflow-stage1-port, evidence.record-control-workflow-stage1-explicit-start-engine, evidence.record-control-workflow-stage1-engine-tests]
+    explanation: 申请内容准备完成、申请人电子签名验证通过且显式选择匹配的已发布流程后，点击确认即构成一次发起动作；系统应在同一确定性事务中创建审批实例、冻结流程版本并直接推进到首个审批节点，不产生开始节点待办或二次保存、提交动作。公共流程Java端口及记录控制适配器已有实现；本轮真实普通账号UI及PG覆盖申请、撤回重提、处理人转办、签名改派和DHR基本联动，不能继续列为这些功能完全未验收。本条保持specified/internal；所有未来账号组合、完整DHR放行/归档和A12历史仍不由这些样例覆盖。
+    evidenceIds: [evidence.record-control-start-entry-user-confirmed, evidence.record-correction-void-design, evidence.record-control-workflow-stage1-port, evidence.record-control-workflow-stage1-explicit-start-engine, evidence.record-control-workflow-stage1-engine-tests, evidence.workflow-record-dhr-closure-postgres-verification, evidence.workflow-record-dhr-closure-live-verification]
   - id: rule.record-control.review-template-category-scope
-    name: 首切片审批流程仅支持表单变更和表单作废
+    name: 记录控制申请匹配表单变更和表单作废流程分类
     status: specified
     visibility: internal
     trigger: review-template.configure-or-reference
@@ -111,8 +111,8 @@ rules:
       type: allow-with-governance
       categories: [CHANGE, OBSOLETE]
       appliesTo: [new-template, new-reference]
-    explanation: 首切片流程工作台仅管理表单变更和表单作废两类审批流程；分类持久化并参与查询和动作匹配。
-    evidenceIds: [evidence.record-correction-void-design]
+    explanation: 此范围约束记录控制申请及其候选匹配，只接受CHANGE和OBSOLETE；分类持久化并参与查询和动作匹配。早期首切片工作台仅两类是历史范围，当前共享审批配置页与WorkflowTemplateController已另支持DHR_SUMMARY用于DHR专属审批，不能用本规则禁止该已确认能力，也不能把DHR类型加入记录控制申请枚举。
+    evidenceIds: [evidence.record-correction-void-design, evidence.dhr-summary-user-confirmed, evidence.workflow-record-dhr-closure-source-review]
   - id: rule.record-control.canonical-action-terms
     name: 记录控制动作使用统一中文产品术语
     status: specified
@@ -167,8 +167,8 @@ rules:
     result:
       type: block
       reason: review-template-actions-are-system-fixed
-    explanation: 记录控制审批流程不提供发起填报权限或表单校验配置，也不绑定具体表单字段。开始节点只表示流程边界，不配置按钮；审批节点固定提供审批、退回、转办，动作语义及显隐由系统固定，不能增删、替换、重复或隐藏。审批按钮的显示名称、样式和动作前账户密码电子签名可配置，审批和退回可配置审批意见必填，转办不提供审批意见必填配置。记录控制审批流程不提供填充签名字段或签名字段绑定；此处沿用 DEC-0041 的配置范围，记录控制运行时签署尚未实现，不套用 DEC-0074 的生产/DHR 按钮认证规则。
-    evidenceIds: [evidence.record-control-start-entry-user-confirmed, evidence.record-control-review-template-required-approvers, evidence.record-control-review-template-publish-tests]
+    explanation: 记录控制审批流程不提供发起填报权限或表单校验配置，也不绑定具体表单字段。开始节点只表示流程边界，不配置按钮；审批节点固定提供审批、退回、转办，动作语义及显隐由系统固定，不能增删、替换、重复或隐藏。审批按钮的显示名称、样式和动作前账户密码电子签名可配置，审批和退回可配置审批意见必填，转办不提供审批意见必填配置。记录控制审批流程不提供填充签名字段或签名字段绑定；此处沿用 DEC-0041 的配置范围。RecordControlService 和 RecordControlTaskActionService 已有申请与审批签署适配，不能继续解释为产品签署待实现；其签署证据归属依 DEC-0087 处理，不据此直接套用或扩大 DEC-0074 的生产/DHR 按钮认证范围。
+    evidenceIds: [evidence.record-control-start-entry-user-confirmed, evidence.record-control-review-template-required-approvers, evidence.record-control-review-template-publish-tests, evidence.record-control-v1-service, evidence.record-control-workflow-result-delivery-adapter, evidence.workflow-record-dhr-closure-source-review]
   - id: rule.record-control.review-template-start-has-no-buttons
     name: 记录控制审批流程开始节点不配置按钮
     status: specified
@@ -242,8 +242,8 @@ rules:
       action: apply-record-correction-or-void
       rejectOnAnyReturn: true
       invalidateRemainingTasksOnReturn: true
-    explanation: P0 支持顺序和并行审批；并行分支必须全部批准后汇合，任一退回则本轮退回且其余待办失效。该规则描述审批引擎待开发契约，不表示旧表单按钮配置已经提供并行审批。
-    evidenceIds: [evidence.record-correction-void-design]
+    explanation: P0 支持顺序和并行审批；并行分支必须全部批准后汇合，任一退回则本轮退回且其余待办失效。原生WorkflowEngine已有汇合推进和退回失效实现，WorkflowEngineTest包含全部分支批准后汇合、深层分支退回和并行待办失效断言，不再作为等待引擎开发的TODO。本规则仍为内部规范，不将原生执行误称通用知识规则层已消费本YAML，也不由旧按钮配置或单条测试推定所有生产流程可并行。
+    evidenceIds: [evidence.record-correction-void-design, evidence.record-control-workflow-stage1-explicit-start-engine, evidence.record-control-workflow-stage1-engine-tests, evidence.workflow-record-dhr-closure-source-review]
   - id: rule.record-control.intervention-preserves-path
     name: 转办和重新分配不改变流程路径
     status: implemented

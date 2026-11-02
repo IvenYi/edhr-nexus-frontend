@@ -1,0 +1,106 @@
+ontologyResult:
+  result: updated
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: 0bd0848bbded6d6954d62a4f924e0b2eec6623ad
+    targetBranch: edhr-dev
+    targetCommit: e3e49784eda6bc01e7e5c686d6f79dc5a600d5ae
+    contractReadCommit: 0bd0848bbded6d6954d62a4f924e0b2eec6623ad
+    uncommittedContractPaths: []
+  reason: 已核对正式决策包及原始源码；本轮为L1流程入口与呈现增强，只补当前实现锚点和来源证据，不改变业务政策、生命周期、审计或签署契约，不提升知识成熟度。
+  changedArtifacts:
+    - path: docs/knowledge/implementation-anchors/workflow-operations.yaml
+      changeType: update
+      ids: [anchor.workflow-operations.responsibility]
+    - path: docs/knowledge/evidence/workflow-list-ui-20261102.yaml
+      changeType: create
+      ids: [evidence.workflow-list-ui-20261102-user-confirmed, evidence.workflow-list-ui-20261102-entry-source]
+    - path: docs/knowledge/evidence/workflow-list-ui-20261102.md
+      changeType: create
+      ids: []
+  knowledgeSync:
+    - id: anchor.workflow-operations.responsibility
+      disposition: updated
+      scope: 补流程列表与重新分配入口UI路径、业务类型及当前任务投影的本轮provenance；旧执行和测试来源保留，其他锚点不改。
+      sourceReferences:
+        - docs/development/workflow-list-ui-20261102/decision-package.yaml
+        - gmp-platform/frontend/src/pages/workflow-center/InstanceList.tsx
+        - gmp-platform/frontend/src/pages/workflow-center/WorkflowReassignmentEntry.tsx
+        - gmp-platform/frontend/src/pages/workflow-center/WorkflowInstancePanel.tsx
+    - id: evidence.workflow-list-ui-20261102-user-confirmed
+      disposition: updated
+      scope: 新增原始用户需求、既有政策及界面实现选择的分类记录；单任务直接进入、多任务先选及历史类型兜底标为实现选择，不伪装为新用户业务政策。
+      sourceReferences:
+        - docs/development/workflow-list-ui-20261102/decision-package.yaml
+        - docs/knowledge/evidence/workflow-list-ui-20261102.md
+    - id: evidence.workflow-list-ui-20261102-entry-source
+      disposition: updated
+      scope: 新增未提交工作树入口和原始查询/引擎来源证据，区分业务类型查询范围、当前待办、顺序后继、并行及历史；不包含数据库数量或实际提交验收结论。
+      sourceReferences:
+        - gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/WorkflowOperationsQuery.java
+        - gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java
+        - gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/RecordControlWorkflowService.java
+        - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrSummaryService.java
+    - id: DEC-0031
+      disposition: retained
+      scope: 每节点一个逻辑任务、多候选共享该任务；不把候选人数解释为并行待办数量。
+      sourceReferences: [docs/knowledge/decisions/DEC-0031-workflow-task-multi-candidate-runtime.yaml]
+    - id: DEC-0039
+      disposition: retained
+      scope: 并行审批范围保持记录控制CHANGE/OBSOLETE，不由本轮显示选择扩展为作业流程首版也支持并行。
+      sourceReferences: [docs/knowledge/decisions/DEC-0039-record-control-parallel-review-configuration.yaml]
+    - id: DEC-0091
+      disposition: retained
+      scope: 重新分配专门权限、原因及强制签署继续有效；未授权新动作或签署豁免。
+      sourceReferences: [docs/knowledge/decisions/DEC-0091-workflow-reassignment-signature.yaml]
+    - id: DEC-0092
+      disposition: retained
+      scope: 日志只读、干预不改变节点路径或结果，DHR继续专属入口；本轮仅新增现有动作入口和身份说明，不扩大查询或干预授权。
+      sourceReferences: [docs/knowledge/decisions/DEC-0092-workflow-operations-entry-and-actions.yaml]
+    - id: evidence.workflow-operations-main-verification
+      disposition: historical
+      scope: 原2026-10-30执行测试证据按原始时点保留，不将旧套件通过记录重写为本轮测试重跑或UI验收。
+      sourceReferences: [docs/knowledge/evidence/workflow-operations-20261030.md]
+  conflicts: []
+  questions: []
+  validationEvidence:
+    - id: validation.workflow-list-knowledge-bootstrap
+      checkType: schema
+      command: 从docs/knowledge/README.md提取并执行ruby Bootstrap知识校验代码块
+      outcome: passed
+      evidence:
+        - 实际输出Bootstrap knowledge validation passed，退出码0；全目录YAML、ID、引用与实现路径校验通过。
+        - 基线仍为0.3.25，未新增政策或提升implemented/verified状态。
+    - id: validation.workflow-list-evidence-links
+      checkType: evidence-path
+      command: ruby逐一解析workflow-list-ui-20261102.md中的本地Markdown目标并用File.exist?校验
+      outcome: passed
+      evidence:
+        - 实际输出Local knowledge evidence links passed，退出码0；所有当前本地证据路径存在。
+    - id: validation.workflow-list-contract-delta
+      checkType: reference
+      command: git diff来源0bd0848b至ab5adafb、再比较ab5adafb至e3e49784的项目契约/相关知识/相关流程源码
+      outcome: passed
+      evidence:
+        - 已独立读取正式decision-package；git rev-parse确认HEAD为0bd0848b、origin/edhr-dev为e3e49784。
+        - 两段目标差异在本轮契约、知识与受影响流程源码范围均为空；远端增量未合并到当前工作树。
+    - id: validation.workflow-list-source-projection
+      checkType: projection
+      command: 静态读取WorkflowOperationsQuery、WorkflowEngine、RecordControlWorkflowService、DhrSummaryService、WorkflowInstanceController及本轮前端文件
+      outcome: passed
+      evidence:
+        - 原始查询包含全历史tasks且排除DHR_SUMMARY；当前任务投影按PENDING/PROCESSING区分，日志历史保留。
+        - 引擎顺序后继按进入激活，拆分可有多并行任务，每节点一逻辑任务；未据此扩展WORK并行范围。
+        - CHANGE/OBSOLETE受控入口、DHR专属创建及通用CRUD拒绝均可定位；遗留DHR/RELEASE常量不计为已联通实例。
+        - 本轮代码复用既有重新分配对话框与taskState，类型和编号已在列表/详情/动作上下文呈现；本体未执行浏览器、业务套件或数据库校验。
+    - id: validation.workflow-list-diff-whitespace
+      checkType: reference
+      command: git diff --check
+      outcome: passed
+      evidence: [退出码0，无空白错误。]
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages: [P1, P2, P3]

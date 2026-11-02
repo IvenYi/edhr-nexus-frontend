@@ -1,0 +1,22 @@
+knowledgeModelVersion: 0.3.25
+evidence:
+  - id: evidence.workflow-record-dhr-closure-source-review
+    type: document
+    path: docs/knowledge/evidence/workflow-record-dhr-closure-20261102.md
+    description: original-evidence-and-historical-reconciliation；本轮按领域完整清单核对表单变更作废、DHR联动及流程责任操作的当前知识、历史替代、原始源码和测试断言，纠正早期来源事实不可用、运行待开发和主动通知无证据等陈旧当前说明；不反填历史验收，不把源码、聚焦测试或主方本轮补测要求等同于完整运行发布。
+    visibility: internal
+  - id: evidence.workflow-record-dhr-closure-live-verification
+    type: document
+    path: docs/development/workflow-record-dhr-closure-20261102/evidence/live-e2e-result.json
+    description: original-test-evidence；2026-11-03主方实际维护页面、真实后端及显式隔离PostgreSQL整链all报告，12个检查步骤全部通过（含登录和初始化，非12条独立业务流程），errors为空；覆盖变更/作废、撤回重提、转办/签名改派、DHR双向阻断/修订/原生审批及两域数据审计。主库9张受影响业务表前后指纹一致，不等于全库无变更证明；目录交错整理和通用质量变化判读未覆盖。
+    visibility: internal
+  - id: evidence.workflow-record-dhr-closure-postgres-verification
+    type: test
+    path: docs/development/workflow-record-dhr-closure-20261102/evidence/RecordControlPostgresIntegrationTest.txt
+    description: original-test-evidence；本轮RecordControlPostgresIntegrationTest原始Surefire报告32项、0失败/错误/跳过。已对照测试源码确认同幂等键并发只创建一个申请/流程/签名、源/DHR竞争、提醒接收人/重投/回滚、改派签名/资格/并发及两域审计；服务集成原件不冒充全部浏览器组合已验收。
+    visibility: internal
+  - id: evidence.workflow-record-dhr-closure-component-verification
+    type: document
+    path: docs/development/workflow-record-dhr-closure-20261102/evidence/component-ui-result.json
+    description: original-test-evidence；维护中的列表/详情/弹窗与实际API客户端在1440和390宽度合成拦截API验证40项全部通过，覆盖列设置、并行/无当前任务、日志/干预及领域审计展示；本原件无真实后端或数据库写入，不替代独立列出的真实整链。
+    visibility: internal

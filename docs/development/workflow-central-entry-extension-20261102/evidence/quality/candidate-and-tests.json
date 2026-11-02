@@ -1,0 +1,57 @@
+{
+  "baseCommit": "0bd0848bbded6d6954d62a4f924e0b2eec6623ad",
+  "headCommit": "0bd0848bbded6d6954d62a4f924e0b2eec6623ad",
+  "candidate": "local dirty working tree; not remote merge",
+  "database": "edhr_record_control_test_quality_central_20261102",
+  "reports": [
+    {
+      "class": "RecordControlPostgresIntegrationTest",
+      "summary": "Tests run: 31, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 17.49 s -- in com.zencas.edhr.recordcontrol.service.RecordControlPostgresIntegrationTest"
+    },
+    {
+      "class": "ProductionExecutionEngineTest",
+      "summary": "Tests run: 22, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.096 s -- in com.zencas.edhr.production.service.ProductionExecutionEngineTest"
+    },
+    {
+      "class": "ExecutionAccessTest",
+      "summary": "Tests run: 13, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.276 s -- in com.zencas.edhr.production.service.ExecutionAccessTest"
+    },
+    {
+      "class": "DhrReviewServiceTest",
+      "summary": "Tests run: 12, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.245 s -- in com.zencas.edhr.production.service.DhrReviewServiceTest"
+    },
+    {
+      "class": "DhrReviewLifecycleIntegrationTest",
+      "summary": "Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.815 s -- in com.zencas.edhr.production.service.DhrReviewLifecycleIntegrationTest"
+    },
+    {
+      "class": "BusinessKnowledgeModelTest",
+      "summary": "Tests run: 89, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 4.445 s -- in com.zencas.edhr.knowledge.BusinessKnowledgeModelTest"
+    }
+  ],
+  "files": {
+    "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormWorkflowOperations.java": "f98e2f9d4431888570f948356e02334217341f5d6d443101fda8672521feae14",
+    "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/WorkflowOperationsQuery.java": "b59d4d91b44b62081d45fc45fbafeab258300459282a6254819067b62d6f357b",
+    "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/WorkflowResponsibilityService.java": "9fa3effdad0debb9a1f6a1b29e821d02bb0dd7e92b1e24c809676146af4fbb01",
+    "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowOperationsController.java": "10e75f8c89f8fe29da3a9c313999ed9d9ab4734528c0da5d59c3cf48e24cd5b1",
+    "gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/controller/AuditController.java": "8a1f7b0c24515ef93b7c817512574be3470b312c947579d9c9f3cc44bca70b5e",
+    "gmp-platform/backend/src/test/java/com/zencas/edhr/recordcontrol/service/RecordControlPostgresIntegrationTest.java": "b7ffec415c5f2cc230afa393feb7fa822db0d8f226d92dac6c830601b3c29564",
+    "gmp-platform/frontend/src/api/workflow-operations.ts": "af893413c16db2aa9273c465aa7f6168114ddc7f5e7739270b4d3b30a8c78989",
+    "gmp-platform/frontend/src/components/workflow/WorkflowResponsibilityDialog.tsx": "253b26b70a27d399e5e87f3a96da39491bc3a48e0ab673d006216ded42d5d5a1",
+    "gmp-platform/frontend/src/pages/workflow-center/InstanceList.tsx": "971a129802348e936ce40b7ac18d01cab39ca74e0383b26dd0ec85b3aff3afe7",
+    "gmp-platform/frontend/src/pages/workflow-center/WorkflowInstancePanel.tsx": "647e0891341be2e9c094c983cca3211ee6558ef7388845809f5f7fbb04c020d9",
+    "gmp-platform/frontend/src/utils/productionAudit.ts": "1890b30b4742eda90e1107fd509a4e7fe1332873d2eba42149041f334053426e",
+    "gmp-platform/frontend/src/pages/form-management/FormInstanceListPage.tsx": "b4734b1912a6cf52eb3ed62eeebd153663b6f8e15464956437368f3eb95961ef",
+    "gmp-platform/frontend/src/pages/form-management/FormReviewPage.tsx": "3d359b03e7157129ccdad21f310189f7c10af1d0741a120f428c00f53f7ff7cc",
+    "gmp-platform/frontend/src/pages/form-management/FormFillingPage.tsx": "db35169730f8ef02301c4a6e3c394452e8a658760386a7c468b3caea29f80f70",
+    "gmp-platform/frontend/src/pages/dhr-management/dhrAuditPresentation.ts": "82e5e7da08f28b67eef63bcee8af3d1265628b2a8ab4b2e70e0abcb8cc0cd8f1",
+    "gmp-platform/frontend/scripts/test-workflow-list-ui-browser.mjs": "2308265f392e9730b98491a010ce0443029426c166421f302d3a5d32ca0559c4",
+    "docs/knowledge/decisions/DEC-0093-central-form-dhr-workflow-responsibility.yaml": "cb692c88ae96c473b4c7a05705c3d386f5376c968bf177adc09c259e674c8004",
+    "docs/knowledge/rules/workflow-central-entry.yaml": "877ad5e3d51e0a52815ad15a4e7810c929fe56d0f9fa32a9dd33be925005bc94",
+    "docs/knowledge/facts/workflow-central-entry.yaml": "ceffcce92e60014388e89028b3ece6771d7721e1d8ce1720cf96bc2c6b1cae20",
+    "docs/knowledge/implementation-anchors/workflow-central-entry.yaml": "4ebc3e9a5bf64ddf1f08ada2a00f9daa41988348455810880f03bb63378dfb2b",
+    "docs/knowledge/evidence/central-form-dhr-workflow-20261102.yaml": "9729a8dbd3084c71f78830634ebc7f95532a3fc8a3a59214f51afba829a58c12",
+    "docs/knowledge/glossary.yaml": "a4a9568a25b6698cb1a09c92ae0e9811edf90f0f849cb422c64c0a4b508f1302",
+    "docs/knowledge/ontology.yaml": "2d26c6941665829990fcf48c04e3b7954620e1091896bba38c1e712a21815362"
+  }
+}

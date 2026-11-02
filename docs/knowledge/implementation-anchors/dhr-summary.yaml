@@ -25,10 +25,10 @@ implementationAnchors:
     testReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrSummaryMigrationTest.java, gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrSummaryPersistenceTest.java, gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrAttachmentAndArchiveTest.java, gmp-platform/backend/scripts/test-dhr-model-migration.mjs, gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrAuditReadTest.java]
     status: specified
     visibility: internal
-    evidenceIds: [evidence.dhr-summary-user-confirmed, evidence.dhr-summary-compliance-assessment, evidence.dhr-summary-service, evidence.dhr-frozen-evidence-integrity-source, evidence.dhr-summary-migration, evidence.dhr-summary-complete-evidence-migration, evidence.dhr-summary-attachment-migration, evidence.dhr-summary-complete-evidence-tests, evidence.dhr-summary-attachment-archive-tests]
+    evidenceIds: [evidence.dhr-summary-user-confirmed, evidence.dhr-summary-compliance-assessment, evidence.dhr-summary-service, evidence.dhr-frozen-evidence-integrity-source, evidence.dhr-summary-migration, evidence.dhr-summary-complete-evidence-migration, evidence.dhr-summary-attachment-migration, evidence.dhr-summary-complete-evidence-tests, evidence.dhr-summary-attachment-archive-tests, evidence.workflow-record-dhr-closure-live-verification]
     sourceRevision: working-tree
-    sourceLocator: "submit/version 保留version_no和完整冻结及人工确认，无evidence_model_version；reorganize/prepareNextDraft先建DRAFT，submit才分配MAX(version_no)+1，workspace返回草稿和历史版、version按指定版本读取。0104转换及原审计保护的旧切片验证见确认证据；revisionPrintableExport的草稿/历史版切换及只读导出仍待本轮UI/端到端验收，不能复用迁移切片质量结论。目标规则保持specified/internal。；2026-10-21仅初始化定位维护（d405a9af工作树）：dhr_summary_version.version_no/check_result_snapshot/attachment_snapshot、dhr_summary_evidence和dhr_summary_draft.source_scope_hash；直接创建最终结构，不执行0104转换，原转换验证保留在历史证据。原sourceRevision/capturedAt仍标识先前实现核对，本注记不重做或提升其业务验收。"
-    capturedAt: '2026-09-28'
+    sourceLocator: "submit/version保留version_no和完整冻结及人工确认，无evidence_model_version；reorganize/prepareNextDraft先建DRAFT，submit才分配MAX(version_no)+1。2026-11-03真实UI已覆盖正式版发起修订后草稿/V1切换、旧正文及V1冻结行不变、V2核查提交和原生批准；只读导出专项不由这些交互代验。0104转换及原审计保护保留旧切片证据，本轮新建样本不代替旧转换样本的再次提交。2026-10-21初始化定位为dhr_summary_version.version_no/check_result_snapshot/attachment_snapshot、dhr_summary_evidence和dhr_summary_draft.source_scope_hash，当前直接建最终结构，不执行0104转换。目标规则保持specified/internal，不将原生Java验收提升为通用知识执行。"
+    capturedAt: '2026-11-03'
     reviewStatus: reviewed
   - id: anchor.dhr-summary-manual-review-confirmation
     targetId: rule.dhr-summary-manual-review-confirmation
@@ -115,8 +115,8 @@ implementationAnchors:
     testReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrReviewServiceTest.java, gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrReviewLifecycleIntegrationTest.java]
     status: specified
     visibility: internal
-    evidenceIds: [evidence.dhr-filling-review-confirmed, evidence.dhr-evidence-impact-service, evidence.dhr-review-service]
+    evidenceIds: [evidence.dhr-filling-review-confirmed, evidence.dhr-evidence-impact-service, evidence.dhr-review-service, evidence.dhr-record-control-linkage-source, evidence.dhr-impact-notification-personal-source, evidence.dhr-linkage-backend-verification, evidence.workflow-record-dhr-closure-source-review]
     sourceRevision: working-tree
-    sourceLocator: "changes 比较冻结表单、新增关联实例和附件，act 阻断发现变化后的批准；主动生效通知和完整核查结果变化尚无闭环证据。；2026-10-21仅初始化定位维护（d405a9af工作树）：dhr_summary_draft.source_scope_hash、dhr_summary_version.check_result_snapshot/attachment_snapshot及dhr_attachment。原sourceRevision/capturedAt仍标识先前实现核对，本注记不重做或提升其业务验收。"
-    capturedAt: '2026-09-25'
+    sourceLocator: "DhrEvidenceImpactService.changes比较冻结表单身份/版/修订/值/状态、新增关联实例及附件，DhrReviewService.act阻断过时批准；sourceEffective与个人提醒服务已有主动生效影响和账号ID通知，RecordControlPostgresIntegrationTest及联动切片原件覆盖收件人、重名/原审计身份、重投、竞争及失败回滚，不能继续概括为无通知证据。完整适用质量结果、异常处置及源签署有效性变化自动比较仍是实质剩余；普通权限和通知子矩阵按本轮实际证据逐项收敛，不由本源码核对自动关闭。2026-10-21初始化定位注记保留于Git历史，当前schema引用不改。"
+    capturedAt: '2026-11-03'
     reviewStatus: reviewed

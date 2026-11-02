@@ -33,6 +33,10 @@ const fieldLabels: Record<string, string> = {
   terminationReason: '结束原因',
   terminationAt: '结束时间',
   remark: '备注',
+  formInstanceId: '表单实例标识', formInstanceNo: '表单实例号', operationId: '工序标识', formId: '表单绑定标识', copyId: '表单份标识',
+  nodeId: '当前节点标识', assigneeId: '处理人标识', assigneeName: '处理人',
+  previousAssigneeId: '原处理人标识', previousAssigneeName: '原处理人', targetUserId: '新处理人标识', targetUserName: '新处理人',
+  reason: '原因', signatureId: '签名标识', signerId: '签署人标识', signerName: '签署人', sessionOperatorId: '会话操作人标识', taskState: '操作前任务状态摘要',
 };
 
 const fieldOrder = [
@@ -91,6 +95,14 @@ function parseSnapshot(value: unknown): unknown {
   } catch {
     return value;
   }
+}
+
+/** Responsibility events identify an exact form copy; older operation-wide audit events keep their existing scope. */
+export function isAuditForForm(event: { action?: string; contentAfter?: unknown }, identity: { formInstanceId?: string; formId?: string; copyId?: string }) {
+  if (event.action !== 'REASSIGN') return true;
+  const value = parseSnapshot(event.contentAfter) as Record<string, unknown> | null;
+  return Boolean(value && (identity.formInstanceId ? value.formInstanceId === identity.formInstanceId
+    : value.formId === identity.formId && value.copyId === identity.copyId));
 }
 
 function formatDateTime(value: unknown): string {

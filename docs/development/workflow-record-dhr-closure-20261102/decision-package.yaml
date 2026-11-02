@@ -1,0 +1,71 @@
+decisionPackage:
+  id: DEC-PACKAGE-20261102-WORKFLOW-RECORD-DHR-CLOSURE
+  scope: 已授权表单变更作废、DHR联动、集中流程及责任操作的整体闭环核查
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: 0bd0848bbded6d6954d62a4f924e0b2eec6623ad
+    targetBranch: edhr-dev
+    targetCommit: 8ec8391721858a7f96d73a5d293d93f43679118a
+    contractReadCommit: 0bd0848bbded6d6954d62a4f924e0b2eec6623ad
+    uncommittedContractPaths: []
+  summary: 用户要求整体复核既有TODO和流程建设、纠正陈旧知识和待办，并补足未执行的全流程验证；不将暂缓功能误关、不破坏主环境和样本。
+  confirmed:
+    concepts: []
+    relationships: []
+    rules: []
+    executionContracts: []
+  confirmedBusinessDecisions:
+    - 沿DEC-0087、DEC-0063/0068、DEC-0091/0092/0093及用户已有澄清验证，不新增业务政策。
+    - 清理当前说明中的已完成待办或错误阻断描述，保留历史原文、真实未决及明确暂缓。
+    - 用户于2026-11-03明确确认本轮对齐公共候选查询为所有已登录用户可读，结束该局部权限协同暂缓；申请与实际审批资格不变。
+    - 表单变更作废、有效修订、双向DHR阻断、冻结证据、当前贡献、通知、只读日志、转办、签名改派和受限撤回属于本轮检查链路。
+    - 归档执行、打印作废过滤、活动表单作废、放行后完整变更、A12历史UI/规则重建、完整多租户及作业条件运行契约不因本次检查自动完成。
+  inferred: []
+  unresolved: []
+  replacementScopes:
+    - {decisionStatementId: DEC-0094-01, supersededStatementIds: [DEC-0087-07], scope: 仅结束候选读取权限协同的局部暂缓，沿已有全登录读取政策实现；菜单、申请和实际审批的数据范围保留。}
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - {area: candidate-read-authorization, change: 按用户确认对齐全登录读取CHANGE/OBSOLETE已发布流程候选，保留写入资格, evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/RecordControlWorkflowController.java]}
+      - {area: numeric-submission-boundary, change: 在记录变更、个人填报/审批和DHR填报四入口复用既有数值归一化，保留输入文本及空值/无效值校验，修复生效投影阻断, evidenceReferences: [gmp-platform/frontend/src/pages/production/executionFormValues.ts]}
+      - {area: domain-closure, change: 建立已授权功能与TODO/知识ID/源码/验证证据对应清单，区分关闭与暂缓, evidenceReferences: [docs/development/record-control-work-allocation-and-integration-contract.md, docs/development/record-control-dhr-linkage-20261029/README.md, docs/development/workflow-central-entry-extension-20261102/validation.md]}
+      - {area: integrated-verification, change: 补真实浏览器到真实后端与隔离数据库的业务链路，不用拦截API代替, evidenceReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/recordcontrol/service/RecordControlPostgresIntegrationTest.java]}
+    transitiveImpacts:
+      - {area: audit-and-current-projections, change: 验证责任变更、生效、当前索引/统计、通知和冻结历史在跨模块链路中一致, evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/recordcontrol/service/RecordControlService.java]}
+    potentialImpacts: []
+    unaffectedAreas:
+      - {area: unrelated-backlog, reason: 不清理本范围之外的业务待办，不重构其他功能。}
+    compatibilityAndMigration:
+      - concern: 本地HEAD加已保留未提交差异为实际候选；远端提交已fetch但不自动合并。需要定位测试发现的缺陷时只做必要修复。
+    snapshotImpacts:
+      - concern: 测试不得改写主库旧修订、冻结DHR或已有验收数据；写操作仅在显式白名单隔离库。
+    auditImpacts:
+      - concern: 数据审计、流程事件、实际签署身份、通知收件人及失败回滚都需要真实持久化证据。
+    permissionImpacts:
+      - concern: 使用管理员、申请人、原审批人、新审批人和无关账号，分别验证入口及实际动作资格。
+    testImpacts:
+      - {scope: affected-domain-end-to-end, scenarios: [普通表单转办改派及完成, 变更申请撤回重提退回批准, 作废生效及默认隐藏, DHR双向阻断及退回重汇总重审, 冻结历史和新修订, 通知和双领域数据审计, 并发与回滚回归], evidenceReferences: []}
+    evidenceGaps:
+      - 既有服务PG与拦截API组件验证不足已由本轮真实all链路补足；提醒收件人与DHR目录尚未逐项取证的组合仍按本轮报告精确保留。
+      - 本轮不代表全项目所有业务或全部历史知识的全量审计，仅对用户列明的完整领域资产与TODO核对。
+  extensionStrategy:
+    selectedPaths: [product-core, standard-action, transaction-orchestration]
+    rationale: 检查既有领域服务及跨域事务；发现确定性缺陷时沿原所有权局部修复，不增加第二套流程或客户条件分支。
+    ownershipBoundaries:
+      - {owner: primary-agent, responsibility: 范围清单、测试设计实施、缺陷修复、开发TODO及最终结论}
+      - {owner: ontology-agent, responsibility: 领域全量当前知识与历史替代核对、残留说明纠正、保留真实未决和证据}
+      - {owner: quality-agent, responsibility: 收尾独立复核；高风险修复后由全新实例做最终验证}
+  affectedFiles:
+    - {path: docs/knowledge, changeType: review-and-update, reason: 纠正当前定义和实施差异中的陈旧阻断，不改写历史}
+    - {path: docs/development, changeType: update, reason: 关闭有证据的TODO并新增整体检查和测试报告}
+    - {path: gmp-platform/backend/src/test, changeType: review-and-update, reason: 补足聚焦集成和隔离数据夹具}
+    - {path: gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/RecordControlWorkflowController.java, changeType: update, reason: 依已确认DEC0094对齐候选只读认证权限}
+    - {path: gmp-platform/frontend/src/pages/record-control/RecordChangePage.tsx, changeType: update, reason: 提交边界复用既有数值归一化}
+    - {path: gmp-platform/frontend/src/pages/form-management/FormFillingPage.tsx, changeType: update, reason: 提交边界复用既有数值归一化}
+    - {path: gmp-platform/frontend/src/pages/form-management/FormReviewPage.tsx, changeType: update, reason: 提交边界复用既有数值归一化及纠正转办候选提示}
+    - {path: gmp-platform/frontend/src/pages/dhr-management/DhrFillingPage.tsx, changeType: update, reason: 提交边界复用既有数值归一化}
+    - {path: gmp-platform/frontend/scripts, changeType: update, reason: 实际页面与后端持久化的端到端检查}
+  acceptanceScenarios:
+    - {id: scenario.workflow-record-dhr-closure-inventory, given: 当前实现及历史待办, when: 按域逐项核对原始证据, then: 已完成/暂缓/未完成分别列明，知识纠错有ID及证据而历史保留, evidenceRequirements: [领域清单, 源码核对, 本体结果]}
+    - {id: scenario.workflow-record-dhr-live-e2e, given: 显式隔离库及真实应用, when: 浏览器执行已授权链路, then: 权限、签名、状态、当前贡献和冻结/审计一致，主数据保持, evidenceRequirements: [真实页面和网络结果, 数据库断言, 独立质量]}

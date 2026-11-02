@@ -1,0 +1,89 @@
+{
+  "sourceHashCount": 21,
+  "rootGitMetadata": {
+    "front": false,
+    "back": false
+  },
+  "originalPermissionGroups": {
+    "web_process_log_jg30": [
+      [
+        "Tmpl",
+        "模板审核"
+      ],
+      [
+        "Routing",
+        "工艺审核"
+      ],
+      [
+        "ProductProcess",
+        "制程审核"
+      ],
+      [
+        "Dhr",
+        "DHR审核"
+      ],
+      [
+        "Change",
+        "变更审核"
+      ]
+    ],
+    "approval-process-intervention": [
+      [
+        "Doc",
+        "表单流程"
+      ],
+      [
+        "Tmpl",
+        "模板审核"
+      ],
+      [
+        "Routing",
+        "工艺审核"
+      ],
+      [
+        "ProductProcess",
+        "制程审核"
+      ],
+      [
+        "Dhr",
+        "DHR审核"
+      ],
+      [
+        "Change",
+        "变更审核"
+      ]
+    ]
+  },
+  "originalTaskQueries": {
+    "doc-tab/todo.vue": "taskType: 'FORM,EDHR'",
+    "dhr-tab/todo.vue": "taskType: 'EDHR_SUMMARY'",
+    "routing-tab/todo.vue": "taskType: 'ROUTING'",
+    "product-process-tab/todo.vue": "taskType: 'PRODUCT_PROCESS'",
+    "change-tab/todo.vue": "taskTypeList: ['FORM_CHANGE', 'DHR_CHANGE', 'NOTEBOOK_CHANGE']"
+  },
+  "originalDocScopeText": [
+    {
+      "indexAllWp": 1557,
+      "text": "该功能可查看表单审核、DHR审核、工艺审、制程审核、变更审核的流程日志"
+    },
+    {
+      "indexAllWp": 1562,
+      "text": "1.该功能可对表单审核、DHR审核、工艺审、制程审核、变更审核的流程进行干预"
+    },
+    {
+      "indexAllWp": 4385,
+      "text": "该功能可查看表单审核、DHR审核、工艺审、制程审核、变更审核的流程日志"
+    },
+    {
+      "indexAllWp": 4390,
+      "text": "1.该功能可对表单审核、DHR审核、工艺审、制程审核、变更审核的流程进行干预"
+    }
+  ],
+  "docAndPictureBytesVerified": true,
+  "retainedKnowledgeJUnit": {
+    "tests": "89",
+    "errors": "0",
+    "failures": "0",
+    "skipped": "0"
+  }
+}

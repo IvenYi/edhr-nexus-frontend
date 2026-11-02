@@ -294,6 +294,7 @@ public class AuditController {
             Map.entry("IMPORT", "导入"),
             Map.entry("EXPORT", "导出"),
             Map.entry("REORDER", "排序调整"),
+            Map.entry("REASSIGN", "重新分配"),
             Map.entry("BATCH_DELETE", "批量删除"),
             Map.entry("UPLOAD_LOGO", "上传系统 Logo"),
             Map.entry("UPLOAD_FAVICON", "上传网站图标"),

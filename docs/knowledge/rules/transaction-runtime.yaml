@@ -1030,7 +1030,7 @@ rules:
     status: specified
     visibility: internal
     trigger: form-process.approval-task.complete
-    scope: form-process-runtime-before-explicit-transfer
+    scope: form-process-runtime-before-explicit-responsibility-change
     condition:
       all:
         - fact: formProcessApproval.candidateCount
@@ -1040,13 +1040,15 @@ rules:
       type: planned-production-work-trigger
       completionStrategy: first-completed-candidate
       sequentialApproval: false
-    explanation: 本条范围明确限定未显式转办的审批节点：多个有权候选中任一可完成，需要逐个顺序审批时配置多个节点。按DEC-0081显式委托后仅当前受让人处理，不由原候选数量或原来源继续授予他人办理权；普通生产表单与泛WorkflowEngine仍分别核对。源码及历史断言不代表本轮并发或事务验收，指定成熟度保持。
+    explanation: 本条范围明确限定尚未发生显式责任变更的审批节点：多个有权候选中任一可完成，需要逐个顺序审批时配置多个节点。按DEC-0081显式转办或DEC-0093授权的管理员签名重新分配后，仅当前目标处理，不由原候选数量或原来源继续授予旧候选办理权；原候选来源仍保留，普通生产表单与泛WorkflowEngine分别核对。源码及历史断言不代表本轮并发或事务验收，指定成熟度保持。
     evidenceIds:
     - evidence.production-form-process-user-confirmed
     - evidence.production-form-process-guancheng-research
     - evidence.production-execution-engine-source
     - evidence.workflow-task-multi-candidate-runtime-implementation
     - evidence.tenant-task-delegation-20261020
+    - evidence.central-form-dhr-workflow-20261102-user-confirmed
+    - evidence.central-form-workflow-responsibility-source
   - id: rule.form-process.approval-return-to-entry
     name: 审批退回固定回到填报阶段
     status: specified

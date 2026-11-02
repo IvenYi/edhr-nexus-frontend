@@ -16,6 +16,7 @@ import type { DhrDisplayStatus, DhrEvidenceRecord, DhrInstanceSummary } from '@/
 import { uploadExecutionFile, type ExecutionButton, type ExecutionCommand, type ExecutionForm, type ExecutionValues } from '@/api/production-execution';
 import { FormCanvasPreview } from '@/pages/master-data/DhrTemplateWorkspaceDialog';
 import { parseReactTemplateDesignerDocument } from '@/pages/master-data/template-designer-react/utils/document';
+import { executionFormValues } from '@/pages/production/executionFormValues';
 import { formListFieldSx, formListQueryGridSx, formListQueryPanelSx } from '@/pages/form-management/formManagementListStyles';
 import DhrDetailDrawer from './DhrDetailDrawer';
 import DhrWorklistTable from './DhrWorklistTable';
@@ -151,7 +152,7 @@ function FillingWorkspace({ dhr, onClose }: { dhr: DhrInstanceSummary; onClose: 
     if (group?.requiresSupplementReason && !credentials?.opinion.trim()) { setAction({ ...button, requireOpinion: true }); return; }
     busyRef.current = true; setBusy(true);
     try {
-      await update(await actDhrFilling(dhr.id, { action: button.action, revision: view.revision, operationId: entry.op.id, formId: entry.form.id, instanceId: selectedCopy, values, signatureTarget: button.signatureTarget, ...credentials, reason: group?.requiresSupplementReason ? credentials?.opinion : undefined }));
+      await update(await actDhrFilling(dhr.id, { action: button.action, revision: view.revision, operationId: entry.op.id, formId: entry.form.id, instanceId: selectedCopy, values: executionFormValues(entry.form.fields, values), signatureTarget: button.signatureTarget, ...credentials, reason: group?.requiresSupplementReason ? credentials?.opinion : undefined }));
       setAction(null); showMessage('表单操作已保存', 'success');
     } catch (e) { showMessage(errorText(e), 'error'); }
     finally { busyRef.current = false; setBusy(false); }

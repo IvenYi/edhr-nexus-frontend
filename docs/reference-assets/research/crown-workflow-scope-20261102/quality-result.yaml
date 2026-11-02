@@ -1,0 +1,138 @@
+qualityResult:
+  result: passed
+  baseCommit: 0bd0848bbded6d6954d62a4f924e0b2eec6623ad
+  headCommit: 0bd0848bbded6d6954d62a4f924e0b2eec6623ad
+  contractBaseline:
+    sourceCommit: 0bd0848bbded6d6954d62a4f924e0b2eec6623ad
+    targetBranch: edhr-dev
+    targetCommit: e3e49784eda6bc01e7e5c686d6f79dc5a600d5ae
+    contractReadCommit: 0bd0848bbded6d6954d62a4f924e0b2eec6623ad
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: dirty
+    includedPaths:
+      - docs/reference-assets/research/crown-workflow-scope-20261102/
+      - docs/knowledge/evidence/crown-workflow-scope-20261102.yaml
+      - docs/knowledge/evidence/crown-workflow-scope-20261102.md
+    excludedPaths:
+      - docs/frontend/list-page-guidelines.md
+      - docs/knowledge/implementation-anchors/workflow-operations.yaml
+      - gmp-platform/frontend/scripts/verify-list-table-style-contract.mjs
+      - gmp-platform/frontend/scripts/test-workflow-list-ui-browser.mjs
+      - gmp-platform/frontend/src/api/workflow-operations.ts
+      - gmp-platform/frontend/src/components/workflow/WorkflowResponsibilityDialog.tsx
+      - gmp-platform/frontend/src/pages/record-control/RecordApprovalPage.tsx
+      - gmp-platform/frontend/src/pages/record-control/RecordRequestListPage.tsx
+      - gmp-platform/frontend/src/pages/workflow-center/InstanceList.tsx
+      - gmp-platform/frontend/src/pages/workflow-center/WorkflowInstancePanel.tsx
+      - gmp-platform/frontend/src/pages/workflow-center/WorkflowReassignmentEntry.tsx
+      - docs/development/workflow-list-ui-20261102/
+      - gmp-platform/frontend/output/
+      - output/
+      - premium-audit.json
+    untrackedPaths:
+      - docs/reference-assets/research/crown-workflow-scope-20261102/
+      - docs/knowledge/evidence/crown-workflow-scope-20261102.yaml
+      - docs/knowledge/evidence/crown-workflow-scope-20261102.md
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+    - id: check.crown-scope-contract-and-boundary
+      required: true
+      category: documentation
+      description: 独立核对本轮L1研究范围、固定提交和契约基线。
+      method: command
+      command: git rev-parse HEAD origin/edhr-dev；git branch --show-current；对比来源至缓存目标的AGENTS/编码准则/角色契约/知识入口及DEC-0092；git diff --check。
+      outcome: passed
+      evidence:
+        - 实际分支edhr-dev，来源HEAD和可用目标完整哈希与本结果contractBaseline一致；相关契约、知识入口及DEC-0092差异为空。
+        - 当前研究是HEAD之上的未提交资产，前轮UI修改和输出按excludedPaths排除；没有新建候选提交、合并、推送或产品发布。
+        - 已独立读取remote-baseline.json，本次限时fetch失败，targetCommit仅为最近成功获取的跟踪目标，不代表服务器当前最新。
+        - 本轮决策包的影响分析、product-core参考路径及明确不改我方执行政策的边界与研究报告一致；git diff --check退出0。
+    - id: check.crown-scope-original-source-integrity
+      required: true
+      category: documentation
+      description: 从当前可获得原始导出重新校验来源完整性。
+      method: command
+      command: Python逐一读取source-manifest.json的原始路径并重算SHA256，核对外部根目录Git元数据。
+      outcome: passed
+      evidence:
+        - 独立重算21份Java/Vue/TS/XML原件，全部与本轮来源清单一致；结果在evidence/independent/verification.json。
+        - 外部前后端根目录均无.git，报告没有编造其提交或将其表述为当前线上部署版本。
+        - 原始源码摘录保留路径、行号及用途；旧2026-10-29报告仅作检索线索，不是本次唯一事实来源。
+    - id: check.crown-scope-log-versus-intervention
+      required: true
+      category: requirements
+      description: 独立核对日志与干预各自的业务组，避免互相外推。
+      method: inspection
+      command: 直接读取冠骋useDocumentTask及各todo/control组件，解析原始5214菜单权限XML；对照报告逐业务两列表格。
+      outcome: passed
+      evidence:
+        - 原始web_process_log_jg30权限为Tmpl/Routing/ProductProcess/Dhr/Change五类；approval-process-intervention增加Doc，共六类。独立XML解析结果记录在verification.json。
+        - 普通表单干预实际筛选FORM,EDHR；模板用独立DocControl待办查询并提供FORM/EDHR模板类型；工艺ROUTING、制程PRODUCT_PROCESS、DHR汇总EDHR_SUMMARY、变更三种CHANGE类型均与原件吻合。
+        - 报告没有把OF_APPROVE流程定义类型当作当前taskType，也没有混同DHR汇总审核与DHR_CHANGE。
+        - 页签可见性确实叠加业务开关及权限，动作另有Reassign/Withdraw权限；dhrSumDisabled条件按源码真值保留，未猜测变量名对应的部署默认语义。
+        - 普通表单是否进入同一集中日志明确标为证据不足；没有由日志五类权限缺Doc推导所有部署绝对不支持，也没有把干预六类抄成日志六类。
+    - id: check.crown-scope-docx-and-images
+      required: true
+      category: visual
+      description: 从原始DOCX独立提取核对文字与截图，分别解释证据强度。
+      method: inspection
+      command: 直接解包原DOCX读取全部w:p文字、逐张比较抽图原始字节；view_image查看image294/image296/image682。
+      outcome: passed
+      evidence:
+        - 原文档SHA256与本轮索引一致，索引中的所有抽图均与当前DOCX对应media原件逐字节一致。
+        - 本实例全部w:p提取在1557/4385核对到日志五类原文，在1562/4390核对到干预原文；报告解释了其直接body子段落与旧全部w:p计数的差别。
+        - 原图294直接呈现集中日志的DHR审核/变更审核示例及审核状态；原图296呈现干预的表单流程/变更审核示例；没有把只显示两项的示例当作全部开关/权限组合。
+        - 原图682属于另一系统配置任务转交示例，与路由中的process-intervention/approval-process-intervention区别一致；报告未混同为同一六分组页面。
+        - 报告保留手册与源码可能不是同一部署版本的边界，没有声称竞品运行复现或线上API测试通过。
+    - id: check.crown-scope-work-execution
+      required: true
+      category: requirements
+      description: 独立核对作业执行、配置审核和作业内表单的不同业务身份。
+      method: inspection
+      command: 阅读原始SummaryApproveHisType、两种任务监听器、TxnInstEntity/Submit/ListSearch、FormNodeDelegate及OnlineFormService。
+      outcome: passed
+      evidence:
+        - 审批历史type投影到ProcessTaskTodo，以及DHR专用EDHR_SUMMARY待办的原始代码与集中审核分组匹配。
+        - 作业实例为独立em_txn_inst，TxnInstSubmit按TXN_INST启动业务流程，TxnInstListSearch提供批次/SN事务查询；支持整条作业执行走独立业务承载的解释。
+        - ROUTING和PRODUCT_PROCESS对应配置审核；报告没有把工艺路线配置审批解释为生产对象沿路线执行的全程历史。
+        - FormNodeDelegate能创建TXN来源并带txnInstId的表单，随后委托缺失的底层平台创建实现；报告因此保留来源到FORM/EDHR任务码映射缺口，不断言作业内表单永远不能进入普通表单待办。
+        - 只说已核实集中分组未见独立事务执行组，不外推底层引擎绝不共享或线上所有版本永远不支持。
+    - id: check.crown-scope-knowledge-and-policy
+      required: true
+      category: ontology
+      description: 核对正式本体结果、最小证据同步及我方政策保持。
+      method: inspection
+      command: 读取ontology-result.yaml、新增两份知识证据、DEC-0092及最终保留BusinessKnowledgeModelTest原始JUnit。
+      outcome: passed
+      evidence:
+        - 正式ontologyResult为updated，知识0.3.25/schema1.2.0保持；只新增内部竞品证据索引，不提升我方能力或路线阶段成熟度。
+        - 知识说明与研究报告均区分user-confirmed/original-evidence/secondary-reference/inference，日志和干预分别取证，缺口未补成事实。
+        - DEC-0092原DHR专属路径和通用干预边界保留；集中只读聚合与分业务干预的建议明确为inference，未替代已确认政策或形成实现授权。
+        - 本实例独立解析新增证据与本体结果YAML，核对最终保留JUnit为89项、0失败、0错误、0跳过；该Maven由本体最后实际执行，本实例未重复运行或冒认自身执行。
+    - id: check.crown-scope-links-and-scope
+      required: true
+      category: documentation
+      description: 核对研究可追溯链接和本轮无产品操作的边界。
+      method: command
+      command: Python解析README和新增知识说明的本地Markdown目标；检查研究与知识文件范围及最终结果引用。
+      outcome: passed
+      evidence:
+        - 正式质量报告生成前已独立验证12个本地链接；本质量结果生成后其自身链接也可解析，未保留其他悬空目标。
+        - 独立证据在evidence/independent/verification.json和link-check.json；未更改主侧报告、知识、产品、测试、迁移或外部原件。
+        - 本质量实例未启动浏览器、冠骋运行环境、Maven或数据库查询，也未提交任何业务操作；研究验证不被表述为全系统回归、签署事务或线上部署验证。
+  findings: []
+  residualRisks:
+    - id: risk.crown-scope-platform-evidence-gap
+      description: 普通表单进入集中日志的完整低代码页面/平台查询，以及TXN来源表单映射到FORM/EDHR任务码的底层创建实现缺失。
+      impact: 只能给出已核实分组和明确未确认项，不能据此断言所有业务或所有版本的完整运行覆盖。
+      mitigation: 报告和知识已逐项标注；后续若要据此改变我方集中显示范围，应补对应原始部署配置或只读运行证据，再作独立产品决策。
+    - id: risk.crown-scope-snapshot-version
+      description: 原始前后端导出无Git元数据，手册与源码是否同一版本未知，本轮未运行冠骋。
+      impact: 结论仅适用于可获得材料，不证明当前线上所有客户实例的界面与权限配置。
+      mitigation: 保留原始摘要/行号/图片及来源分列，不把静态资料交叉印证冒充同一版本端到端复现。
+    - id: risk.crown-scope-target-freshness
+      description: 本轮fetch限时失败，目标基线为最近成功获取的缓存提交。
+      impact: 不能将本结果当作远端当前最新组合的集成验收。
+      mitigation: 本轮只交付本地研究与知识证据，不合并/推送/发布；后续集成前重新获取并核对实际目标增量。
+  blockingConditions: []

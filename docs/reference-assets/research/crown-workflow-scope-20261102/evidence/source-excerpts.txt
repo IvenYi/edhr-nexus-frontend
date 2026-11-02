@@ -1,0 +1,723 @@
+
+## F01 src/projects/web-render/src/views/edhr-application/render/approval-process-intervention/useDocumentTask.ts
+六类干预页签、权限、原样功能开关条件
+
+20: const { businessSetting } = useBusinessSetting();
+21: const {
+22:   enableDoc,
+23:   enableDocControl,
+24:   enableRoutingApprove,
+25:   enableProductProcessApprove,
+26:   dhrSumDisabled,
+27: } = businessSetting;
+28: 
+29: const computedSetting = computed(() => {
+30:   if (appInfoStore.appInfo.suiteKey === 'MEDPRO') {
+31:     return {
+32:       enableDoc: 0,
+33:       enableDocControl: 0,
+34:       enableRoutingApprove: 0,
+35:       enableProductProcessApprove: 0,
+36:       dhrSumDisabled: 1,
+37:     };
+38:   }
+39:   return {
+40:     enableDoc,
+41:     enableDocControl,
+42:     enableRoutingApprove,
+43:     enableProductProcessApprove,
+44:     dhrSumDisabled,
+45:   };
+46: });
+47: 
+72: const userActions = computed(() => {
+73:   const page = 'approval-process-intervention';
+74:   return {
+75:     // 表单流程
+76:     Doc: !!getPermissionByKey(page, 'Doc'),
+77:     DocReassign: !!getPermissionByKey(page, 'Doc.Reassign'),
+78:     DocWithdraw: !!getPermissionByKey(page, 'Doc.Withdraw'),
+79:     // 模板审核
+80:     Tmpl: !!getPermissionByKey(page, 'Tmpl'),
+81:     TmplReassign: !!getPermissionByKey(page, 'Tmpl.Reassign'),
+82:     TmplWithdraw: !!getPermissionByKey(page, 'Tmpl.Withdraw'),
+83:     // 工艺审核
+84:     Routing: !!getPermissionByKey(page, 'Routing'),
+85:     RoutingReassign: !!getPermissionByKey(page, 'Routing.Reassign'),
+86:     RoutingWithdraw: !!getPermissionByKey(page, 'Routing.Withdraw'),
+87:     // 制程审核
+88:     ProductProcess: !!getPermissionByKey(page, 'ProductProcess'),
+89:     ProductProcessReassign: !!getPermissionByKey(page, 'ProductProcess.Reassign'),
+90:     ProductProcessWithdraw: !!getPermissionByKey(page, 'ProductProcess.Withdraw'),
+91:     // DHR审核
+92:     Dhr: !!getPermissionByKey(page, 'Dhr'),
+93:     DhrReassign: !!getPermissionByKey(page, 'Dhr.Reassign'),
+94:     DhrWithdraw: !!getPermissionByKey(page, 'Dhr.Withdraw'),
+95:     // 变更审核
+96:     Change: !!getPermissionByKey(page, 'Change'),
+97:     ChangeReassign: !!getPermissionByKey(page, 'Change.Reassign'),
+98:     ChangeWithdraw: !!getPermissionByKey(page, 'Change.Withdraw'),
+99:   };
+100: });
+101: 
+102: const initialTabs = computed(() => [
+103:   {
+104:     key: 'doc',
+105:     name: t('sys.edhr.approvalTab.form'),
+106:     visible: computedSetting.value.enableDoc && userActions.value.Doc,
+107:     component: DocTab,
+108:   },
+109:   {
+110:     key: 'tmpl',
+111:     name: t('sys.edhr.approvalTab.tmpl'),
+112:     visible: computedSetting.value.enableDocControl && userActions.value.Tmpl,
+113:     component: ControlTab,
+114:   },
+115:   {
+116:     key: 'routing',
+117:     name: t('sys.edhr.approvalTab.routing'),
+118:     visible: computedSetting.value.enableRoutingApprove && userActions.value.Routing,
+119:     component: RoutingTab,
+120:   },
+121:   {
+122:     key: 'productProcess',
+123:     name: t('sys.edhr.approvalTab.productProcess'),
+124:     visible: computedSetting.value.enableProductProcessApprove && userActions.value.ProductProcess,
+125:     component: ProductProcessTab,
+126:   },
+127:   {
+128:     key: 'dhr',
+129:     name: t('sys.edhr.approvalTab.dhr'),
+130:     visible: computedSetting.value.dhrSumDisabled && userActions.value.Dhr,
+131:     component: DhrTab,
+132:   },
+133:   {
+134:     key: 'change',
+135:     name: t('sys.edhr.approvalTab.change'),
+136:     visible: userActions.value.Change,
+137:     component: ChangeTab,
+138:   },
+139: ]);
+140: 
+141: function transferFirstLetter(str, type: 'UPPER' | 'LOWER') {
+142:   if (type === 'UPPER') {
+143:     return str.charAt(0).toUpperCase() + str.slice(1);
+144:   }
+145:   return str.charAt(0).toLowerCase() + str.slice(1);
+146: }
+147: 
+148: export function useDocumentTask() {
+149:   const activeTabKey = ref('doc');
+150:   const tabList = computed(() => initialTabs.value.filter((item) => item.visible));
+151: 
+152:   const tabObj = Object.entries(
+153:     pick(
+154:       userActions.value,
+155:       tabList.value.map((item) => transferFirstLetter(item.key, 'UPPER')),
+156:     ),
+157:   ).find(([k, v]) => v);
+158:   if (tabObj) {
+159:     activeTabKey.value = transferFirstLetter(tabObj[0], 'LOWER');
+160:   }
+161: 
+162:   return {
+163:     tabList,
+164:     formState,
+165:     activeTabKey,
+
+## F02 src/projects/web-render/src/views/edhr-application/render/approval-process-intervention/doc-tab/todo.vue
+普通表单任务查询FORM,EDHR
+
+45: 
+46:   import { TableActionAuto } from '/@/components/Table';
+47:   import { useDocumentTask } from '../useDocumentTask';
+48:   import { getProcessTaskTodoAllUserPageList } from '/@/apis/gct-apaas/ProcessTaskTodoController';
+49:   import type { ProcessTaskTodoResponse } from '/@/apis/gct-apaas/model';
+50:   import ReassignModal from '../reassign-modal.vue';
+51:   import { IModalData } from '@gct/runtime';
+52:   import {
+53:     postOnlineFormProcessInterfereReassign,
+90:     if (initCurrent) {
+91:       Object.assign(pagination, { current: 1 });
+92:     }
+93: 
+94:     loading.value = true;
+95:     const res = await getProcessTaskTodoAllUserPageList({
+96:       ...formState,
+97:       taskType: 'FORM,EDHR',
+98:       pageNo: pagination.current,
+99:       pageSize: pagination.pageSize,
+100:     }).finally(() => {
+101:       loading.value = false;
+102:     });
+103:     pagination.current = res?.pageNo ?? 1;
+104:     pagination.total = res?.totalCount ?? 0;
+105:     tableData.value = res?.data ?? [];
+106:   };
+107: 
+108:   const handleTableChange = (paginationInfo) => {
+109:     Object.assign(pagination, paginationInfo);
+
+## F03 src/projects/web-render/src/views/edhr-application/render/approval-process-intervention/control-tab/index.vue
+模板文控任务独立查询
+
+29:   import {
+30:     postDocControlProcessInterfereReassign,
+31:     postDocControlProcessInterfereReturn,
+32:   } from '/@/apis/gct-apaas/DocControlProcessController';
+33:   import { getDocControlTaskTodoAllUserPageList } from '/@/apis/gct-apaas/DocControlTaskTodoController';
+34:   import { useDocumentTask } from '../useDocumentTask';
+35: 
+36:   const { t } = useI18n();
+37:   const { userActions } = useDocumentTask();
+38: 
+39:   const columnDefinitions = [
+40:     { title: t('sys.edhr.controlFileName'), field: 'docName', minWidth: 300 },
+41:     { title: t('sys.edhr.controlFileCode'), field: 'docCode', minWidth: 250 },
+42:     { title: t('sys.appDesigner.version'), field: 'version' },
+43:     { title: t('sys.edhr.subcategory'), field: 'categoryName' },
+44:     {
+45:       title: t('sys.edhr.controlFileType'),
+46:       field: 'controlTmplType',
+47:       minWidth: 140,
+48:       params: { i18nPrefix: 'sys.edhr.intervention' },
+49:       slots: { default: 'value_i18n_render' },
+50:     },
+51:     { title: t('sys.edhr.businessOfflineVersion'), field: 'offlineVersion', minWidth: 120 },
+52:     // {
+53:     //   title: t('sys.edhr.controlStatus'),
+54:     //   field: 'controlStatus',
+75:   const getTableData = async (initCurrent = 0) => {
+76:     if (initCurrent) {
+77:       Object.assign(pagination, { current: 1 });
+78:     }
+79: 
+80:     loading.value = true;
+81:     const res: any = await getDocControlTaskTodoAllUserPageList({
+82:       ...unref(form),
+83:       pageNo: pagination.current,
+84:       pageSize: pagination.pageSize,
+85:     }).finally(() => {
+86:       loading.value = false;
+87:     });
+
+## F04 src/projects/web-render/src/views/edhr-application/render/approval-process-intervention/control-tab/search-form.vue
+模板种类表单与DHR
+
+35:       model: 'name',
+36:       maxLength: 32,
+37:     },
+38:     {
+39:       type: 'select',
+40:       label: t('sys.edhr.controlFileType'),
+41:       id: 'controlTmplType',
+42:       model: 'controlTmplType',
+43:       options: [
+44:         { label: t('sys.edhr.formTmpl'), value: 'FORM' },
+45:         { label: t('sys.edhr.edhrTmpl'), value: 'EDHR' },
+46:       ],
+47:       onChange: onTypeChange,
+48:     },
+49:     {
+
+## F05 src/projects/web-render/src/views/edhr-application/render/approval-process-intervention/routing-tab/todo.vue
+工艺配置审批ROUTING
+
+84:       Object.assign(pagination, { current: 1 });
+85:     }
+86: 
+87:     loading.value = true;
+88:     const res = await postProcessTaskTodoApproveHisPageList({
+89:       ...formState,
+90:       taskType: 'ROUTING',
+91:       pageNo: pagination.current,
+92:       pageSize: pagination.pageSize,
+93:     }).finally(() => {
+94:       loading.value = false;
+95:     });
+96:     pagination.current = res?.pageNo ?? 1;
+97:     pagination.total = res?.totalCount ?? 0;
+98:     tableData.value = res?.data ?? [];
+
+## F06 src/projects/web-render/src/views/edhr-application/render/approval-process-intervention/product-process-tab/todo.vue
+制程审批PRODUCT_PROCESS
+
+108:       Object.assign(pagination, { current: 1 });
+109:     }
+110: 
+111:     loading.value = true;
+112:     const res = await postProcessTaskTodoApproveHisPageList({
+113:       ...formState,
+114:       taskType: 'PRODUCT_PROCESS',
+115:       pageNo: pagination.current,
+116:       pageSize: pagination.pageSize,
+117:     }).finally(() => {
+118:       loading.value = false;
+119:     });
+120:     pagination.current = res?.pageNo ?? 1;
+121:     pagination.total = res?.totalCount ?? 0;
+122:     tableData.value = res?.data ?? [];
+
+## F07 src/projects/web-render/src/views/edhr-application/render/approval-process-intervention/dhr-tab/todo.vue
+DHR汇总审批EDHR_SUMMARY
+
+98:     if (initCurrent) {
+99:       Object.assign(pagination, { current: 1 });
+100:     }
+101: 
+102:     loading.value = true;
+103:     const res = await postProcessTaskTodoApproveHisPageList({
+104:       ...formState,
+105:       taskType: 'EDHR_SUMMARY',
+106:       pageNo: pagination.current,
+107:       pageSize: pagination.pageSize,
+108:     }).finally(() => {
+109:       loading.value = false;
+110:     });
+111:     pagination.current = res?.pageNo ?? 1;
+112:     pagination.total = res?.totalCount ?? 0;
+113:     tableData.value = res?.data ?? [];
+114:   };
+
+## F08 src/projects/web-render/src/views/edhr-application/render/approval-process-intervention/change-tab/todo.vue
+FORM_CHANGE/DHR_CHANGE/NOTEBOOK_CHANGE
+
+94:       Object.assign(pagination, { current: 1 });
+95:     }
+96: 
+97:     loading.value = true;
+98:     const res = await postProcessTaskTodoApproveHisPageList({
+99:       ...formState,
+100:       taskType: undefined,
+101:       taskTypeList: ['FORM_CHANGE', 'DHR_CHANGE', 'NOTEBOOK_CHANGE'],
+102:       pageNo: pagination.current,
+103:       pageSize: pagination.pageSize,
+104:     }).finally(() => {
+105:       loading.value = false;
+106:     });
+107:     pagination.current = res?.pageNo ?? 1;
+108:     pagination.total = res?.totalCount ?? 0;
+109:     tableData.value = res?.data ?? [];
+
+## F09 src/locales/lang/zh-CN/sys/edhr.ts
+中文页签/模板类型名称
+
+24:   productType: '产品类型',
+25:   spec: '规格型号',
+26:   edhrTmpl: 'DHR模板',
+27:   docTmpl: '单据模板',
+28:   formTmpl: '表单模板',
+29:   intervention: {
+30:     EDHR: 'DHR模板',
+31:     FORM: '表单模板',
+32:   },
+33:   processStatusEnum: {
+690:   operationLog: '操作记录',
+691:   approvalTab: {
+692:     form: '表单流程',
+693:     tmpl: '模板审核',
+694:     routing: '工艺审核',
+695:     productProcess: '制程审核',
+696:     dhr: 'DHR审核',
+697:     change: '变更审核',
+698:   },
+699:   productFamilyNameMax32: '产品家族名称字数不能超过32个字符',
+
+## F10 src/projects/web-render/src/views/system-config/hooks/useBusinessSetting.ts
+业务开关声明和默认值，不推断用户部署配置
+
+31:   /** DHR模板审批后自动切换默认 */
+32:   updateDhrDefaultAfterApprove: number;
+33:   /** 是否支持放行单 */
+34:   enableCreateReleaseTmpl: number;
+35:   /** 放行单默认关联放行事务 */
+36:   defaultRelatedReleaseTxn: string;
+37:   /** 是否启用工艺审核 */
+38:   enableRoutingApprove: number;
+39:   /** 是否启用制程审核 */
+40:   enableProductProcessApprove: number;
+41:   /** 数据采集模块是否 */
+42:   enableShareOnlineForm: number;
+43:   /** 流程干预是否显示表单流程 */
+44:   enableDoc: number;
+45:   /** ERP BOM是否可修改 */
+58:   ruleConfig: {},
+59:   validateForm: 1,
+60:   productionModality: 'container',
+61:   dhrSumDisabled: 0,
+62:   enforceUseDHRSummaryProcess: 0,
+63:   updateFormDefaultAfterApprove: 1,
+64:   updateDhrDefaultAfterApprove: 1,
+65:   enableCreateReleaseTmpl: 1,
+66:   defaultRelatedReleaseTxn: 'rcus_product_release',
+67:   enableRoutingApprove: 0,
+68:   enableProductProcessApprove: 0,
+69:   enableShareOnlineForm: 1,
+70:   enableDoc: 1,
+71:   erpBomCanModifyEnabled: 0,
+72: });
+73: 
+74: // medpro 流程干预设置的默认配置
+75: const medProSetting = {
+76:   enableDoc: 0,
+77:   enableDocControl: 0,
+78:   enableRoutingApprove: 0,
+79:   enableProductProcessApprove: 0,
+80:   dhrSumDisabled: 1,
+81: };
+
+## F11 src/projects/web-render/src/router/asyncRouter.ts
+两种干预路由不可混为一页
+
+433:     import('/@web-render/views/edhr-application/render/ds-management/index.vue'),
+434:   // 流程干预 【MEDPRO】
+435:   'process-intervention': () =>
+436:     import('/@web-render/views/edhr-application/render/process-intervention/index.vue'),
+437:   // 审核流程干预 【edhr】
+438:   'approval-process-intervention': () =>
+439:     isEdhr()
+440:       ? import('/@web-render/views/edhr-application/render/approval-process-intervention/index.vue')
+441:       : import('/@web-render/views/medpro-application/render/approval-process-intervention/index.vue'),
+442:   // 文控管理
+
+## F12 src/apis/gct-apaas/ProcessApprovalLogController.ts
+平台日志SDK不足以证明集中页类型过滤
+
+98: /**
+99:  * 分页列表
+100:  * import { getProcessApprovalLogPageList } from "/@/apis/gct-apaas/ProcessApprovalLogController"
+101:  */
+102: export interface getProcessApprovalLogPageListQueryInterface {
+103:   pageNo?: number; // 页码
+104:   pageSize?: number; // 每页数据条数
+105: }
+106: export async function getProcessApprovalLogPageList(params: getProcessApprovalLogPageListQueryInterface = {}, config = {}): Promise<ResponseEntityPageBaseProcessApprovalLogResponse['data']> {
+107:   return defHttp.get(
+108:     {
+109:       url: `/gct-apaas/api/process-approval-log/page/list`,
+110:       params,
+111:     },
+112:     {
+113:       joinTenantIdToHeader: true,
+114:       ...config,
+115:     },
+116:   );
+117: }
+118: 
+119: /**
+120:  * 修改
+
+## B01 src/main/resources/com/gct/apaas/liquibase/suit/edhr/upgrade/5214/changelog-menu_permission_5214.xml
+集中日志五类/干预六类权限定义
+
+677:             <column name="id_">UwoI3x09TsbLFFMU</column>
+678:             <column name="key_">Tmpl</column>
+679:             <column name="name_">模板审核</column>
+680:             <column name="relation_id_">web_process_log_jg30</column>
+681:             <column name="terminal_type_">WEB</column>
+694:             <column name="id_">mgVpfMHZHbcQXfwz</column>
+695:             <column name="key_">Routing</column>
+696:             <column name="name_">工艺审核</column>
+697:             <column name="relation_id_">web_process_log_jg30</column>
+698:             <column name="terminal_type_">WEB</column>
+711:             <column name="id_">4rdNUZ0eQpxZjzrW</column>
+712:             <column name="key_">ProductProcess</column>
+713:             <column name="name_">制程审核</column>
+714:             <column name="relation_id_">web_process_log_jg30</column>
+715:             <column name="terminal_type_">WEB</column>
+728:             <column name="id_">pwYX0n58JUv92xMQ</column>
+729:             <column name="key_">Dhr</column>
+730:             <column name="name_">DHR审核</column>
+731:             <column name="relation_id_">web_process_log_jg30</column>
+732:             <column name="terminal_type_">WEB</column>
+745:             <column name="id_">rPJUq9fBoXNPcl1b</column>
+746:             <column name="key_">Change</column>
+747:             <column name="name_">变更审核</column>
+748:             <column name="relation_id_">web_process_log_jg30</column>
+749:             <column name="terminal_type_">WEB</column>
+764:             <column name="id_">hzqckP2nJegIE9rm</column>
+765:             <column name="key_">Doc</column>
+766:             <column name="name_">表单流程</column>
+767:             <column name="relation_id_">approval-process-intervention</column>
+768:             <column name="terminal_type_">WEB</column>
+781:             <column name="id_">ObIwbDsRfK1ROBzA</column>
+782:             <column name="key_">Tmpl</column>
+783:             <column name="name_">模板审核</column>
+784:             <column name="relation_id_">approval-process-intervention</column>
+785:             <column name="terminal_type_">WEB</column>
+798:             <column name="id_">speg6x6sVywjmoC5</column>
+799:             <column name="key_">Routing</column>
+800:             <column name="name_">工艺审核</column>
+801:             <column name="relation_id_">approval-process-intervention</column>
+802:             <column name="terminal_type_">WEB</column>
+815:             <column name="id_">WlATMosCSxhExfqY</column>
+816:             <column name="key_">ProductProcess</column>
+817:             <column name="name_">制程审核</column>
+818:             <column name="relation_id_">approval-process-intervention</column>
+819:             <column name="terminal_type_">WEB</column>
+832:             <column name="id_">4bAj41e1WlzIUUDd</column>
+833:             <column name="key_">Dhr</column>
+834:             <column name="name_">DHR审核</column>
+835:             <column name="relation_id_">approval-process-intervention</column>
+836:             <column name="terminal_type_">WEB</column>
+849:             <column name="id_">nbLfIi238ywoHs27</column>
+850:             <column name="key_">Change</column>
+851:             <column name="name_">变更审核</column>
+852:             <column name="relation_id_">approval-process-intervention</column>
+853:             <column name="terminal_type_">WEB</column>
+866:             <column name="id_">n43G0gGr2rSZx77z</column>
+867:             <column name="key_">Doc.Reassign</column>
+868:             <column name="name_">表单流程-转办</column>
+869:             <column name="relation_id_">approval-process-intervention</column>
+870:             <column name="terminal_type_">WEB</column>
+883:             <column name="id_">uQxyq2XoNurH6xkk</column>
+884:             <column name="key_">Doc.Withdraw</column>
+885:             <column name="name_">表单流程-撤回</column>
+886:             <column name="relation_id_">approval-process-intervention</column>
+887:             <column name="terminal_type_">WEB</column>
+900:             <column name="id_">FrzNktyqXv3L0VQi</column>
+901:             <column name="key_">Tmpl.Reassign</column>
+902:             <column name="name_">模板审核-转办</column>
+903:             <column name="relation_id_">approval-process-intervention</column>
+904:             <column name="terminal_type_">WEB</column>
+917:             <column name="id_">KLIBqzmVf10sjWnU</column>
+918:             <column name="key_">Tmpl.Withdraw</column>
+919:             <column name="name_">模板审核-撤回</column>
+920:             <column name="relation_id_">approval-process-intervention</column>
+921:             <column name="terminal_type_">WEB</column>
+934:             <column name="id_">91gsxyzdeNpzXotG</column>
+935:             <column name="key_">Routing.Reassign</column>
+936:             <column name="name_">工艺审核-转办</column>
+937:             <column name="relation_id_">approval-process-intervention</column>
+938:             <column name="terminal_type_">WEB</column>
+951:             <column name="id_">SEaqMHWn4HmmN0KM</column>
+952:             <column name="key_">Routing.Withdraw</column>
+953:             <column name="name_">工艺审核-撤回</column>
+954:             <column name="relation_id_">approval-process-intervention</column>
+955:             <column name="terminal_type_">WEB</column>
+968:             <column name="id_">u4AOKUy2pAaUnb5S</column>
+969:             <column name="key_">ProductProcess.Reassign</column>
+970:             <column name="name_">制程审核-转办</column>
+971:             <column name="relation_id_">approval-process-intervention</column>
+972:             <column name="terminal_type_">WEB</column>
+985:             <column name="id_">TwbNVZYvUauYvwvW</column>
+986:             <column name="key_">ProductProcess.Withdraw</column>
+987:             <column name="name_">制程审核-撤回</column>
+988:             <column name="relation_id_">approval-process-intervention</column>
+989:             <column name="terminal_type_">WEB</column>
+1002:             <column name="id_">uXmfzjNsLcuOEqeK</column>
+1003:             <column name="key_">Dhr.Reassign</column>
+1004:             <column name="name_">DHR审核-转办</column>
+1005:             <column name="relation_id_">approval-process-intervention</column>
+1006:             <column name="terminal_type_">WEB</column>
+1019:             <column name="id_">8c3l2AYf6weFw61i</column>
+1020:             <column name="key_">Dhr.Withdraw</column>
+1021:             <column name="name_">DHR审核-撤回</column>
+1022:             <column name="relation_id_">approval-process-intervention</column>
+1023:             <column name="terminal_type_">WEB</column>
+1036:             <column name="id_">BvlAVqcx41FrzLtq</column>
+1037:             <column name="key_">Change.Reassign</column>
+1038:             <column name="name_">变更审核-转办</column>
+1039:             <column name="relation_id_">approval-process-intervention</column>
+1040:             <column name="terminal_type_">WEB</column>
+1053:             <column name="id_">eaW9yLGuctzkfPsu</column>
+1054:             <column name="key_">Change.Withdraw</column>
+1055:             <column name="name_">变更审核-撤回</column>
+1056:             <column name="relation_id_">approval-process-intervention</column>
+1057:             <column name="terminal_type_">WEB</column>
+
+## B02 src/main/java/com/gct/apaas/edhr/approve/enums/SummaryApproveHisType.java
+业务审批历史类型
+
+10: public enum SummaryApproveHisType {
+11: 
+12:     /** EDHR汇总 */
+13:     EDHR_SUMMARY,
+14:     /** 表单变更 */
+15:     FORM_CHANGE,
+16:     /** DHR变更 */
+17:     DHR_CHANGE,
+18:     /** 记录本变更 */
+19:     NOTEBOOK_CHANGE,
+20:     /** 产品制程 */
+21:     PRODUCT_PROCESS,
+22:     /** 工艺路线 */
+23:     ROUTING;
+24: 
+25: }
+
+## B03 src/main/java/com/gct/apaas/edhr/approve/listener/ProcessTaskEventListener.java
+审批业务type投影到待办
+
+102:     @ProcessPath(method = "onTaskCreateEvent", async = false, businessKey = PmProcessDefinitionTypeEnum.BUSINESS_APPROVE)
+103:     @EventListener(condition = "#taskDelegate.eventName=='create' && #taskDelegate.getProcessInstance().getBusinessKey == 'BUSINESS_APPROVE'")
+270:         Map<String, Object> approveHisMap = modelManager.getById(ModelName.EDHR_SUMMARY_APPROVE_HIS, approveHisId);
+271:         if (approveHisMap == null
+272:                 && (approveHisMap = modelManager.getById(ModelName.EDHR_SUMMARY_APPROVE_HIS, businessId)) == null) {
+273:             return taskTodo;
+274:         }
+275:         EdhrSummaryApproveHisEntity approveHisEntity = new EdhrSummaryApproveHisEntity(approveHisMap);
+276:         taskTodo.setBusinessId(approveHisEntity.getId());
+277:         taskTodo.setBusinessCode(approveHisEntity.getChangeNo());
+278:         taskTodo.setTaskType(approveHisEntity.getType());
+279:         taskTodo.setOfCode(approveHisEntity.getTmplCode());
+280:         taskTodo.setOfInstanceId(approveHisEntity.getOnlineFormInstanceId());
+281:         taskTodo.setTitle(approveHisEntity.getTitle());
+282:         taskTodo.setOfTmplId(approveHisEntity.getTmplId());
+283:         taskTodo.setOfTmplName(approveHisEntity.getTmplName());
+284:         taskTodo.setSerialNo(approveHisEntity.getSerialNo());
+
+## B04 src/main/java/com/gct/apaas/edhr/bizProcess/listener/EdhrProcessTaskEventListener.java
+DHR审核任务类型投影
+
+289:     private ProcessTaskTodo createTaskTodo(String taskId, String starterId, String starterName, String processInstanceId) {
+290:         ProcessTaskTodo taskTodo = new ProcessTaskTodo();
+291: 
+292:         taskTodo.setProcessInstanceId(processInstanceId); //camunda流程实例id和自定义的流程实例id一样
+293:         taskTodo.setTaskId(taskId);
+294:         taskTodo.setStarterId(starterId); //流程创建人ID
+295:         taskTodo.setStarterName(starterName);////流程创建人名称
+296:         taskTodo.setTaskStartTime(LocalDateTime.now());
+297: 
+298:         String edhrInstanceId = (String) runtimeService.getVariables(processInstanceId)
+299:                 .get(ProcessConstant.MODEL_DATA_ID); //获取EDHR实例id
+300:         //表单实例一定会关联一个edhr实例id - 其再创建edhr实例时会关联创建表单实例
+301:         /*if (StrUtil.isBlank(edhrInstanceId)) {
+302:             throw new ApiException("sys.ncdp.api.doc_outline.parameter.not.blank", "edhr实例id");
+303:         }*/
+304:         if (StringUtils.isNotBlank(edhrInstanceId)) {
+305:             EdhrInstance edhrInstance = edhrInstanceService.findByIdAndAssertNotNull(edhrInstanceId);
+306:             taskTodo.setProductId(edhrInstance.getProductId());
+307:             taskTodo.setProductName(edhrInstance.getProductName());
+308:             taskTodo.setEdhrTmplId(edhrInstance.getTmplId());
+309:             taskTodo.setEdhrTmplName(edhrInstance.getTmplName());
+310:             //taskTodo.setOfInstanceId(edhrInstanceId);
+311:             //taskTodo.setOfTmplId(edhrInstance.getTmplId());
+312:             //taskTodo.setOfTmplName(edhrInstance.getTmplName());
+313:             taskTodo.setEdhrInstanceId(edhrInstance.getId());
+314:             taskTodo.setTaskType(ProcessTaskTypeEnum.EDHR_SUMMARY.getCode());
+315:             taskTodo.setMaterialNo(edhrInstance.getMaterialNo());  //表单实例此值也取自edhrInstance
+316:             taskTodo.setMaterialStatus(edhrInstance.getMaterialStatus());//表单实例此值也取自edhrInstance
+317:             taskTodo.setMfgOrderId(edhrInstance.getMfgOrderId());
+318:         } else {
+319:             taskTodo.setTaskType(ProcessTaskTypeEnum.EDHR_SUMMARY.getCode());
+320:         }
+
+## B05 src/main/java/com/gct/apaas/edhr/transaction/entity/TxnInstEntity.java
+事务独立em_txn_inst模型
+
+16:  */
+17: @Getter
+18: @Setter
+19: public class TxnInstEntity extends NdoEntity implements Serializable {
+20:     public static final String MODEL_KEY = "em_txn_inst";
+21:     /**
+22:      * 事务定义ID
+23:      */
+24:     private String txnDefinitionId;
+25: 
+
+## B06 src/main/java/com/gct/apaas/edhr/transaction/biz/TxnInstSubmitBs.java
+事务实例引擎启动
+
+262:         processProduction(txnInstEntity);
+263:         createInspectionList(txnInstEntity);
+264:         createProductReleaseList(txnInstEntity);
+265:         createStockList(txnInstEntity);
+266:         modelManager.savePreferExternalId(TxnInstEntity.MODEL_KEY, txnInstEntity.toMap());
+267: 
+268:         //txnMainlineEntity.setTxnInstId(instId);
+269: 
+270:         //不存在就需要启动
+271:         StartProcInstData startProcInstData = StartProcInstData.builder()
+272:                 .modelKey(ModelName.TXN_INST)
+273:                 .dataId(Optional.ofNullable(txnInstEntity.getContainerId()).orElse(txnInstEntity.getSnId()))
+274:                 .procDefId(txnInstEntity.getProcDefId())
+275:                 .modelData(txnInstEntity.toMap())
+276:                 .build();
+277:         ProcessInstance processInstance = bizProcessEngine
+278:                 .startBizProcessInstance(startProcInstData);
+279:         modelManager.updateById(TxnInstEntity.MODEL_KEY, Map.of(FieldName.PROC_INST_ID, processInstance.getId()), instId);
+280:         //String id = modelManager.save(TxnMainlineEntity.MODEL_KEY, txnMainlineEntity.toMap());
+281:         //txnMainlineEntity.setId(id);
+
+## B07 src/main/java/com/gct/apaas/edhr/transaction/biz/TxnInstListSearchBs.java
+批次/SN事务独立列表查询
+
+40: @RequiredArgsConstructor
+41: public class TxnInstListSearchBs extends InstBizServiceAdapter {
+42:     private final PermissionsService permissionsService;
+43:     private final ModelManager modelManager;
+44:     private final EntityModelNsGlobalMethod entityModelNsGlobalMethod;
+45: 
+46:     @Override
+47:     public String registerModelKey() {
+48:         return ModelName.TXN_INST;
+49:     }
+50: 
+51:     @Override
+52:     public BuiltinBizServiceMeta registerMeta() {
+53:         return new BuiltinBizServiceMeta("biz_txn_inst_list_search", "批次/SN事务列表查询", HttpMethod.GET.name(), "批次/SN事务列表查询", OperateTypeEnum.SELECT);
+54:     }
+55: 
+56:     @Override
+57:     public Object doService(String modelKey, HttpParam httpParam, Map<String, Object> bsCtx) {
+58:         Map<String, Object> valueMap = JsonUtils.parseObject(httpParam.getBody(), new TypeReference<Map<String, Object>>() {
+59:         });
+60:         ConditionDTO conditionDTO = BeanUtils.toBean(valueMap, ConditionDTO.class);
+61:         StringBuffer sb = permissionsService.getPermissions();
+62:         String[] permissions = sb.toString().split(StringPool.COMMA);
+63:         Map<String, Object> queryMap = buildQuery(conditionDTO, permissions);
+64:         QueryControl queryControl = QueryControl.createBsDefault();
+65:         //queryControl.useFieldPermission = false;
+66:         //queryControl.useDataRule = false;
+67:         ModelPageableRow modelPageableRow = modelDataBaseBiz.listByPage(TxnInstEntity.MODEL_KEY, BeanUtil.toBean(queryMap, ConditionDTO.class), queryControl);
+68:         //Map<String, Object> resultPage = modelManager.listByPage(TxnInstEntity.MODEL_KEY, queryMap, BeanUtil.beanToMap(queryControl));
+69:         if (modelPageableRow.getData() != null) {
+70:             List<Map<String, Object>> dataList = (List<Map<String, Object>>) modelPageableRow.getData();
+
+## B08 src/main/java/com/gct/apaas/edhr/bizProcess/juel/FormNodeDelegate.java
+作业可创建TXN来源表单，不能排除其表单任务
+
+122:         //创建在线表单实例
+123:         OfInstCreateDTO createDTO = OfInstCreateDTO.builder()
+124:                 .tmplId(onlineFormId)
+125:                 .businessId(txnInstEntity.getRoutingOperationId())
+126:                 .businessType(BusinessTypeEnum.TXN.getCode())
+127:                 .materialNo(name)
+128:                 //.params(formInstanceParamsService.getParams(name,materialStatus, txnInstEntity.getRoutingOperationId()))
+129:                 //扩展字段用来做业务区分
+130:                 .ext1(taskType)
+131:                 .ext2(productId)
+132:                 .ext3(productRbi)
+133:                 .ext4(productRi)
+134:                 .ext5(mfgOrderId)
+135:                 .ext6(shopfloorId)
+136:                 .ext7(productFmilyId)
+137:                 .ofRequired(0)
+138:                 .txnInstId(txnInstEntity.getId())
+139:                 .build();
+140: 
+141:         if (StrUtil.isNotEmpty(txnInstEntity.getContainerId())) {
+142:             createDTO.setMaterialStatus(MaterialStatusTypeEnum.LOT.getCode());
+143:         }
+144:         if (StrUtil.isNotEmpty(txnInstEntity.getSnId())) {
+145:             createDTO.setMaterialStatus(MaterialStatusTypeEnum.SN.getCode());
+146:         }
+147:         OnlineFormInstance instance = onlineFormService.create(createDTO);
+148: 
+
+## B09 src/main/java/com/gct/apaas/edhr/bizProcess/service/OnlineFormService.java
+创建委托平台实现，平台来源映射缺口
+
+49:     private OnlineFormInstanceService onlineFormInstanceService;
+50: 
+51:     @Autowired
+52:     private EdhrSequenceService edhrSequenceService;
+53: 
+54: 
+55:     public OnlineFormInstance create(OfInstCreateDTO createDTO) {
+56:         return onlineFormInstanceService.create(createDTO, edhrSequenceService.generateSnSerialNoByConfig(createDTO));
+57:     }
+58: 
+59: }

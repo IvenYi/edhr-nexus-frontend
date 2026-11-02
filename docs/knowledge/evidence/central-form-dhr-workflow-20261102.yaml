@@ -1,0 +1,32 @@
+knowledgeModelVersion: 0.3.25
+evidence:
+  - id: evidence.central-form-dhr-workflow-20261102-user-confirmed
+    type: document
+    path: docs/knowledge/evidence/central-form-dhr-workflow-20261102.md
+    description: user-confirmed-and-existing-policy；用户接受普通表单和DHR进入集中日志及干预，普通表单保留本人转办并增加管理员签名改派，DHR只增管理员签名改派；追加两领域数据审计。准确的声明级替代和历史保留见DEC-0093，原话、工程选择及原始实现证据分别记录，不以冠骋调研或方案接受推定运行验收。
+    visibility: internal
+  - id: evidence.central-form-dhr-workflow-query-source
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/WorkflowOperationsQuery.java
+    description: original-evidence；本轮0bd0848b工作树的list以UNION ALL聚合既有工作流及普通表单原生投影，在领域可见范围之后统一过滤、计数和分页；DHR查询绑定真实汇总版本并显示DHR编号及版本，普通表单以FORM_PROCESS和form-实例ID区分。控制器按同一字符串身份路由详情及受控改派，不生成第二套运行实例；具体源码定位和测试边界见同名说明。
+    visibility: internal
+  - id: evidence.central-form-workflow-responsibility-source
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormWorkflowOperations.java
+    description: original-evidence；从form_instance_record和production_execution读取原生状态/历史，仅当前可变审批节点可改派；管理会话及签署人权限、同租户正常目标、表单审批资格及状态摘要在执行时核对。复用WORKFLOW_INTERVENTION受控签名、transferAssignees和revision，同一事务增加REASSIGN结构化历史及PRODUCTION_EXECUTION领域审计，冻结候选、表单内容及流程保持；不扩大填报字段权限。
+    visibility: internal
+  - id: evidence.central-dhr-workflow-responsibility-source
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/WorkflowResponsibilityService.java
+    description: original-evidence；DHR仅开放管理员签名重新分配，requireActive复核当前汇总审批仍待审；eligible要求同租户正常用户具DHR审核页及动作权限，来源候选保留于originSnapshot，只有新处理人继续审批。签名、责任、运行日志及干预和DHR_SUMMARY_REVIEW审计同事务，审计entityId定位汇总版本，原DhrSummaryService.audit/versionAudit可读取；DHR通用转办仍拒绝。
+    visibility: internal
+  - id: evidence.central-form-dhr-audit-presentation-source
+    type: code
+    path: gmp-platform/frontend/src/utils/productionAudit.ts
+    description: original-evidence；普通表单列表、填报及审批页复用isAuditForForm按REASSIGN的表单实例或formId/copyId过滤，并增加责任、签署和原因中文字段；不重写历史工序级事件范围。DHR审计展示同时补充改派、签署、节点与候选快照中文字段，原始不可变审计内容保持；前端路径及真实交互边界见同名说明。
+    visibility: internal
+  - id: evidence.central-form-dhr-workflow-tests
+    type: test
+    path: gmp-platform/backend/src/test/java/com/zencas/edhr/recordcontrol/service/RecordControlPostgresIntegrationTest.java
+    description: original-and-test-evidence；本轮新增DHR改派后新旧处理权、冻结证据及两级领域审计，普通表单签名改派/原候选/内容保持、原待办及精确审计身份，非法签名/目标/跨租户/业务锁负向、两源统一分页和表单竞争/审计失败回滚断言。实际执行、失败修复及最终结果在同名说明按原报告分时点记录；测试源码存在不等于本次已经运行通过，不替代独立质量及完整多租户/审批矩阵验收。
+    visibility: internal

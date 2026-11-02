@@ -15,6 +15,9 @@ const labels: Record<string, string> = {
   removedSummaryVersions: '已清理的开发期汇总', summaryStatus: '汇总状态', requiresFreshCheck: '需要重新核查',
   signatureId: '签名标识', signerId: '签署人标识', signerName: '签署人', signerAccount: '签署账号',
   sessionOperatorId: '会话操作人标识', reviewMode: '审批方式', reviewOutcome: '审批结果', outcome: '审批结果',
+  instanceId: '流程实例标识', nodeId: '当前节点标识', workflowVersionId: '审批流程版本标识',
+  assigneeId: '处理人标识', assigneeName: '处理人', previousAssigneeId: '原处理人标识', previousAssigneeName: '原处理人',
+  targetUserId: '新处理人标识', targetUserName: '新处理人', candidateSnapshot: '候选依据快照', taskState: '操作前任务状态摘要',
 };
 const enums: Record<string, string> = {
   IN_PROGRESS: '填报中', COMPLETED: '生产完成', EARLY_TERMINATED: '已终止',
@@ -22,6 +25,7 @@ const enums: Record<string, string> = {
   APPROVED: '已通过', RETURNED: '已退回', REJECTED: '已退回',
   CREATE: '创建', UPDATE: '更新', SAVE: '保存', SUBMIT: '提交', APPROVE: '审批通过', RETURN: '退回',
   LINK: '关联附件', VERIFY: '核验附件', UNLINK: '解除附件关联', EXPORT: '导出', MIGRATE: '数据迁移',
+  REASSIGN: '重新分配', TRANSFER: '转办',
   BATCH: '批次', SN: 'SN', NONE: '不另启汇总审批', REQUIRED: '需要汇总审批',
   FULL: '完整 DHR', SELECTED: '选定范围', EXTERNAL_REPORT: '委外报告', CERTIFICATE: '证明文件', PAPER_SCAN: '纸质扫描', OTHER: '其他',
 };

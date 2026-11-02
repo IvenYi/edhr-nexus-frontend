@@ -1,0 +1,18 @@
+knowledgeModelVersion: 0.3.25
+facts:
+  - id: fact.workflow-central-entry.business-type
+    name: 集中流程查询的领域业务类型
+    conceptId: concept.workflow-event-log
+    valueType: string
+    sourceType: derived
+    sourcePath: gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/WorkflowOperationsQuery.java
+    aliases: [centralWorkflow.businessType]
+    availability: runtime
+    allowedOperators: [in]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.central-form-dhr-workflow-20261102-user-confirmed, evidence.central-form-dhr-workflow-query-source]
+    sourceRevision: working-tree
+    sourceLocator: WorkflowOperationsQuery.list/detail读取workflow_instance.business_type，FormWorkflowOperations.source/detail将持久化普通表单投影为FORM_PROCESS，DHR保留DHR_SUMMARY。两源在UNION ALL后统一过滤、计数及分页；本事实定位原生查询响应，不宣称通用知识运行求值器或完整多租户隔离已建立。
+    capturedAt: '2026-11-02'
+    reviewStatus: reviewed

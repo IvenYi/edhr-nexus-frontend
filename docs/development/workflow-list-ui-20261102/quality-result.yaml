@@ -1,0 +1,137 @@
+qualityResult:
+  result: passed
+  baseCommit: 0bd0848bbded6d6954d62a4f924e0b2eec6623ad
+  headCommit: 0bd0848bbded6d6954d62a4f924e0b2eec6623ad
+  contractBaseline:
+    sourceCommit: 0bd0848bbded6d6954d62a4f924e0b2eec6623ad
+    targetBranch: edhr-dev
+    targetCommit: e3e49784eda6bc01e7e5c686d6f79dc5a600d5ae
+    contractReadCommit: 0bd0848bbded6d6954d62a4f924e0b2eec6623ad
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: dirty
+    includedPaths:
+      - gmp-platform/frontend/src/api/workflow-operations.ts
+      - gmp-platform/frontend/src/components/workflow/WorkflowResponsibilityDialog.tsx
+      - gmp-platform/frontend/src/pages/workflow-center/InstanceList.tsx
+      - gmp-platform/frontend/src/pages/workflow-center/WorkflowInstancePanel.tsx
+      - gmp-platform/frontend/src/pages/workflow-center/WorkflowReassignmentEntry.tsx
+      - gmp-platform/frontend/scripts/test-workflow-list-ui-browser.mjs
+      - docs/knowledge/implementation-anchors/workflow-operations.yaml
+      - docs/knowledge/evidence/workflow-list-ui-20261102.md
+      - docs/knowledge/evidence/workflow-list-ui-20261102.yaml
+      - docs/development/workflow-list-ui-20261102/
+    excludedPaths: [gmp-platform/frontend/output/, output/, premium-audit.json]
+    untrackedPaths:
+      - gmp-platform/frontend/src/pages/workflow-center/WorkflowReassignmentEntry.tsx
+      - gmp-platform/frontend/scripts/test-workflow-list-ui-browser.mjs
+      - docs/knowledge/evidence/workflow-list-ui-20261102.md
+      - docs/knowledge/evidence/workflow-list-ui-20261102.yaml
+      - docs/development/workflow-list-ui-20261102/
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+    - id: check.workflow-list-contract-and-candidate
+      required: true
+      category: documentation
+      description: 独立核对实际主目录、Git基线、契约及本轮未提交审查范围。
+      method: command
+      command: git rev-parse HEAD origin/edhr-dev；git branch --show-current；来源到目标相关契约/知识/流程源码差异；git diff --check；SHA256清单校验。
+      outcome: passed
+      evidence:
+        - 实际分支edhr-dev，HEAD为0bd0848b完整哈希，已获取目标为e3e49784完整哈希，与本结果contractBaseline一致。
+        - 来源至目标的AGENTS、编码准则、专业角色及受影响知识/流程源码无差异；未合并远端其他内容，未创建工作树或提交。
+        - 本轮为HEAD之上的dirty工作树；evidence/source-manifest.json中9项实现、测试和知识文件SHA256逐项一致，不编造候选提交哈希。
+        - git diff --check退出0；既有输出按excludedPaths排除，未删除或修改。
+    - id: check.workflow-list-requirements-and-source
+      required: true
+      category: requirements
+      description: 独立核对列表动作、业务身份、当前任务、既有签名和权限边界。
+      method: inspection
+      command: 阅读本轮前端实现及WorkflowOperationsQuery、WorkflowEngine、既有责任对话框和DEC-0031/0039/0091/0092。
+      outcome: passed
+      evidence:
+        - 操作列仅干预模式且workflow.intervene有权的RUNNING行显示；点击和键盘操作均阻止冒泡至行详情。
+        - 单活动任务直接进入既有签名弹窗，多活动任务先选择具体任务；PENDING/PROCESSING之外历史任务不进入干预当前任务，日志详情保留历史。
+        - 入口refetchOnMount为always，读取期间不复用旧选择；重新打开仍刷新当前任务。提交继续传递所选taskId及其taskState，没有批量重分配或签名豁免。
+        - 责任对话框仅增加可选业务说明；原目标、原因、电子签名、忙状态及后端调用契约保持，转办调用方未改变。
+        - 列表默认业务类型与业务编号/模板名分列；详情两页签及动作上下文保持身份；未知历史显示原码、空类型明确未标注，不猜测业务。
+        - 原始查询排除DHR_SUMMARY而非硬限定CHANGE/OBSOLETE；正常受控入口为CHANGE/OBSOLETE，DHR和生产执行边界未扩大；没有服务端、迁移或数据初始化改动。
+    - id: check.workflow-list-knowledge-sync
+      required: true
+      category: ontology
+      description: 核对最小知识同步、证据分类和历史保留与实现范围一致。
+      method: inspection
+      command: 阅读decision-package、ontology-result、本轮知识证据和workflow-operations锚点差异，核对BusinessKnowledgeModelTest原始报告。
+      outcome: passed
+      evidence:
+        - ontologyResult为updated；0.3.25/schema1.2.0保持，只补来源及入口锚点，不新建业务政策、状态或提升成熟度。
+        - 原始用户需求、原始源码与界面实现选择分列，原责任执行/PG历史证据保留；未将本轮静态核对冒充旧套件重跑。
+        - 顺序后继、并行待办、多候选共享一任务和历史任务的说明与原始引擎及DEC-0031/0039一致，不扩展作业流程并行能力。
+        - 独立读取主侧Surefire报告，BusinessKnowledgeModelTest为89项、0失败、0错误、0跳过；本质量实例未重复运行Maven。
+    - id: check.workflow-list-independent-browser
+      required: true
+      category: integration
+      description: 独立重跑实际维护组件、主题和客户端的受控API浏览器交互。
+      method: browser
+      command: NODE_PATH=/Users/ivenwang/.npm/_npx/31e32ef8478fbf80/node_modules CHROME_PATH='/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' WORKFLOW_LIST_ARTIFACTS=/Users/ivenwang/Documents/edhr-nexus/docs/development/workflow-list-ui-20261102/evidence/independent/browser node scripts/test-workflow-list-ui-browser.mjs（前端cwd）。
+      outcome: passed
+      evidence:
+        - evidence/independent/browser/result.json；独立运行退出0，26/26通过，覆盖1440px及390px。
+        - 覆盖单/并行/无待办、已结束、读取失败重试、加载、权限、未知/空类型、空列表、列表失败、当前/历史任务及详情/审计业务身份。
+        - 覆盖列显隐/拖拽顺序/真实鼠标拖动列宽、持久化、日志/干预及用户偏好隔离、48px表头/40px行及右侧sticky操作。
+        - 合成提交核对所选taskId、targetUserId、expectedTaskState，缺签禁止提交；30秒缓存内重开仍刷新，不呈现已失效任务签名入口。
+        - 全部业务请求由脚本拦截，合成POST未到真实后端；不将本检查当真实签署事务或全应用E2E。
+    - id: check.workflow-list-visual
+      required: true
+      category: visual
+      description: 独立查看桌面、窄屏、字段设置、详情及重新分配视觉原件。
+      method: inspection
+      command: view_image查看独立浏览器single-390/settings-390/load-error-390/history-1440及主侧live/column-settings、detail原件。
+      outcome: passed
+      evidence:
+        - 列表保持统一查询面板/工具栏/表格/底栏；字段设置沿用列图标及共享Popover，无新增页面标题或导航空间占用。
+        - 窄屏表格内部横向滚动，操作列保持可见；签名弹窗在390px内换行和布局正常，业务类型和编号可读。
+        - 实际主环境截图中类型、申请编号、模板名与当前任务分别呈现；审计页签保留身份；截图检查不冒充本质量实例真实登录。
+    - id: check.workflow-list-style-and-build
+      required: true
+      category: regression
+      description: 独立运行共享样式检查，并核对本轮构建结果及源码一致性。
+      method: command
+      command: npm run verify:list-table-style；读取主侧build日志并校验source-manifest.json。
+      outcome: passed
+      evidence:
+        - 独立样式检查退出0，33个公共列表、15个样式入口、9个可调列列表和5个RDO页面契约通过。
+        - 独立读取本轮build原始日志，TypeScript/Vite构建完成；9项源码清单校验一致。本质量实例未重复执行完整构建。
+    - id: check.workflow-list-retained-data
+      required: true
+      category: database
+      description: 在真实开发库只读核对验收样例保留及业务类型边界。
+      method: query
+      command: psql -X -d edhr_dev，以BEGIN READ ONLY执行RC-20261030申请、四个DHR及workflow_instance类型/状态聚合SELECT。
+      outcome: passed
+      evidence:
+        - RC-20261030-000001至000007共7条仍IN_REVIEW；四个DHR依次为PENDING_REVIEW、NOT_STARTED及两个FORMALIZED。
+        - 实例聚合为CHANGE运行6、OBSOLETE运行1及DHR_SUMMARY运行1/完成2，符合主侧正常列表7条与查询排除DHR的边界。
+        - 本质量实例只执行SELECT，未登录提交、重置、审批、重新分配、转办或撤回主库样例，不断言其仍等于最初造数后的全部责任状态。
+    - id: check.workflow-list-adjacent-generic-ui
+      required: false
+      category: regression
+      description: 记录额外既有菜单图标用例失败及其与当前切片的关系。
+      method: inspection
+      command: 阅读主侧test-generic-ui日志，并执行git diff --exit-code HEAD比较menuManagement.ts、constants.ts及test-generic-ui.mjs。
+      outcome: failed
+      evidence:
+        - 主侧额外套件13/14；normalization preserves configured module and required-menu icons on repeated saves实际FactCheck、预期asset:456。
+        - 三个失败相关文件与固定HEAD完全一致，git diff退出0；本轮改动不进入该菜单标准化路径。
+        - 这是未修改的既有相邻用例失败，不属于本轮L1必需验收；本质量实例未修复、降低断言或宣称全套通过。
+  findings: []
+  residualRisks:
+    - id: risk.workflow-list-validation-boundary
+      description: 本轮验证前端切片及只读数据；受控API提交不等于真实后端签署和事务重验。
+      impact: 不作为全系统回归、CSV、数据库迁移或发布通过证明。
+      mitigation: 服务端未修改；保留既有真实集成证据和主库样例供人工验收，若后续改变执行契约需重新评定级别及验证。
+    - id: risk.workflow-list-existing-menu-icon-test
+      description: 额外菜单图标保留用例在未改动的HEAD源码上已有失败。
+      impact: 本轮必需检查通过，但不能宣称既有generic-ui套件整体绿色。
+      mitigation: 已在README及本结果披露，保持本轮精准范围，后续单独处理该菜单问题。
+  blockingConditions: []

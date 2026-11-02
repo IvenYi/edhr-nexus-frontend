@@ -1,0 +1,42 @@
+knowledgeModelVersion: 0.3.25
+rules:
+  - id: rule.workflow-central-entry.domain-projection
+    name: 普通表单及DHR集中查询复用领域运行事实
+    status: specified
+    visibility: internal
+    trigger: workflow-central-entry.query
+    scope: ordinary-form-and-dhr-review
+    condition:
+      all:
+        - {fact: fact.workflow-central-entry.business-type, operator: in, value: [FORM_PROCESS, DHR_SUMMARY]}
+    result:
+      type: return-query-projection
+      source: existing-domain-runtime-and-history
+      includeBusinessTypeAndBusinessObject: true
+      createsRuntimeTasks: false
+      grantsActionPermission: false
+      requiresDomainReadOrInterventionPermission: true
+    explanation: DEC-0093-01确认普通表单与DHR进入集中流程日志及干预；集中读取不新增运行引擎或改写领域所有权，普通表单读取持久化表单份和生产执行状态/历史，DHR读取既有汇总审批任务与版本。日志可解释填报阶段，干预只暴露当前未处理审批任务的签名改派，不扩大填报权限；作业整体及工艺路线保持原范围。具体读取权限映射、表单前缀身份和分页实现属于工程选择，不能将本规范标记为已运行通过。
+    evidenceIds: [evidence.central-form-dhr-workflow-20261102-user-confirmed, evidence.central-form-dhr-workflow-query-source]
+  - id: rule.workflow-central-entry.signed-responsibility-change
+    name: 普通表单及DHR签名改派保留证据和领域审计
+    status: specified
+    visibility: internal
+    trigger: workflow-central-entry.reassign
+    scope: ordinary-form-approval-and-dhr-review
+    condition:
+      all:
+        - {fact: intervention.type, operator: equals, value: MANAGERIAL_REASSIGNMENT}
+    result:
+      type: update-reference
+      target: currentApprovalTask.currentAssignee
+      valueFrom: selectedTarget.id
+      preserves: [originalCandidateEvidence, currentNode, formValues, frozenDhrSummaryVersion, existingSignatures, approvalDecisions, workflowPath, businessOutcome]
+      writes: [responsibilityHistory, signatureReference, domainDataAudit]
+      transactional: true
+      requiresActiveUnhandledApprovalTask: true
+      requiresOperatorAndSignerInterventionPermission: true
+      requiresDomainQualifiedTarget: true
+      requiresReasonAndStateBoundSignature: true
+    explanation: DEC-0093-02/03仅授权普通表单及DHR当前未处理审批任务的管理员签名重新分配。原候选依据与当前责任分开保存，仅新目标可继续处理；执行时复核任务状态与签名绑定，失败不得部分落地。集中历史以及表单/DHR各自数据审计均须能够定位业务、任务、原/新处理责任、原因、时间、实际操作者/签署人及签名引用。DHR仍由专属路径批准或退回，本人转办和撤回不开放；普通表单已有转办及其目标和签署政策保持。该规范保留specified/internal，具体资格码及事务实现另取源码和测试证据。
+    evidenceIds: [evidence.central-form-dhr-workflow-20261102-user-confirmed, evidence.workflow-reassignment-signature-user-confirmed, evidence.central-form-workflow-responsibility-source, evidence.central-dhr-workflow-responsibility-source, evidence.central-form-dhr-audit-presentation-source]

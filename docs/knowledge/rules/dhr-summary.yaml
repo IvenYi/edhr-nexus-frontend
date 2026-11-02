@@ -71,8 +71,8 @@ rules:
       workflowBusinessType: DHR_SUMMARY
       workflowVersionStatus: PUBLISHED
       freezeAt: first-production-start
-    explanation: REQUIRED 选择已发布 DHR_SUMMARY 定义和版本并在开工冻结；NONE 不另启本系统汇总审批，不豁免适用法定审核、源表单签署或放行。当前已有旧审批代码，但本次完整证据及检查结果审批尚未验收。
-    evidenceIds: [evidence.dhr-summary-user-confirmed, evidence.dhr-summary-service, evidence.dhr-summary-process-configuration-ui]
+    explanation: REQUIRED 选择已发布 DHR_SUMMARY 定义和版本并在开工冻结；NONE 不另启本系统汇总审批，不豁免适用法定审核、源表单签署或放行。当前原生汇总/审核路径已有完整证据冻结、人工三项核查和检查结果保留，本轮真实链覆盖退回、V2重汇总、签名改派及专属批准；通用质量、异常和源签署自动判读/变化比较仍按DEC-0068保留，不概括为审批路径完全未验收，也不提升本规则为通用知识运行发布。
+    evidenceIds: [evidence.dhr-summary-user-confirmed, evidence.dhr-summary-service, evidence.dhr-summary-process-configuration-ui, evidence.workflow-record-dhr-closure-live-verification]
   - id: rule.dhr-summary-optional-placement-order
     name: 实例自定义展示位置与同级顺序
     status: specified
@@ -146,8 +146,8 @@ rules:
       manualSelectionFiltersEvidence: false
       completionFiltersVisibility: false
       emptySourceCreatesEvidence: false
-    explanation: 执行上下文绑定作业/工序表单的生产对象，自动归集实际实例及受控附件。未完成、失败、作废、已替代记录保持可见与真实状态；合格完成和提交资格由适用检查决定。自定义上下文和附件关联须核验，填错批次值是内容错误，不假设正常自动归属会错。
-    evidenceIds: [evidence.dhr-summary-user-confirmed]
+    explanation: 执行上下文绑定作业/工序表单的生产对象，自动归集实际实例及受控附件。未完成、失败、作废、已替代记录保留完整归集、冻结、核查和按权可达的真实状态；DEC-0063-16规定作废在常规视图默认隐藏，仅经低频入口查看，不将证据可达解释为常规平铺或缩减核查范围。合格完成和提交资格由适用检查决定。自定义上下文和附件关联须核验，填错批次值是内容错误，不假设正常自动归属会错。
+    evidenceIds: [evidence.dhr-summary-user-confirmed, evidence.dhr-filling-review-confirmed, evidence.workflow-record-dhr-closure-source-review]
   - id: rule.dhr-summary-block-stale-approval
     name: 有效证据变化阻断过时批准且保留历史
     status: specified

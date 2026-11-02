@@ -1,0 +1,45 @@
+knowledgeModelVersion: 0.3.25
+decisions:
+  - id: DEC-0093
+    title: 普通表单与DHR集中流程查询及签名重新分配
+    status: specified
+    visibility: internal
+    context: user-confirmed-and-existing-policy；2026-11-02用户明确接受普通表单保留处理人转办并增加管理员签名重新分配，DHR增加管理员签名重新分配但本期不增加处理人主动转办，两类进入流程日志和流程干预，并追加要求在DHR及表单各自数据审计体现责任变化。01补充DEC-0092-01的集中入口业务范围，02只局部替代DEC-0081-04、DEC-0091-03和DEC-0092-05中管理员重新分配未开放的对应范围，不替代这些声明保留的审批、证据、签署或禁止动作边界；DEC-0092-06的DHR查询排除保留为2026-10-30历史实现事实而非永久政策。确认规范与本轮实际实现及测试证据分列，不由接受方案推定运行验收或提升知识版本、schema及P0阶段。
+    decisionStatements:
+      - id: DEC-0093-01
+        statement: user-confirmed；普通生产表单流程和DHR汇总审批均纳入集中流程日志及流程干预。日志按权只读展示所属业务类型、业务对象、流程状态、当前任务及运行历史，干预只提供本轮有权执行的当前未处理审批任务重新分配；菜单可见和集中查询不授予审批、填报或内容修改权。作业整体流程与工艺路线流程保持原范围，不由本条宣称其他所有流程均已纳入。此条补充DEC-0092-01的业务覆盖，不改写DEC-0092-06所记载的历史DHR查询排除。
+        status: specified
+        visibility: internal
+      - id: DEC-0093-02
+        statement: user-confirmed-and-existing-policy；普通表单保留当前有处理权人员发起的转办，新增有专门干预权限管理人员发起的签名重新分配；DHR新增同类管理员签名重新分配，本期不开放处理人主动转办。改派仅改变当前未处理审批任务或节点的责任，须明确有效目标、必填原因、有效电子签名及执行时状态复核，实际操作者和实际签署人均须有相应管理权限；签署身份及凭证按DEC-0074。原候选依据与当前责任分别保留，改派后仅新目标具有当前处理权，不推进节点、不修改表单内容、DHR冻结汇总版本、既有签名或审批决定。此条仅替代DEC-0081-04、DEC-0091-03、DEC-0092-05中不扩展普通表单及DHR管理员重新分配的范围；DHR批准和退回仍经专属领域校验，不开放DHR本人转办、撤回、跳过、强制跳转、加签、管理员直接批准、流程终止或归档。
+        status: specified
+        visibility: internal
+      - id: DEC-0093-03
+        statement: user-confirmed-and-existing-policy；普通表单和DHR责任重新分配必须在集中流程历史和各自数据审计中可追溯，不能只留下公共流程日志。证据须能定位业务对象、表单份或DHR汇总版本、当前审批任务或节点、原处理责任、新处理人、原因、时间、实际操作者、会话身份、实际签署人及签名引用；责任变更、签名、运行历史及领域审计保持同事务成功或回滚。已有表单转办仍按其原签署规则运行并在表单原生历史及数据审计中体现，不因本条被改成免审批准或强制签名动作。
+        status: specified
+        visibility: internal
+      - id: DEC-0093-04
+        statement: implementation-choice-and-evidence-boundary；集中普通表单记录投影自已持久化表单实例、生产执行状态和结构化历史，当前审批节点用于改派，不另建第二套运行任务或执行引擎；只读日志可解释填报阶段，填报字段权限不因此扩大。DHR复用已有审批任务并保留领域版本及证据检查。本轮目标资格的具体权限码、表单前缀身份、分页SQL、签名摘要和审计实体映射属于工程选择，须按原始源码、聚焦测试及独立质量分别取证，不能伪装成用户逐字段确认或据此宣称完整多租户隔离、CSV、知识运行发布和生产部署通过。
+        status: specified
+        visibility: internal
+    supersedes: [DEC-0081, DEC-0091, DEC-0092]
+    evidenceIds: [evidence.central-form-dhr-workflow-20261102-user-confirmed]
+    acceptanceScenarios:
+      - id: scenario.central-form-dhr-log-and-intervention-scope
+        given: 已有普通表单和DHR汇总审批，用户具备对应读取或管理权限
+        when: 查询流程日志、流程干预及详情
+        then: 按权识别业务类型与具体业务对象，日志读取原生运行事实；干预只含可改派的当前审批任务，不生成重复运行任务或扩大作业与工艺路线范围
+        evidenceIds: [evidence.central-form-dhr-workflow-20261102-user-confirmed]
+        evidenceRequirements: [分页和类型身份, 普通及管理可见范围, 表单填报只读与审批干预区分]
+      - id: scenario.central-form-dhr-signed-reassignment-preserves-evidence
+        given: 当前审批任务仍未处理且管理人员、实际签署人和目标满足各自资格
+        when: 填写原因并完成有效签名重新分配
+        then: 只有新目标可处理，原候选来源保留，节点、内容、冻结汇总版本、既有签名和决定不变，集中历史及领域数据审计可追溯
+        evidenceIds: [evidence.central-form-dhr-workflow-20261102-user-confirmed]
+        evidenceRequirements: [有效签名及目标资格, 新旧处理权, DHR及表单领域审计, 冻结证据不变, 实际交互]
+      - id: scenario.central-form-dhr-reassignment-rejection-and-rollback
+        given: 签名、资格、目标或原因不合法，或并发处理已改变任务状态
+        when: 查询目标或提交重新分配
+        then: 拒绝非法或过期请求，责任、签名、运行历史和领域审计无部分落地；DHR本人转办及通用批准绕过继续拒绝
+        evidenceIds: [evidence.central-form-dhr-workflow-20261102-user-confirmed]
+        evidenceRequirements: [权限签名状态负向, 竞争及失败回滚, DHR专属审批及普通表单原转办回归]

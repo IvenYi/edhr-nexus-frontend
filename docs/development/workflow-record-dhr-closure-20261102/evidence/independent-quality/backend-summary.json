@@ -1,0 +1,307 @@
+{
+  "command": "RECORD_CONTROL_TEST_DATABASE_URL=jdbc:postgresql://127.0.0.1:5432/edhr_record_control_test_closure_quality_20261103 PGUSER=ivenwang mvn -q -Dtest=RecordControl*Test,Dhr*Test,Workflow*Test,ExecutionAccessTest,ProductionExecutionEngineTest,BusinessKnowledgeModelTest test",
+  "exitCode": 0,
+  "summary": {
+    "tests": 409,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 43,
+    "passed": 366
+  },
+  "classes": [
+    {
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "name": "com.zencas.edhr.production.service.DhrArchiveLayoutReaderTest"
+    },
+    {
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "name": "com.zencas.edhr.production.service.DhrFormFilesTest"
+    },
+    {
+      "tests": 6,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "name": "com.zencas.edhr.production.service.DhrReviewLifecycleIntegrationTest"
+    },
+    {
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "name": "com.zencas.edhr.recordcontrol.service.RecordControlMigrationTest"
+    },
+    {
+      "tests": 10,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "name": "com.zencas.edhr.recordcontrol.service.RecordControlAccessTest"
+    },
+    {
+      "tests": 8,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "name": "com.zencas.edhr.production.service.DhrSummaryServiceTest"
+    },
+    {
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 5,
+      "name": "com.zencas.edhr.production.service.DhrTraceReportPostgresTest"
+    },
+    {
+      "tests": 7,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 7,
+      "name": "com.zencas.edhr.workflow.controller.WorkflowReadBoundaryPostgresTest"
+    },
+    {
+      "tests": 12,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "name": "com.zencas.edhr.production.service.DhrReviewServiceTest"
+    },
+    {
+      "tests": 89,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "name": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest"
+    },
+    {
+      "tests": 22,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "name": "com.zencas.edhr.production.service.ProductionExecutionEngineTest"
+    },
+    {
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "name": "com.zencas.edhr.production.service.DhrReviewMigrationTest"
+    },
+    {
+      "tests": 13,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "name": "com.zencas.edhr.production.service.ExecutionAccessTest"
+    },
+    {
+      "tests": 32,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "name": "com.zencas.edhr.recordcontrol.service.RecordControlPostgresIntegrationTest"
+    },
+    {
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "name": "com.zencas.edhr.recordcontrol.service.RecordControlTaskActionServiceTest"
+    },
+    {
+      "tests": 13,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "name": "com.zencas.edhr.production.service.DhrAttachmentAndArchiveTest"
+    },
+    {
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "name": "com.zencas.edhr.production.service.DhrInstanceMigrationTest"
+    },
+    {
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "name": "com.zencas.edhr.workflow.controller.RecordControlCandidateAuthorizationTest"
+    },
+    {
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 4,
+      "name": "com.zencas.edhr.production.service.DhrEvidenceBatchPostgresTest"
+    },
+    {
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "name": "com.zencas.edhr.production.service.DhrInstanceLookupTest"
+    },
+    {
+      "tests": 12,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 12,
+      "name": "com.zencas.edhr.workflow.engine.WorkflowTransferPostgresTest"
+    },
+    {
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "name": "com.zencas.edhr.workflow.entity.WorkflowActionLogTest"
+    },
+    {
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "name": "com.zencas.edhr.workflow.controller.RecordControlWorkflowControllerTest"
+    },
+    {
+      "tests": 24,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "name": "com.zencas.edhr.production.service.DhrSummaryPersistenceTest"
+    },
+    {
+      "tests": 7,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 1,
+      "name": "com.zencas.edhr.production.service.DhrPdfRendererTest"
+    },
+    {
+      "tests": 24,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "name": "com.zencas.edhr.workflow.engine.WorkflowEngineTest"
+    },
+    {
+      "tests": 8,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "name": "com.zencas.edhr.production.controller.DhrWorkbenchPermissionsTest"
+    },
+    {
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 5,
+      "name": "com.zencas.edhr.production.service.DhrLegacyMigrationTest"
+    },
+    {
+      "tests": 8,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "name": "com.zencas.edhr.recordcontrol.service.RecordControlDiffTest"
+    },
+    {
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "name": "com.zencas.edhr.production.service.DhrAuditReadTest"
+    },
+    {
+      "tests": 24,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "name": "com.zencas.edhr.workflow.controller.WorkflowTemplateControllerTest"
+    },
+    {
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "name": "com.zencas.edhr.production.controller.DhrGenericAccessTest"
+    },
+    {
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 4,
+      "name": "com.zencas.edhr.workflow.controller.WorkflowQueuePaginationPostgresTest"
+    },
+    {
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "name": "com.zencas.edhr.production.service.DhrSummaryMigrationTest"
+    },
+    {
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "name": "com.zencas.edhr.workflow.controller.WorkflowTaskControllerTest"
+    },
+    {
+      "tests": 22,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "name": "com.zencas.edhr.workflow.controller.WorkflowInstanceAuthorizationIntegrationTest"
+    },
+    {
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "name": "com.zencas.edhr.workflow.service.RecordControlWorkflowServiceTest"
+    },
+    {
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 5,
+      "name": "com.zencas.edhr.workflow.controller.WorkflowTaskPaginationPostgresTest"
+    },
+    {
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "name": "com.zencas.edhr.production.service.DhrSummaryOrderMigrationTest"
+    },
+    {
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "name": "com.zencas.edhr.production.service.DhrFillingServiceTest"
+    },
+    {
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "name": "com.zencas.edhr.production.service.DhrSummaryDisplayNameMigrationTest"
+    },
+    {
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "name": "com.zencas.edhr.workflow.repository.WorkflowDefinitionMigrationTest"
+    }
+  ]
+}

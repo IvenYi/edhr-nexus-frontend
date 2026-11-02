@@ -1,0 +1,35 @@
+knowledgeModelVersion: 0.3.25
+decisions:
+  - id: DEC-0094
+    title: 记录控制候选流程读取对齐认证访问边界
+    status: specified
+    visibility: internal
+    context: user-confirmed-and-existing-policy；整体闭环检查发现记录控制申请域已按认证访问而公共候选接口仍要求corrections.create或voids.create，DEC-0087-07要求两者协同但该实现差异曾暂缓。2026-11-03用户明确选择本轮一起对齐并验证，结束这项局部暂缓；本决策只收敛候选只读接口，不授予菜单、来源修改、流程发起或审批动作资格。既有全登录查询约定、申请原子复核及审批数据范围保持。
+    decisionStatements:
+      - id: DEC-0094-01
+        statement: user-confirmed；表单变更与表单作废审批流程候选查询仅要求已认证用户，CHANGE与OBSOLETE使用同一认证读取边界，不再额外要求record-control.corrections.create或record-control.voids.create才能加载候选。该声明完成DEC-0087-07中候选权限与申请入口协同待收敛的局部范围；不替代其菜单授权、本人申请及当前/本人已处理审批任务的数据范围。
+        status: specified
+        visibility: internal
+      - id: DEC-0094-02
+        statement: existing-policy-and-scope-boundary；候选查询只返回类型匹配且当前已发布的具体审批流程版本，既有菜单显隐保持；候选可读不等于可发起或可审批。最终申请仍在服务端复核来源状态、有效修订、冲突申请、流程类型/版本、实际签署身份及签名；审批、转办、签名重新分配和受限撤回继续各按当前权限及数据范围执行。
+        status: specified
+        visibility: internal
+      - id: DEC-0094-03
+        statement: evidence-boundary；discrepancy.record-control-v1-workflow-permission-mismatch原历史记录和先前accepted时点保留；本轮对齐实现及匿名/普通认证账号/类型匹配的真实方法安全、HTTP或页面证据完成后，才将该当前实现差异记为resolved。关闭此差异不提升整套P0、A12、归档、多租户、通用知识规则层或生产发布成熟度。
+        status: specified
+        visibility: internal
+    supersedes: []
+    evidenceIds: [evidence.record-control-authenticated-candidate-read-user-confirmed, evidence.record-control-authenticated-candidate-read-source, evidence.record-control-authenticated-candidate-method-security, evidence.record-control-v1-user-confirmed, evidence.record-control-workflow-stage1-candidate-api]
+    acceptanceScenarios:
+      - id: scenario.record-control-authenticated-candidate-read
+        given: 普通已认证账号没有两类额外创建权限码但存在匹配的当前已发布审批流程
+        when: 分别查询CHANGE和OBSOLETE候选
+        then: 两类只读查询均可成功且只返回类型匹配的当前已发布具体版本，匿名读取继续拒绝
+        evidenceIds: [evidence.record-control-authenticated-candidate-read-user-confirmed, evidence.record-control-authenticated-candidate-read-source, evidence.record-control-authenticated-candidate-method-security]
+        evidenceRequirements: [真实方法安全或HTTP身份边界, 两类业务及发布状态筛选, 无写入副作用]
+      - id: scenario.record-control-candidate-read-does-not-grant-action
+        given: 用户可读取候选但不满足来源或审批操作资格
+        when: 尝试申请确认或处理其他人的审批任务
+        then: 原服务端资格、签名、状态和数据范围继续阻断，不因候选加载成功扩大写入或处理权
+        evidenceIds: [evidence.record-control-authenticated-candidate-read-user-confirmed, evidence.record-control-v1-service]
+        evidenceRequirements: [来源资格回归, 签名及审批数据范围负例]

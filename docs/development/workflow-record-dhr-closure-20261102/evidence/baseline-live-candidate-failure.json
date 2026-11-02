@@ -1,0 +1,46 @@
+{
+  "qualification": "Maintained application on dedicated Vite, real backend and disposable PostgreSQL; no business API mocking.",
+  "database": "edhr_record_control_test_closure_e2e_20261102",
+  "base": "http://localhost:13002",
+  "checks": [
+    {
+      "name": "actual-login-four-roles",
+      "passed": true,
+      "milliseconds": 4247
+    },
+    {
+      "name": "prepare-real-frozen-dhr-fixtures-through-services",
+      "passed": true,
+      "milliseconds": 393
+    },
+    {
+      "name": "signed-request-withdraw-releases-lock-and-allows-new-request",
+      "passed": false,
+      "error": "AssertionError [ERR_ASSERTION]: /workflow/record-control/candidates?businessType=CHANGE: {\"code\":403,\"message\":\"无操作权限\",\"timestamp\":\"2026-11-02T16:09:03.280789Z\",\"traceId\":\"ab7957a5-864a-428a-b4b3-52c049ed0c8c\"}\n\n403 !== 200\n\n    at api (file:///Users/ivenwang/Documents/edhr-nexus/gmp-platform/frontend/scripts/test-workflow-record-dhr-live.mjs:37:28)\n    at async submitRequest (file:///Users/ivenwang/Documents/edhr-nexus/gmp-platform/frontend/scripts/test-workflow-record-dhr-live.mjs:50:17)\n    at async file:///Users/ivenwang/Documents/edhr-nexus/gmp-platform/frontend/scripts/test-workflow-record-dhr-live.mjs:102:36\n    at async step (file:///Users/ivenwang/Documents/edhr-nexus/gmp-platform/frontend/scripts/test-workflow-record-dhr-live.mjs:19:8)\n    at async file:///Users/ivenwang/Documents/edhr-nexus/gmp-platform/frontend/scripts/test-workflow-record-dhr-live.mjs:101:3"
+    }
+  ],
+  "network": [],
+  "errors": [],
+  "mainBefore": {
+    "record_control_request": "7:6c64df5abe2ccab0ea286cd940c13ad4",
+    "form_instance_record": "38:bc70dca85b1fa92344fc031f0d3aab1e",
+    "form_instance_revision": "38:82fa1f61d255b2e3dc703b54911051da",
+    "production_execution": "19:f9e5b97610af0be97064106fe4fa0d4a",
+    "dhr_instance": "15:c59f0c9057c27f976db0eff6d915d7fd",
+    "dhr_summary_version": "8:e0179c235e73a0c24a576f469625ccbb",
+    "dhr_summary_review": "3:e0134782732b1df895e4b7cf4ffcdd21",
+    "workflow_instance": "10:4e32b442a4899bfdc3581f906ab08f11",
+    "workflow_task": "11:31e4a84594e6fd7de78a6edef1382f74"
+  },
+  "mainAfter": {
+    "record_control_request": "7:6c64df5abe2ccab0ea286cd940c13ad4",
+    "form_instance_record": "38:bc70dca85b1fa92344fc031f0d3aab1e",
+    "form_instance_revision": "38:82fa1f61d255b2e3dc703b54911051da",
+    "production_execution": "19:f9e5b97610af0be97064106fe4fa0d4a",
+    "dhr_instance": "15:c59f0c9057c27f976db0eff6d915d7fd",
+    "dhr_summary_version": "8:e0179c235e73a0c24a576f469625ccbb",
+    "dhr_summary_review": "3:e0134782732b1df895e4b7cf4ffcdd21",
+    "workflow_instance": "10:4e32b442a4899bfdc3581f906ab08f11",
+    "workflow_task": "11:31e4a84594e6fd7de78a6edef1382f74"
+  }
+}

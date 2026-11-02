@@ -25,9 +25,7 @@ public class RecordControlWorkflowController {
     private final RecordControlWorkflowPort workflowPort;
 
     @GetMapping("/candidates")
-    @PreAuthorize("#businessType != null and "
-            + "((#businessType.equalsIgnoreCase('CHANGE') and hasAuthority('record-control.corrections.create')) "
-            + "or (#businessType.equalsIgnoreCase('OBSOLETE') and hasAuthority('record-control.voids.create')))" )
+    @PreAuthorize("isAuthenticated()")
     public ApiResponse<List<PublishedCandidate>> listCandidates(@RequestParam String businessType) {
         return ApiResponse.success(workflowPort.listPublishedCandidates(parseBusinessType(businessType)));
     }

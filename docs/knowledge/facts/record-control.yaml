@@ -21,64 +21,64 @@ facts:
     conceptId: concept.form-instance
     valueType: string
     sourceType: database
-    sourcePath: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormInstanceRecordService.java
+    sourcePath: gmp-platform/backend/src/main/java/com/zencas/edhr/recordcontrol/service/RecordControlService.java
     aliases: [recordControl.sourceStatus]
-    availability: not-available
+    availability: runtime
     allowedOperators: [equals]
-    status: specified
+    status: implemented
     visibility: internal
-    evidenceIds: [evidence.record-control-v1-user-confirmed]
-    sourceRevision: aef427c524bd7270b3775fbd7c599c72a545e21b
-    sourceLocator: source-status-validation-pending
-    capturedAt: '2026-09-16'
-    reviewStatus: unreviewed
+    evidenceIds: [evidence.record-control-v1-user-confirmed, evidence.record-control-v1-service, evidence.workflow-record-dhr-closure-source-review]
+    sourceRevision: working-tree
+    sourceLocator: RecordControlService.lookup读取form_instance_record.status；submit在来源锁内复核COMPLETED，申请待审不改来源主状态；本轮0bd0848b加工作区差异原始源码核对，不代表通用知识执行注册。
+    capturedAt: '2026-11-03'
+    reviewStatus: reviewed
   - id: fact.record-control-current-revision-present
     name: 来源实例当前有效修订存在
     conceptId: concept.form-instance-revision
     valueType: boolean
     sourceType: derived
-    sourcePath: docs/knowledge/decisions/DEC-0087-record-control-v1-closure.yaml
+    sourcePath: gmp-platform/backend/src/main/java/com/zencas/edhr/recordcontrol/service/RecordControlService.java
     aliases: [recordControl.currentRevisionPresent]
-    availability: not-available
+    availability: runtime
     allowedOperators: [equals]
-    status: specified
+    status: implemented
     visibility: internal
-    evidenceIds: [evidence.record-control-v1-user-confirmed]
+    evidenceIds: [evidence.record-control-v1-user-confirmed, evidence.record-control-v1-service, evidence.workflow-record-dhr-closure-source-review]
     sourceRevision: working-tree
-    sourceLocator: DEC-0087-03
-    capturedAt: '2026-10-28'
+    sourceLocator: RecordControlService.submit在来源锁内同时检查current_revision_id、提交修订一致及同记录EFFECTIVE修订实际存在；不能仅以非空指针推断当前有效。
+    capturedAt: '2026-11-03'
     reviewStatus: reviewed
   - id: fact.record-control-active-application-present
     name: 来源实例活动申请存在
     conceptId: concept.record-control-application
     valueType: boolean
     sourceType: derived
-    sourcePath: docs/knowledge/decisions/DEC-0087-record-control-v1-closure.yaml
+    sourcePath: gmp-platform/backend/src/main/java/com/zencas/edhr/recordcontrol/service/RecordControlService.java
     aliases: [recordControl.activeApplicationPresent]
-    availability: not-available
+    availability: runtime
     allowedOperators: [equals]
-    status: specified
+    status: implemented
     visibility: internal
-    evidenceIds: [evidence.record-control-v1-user-confirmed]
+    evidenceIds: [evidence.record-control-v1-user-confirmed, evidence.record-control-v1-service, evidence.workflow-record-dhr-closure-source-review]
     sourceRevision: working-tree
-    sourceLocator: DEC-0087-03
-    capturedAt: '2026-10-28'
+    sourceLocator: RecordControlService.lookup关联IN_REVIEW申请作为活动标记；submit在来源锁内计数并拒绝冲突申请，打开页面不占锁。
+    capturedAt: '2026-11-03'
     reviewStatus: reviewed
   - id: fact.record-control-authenticated-user-present
     name: 后端认证用户存在
     conceptId: concept.record-control-application
     valueType: boolean
     sourceType: runtime-context
-    sourcePath: docs/knowledge/decisions/DEC-0087-record-control-v1-closure.yaml
+    sourcePath: gmp-platform/backend/src/main/java/com/zencas/edhr/recordcontrol/service/RecordControlService.java
     aliases: [recordControl.authenticatedUserPresent]
-    availability: not-available
+    availability: runtime
     allowedOperators: [equals]
-    status: specified
+    status: implemented
     visibility: internal
-    evidenceIds: [evidence.record-control-v1-user-confirmed]
+    evidenceIds: [evidence.record-control-v1-user-confirmed, evidence.record-control-v1-service, evidence.workflow-record-dhr-closure-source-review]
     sourceRevision: working-tree
-    sourceLocator: DEC-0087-07
-    capturedAt: '2026-10-28'
+    sourceLocator: RecordControlService.actor从AuditContext取认证账号并拒绝缺失身份；提交签署身份由ExecutionAccess.authenticateButtonSigner取得，服务端数据范围不采信客户端人员参数。
+    capturedAt: '2026-11-03'
     reviewStatus: reviewed
   - id: fact.record-control-workflow-result
     name: 记录控制流程结果

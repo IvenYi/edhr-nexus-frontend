@@ -1,5 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
+import ts from 'typescript';
 
 const root = resolve(import.meta.dirname, '..');
 const read = (path) => readFileSync(resolve(root, path), 'utf8');
@@ -55,6 +56,9 @@ const listPages = [
   'src/pages/form-management/FormInstanceListPage.tsx',
   'src/pages/form-management/FormFillingPage.tsx',
   'src/pages/form-management/FormReviewPage.tsx',
+  'src/pages/record-control/RecordRequestListPage.tsx',
+  'src/pages/record-control/RecordApprovalPage.tsx',
+  'src/pages/workflow-center/InstanceList.tsx',
 ];
 
 const publicListPages = [
@@ -91,6 +95,8 @@ const publicListPages = [
   'src/pages/system/LoginLogPage.tsx',
   'src/pages/system/SignatureLogPage.tsx',
   'src/pages/account/PersonalSettingsPage.tsx',
+  'src/pages/record-control/RecordRequestListPage.tsx',
+  'src/pages/record-control/RecordApprovalPage.tsx',
 ];
 
 for (const path of publicListPages) {
@@ -113,6 +119,7 @@ const resizablePages = [
   'src/pages/form-management/FormInstanceListPage.tsx',
   'src/pages/form-management/FormFillingPage.tsx',
   'src/pages/form-management/FormReviewPage.tsx',
+  'src/pages/workflow-center/InstanceList.tsx',
 ];
 
 for (const path of resizablePages) {
@@ -225,6 +232,9 @@ const simpleActionColumnPages = [
   'src/pages/master-data/UnitPage.tsx',
   'src/pages/master-data/SopDocumentPage.tsx',
   'src/pages/workflow-center/BindingRuleList.tsx',
+  'src/pages/workflow-center/InstanceList.tsx',
+  'src/pages/record-control/RecordRequestListPage.tsx',
+  'src/pages/record-control/RecordApprovalPage.tsx',
 ];
 for (const path of simpleActionColumnPages) {
   const source = read(path);
@@ -233,4 +243,44 @@ for (const path of simpleActionColumnPages) {
   assert((source.match(/listTableStickyActionSx\([^)]*, 'body'\)/g) ?? []).length > 0, `${path} must apply the shared sticky operation token to its body`);
 }
 
-console.log(`Verified the shared list-table style contract across ${publicListPages.length} public list pages, ${listPages.length} style entry points, ${resizablePages.length} resizable lists, and ${rdoPages.length} RDO pages.`);
+const iconActionPages = [
+  'src/pages/workflow-center/InstanceList.tsx',
+  'src/pages/record-control/RecordRequestListPage.tsx',
+  'src/pages/record-control/RecordApprovalPage.tsx',
+];
+
+function verifyIconActions(source, path) {
+  const file = ts.createSourceFile(path, source, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
+  const visit = (node, inCell = false, inTooltip = false) => {
+    const element = ts.isJsxElement(node) ? node.openingElement : ts.isJsxSelfClosingElement(node) ? node : null;
+    if (element) {
+      const tag = element.tagName.getText(file);
+      inCell ||= tag === 'TableCell';
+      inTooltip ||= tag === 'Tooltip';
+      assert(!inCell || tag !== 'Button', `${path}: list cells must use icon actions, not text Button`);
+      if (inCell && tag === 'IconButton') {
+        const attribute = name => element.attributes.properties.find(item => ts.isJsxAttribute(item) && item.name.getText(file) === name)?.initializer;
+        assert(inTooltip, `${path}: list IconButton must have Tooltip`);
+        assert(attribute('size') && ts.isStringLiteral(attribute('size')) && attribute('size').text === 'small', `${path}: list IconButton must use size="small"`);
+        assert(attribute('aria-label'), `${path}: list IconButton must have aria-label`);
+      }
+    }
+    ts.forEachChild(node, child => visit(child, inCell, inTooltip));
+  };
+  visit(file);
+}
+
+for (const path of iconActionPages) verifyIconActions(read(path), path);
+// Exercise the guard with regressions so a passing style check cannot silently
+// stop detecting text actions or unlabeled/unexplained icons.
+for (const invalid of [
+  '<TableCell><Button>查看详情</Button></TableCell>',
+  '<TableCell><IconButton size="small" aria-label="查看" /></TableCell>',
+  '<TableCell><Tooltip title="查看"><IconButton size="small" /></Tooltip></TableCell>',
+]) {
+  let rejected = false;
+  try { verifyIconActions(invalid, 'icon-action-guard-probe.tsx'); } catch { rejected = true; }
+  assert(rejected, 'List icon-action guard must reject a nonconforming cell');
+}
+
+console.log(`Verified the shared list-table style contract across ${publicListPages.length} public list pages, ${listPages.length} style entry points, ${resizablePages.length} resizable lists, ${rdoPages.length} RDO pages, and icon actions on ${iconActionPages.length} workflow/record-control components.`);

@@ -67,18 +67,18 @@ decisions:
         evidenceRequirements: [审批节点按钮配置界面核对, 固定动作发布校验测试, 转办意见配置阻断测试, 电子签名配置保存测试]
     implementationDiscrepancies:
       - id: discrepancy.record-control-review-template-runtime-pending-v2
-        status: accepted
+        status: resolved
         severity: high
         visibility: internal
         path: docs/knowledge/decisions/DEC-0037-record-correction-and-void-control.yaml
         lineHint: 1
-        summary: "provenance: original-evidence；审核模板的开始节点、审批主体和审批按钮配置及发布校验已有当前工作树实现证据，但运行时审批、退回、转办和审批电子签名执行尚未形成发布级实现证据。"
-        evidenceIds: [evidence.record-correction-void-design, evidence.record-control-review-template-editor, evidence.record-control-review-template-publish-tests]
+        summary: "provenance: historical-and-original-evidence；模板形成时运行待补的历史保留。当前RecordControlTaskActionService、WorkflowEngine及WorkflowResponsibilityService已执行审批/退回、冻结签署配置转办和签名管理员改派，已有实际PG原件支持签名、资格、并发和回滚，不再以该旧缺口阻塞当前功能。未覆盖具体UI与完整生命周期验证另列，不将模板决策本身提升为发布或知识运行通过。"
+        evidenceIds: [evidence.record-correction-void-design, evidence.record-control-review-template-editor, evidence.record-control-review-template-publish-tests, evidence.record-control-task-action-result-tests, evidence.workflow-operations-main-verification, evidence.workflow-record-dhr-closure-source-review]
       - id: discrepancy.record-control-application-confirmation-runtime-pending
-        status: accepted
+        status: resolved
         severity: high
         visibility: internal
         path: docs/knowledge/evidence/record-control-start-entry-user-confirmed.md
         lineHint: 19
-        summary: "provenance: user-confirmed-and-original-evidence-gap；申请确认即启动审核的业务语义已经确认，公共流程侧显式版本启动、版本快照、开始节点自动越过和首审批任务已有阶段一实现；但记录控制申请入口、签名真实性校验、来源资格与业务锁、申请与流程原子提交、申请侧流程引用回写及端到端审计仍无实现证据。"
-        evidenceIds: [evidence.record-control-start-entry-user-confirmed, evidence.record-control-workflow-stage1-port, evidence.record-control-workflow-stage1-explicit-start-engine, evidence.record-control-workflow-stage1-engine-tests]
+        summary: "provenance: historical-and-original-evidence；早期仅有公共启动端口、尚缺申请适配的历史保留。当前RecordControlService.submit已在来源锁内复核状态、有效修订和活动锁，认证真实签署人并保存受控签名，原子创建申请、显式启动版本、回写流程引用和审计；源码和PG原件已有实现证据，故关闭无申请确认运行实现的旧缺口。本轮真实浏览器链和独立质量另取实际结果，不反填旧验收。"
+        evidenceIds: [evidence.record-control-start-entry-user-confirmed, evidence.record-control-workflow-stage1-port, evidence.record-control-workflow-stage1-explicit-start-engine, evidence.record-control-workflow-stage1-engine-tests, evidence.record-control-v1-service, evidence.workflow-operations-postgres-tests, evidence.workflow-record-dhr-closure-source-review]

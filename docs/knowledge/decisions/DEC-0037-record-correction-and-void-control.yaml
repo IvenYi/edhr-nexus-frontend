@@ -77,18 +77,18 @@ decisions:
         evidenceRequirements: [权限边界测试, 流程日志和审计记录验证]
     implementationDiscrepancies:
       - id: discrepancy.record-control-p0-runtime-not-implemented
-        status: accepted
+        status: resolved
         severity: high
         visibility: internal
         path: docs/superpowers/specs/2026-09-11-record-correction-and-void-design.md
         lineHint: 1
-        summary: "provenance: historical-original-evidence-and-current-scope；本设计形成时尚无记录控制运行实现。2026-10-28 来支提供申请、有效修订切换、审批/退回适配与部分安全实现，当时仍缺撤回/转办/重新分配及DHR生效消费。后续DHR联动按其独立切片证据判断，2026-10-30三动作已有DEC-0092-06源码及主侧聚焦验证，不再将这三项概括为完全未实现。原始缺口时点保留，完整P0、A12及独立验收仍各按实际范围判断，不将设计整体标记verified或知识runtime。"
-        evidenceIds: [evidence.record-correction-void-design, evidence.workflow-operations-responsibility-source, evidence.workflow-operations-withdrawal-source, evidence.workflow-operations-main-verification]
+        summary: "provenance: historical-original-evidence-and-current-scope；本设计形成时尚无记录控制运行实现，2026-10-28集成时仍缺三动作和DHR生效消费的历史保留。当前原生服务已有申请、修订、审批/退回及结果消费，DEC-0092-06及其PG原件支持撤回/转办/签名改派，联动切片原件支持DHR影响、当前贡献和提醒；因此仅将本项完全无运行实现的缺口关闭。A12历史UI/规则重建、通用质量变化比较和未覆盖的具体整链场景另列，不把本设计整体标记verified或知识runtime，也不反填旧时点验收。"
+        evidenceIds: [evidence.record-correction-void-design, evidence.record-control-v1-service, evidence.workflow-operations-responsibility-source, evidence.workflow-operations-withdrawal-source, evidence.workflow-operations-main-verification, evidence.dhr-linkage-backend-verification, evidence.workflow-record-dhr-closure-source-review]
       - id: discrepancy.record-control-no-database-migration
-        status: accepted
+        status: resolved
         severity: medium
         visibility: internal
         path: docs/superpowers/specs/2026-09-11-record-correction-and-void-design.md
         lineHint: 1
-        summary: "provenance: user-confirmed-and-original-evidence；本设计形成时的本体门禁没有创建数据库迁移；来支随后提供 0087/0088 SQL，当前目标已使用合并基线，迁移注册、首次完成修订及回滚的实际验证由集成切片记录，不从 SQL 文件存在推定已执行或完整 DHR/A12 兼容。"
-        evidenceIds: [evidence.record-correction-void-design]
+        summary: "provenance: historical-and-original-test-evidence；本设计形成时本体门禁没有创建数据库迁移的历史保留；来支0087/0088与后续0089已进入当前基线及前向迁移，现有PG初始化/升级/重复和记录控制服务原件不再支持无迁移这一当前缺口。本项仅关闭结构缺失，不从SQL或样例测试外推所有部署、现场迁移回滚及完整DHR/A12兼容。"
+        evidenceIds: [evidence.record-correction-void-design, evidence.record-control-integration-20261028, evidence.dhr-impact-linkage-migration, evidence.dhr-linkage-backend-verification, evidence.workflow-record-dhr-closure-source-review]

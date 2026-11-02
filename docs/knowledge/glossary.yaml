@@ -266,7 +266,7 @@ terms:
     visibility: internal
   - id: term.workflow-reassignment-action
     name: 重新分配
-    definition: 具备专门干预权限的人员从流程干预入口变更当前任务处理人的标准动作，不要求其是原处理人；原因必填，保留任务原授权资格，不将普通任务的租户内转办政策外推为管理改派范围，不改变当前节点、流程路径或业务结果。本轮授权内的重新分配按DEC-0091/0092必须完成电子签名，签名不替代权限、原因或审计，不由此扩展普通转办、撤回的签署要求或DHR通用干预。中文产品文案不得使用“管理重新分配”作为并列正式名称。
+    definition: 具备专门干预权限的人员从流程干预入口变更当前未处理审批任务责任的标准动作，不要求其是原处理人；原因必填，目标满足对应领域资格，不改变当前节点、流程路径或业务结果。按DEC-0091/0092及DEC-0093，记录控制、普通表单和DHR已确认范围内的重新分配均须有效电子签名，实际操作者及签署人须有管理权限；原候选依据单独保留，改派后仅当前目标可处理。普通任务的租户内转办范围不自动成为管理员改派目标范围，签名不替代权限、原因或领域数据审计。DEC-0093只补充普通表单及DHR管理员签名改派，DHR本人转办、撤回及通用批准绕过仍不开放；普通转办和撤回的原签署规则保持。新增范围的运行证据单独核对，不由本词条既有implemented状态推定已验收。中文产品文案不得使用“管理重新分配”作为并列正式名称。
     aliases: [REASSIGN]
     status: implemented
     visibility: internal
@@ -794,7 +794,7 @@ terms:
     visibility: internal
   - id: term.workflow-event-log
     name: 流程事件日志
-    definition: 用于展示和排查流程时间线的只读业务运行日志概念；继续由现有 WorkflowActionLog/workflow_action_log 承载，不新建 WorkflowEventLog 第二套表。流程中心按DEC-0092将既有流程实例入口显示为流程日志，保留实例查询、详情和历史身份；菜单显示名不把实例本身与日志记录合并为同一对象。合规证据另由不可变审计事件保存。
+    definition: 用于展示和排查流程时间线的只读业务运行日志概念；公共流程和DHR复用现有WorkflowActionLog/workflow_action_log，普通表单按DEC-0093投影原生产执行结构化历史，不新建WorkflowEventLog表或第二套运行任务。流程中心按DEC-0092将既有流程实例入口显示为流程日志，并按DEC-0093纳入普通表单和DHR审批，保留对应业务类型、实例或表单份身份和详情；菜单显示名不把实例本身与日志记录合并为同一对象。合规证据另由各领域不可变数据审计保存，集中可读不授予内容修改或审批权；新增范围的运行实现和验收另取本轮证据。
     aliases: [审批流程日志, 流程日志, WorkflowEventLog]
     status: implemented
     visibility: internal

@@ -4,6 +4,7 @@ import { Alert, Box, Button, Chip, CircularProgress, Dialog, DialogActions, Dial
   Divider, MenuItem, Paper, Snackbar, Stack, TextField, Typography } from '@mui/material';
 import { DescriptionOutlined, FactCheckOutlined, RateReviewOutlined, SearchRounded } from '@mui/icons-material';
 import ButtonSignatureCredentials from '@/components/workflow/ButtonSignatureCredentials';
+import { executionFormValues } from '@/pages/production/executionFormValues';
 import { FormCanvasPreview } from '@/pages/master-data/DhrTemplateWorkspaceDialog';
 import { parseReactTemplateDesignerDocument } from '@/pages/master-data/template-designer-react/utils/document';
 import { uploadExecutionFile } from '@/api/production-execution';
@@ -79,7 +80,7 @@ export default function RecordChangePage() {
     try {
       const submitted = await submitRecordControlRequest({
         requestType: mode, instanceNo: record.instance_no, sourceRevisionId: record.current_revision_id,
-        proposedValues: mode === 'CHANGE' ? values : undefined, reason: reason.trim(),
+        proposedValues: mode === 'CHANGE' ? executionFormValues(record.snapshot.fields, values) : undefined, reason: reason.trim(),
         workflowDefinitionId: selectedCandidate.workflowDefinitionId,
         workflowVersionId: selectedCandidate.workflowVersionId, account, password, idempotencyKey,
       });

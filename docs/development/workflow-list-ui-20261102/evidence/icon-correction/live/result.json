@@ -1,0 +1,51 @@
+{
+  "passed": true,
+  "qualification": "Normal main frontend/backend. Login and query only; for-my-workflow-tasks POST independently verified readOnly/SELECT in service. Reassignment only opened and canceled.",
+  "observations": [
+    {
+      "name": "interventions",
+      "actionWidth": 64,
+      "actions": [
+        "重新分配"
+      ],
+      "rows": 7
+    },
+    {
+      "name": "mine",
+      "actionWidth": 64,
+      "actions": [
+        "查看详情"
+      ],
+      "rows": 7
+    },
+    {
+      "name": "history",
+      "actionWidth": 64,
+      "actions": [
+        "查看详情"
+      ],
+      "rows": 7
+    },
+    {
+      "name": "approval-todo",
+      "actionWidth": 96,
+      "actions": [
+        "查看申请",
+        "审批处理"
+      ],
+      "rows": 5
+    },
+    {
+      "name": "approval-done",
+      "actionWidth": 96,
+      "actions": [
+        "查看申请"
+      ],
+      "rows": 1
+    }
+  ],
+  "blockedWrites": [],
+  "errors": [],
+  "before": "BEGIN\n{\"requests\" : \"2a3d31b05c495dfe540967f17115e8c5\", \"tasks\" : \"da53322925eb5680698e7393688ba19d\", \"sources\" : \"2e56513a7bf323f5f96e7867e48c1d6e\", \"dhr\" : \"b40e8a2977f8a5342b534fd1a2b01997\"}\nCOMMIT",
+  "after": "BEGIN\n{\"requests\" : \"2a3d31b05c495dfe540967f17115e8c5\", \"tasks\" : \"da53322925eb5680698e7393688ba19d\", \"sources\" : \"2e56513a7bf323f5f96e7867e48c1d6e\", \"dhr\" : \"b40e8a2977f8a5342b534fd1a2b01997\"}\nCOMMIT"
+}

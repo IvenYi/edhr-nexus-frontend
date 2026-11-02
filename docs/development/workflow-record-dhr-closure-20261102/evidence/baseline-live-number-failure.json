@@ -1,0 +1,106 @@
+{
+  "qualification": "Maintained application on dedicated Vite, real backend and disposable PostgreSQL; no business API mocking.",
+  "database": "edhr_record_control_test_closure_e2e_20261102",
+  "base": "http://localhost:13002",
+  "checks": [
+    {
+      "name": "actual-login-four-roles",
+      "passed": true,
+      "milliseconds": 4261
+    },
+    {
+      "name": "prepare-real-frozen-dhr-fixtures-through-services",
+      "passed": true,
+      "milliseconds": 361
+    },
+    {
+      "name": "signed-request-withdraw-releases-lock-and-allows-new-request",
+      "passed": true,
+      "milliseconds": 4384
+    },
+    {
+      "name": "handler-transfer-signed-manager-reassignment-and-original-approval",
+      "passed": false,
+      "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n400 !== 200\n\n    at requestDecision (file:///Users/ivenwang/Documents/edhr-nexus/gmp-platform/frontend/scripts/test-workflow-record-dhr-live.mjs:66:88)\n    at async file:///Users/ivenwang/Documents/edhr-nexus/gmp-platform/frontend/scripts/test-workflow-record-dhr-live.mjs:113:68\n    at async step (file:///Users/ivenwang/Documents/edhr-nexus/gmp-platform/frontend/scripts/test-workflow-record-dhr-live.mjs:19:8)\n    at async file:///Users/ivenwang/Documents/edhr-nexus/gmp-platform/frontend/scripts/test-workflow-record-dhr-live.mjs:108:3"
+    }
+  ],
+  "network": [
+    {
+      "role": "applicant",
+      "method": "POST",
+      "path": "/api/v1/record-control/requests",
+      "status": 200
+    },
+    {
+      "role": "applicant",
+      "method": "POST",
+      "path": "/api/v1/record-control/requests/392737026808340480/withdraw",
+      "status": 200
+    },
+    {
+      "role": "applicant",
+      "method": "POST",
+      "path": "/api/v1/record-control/requests",
+      "status": 200
+    },
+    {
+      "role": "applicant",
+      "method": "POST",
+      "path": "/api/v1/record-control/requests",
+      "status": 200
+    },
+    {
+      "role": "reviewer",
+      "method": "POST",
+      "path": "/api/v1/record-control/workflow-tasks/392737045816926208/transfer",
+      "status": 200
+    },
+    {
+      "role": "reviewer",
+      "method": "POST",
+      "path": "/api/v1/record-control/requests/for-my-workflow-tasks",
+      "status": 200
+    },
+    {
+      "role": "reviewer",
+      "method": "POST",
+      "path": "/api/v1/record-control/requests/for-my-workflow-tasks",
+      "status": 200
+    },
+    {
+      "role": "manager",
+      "method": "POST",
+      "path": "/api/v1/workflow/operations/tasks/392737045816926208/reassign",
+      "status": 200
+    },
+    {
+      "role": "reviewer",
+      "method": "POST",
+      "path": "/api/v1/record-control/workflow-tasks/392737045816926208/approve",
+      "status": 400
+    }
+  ],
+  "errors": [],
+  "mainBefore": {
+    "record_control_request": "7:6c64df5abe2ccab0ea286cd940c13ad4",
+    "form_instance_record": "38:bc70dca85b1fa92344fc031f0d3aab1e",
+    "form_instance_revision": "38:82fa1f61d255b2e3dc703b54911051da",
+    "production_execution": "19:f9e5b97610af0be97064106fe4fa0d4a",
+    "dhr_instance": "15:c59f0c9057c27f976db0eff6d915d7fd",
+    "dhr_summary_version": "8:e0179c235e73a0c24a576f469625ccbb",
+    "dhr_summary_review": "3:e0134782732b1df895e4b7cf4ffcdd21",
+    "workflow_instance": "10:4e32b442a4899bfdc3581f906ab08f11",
+    "workflow_task": "11:31e4a84594e6fd7de78a6edef1382f74"
+  },
+  "mainAfter": {
+    "record_control_request": "7:6c64df5abe2ccab0ea286cd940c13ad4",
+    "form_instance_record": "38:bc70dca85b1fa92344fc031f0d3aab1e",
+    "form_instance_revision": "38:82fa1f61d255b2e3dc703b54911051da",
+    "production_execution": "19:f9e5b97610af0be97064106fe4fa0d4a",
+    "dhr_instance": "15:c59f0c9057c27f976db0eff6d915d7fd",
+    "dhr_summary_version": "8:e0179c235e73a0c24a576f469625ccbb",
+    "dhr_summary_review": "3:e0134782732b1df895e4b7cf4ffcdd21",
+    "workflow_instance": "10:4e32b442a4899bfdc3581f906ab08f11",
+    "workflow_task": "11:31e4a84594e6fd7de78a6edef1382f74"
+  }
+}

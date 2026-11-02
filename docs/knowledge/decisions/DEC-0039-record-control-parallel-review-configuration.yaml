@@ -73,10 +73,10 @@ decisions:
         evidenceRequirements: [聚合向下快捷添加审批验证, 聚合向下快捷添加并行审批验证, 聚合已有后继时入口隐藏验证, 组内拓扑限制测试]
     implementationDiscrepancies:
       - id: discrepancy.record-control-parallel-config-runtime-pending
-        status: accepted
+        status: resolved
         severity: high
         visibility: internal
         path: docs/knowledge/decisions/DEC-0037-record-correction-and-void-control.yaml
         lineHint: 1
-        summary: "provenance: original-evidence；并行分支配置与审核引擎运行时执行尚未形成发布级实现证据，不能标记为 implemented、verified 或 runtime。"
-        evidenceIds: [evidence.record-correction-void-design]
+        summary: "provenance: historical-and-original-evidence；本声明形成时并行配置不能证明引擎运行能力的历史保留。当前WorkflowEngine.parallelJoinReady/activateStructuralNode及记录控制退回路径已有汇合、后继推进和其他待办失效实现，WorkflowEngineTest有全部分支批准、并行退回和深层退回断言；无运行实现的缺口关闭。完整并行真实页面链的运行覆盖仍按本轮具体断言记录，不把配置/单元证据等同于verified、知识runtime或发布通过。"
+        evidenceIds: [evidence.record-correction-void-design, evidence.record-control-workflow-stage1-explicit-start-engine, evidence.record-control-workflow-stage1-engine-tests, evidence.workflow-record-dhr-closure-source-review]

@@ -1,0 +1,12 @@
+knowledgeModelVersion: 0.3.25
+evidence:
+  - id: evidence.workflow-list-ui-20261102-user-confirmed
+    type: document
+    path: docs/knowledge/evidence/workflow-list-ui-20261102.md
+    description: user-confirmed-and-existing-policy；记录流程干预列表重新分配入口、两个列表列设置、业务类型辨识及当前任务解释需求；保留既有签署、权限、DHR专属边界，不新增业务政策。
+    visibility: internal
+  - id: evidence.workflow-list-ui-20261102-entry-source
+    type: code
+    path: gmp-platform/frontend/src/pages/workflow-center/WorkflowReassignmentEntry.tsx
+    description: original-evidence；列表重新分配入口复用原对话框和taskState，按PENDING/PROCESSING区分当前任务；顺序、并行、多候选及历史任务边界和业务类型来源的源码定位见同名说明，不将静态核对当业务运行或发布验收。
+    visibility: internal

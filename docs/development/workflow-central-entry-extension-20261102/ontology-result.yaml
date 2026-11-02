@@ -1,0 +1,157 @@
+ontologyResult:
+  result: updated
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: 0bd0848bbded6d6954d62a4f924e0b2eec6623ad
+    targetBranch: edhr-dev
+    targetCommit: 8ec8391721858a7f96d73a5d293d93f43679118a
+    contractReadCommit: 0bd0848bbded6d6954d62a4f924e0b2eec6623ad
+    uncommittedContractPaths: []
+  reason: 已按用户明确接受的L2范围同步普通表单及DHR集中查询、管理员签名重新分配和各自数据审计，准确局部替代旧管理员改派未开放范围，保留历史原文及DHR本人转办/撤回和通用批准绕过禁令。已核对本地未提交工作树的原始源码、主侧最终知识89项、PG31项及领域53项报告和相应源断言；本体未运行Maven、浏览器或数据库。目标契约及知识增量为空，但远端DhrReviewService对象补取失败且未集成，结论针对本地0bd0848b加本轮差异，不冒称完整目标兼容、独立质量或生产发布通过。
+  changedArtifacts:
+    - path: docs/knowledge/decisions/DEC-0093-central-form-dhr-workflow-responsibility.yaml
+      changeType: add
+      ids: [DEC-0093, DEC-0093-01, DEC-0093-02, DEC-0093-03, DEC-0093-04, scenario.central-form-dhr-log-and-intervention-scope, scenario.central-form-dhr-signed-reassignment-preserves-evidence, scenario.central-form-dhr-reassignment-rejection-and-rollback]
+    - path: docs/knowledge/evidence/central-form-dhr-workflow-20261102.yaml
+      changeType: add
+      ids: [evidence.central-form-dhr-workflow-20261102-user-confirmed, evidence.central-form-dhr-workflow-query-source, evidence.central-form-workflow-responsibility-source, evidence.central-dhr-workflow-responsibility-source, evidence.central-form-dhr-audit-presentation-source, evidence.central-form-dhr-workflow-tests]
+    - path: docs/knowledge/evidence/central-form-dhr-workflow-20261102.md
+      changeType: add
+      ids: [evidence.central-form-dhr-workflow-20261102-user-confirmed]
+    - path: docs/knowledge/rules/workflow-central-entry.yaml
+      changeType: add
+      ids: [rule.workflow-central-entry.domain-projection, rule.workflow-central-entry.signed-responsibility-change]
+    - path: docs/knowledge/facts/workflow-central-entry.yaml
+      changeType: add
+      ids: [fact.workflow-central-entry.business-type]
+    - path: docs/knowledge/implementation-anchors/workflow-central-entry.yaml
+      changeType: add
+      ids: [anchor.workflow-central-entry.domain-projection, anchor.workflow-central-entry.form-signed-reassignment, anchor.workflow-central-entry.dhr-signed-reassignment]
+    - path: docs/knowledge/glossary.yaml
+      changeType: update
+      ids: [term.workflow-reassignment-action, term.workflow-event-log]
+    - path: docs/knowledge/ontology.yaml
+      changeType: update
+      ids: [concept.workflow-event-log]
+    - path: docs/knowledge/README.md
+      changeType: update
+      ids: []
+    - path: docs/architecture/business-knowledge-model.md
+      changeType: update
+      ids: []
+  knowledgeSync:
+    - id: DEC-0093-01
+      disposition: updated
+      scope: 普通表单及DHR进入集中日志/干预，补充DEC-0092-01入口覆盖；按领域可见范围读取，干预限当前可改派审批，不将作业整体或工艺路线纳入，不由历史DHR查询排除推导永久禁令。
+      sourceReferences: [docs/development/workflow-central-entry-extension-20261102/user-confirmed.md, docs/knowledge/decisions/DEC-0093-central-form-dhr-workflow-responsibility.yaml]
+    - id: DEC-0093-02
+      disposition: updated
+      scope: 普通表单保留处理人转办并新增管理员签名改派，DHR仅新增管理员签名改派；对应decisionPackage.replacementScopes准确替代0081-04/0091-03/0092-05中管理员改派未开放范围。原因、合法目标、操作者及签署人权限、有效签名、状态复核、原候选来源和唯一当前责任保持，内容及冻结/审批证据不变。
+      sourceReferences: [docs/development/workflow-central-entry-extension-20261102/decision-package.yaml, docs/knowledge/decisions/DEC-0093-central-form-dhr-workflow-responsibility.yaml]
+    - id: DEC-0093-03
+      disposition: updated
+      scope: 签名改派必须进入集中历史和普通表单/DHR各自数据审计，并定位业务、实例/份或版本、当前节点、原新责任、原因、时间、实际操作者/签署人和签名；事务失败无部分落地。原表单转办不因本条被改成强制签名或批准。
+      sourceReferences: [docs/development/workflow-central-entry-extension-20261102/user-confirmed.md, docs/knowledge/evidence/central-form-dhr-workflow-20261102.md]
+    - id: DEC-0093-04
+      disposition: updated
+      scope: 显式标识领域投影、表单前缀身份、具体权限码和事务映射为工程选择；普通表单复用持久化运行状态/历史，不建第二套任务，不扩大填报权限，不以方案接受或竞品行为推定运行验收。
+      sourceReferences: [docs/knowledge/evidence/central-form-dhr-workflow-20261102.md]
+    - id: DEC-0081-04
+      disposition: historical
+      scope: 不扩展管理员重新分配的对应范围由DEC-0093-02局部替代；历史原文保留，DHR专属批准/退回、本人转办禁令、证据检查、签署及多租户未决边界继续保留，不整体废弃DEC-0081。
+      sourceReferences: [docs/knowledge/decisions/DEC-0081-tenant-scoped-task-delegation.yaml, docs/knowledge/decisions/DEC-0093-central-form-dhr-workflow-responsibility.yaml]
+    - id: DEC-0091-03
+      disposition: historical
+      scope: 当时不开放DHR通用管理改派的部分由DEC-0093-02局部替代；2026-10-29仅调研的历史成熟度与证据时点、DHR专属审批和禁止跳过/强制跳转/加签/管理员直接批准等其余边界保持。
+      sourceReferences: [docs/knowledge/decisions/DEC-0091-workflow-reassignment-signature.yaml, docs/knowledge/decisions/DEC-0093-central-form-dhr-workflow-responsibility.yaml]
+    - id: DEC-0092-05
+      disposition: historical
+      scope: DHR管理员重新分配未开放部分由DEC-0093-02替代；运行日志只读及不可变审计、责任变更不等于审批通过、DHR本人转办/撤回及其他禁止动作和归档暂缓保持。
+      sourceReferences: [docs/knowledge/decisions/DEC-0092-workflow-operations-entry-and-actions.yaml, docs/knowledge/decisions/DEC-0093-central-form-dhr-workflow-responsibility.yaml]
+    - id: DEC-0092-06
+      disposition: historical
+      scope: 保留2026-10-30实现及198项检查的原始时点，DHR查询排除仅是当时实现事实，不能继续作为当前禁止集中读取或改派的政策，也不能将旧25项PG套件当本轮新增范围已运行证明。
+      sourceReferences: [docs/knowledge/decisions/DEC-0092-workflow-operations-entry-and-actions.yaml, docs/knowledge/evidence/workflow-operations-20261030.md]
+    - id: term.workflow-transfer-action
+      disposition: retained
+      scope: 处理人转办与管理员重新分配继续分开；普通表单按DEC-0081保留租户内委托范围，记录控制保留自身候选及禁止自审，DHR不增加处理人转办，不由本轮管理员资格码改变原转办政策。
+      sourceReferences: [docs/knowledge/glossary.yaml, docs/knowledge/decisions/DEC-0081-tenant-scoped-task-delegation.yaml]
+    - id: term.workflow-reassignment-action
+      disposition: updated
+      scope: 当前定义增加普通表单及DHR管理员签名改派，保留签名不替代资格/原因/审计、只改当前审批责任和新旧处理权边界；不再将旧DHR管理改派禁令作为当前定义。
+      sourceReferences: [docs/knowledge/glossary.yaml, docs/knowledge/decisions/DEC-0093-central-form-dhr-workflow-responsibility.yaml]
+    - id: term.workflow-event-log
+      disposition: updated
+      scope: 集中日志按领域投影已有运行历史，公共/DHR仍用WorkflowActionLog，普通表单用生产执行结构化历史；不把菜单名、实例和事件记录混为同一对象，不新建第二套表/引擎。
+      sourceReferences: [docs/knowledge/glossary.yaml, docs/knowledge/implementation-anchors/workflow-central-entry.yaml]
+    - id: concept.workflow-event-log
+      disposition: updated
+      scope: 补充已确认集中领域范围的证据来源，保留既有概念身份及implemented/internal，不新增同义对象或提升知识运行资格。
+      sourceReferences: [docs/knowledge/ontology.yaml, docs/knowledge/evidence/central-form-dhr-workflow-20261102.yaml]
+    - id: rule.workflow-central-entry.domain-projection
+      disposition: updated
+      scope: 记录两领域集中只读投影、可见范围和不新增运行任务的规范，保持specified/internal；原生SQL实现及FORM_PROCESS/DHR_SUMMARY实际响应由独立锚点定位。
+      sourceReferences: [docs/knowledge/rules/workflow-central-entry.yaml, gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/WorkflowOperationsQuery.java]
+    - id: rule.workflow-central-entry.signed-responsibility-change
+      disposition: updated
+      scope: 记录当前审批、双身份管理资格、目标、原因、状态绑定签名、责任和领域审计同事务规范，保持specified/internal；不声明通用知识执行引擎已消费该规则。
+      sourceReferences: [docs/knowledge/rules/workflow-central-entry.yaml, docs/knowledge/implementation-anchors/workflow-central-entry.yaml]
+    - id: fact.workflow-central-entry.business-type
+      disposition: updated
+      scope: 以原生集中响应的businessType定位普通表单FORM_PROCESS和DHR_SUMMARY，按实际已实现查询标记implemented/internal；不将原生响应等同于通用运行事实适配器或完整租户隔离。
+      sourceReferences: [docs/knowledge/facts/workflow-central-entry.yaml, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormWorkflowOperations.java]
+    - id: anchor.workflow-central-entry.domain-projection
+      disposition: updated
+      scope: 锚定两源SQL分页、领域可见范围、前缀身份、控制器及前端类型标签，原始代码与31项PG中的聚合及可见性断言分别核对。
+      sourceReferences: [docs/knowledge/implementation-anchors/workflow-central-entry.yaml, docs/development/workflow-central-entry-extension-20261102/evidence/RecordControlPostgresIntegrationTest.txt]
+    - id: anchor.workflow-central-entry.form-signed-reassignment
+      disposition: updated
+      scope: 锚定原生产状态/冻结候选、当前目标覆盖、修订竞争、受控签名及PRODUCTION_EXECUTION领域审计；表单三入口对新REASSIGN按实例/份精确过滤，不改历史工序级审计范围。
+      sourceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormWorkflowOperations.java, gmp-platform/frontend/src/utils/productionAudit.ts, docs/knowledge/implementation-anchors/workflow-central-entry.yaml]
+    - id: anchor.workflow-central-entry.dhr-signed-reassignment
+      disposition: updated
+      scope: 锚定DHR待审复核、目标资格、originSnapshot、唯一当前处理权及DHR_SUMMARY_REVIEW按汇总版本审计；DhrReviewService专属批准/退回及冻结证据检查保持。
+      sourceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/WorkflowResponsibilityService.java, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrSummaryService.java, docs/knowledge/implementation-anchors/workflow-central-entry.yaml]
+    - id: question.multi-tenant-workflow-isolation
+      disposition: deferred
+      scope: 保留非MVP完整多租户契约未决，当前同租户目标资格及默认租户SQL不关闭该问题；不阻塞已确认默认单租户功能，不宣称多租户生产可用。
+      sourceReferences: [docs/knowledge/open-questions.yaml]
+  conflicts: []
+  questions: []
+  validationEvidence:
+    - id: validation.central-form-dhr.knowledge-model
+      checkType: schema
+      command: 主侧最终执行mvn -q -Dtest=BusinessKnowledgeModelTest test；本体读取保留JUnit及validation.md，不重复执行Maven
+      outcome: passed
+      evidence: [docs/development/workflow-central-entry-extension-20261102/evidence/BusinessKnowledgeModelTest.txt, docs/development/workflow-central-entry-extension-20261102/validation.md, 89项且失败/错误/跳过均为0]
+    - id: validation.central-form-dhr.bootstrap
+      checkType: schema
+      command: 本体执行docs/knowledge/README.md中的Bootstrap Ruby诊断；不作为正式Maven门禁替代
+      outcome: passed
+      evidence: [docs/development/workflow-central-entry-extension-20261102/evidence/ontology-bootstrap.txt]
+    - id: validation.central-form-dhr.replacement-references
+      checkType: reference
+      command: 本体逐条读取DEC-0081-04/0091-03/0092-01/05/06、DEC-0093及decisionPackage.replacementScopes并核对精确替代范围
+      outcome: passed
+      evidence: [docs/knowledge/decisions/DEC-0093-central-form-dhr-workflow-responsibility.yaml, docs/development/workflow-central-entry-extension-20261102/decision-package.yaml, 旧决策原文保持且0092-06仅作历史实现事实]
+    - id: validation.central-form-dhr.source-and-tests
+      checkType: reference
+      command: 本体读取原始服务/控制器/审计及前端源码与六项新增PG源断言，核对主侧最终PG31项及领域53项报告
+      outcome: passed
+      evidence: [docs/knowledge/implementation-anchors/workflow-central-entry.yaml, docs/knowledge/evidence/central-form-dhr-workflow-20261102.md, docs/development/workflow-central-entry-extension-20261102/evidence/RecordControlPostgresIntegrationTest.txt, docs/development/workflow-central-entry-extension-20261102/evidence/ExecutionAccessTest.txt, docs/development/workflow-central-entry-extension-20261102/evidence/ProductionExecutionEngineTest.txt, docs/development/workflow-central-entry-extension-20261102/evidence/DhrReviewServiceTest.txt, docs/development/workflow-central-entry-extension-20261102/evidence/DhrReviewLifecycleIntegrationTest.txt]
+    - id: validation.central-form-dhr.status-projection
+      checkType: status-transition
+      command: 本体核对0.3.25/schema1.2.0、P0保持，新规范specified/internal、原生事实和锚点implemented/internal，未新增verified/runtime或执行契约
+      outcome: passed
+      evidence: [docs/knowledge/rules/workflow-central-entry.yaml, docs/knowledge/facts/workflow-central-entry.yaml, docs/knowledge/implementation-anchors/workflow-central-entry.yaml]
+    - id: validation.central-form-dhr.evidence-paths
+      checkType: evidence-path
+      command: 本体执行新证据Markdown相对链接存在性及Bootstrap证据路径检查，并执行git diff --check -- docs/knowledge docs/architecture/business-knowledge-model.md
+      outcome: passed
+      evidence: [docs/development/workflow-central-entry-extension-20261102/evidence/ontology-links.json, docs/development/workflow-central-entry-extension-20261102/evidence/ontology-bootstrap.txt]
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages: [P1, P2, P3]

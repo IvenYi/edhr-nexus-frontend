@@ -7,7 +7,7 @@ import DetailSection from '@/components/FormDialogSection';
 import StatusBadge from '@/components/StatusBadge';
 import WorkflowResponsibilityDialog from '@/components/workflow/WorkflowResponsibilityDialog';
 import { useAuthStore } from '@/stores/authStore';
-import { getWorkflowOperation, workflowActionLabel, type WorkflowOperationTask } from '@/api/workflow-operations';
+import { getWorkflowOperation, workflowActionLabel, workflowBusinessTypeLabel, type WorkflowOperationTask } from '@/api/workflow-operations';
 import { INSTANCE_STATUS_MAP, NODE_TYPE_MAP } from '@/utils/constants';
 import { StandardFlowNode } from '@/components/flow-designer/FlowDesigner';
 
@@ -45,19 +45,22 @@ export default function WorkflowInstancePanel({ id, audit = false, intervention 
   if (query.isLoading) return <Box sx={{ minHeight: 200, display: 'grid', placeItems: 'center' }}><CircularProgress size={24} /></Box>;
   if (!data || query.isError) return <Alert severity="error" action={<Button onClick={() => void query.refetch()}>重试</Button>}>流程详情加载失败</Alert>;
   const status = INSTANCE_STATUS_MAP[data.status as keyof typeof INSTANCE_STATUS_MAP];
+  const displayedTasks = intervention ? data.tasks.filter(task => ['PENDING', 'PROCESSING'].includes(task.status)) : data.tasks;
   return <>
-    {!audit ? <>
       <DetailSection title="流程信息"><Stack spacing={1}>
-        <Typography variant="body2">{data.templateName} · {data.businessKey || data.id}</Typography>
+        <Typography variant="body2">业务类型：{workflowBusinessTypeLabel(data.businessType)}</Typography>
+        <Typography variant="body2">{['CHANGE', 'OBSOLETE'].includes(data.businessType || '') ? '申请编号' : '业务编号'}：{data.businessKey || data.id}</Typography>
+        <Typography variant="body2">流程名称：{data.templateName || '未命名流程'}</Typography>
         <StatusBadge label={status?.label || data.status} color={status?.color || 'default'} />
         <Typography variant="body2" color="text.secondary">发起人：{data.startUserName} · {data.startTime?.replace('T', ' ').slice(0, 19)}</Typography>
       </Stack></DetailSection>
+    {!audit ? <>
       <DetailSection title="流程图"><Box sx={{ height: 260 }}>{nodes.length ? <ReactFlow nodes={nodes} nodeTypes={nodeTypes} edges={edges} fitView nodesDraggable={false} nodesConnectable={false} elementsSelectable={false}
         ariaLabelConfig={{ 'controls.ariaLabel': '流程图控制', 'controls.zoomIn.ariaLabel': '放大', 'controls.zoomOut.ariaLabel': '缩小', 'controls.fitView.ariaLabel': '适应视图' }}
         proOptions={{ hideAttribution: true }}><Background /><Controls showInteractive={false} /></ReactFlow> : <Typography variant="body2" color="text.secondary">暂无流程图</Typography>}</Box></DetailSection>
       <DetailSection title={intervention ? '当前任务' : '审批任务'}><Stack spacing={1.5}>
-        {!data.tasks.length && <Typography variant="body2" color="text.secondary">暂无任务</Typography>}
-        {data.tasks.map(task => <Box key={task.id}>
+        {!displayedTasks.length && <Typography variant="body2" color="text.secondary">{intervention ? '暂无当前任务' : '暂无任务'}</Typography>}
+        {displayedTasks.map(task => <Box key={task.id}>
           <Stack direction="row" spacing={1} alignItems="center" justifyContent="space-between"><Box sx={{ minWidth: 0 }}>
             <Typography variant="body2">{data.nodes.find(node => node.id === task.nodeId)?.name || '审批任务'} · {task.assigneeName}</Typography>
             <Typography variant="caption" color="text.secondary">{['PENDING', 'PROCESSING'].includes(task.status) ? '待处理' : task.status === 'WITHDRAWN' ? '已撤回' : task.status === 'REJECTED' ? '已退回' : task.status === 'TERMINATED' ? '已终止' : '已处理'} · {task.id}</Typography>
@@ -78,6 +81,7 @@ export default function WorkflowInstancePanel({ id, audit = false, intervention 
       </Box>)}
     </Stack></DetailSection>}
     {selected && <WorkflowResponsibilityDialog taskId={selected.id} taskState={selected.taskState} previousAssignee={selected.assigneeName} reassign
+      businessDescription={`${workflowBusinessTypeLabel(data.businessType)} · ${data.businessKey || data.id}`}
       onClose={() => setSelected(null)} onSuccess={() => { setSelected(null); void query.refetch(); }} />}
   </>;
 }

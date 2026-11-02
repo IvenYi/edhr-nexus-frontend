@@ -1,0 +1,17 @@
+knowledgeModelVersion: 0.3.25
+evidence:
+  - id: evidence.record-control-authenticated-candidate-read-user-confirmed
+    type: document
+    path: docs/knowledge/evidence/record-control-authenticated-candidate-read-confirmed.md
+    description: user-confirmed；本轮整体检查发现公共候选接口与认证申请入口的权限协同暂缓仍未结束，用户明确选择本轮一起对齐并验证，仅候选读取改为isAuthenticated，申请资格、审批处理权及菜单边界保持。实际实现和验证另取本轮证据，不由确认选项推定已运行通过。
+    visibility: internal
+  - id: evidence.record-control-authenticated-candidate-read-source
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/RecordControlWorkflowController.java
+    description: original-evidence；本轮候选GET改用isAuthenticated，parseBusinessType仍只接受CHANGE/OBSOLETE，并调用原只读listPublishedCandidates；不改变申请/审批控制器、最终提交服务资格或菜单授权。
+    visibility: internal
+  - id: evidence.record-control-authenticated-candidate-method-security
+    type: test
+    path: gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/RecordControlCandidateAuthorizationTest.java
+    description: original-and-test-evidence；真实Spring方法安全代理3项断言覆盖无创建权限的普通认证用户读取两类候选、匿名在到达端口前拒绝及DHR_SUMMARY等不支持类型拒绝。主方原surefire报告3项/0失败/0错误已由本体读取；完整浏览器及后续整体结果仍独立记录，不将代理端口mock当作数据库整链。
+    visibility: internal

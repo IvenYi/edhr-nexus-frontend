@@ -180,18 +180,18 @@ facts:
     name: "规则事实 currentRevision.exists"
     conceptId: concept.business-rule-runtime
     valueType: boolean
-    sourceType: configuration
-    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java"
+    sourceType: derived
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/recordcontrol/service/RecordControlService.java"
     aliases: ["currentRevision.exists"]
-    availability: not-available
+    availability: runtime
     allowedOperators: [equals]
-    status: specified
+    status: implemented
     visibility: internal
-    evidenceIds: [evidence.production-service, evidence.ontology-foundation-fact-type-review]
+    evidenceIds: [evidence.production-service, evidence.ontology-foundation-fact-type-review, evidence.workflow-record-dhr-closure-source-review]
     sourceRevision: working-tree
-    sourceLocator: "currentRevision.exists"
-    capturedAt: '2026-09-13'
-    reviewStatus: unreviewed
+    sourceLocator: "RecordControlService.submit查询同记录EFFECTIVE修订，applyResult在来源锁内复核当前修订引用；仅解释记录控制原生取值，不注册通用知识求值器。"
+    capturedAt: '2026-11-03'
+    reviewStatus: reviewed
   - id: fact.catalog.dhrtemplateitem
     name: "规则事实 dhrTemplateItem"
     conceptId: concept.product-process-version
@@ -340,18 +340,18 @@ facts:
     name: "规则事实 earlyTermination.reasonPresent"
     conceptId: concept.business-rule-runtime
     valueType: boolean
-    sourceType: configuration
+    sourceType: derived
     sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java"
     aliases: ["earlyTermination.reasonPresent"]
-    availability: not-available
+    availability: runtime
     allowedOperators: [equals]
-    status: specified
+    status: implemented
     visibility: internal
-    evidenceIds: [evidence.production-service, evidence.ontology-foundation-fact-type-review]
+    evidenceIds: [evidence.production-service, evidence.ontology-foundation-fact-type-review, evidence.workflow-record-dhr-closure-source-review]
     sourceRevision: working-tree
-    sourceLocator: "earlyTermination.reasonPresent"
-    capturedAt: '2026-09-13'
-    reviewStatus: unreviewed
+    sourceLocator: "ProductionService.endObject在IN_PROGRESS资格内强制非空原因并随terminationReason/terminationAt与关联DHR终止同事务保存；当前源取值已存在，本轮不补记未执行的终止E2E。"
+    capturedAt: '2026-11-03'
+    reviewStatus: reviewed
   - id: fact.catalog.formbinding-required
     name: "规则事实 formBinding.required"
     conceptId: concept.business-rule-runtime
@@ -565,17 +565,17 @@ facts:
     conceptId: concept.production-work
     valueType: boolean
     sourceType: configuration
-    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java"
+    sourcePath: "docs/knowledge/decisions/DEC-0041-record-control-application-confirmation-start.yaml"
     aliases: ["formProcessButtonConfigurationRequested"]
     availability: not-available
     allowedOperators: [equals]
     status: specified
     visibility: internal
-    evidenceIds: [evidence.production-service, evidence.ontology-foundation-fact-type-review]
+    evidenceIds: [evidence.production-service, evidence.ontology-foundation-fact-type-review, evidence.workflow-record-dhr-closure-source-review]
     sourceRevision: working-tree
-    sourceLocator: "formProcessButtonConfigurationRequested"
-    capturedAt: '2026-09-13'
-    reviewStatus: unreviewed
+    sourceLocator: "DEC-0041-06及P0标准动作边界的规范配置请求事实；当前没有同名持久化字段或通用事实提供器，不能从not-available推断审批按钮/转办本身未实现。"
+    capturedAt: '2026-11-03'
+    reviewStatus: reviewed
   - id: fact.catalog.formprocessentry-subjectconfigurationpresent
     name: "规则事实 formProcessEntry.subjectConfigurationPresent"
     conceptId: concept.production-work
@@ -806,18 +806,18 @@ facts:
     name: "规则事实 intervention.type"
     conceptId: concept.business-rule-runtime
     valueType: string
-    sourceType: configuration
-    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java"
+    sourceType: derived
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/WorkflowResponsibilityService.java"
     aliases: ["intervention.type"]
-    availability: not-available
+    availability: runtime
     allowedOperators: [equals]
-    status: specified
+    status: implemented
     visibility: internal
-    evidenceIds: [evidence.production-service]
+    evidenceIds: [evidence.production-service, evidence.workflow-record-dhr-closure-source-review]
     sourceRevision: working-tree
-    sourceLocator: "intervention.type"
-    capturedAt: '2026-09-13'
-    reviewStatus: unreviewed
+    sourceLocator: "WorkflowResponsibilityService.change的reassignment分支及FormWorkflowOperations.reassign区分管理员改派与处理人转办；MANAGERIAL_REASSIGNMENT/ORDINARY_TRANSFER为规则语义映射，持久化动作仍为REASSIGN/TRANSFER。"
+    capturedAt: '2026-11-03'
+    reviewStatus: reviewed
   - id: fact.catalog.material-typename
     name: "规则事实 material.typeName"
     conceptId: concept.material
@@ -1558,18 +1558,18 @@ facts:
     name: "规则事实 productionObject.routeHasNoCurrentOperation"
     conceptId: concept.production-object
     valueType: boolean
-    sourceType: configuration
-    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java"
+    sourceType: derived
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java"
     aliases: ["productionObject.routeHasNoCurrentOperation"]
     availability: not-available
     allowedOperators: [equals]
     status: specified
     visibility: internal
-    evidenceIds: [evidence.production-service, evidence.ontology-foundation-fact-type-review]
+    evidenceIds: [evidence.production-service, evidence.ontology-foundation-fact-type-review, evidence.workflow-record-dhr-closure-source-review]
     sourceRevision: working-tree
-    sourceLocator: "productionObject.routeHasNoCurrentOperation"
-    capturedAt: '2026-09-13'
-    reviewStatus: unreviewed
+    sourceLocator: "保留早期正常完成规则的稳定别名；当前原生执行从冻结工序状态判断对象完成并同步DHR，不存在同名routeHasNoCurrentOperation字段或通用事实提供器。not-available仅保留该规范别名的通用求值缺口，不表示正常完成/DHR同步待开发。"
+    capturedAt: '2026-11-03'
+    reviewStatus: reviewed
   - id: fact.catalog.productionobject-status
     name: "规则事实 productionObject.status"
     conceptId: concept.production-object
@@ -1974,34 +1974,34 @@ facts:
     name: "规则事实 request.status"
     conceptId: concept.business-rule-runtime
     valueType: string
-    sourceType: configuration
-    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java"
+    sourceType: database
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/recordcontrol/service/RecordControlService.java"
     aliases: ["request.status"]
-    availability: not-available
+    availability: runtime
     allowedOperators: [in]
-    status: specified
+    status: implemented
     visibility: internal
-    evidenceIds: [evidence.production-service]
+    evidenceIds: [evidence.production-service, evidence.workflow-record-dhr-closure-source-review]
     sourceRevision: working-tree
-    sourceLocator: "request.status"
-    capturedAt: '2026-09-13'
-    reviewStatus: unreviewed
+    sourceLocator: "RecordControlService.lookup/requestDetail读取record_control_request.status；IN_REVIEW活动申请单独关联，来源主状态保持。"
+    capturedAt: '2026-11-03'
+    reviewStatus: reviewed
   - id: fact.catalog.requestedaction
     name: "规则事实 requestedAction"
     conceptId: concept.business-rule-runtime
     valueType: string
     sourceType: configuration
-    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java"
+    sourcePath: "docs/knowledge/decisions/DEC-0037-record-correction-and-void-control.yaml"
     aliases: ["requestedAction"]
     availability: not-available
     allowedOperators: [in]
     status: specified
     visibility: internal
-    evidenceIds: [evidence.production-service]
+    evidenceIds: [evidence.production-service, evidence.workflow-record-dhr-closure-source-review]
     sourceRevision: working-tree
-    sourceLocator: "requestedAction"
-    capturedAt: '2026-09-13'
-    reviewStatus: unreviewed
+    sourceLocator: "DEC-0037-05及rule.record-control.p0-intervention-boundary的规范请求动作输入；产品原生入口沿各自服务白名单和记录控制保护，不宣称当前已注册同名通用知识求值输入。"
+    capturedAt: '2026-11-03'
+    reviewStatus: reviewed
   - id: fact.catalog.routeversion
     name: "规则事实 routeVersion"
     conceptId: concept.product-process-version
@@ -2102,66 +2102,66 @@ facts:
     name: "规则事实 request.contentPrepared"
     conceptId: concept.business-rule-runtime
     valueType: boolean
-    sourceType: runtime-context
-    sourcePath: "docs/knowledge/evidence/record-control-start-entry-user-confirmed.md"
+    sourceType: derived
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/recordcontrol/service/RecordControlService.java"
     aliases: ["request.contentPrepared"]
-    availability: not-available
+    availability: runtime
     allowedOperators: [equals]
-    status: specified
+    status: implemented
     visibility: internal
-    evidenceIds: [evidence.record-control-start-entry-user-confirmed]
+    evidenceIds: [evidence.record-control-start-entry-user-confirmed, evidence.workflow-record-dhr-closure-source-review]
     sourceRevision: working-tree
-    sourceLocator: "已确认结论/申请内容"
-    capturedAt: '2026-09-15'
-    reviewStatus: unreviewed
+    sourceLocator: "RecordControlService.submit复核申请必填、实际变化、原因、来源有效修订及显式流程引用；拟数据只保存于申请，批准前不写正式值。"
+    capturedAt: '2026-11-03'
+    reviewStatus: reviewed
   - id: fact.catalog.recordcontrolrequest-applicantsignatureverified
     name: "规则事实 request.applicantSignatureVerified"
     conceptId: concept.business-rule-runtime
     valueType: boolean
     sourceType: runtime-context
-    sourcePath: "docs/knowledge/evidence/record-control-start-entry-user-confirmed.md"
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/recordcontrol/service/RecordControlService.java"
     aliases: ["request.applicantSignatureVerified"]
-    availability: not-available
+    availability: runtime
     allowedOperators: [equals]
-    status: specified
+    status: implemented
     visibility: internal
-    evidenceIds: [evidence.record-control-start-entry-user-confirmed]
+    evidenceIds: [evidence.record-control-start-entry-user-confirmed, evidence.workflow-record-dhr-closure-source-review]
     sourceRevision: working-tree
-    sourceLocator: "已确认结论/申请人电子签名"
-    capturedAt: '2026-09-15'
-    reviewStatus: unreviewed
+    sourceLocator: "RecordControlService.submit调用ExecutionAccess.authenticateButtonSigner并signTarget(RECORD_CONTROL_REQUEST)，受控签名与申请启动同事务；签署人不从客户端身份参数采信。"
+    capturedAt: '2026-11-03'
+    reviewStatus: reviewed
   - id: fact.catalog.sourcerecord-completed
     name: "规则事实 sourceRecord.completed"
     conceptId: concept.business-rule-runtime
     valueType: boolean
-    sourceType: configuration
-    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java"
+    sourceType: derived
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/recordcontrol/service/RecordControlService.java"
     aliases: ["sourceRecord.completed"]
-    availability: not-available
+    availability: runtime
     allowedOperators: [equals]
-    status: specified
+    status: implemented
     visibility: internal
-    evidenceIds: [evidence.production-service, evidence.ontology-foundation-fact-type-review]
+    evidenceIds: [evidence.production-service, evidence.ontology-foundation-fact-type-review, evidence.workflow-record-dhr-closure-source-review]
     sourceRevision: working-tree
-    sourceLocator: "sourceRecord.completed"
-    capturedAt: '2026-09-13'
-    reviewStatus: unreviewed
+    sourceLocator: "RecordControlService.submit/applyResult在来源锁内检查form_instance_record.status为COMPLETED；活动申请不改该主状态。"
+    capturedAt: '2026-11-03'
+    reviewStatus: reviewed
   - id: fact.catalog.sourcerecord-currentrevisionexists
     name: "规则事实 sourceRecord.currentRevisionExists"
     conceptId: concept.business-rule-runtime
     valueType: boolean
-    sourceType: configuration
-    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java"
+    sourceType: derived
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/recordcontrol/service/RecordControlService.java"
     aliases: ["sourceRecord.currentRevisionExists"]
-    availability: not-available
+    availability: runtime
     allowedOperators: [equals]
-    status: specified
+    status: implemented
     visibility: internal
-    evidenceIds: [evidence.production-service, evidence.ontology-foundation-fact-type-review]
+    evidenceIds: [evidence.production-service, evidence.ontology-foundation-fact-type-review, evidence.workflow-record-dhr-closure-source-review]
     sourceRevision: working-tree
-    sourceLocator: "sourceRecord.currentRevisionExists"
-    capturedAt: '2026-09-13'
-    reviewStatus: unreviewed
+    sourceLocator: "RecordControlService.submit复核current_revision_id、提交修订身份及同记录EFFECTIVE修订存在；applyResult再次锁内复核来源修订未变化。"
+    capturedAt: '2026-11-03'
+    reviewStatus: reviewed
   - id: fact.catalog.split-batchcount
     name: "规则事实 split.batchCount"
     conceptId: concept.production-batch
@@ -2342,18 +2342,18 @@ facts:
     name: "规则事实 voidRequest.approved"
     conceptId: concept.business-rule-runtime
     valueType: boolean
-    sourceType: configuration
-    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java"
+    sourceType: derived
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/recordcontrol/service/RecordControlService.java"
     aliases: ["voidRequest.approved"]
-    availability: not-available
+    availability: runtime
     allowedOperators: [equals]
-    status: specified
+    status: implemented
     visibility: internal
-    evidenceIds: [evidence.production-service, evidence.ontology-foundation-fact-type-review]
+    evidenceIds: [evidence.production-service, evidence.ontology-foundation-fact-type-review, evidence.workflow-record-dhr-closure-source-review]
     sourceRevision: working-tree
-    sourceLocator: "voidRequest.approved"
-    capturedAt: '2026-09-13'
-    reviewStatus: unreviewed
+    sourceLocator: "RecordControlService.applyResult仅在Result.APPROVED且request_type为OBSOLETE时调用applyObsolete；其他结果不修改来源内容/修订。"
+    capturedAt: '2026-11-03'
+    reviewStatus: reviewed
   - id: fact.catalog.workorder-existingobjectformsmatchrequestedform
     name: "规则事实 workOrder.existingObjectFormsMatchRequestedForm"
     conceptId: concept.work-order
@@ -2534,34 +2534,34 @@ facts:
     name: "规则事实 workflow.allBranchesApproved"
     conceptId: concept.business-rule-runtime
     valueType: boolean
-    sourceType: configuration
-    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java"
+    sourceType: derived
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java"
     aliases: ["workflow.allBranchesApproved"]
-    availability: not-available
+    availability: runtime
     allowedOperators: [equals]
-    status: specified
+    status: implemented
     visibility: internal
-    evidenceIds: [evidence.production-service, evidence.ontology-foundation-fact-type-review]
+    evidenceIds: [evidence.production-service, evidence.ontology-foundation-fact-type-review, evidence.workflow-record-dhr-closure-source-review]
     sourceRevision: working-tree
-    sourceLocator: "workflow.allBranchesApproved"
-    capturedAt: '2026-09-13'
-    reviewStatus: unreviewed
+    sourceLocator: "WorkflowEngine.parallelJoinReady将实例COMPLETED任务节点与汇聚节点全部入边源节点比较；仅全部满足后activateStructuralNode推进后继。"
+    capturedAt: '2026-11-03'
+    reviewStatus: reviewed
   - id: fact.catalog.workflow-parallelbranchesexist
     name: "规则事实 workflow.parallelBranchesExist"
     conceptId: concept.business-rule-runtime
     valueType: boolean
-    sourceType: configuration
-    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java"
+    sourceType: derived
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java"
     aliases: ["workflow.parallelBranchesExist"]
-    availability: not-available
+    availability: configuration-and-runtime
     allowedOperators: [equals]
-    status: specified
+    status: implemented
     visibility: internal
-    evidenceIds: [evidence.production-service, evidence.ontology-foundation-fact-type-review]
+    evidenceIds: [evidence.production-service, evidence.ontology-foundation-fact-type-review, evidence.workflow-record-dhr-closure-source-review]
     sourceRevision: working-tree
-    sourceLocator: "workflow.parallelBranchesExist"
-    capturedAt: '2026-09-13'
-    reviewStatus: unreviewed
+    sourceLocator: "WorkflowEngine读取冻结版本PARALLEL_SPLIT/PARALLEL_JOIN节点及连线；结构节点不创建审批任务，分支创建实际任务；非通用并行布尔字段。"
+    capturedAt: '2026-11-03'
+    reviewStatus: reviewed
   - id: fact.catalog.workflowtask-status
     name: "规则事实 workflowTask.status"
     conceptId: concept.workflow-task
@@ -2583,17 +2583,17 @@ facts:
     conceptId: concept.business-rule-runtime
     valueType: string
     sourceType: configuration
-    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java"
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowTemplateController.java"
     aliases: ["workflowTemplate.category"]
-    availability: not-available
+    availability: configuration-and-runtime
     allowedOperators: [in]
-    status: specified
+    status: implemented
     visibility: internal
-    evidenceIds: [evidence.production-service]
+    evidenceIds: [evidence.production-service, evidence.workflow-record-dhr-closure-source-review]
     sourceRevision: working-tree
-    sourceLocator: "workflowTemplate.category"
-    capturedAt: '2026-09-13'
-    reviewStatus: unreviewed
+    sourceLocator: "WorkflowTemplateController.validateBusinessType及WorkflowDefinition.businessType；共享审批配置实际支持CHANGE/OBSOLETE/DHR_SUMMARY，记录控制申请候选仍只接受自身CHANGE或OBSOLETE。"
+    capturedAt: '2026-11-03'
+    reviewStatus: reviewed
   - id: fact.catalog.reviewtemplate-approvalnode-approversubjectsconfigured
     name: "规则事实 reviewTemplate.approvalNode.approverSubjectsConfigured"
     conceptId: concept.record-control-review-template

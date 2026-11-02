@@ -12,15 +12,17 @@ implementationAnchors:
     databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql]
     uiReferences:
       - gmp-platform/frontend/src/components/workflow/WorkflowResponsibilityDialog.tsx
+      - gmp-platform/frontend/src/pages/workflow-center/InstanceList.tsx
+      - gmp-platform/frontend/src/pages/workflow-center/WorkflowReassignmentEntry.tsx
       - gmp-platform/frontend/src/pages/workflow-center/WorkflowInstancePanel.tsx
       - gmp-platform/frontend/src/pages/record-control/RecordApprovalDetailPage.tsx
     testReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/recordcontrol/service/RecordControlPostgresIntegrationTest.java]
     status: implemented
     visibility: internal
-    evidenceIds: [evidence.workflow-operations-responsibility-source, evidence.workflow-operations-postgres-tests, evidence.workflow-operations-main-verification]
+    evidenceIds: [evidence.workflow-operations-responsibility-source, evidence.workflow-operations-postgres-tests, evidence.workflow-operations-main-verification, evidence.workflow-list-ui-20261102-user-confirmed, evidence.workflow-list-ui-20261102-entry-source]
     sourceRevision: working-tree
-    sourceLocator: WorkflowResponsibilityService.change/eligible/taskState；基于40497474的本轮未提交工作树，具体核对来源与主侧执行证据见workflow-operations-20261030.md，不虚构新提交或发布。
-    capturedAt: '2026-10-30'
+    sourceLocator: WorkflowResponsibilityService.change/eligible/taskState既有执行与测试来源保留在workflow-operations-20261030.md；2026-11-02基于0bd0848b的未提交工作树补核InstanceList/WorkflowReassignmentEntry/WorkflowInstancePanel入口、业务类型和当前任务投影，详见workflow-list-ui-20261102.md，不将本轮静态核对冒充旧套件重跑或发布通过。
+    capturedAt: '2026-11-02'
     reviewStatus: reviewed
   - id: anchor.workflow-operations.withdrawal-result
     targetId: fact.record-control-workflow-result

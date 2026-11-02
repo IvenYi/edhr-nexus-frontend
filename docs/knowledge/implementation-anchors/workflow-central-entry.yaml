@@ -1,0 +1,67 @@
+knowledgeModelVersion: 0.3.25
+implementationAnchors:
+  - id: anchor.workflow-central-entry.domain-projection
+    targetId: rule.workflow-central-entry.domain-projection
+    targetType: rule
+    codeReferences:
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/WorkflowOperationsQuery.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormWorkflowOperations.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowOperationsController.java
+    apiReferences: ['GET /api/v1/workflow/operations/instances', 'GET /api/v1/workflow/operations/instances/{id}']
+    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql]
+    uiReferences:
+      - gmp-platform/frontend/src/api/workflow-operations.ts
+      - gmp-platform/frontend/src/pages/workflow-center/InstanceList.tsx
+      - gmp-platform/frontend/src/pages/workflow-center/WorkflowInstancePanel.tsx
+    testReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/recordcontrol/service/RecordControlPostgresIntegrationTest.java]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.central-form-dhr-workflow-query-source, evidence.central-form-dhr-workflow-tests]
+    sourceRevision: working-tree
+    sourceLocator: 0bd0848b上的本轮未提交工作树；WorkflowOperationsQuery.list/detail与FormWorkflowOperations.source/detail/visibility，业务类型FORM_PROCESS/DHR_SUMMARY及form-身份；主侧实际运行与独立质量证据另据同轮说明，不把源码存在性当运行或部署通过。
+    capturedAt: '2026-11-02'
+    reviewStatus: reviewed
+  - id: anchor.workflow-central-entry.form-signed-reassignment
+    targetId: rule.workflow-central-entry.signed-responsibility-change
+    targetType: rule
+    codeReferences:
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormWorkflowOperations.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionAccess.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowOperationsController.java
+    apiReferences: ['GET /api/v1/workflow/operations/tasks/{id}/reassignment-targets', 'POST /api/v1/workflow/operations/tasks/{id}/reassign']
+    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql]
+    uiReferences:
+      - gmp-platform/frontend/src/components/workflow/WorkflowResponsibilityDialog.tsx
+      - gmp-platform/frontend/src/utils/productionAudit.ts
+      - gmp-platform/frontend/src/pages/form-management/FormInstanceListPage.tsx
+      - gmp-platform/frontend/src/pages/form-management/FormFillingPage.tsx
+      - gmp-platform/frontend/src/pages/form-management/FormReviewPage.tsx
+    testReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/recordcontrol/service/RecordControlPostgresIntegrationTest.java]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.central-form-workflow-responsibility-source, evidence.central-form-dhr-audit-presentation-source, evidence.central-form-dhr-workflow-tests]
+    sourceRevision: working-tree
+    sourceLocator: FormWorkflowOperations.targets/reassign/requireActive/state及ExecutionAccess.canAct；form-表单实例ID:节点ID定位同一原生审批责任，WORKFLOW_INTERVENTION签名、结构化REASSIGN及PRODUCTION_EXECUTION领域审计复用原事务和修订竞争机制。isAuditForForm只精确限制新REASSIGN审计，不改历史事件范围。
+    capturedAt: '2026-11-02'
+    reviewStatus: reviewed
+  - id: anchor.workflow-central-entry.dhr-signed-reassignment
+    targetId: rule.workflow-central-entry.signed-responsibility-change
+    targetType: rule
+    codeReferences:
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/WorkflowResponsibilityService.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrReviewService.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrSummaryService.java
+    apiReferences: ['GET /api/v1/workflow/operations/tasks/{id}/reassignment-targets', 'POST /api/v1/workflow/operations/tasks/{id}/reassign']
+    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql]
+    uiReferences:
+      - gmp-platform/frontend/src/components/workflow/WorkflowResponsibilityDialog.tsx
+      - gmp-platform/frontend/src/pages/dhr-management/DhrAuditTrail.tsx
+      - gmp-platform/frontend/src/pages/dhr-management/dhrAuditPresentation.ts
+    testReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/recordcontrol/service/RecordControlPostgresIntegrationTest.java]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.central-dhr-workflow-responsibility-source, evidence.central-form-dhr-audit-presentation-source, evidence.central-form-dhr-workflow-tests]
+    sourceRevision: working-tree
+    sourceLocator: WorkflowResponsibilityService.change/eligible/requireActive保留DHR仅管理签名改派边界；DHR_SUMMARY_REVIEW审计entityId为summaryVersionId，使DhrSummaryService.audit/versionAudit原查询可见；DhrReviewService原专属处理校验及新候选读取不被通用批准替代。源基点0bd0848b，未宣称集成8ec83917目标源码。
+    capturedAt: '2026-11-02'
+    reviewStatus: reviewed

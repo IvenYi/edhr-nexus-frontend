@@ -1,0 +1,62 @@
+decisionPackage:
+  id: DEC-PACKAGE-20261102-CROWN-WORKFLOW-SCOPE
+  scope: 冠骋流程日志和流程干预业务范围原始证据调研
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: 0bd0848bbded6d6954d62a4f924e0b2eec6623ad
+    targetBranch: edhr-dev
+    targetCommit: e3e49784eda6bc01e7e5c686d6f79dc5a600d5ae
+    contractReadCommit: 0bd0848bbded6d6954d62a4f924e0b2eec6623ad
+    uncommittedContractPaths: []
+  summary: 回到本地冠骋原始前后端和DOCX，核对集中入口包含的审核业务，区分表单填报审批、模板审批、作业/事务执行、工艺路线审批和DHR审核。不修改eDHR产品范围或动作授权。
+  confirmed:
+    concepts: []
+    relationships: []
+    rules: []
+    executionContracts: []
+  confirmedBusinessDecisions:
+    - user-confirmed：调研冠骋流程日志及流程干预各有哪些业务，重点回答表单流程、作业流程、DHR审批是否显示。
+    - existing-policy：既有调研记录只作检索索引，结论须回到可获得原始证据；本地源码/文档快照不能代表当前线上所有客户部署。
+    - existing-policy：竞品调研不自动替代我方DEC-0092的DHR专属边界，不新增业务入口或通用干预授权。
+  inferred: []
+  unresolved: []
+  replacementScopes: []
+  impactAnalysis:
+    level: L1
+    directImpacts:
+      - area: reference-explanation
+        change: 澄清冠骋集中审核日志/干预与作业执行的边界，保存可复核的原始路径/行号/摘要和缺口。
+        evidenceReferences: [docs/reference-assets/edhr-and-crown-reference-checklist.md]
+    transitiveImpacts: []
+    potentialImpacts:
+      - area: future-central-visibility
+        concern: 调研可能为我方后续集中查询提供对照；只有用户另行确认才改变现有范围与动作。
+        evidenceReferences: [docs/knowledge/decisions/DEC-0092-workflow-operations-entry-and-actions.yaml]
+    unaffectedAreas:
+      - {area: product-implementation, reason: 本轮不改产品代码、权限、签名、状态、数据库或开发环境。}
+    compatibilityAndMigration: []
+    snapshotImpacts: []
+    auditImpacts: []
+    permissionImpacts: []
+    testImpacts:
+      - scope: research
+        scenarios: [集中入口页签/功能开关/权限, 日志低代码入口证据, 普通表单与模板审批区分, DHR审核与DHR变更区分, 作业执行独立路径, 原始DOCX文本/图片交叉核对]
+        evidenceReferences: []
+    evidenceGaps:
+      - 尚未验证冠骋当前线上部署与平台层缺失的低代码运行查询实现；只解释可获得快照。
+  extensionStrategy:
+    selectedPaths: [product-core]
+    rationale: 本轮仅为未来产品公共集中查询提供证据，不启动新的客户分支、执行编排或插件。
+    ownershipBoundaries:
+      - {owner: primary-agent, responsibility: 原始前端/文档调研、结论与比较报告}
+      - {owner: ontology-agent, responsibility: 交叉核对原始后端概念边界并同步最小证据资产，不变我方政策}
+      - {owner: quality-agent, responsibility: 收尾独立核对原始依据及结论强度}
+  affectedFiles:
+    - {path: docs/reference-assets/research/crown-workflow-scope-20261102/, changeType: create, reason: 原始调研报告、来源清单及角色结果}
+    - {path: docs/knowledge/evidence/crown-workflow-scope-20261102.yaml, changeType: create, reason: 客户解释引用的竞品证据索引，不提升我方能力成熟度}
+  acceptanceScenarios:
+    - id: scenario.crown-workflow-scope
+      given: 可获得的冠骋前后端与原始DOCX
+      when: 核对日志与干预业务范围
+      then: 分别回答三类流程是否进入入口，给出完整业务分组、开关/权限及证据缺口，不把作业执行和配置审批混同，不以竞品证据更改我方规则。
+      evidenceRequirements: [原始源码行号与摘要, 原始DOCX文本/图片, 本体核对, 独立质量核对]

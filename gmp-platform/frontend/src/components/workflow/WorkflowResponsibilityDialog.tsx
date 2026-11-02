@@ -8,8 +8,8 @@ import { useSnackbar } from '@/components/SnackbarProvider';
 import { changeTaskResponsibility, getResponsibilityTargets, getTransferContext } from '@/api/workflow-operations';
 
 type Target = { id: string; name: string; username: string };
-export default function WorkflowResponsibilityDialog({ taskId, taskState, previousAssignee, reassign = false, onClose, onSuccess }: {
-  taskId: string; taskState?: string; previousAssignee?: string; reassign?: boolean; onClose: () => void; onSuccess: () => void;
+export default function WorkflowResponsibilityDialog({ taskId, taskState, previousAssignee, businessDescription, reassign = false, onClose, onSuccess }: {
+  taskId: string; taskState?: string; previousAssignee?: string; businessDescription?: string; reassign?: boolean; onClose: () => void; onSuccess: () => void;
 }) {
   const { showMessage } = useSnackbar();
   const cache = useQueryClient();
@@ -38,7 +38,7 @@ export default function WorkflowResponsibilityDialog({ taskId, taskState, previo
     try {
       await changeTaskResponsibility(taskId, reassign, { targetUserId: target.id, reason: reason.trim(),
         expectedTaskState: reassign ? taskState! : context.data!.taskState, account: account.trim(), password });
-      await cache.invalidateQueries({ predicate: query => /workflow|record-control/.test(String(query.queryKey[0])), refetchType: 'none' });
+      await cache.invalidateQueries({ predicate: query => /workflow|record-control|^form-|^dhr-/.test(String(query.queryKey[0])) });
       showMessage(reassign ? '重新分配成功' : '转办成功', 'success'); onSuccess();
     } catch (e) { setError(e instanceof Error ? e.message : '操作失败，请重试'); setPassword(''); }
     finally { submitting.current = false; setBusy(false); }
@@ -46,6 +46,7 @@ export default function WorkflowResponsibilityDialog({ taskId, taskState, previo
   return <FormDialog open fullWidth maxWidth="sm" onClose={() => { if (!busy) onClose(); }} hideCloseButton={busy} aria-labelledby="responsibility-title">
     <DialogTitle id="responsibility-title">{reassign ? '重新分配' : '转办任务'}</DialogTitle>
     <DialogContent dividers><FormDialogSection title="处理责任"><Stack spacing={1.5}>
+      {businessDescription && <Typography variant="body2">{businessDescription}</Typography>}
       <Typography variant="body2" color="text.secondary">任务 {taskId}{previousAssignee ? ` · 原处理人：${previousAssignee}` : ''}</Typography>
       <Typography variant="caption" color="text.secondary">只更换当前处理人，流程节点和审批结果保持不变。</Typography>
       {!reassign && context.isError && <Alert severity="error" action={<Button onClick={() => void context.refetch()}>重试</Button>}>任务配置加载失败</Alert>}

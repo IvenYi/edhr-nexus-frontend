@@ -1,0 +1,52 @@
+{
+  "checkedAt": "2026-11-02T16:59:36Z",
+  "sourceCommit": "0bd0848bbded6d6954d62a4f924e0b2eec6623ad",
+  "targetCommit": "8ec8391721858a7f96d73a5d293d93f43679118a",
+  "workingTree": "dirty",
+  "knowledgeModelVersion": "0.3.25",
+  "checks": {
+    "yamlParse": {
+      "outcome": "passed",
+      "scope": "all-knowledge-yaml-and-ontology-result"
+    },
+    "uniqueIds": {
+      "outcome": "passed",
+      "duplicateIds": 0
+    },
+    "evidenceReferences": {
+      "outcome": "passed",
+      "unresolvedEvidenceIds": 0
+    },
+    "evidencePaths": {
+      "outcome": "passed",
+      "missing": [
+
+      ]
+    },
+    "maturityAndProjection": {
+      "outcome": "passed",
+      "promotedToVerifiedOrPublishedVisibility": [
+
+      ]
+    },
+    "inventory": {
+      "outcome": "passed",
+      "files": 70,
+      "records": 681,
+      "knowledgeSync": 681,
+      "staleHashes": [
+
+      ],
+      "outcomes": {
+        "consistent": 617,
+        "needs-fix": 42,
+        "superseded": 12,
+        "evidence-gap": 5,
+        "needs-decision": 5
+      }
+    }
+  },
+  "errors": [
+
+  ]
+}

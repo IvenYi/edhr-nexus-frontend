@@ -4,6 +4,7 @@ import com.zencas.edhr.common.dto.PageResult;
 import com.zencas.edhr.common.exception.BusinessException;
 import com.zencas.edhr.common.exception.ErrorCode;
 import com.zencas.edhr.workflow.repository.WorkflowTaskRepository;
+import com.zencas.edhr.production.service.FormWorkflowOperations;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
@@ -12,40 +13,50 @@ import com.zencas.edhr.common.audit.AuditContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import java.util.*;
 
-/** Read projection shared by the log and intervention screens. DHR keeps its dedicated evidence surface. */
+/** Shared read projection; domain approval and responsibility actions retain their own transactions. */
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class WorkflowOperationsQuery {
     private final JdbcTemplate jdbc;
     private final WorkflowTaskRepository tasks;
+    private final FormWorkflowOperations forms;
+
+    private static final String FROM = """
+        FROM workflow_instance i LEFT JOIN workflow_definition d ON d.id=i.definition_id
+        LEFT JOIN record_control_request q ON q.workflow_instance_id=CAST(i.id AS VARCHAR) AND q.tenant_id='default'
+        LEFT JOIN dhr_summary_review r ON r.workflow_instance_id=i.id AND i.business_type='DHR_SUMMARY'
+        LEFT JOIN dhr_summary_version v ON v.id=r.summary_version_id AND v.tenant_id='default'
+        LEFT JOIN dhr_instance h ON h.id=v.dhr_instance_id AND h.tenant_id=v.tenant_id
+        LEFT JOIN user_account u ON CAST(u.id AS VARCHAR)=i.initiator_id
+        """;
+    private static final String BUSINESS_KEY = "COALESCE(q.request_no,h.dhr_no||' · V'||v.version_no,i.business_id)";
 
     public PageResult<Map<String, Object>> list(int page, int size, String keyword, String status, boolean runningOnly) {
         if (page < 1 || size < 1 || size > 100) throw invalid("分页参数不正确");
         String query = keyword == null ? "" : keyword.strip();
         if (query.length() > 128) throw invalid("查询条件不能超过128字");
         if (status != null && !status.isBlank() && !Set.of("RUNNING", "COMPLETED", "TERMINATED", "WITHDRAWN").contains(status)) throw invalid("流程状态不正确");
-        String where = " WHERE (i.business_type IS NULL OR i.business_type<>'DHR_SUMMARY')";
         List<Object> args = new ArrayList<>();
-        where += visibility(args);
+        String where = " WHERE (i.business_type IS DISTINCT FROM 'DHR_SUMMARY' OR h.id IS NOT NULL)" + visibility(args);
         if (runningOnly) where += " AND i.status='RUNNING'";
-        else if (status != null && !status.isBlank()) { where += " AND i.status=?"; args.add(status); }
+        var formSource = forms.source(runningOnly);
+        String source = "SELECT CAST(i.id AS VARCHAR) AS \"id\",d.name AS \"templateName\"," + BUSINESS_KEY + " AS \"businessKey\","
+                + "i.business_type AS \"businessType\",i.status,COALESCE(u.display_name,i.initiator_id) AS \"startUserName\","
+                + "CAST(i.started_at AS VARCHAR) AS \"startTime\",CAST(i.completed_at AS VARCHAR) AS \"endTime\" " + FROM + where
+                + " UNION ALL " + formSource.sql();
+        args.addAll(formSource.args());
+        String filter = " WHERE 1=1";
+        if (!runningOnly && status != null && !status.isBlank()) { filter += " AND status=?"; args.add(status); }
         if (!query.isBlank()) {
-            where += " AND (CAST(i.id AS VARCHAR)=? OR COALESCE(q.request_no,i.business_id,'') ILIKE ? OR d.name ILIKE ?)";
+            filter += " AND (id=? OR COALESCE(\"businessKey\",'') ILIKE ? ESCAPE '!' OR \"templateName\" ILIKE ? ESCAPE '!')";
             String pattern = "%" + query.replace("!", "!!").replace("%", "!%").replace("_", "!_") + "%";
             args.add(query); args.add(pattern); args.add(pattern);
-            where = where.replace(" ILIKE ?", " ILIKE ? ESCAPE '!'");
         }
-        String from = " FROM workflow_instance i LEFT JOIN workflow_definition d ON d.id=i.definition_id"
-                + " LEFT JOIN record_control_request q ON q.workflow_instance_id=CAST(i.id AS VARCHAR) AND q.tenant_id='default'"
-                + " LEFT JOIN user_account u ON CAST(u.id AS VARCHAR)=i.initiator_id";
-        Long total = jdbc.queryForObject("SELECT count(*)" + from + where, Long.class, args.toArray());
+        String from = " FROM (" + source + ") sources" + filter;
+        Long total = jdbc.queryForObject("SELECT count(*)" + from, Long.class, args.toArray());
         args.add(size); args.add((long) (page - 1) * size);
-        var content = jdbc.queryForList("""
-                SELECT CAST(i.id AS VARCHAR) AS "id",d.name AS "templateName",COALESCE(q.request_no,i.business_id) AS "businessKey",
-                       i.business_type AS "businessType",i.status,COALESCE(u.display_name,i.initiator_id) AS "startUserName",
-                       CAST(i.started_at AS VARCHAR) AS "startTime",CAST(i.completed_at AS VARCHAR) AS "endTime"
-                """ + from + where + " ORDER BY i.started_at DESC,i.id DESC LIMIT ? OFFSET ?", args.toArray());
+        var content = jdbc.queryForList("SELECT *" + from + " ORDER BY \"startTime\" DESC,id DESC LIMIT ? OFFSET ?", args.toArray());
         return PageResult.of(content, page, size, total == null ? 0 : total);
     }
 
@@ -53,15 +64,11 @@ public class WorkflowOperationsQuery {
         List<Object> args = new ArrayList<>(); args.add(id);
         String scope = visibility(args);
         var rows = jdbc.queryForList("""
-                SELECT CAST(i.id AS VARCHAR) AS "id",d.name AS "templateName",COALESCE(q.request_no,i.business_id) AS "businessKey",
+                SELECT CAST(i.id AS VARCHAR) AS "id",d.name AS "templateName",%s AS "businessKey",
                        CAST(i.version_id AS VARCHAR) AS "versionId",i.business_type AS "businessType",i.status,
                        COALESCE(u.display_name,i.initiator_id) AS "startUserName",CAST(i.started_at AS VARCHAR) AS "startTime",CAST(i.completed_at AS VARCHAR) AS "endTime"
-                FROM workflow_instance i LEFT JOIN workflow_definition d ON d.id=i.definition_id
-                LEFT JOIN record_control_request q ON q.workflow_instance_id=CAST(i.id AS VARCHAR) AND q.tenant_id='default'
-                LEFT JOIN user_account u ON CAST(u.id AS VARCHAR)=i.initiator_id
-                WHERE i.id=? AND (i.business_type IS NULL OR i.business_type<>'DHR_SUMMARY')
-                """ + scope, args.toArray());
-        if (rows.isEmpty()) throw invalid("流程不存在或请通过DHR专属入口查看");
+                """.formatted(BUSINESS_KEY) + FROM + " WHERE i.id=? AND (i.business_type IS DISTINCT FROM 'DHR_SUMMARY' OR h.id IS NOT NULL)" + scope, args.toArray());
+        if (rows.isEmpty()) throw invalid("流程不存在或无权查看");
         Map<String, Object> result = new LinkedHashMap<>(rows.getFirst());
         result.put("nodes", jdbc.queryForList("""
                 SELECT CAST(n.id AS VARCHAR) AS "id",n.name,n.node_type AS "type",n.position_x AS "positionX",n.position_y AS "positionY",
@@ -96,14 +103,23 @@ public class WorkflowOperationsQuery {
         var auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth != null && auth.getAuthorities().stream().anyMatch(a -> "workflow.intervene".equals(a.getAuthority()))) return "";
         String actor = Objects.toString(AuditContext.getOperatorId(), "");
+        String dhrScope = " AND (i.business_type IS DISTINCT FROM 'DHR_SUMMARY' OR (" + (has("records.dhr-review") ? "true" : "false")
+                + " AND h.id IS NOT NULL AND (i.initiator_id=? OR EXISTS (SELECT 1 FROM workflow_task dt WHERE dt.instance_id=i.id AND "
+                + "((dt.status IN ('PENDING','PROCESSING') AND (dt.candidate_snapshot->'userIds' @> CAST(? AS jsonb) OR dt.candidate_snapshot->>'unrestricted'='true' OR dt.assignee_id=?))"
+                + " OR (dt.status IN ('COMPLETED','REJECTED') AND dt.assignee_id=?))))))";
+        args.add(actor); args.add("[\"" + actor + "\"]"); args.add(actor); args.add(actor);
         args.add(actor); args.add(actor); args.add("[\"" + actor + "\"]"); args.add(actor);
-        return """
+        return dhrScope + """
                  AND (i.business_type IS NULL OR i.business_type NOT IN ('CHANGE','OBSOLETE') OR q.status<>'IN_REVIEW'
                   OR q.applicant_id=? OR EXISTS (SELECT 1 FROM workflow_task t WHERE t.instance_id=i.id
                   AND ((t.status IN ('PENDING','PROCESSING') AND (t.assignee_id=?
                     OR (t.candidate_snapshot -> 'userIds') @> CAST(? AS jsonb) OR t.candidate_snapshot ->> 'unrestricted'='true'))
                     OR (t.status IN ('COMPLETED','REJECTED','TRANSFERRED') AND t.assignee_id=?))))
                 """;
+    }
+    private boolean has(String code) {
+        var auth = SecurityContextHolder.getContext().getAuthentication();
+        return auth != null && auth.getAuthorities().stream().anyMatch(a -> code.equals(a.getAuthority()));
     }
     private BusinessException invalid(String message) { return new BusinessException(ErrorCode.WF_007, message); }
 }

@@ -1,0 +1,140 @@
+qualityResult:
+  result: passed
+  baseCommit: 0bd0848bbded6d6954d62a4f924e0b2eec6623ad
+  headCommit: 0bd0848bbded6d6954d62a4f924e0b2eec6623ad
+  contractBaseline:
+    sourceCommit: 0bd0848bbded6d6954d62a4f924e0b2eec6623ad
+    targetBranch: edhr-dev
+    targetCommit: 8ec8391721858a7f96d73a5d293d93f43679118a
+    contractReadCommit: 0bd0848bbded6d6954d62a4f924e0b2eec6623ad
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: dirty
+    includedPaths:
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormWorkflowOperations.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/WorkflowOperationsQuery.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/WorkflowResponsibilityService.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowOperationsController.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/controller/AuditController.java
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/recordcontrol/service/RecordControlPostgresIntegrationTest.java
+      - gmp-platform/frontend/src/api/workflow-operations.ts
+      - gmp-platform/frontend/src/components/workflow/WorkflowResponsibilityDialog.tsx
+      - gmp-platform/frontend/src/pages/workflow-center
+      - gmp-platform/frontend/src/utils/productionAudit.ts
+      - gmp-platform/frontend/src/pages/form-management/FormInstanceListPage.tsx
+      - gmp-platform/frontend/src/pages/form-management/FormReviewPage.tsx
+      - gmp-platform/frontend/src/pages/form-management/FormFillingPage.tsx
+      - gmp-platform/frontend/src/pages/dhr-management/dhrAuditPresentation.ts
+      - gmp-platform/frontend/scripts/test-workflow-list-ui-browser.mjs
+      - docs/knowledge/decisions/DEC-0093-central-form-dhr-workflow-responsibility.yaml
+      - docs/knowledge/rules/workflow-central-entry.yaml
+      - docs/knowledge/facts/workflow-central-entry.yaml
+      - docs/knowledge/implementation-anchors/workflow-central-entry.yaml
+      - docs/knowledge/evidence/central-form-dhr-workflow-20261102.yaml
+      - docs/knowledge/evidence/central-form-dhr-workflow-20261102.md
+      - docs/knowledge/glossary.yaml
+      - docs/knowledge/ontology.yaml
+      - docs/knowledge/README.md
+      - docs/architecture/business-knowledge-model.md
+      - docs/development/workflow-central-entry-extension-20261102
+    excludedPaths:
+      - 其他功能切片及约900个既存未跟踪历史证据不属于本轮全量审计范围，未清理或重置
+      - 远端8ec83917未集成，不是本轮被验证的合并候选
+    untrackedPaths:
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormWorkflowOperations.java
+      - gmp-platform/frontend/scripts/test-workflow-list-ui-browser.mjs
+      - docs/knowledge/decisions/DEC-0093-central-form-dhr-workflow-responsibility.yaml
+      - docs/knowledge/rules/workflow-central-entry.yaml
+      - docs/knowledge/facts/workflow-central-entry.yaml
+      - docs/knowledge/implementation-anchors/workflow-central-entry.yaml
+      - docs/knowledge/evidence/central-form-dhr-workflow-20261102.yaml
+      - docs/knowledge/evidence/central-form-dhr-workflow-20261102.md
+      - docs/development/workflow-central-entry-extension-20261102
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+    - id: check.central-contract-and-scope
+      required: true
+      category: requirements
+      description: 独立读取契约、DEC-0093、影响分析、替代范围、本体结果及原始源码，核对本地候选边界
+      method: inspection
+      command: git rev-parse HEAD origin/edhr-dev; git diff --name-only HEAD origin/edhr-dev -- AGENTS.md codeplzreadme.md docs/agents docs/knowledge; read role/decision/source files
+      outcome: passed
+      evidence:
+        - HEAD为0bd0848bbded6d6954d62a4f924e0b2eec6623ad，目标引用为8ec8391721858a7f96d73a5d293d93f43679118a，契约及知识差异命令无输出
+        - ontology-result.yaml为updated；只替代旧管理员改派未开放范围，原历史、DHR专属批准/退回及本人转办/撤回禁令保留
+        - evidence/quality/candidate-and-tests.json保存本轮实际审查源码哈希；仅验证本地HEAD加dirty差异
+    - id: check.central-permission-state-and-transactions
+      required: true
+      category: security
+      description: 核对普通表单和DHR的专门权限、实际签署、有效目标、当前状态、并发及领域审计事务
+      method: inspection
+      command: inspect FormWorkflowOperations, WorkflowResponsibilityService, WorkflowOperationsController, ExecutionAccess, TenantTransferTargets, WorkflowEngine and DhrReviewService
+      outcome: passed
+      evidence:
+        - 管理入口和服务要求workflow.intervene，实际签署人再次核对管理权限与租户；原生签署认证复用有效账号、电子签名认证及签署密码
+        - 目标通过同租户正常可用人员规则及各领域审批权限；普通表单只改transferAssignees，DHR只收敛有效任务候选且另保留originSnapshot
+        - 普通表单锁工单再锁对象并检查执行修订，DHR锁流程与任务并刷新状态；改派不执行节点推进或批准
+        - 签名、责任、历史、领域审计同事务提交；DHR通用完成接口仍拒绝绕过专属审核校验
+    - id: check.independent-postgres-and-domain-regression
+      required: true
+      category: integration
+      description: 在质量实例新建白名单隔离库独立复跑本轮事务、权限、回滚、审计及相邻领域和知识检查
+      method: automated-test
+      command: RECORD_CONTROL_TEST_DATABASE_URL=jdbc:postgresql://127.0.0.1:5432/edhr_record_control_test_quality_central_20261102 PGUSER=ivenwang JAVA_HOME=/opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home mvn -q -Dtest=RecordControlPostgresIntegrationTest,ProductionExecutionEngineTest,ExecutionAccessTest,DhrReviewServiceTest,DhrReviewLifecycleIntegrationTest,BusinessKnowledgeModelTest test
+      outcome: passed
+      evidence:
+        - exitCode=0；31项真实PG集成、53项领域回归、89项知识校验，共173项通过，0失败、0错误、0跳过
+        - evidence/quality中的6个Surefire文本报告及candidate-and-tests.json
+        - PG覆盖两类改派、原/新处理权、冻结证据不变、领域审计可见、非法签名/目标/状态、过期重放、表单并发和审计失败回滚，以及原记录控制/转办/受限撤回回归
+        - 测试未向edhr_dev执行业务写入，不重置主库人工验收数据
+    - id: check.domain-audit-mapping
+      required: true
+      category: audit
+      description: 独立核对领域数据审计关联及具体表单份过滤
+      method: inspection
+      command: inspect DhrSummaryService.audit/versionAudit, FormWorkflowOperations.reassign, productionAudit.isAuditForForm, three form audit loaders and dhrAuditPresentation
+      outcome: passed
+      evidence:
+        - DHR改派审计使用DHR_SUMMARY_REVIEW及汇总版本ID，完整DHR与版本审计原查询均能读取
+        - 普通表单使用PRODUCTION_EXECUTION审计，含表单实例/份、节点、原/新处理人、原因、签署人与签名；保留原工序摘要检索
+        - 三个表单审计入口仅将REASSIGN按formInstanceId或formId与copyId精确过滤，原有非改派审计范围保持
+        - 改派成功使工作流、记录控制、表单及DHR查询缓存失效；新增审计字段和动作具有中文显示
+    - id: check.independent-component-browser-and-visual
+      required: true
+      category: e2e
+      description: 质量专项子实例独立复跑真实维护组件、主题和API客户端的拦截API浏览器交互，并复核窄屏截图
+      method: browser
+      command: NODE_PATH=/Users/ivenwang/.npm/_npx/31e32ef8478fbf80/node_modules CHROME_PATH='/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' WORKFLOW_LIST_ARTIFACTS=/tmp/central-audit-ui-quality-20261102 node scripts/test-workflow-list-ui-browser.mjs
+      outcome: passed
+      evidence:
+        - evidence/quality/ui-result.json，40/40通过，1440及390两种宽度
+        - evidence/quality/form-390.png和domain-audit-390.png已查看，无窄屏溢出；现有图标、字段设置及审计响应式保持
+        - 核对FORM_PROCESS与DHR_SUMMARY中文业务类型、前缀URL编码、签名必填、请求、并行选择、列设置和相邻列表图标
+        - API为合成拦截；本项不代表真实主库改派或真人验收
+    - id: check.local-running-environment-and-hygiene
+      required: true
+      category: regression
+      description: 核对主侧正常环境GET证据、构建与列表规范报告及差异卫生
+      method: inspection
+      command: read evidence/main-environment-read.json, frontend-build.txt, list-style.txt; git diff --check
+      outcome: passed
+      evidence:
+        - 主侧8081正常环境登录后业务GET为200，运行列表含CHANGE/OBSOLETE/DHR_SUMMARY，DHR详情含明确编号与V1
+        - 主侧前端构建及列表规范通过报告已读取；质量本轮git diff --check exitCode=0
+        - 主环境证据准确说明只登录和业务读取，未将登录审计误述为完全无数据库写入
+        - README.md验收步骤与当前业务边界一致，明确普通表单需已有运行流程；main-acceptance-counts.txt确认原7条请求、8份表单及4个DHR仍保留
+  findings: []
+  residualRisks:
+    - id: risk.unmerged-target
+      description: 远端8ec83917未集成，DhrReviewService目标对象补取失败；本轮只验证本地0bd0848b加未提交差异
+      impact: 不能将本轮通过当作完整最新远端合并候选通过
+      mitigation: 后续集成须核对实际目标代码和受影响范围，并对真实合并候选重跑适用检查
+    - id: risk.live-browser-domain-write-not-executed
+      description: 真实组件浏览器使用拦截API，真实持久化验证由隔离PG服务测试覆盖；没有在主开发库执行浏览器改派写入或真人验收
+      impact: 不覆盖完整浏览器至主库的真实改派链和用户人工验收
+      mitigation: 主环境已正常启动并只读确认可见，后续人工验收使用独立合成业务对象，保留现有样本
+    - id: risk.default-tenant-scope
+      description: 本轮仍为既有默认单租户MVP，目标资格的同租户校验不等于工作流全域租户隔离
+      impact: 不适用于直接宣称多租户生产发布通过
+      mitigation: 保留question.multi-tenant-workflow-isolation并在启用多租户前另行闭环
+  blockingConditions: []

@@ -1,36 +1,19 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Box, Button, Stack, Tab, Table, TableBody, TableCell, TableContainer,
-  TableHead, TableRow, Tabs, Typography } from '@mui/material';
+import { Box, Button, IconButton, Stack, Tab, Table, TableBody, TableCell,
+  TableHead, TableRow, Tabs, Tooltip, Typography } from '@mui/material';
+import { RateReviewOutlined, VisibilityOutlined } from '@mui/icons-material';
+import { ListTableShell } from '@/components/ListTableShell';
+import { listTableBodyCellSx, listTableHeaderCellSx, listTableStickyActionSx } from '@/components/listTableStyles';
 import StatusBadge from '@/components/StatusBadge';
 import TableStateCell from '@/components/TableStateCell';
 import { getRequestsForMyWorkflowTasks, listMyWorkflowTasks,
   type RecordControlRequest, type RecordControlWorkflowTask } from '@/api/record-control';
 
-const headerCellSx = { fontWeight: 600, bgcolor: '#f5f7fa', color: '#606266', whiteSpace: 'nowrap' };
-const actionHeaderCellSx = {
-  ...headerCellSx,
-  position: 'sticky' as const,
-  right: 0,
-  zIndex: 4,
-  width: 190,
-  minWidth: 190,
-  maxWidth: 190,
-  textAlign: 'center' as const,
-  borderLeft: '1px solid #ebeef5',
-  boxShadow: '-6px 0 10px rgba(31, 45, 61, 0.06)',
-};
-const actionBodyCellSx = {
-  position: 'sticky' as const,
-  right: 0,
-  zIndex: 2,
-  width: 190,
-  minWidth: 190,
-  maxWidth: 190,
-  bgcolor: '#fff',
-  borderLeft: '1px solid #ebeef5',
-  boxShadow: '-6px 0 10px rgba(31, 45, 61, 0.06)',
-};
+const headerCellSx = listTableHeaderCellSx;
+const ACTION_WIDTH = 96;
+const actionHeaderCellSx = { ...headerCellSx, ...listTableStickyActionSx(ACTION_WIDTH, 'head'), textAlign: 'center' as const };
+const actionBodyCellSx = { ...listTableStickyActionSx(ACTION_WIDTH, 'body'), textAlign: 'center' as const };
 
 export default function RecordApprovalPage() {
   const navigate = useNavigate();
@@ -66,13 +49,13 @@ export default function RecordApprovalPage() {
       <Tabs value={scope} onChange={(_, value: 'todo' | 'done') => { setScope(value); setPage(0); }} sx={{ px: 2, borderBottom: '1px solid #ebeef5', flexShrink: 0 }}>
         <Tab value="todo" label="待办任务" /><Tab value="done" label="已办任务" />
       </Tabs>
-      <TableContainer sx={{ flex: 1, minHeight: 0, overflow: 'auto' }}><Table stickyHeader size="small" sx={{ minWidth: 1540 }}><TableHead><TableRow>
+      <ListTableShell sx={{ flex: 1, minHeight: 0, overflow: 'auto' }}><Table stickyHeader size="small" sx={{ minWidth: 1540 }}><TableHead><TableRow>
         {['任务编号', '申请编号', '申请类型', '表单实例编号', '表单名称', '表单编码', '申请人', '任务时间', '状态', '操作'].map((column) =>
           <TableCell key={column} sx={column === '操作' ? actionHeaderCellSx : headerCellSx}>{column}</TableCell>)}
       </TableRow></TableHead><TableBody>
         {busy ? <TableRow sx={{ height: '100%' }}><TableStateCell colSpan={10} sx={{ height: '100%', color: '#909399' }}>加载中...</TableStateCell></TableRow>
           : error ? <TableRow sx={{ height: '100%' }}><TableStateCell colSpan={10} sx={{ height: '100%', color: '#c62828' }}>{error}</TableStateCell></TableRow>
-            : rows.map(({ task, request }) => <TableRow hover key={task.id} sx={{ '& > .MuiTableCell-root': { height: 48, color: '#606266', whiteSpace: 'nowrap' } }}>
+            : rows.map(({ task, request }) => <TableRow hover key={task.id} sx={{ '& > .MuiTableCell-root': { ...listTableBodyCellSx, whiteSpace: 'nowrap' } }}>
           <TableCell>{task.id}</TableCell><TableCell>{request.request_no}</TableCell>
           <TableCell>{request.request_type === 'CHANGE' ? '表单变更' : '表单作废'}</TableCell>
           <TableCell>{request.instance_no}</TableCell>
@@ -81,15 +64,13 @@ export default function RecordApprovalPage() {
           <TableCell>{request.applicant_name || request.applicant_id}</TableCell>
           <TableCell>{(scope === 'done' ? task.completedAt : task.createdAt)?.replace('T', ' ').slice(0, 19) || '—'}</TableCell>
           <TableCell><StatusBadge label={scope === 'todo' ? '待处理' : '已处理'} color={scope === 'todo' ? 'warning' : 'success'} /></TableCell>
-          <TableCell sx={actionBodyCellSx}>
-            <Stack direction="row" spacing={0.5} alignItems="center">
-              {scope === 'todo' && <Button size="small" variant="contained" onClick={() => navigate(`/records/approvals/${task.id}/${request.id}`)}>审批处理</Button>}
-              <Button size="small" onClick={() => navigate(`/records/requests/${request.id}`)}>查看申请</Button>
-            </Stack>
+          <TableCell align="center" sx={actionBodyCellSx}>
+            <Tooltip title="查看申请" arrow><IconButton size="small" aria-label="查看申请" onClick={() => navigate(`/records/requests/${request.id}`)}><VisibilityOutlined fontSize="small" /></IconButton></Tooltip>
+            {scope === 'todo' && <Tooltip title="审批处理" arrow><IconButton size="small" aria-label="审批处理" onClick={() => navigate(`/records/approvals/${task.id}/${request.id}`)}><RateReviewOutlined fontSize="small" /></IconButton></Tooltip>}
           </TableCell>
         </TableRow>)}
         {!busy && !error && !rows.length && <TableRow sx={{ height: '100%' }}><TableStateCell colSpan={10} sx={{ height: '100%', color: '#909399' }}>暂无关联的{scope === 'todo' ? '待办' : '已办'}任务</TableStateCell></TableRow>}
-      </TableBody></Table></TableContainer>
+      </TableBody></Table></ListTableShell>
       <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={1} sx={{ px: 2, py: 1.25, borderTop: '1px solid #ebeef5', flexShrink: 0 }}>
         <Typography variant="body2" color="text.secondary">共 {totalElements} 条数据</Typography>
         <Stack direction="row" spacing={1} alignItems="center"><Typography variant="body2" color="text.secondary">第 {page + 1} 页</Typography>

@@ -1,0 +1,484 @@
+{
+  "capturedDate": "2026-11-02 Asia/Shanghai",
+  "qualification": "Local original source snapshot; no running Crown or current deployment claim",
+  "roots": {
+    "front": "/Users/ivenwang/Documents/iven space/paas-main-front",
+    "back": "/Users/ivenwang/Documents/iven space/gct-edhr-bed/gct-edhr-bed"
+  },
+  "hasRootGitMetadata": {
+    "front": false,
+    "back": false
+  },
+  "sources": [
+    {
+      "id": "F01",
+      "evidenceType": "original-evidence",
+      "sourceKind": "crown-front",
+      "path": "/Users/ivenwang/Documents/iven space/paas-main-front/src/projects/web-render/src/views/edhr-application/render/approval-process-intervention/useDocumentTask.ts",
+      "relativePath": "src/projects/web-render/src/views/edhr-application/render/approval-process-intervention/useDocumentTask.ts",
+      "sha256": "8a0bc4ed3ad008af2fa467a2380836fcfb9d5cea10da681370cd15ebb24c9e29",
+      "bytes": 5112,
+      "lineCount": 168,
+      "ranges": [
+        {
+          "start": 20,
+          "end": 47
+        },
+        {
+          "start": 72,
+          "end": 165
+        }
+      ],
+      "purpose": "六类干预页签、权限、原样功能开关条件"
+    },
+    {
+      "id": "F02",
+      "evidenceType": "original-evidence",
+      "sourceKind": "crown-front",
+      "path": "/Users/ivenwang/Documents/iven space/paas-main-front/src/projects/web-render/src/views/edhr-application/render/approval-process-intervention/doc-tab/todo.vue",
+      "relativePath": "src/projects/web-render/src/views/edhr-application/render/approval-process-intervention/doc-tab/todo.vue",
+      "sha256": "eca214d01f58af4db250269c0ef437e384e79ecd45cfee73a37b9f1cea8e4f81",
+      "bytes": 5684,
+      "lineCount": 182,
+      "ranges": [
+        {
+          "start": 45,
+          "end": 53
+        },
+        {
+          "start": 90,
+          "end": 109
+        }
+      ],
+      "purpose": "普通表单任务查询FORM,EDHR"
+    },
+    {
+      "id": "F03",
+      "evidenceType": "original-evidence",
+      "sourceKind": "crown-front",
+      "path": "/Users/ivenwang/Documents/iven space/paas-main-front/src/projects/web-render/src/views/edhr-application/render/approval-process-intervention/control-tab/index.vue",
+      "relativePath": "src/projects/web-render/src/views/edhr-application/render/approval-process-intervention/control-tab/index.vue",
+      "sha256": "ac59fe9ace2d55c2785da9fde28d0972e889dc4325691ce1374073f71714046f",
+      "bytes": 5133,
+      "lineCount": 167,
+      "ranges": [
+        {
+          "start": 29,
+          "end": 54
+        },
+        {
+          "start": 75,
+          "end": 87
+        }
+      ],
+      "purpose": "模板文控任务独立查询"
+    },
+    {
+      "id": "F04",
+      "evidenceType": "original-evidence",
+      "sourceKind": "crown-front",
+      "path": "/Users/ivenwang/Documents/iven space/paas-main-front/src/projects/web-render/src/views/edhr-application/render/approval-process-intervention/control-tab/search-form.vue",
+      "relativePath": "src/projects/web-render/src/views/edhr-application/render/approval-process-intervention/control-tab/search-form.vue",
+      "sha256": "9e79ca858212d710cc21d0e524c7692d755bc6b7e31d437beb18cd5806444b57",
+      "bytes": 2885,
+      "lineCount": 104,
+      "ranges": [
+        {
+          "start": 35,
+          "end": 49
+        }
+      ],
+      "purpose": "模板种类表单与DHR"
+    },
+    {
+      "id": "F05",
+      "evidenceType": "original-evidence",
+      "sourceKind": "crown-front",
+      "path": "/Users/ivenwang/Documents/iven space/paas-main-front/src/projects/web-render/src/views/edhr-application/render/approval-process-intervention/routing-tab/todo.vue",
+      "relativePath": "src/projects/web-render/src/views/edhr-application/render/approval-process-intervention/routing-tab/todo.vue",
+      "sha256": "03e7a60a9e11de2404e015fe9cd3122caf5ae975c35cda2d450c0071defd6458",
+      "bytes": 4727,
+      "lineCount": 155,
+      "ranges": [
+        {
+          "start": 84,
+          "end": 98
+        }
+      ],
+      "purpose": "工艺配置审批ROUTING"
+    },
+    {
+      "id": "F06",
+      "evidenceType": "original-evidence",
+      "sourceKind": "crown-front",
+      "path": "/Users/ivenwang/Documents/iven space/paas-main-front/src/projects/web-render/src/views/edhr-application/render/approval-process-intervention/product-process-tab/todo.vue",
+      "relativePath": "src/projects/web-render/src/views/edhr-application/render/approval-process-intervention/product-process-tab/todo.vue",
+      "sha256": "dc8275c5d89e8a4cb7a49a5421f30531f85dbfaf755b61b3c6bf7d3cfac16008",
+      "bytes": 5617,
+      "lineCount": 181,
+      "ranges": [
+        {
+          "start": 108,
+          "end": 122
+        }
+      ],
+      "purpose": "制程审批PRODUCT_PROCESS"
+    },
+    {
+      "id": "F07",
+      "evidenceType": "original-evidence",
+      "sourceKind": "crown-front",
+      "path": "/Users/ivenwang/Documents/iven space/paas-main-front/src/projects/web-render/src/views/edhr-application/render/approval-process-intervention/dhr-tab/todo.vue",
+      "relativePath": "src/projects/web-render/src/views/edhr-application/render/approval-process-intervention/dhr-tab/todo.vue",
+      "sha256": "de57861123453f309a22033a4c04fcf1a4e4fcc1b13ec51505b3c88316e208c4",
+      "bytes": 5689,
+      "lineCount": 189,
+      "ranges": [
+        {
+          "start": 98,
+          "end": 114
+        }
+      ],
+      "purpose": "DHR汇总审批EDHR_SUMMARY"
+    },
+    {
+      "id": "F08",
+      "evidenceType": "original-evidence",
+      "sourceKind": "crown-front",
+      "path": "/Users/ivenwang/Documents/iven space/paas-main-front/src/projects/web-render/src/views/edhr-application/render/approval-process-intervention/change-tab/todo.vue",
+      "relativePath": "src/projects/web-render/src/views/edhr-application/render/approval-process-intervention/change-tab/todo.vue",
+      "sha256": "c381fb9290c838893cf87eecf3868eec5e7415f06c28e12b24d4f81f3a71f041",
+      "bytes": 5634,
+      "lineCount": 185,
+      "ranges": [
+        {
+          "start": 94,
+          "end": 109
+        }
+      ],
+      "purpose": "FORM_CHANGE/DHR_CHANGE/NOTEBOOK_CHANGE"
+    },
+    {
+      "id": "F09",
+      "evidenceType": "original-evidence",
+      "sourceKind": "crown-front",
+      "path": "/Users/ivenwang/Documents/iven space/paas-main-front/src/locales/lang/zh-CN/sys/edhr.ts",
+      "relativePath": "src/locales/lang/zh-CN/sys/edhr.ts",
+      "sha256": "1f0641a038b87734d4972bb496a7a05ab0d5809c5e6b1ef900c55f39424f5790",
+      "bytes": 26085,
+      "lineCount": 726,
+      "ranges": [
+        {
+          "start": 24,
+          "end": 33
+        },
+        {
+          "start": 690,
+          "end": 699
+        }
+      ],
+      "purpose": "中文页签/模板类型名称"
+    },
+    {
+      "id": "F10",
+      "evidenceType": "original-evidence",
+      "sourceKind": "crown-front",
+      "path": "/Users/ivenwang/Documents/iven space/paas-main-front/src/projects/web-render/src/views/system-config/hooks/useBusinessSetting.ts",
+      "relativePath": "src/projects/web-render/src/views/system-config/hooks/useBusinessSetting.ts",
+      "sha256": "2732a5f62c780173cd8cd8a7c7124b6dd7cf4e185a1adc9a04488272f22b341a",
+      "bytes": 2866,
+      "lineCount": 111,
+      "ranges": [
+        {
+          "start": 31,
+          "end": 45
+        },
+        {
+          "start": 58,
+          "end": 81
+        }
+      ],
+      "purpose": "业务开关声明和默认值，不推断用户部署配置"
+    },
+    {
+      "id": "F11",
+      "evidenceType": "original-evidence",
+      "sourceKind": "crown-front",
+      "path": "/Users/ivenwang/Documents/iven space/paas-main-front/src/projects/web-render/src/router/asyncRouter.ts",
+      "relativePath": "src/projects/web-render/src/router/asyncRouter.ts",
+      "sha256": "fb2e943ac4e62bf3dedf4c105cae496212fea8ff5455863c2ca6f7c981f3205d",
+      "bytes": 18588,
+      "lineCount": 536,
+      "ranges": [
+        {
+          "start": 433,
+          "end": 442
+        }
+      ],
+      "purpose": "两种干预路由不可混为一页"
+    },
+    {
+      "id": "F12",
+      "evidenceType": "original-evidence",
+      "sourceKind": "crown-front",
+      "path": "/Users/ivenwang/Documents/iven space/paas-main-front/src/apis/gct-apaas/ProcessApprovalLogController.ts",
+      "relativePath": "src/apis/gct-apaas/ProcessApprovalLogController.ts",
+      "sha256": "ffc4bac2fdc26197757a3b343d6cfdb81a32c2c634b64e01bf925cd7058586a9",
+      "bytes": 4012,
+      "lineCount": 137,
+      "ranges": [
+        {
+          "start": 98,
+          "end": 120
+        }
+      ],
+      "purpose": "平台日志SDK不足以证明集中页类型过滤"
+    },
+    {
+      "id": "B01",
+      "evidenceType": "original-evidence",
+      "sourceKind": "crown-back",
+      "path": "/Users/ivenwang/Documents/iven space/gct-edhr-bed/gct-edhr-bed/src/main/resources/com/gct/apaas/liquibase/suit/edhr/upgrade/5214/changelog-menu_permission_5214.xml",
+      "relativePath": "src/main/resources/com/gct/apaas/liquibase/suit/edhr/upgrade/5214/changelog-menu_permission_5214.xml",
+      "sha256": "67ca23f0f54933ade17ee757d9585f0bcb0caddbd8085468d1cdf7b10468c545",
+      "bytes": 57037,
+      "lineCount": 1070,
+      "ranges": [
+        {
+          "start": 677,
+          "end": 681
+        },
+        {
+          "start": 694,
+          "end": 698
+        },
+        {
+          "start": 711,
+          "end": 715
+        },
+        {
+          "start": 728,
+          "end": 732
+        },
+        {
+          "start": 745,
+          "end": 749
+        },
+        {
+          "start": 764,
+          "end": 768
+        },
+        {
+          "start": 781,
+          "end": 785
+        },
+        {
+          "start": 798,
+          "end": 802
+        },
+        {
+          "start": 815,
+          "end": 819
+        },
+        {
+          "start": 832,
+          "end": 836
+        },
+        {
+          "start": 849,
+          "end": 853
+        },
+        {
+          "start": 866,
+          "end": 870
+        },
+        {
+          "start": 883,
+          "end": 887
+        },
+        {
+          "start": 900,
+          "end": 904
+        },
+        {
+          "start": 917,
+          "end": 921
+        },
+        {
+          "start": 934,
+          "end": 938
+        },
+        {
+          "start": 951,
+          "end": 955
+        },
+        {
+          "start": 968,
+          "end": 972
+        },
+        {
+          "start": 985,
+          "end": 989
+        },
+        {
+          "start": 1002,
+          "end": 1006
+        },
+        {
+          "start": 1019,
+          "end": 1023
+        },
+        {
+          "start": 1036,
+          "end": 1040
+        },
+        {
+          "start": 1053,
+          "end": 1057
+        }
+      ],
+      "purpose": "集中日志五类/干预六类权限定义"
+    },
+    {
+      "id": "B02",
+      "evidenceType": "original-evidence",
+      "sourceKind": "crown-back",
+      "path": "/Users/ivenwang/Documents/iven space/gct-edhr-bed/gct-edhr-bed/src/main/java/com/gct/apaas/edhr/approve/enums/SummaryApproveHisType.java",
+      "relativePath": "src/main/java/com/gct/apaas/edhr/approve/enums/SummaryApproveHisType.java",
+      "sha256": "449fa759340b15eaf023f22f89805c6f57d414ca55a6ede1f2556f4179bf7fa7",
+      "bytes": 424,
+      "lineCount": 25,
+      "ranges": [
+        {
+          "start": 10,
+          "end": 25
+        }
+      ],
+      "purpose": "业务审批历史类型"
+    },
+    {
+      "id": "B03",
+      "evidenceType": "original-evidence",
+      "sourceKind": "crown-back",
+      "path": "/Users/ivenwang/Documents/iven space/gct-edhr-bed/gct-edhr-bed/src/main/java/com/gct/apaas/edhr/approve/listener/ProcessTaskEventListener.java",
+      "relativePath": "src/main/java/com/gct/apaas/edhr/approve/listener/ProcessTaskEventListener.java",
+      "sha256": "4526a772aa390e1499e541a0b36f257cfebffdc4f189166d027ea34fd1da83f4",
+      "bytes": 19016,
+      "lineCount": 411,
+      "ranges": [
+        {
+          "start": 102,
+          "end": 103
+        },
+        {
+          "start": 270,
+          "end": 284
+        }
+      ],
+      "purpose": "审批业务type投影到待办"
+    },
+    {
+      "id": "B04",
+      "evidenceType": "original-evidence",
+      "sourceKind": "crown-back",
+      "path": "/Users/ivenwang/Documents/iven space/gct-edhr-bed/gct-edhr-bed/src/main/java/com/gct/apaas/edhr/bizProcess/listener/EdhrProcessTaskEventListener.java",
+      "relativePath": "src/main/java/com/gct/apaas/edhr/bizProcess/listener/EdhrProcessTaskEventListener.java",
+      "sha256": "def38f81a1b3d6b8fe96fbf5dc91e217cd839884e8f1a3d5341a70196bec50a6",
+      "bytes": 22196,
+      "lineCount": 480,
+      "ranges": [
+        {
+          "start": 289,
+          "end": 320
+        }
+      ],
+      "purpose": "DHR审核任务类型投影"
+    },
+    {
+      "id": "B05",
+      "evidenceType": "original-evidence",
+      "sourceKind": "crown-back",
+      "path": "/Users/ivenwang/Documents/iven space/gct-edhr-bed/gct-edhr-bed/src/main/java/com/gct/apaas/edhr/transaction/entity/TxnInstEntity.java",
+      "relativePath": "src/main/java/com/gct/apaas/edhr/transaction/entity/TxnInstEntity.java",
+      "sha256": "400e1d3bb680116a086e6002d411e44e7d35ca36dafe883777e11aa1a66729ae",
+      "bytes": 8796,
+      "lineCount": 309,
+      "ranges": [
+        {
+          "start": 16,
+          "end": 25
+        }
+      ],
+      "purpose": "事务独立em_txn_inst模型"
+    },
+    {
+      "id": "B06",
+      "evidenceType": "original-evidence",
+      "sourceKind": "crown-back",
+      "path": "/Users/ivenwang/Documents/iven space/gct-edhr-bed/gct-edhr-bed/src/main/java/com/gct/apaas/edhr/transaction/biz/TxnInstSubmitBs.java",
+      "relativePath": "src/main/java/com/gct/apaas/edhr/transaction/biz/TxnInstSubmitBs.java",
+      "sha256": "f98e8bec152c7b35be42b19f97fccc8b90e08fa9b21721cb54b93ba9876f6e33",
+      "bytes": 32440,
+      "lineCount": 516,
+      "ranges": [
+        {
+          "start": 262,
+          "end": 281
+        }
+      ],
+      "purpose": "事务实例引擎启动"
+    },
+    {
+      "id": "B07",
+      "evidenceType": "original-evidence",
+      "sourceKind": "crown-back",
+      "path": "/Users/ivenwang/Documents/iven space/gct-edhr-bed/gct-edhr-bed/src/main/java/com/gct/apaas/edhr/transaction/biz/TxnInstListSearchBs.java",
+      "relativePath": "src/main/java/com/gct/apaas/edhr/transaction/biz/TxnInstListSearchBs.java",
+      "sha256": "81ec400767f5df0f0a2773c3ae2c230d5bfd06ef84d826dbe3e8afc36642c9bc",
+      "bytes": 7996,
+      "lineCount": 173,
+      "ranges": [
+        {
+          "start": 40,
+          "end": 70
+        }
+      ],
+      "purpose": "批次/SN事务独立列表查询"
+    },
+    {
+      "id": "B08",
+      "evidenceType": "original-evidence",
+      "sourceKind": "crown-back",
+      "path": "/Users/ivenwang/Documents/iven space/gct-edhr-bed/gct-edhr-bed/src/main/java/com/gct/apaas/edhr/bizProcess/juel/FormNodeDelegate.java",
+      "relativePath": "src/main/java/com/gct/apaas/edhr/bizProcess/juel/FormNodeDelegate.java",
+      "sha256": "2958e1ba45036b31cb9e0a018cb848b38def0027af402575572cc45c30d7b4bb",
+      "bytes": 11110,
+      "lineCount": 208,
+      "ranges": [
+        {
+          "start": 122,
+          "end": 148
+        }
+      ],
+      "purpose": "作业可创建TXN来源表单，不能排除其表单任务"
+    },
+    {
+      "id": "B09",
+      "evidenceType": "original-evidence",
+      "sourceKind": "crown-back",
+      "path": "/Users/ivenwang/Documents/iven space/gct-edhr-bed/gct-edhr-bed/src/main/java/com/gct/apaas/edhr/bizProcess/service/OnlineFormService.java",
+      "relativePath": "src/main/java/com/gct/apaas/edhr/bizProcess/service/OnlineFormService.java",
+      "sha256": "1648a501b841a6e7fb1e4ec8405cefa3bb37e027f9613a5a25c0170d577b6adf",
+      "bytes": 2485,
+      "lineCount": 59,
+      "ranges": [
+        {
+          "start": 49,
+          "end": 59
+        }
+      ],
+      "purpose": "创建委托平台实现，平台来源映射缺口"
+    }
+  ],
+  "originalDocument": "original-document.json"
+}

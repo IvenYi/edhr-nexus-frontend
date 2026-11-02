@@ -35,7 +35,7 @@ decisions:
         status: specified
         visibility: internal
       - id: DEC-0087-08
-        statement: "provenance: user-confirmed-and-original-evidence；2026-09-16 的首期材料以当时缺少可靠 DHR/放行来源为暂缓依据，原始材料保留。2026-10-28 首轮记录控制集成时目标已具有 DHR 实例、汇总及审批，真实生效联动当时尚未接通；后续 DEC-0068 的联动切片已接入当前内容索引、正式贡献切换、DHR 影响和站内提醒，并保留双向在审阻断及人工退回后重新汇总的既有路径，不能继续概括为全部未实现。DHR 放行判断仍暂缓，不能宣称已阻断外部/历史已放行 DHR，也不自动创建替代表单或重汇总。DEC-0068 两项 high 的完整变化比较及未覆盖全面矩阵、完整 A12 继续开放，实际验收取对应候选证据，不将本次集成提升为完整链路或生产发布。"
+        statement: "provenance: user-confirmed-and-original-evidence；2026-09-16的首期材料以当时缺少可靠DHR/放行来源为暂缓依据，原始材料保留。2026-10-28首轮集成时目标已有DHR实例、汇总及审批，真实生效联动当时尚未接通；后续DEC-0068已接入当前索引、正式贡献切换、DHR影响、站内提醒及双向在审阻断和人工退回重汇总。2026-11-03真实普通账号基本整链及PG原件已补，不再作为无联动或无UI的待办；DEC-0068只保留通用质量/异常/源签署自动变化比较，以及改派后接收人、多/无限制候选集合、无法唯一恢复旧提交身份的未组合验证边界。DHR放行判断、完整A12仍暂缓，不宣称已阻断外部/历史已放行DHR，不自动创建替代表单或重汇总，基本链通过也不等于完整放行/归档或生产发布。"
         status: specified
         visibility: internal
       - id: DEC-0087-09
@@ -104,13 +104,13 @@ decisions:
         visibility: internal
         path: gmp-platform/backend/src/main/java/com/zencas/edhr/recordcontrol/service/RecordControlTaskActionService.java
         lineHint: 1
-        summary: "provenance: original-evidence；申请、修订、电子签名、最终审批或退回的同步结果投递、eventId 幂等消费、事务回滚及数据访问边界已具有实现和聚焦测试证据。真实 PostgreSQL 历史升级、并发争用和双账号浏览器 E2E 仍是发布验证缺口，不影响将已核对能力投影为 implemented。"
-        evidenceIds: [evidence.record-control-v1-user-confirmed, evidence.record-control-v1-service, evidence.record-control-workflow-result-delivery-adapter, evidence.record-control-workflow-result-business-handler, evidence.record-control-task-action-result-tests, evidence.record-control-active-detail-access-tests, evidence.record-control-signature-generic-crud-tests, evidence.record-control-signature-generic-list-tests, evidence.record-control-workflow-task-projection-repository, evidence.record-control-workflow-task-projection-service, evidence.record-control-workflow-task-projection-api, evidence.record-control-workflow-task-projection-ui, evidence.record-control-workflow-task-projection-tests]
+        summary: "provenance: original-and-test-evidence；申请、修订、电子签名、最终审批或退回的同步结果投递、eventId幂等消费、事务回滚及数据访问边界已有实现和聚焦测试；本轮真实PG32及四角色应用all链进一步覆盖争用、撤回/转办/签名改派和DHR基本联动，不再笼统保留没有真实并发或多账号UI的缺口。历史升级保留既有迁移证据而本轮未重跑；未来复杂模板、全部角色/多租户和部署组合不由此宣称完成。implemented/internal不代表通用知识规则已发布执行。"
+        evidenceIds: [evidence.record-control-v1-user-confirmed, evidence.record-control-v1-service, evidence.record-control-workflow-result-delivery-adapter, evidence.record-control-workflow-result-business-handler, evidence.record-control-task-action-result-tests, evidence.record-control-active-detail-access-tests, evidence.record-control-signature-generic-crud-tests, evidence.record-control-signature-generic-list-tests, evidence.record-control-workflow-task-projection-repository, evidence.record-control-workflow-task-projection-service, evidence.record-control-workflow-task-projection-api, evidence.record-control-workflow-task-projection-ui, evidence.record-control-workflow-task-projection-tests, evidence.workflow-record-dhr-closure-postgres-verification, evidence.workflow-record-dhr-closure-live-verification]
       - id: discrepancy.record-control-v1-workflow-permission-mismatch
-        status: accepted
+        status: resolved
         severity: high
         visibility: internal
         path: gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/RecordControlWorkflowController.java
         lineHint: 1
-        summary: "provenance: original-evidence-and-user-confirmed；用户已明确本期不新增岗位、角色或模板级功能授权，公共流程候选接口权限码与菜单授权的进一步协同收敛暂缓。申请人、候选/处理人及已处理任务的数据范围仍必须由认证上下文强制执行，不因该暂缓而放宽。"
-        evidenceIds: [evidence.record-control-workflow-stage1-candidate-api, evidence.record-control-v1-user-confirmed]
+        summary: "provenance: historical-and-user-confirmed-and-test-evidence；此前候选权限协同暂缓及accepted时点保留。2026-11-03用户明确按DEC-0094本轮一起对齐并验证，RecordControlWorkflowController候选GET已改isAuthenticated；真实Spring方法安全代理3项/0失败原件支持无创建权限普通认证用户读取CHANGE/OBSOLETE、匿名及不支持类型拒绝，本局部实现差异关闭。菜单、申请原子资格、实际签署及审批任务数据范围保持，读取候选不授予写或审批权；整体HTTP/浏览器链及独立质量另取本轮实际证据。"
+        evidenceIds: [evidence.record-control-workflow-stage1-candidate-api, evidence.record-control-v1-user-confirmed, evidence.record-control-authenticated-candidate-read-user-confirmed, evidence.record-control-authenticated-candidate-read-source, evidence.record-control-authenticated-candidate-method-security]

@@ -1,0 +1,21 @@
+ontologyResult:
+  result: not-applicable
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: 0bd0848bbded6d6954d62a4f924e0b2eec6623ad
+    targetBranch: edhr-dev
+    targetCommit: e3e49784eda6bc01e7e5c686d6f79dc5a600d5ae
+    contractReadCommit: 0bd0848bbded6d6954d62a4f924e0b2eec6623ad
+    uncommittedContractPaths: []
+  reason: 本次追加纠正只替换列表操作的视觉载体及相应Tooltip/无障碍标签，并统一宽度和已有表格样式；动作名称、处理目标、路由、权限、签署、业务状态及审计语义均不改变。页面规范和静态校验补充属于UI契约，不新增业务政策；主智能体记录不适用，不重复派发本体实例。初版业务身份解释的updated本体结果仍按原范围保留。
+  changedArtifacts: []
+  knowledgeSync: []
+  conflicts: []
+  questions: []
+  validationEvidence: []
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages: [P1, P2, P3]

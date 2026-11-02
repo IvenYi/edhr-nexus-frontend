@@ -1,0 +1,131 @@
+qualityResult:
+  result: passed
+  baseCommit: 0bd0848bbded6d6954d62a4f924e0b2eec6623ad
+  headCommit: 0bd0848bbded6d6954d62a4f924e0b2eec6623ad
+  contractBaseline:
+    sourceCommit: 0bd0848bbded6d6954d62a4f924e0b2eec6623ad
+    targetBranch: edhr-dev
+    targetCommit: e3e49784eda6bc01e7e5c686d6f79dc5a600d5ae
+    contractReadCommit: 0bd0848bbded6d6954d62a4f924e0b2eec6623ad
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: dirty
+    includedPaths:
+      - gmp-platform/frontend/src/pages/workflow-center/InstanceList.tsx
+      - gmp-platform/frontend/src/pages/workflow-center/WorkflowReassignmentEntry.tsx
+      - gmp-platform/frontend/src/pages/workflow-center/WorkflowInstancePanel.tsx
+      - gmp-platform/frontend/src/components/workflow/WorkflowResponsibilityDialog.tsx
+      - gmp-platform/frontend/src/api/workflow-operations.ts
+      - gmp-platform/frontend/src/pages/record-control/RecordRequestListPage.tsx
+      - gmp-platform/frontend/src/pages/record-control/RecordApprovalPage.tsx
+      - gmp-platform/frontend/scripts/verify-list-table-style-contract.mjs
+      - gmp-platform/frontend/scripts/test-workflow-list-ui-browser.mjs
+      - docs/frontend/list-page-guidelines.md
+      - docs/knowledge/implementation-anchors/workflow-operations.yaml
+      - docs/knowledge/evidence/workflow-list-ui-20261102.md
+      - docs/knowledge/evidence/workflow-list-ui-20261102.yaml
+      - docs/development/workflow-list-ui-20261102/
+    excludedPaths: [gmp-platform/frontend/output/, output/, premium-audit.json]
+    untrackedPaths:
+      - gmp-platform/frontend/src/pages/workflow-center/WorkflowReassignmentEntry.tsx
+      - gmp-platform/frontend/scripts/test-workflow-list-ui-browser.mjs
+      - docs/knowledge/evidence/workflow-list-ui-20261102.md
+      - docs/knowledge/evidence/workflow-list-ui-20261102.yaml
+      - docs/development/workflow-list-ui-20261102/
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+    - id: check.icon-correction-baseline
+      required: true
+      category: documentation
+      description: 独立核对主目录、固定提交、契约及未提交审查范围。
+      method: command
+      command: git rev-parse HEAD origin/edhr-dev；git branch --show-current；相关契约/规范/流程及记录控制源码目标差异；git diff --check。
+      outcome: passed
+      evidence:
+        - 独立读取本地HEAD与origin跟踪提交，分别为0bd0848b及e3e49784完整哈希，分支仍edhr-dev。
+        - 本地HEAD到已获取目标的AGENTS、编码准则、专业角色、页面规范与本轮相关页面源码无增量；当前候选为dirty工作树，不编造新提交。
+        - 本次主侧fetch尝试因GitHub连接超时失败，targetCommit仅为最近成功获取的本地跟踪目标，不能宣称服务器此刻最新；本轮无合并、发布或推送。
+        - git diff --check退出0；独立source-hashes.json记录本次10项实现/测试/UI规范文件SHA256。
+        - 主侧icon-correction/source-manifest.json的6项当前图标纠正来源哈希逐项验证一致；已阅读icon-correction.md及README中的当前结果与初版历史区分。
+    - id: check.icon-correction-ui-contract
+      required: true
+      category: requirements
+      description: 核对图标、提示、无障碍名称、最大操作数量和原有行为。
+      method: inspection
+      command: 阅读InstanceList、RecordRequestListPage、RecordApprovalPage与列表规范第4.4节及对应源差异。
+      outcome: passed
+      evidence:
+        - 查看详情/申请为VisibilityOutlined，审批处理为RateReviewOutlined，重新分配为AssignmentIndOutlined；均使用IconButton small、Tooltip与对应aria-label。
+        - 流程干预和我的变更/变更记录操作列为64px；审批待办/已办视图共用96px，查看在先、待办处理在后，没有额外图标gap，表头及表体居中冻结。
+        - RC两表复用ListTableShell、标准48px表头/40px行及公共冻结阴影；没有改动查询、分页、业务scope、任务关联或详情/处理路由。
+        - 查询、重置、分页、详情工作区命令及签名弹窗仍按其上下文使用文字按钮；未把列表图标要求扩展为删除签署或改变业务动作。
+        - 重新分配可见条件仍为原专门权限及RUNNING，入口与既有必签对话框不变；动作点击/键盘事件继续阻止行详情冒泡。
+    - id: check.icon-correction-original-coverage-gap
+      required: true
+      category: regression
+      description: 核对先前规范校验为何未拦截，并验证本轮补充检查。
+      method: command
+      command: git show HEAD读取旧verify-list-table-style-contract.mjs；独立运行npm run verify:list-table-style。
+      outcome: passed
+      evidence:
+        - 原始HEAD脚本仅检查表格壳/样式token等，不存在IconButton/Tooltip操作约束检查，RC两列表不在公共列表登记中；这支持实现与检查覆盖均存在遗漏的解释。
+        - 独立检查退出0，当前登记35个公共列表、18个样式入口、10个可调列列表及5个RDO页面。
+        - 新TSX语法树检查对当前3个流程/记录控制组件的TableCell拒绝文字Button，要求IconButton small、Tooltip和aria-label；三个反例探针实际随检查执行通过。
+        - 图标检查覆盖仅限登记的3个组件，不宣称全仓所有图标或任意语义均自动验证。
+    - id: check.icon-correction-independent-browser
+      required: true
+      category: integration
+      description: 独立重跑实际维护组件、主题和客户端的受控API浏览器回归。
+      method: browser
+      command: frontend cwd，NODE_PATH=/Users/ivenwang/.npm/_npx/31e32ef8478fbf80/node_modules CHROME_PATH='/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' WORKFLOW_LIST_ARTIFACTS=本轮evidence/icon-correction/independent/browser node scripts/test-workflow-list-ui-browser.mjs。
+      outcome: passed
+      evidence:
+        - 独立运行退出0，evidence/icon-correction/independent/browser/result.json为34/34通过，覆盖1440px及390px。
+        - 新增8项覆盖我的变更/变更记录与审批待办/已办：真实SVG图标、操作单元格无常驻文字、Tooltip、64/96px宽、48/40px高度、右冻结、鼠标查看和键盘审批跳转、无业务提交。
+        - 原26项重新分配单/多/无任务、结束/失败/重试、权限、字段偏好隔离、当前/历史任务及身份、必签和目标taskId/taskState绑定、缓存内重开刷新均通过。
+        - API全部由测试脚本拦截；for-my-workflow-tasks是读取关联请求的POST，合成责任提交没有发送真实后端。不将此结果当作真实签署事务或全应用E2E。
+    - id: check.icon-correction-visual
+      required: true
+      category: visual
+      description: 独立查看原件中的图标语义、布局和窄屏表现。
+      method: inspection
+      command: view_image查看独立record-todo-1440-icons、record-history-390-icons及settings-390原件。
+      outcome: passed
+      evidence:
+        - 审批待办查看/审阅图标顺序、大小与居中一致；查看提示文字可读。
+        - 390px变更记录与流程干预的操作列保持右侧可见，内容在表格内横向滚动，图标未挤出列或侵占导航空间。
+        - 既有查询、工具栏、表格和底栏结构保持；没有额外新页面骨架或独立图标体系。
+    - id: check.icon-correction-ontology-and-build
+      required: true
+      category: ontology
+      description: 核对影响分析、本体不适用范围、历史证据保留及构建来源。
+      method: inspection
+      command: 阅读增量decisionPackage、ontology-icon-correction-result、知识0.3.25、DEC-0091/0092；读取主侧最新build日志及初版SHA256清单。
+      outcome: passed
+      evidence:
+        - 同切片决策包补充图标与检查范围，extensionStrategy仍为product-core；无未决业务问题、政策替代或客户条件分支。
+        - 此次ontologyResult not-applicable符合纯UI载体/规范检查纠正；原初版updated结果按原时点保留，未重写为本次本体执行。
+        - 原初版9项SHA256中7项仍一致，预期变化仅为InstanceList及浏览器脚本；原签名/API/详情/知识来源保持。
+        - 独立读取/tmp/edhr-workflow-list-icon-build-20261102.log，tsc-b及Vite构建完成；本实例未重复完整构建或Maven/PG业务套件。
+    - id: check.icon-correction-data-preservation
+      required: true
+      category: database
+      description: 只读确认人工验收样例并核对主侧真实环境证据。
+      method: query
+      command: psql -X -d edhr_dev，以BEGIN READ ONLY查询RC-20261030申请；读取主侧icon-correction/live/result.json。
+      outcome: passed
+      evidence:
+        - 本实例SELECT确认000001至000007共7条申请仍IN_REVIEW，未登录或提交主库业务动作。
+        - 主侧真实环境结果记录干预、我的变更、变更记录的64px及待办/已办96px，blockedWrites/errors均为空；责任、请求、来源和DHR前后哈希相同。
+        - 已核对控制器for-my-workflow-tasks委派读取方法，该关联读取POST不等于审批或变更业务提交；主环境登录与截图为主侧证据，不冒充本实例实际登录。
+  findings: []
+  residualRisks:
+    - id: risk.icon-correction-target-freshness
+      description: 主侧本轮fetch网络超时，只能核对已获取的e3e49784目标。
+      impact: 本结果覆盖当前本地主目录未提交候选，不证明远端最新组合已集成。
+      mitigation: 当前不做合并/推送/发布；后续集成前重新获取目标并评估实际增量。
+    - id: risk.icon-correction-check-coverage
+      description: 新图标静态约束覆盖3个登记组件，浏览器覆盖本轮受影响路径；没有执行全仓列表图标审计或真实后端业务事务重验。
+      impact: 不能据此宣称所有历史页面均合规或整个业务套件全绿；先前额外菜单图标用例失败仍是历史已披露问题。
+      mitigation: 明确范围并保留原工程证据和人工验收数据，新增相关页面时登记校验并按风险扩展验证。
+  blockingConditions: []

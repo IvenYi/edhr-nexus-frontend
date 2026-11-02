@@ -1,6 +1,6 @@
 import client from './client';
 export interface WorkflowInstanceRow {
-  id: string; templateName: string; businessKey: string; businessType: string; status: string;
+  id: string; templateName: string; businessKey: string; businessType: string | null; status: string;
   startUserName: string; startTime: string; endTime: string | null;
 }
 export interface WorkflowOperationTask {
@@ -16,12 +16,14 @@ export interface WorkflowInstanceView extends WorkflowInstanceRow {
 export interface ResponsibilityCommand { targetUserId: string; reason: string; expectedTaskState: string; account: string; password: string }
 export const listWorkflowOperations = async (params: Record<string, unknown>): Promise<{ content: WorkflowInstanceRow[]; totalElements: number; totalPages: number }> =>
   (await client.get('/workflow/operations/instances', { params })).data.data;
-export const getWorkflowOperation = async (id: string): Promise<WorkflowInstanceView> => (await client.get(`/workflow/operations/instances/${id}`)).data.data;
+export const getWorkflowOperation = async (id: string): Promise<WorkflowInstanceView> => (await client.get(`/workflow/operations/instances/${encodeURIComponent(id)}`)).data.data;
 export const getResponsibilityTargets = async (id: string, reassign: boolean, keyword: string, signal: AbortSignal): Promise<Array<{ id: string; name: string; username: string }>> =>
-  (await client.get(`/workflow/operations/tasks/${id}/${reassign ? 'reassignment' : 'transfer'}-targets`, { params: { keyword }, signal })).data.data;
+  (await client.get(`/workflow/operations/tasks/${encodeURIComponent(id)}/${reassign ? 'reassignment' : 'transfer'}-targets`, { params: { keyword }, signal })).data.data;
 export const getTransferContext = async (id: string): Promise<{ taskState: string; signatureRequired: boolean; canTransfer: boolean }> =>
   (await client.get(`/workflow/operations/tasks/${id}/transfer-context`)).data.data;
 export const changeTaskResponsibility = async (id: string, reassign: boolean, command: ResponsibilityCommand) =>
-  client.post(reassign ? `/workflow/operations/tasks/${id}/reassign` : `/record-control/workflow-tasks/${id}/transfer`, command);
+  client.post(reassign ? `/workflow/operations/tasks/${encodeURIComponent(id)}/reassign` : `/record-control/workflow-tasks/${encodeURIComponent(id)}/transfer`, command);
+export const workflowBusinessTypeLabel = (type: string | null) =>
+  type === 'CHANGE' ? '表单变更' : type === 'OBSOLETE' ? '表单作废' : type === 'FORM_PROCESS' ? '普通表单流程' : type === 'DHR_SUMMARY' ? 'DHR 汇总审批' : type ? `其他业务（${type}）` : '未标注业务类型';
 export const workflowActionLabel = (action: string) => ({ INSTANCE_START: '发起流程', TASK_CREATE: '创建待办', TASK_COMPLETE: '完成审批',
-  APPROVE: '审批通过', REJECT: '审批退回', SUBMIT: '提交', TASK_TRANSFER: '转办', TASK_REASSIGN: '重新分配', INSTANCE_WITHDRAW: '申请撤回', INSTANCE_COMPLETE: '流程完成', INTERVENE: '流程干预' }[action] || action);
+  APPROVE: '审批通过', REJECT: '审批退回', RETURN: '审批退回', SUBMIT: '提交', TASK_TRANSFER: '转办', TASK_REASSIGN: '重新分配', INSTANCE_WITHDRAW: '申请撤回', INSTANCE_COMPLETE: '流程完成', INTERVENE: '流程干预' }[action] || action);

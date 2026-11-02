@@ -43,10 +43,10 @@ decisions:
         evidenceRequirements: [审核模板固定动作按钮配置验证]
     implementationDiscrepancies:
       - id: discrepancy.record-control-review-template-runtime-pending
-        status: accepted
+        status: resolved
         severity: high
         visibility: internal
         path: docs/knowledge/decisions/DEC-0037-record-correction-and-void-control.yaml
         lineHint: 1
-        summary: "provenance: original-evidence；审核模板配置边界已落地到设计器和发布校验，但运行时审核引擎、申请提交和任务动作执行尚未形成发布级实现证据。"
-        evidenceIds: [evidence.record-correction-void-design]
+        summary: "provenance: historical-and-current-scope；本已废弃决策的运行时待实施记录保留历史含义，当前模板政策由DEC-0041完整替代，不能恢复开始节点SAVE/SUBMIT。后续申请确认、原生审批/退回及签署动作已由DEC-0042/0087/0092源实现和PG证据支持，无运行实现不再是当前缺口；关闭不改变本决策deprecated状态，也不补记旧切片发布验收。"
+        evidenceIds: [evidence.record-correction-void-design, evidence.record-control-v1-service, evidence.workflow-operations-main-verification, evidence.workflow-record-dhr-closure-source-review]

@@ -1,0 +1,472 @@
+{
+  "sourceCommit": "0bd0848bbded6d6954d62a4f924e0b2eec6623ad",
+  "targetCommit": "8ec8391721858a7f96d73a5d293d93f43679118a",
+  "workingTree": "dirty",
+  "capturedAt": "2026-11-02T17:00:18.685400+00:00",
+  "productCandidate": [
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/controller/AuditController.java",
+      "sha256": "8a1f7b0c24515ef93b7c817512574be3470b312c947579d9c9f3cc44bca70b5e"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormWorkflowOperations.java",
+      "sha256": "f98e2f9d4431888570f948356e02334217341f5d6d443101fda8672521feae14"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/RecordControlWorkflowController.java",
+      "sha256": "53a71fdc5a0271883577bbb588defd8a4b645d3265da8cece3392fcf025c96f1"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowOperationsController.java",
+      "sha256": "10e75f8c89f8fe29da3a9c313999ed9d9ab4734528c0da5d59c3cf48e24cd5b1"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/WorkflowOperationsQuery.java",
+      "sha256": "b59d4d91b44b62081d45fc45fbafeab258300459282a6254819067b62d6f357b"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/WorkflowResponsibilityService.java",
+      "sha256": "9fa3effdad0debb9a1f6a1b29e821d02bb0dd7e92b1e24c809676146af4fbb01"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/recordcontrol/service/RecordControlPostgresIntegrationTest.java",
+      "sha256": "9a173ebb2f4c02d20014094923625070d02702577ba25a5878a6a8c5b6827660"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/RecordControlCandidateAuthorizationTest.java",
+      "sha256": "cde3f93514e8f08c6ab63324799d52f8c90d7e7baa0e5342f9dbecc316d6442f"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/RecordControlWorkflowControllerTest.java",
+      "sha256": "4a706570fcb1c0babb0b3a74c661f7ff43fc389dd8af0736d2471c93a0971bcf"
+    },
+    {
+      "path": "gmp-platform/frontend/scripts/test-workflow-list-ui-browser.mjs",
+      "sha256": "2308265f392e9730b98491a010ce0443029426c166421f302d3a5d32ca0559c4"
+    },
+    {
+      "path": "gmp-platform/frontend/scripts/test-workflow-record-dhr-live.mjs",
+      "sha256": "daad2468bf737d37f3aa2241f7749778f04fc8b8c5cda4190004269188be65e3"
+    },
+    {
+      "path": "gmp-platform/frontend/scripts/verify-list-table-style-contract.mjs",
+      "sha256": "7c2aa7aaab3c73db7a7676095a2a23482da3b5ad35ac346f2f6ecb6cf301599b"
+    },
+    {
+      "path": "gmp-platform/frontend/scripts/workflow-record-dhr-live-fixture.mjs",
+      "sha256": "131c14357f49c7971631763db95e293dab24bb85d361af568b98e8e4e20f84a0"
+    },
+    {
+      "path": "gmp-platform/frontend/src/api/workflow-operations.ts",
+      "sha256": "af893413c16db2aa9273c465aa7f6168114ddc7f5e7739270b4d3b30a8c78989"
+    },
+    {
+      "path": "gmp-platform/frontend/src/components/workflow/WorkflowResponsibilityDialog.tsx",
+      "sha256": "253b26b70a27d399e5e87f3a96da39491bc3a48e0ab673d006216ded42d5d5a1"
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/dhr-management/DhrFillingPage.tsx",
+      "sha256": "55c9bf1b9ba1442290fd06e9d93bb410f91786e8217eaff3bf3584bf543056ad"
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/dhr-management/dhrAuditPresentation.ts",
+      "sha256": "82e5e7da08f28b67eef63bcee8af3d1265628b2a8ab4b2e70e0abcb8cc0cd8f1"
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/form-management/FormFillingPage.tsx",
+      "sha256": "98ef7de7b093e0790c114926074990a63868196df56eaa9456001f4127c6a1fd"
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/form-management/FormInstanceListPage.tsx",
+      "sha256": "b4734b1912a6cf52eb3ed62eeebd153663b6f8e15464956437368f3eb95961ef"
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/form-management/FormReviewPage.tsx",
+      "sha256": "fa9368fa87b1a52c0c5b5ee2b1f362a42a5b07146b04f700ddb5f20fb1beb1d2"
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/record-control/RecordApprovalPage.tsx",
+      "sha256": "02e9e1f6c17f23aba4a46e5d48606131ce2075a9782d0826de5a5f87ea36bd4e"
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/record-control/RecordChangePage.tsx",
+      "sha256": "a9bda71572f3d733da9ebdc09eb9a3761167c25ebb360be004babf5ed3f13bae"
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/record-control/RecordRequestListPage.tsx",
+      "sha256": "a97b1cced94a295eff68de1e1f1f11eec6b94b77de54d7839c43decd73983bf9"
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/workflow-center/InstanceList.tsx",
+      "sha256": "971a129802348e936ce40b7ac18d01cab39ca74e0383b26dd0ec85b3aff3afe7"
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/workflow-center/WorkflowInstancePanel.tsx",
+      "sha256": "647e0891341be2e9c094c983cca3211ee6558ef7388845809f5f7fbb04c020d9"
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/workflow-center/WorkflowReassignmentEntry.tsx",
+      "sha256": "3e80e947b666abec935806c0a0c992256781f2d2e51bd5f87c0b084d1efb2f2e"
+    },
+    {
+      "path": "gmp-platform/frontend/src/utils/productionAudit.ts",
+      "sha256": "1890b30b4742eda90e1107fd509a4e7fe1332873d2eba42149041f334053426e"
+    }
+  ],
+  "untrackedProductPaths": [
+    "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormWorkflowOperations.java",
+    "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/RecordControlCandidateAuthorizationTest.java",
+    "gmp-platform/frontend/scripts/test-workflow-list-ui-browser.mjs",
+    "gmp-platform/frontend/scripts/test-workflow-record-dhr-live.mjs",
+    "gmp-platform/frontend/scripts/workflow-record-dhr-live-fixture.mjs",
+    "gmp-platform/frontend/src/pages/workflow-center/WorkflowReassignmentEntry.tsx"
+  ],
+  "originalSourceAnchors": [
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/recordcontrol/service/RecordControlService.java",
+      "sha256": "93507a91197f9a58dacfdb9b853d71c2cc0e4883babb5ad378ce7b153a672d44"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/recordcontrol/service/RecordControlTaskActionService.java",
+      "sha256": "bcca77215bed6379acbdd42a38ee25ecbae53ef88eb1f17b9884f0ee38c8e9a3"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java",
+      "sha256": "7b29f2a1d4f5d3997ddbc952ae256cda66fad7d5ce02b61558e72d6bb16a24fd"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/RecordControlWorkflowService.java",
+      "sha256": "f6ee03b424e5ebee0d69787af0a02e11d69554366791abc8817218c6fb61012a"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrSummaryService.java",
+      "sha256": "20d96b976bd931ccf65c710204a01d8d571d51f8deebaf64bb0aaad8f7e24c3e"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrReviewService.java",
+      "sha256": "afbf44533270c535188d4c78a7481022ea7cc0126bded081ec86631f181b7282"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrEvidenceImpactService.java",
+      "sha256": "09ae4603a600df3a8cafb00e9e304e7cffbc840a2fab6b8b511f745822649c80"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrImpactNotificationService.java",
+      "sha256": "2ec8ab10285cb55892fbf71ae8a3c7bab2bac9a73510c0d6f855d2102a9c38ce"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionAccess.java",
+      "sha256": "4cc08bef2602a87812713e43e94001485ad47f287899dd336e5e74872a3b273d"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormWorklistService.java",
+      "sha256": "1fbb1a6d69ba8a720545c36218768cc11bfaa07756caf5f6564b022d79ad5451"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionEngine.java",
+      "sha256": "d58fd29f2c4e7a00d9d56c725559c51bc186d9d0be3d42cfb6c7b8c377b493c1"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java",
+      "sha256": "1030a3d9e3f102d53f306135be943913c17eb4f810c07f6ca1370faf6dcd1eb1"
+    }
+  ],
+  "knowledgeManifestFiles": [
+    {
+      "path": "docs/knowledge/decisions/DEC-0037-record-correction-and-void-control.yaml",
+      "sha256": "3e37987998b6974529939323c84f7d7a9c9829ccd1e3fd7c5cdaa0da6fc392c4"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0039-record-control-parallel-review-configuration.yaml",
+      "sha256": "10581958f972466ab62ab59fa5b945c8b54802939b4d693b566791ff581c78b4"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0040-record-control-review-template-fixed-actions.yaml",
+      "sha256": "ce904cf3a8f5fc7c82d6c5ca30d22d82b1a76d72d54383b54a505aa9a6a2401e"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0041-record-control-application-confirmation-start.yaml",
+      "sha256": "eedb1fff2067801a88b3a7d6d805416e7cb0c62ec952a15a8273b91a3c05a5f1"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0042-record-control-workflow-stage1-contract.yaml",
+      "sha256": "0998e27da80e0eb95e9dedf2a0544fdddb0fc66a487b7eb81b8114bc82ec3dbe"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0043-record-control-canonical-terminology.yaml",
+      "sha256": "877b20598c3173c530747ddd0a89c8aef2078c4844ef64cb8d39bdfa5b72142f"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0055-form-approval-transfer.yaml",
+      "sha256": "159dc61c2247c42ef3e1327264977b797a253a49e6de4aeece06e9c0e6420a95"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0056-approval-display-terminology.yaml",
+      "sha256": "3b7642a20d086ea70554ecd1ceed367673b6ce98701c5db879b01fe02f4febab"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0062-dhr-instance-management-phase1.yaml",
+      "sha256": "c7543c60d2a7bb5e8c2d82c1941d255232310faa69b8c137b23dee1b37b1ed84"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml",
+      "sha256": "11e70ec27862eb971a2ad01cd928e8c2ecba36be4df70e170bd1f5296c4e0253"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml",
+      "sha256": "a944fbbc1dd7603eb37fd936143c9133c019d552b3763fcaff3ff9da798bf40a"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0069-dhr-early-termination-lifecycle.yaml",
+      "sha256": "333c2677ff28fc8437cd0615bce56678937851be6e4243e6527cb79db35f23bf"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0070-dhr-approval-menu-display.yaml",
+      "sha256": "31f03129204d441f8ead68a657d637637bf48e8eb2136903d3e1d7fc8f6872d0"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0071-dhr-summary-placement-order.yaml",
+      "sha256": "928d1793ab44a3c1a5dbcaff807fdb805a2b846105d0e3c3f2c571dabc2b4388"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0072-dhr-summary-source-group-presentation.yaml",
+      "sha256": "93a32428a53658205599ff3a1d6c4b755cded2591b228e75b0f4dc0181158f28"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0081-tenant-scoped-task-delegation.yaml",
+      "sha256": "c47a0ea204787a4f03cf5e507e71ec002e1e7514ade7cd122d2290049aa0c5da"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0086-record-change-search-scope.yaml",
+      "sha256": "a0d1b9006140f57e216ad5fb685db156a308455d4580b9a83c19fa9677c6fb20"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0087-record-control-v1-closure.yaml",
+      "sha256": "a94b456620723116fbe07b4d11e3f45ae6d45df58cb63e59aee2282db6997562"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0088-form-and-change-management-menu-boundary.yaml",
+      "sha256": "29dffc4607b5035a3782287bc6a48f42703c0f76754e0fddcb1a3ec2e70097db"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0090-dhr-archive-minimum-scope.yaml",
+      "sha256": "72c1491280ff65e95197cbb7c7cff4d177251e4a9d0a9a8458e9f02cb6a4cc5b"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0091-workflow-reassignment-signature.yaml",
+      "sha256": "a1b13e9ae4a00848a4c8c8a8ad1619841ccbcb9163f1fcbc366082e72444c1e6"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0092-workflow-operations-entry-and-actions.yaml",
+      "sha256": "52df0c8618a91276e3376728e0e519324e691c24345693fb8f977f267a7e866c"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0093-central-form-dhr-workflow-responsibility.yaml",
+      "sha256": "cb692c88ae96c473b4c7a05705c3d386f5376c968bf177adc09c259e674c8004"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0094-record-control-authenticated-candidate-read.yaml",
+      "sha256": "589239e78319f425c052f272290e874eca2a4bf8694cbe50c8404df4915cbc43"
+    },
+    {
+      "path": "docs/knowledge/evidence/central-form-dhr-workflow-20261102.yaml",
+      "sha256": "9729a8dbd3084c71f78830634ebc7f95532a3fc8a3a59214f51afba829a58c12"
+    },
+    {
+      "path": "docs/knowledge/evidence/dhr-archive.yaml",
+      "sha256": "120aa464f79026756c2f6dca7ccad0447220953c23f525720e3dee09e4a3896f"
+    },
+    {
+      "path": "docs/knowledge/evidence/dhr-filling-review.yaml",
+      "sha256": "d57eb3de9b837565cde3c9227e747981e829e4bd8ea476e0024851ee4b21a854"
+    },
+    {
+      "path": "docs/knowledge/evidence/dhr-instance-management.yaml",
+      "sha256": "4fb2da540dad1b656cb9a48d70b9d04240cebc07aa41bd61d722b54253c3e9c4"
+    },
+    {
+      "path": "docs/knowledge/evidence/dhr-robustness-review-fix.yaml",
+      "sha256": "6773cae134672af47da1ce816cbb328e431a4f0e15fdb7a46ffd3aea10466761"
+    },
+    {
+      "path": "docs/knowledge/evidence/dhr-summary.yaml",
+      "sha256": "b121656c1c69b13066dbb34e2fed6f080140663c668c55ba5faf61a993b1b389"
+    },
+    {
+      "path": "docs/knowledge/evidence/dhr-termination-lifecycle.yaml",
+      "sha256": "21c160b81ecf9f3740856f17df71f87a52804018016517965a5264daef2d12ac"
+    },
+    {
+      "path": "docs/knowledge/evidence/form-approval-transfer.yaml",
+      "sha256": "0436c274f0a1ddc644562e9de0992d5dc74df6eb72fb7ea6c0ef309e552d6efc"
+    },
+    {
+      "path": "docs/knowledge/evidence/record-change.yaml",
+      "sha256": "31eba2d27fa459751d95479faa7226d6ca0569066bd15220901a83dc09077fc9"
+    },
+    {
+      "path": "docs/knowledge/evidence/record-control-authenticated-candidate-read.yaml",
+      "sha256": "a9681d2d2305f253ae27d33a04a915f4a3eabbf1a4239f523faa6af4c4acfa86"
+    },
+    {
+      "path": "docs/knowledge/evidence/record-control-dhr-linkage.yaml",
+      "sha256": "608e2544af0ea0fa8f172649acac0499ae410b3ac6caf6ecce66b2df92bb6f47"
+    },
+    {
+      "path": "docs/knowledge/evidence/record-control-v1.yaml",
+      "sha256": "2dfb19fc0b514fc4ed33bab7857358c54114b1f2df903341849136fd5365e477"
+    },
+    {
+      "path": "docs/knowledge/evidence/record-control-workflow-stage1.yaml",
+      "sha256": "b74a6f1340c4d587c992c93a35615aea641af1d6d3c71d640e81cedcf571e6db"
+    },
+    {
+      "path": "docs/knowledge/evidence/record-correction-void-design.yaml",
+      "sha256": "121d6637898997f4edb409d8c37b2a38b11a541deadb250303fec9e8a185d1d6"
+    },
+    {
+      "path": "docs/knowledge/evidence/workflow-operations-20261030.yaml",
+      "sha256": "069402aa8ac933dab5704ba170c8339f1a0b799b54dba3522ecfbda538c8c06e"
+    },
+    {
+      "path": "docs/knowledge/evidence/workflow-reassignment-signature.yaml",
+      "sha256": "c9fa449f554bb1ea5f3a001bc56655d50fe1fa53bd9412ef065fe50d97d394f8"
+    },
+    {
+      "path": "docs/knowledge/evidence/workflow-record-dhr-closure-20261102.yaml",
+      "sha256": "a122977158750c25914e1c86cf216824be9570731a0b1cb019fbbe8f85df0eee"
+    },
+    {
+      "path": "docs/knowledge/facts/core-business.yaml",
+      "sha256": "252bf10f8f3640a6601480f22565566e8eed3b435151878629cf97eb3d7ba799"
+    },
+    {
+      "path": "docs/knowledge/facts/dhr-instance-management.yaml",
+      "sha256": "6b9e1d2c4c4bc5e72c8232abe718af12e97170f149ed1997454278aed64bbfd0"
+    },
+    {
+      "path": "docs/knowledge/facts/dhr-summary.yaml",
+      "sha256": "cef00d62cf06832395bf1249c2802dce8d731776f3ea3c33022bd9d6e7c1a5ed"
+    },
+    {
+      "path": "docs/knowledge/facts/form-approval-transfer.yaml",
+      "sha256": "8a3b59c81fed2423d3bb56146af5a7e5693d1ba0c65c85e9d882f38ff591273f"
+    },
+    {
+      "path": "docs/knowledge/facts/record-control.yaml",
+      "sha256": "bb4bf169f7d6acae0c32f5092e782acf2c0da688dc1f1346646d0e1a7c1531f0"
+    },
+    {
+      "path": "docs/knowledge/facts/workflow-central-entry.yaml",
+      "sha256": "ceffcce92e60014388e89028b3ece6771d7721e1d8ce1720cf96bc2c6b1cae20"
+    },
+    {
+      "path": "docs/knowledge/glossary.yaml",
+      "sha256": "a4a9568a25b6698cb1a09c92ae0e9811edf90f0f849cb422c64c0a4b508f1302"
+    },
+    {
+      "path": "docs/knowledge/implementation-anchors/core-business.yaml",
+      "sha256": "c1049d7d3d56c7ad4b1cc3eb25f621487a5ad85c54dd0a3ea0748720b21f1ab3"
+    },
+    {
+      "path": "docs/knowledge/implementation-anchors/dhr-instance-management.yaml",
+      "sha256": "ab2c79eef1e895d3a91a6237a044dd03d7b3d1b3d2e37843f8b7c9b18879c8ff"
+    },
+    {
+      "path": "docs/knowledge/implementation-anchors/dhr-summary-order.yaml",
+      "sha256": "6712addb2d679b707d4e32604729d9589a212f40230081353368046653e99eee"
+    },
+    {
+      "path": "docs/knowledge/implementation-anchors/dhr-summary-source-group.yaml",
+      "sha256": "0a91a1ff292834130fcf807f7ea5dd9ba12041b44ffedc376dbe1befe7d844d9"
+    },
+    {
+      "path": "docs/knowledge/implementation-anchors/dhr-summary.yaml",
+      "sha256": "39452c92f02d2fd46c60e43b555fff99420c3b551a624410a78728b671671f12"
+    },
+    {
+      "path": "docs/knowledge/implementation-anchors/form-approval-transfer.yaml",
+      "sha256": "85a7ce7bd55d3ff3d95211cf722c708e0ba1bb17338888b0b861c6ffa668e094"
+    },
+    {
+      "path": "docs/knowledge/implementation-anchors/workflow-central-entry.yaml",
+      "sha256": "4ebc3e9a5bf64ddf1f08ada2a00f9daa41988348455810880f03bb63378dfb2b"
+    },
+    {
+      "path": "docs/knowledge/implementation-anchors/workflow-operations.yaml",
+      "sha256": "cd947bf5afd4918aaa869f08d8a4a21eae1076162b5617e91f66d24e47f6b249"
+    },
+    {
+      "path": "docs/knowledge/ontology.yaml",
+      "sha256": "2d26c6941665829990fcf48c04e3b7954620e1091896bba38c1e712a21815362"
+    },
+    {
+      "path": "docs/knowledge/open-questions.yaml",
+      "sha256": "c7b3bdecd1a6ac164d95ff515b5412998a556a07e9b5fcb64b3643473aa6e2bf"
+    },
+    {
+      "path": "docs/knowledge/rules/dhr-instance-management.yaml",
+      "sha256": "04e6187dd9e6744ddffaf3cbebb43950686bc18329064e3690466f4437c15392"
+    },
+    {
+      "path": "docs/knowledge/rules/dhr-summary.yaml",
+      "sha256": "2a9240f5ecac5da9e1277e1f750d46695ab93097aa3229ab976f19c38934d601"
+    },
+    {
+      "path": "docs/knowledge/rules/form-approval-transfer.yaml",
+      "sha256": "d151a3a48dd3f2ca6c12333733e261b4d2f2cc26fa0a27515d07e3d58e470c41"
+    },
+    {
+      "path": "docs/knowledge/rules/production.yaml",
+      "sha256": "175ef7b65961bb5e72b39dceaaf919fb277b3107fcd0fdaf0f3d5fb2d7ba32d8"
+    },
+    {
+      "path": "docs/knowledge/rules/record-change.yaml",
+      "sha256": "690e27c848288572eefe4384f18114b461d2b88402e7cc9d0e35e65d36334f50"
+    },
+    {
+      "path": "docs/knowledge/rules/workflow-central-entry.yaml",
+      "sha256": "877ad5e3d51e0a52815ad15a4e7810c929fe56d0f9fa32a9dd33be925005bc94"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0028-production-form-process-button-electronic-signature.yaml",
+      "sha256": "7865fe4d190bb25619ddca3907e432a932afce330e1e65982f3fdf695dd4b77c"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0031-workflow-task-multi-candidate-runtime.yaml",
+      "sha256": "c54fdb4f7265382572fe65da61f3a31aa06667f11a6718ecd5d998119ef065d7"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0074-shared-terminal-button-signature.yaml",
+      "sha256": "09d6cb083c1350f3c64a2abb8583ca9a4eb1a7b3a837cdd67b9f6dc28d9e2d3f"
+    },
+    {
+      "path": "docs/knowledge/rules/button-signature.yaml",
+      "sha256": "b257a7b50fd9dc5e7c4c89411e3725cc6515a9c88889373d2b4d53057bcc34ac"
+    },
+    {
+      "path": "docs/knowledge/facts/button-signature.yaml",
+      "sha256": "85600c7bca3dbaf7ce202f7e6226adc59113d5bcf7b6021dfc7da2a437f0750e"
+    },
+    {
+      "path": "docs/knowledge/rules/transaction-runtime.yaml",
+      "sha256": "b1e5d8910e10a42f466135f097a651bab7657b7e29de18a6a5dd200793b11ae5"
+    }
+  ],
+  "knowledgeInventoryCounts": {
+    "files": 70,
+    "records": 681,
+    "referenceOnlyRecords": 14,
+    "byOutcome": {
+      "consistent": 617,
+      "needs-fix": 42,
+      "superseded": 12,
+      "evidence-gap": 5,
+      "needs-decision": 5
+    },
+    "resolvedCorrections": 42,
+    "semanticReviewed": 681,
+    "pendingReferenceOnly": 14
+  },
+  "qualification": "Exact current product hashes plus original domain anchors; knowledge manifest hashes independently compared. Not a full-repository semantic audit and not a merged remote candidate."
+}
