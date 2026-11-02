@@ -1,0 +1,66 @@
+decisionPackage:
+  id: DEC-PACKAGE-AUDIT-DHR-ATTACHMENT-QUERY-20261102
+  scope: 附件读取重复元数据与汇总提交前置核查查询量、锁边界观测
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: 8ec8391721858a7f96d73a5d293d93f43679118a
+    targetBranch: edhr-dev
+    targetCommit: 8ec8391721858a7f96d73a5d293d93f43679118a
+    contractReadCommit: 8ec8391721858a7f96d73a5d293d93f43679118a
+    uncommittedContractPaths: []
+  summary: PR54已合入且整树同6c52，无代码/知识/契约额外增量；先验证读取/汇总附件查询及真实锁等待。下载仅提出末尾文件名复用，待用户答复，不提前实施。
+  confirmed: {concepts: [], relationships: [], rules: [], executionContracts: []}
+  inferred:
+    - id: inference.original-name-reuse
+      statement: 当前生产接口不修改已登记原件名；可考虑携带最后一次已核原件元数据构造相同响应，保留全部既有资格/冻结/SHA检查时点，省单独文件名查询。
+      rationale: 实际原有下载5/6次查询及源码UPDATE字段核对；工程方案待用户选择，不是新业务政策。
+      relatedIds: []
+    - id: inference.summary-read-context
+      statement: 汇总提交持生产对象/DHR父锁后，逐附件file重复读父DHR与附件元数据，需量化并验证合法并发unlink的锁等待再讨论复用。
+      rationale: 不直接删校验、改锁/资格时点或把所有调用方套同一批读路径。
+      relatedIds: []
+  unresolved: []
+  replacementScopes: []
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - area: query-observation
+        change: 自有原生数据库中执行实际public submit前置核查至既有人工确认guard，记录SQL及真实并发父锁；不是完整成功提交或完整业务验收。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrSummaryService.java]
+    transitiveImpacts:
+      - area: download-readers
+        change: Controller与任务下载共用原件读取；若后续复用必须保持响应字节/名/头和当前/冻结资格，Archive readonly上下文需另核。
+        evidenceReferences: []
+    potentialImpacts:
+      - area: proposed-optimization
+        concern: 用户正选择是否先复用文件名元数据，未答不当批准；汇总批量读取尚不实施，不能移除资格/锁/完整校验。
+        evidenceReferences: []
+    unaffectedAreas:
+      - area: policy
+        change: 来源/50MiB/格式、完整流式SHA先于输出、核验/解除历史/冻结、权限/审批/索引/页面不改。
+        evidenceReferences: [docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml]
+    compatibilityAndMigration: []
+    snapshotImpacts: []
+    auditImpacts: []
+    permissionImpacts: []
+    testImpacts:
+      - scope: public-preflight-native
+        scenarios: [0/1/10/100/300附件查询增长, 当前/冻结读取, 真实父锁阻塞unlink, 损坏仍拒绝]
+        evidenceReferences: []
+    evidenceGaps: [模拟表单/影响/流程依赖及刻意人工guard失败不是完整提交/HTTP/部署验收, 逻辑SQL计数非生产SLA或全局N+1覆盖, Archive及完整账号UI并发另核, 所有旧high与整体审计队列保持]
+  extensionStrategy:
+    selectedPaths: [product-core]
+    rationale: 先取得实际源码/查询/锁证据，不为假设增加批处理/缓存/权限框架。
+    ownershipBoundaries:
+      - owner: DhrAttachmentService-read-and-DhrSummaryService-submit
+        responsibility: 本批有限读取/锁上下文观测，后续明确选择再实施局部优化。
+  affectedFiles:
+    - path: gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrAttachmentQueryObservationPostgresTest.java
+      changeType: create
+      reason: 原生实际公开提交前缀与父锁/query量化。
+  acceptanceScenarios:
+    - id: scenario.query-and-lock-observation
+      given: 自有原生PG与受控附件元数据/真实字节
+      when: 公开submit运行到原人工确认guard或合法unlink并发等待
+      then: 记录实际查询且维持当前校验与父锁，不落冻结版本、不伪造成功提交。
+      evidenceRequirements: [原始命令/SQL/结果, 实际pg_stat_activity锁等待, 全新独立最终质量]

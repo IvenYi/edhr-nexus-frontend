@@ -1,5 +1,29 @@
 # 持续推进台账
 
+## PR55追加：用户确认下载元数据复用
+
+已更新[PR55](https://github.com/IvenYi/edhr-nexus-frontend/pull/55)为“复用附件下载元数据并验证查询与锁”，原分支→edhr-dev，观察OPEN/MERGEABLE/CLEAN，建议人工merge当前组合。代码b5cbdf07及a1109d6e质量归档已正常推送，当前仅L0交付登记；受测产品/测试/知识/契约/决策包/source-review/performance与原件包保持。交付观察见本批evidence/delivery-verification.json，下一批先fetch实际合入/增量，继续讨论汇总5+2N和导出内存及整体审计，原旧队列/暂缓保持，不自动merge/deploy/恢复。
+
+新组合已通过全新最终质量：clean受测b5cbdf076dbb55e57ba1ae93837d721da4940778、13/13必需检查passed/FINAL，独立80/80、容量1/12组84请求、知识89均0F/E/S；独立旧同11为2真查询断言红9正，原始12JFR另重解析，所有专业角色/子角色FINAL。本体NA/FINAL，14ID/25指纹/330知识不变。106最终原件加manifest与原96主侧/本体原件加manifest归档。全部新角色FINAL后实际无漂移/阶段复核并fetch目标仍8ec，当前只L0原件/验收/范围/交付，受测已有6812路径除NEXT保持；新内部名字读取时点有意合并，未删资格/SHA。下文“当前待新QA”为历史阶段，不覆盖本段。
+
+用户明确回复“先做这项复用（推荐）”，PR55仍OPEN，target最新fetch仍8ec8391721858a7f96d73a5d293d93f43679118a，无外部代码/知识/契约增量；在原分支追加小提交，[本批](../branch-review-20261102-dhr-download-metadata/README.md)L2只末尾文件名复用。三产品文件：末次路径/SHA查询带名字，私有原完整性方法经内部Download(Path,name)返回，两个Controller不再另查名；保留两DHR、active/冻结id+SHA、任务资格、完整摘要后输出。名字读取有意合并到摘要前，不声称所有字段时点相同。原file Path及两列SQL不动，Summary/Archive无新列或业务fallback，无新索引/缓存/框架/UI。
+
+主侧80/80、容量单项12组84请求均过0F/E/S；有效当前/冻结实际5/6→4/5，42完整50MiB响应+头/SHA、42坏文件输出前拒绝；坏文件原即4/5不虚报改善，两遍逻辑读取保持。旧eb9相同11例仅2查询目标真红、9正控，0error/skip；原件原样保留，自有PG/旧树正常清理。96主侧/本体原件加manifest归档；本体NA/FINAL，14既有ID/25源指纹、330知识不变、89过，子角色FINAL。当前待新的全新最终QA，旧ec728837 passed及原保护清单只对应旧候选，不改旧证据、不能覆盖新实现。
+
+整体W3/W4/W5交叉、W2余项/W6健壮性性能抽取A23含旧已审/W7增量保持；本次3产品改/2测试改/1新增另入增量，复用同8ec固定6785盘点，整文件0/历史unique未知。汇总5+2N仍待讨论优化、ZIP数组/PDF累计、完整HTTP/账号并发及原两DHRhigh/A12/四gap/全部旧队列/用户暂缓保持。全部新角色FINAL后实际再做PR前漂移/阶段复核并重写PR55标题正文反映最终范围；不自动merge/deploy/恢复/孤儿扫删，不查询触发CI。
+
+## PR54已合入：附件查询/汇总父锁实证审查
+
+已交付[PR55](https://github.com/IvenYi/edhr-nexus-frontend/pull/55)，audit/edhr-dev-dhr-attachment-query-review-20261102→edhr-dev，登记观察OPEN/MERGEABLE/CLEAN，建议人工merge本批诊断/审查证据。受测ec728837之后e1de615d及本登记只L0原件/验收/状态，产品/测试/知识/契约/source-review/决策包/固定盘点保持；观察见本批evidence/delivery-verification.json。性能未实施，下一批先fetch真实merge/增量，优先讨论名字复用/汇总元数据上下文，再继续全审与记录控制增量；所有旧队列/暂缓保持，不自动merge/deploy/恢复。
+
+本批已通过全新独立最终质量：clean受测ec72883796766eba1c693b2d023bf8d112d86564、11/11必需检查passed/FINAL，独立34/34和知识89/89全部0F/E/S，所有子角色FINAL；本体NA/FINAL。37份最终原件另加manifest原字节归档，32份主侧/本体原件加manifest保持。全部角色FINAL后实际完成PR前无漂移/阶段/余项复核，fetch目标仍8ec839；后续仅L0归档/验收/交付，受测其余6796路径保持。下文“当前正做fresh”为原阶段历史，不覆盖本段最终状态；性能提案未实施，605查询仍为待整改风险。
+
+实际fetch最新edhr-dev@8ec8391721858a7f96d73a5d293d93f43679118a，PR54人工merge、整树同6c52，无外部产品/知识/契约增量。新分支audit/edhr-dev-dhr-attachment-query-review-20261102；本批L2新增原生查询/锁诊断，未修改产品/迁移/UI/业务政策。[本批记录](../branch-review-20261102-dhr-attachment-query/README.md)主侧2/2通过：实际公开submit前缀至既有人工guard，0/1/10/100/300附件为5/7/25/205/605查询；真实pg_stat_activity Lock等待证实父锁阻塞合法unlink，释放后解除提交且历史原件保留。不是完整成功冻结提交、HTTP/RBAC/部署并发或大文件SLA。
+
+主侧相邻32/32回归通过，当前正做fresh独立收尾，尚未宣布质量门禁通过。本体NA/FINAL，19个既有ID有限重审、330知识文件不变、89正式知识测试通过，不计新unique或全库语义完成。32份主侧/本体原件含工具/7源快照另加manifest原样归档。下载末尾原件名复用提案尚待用户选择，汇总/导出批量读取尚未实施；保留两次DHR存在检查的时点、active/冻结id+SHA资格、完整流式摘要和全部人工/草稿guard。索引已有主键/活动集合候选，查询量不能靠重复加索引解决，未跑完整安装EXPLAIN；ZIP/PDF累计和原件数组另审。
+
+固定6785路径/135迁移/464HTTP注解/216前端候选仅盘点；整文件0、历史unique未知。A23有限方法复查及Path+名字内部载体、父锁内核查方法的具体抽取方案已记录，未大重构。整体W3/W4/W5交叉，W2余项/W6健壮性性能A23含旧已审/W7增量、原666/44/183、两旧DHRhigh/A12/四gap、完整账号UI收件人/共享ACL引用互斥/持久失败对账和原暂缓均保持；记录控制已实现待增量审查。不自动merge/deploy/恢复/孤儿扫删，不查询触发CI。全部角色FINAL后再实际进行PR前漂移和阶段复核。
+
 ## PR53已合入：DHR附件登记前写入失败与容量观测
 
 已交付[PR54](https://github.com/IvenYi/edhr-nexus-frontend/pull/54)，audit/edhr-dev-dhr-attachment-write-20261102→edhr-dev，建议本批人工merge。写入当前原件补偿和用户已确认的流式完整摘要一起完成fresh最终验收；受测5cb之后仅L0原件/验收/交付登记，保护路径保持，交付观察见本批evidence/delivery-verification.json。下轮先fetch实际merge/增量，再核重复元数据/汇总附件循环查询与资格时点；原high/全审/暂缓保持，不自动merge/deploy/恢复。

@@ -1,0 +1,77 @@
+decisionPackage:
+  id: DEC-PACKAGE-AUDIT-DHR-DOWNLOAD-METADATA-20261102
+  scope: PR55追加用户明确确认的下载原件名元数据复用
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: eb9faf1202fa6cda23264efbe8b3fcb493b471b3
+    targetBranch: edhr-dev
+    targetCommit: 8ec8391721858a7f96d73a5d293d93f43679118a
+    contractReadCommit: eb9faf1202fa6cda23264efbe8b3fcb493b471b3
+    uncommittedContractPaths: []
+  summary: 用户明确选择“先做这项复用（推荐）”；PR55仍OPEN，追加小提交并重新独立验收组合。最后一次原件元数据读取同时取original_name，内部Download载体带已完整SHA校验的Path和名字给两个Controller；预计有效当前/冻结5/6降4/5查询。不是新业务政策。
+  confirmed: {concepts: [], relationships: [], rules: [], executionContracts: []}
+  inferred:
+    - id: inference.current-original-name-stability
+      statement: 当前生产接口仅修改核验或解除关联字段，没有改已登记原件名、路径、SHA的入口，因此可复用最后一次读取的名字；不将其提升为永久禁止改名政策。
+      rationale: 现有生产源码UPDATE及全部typed调用点核对。
+      relatedIds: [DEC-0063-10]
+  unresolved: []
+  replacementScopes: []
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - area: download-read-context
+        change: downloadableFile返回内部Download(Path,originalName)，末尾元数据查询多取一列，删除本轮变为无调用的独立originalName方法，两个Controller消费同一结果。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrAttachmentService.java, gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrAttachmentController.java, gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrReviewController.java]
+    transitiveImpacts:
+      - area: shared-original-integrity
+        change: 私有verifiedFile(Map)复用原存在/完整流式SHA校验；file仍返回Path、原SQL不加original_name，Summary/Archive无资格/查询变化。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrSummaryService.java, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrArchiveService.java]
+    potentialImpacts:
+      - area: future-metadata-writers
+        concern: 新增原件改名/重绑入口时需增量重审读取时点；不在本批制定未来政策或添加缓存/全局防御框架。
+        evidenceReferences: []
+    unaffectedAreas:
+      - area: business-policy
+        change: 七格式/50MiB/来源/核验/带原因解除历史/冻结/审批/上传补偿/完整摘要后输出/索引/UI保持；汇总5+2N和ZIP内存未实施优化。
+        evidenceReferences: [docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml]
+    compatibilityAndMigration:
+      - area: internal-java-api
+        change: 全部typed生产调用为两个Controller，相关测试适配内部返回载体；HTTP URL/参数/响应头/错误/原件字节保持，无迁移，无兼容wrapper或fixture专用业务fallback。
+        evidenceReferences: []
+    snapshotImpacts:
+      - area: frozen-attachment-access
+        change: 既有version归属及id+SHA成员检查保持，不改冻结元数据；旧版解除关联后按原版本仍可下载。
+        evidenceReferences: []
+    auditImpacts:
+      - area: write-events
+        change: 不新增或改变LINK/VERIFY/UNLINK及审批/导出审计，不回写历史。
+        evidenceReferences: []
+    permissionImpacts:
+      - area: existing-read-moments
+        change: 保留原两次DHR存在检查及顺序、当前active/冻结成员、任务detail授权先于原件读取，不提前输出响应。
+        evidenceReferences: []
+    testImpacts:
+      - scope: native-metadata-and-neighbors
+        scenarios: [当前冻结有效4/5查询, 两次DHR读取仍在, 文件名/头/完整字节, 缺失损坏拒绝, 解除后版本访问, id与SHA成员/跨DHR版本和现有tenant谓词, 任务拒绝先于原件读取, Summary父锁查询保持, 50MiB容量12组84请求, 旧源同11负控]
+        evidenceReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrAttachmentDownloadMetadataPostgresTest.java]
+    evidenceGaps: [进程内真实Controller/proxy/PG/resource不代表完整HTTP/JWT浏览器或所有账号矩阵, 四canonical表/PK非完整迁移/索引安装, 暖稀疏PNG及2GiBJVM不是生产SLA或RSS/物理IO认证, 原high/A12/全审及用户暂缓均保持]
+  extensionStrategy:
+    selectedPaths: [product-core]
+    rationale: 局部内部返回载体与私有完整性方法复用，无公共路径泄漏/通用缓存/配置框架。
+    ownershipBoundaries:
+      - owner: DhrAttachmentService-and-two-download-controllers
+        responsibility: 服务完成资格及完整性验证，Controller只构造原响应。
+  affectedFiles:
+    - {path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrAttachmentService.java, changeType: update, reason: 携带已校验元数据并复用私有完整性检查}
+    - {path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrAttachmentController.java, changeType: update, reason: 构造相同响应不再独立查名字}
+    - {path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrReviewController.java, changeType: update, reason: 保留任务资格后消费同一载体}
+    - {path: gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrAttachmentDownloadMetadataPostgresTest.java, changeType: create, reason: 原生语义/响应/查询保护}
+    - {path: gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrAttachmentAndArchiveTest.java, changeType: update, reason: 仅适配内部Path载体，不降旧断言}
+    - {path: gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/DhrWorkbenchPermissionsTest.java, changeType: update, reason: 内部载体适配及任务先行拒绝负例}
+  acceptanceScenarios:
+    - id: scenario.metadata-reuse-preserves-controlled-download
+      given: 当前或显式冻结版本的同DHR受控原件
+      when: 两下载入口在原资格/成员与完整SHA通过后构造响应
+      then: 文件名/头/完整字节不变，常规当前/冻结查询4/5，坏文件和越界仍拒绝，file的其他读者保持
+      evidenceRequirements: [原生实际查询与字节, 权限负例, 相邻回归, 旧源有效负控, 50MiB容量, 全新最终独立质量]

@@ -1,0 +1,35 @@
+{
+  "sourceCommit": "8ec8391721858a7f96d73a5d293d93f43679118a",
+  "tree": "0485481ba852e91e4e6a90ff1c64d661126e00c9",
+  "trackedPaths": 6785,
+  "scopeCount": 6785,
+  "excludedPaths": [],
+  "assetTypes": {
+    "configuration-or-data": 3492,
+    "documentation": 469,
+    "binary-asset": 1255,
+    "source-or-tool": 843,
+    "knowledge": 330,
+    "test": 260,
+    "database-migration": 135,
+    "dependency-lock": 1
+  },
+  "workPackages": {
+    "W5": 714,
+    "W4": 253,
+    "W0-W7": 5241,
+    "W1": 147,
+    "W2": 225,
+    "W3": 205
+  },
+  "entrypointCandidates": {
+    "http-annotation": 464,
+    "state-definition-candidate": 8,
+    "background-candidate": 1,
+    "frontend-route-candidate": 216
+  },
+  "migrationFiles": 135,
+  "semanticReviewComplete": false,
+  "entrypointLimitations": "Static candidate locations include class annotations and dynamic route shapes; URLs, auth and worker activation require source review. No route execution claimed.",
+  "coverageSha256": "58f347f70fe2bfd301df8b1ba8bac08805598a507d479ad78a00d14a696d55ed"
+}
