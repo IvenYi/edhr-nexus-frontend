@@ -161,5 +161,10 @@
     "No browser/socket/login-RBAC certification, no CI endpoints, no merge/deploy/history restore"
   ],
   "recommendMergeForThisBatch": true,
-  "nextAction": "Fetch actual integration and increments; continue remaining ordinary permission/account matrix and file consistency/robustness; discuss observed large-active candidate CPU if relevant load."
+  "nextAction": "Fetch actual integration and increments; continue remaining ordinary permission/account matrix and file consistency/robustness; discuss observed large-active candidate CPU if relevant load.",
+  "postQaVerification": {
+    "document": "evidence/delivery-verification.json",
+    "protectedDeltaPaths": [],
+    "runtimeRetestClaimed": false
+  }
 }

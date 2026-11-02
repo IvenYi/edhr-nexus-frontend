@@ -2,6 +2,8 @@
 
 ## PR50待合并：DHR个人查询分页与索引
 
+已交付[PR51](https://github.com/IvenYi/edhr-nexus-frontend/pull/51)，audit/edhr-dev-dhr-review-pagination-20261102→edhr-dev，登记时OPEN/MERGEABLE/CLEAN，建议本批人工合入。受测b07fc1ca后a89d184d仅L0原件/验收/范围，当前交付登记保持保护路径；PR50仍为独立未合入验收分支，后续实际组合需核对。下一批先fetch实际合入及新代码，继续剩余权限/账号/收件人矩阵和文件一致性/健壮性；大活跃候选/COUNT深页/关键词、ICU部署前置与两旧high/A12/四gap及W6/W7不关闭，不自动merge/deploy/恢复。
+
 当前全新独立质量对clean `b07fc1ca`正式passed/FINAL，13/13必需检查；独立单次146/146及知识89/89，最终整类旧1真红0error/skip（84SQL/5309rows→1/20、personal21），11组混合计划、实际11changeset与有效索引2闭环，自有PG/旧树已清理。本体r2 NA/FINAL；已实际向用户完成全部角色FINAL后的PR前无漂移/阶段复核。受测后仅L0原件/验收/交付登记，当前分页IO medium有限resolved，两旧DHRhigh和规模/全审矩阵继续open；[本批验收](../branch-review-20261102-dhr-review-pagination/acceptance.json)不作为整体发布认证。下文准备QA为主侧历史检查点。
 
 已再次fetch`edhr-dev@1ad6300918bd0059049eab3c415ca31162dd5115`，PR50仍OPEN，保留其旧验收分支，本批从最新目标独立建`audit/edhr-dev-dhr-review-pagination-20261102`。用户明确同意DB筛选/计数/分页并评估索引边界；[本批](../branch-review-20261102-dhr-review-pagination/README.md)仅DHR查询、两项有计划证据的部分索引及测试/迁移接入，不改变业务政策、冻结、审批锁或签署。
