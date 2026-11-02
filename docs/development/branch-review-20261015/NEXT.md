@@ -2,6 +2,8 @@
 
 ## PR54已合入：附件查询/汇总父锁实证审查
 
+已交付[PR55](https://github.com/IvenYi/edhr-nexus-frontend/pull/55)，audit/edhr-dev-dhr-attachment-query-review-20261102→edhr-dev，登记观察OPEN/MERGEABLE/CLEAN，建议人工merge本批诊断/审查证据。受测ec728837之后e1de615d及本登记只L0原件/验收/状态，产品/测试/知识/契约/source-review/决策包/固定盘点保持；观察见本批evidence/delivery-verification.json。性能未实施，下一批先fetch真实merge/增量，优先讨论名字复用/汇总元数据上下文，再继续全审与记录控制增量；所有旧队列/暂缓保持，不自动merge/deploy/恢复。
+
 本批已通过全新独立最终质量：clean受测ec72883796766eba1c693b2d023bf8d112d86564、11/11必需检查passed/FINAL，独立34/34和知识89/89全部0F/E/S，所有子角色FINAL；本体NA/FINAL。37份最终原件另加manifest原字节归档，32份主侧/本体原件加manifest保持。全部角色FINAL后实际完成PR前无漂移/阶段/余项复核，fetch目标仍8ec839；后续仅L0归档/验收/交付，受测其余6796路径保持。下文“当前正做fresh”为原阶段历史，不覆盖本段最终状态；性能提案未实施，605查询仍为待整改风险。
 
 实际fetch最新edhr-dev@8ec8391721858a7f96d73a5d293d93f43679118a，PR54人工merge、整树同6c52，无外部产品/知识/契约增量。新分支audit/edhr-dev-dhr-attachment-query-review-20261102；本批L2新增原生查询/锁诊断，未修改产品/迁移/UI/业务政策。[本批记录](../branch-review-20261102-dhr-attachment-query/README.md)主侧2/2通过：实际公开submit前缀至既有人工guard，0/1/10/100/300附件为5/7/25/205/605查询；真实pg_stat_activity Lock等待证实父锁阻塞合法unlink，释放后解除提交且历史原件保留。不是完整成功冻结提交、HTTP/RBAC/部署并发或大文件SLA。
