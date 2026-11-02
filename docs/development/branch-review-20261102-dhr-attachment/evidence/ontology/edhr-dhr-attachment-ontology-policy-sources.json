@@ -1,0 +1,398 @@
+{
+  "status": "FINAL",
+  "capturedAt": "2026-11-02T12:32:14.836088+00:00",
+  "knowledgeModelVersion": "0.3.25",
+  "contractBaseline": {
+    "sourceCommit": "ab5adafb9629b94f95eb88825ec0a4ea06f4efb1",
+    "targetBranch": "edhr-dev",
+    "targetCommit": "ab5adafb9629b94f95eb88825ec0a4ea06f4efb1",
+    "contractReadCommit": "ab5adafb9629b94f95eb88825ec0a4ea06f4efb1",
+    "uncommittedContractPaths": []
+  },
+  "contractChanges": "",
+  "records": [
+    {
+      "id": "DEC-0063-10",
+      "recordType": "decision-statement",
+      "sourcePath": "docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml",
+      "sourceLocator": "line 45",
+      "quotedOriginal": "user-confirmed；手工补充附件与纸质扫描件须核验来源、对应生产对象及内容关联，并保留关联与核验追溯；它们是受控附件证据，不虚构为第四种表单实例业务来源。保留 PDF/PNG/JPEG，新增 DOC/DOCX/XLS/XLSX；单文件上限 50MB，定义为 50*1024*1024=52428800 字节且含边界。Office 仅原文件上传下载，不在线预览、编辑或转换；保留原件字节及 SHA-256、受控核验、原权限与冻结引用。附件在 DHR 导航底部提供独立入口，零份附件仍可打开；汇总及冻结查看点击该入口后以附件列表作为右侧主内容，沿用原上传元信息、核验、下载及带原因解除关联，历史文件不物理删除；冻结查看只读，其他工作区不增加写权限。本次不新增附件接口，不改变证据范围或冻结版本边界。",
+      "sourceType": "user-confirmed",
+      "originalConfirmations": [
+        {
+          "sourcePath": "docs/knowledge/evidence/dhr-summary-user-confirmed.md",
+          "sourceLocator": "line 54",
+          "quotedOriginal": "- `user-confirmed`：保留 PDF/PNG/JPEG，新增 DOC/DOCX/XLS/XLSX；Office 仅上传和下载原文件，不提供在线预览、编辑或格式转换。单文件 50MB 明确定义为 `50*1024*1024 = 52428800` 字节（50 MiB），含边界；满足其他条件时允许该大小，52428801 字节拒绝。此上限不是整个 multipart 请求体的上限。",
+          "sourceType": "user-confirmed"
+        },
+        {
+          "sourcePath": "docs/knowledge/evidence/dhr-summary-user-confirmed.md",
+          "sourceLocator": "line 55",
+          "quotedOriginal": "- `user-confirmed`：受控来源/生产对象/内容关联核验、原权限、原件 SHA-256、冻结引用、带原因解除关联并保留原文件继续适用；格式扩展不改变生产对象、三类表单来源、审批及放行规则。原件不因 Office 类型而转换后另算摘要，冻结 ZIP 保留原始字节。",
+          "sourceType": "user-confirmed"
+        },
+        {
+          "sourcePath": "docs/knowledge/evidence/dhr-summary-user-confirmed.md",
+          "sourceLocator": "line 73",
+          "quotedOriginal": "- 汇总及冻结查看的附件入口将右侧主内容切换为附件列表；原上传元信息、来源核验、下载和带原因解除关联保持，历史文件不物理删除。冻结查看只读，不增加其他工作区写权或附件接口。",
+          "sourceType": "user-confirmed"
+        },
+        {
+          "sourcePath": "docs/knowledge/evidence/dhr-summary-user-confirmed.md",
+          "sourceLocator": "line 114",
+          "quotedOriginal": "- 手工附件及纸质扫描核验来源、对象及内容关系；保存文件版本、来源/核验、上传信息及原件追溯，区分原记录形成时间和扫描时间。替换/解除关联受权限、审计及版本影响控制，旧冻结版本仍可追溯。",
+          "sourceType": "user-confirmed"
+        }
+      ],
+      "originalAssetMaturity": {
+        "status": "specified",
+        "visibility": "internal"
+      },
+      "currentMeaning": "DHR受控附件保留原件字节/SHA256、来源和生产对象核验及关联历史；带原因解除关联不物理删除历史原件。七格式/50MiB含边界保持。",
+      "implementationReference": "DhrAttachmentService.upload:70-117; verify:120-135; unlink:137-148; file:150-160",
+      "semanticReviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "scope": "Only affected attachment integrity and retained linkage policy. UNKNOWN retention is separately labelled engineering inference.",
+      "disposition": "retained"
+    },
+    {
+      "id": "DEC-0063-05",
+      "recordType": "decision-statement",
+      "sourcePath": "docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml",
+      "sourceLocator": "line 25",
+      "quotedOriginal": "user-confirmed；自动收集持续发生，但普通整理/提交仍限生产正常完成。提交时重核集合和来源版本并阻断陈旧提交，冻结全部实际关联证据及来源版本、状态、内容快照/哈希、附件引用、检查结果、基础及展示目录、逐实例位置/别名和审批绑定。审批、版本详情与导出读取同一冻结证据基准；来源导航报错修复只读取当前冻结版本 candidates，不以实时实例或草稿补齐冻结成员；后续变化不改写旧版，实时视图须明确区分。",
+      "sourceType": "user-confirmed",
+      "originalConfirmations": [
+        {
+          "sourcePath": "docs/knowledge/evidence/dhr-summary-user-confirmed.md",
+          "sourceLocator": "line 115",
+          "quotedOriginal": "- 提交重新核查完整集合及来源版本（含新增实例/附件），陈旧提交阻断。冻结全部证据、检查结果（规则依据/版本、时间、问题、处置及确认）、目录展示、附件和审批绑定。",
+          "sourceType": "user-confirmed"
+        }
+      ],
+      "originalAssetMaturity": {
+        "status": "specified",
+        "visibility": "internal"
+      },
+      "currentMeaning": "全部实际关联证据和附件等在提交时同版冻结，后续变化不覆盖旧版本。",
+      "implementationReference": "DhrAttachmentService.snapshot:51-68; downloadableFile:162-181",
+      "semanticReviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "scope": "Frozen-membership preservation only; does not certify all source-change/approval impacts.",
+      "disposition": "retained"
+    },
+    {
+      "id": "DEC-0063-11",
+      "recordType": "decision-statement",
+      "sourcePath": "docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml",
+      "sourceLocator": "line 49",
+      "quotedOriginal": "user-confirmed；冻结版本通过统一入口选择完整 ZIP 或自定义 ZIP；选择器按当前冻结档案目录、顺序与别名展示，支持目录、组及实例勾选，并可混选本版附件，切换版本清空选择。ZIP 使用中文目录，包含按冻结档案顺序汇成的可打印总 DHR PDF，以及按批记录模板、作业表单、自定义表单来源分类的单实例原模板版式 PDF；档案位置不改来源身份，也不重复计算同一实例。表单内上传文件是该实例的原证据，放在对应实例的附件目录；汇总整理附件放在与来源目录同级的汇总附件目录。实例原件缺失或内容损坏时不得省略附件后输出“完整档案”，包含该实例的选定范围导出也须阻断。附件内容不并入总 PDF，只在 PDF 中列附件索引，并在 ZIP 中保留原文件；Office 不预览、编辑或转换。JSON 及机器清单保留于追溯资料，服务冻结数据、摘要、审计及签署追溯，不作为用户打印正文。总 PDF、单表 PDF、附件引用及追溯资料均绑定同一显式冻结版本，不以当前草稿或当前表单值替代；范围及版本须明确标识，选定范围不得冒充完整 DHR，总 PDF 也不能替代含附件原件的完整 ZIP。本轮提供可下载打印的 PDF，不新增在线打印流程；具体打印引擎、文件防护及命名去重算法仍属工程方案，不表示已实现或已验证。",
+      "sourceType": "user-confirmed",
+      "originalConfirmations": [
+        {
+          "sourcePath": "docs/knowledge/evidence/dhr-summary-user-confirmed.md",
+          "sourceLocator": "line 55",
+          "quotedOriginal": "- `user-confirmed`：受控来源/生产对象/内容关联核验、原权限、原件 SHA-256、冻结引用、带原因解除关联并保留原文件继续适用；格式扩展不改变生产对象、三类表单来源、审批及放行规则。原件不因 Office 类型而转换后另算摘要，冻结 ZIP 保留原始字节。",
+          "sourceType": "user-confirmed"
+        },
+        {
+          "sourcePath": "docs/knowledge/evidence/dhr-summary-user-confirmed.md",
+          "sourceLocator": "line 74",
+          "quotedOriginal": "- 冻结版本统一导出入口提供完整 ZIP/自定义 ZIP；自定义允许跨来源实例与附件混选，只限当前冻结版本成员，切换版本清空选择，明确标记部分包，不改变冻结证据及审批范围。",
+          "sourceType": "user-confirmed"
+        },
+        {
+          "sourcePath": "docs/knowledge/evidence/dhr-summary-user-confirmed.md",
+          "sourceLocator": "line 121",
+          "quotedOriginal": "- ZIP 支持整份冻结版本和选定范围，包含对应来源生产执行审计与签名，并保持 DHR 审计及审批签署可追溯；部分包明确标识，不能缩减审批对象或冒充完整 DHR；完整包不静默漏项。中文目录、可打印总/单表 PDF、两类附件原件及追溯 JSON 按本文件首节最新确认；不新增在线打印流程，具体打印引擎、命名去重和序列化细节仍为工程方案。",
+          "sourceType": "user-confirmed"
+        }
+      ],
+      "originalAssetMaturity": {
+        "status": "specified",
+        "visibility": "internal"
+      },
+      "currentMeaning": "完整或选定ZIP使用同一显式冻结版本，附件原件保留；选择导出范围不改变证据或审批范围。",
+      "implementationReference": "DhrAttachmentService.downloadableFile:162-181",
+      "semanticReviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "scope": "Unchanged frozen attachment member/digest gate. No archive/runtime performance certification.",
+      "disposition": "retained"
+    },
+    {
+      "id": "DEC-0063-12",
+      "recordType": "decision-statement",
+      "sourcePath": "docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml",
+      "sourceLocator": "line 53",
+      "quotedOriginal": "user-confirmed；实例操作日志负责填报、签署、表单变更/作废及历史内容定位，以表单管理为主入口，本轮不新增 DHR 实例日志 UI；DHR 详情的数据审计记录目录、附件关联、核查、提交、审批和导出。移除业务工作区重复的 DHR 数据审计按钮，保留四列表行详情中的数据审计入口。两层沿证据身份和版本关联，不相互替代；查看、整理、附件、提交、审批、导出分权，入口调整不改变审计语义和原授权。",
+      "sourceType": "user-confirmed",
+      "originalConfirmations": [
+        {
+          "sourcePath": "docs/knowledge/evidence/dhr-summary-user-confirmed.md",
+          "sourceLocator": "line 112",
+          "quotedOriginal": "- 同包 `confirmedUiRefinements`：统一使用紧凑的“DHR 导航”标题，范围说明移至工作区头部；“整理目录”和“返回浏览”位于导航标题行，返回浏览保留当前实例，模式和实例栏以短过渡切换并支持减少动态效果。附件在导航底部提供独立入口，零份仍可打开，不增加第四种表单来源。移除业务工作区重复的 DHR 数据审计按钮，保留四列表行详情审计；实例日志以表单管理为主入口，本轮不新增 DHR 实例日志 UI。以上为用户确认的待验证 UI，既有测试记录不证明本轮入口与过渡已验收。",
+          "sourceType": "user-confirmed"
+        }
+      ],
+      "originalAssetMaturity": {
+        "status": "specified",
+        "visibility": "internal"
+      },
+      "currentMeaning": "DHR附件关联/核验属于业务审计层；技术事务异常日志不替代或补造业务审计。",
+      "implementationReference": "DhrAttachmentService.audit:250-259; upload LINK/verify VERIFY/unlink UNLINK",
+      "semanticReviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "scope": "Existing audit ownership retained; new cleanup diagnostic is technical observation only.",
+      "disposition": "retained"
+    },
+    {
+      "id": "DEC-0063-13",
+      "recordType": "decision-statement",
+      "sourcePath": "docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml",
+      "sourceLocator": "line 57",
+      "quotedOriginal": "user-confirmed；作业/工序表单由执行上下文绑定生产对象，不设计为人工选择归属。填入另一批次的值属于内容错误；自定义表单选错执行上下文或附件误关联属于不同错误，应分别核验，不假设正常自动归属会错，也不开放跨批次移动。",
+      "sourceType": "user-confirmed",
+      "originalConfirmations": [
+        {
+          "sourcePath": "docs/knowledge/evidence/dhr-summary-user-confirmed.md",
+          "sourceLocator": "line 113",
+          "quotedOriginal": "- 作业/工序表单由执行上下文绑定生产对象，不设计为人工选择归属；填错另一批次的值是内容错误，自定义选错上下文和附件误关联分别处理，不虚构自动归属事故或开放跨批次移表。",
+          "sourceType": "user-confirmed"
+        },
+        {
+          "sourcePath": "docs/knowledge/evidence/dhr-summary-user-confirmed.md",
+          "sourceLocator": "line 114",
+          "quotedOriginal": "- 手工附件及纸质扫描核验来源、对象及内容关系；保存文件版本、来源/核验、上传信息及原件追溯，区分原记录形成时间和扫描时间。替换/解除关联受权限、审计及版本影响控制，旧冻结版本仍可追溯。",
+          "sourceType": "user-confirmed"
+        }
+      ],
+      "originalAssetMaturity": {
+        "status": "specified",
+        "visibility": "internal"
+      },
+      "currentMeaning": "附件误关联与表单内容/上下文错误分别处理，不开放跨批次搬运。",
+      "implementationReference": "DhrAttachmentService.upload binds dhrId; unlink only sets active=false with reason",
+      "semanticReviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "scope": "Unchanged DHR association identity; no new deletion/ACL policy.",
+      "disposition": "retained"
+    },
+    {
+      "id": "term.dhr-controlled-attachment",
+      "recordType": "term",
+      "sourcePath": "docs/knowledge/glossary.yaml",
+      "sourceLocator": "line 177",
+      "quotedOriginal": {
+        "id": "term.dhr-controlled-attachment",
+        "name": "DHR 受控附件",
+        "definition": "与生产对象 DHR 建立可追溯关联的手工文件或纸质记录扫描件；记录来源、内容摘要、核验与关联历史，冻结版本保留其当时引用。它不是表单实例的第四种业务来源。",
+        "aliases": [
+          "DHR 附件证据",
+          "纸质扫描附件"
+        ],
+        "status": "specified",
+        "visibility": "internal"
+      },
+      "sourceType": "original-evidence",
+      "originalAssetMaturity": {
+        "status": "specified",
+        "visibility": "internal"
+      },
+      "currentMeaning": "手工文件或扫描件是与生产对象DHR可追溯关联的受控附件，不是第四类表单来源。",
+      "implementationReference": "DhrAttachmentService.upload/snapshot",
+      "semanticReviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "disposition": "retained",
+      "scope": "Finite attachment identity/linkage definition only; no maturity increase or whole-file semantic completion."
+    },
+    {
+      "id": "concept.dhr-controlled-attachment",
+      "recordType": "concept",
+      "sourcePath": "docs/knowledge/ontology.yaml",
+      "sourceLocator": "line 177",
+      "quotedOriginal": {
+        "id": "concept.dhr-controlled-attachment",
+        "termId": "term.dhr-controlled-attachment",
+        "kind": "runtime-fact",
+        "status": "specified",
+        "visibility": "internal",
+        "evidenceIds": [
+          "evidence.dhr-summary-user-confirmed",
+          "evidence.dhr-summary-attachment-service"
+        ]
+      },
+      "sourceType": "original-evidence",
+      "originalAssetMaturity": {
+        "status": "specified",
+        "visibility": "internal"
+      },
+      "currentMeaning": "受控附件概念引用原术语及用户确认/源码证据，保持specified/internal。",
+      "implementationReference": "DhrAttachmentService",
+      "semanticReviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "disposition": "retained",
+      "scope": "Finite attachment identity/linkage definition only; no maturity increase or whole-file semantic completion."
+    },
+    {
+      "id": "relation.dhr-summary-version-contains-controlled-attachments",
+      "recordType": "relationship",
+      "sourcePath": "docs/knowledge/ontology.yaml",
+      "sourceLocator": "line 902",
+      "quotedOriginal": {
+        "id": "relation.dhr-summary-version-contains-controlled-attachments",
+        "source": "concept.dhr-summary-version",
+        "target": "concept.dhr-controlled-attachment",
+        "cardinality": "one-to-zero-or-many",
+        "status": "specified",
+        "visibility": "internal",
+        "evidenceIds": [
+          "evidence.dhr-summary-user-confirmed",
+          "evidence.dhr-summary-attachment-service"
+        ]
+      },
+      "sourceType": "original-evidence",
+      "originalAssetMaturity": {
+        "status": "specified",
+        "visibility": "internal"
+      },
+      "currentMeaning": "冻结汇总版本可有零至多份受控附件，保留冻结引用。",
+      "implementationReference": "DhrAttachmentService.downloadableFile",
+      "semanticReviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "disposition": "retained",
+      "scope": "Finite attachment identity/linkage definition only; no maturity increase or whole-file semantic completion."
+    },
+    {
+      "id": "scenario.dhr-summary-attachment-export-and-audit",
+      "recordType": "acceptance-scenario",
+      "sourcePath": "docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml",
+      "sourceLocator": "line 100",
+      "quotedOriginal": {
+        "id": "scenario.dhr-summary-attachment-export-and-audit",
+        "given": "可编辑 DHR 具有 PDF/PNG/JPEG 及 DOC/DOCX/XLS/XLSX 原件，另有已核验附件、实例日志及冻结版本",
+        "when": "用户按权限上传、核验、下载附件，查看审计并导出整份或选定范围 ZIP",
+        "then": "满足其他条件的 52428800 字节原件允许上传，52428801 字节拒绝；Office 仅原文件上传下载，不在线预览、编辑或转换，下载及冻结 ZIP 保留原件字节与 SHA-256。附件来源和生产对象可追溯，实例日志与 DHR 审计可关联；附件入口切换右侧主内容且沿用原上传元信息、核验和带原因解除关联，解除关联保留原文件及旧冻结引用；冻结版只读。统一导出入口支持完整 ZIP 与当前冻结版本内跨来源实例及附件混选，切换版本清空选择；ZIP 包含来源生产执行审计及签名，版本和范围明确，部分 ZIP 不冒充完整 DHR",
+        "evidenceIds": [
+          "evidence.dhr-summary-user-confirmed"
+        ],
+        "evidenceRequirements": [
+          "七种格式上传核验下载",
+          "50MB含边界及超限测试",
+          "Office原件与冻结ZIP字节及SHA256比对",
+          "附件来源核验",
+          "解除关联后冻结引用及原件保留",
+          "完整及部分导出比对",
+          "来源生产执行审计与签名完整性测试",
+          "权限及双层审计验证"
+        ]
+      },
+      "sourceType": "user-confirmed",
+      "originalAssetMaturity": {
+        "status": "specified",
+        "visibility": "internal"
+      },
+      "currentMeaning": "附件来源、原件、解除关联历史、冻结版本与原权限一并保持；本轮只验证事务结果的一部分。",
+      "implementationReference": "DhrAttachmentService; DhrAttachmentAndArchiveTest existing assertions retained",
+      "semanticReviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "disposition": "retained",
+      "scope": "No claim the complete acceptance scenario was runtime executed by this source-only role."
+    }
+  ],
+  "engineeringInferences": [
+    {
+      "id": "inference.dhr-attachment-unknown-not-rollback",
+      "sourceType": "inference",
+      "currentMeaning": "UNKNOWN不能证实回滚。保留可能已登记原件并记录id/path是工程一致性选择，不能登记为用户直接规定的新业务规则。",
+      "sourcePath": "docs/development/branch-review-20261102-dhr-attachment/decision-package.yaml",
+      "sourceLocator": "inferred[0]",
+      "implementationReference": "DhrAttachmentService.upload afterCompletion existing status!=STATUS_COMMITTED is candidate for correction"
+    },
+    {
+      "id": "inference.dhr-attachment-cleanup-observable",
+      "sourceType": "inference",
+      "currentMeaning": "已回滚补偿失败要留下技术定位且保留原事务错误，不补造业务LINK审计；日志不等于持久对账。",
+      "sourcePath": "docs/development/branch-review-20261102-dhr-attachment/decision-package.yaml",
+      "sourceLocator": "inferred[1]"
+    }
+  ],
+  "policyBoundary": "DHR受控附件解除关联不物理删除历史原件不等于所有通用文件禁止删除；通用DELETE、未答ACL/共享引用政策不由本轮决定。",
+  "counts": {
+    "finiteExistingRecordsReviewed": 9,
+    "newUniqueBusinessIds": null,
+    "wholeFileSemanticCompletion": 0,
+    "runtimeTestsExecuted": 0
+  },
+  "remaining": [
+    "两旧DHR high",
+    "A12余项",
+    "四gap",
+    "原666/44/183增量待审",
+    "W6全量含旧已审A23及W7新增",
+    "持久清理/崩溃/真实网络断连/共享ACL引用并发"
+  ],
+  "knowledgeFilesModified": [],
+  "productFilesModified": [],
+  "fingerprints": [
+    {
+      "path": "AGENTS.md",
+      "bytes": 25065,
+      "sha256": "13dc7cdacea0b1bb0aef2abb268781f9c69584acd4879b204d2b7fd81a2927fc"
+    },
+    {
+      "path": "docs/agents/business-knowledge-modeler.md",
+      "bytes": 15881,
+      "sha256": "9806c900f98e1cbcf4f8d68a998a07a5449369df037183c75ec08cd666bf56ae"
+    },
+    {
+      "path": "docs/agents/agent-handoff-contract.md",
+      "bytes": 31233,
+      "sha256": "3439a35dd1baa77ac723f1b5afa237a338d56e31386f06b02b4aacfd754e3a12"
+    },
+    {
+      "path": "docs/architecture/business-knowledge-model.md",
+      "bytes": 70441,
+      "sha256": "5fdc7d831d378816370250dfc02bfa0d0b18b5eecb461c9b8e503ba4c7952b6e"
+    },
+    {
+      "path": "docs/knowledge/README.md",
+      "bytes": 109946,
+      "sha256": "23d4aa15793b1fa1dbe54c3840e47a64602b3887c0ecbb5d79afa92e384474c5"
+    },
+    {
+      "path": "docs/knowledge/open-questions.yaml",
+      "bytes": 22420,
+      "sha256": "c7b3bdecd1a6ac164d95ff515b5412998a556a07e9b5fcb64b3643473aa6e2bf"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml",
+      "bytes": 23213,
+      "sha256": "11e70ec27862eb971a2ad01cd928e8c2ecba36be4df70e170bd1f5296c4e0253"
+    },
+    {
+      "path": "docs/knowledge/evidence/dhr-summary-user-confirmed.md",
+      "bytes": 36542,
+      "sha256": "51dc528c6fe38671023cec25cfbe6bf1f0a8dcf2fc088f7894524a2d5f035642"
+    },
+    {
+      "path": "docs/knowledge/glossary.yaml",
+      "bytes": 71650,
+      "sha256": "ebec2f3f7345b05eaa16e6bde89ab61448fbe04e72133b071d6944b61fad6f15"
+    },
+    {
+      "path": "docs/knowledge/ontology.yaml",
+      "bytes": 96031,
+      "sha256": "c9c97162d8232196bcb47ad574c03783e2406c6ac530cfa27b1156b00bd8c8c6"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrAttachmentService.java",
+      "bytes": 15991,
+      "sha256": "6493a32d00fd20d864bc37ee633babecc2001a001e9e54d4aba5b798295363d1"
+    },
+    {
+      "path": "docs/development/branch-review-20261102-dhr-attachment/decision-package.yaml",
+      "bytes": 4818,
+      "sha256": "d138e8e87b7eddd331616ad79b6a0714acf1d1585f2b419da15aa2a2b0d75296"
+    }
+  ]
+}

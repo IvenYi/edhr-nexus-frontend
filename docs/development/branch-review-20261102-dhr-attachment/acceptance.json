@@ -1,0 +1,168 @@
+{
+  "executionLevel": "L2",
+  "status": "passed",
+  "baseCommit": "ab5adafb9629b94f95eb88825ec0a4ea06f4efb1",
+  "runtimeTestedCommit": "a6f799459eb105da5e98ab3d548d6b03d18d9e43",
+  "allFormalRoles": "FINAL",
+  "qualityResult": "evidence/final-quality/edhr-dhr-attachment-qa-qualityResult.yaml",
+  "independentReview": "evidence/final-quality/edhr-dhr-attachment-qa-report.md",
+  "requiredPassed": 13,
+  "requiredTotal": 13,
+  "findings": [
+    {
+      "id": "QF-DHR-ATTACHMENT-UNKNOWN-LOSS",
+      "severity": "high",
+      "scope": "DhrAttachmentService.upload transaction completion",
+      "summary": "旧UNKNOWN误当回滚删除可能已登记原件；当前保留并定位",
+      "reproductionSteps": [
+        "Use actual proxied service and canonical native PostgreSQL/JPA audit/JDBC attachment registration",
+        "Commit actual database then throw synthetic acknowledgement exception in manager, yielding actual STATUS_UNKNOWN notification",
+        "Inspect actual attachment and audit rows and exact original bytes after failed request"
+      ],
+      "expectedResult": "UNKNOWN must not destroy possibly committed original; retain and report identity/path without guessing database rollback",
+      "actualResult": "Old native control leaves attachment+audit rows but fails original existence; current same scenario keeps exact bytes, status UNKNOWN and error log",
+      "evidence": [
+        "/tmp/edhr-dhr-attachment-qa-old-DhrAttachmentTransactionPostgresTest.xml",
+        "/tmp/edhr-dhr-attachment-qa-current-DhrAttachmentTransactionPostgresTest.xml"
+      ],
+      "resolutionStatus": "resolved",
+      "resolutionEvidence": [
+        {
+          "type": "commit",
+          "reference": "a6f799459eb105da5e98ab3d548d6b03d18d9e43"
+        },
+        {
+          "type": "command",
+          "reference": "/tmp/edhr-dhr-attachment-qa-current-summary.json"
+        },
+        {
+          "type": "document",
+          "reference": "/tmp/edhr-dhr-attachment-qa-source-inspection.json"
+        }
+      ]
+    },
+    {
+      "id": "QF-DHR-ATTACHMENT-CLEANUP-DIAGNOSTICS",
+      "severity": "medium",
+      "scope": "DhrAttachmentService.upload rollback compensation",
+      "summary": "旧回滚清理吞IO异常无文件定位；当前记录id/path及异常且保留原事务失败",
+      "reproductionSteps": [
+        "Upload inside actual outer transaction",
+        "Replace newly written original with nonempty directory, then throw original transaction error",
+        "Inspect rollback result, retained directory child, unrelated file and service error logs"
+      ],
+      "expectedResult": "Rollback cleanup failure leaves identity/path/exception while original transaction error remains primary",
+      "actualResult": "Old same control fails absent diagnostic log; current logs DirectoryNotEmptyException with exact id/path, row and audit rollback, original error and physical child preserved",
+      "evidence": [
+        "/tmp/edhr-dhr-attachment-qa-old-DhrAttachmentTransactionPostgresTest.xml",
+        "/tmp/edhr-dhr-attachment-qa-current-DhrAttachmentTransactionPostgresTest.xml"
+      ],
+      "resolutionStatus": "resolved",
+      "resolutionEvidence": [
+        {
+          "type": "commit",
+          "reference": "a6f799459eb105da5e98ab3d548d6b03d18d9e43"
+        },
+        {
+          "type": "command",
+          "reference": "/tmp/edhr-dhr-attachment-qa-current-summary.json"
+        }
+      ]
+    }
+  ],
+  "independentRuns": {
+    "current": {
+      "tests": 122,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "knowledge": {
+      "tests": 89,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "oldCounterfactual": {
+      "tests": 11,
+      "failures": 2,
+      "errors": 0,
+      "skipped": 0
+    },
+    "oldPositiveControls": 9
+  },
+  "countingBoundary": "Single122 = new11 + priorDHR27 + priorFile84. Repeated executions are not unique semantic coverage; old actual11 has2 assertion failures and9positive with0errors/skips.",
+  "ontology": {
+    "result": "not-applicable",
+    "roleState": "FINAL",
+    "version": "0.3.25",
+    "finiteExistingIds": 12,
+    "deduplication": "10+9-7",
+    "knowledgeFilesUnchanged": 330,
+    "sourceFingerprints": 25,
+    "maturityChanged": false
+  },
+  "inventory": {
+    "fixedCommit": "ab5adafb9629b94f95eb88825ec0a4ea06f4efb1",
+    "paths": 6503,
+    "sql": 135,
+    "httpCandidates": 464,
+    "routeCandidates": 216,
+    "status": "inventory-only"
+  },
+  "coverage": {
+    "wholeFileCompletion": 0,
+    "historicalUniqueIncrement": null,
+    "sourceReview": "source-review.json",
+    "recordStage": "Source-review is primary checkpoint; final disposition is this acceptance and independent quality result",
+    "historicalQueuesRetained": true
+  },
+  "evidence": {
+    "primaryOriginals": 40,
+    "primarySourceSnapshots": 3,
+    "finalOriginalsIncludingManifest": 47,
+    "archive": "final-evidence-manifest.json"
+  },
+  "scopeReview": {
+    "noDrift": true,
+    "allFormalRoles": "FINAL",
+    "actualUserCommunicationBeforePrCreation": true,
+    "document": "scope-review.md"
+  },
+  "residualRisks": [
+    {
+      "id": "risk.unknown-retry-and-durable-reconcile",
+      "description": "UNKNOWN can have either DB outcome; retained original, request error, retry duplicates and process crash still require explicit durable reconciliation.",
+      "impact": "No cross-resource atomicity or automatic recovery/idempotent retry guarantee.",
+      "mitigation": "Preserve id/path and inspect registration before retry; do not automatically resubmit, restore history or sweep/delete orphans."
+    },
+    {
+      "id": "risk.pre-registration-write-and-direct-calls",
+      "description": "Interrupted physical write before callback registration and unsynchronized direct/internal invocation remain separate review scopes.",
+      "impact": "Current passed result does not close entire attachment file-consistency family.",
+      "mitigation": "Dedicated fault reproduction and ownership review before follow-up deterministic fix."
+    },
+    {
+      "id": "risk.limited-runtime",
+      "description": "New native test uses actual proxy/JPA audit/JDBC and three canonical table subset plus test-only constraints; UNKNOWN manager fault is synthetic.",
+      "impact": "No full schema/FK/migration, real socket fault, browser or complete DHR HTTP/RBAC/tenant/recipient certification.",
+      "mitigation": "Keep exact evidence limits; run domain/deployment/UI checks when applicable."
+    },
+    {
+      "id": "risk.download-capacity",
+      "description": "Existing download repeated metadata reads and full readAllBytes are source candidates;5/6 explicit JDBC path and50MiB concurrency capacity are source counts/inference.",
+      "impact": "No actual heap/latency/GC/SLA conclusion; high concurrency may require bounded reading/context reuse.",
+      "mitigation": "Measure isolated current/frozen good/corrupt50MiB requests before discussing optimization; preserve digest/frozen membership checks."
+    },
+    {
+      "id": "risk.audit-and-acl-remaining",
+      "description": "Global ACL/reference concurrency, old two DHR highs/A12/four gaps,666paths/44knowledge/183ID, full UI/accounts/recipient and paused friend signature page/production dialog remain.",
+      "impact": "Local closure is not whole audit or production release completion.",
+      "mitigation": "Continue W2 remainder and W3/W4/W5, W6 robustness/performance/A23 including prior-reviewed source and W7 latest increments."
+    }
+  ],
+  "blockingConditions": [],
+  "recommendMergeForThisBatch": true,
+  "nextAction": "Fetch actual merge/increments; measure controlled attachment download metadata reuse/50MiB concurrency and audit interrupted write/no-transaction paths. Retain record-control increment, W6 whole robustness/performance/A23 including previously reviewed code and W7 latest increments.",
+  "deliveryPolicy": "Manual merge only; no deploy, history restore, orphan sweep, CI/Actions queries/triggers or shared-history rewrite."
+}

@@ -1,0 +1,27 @@
+{
+  "cmd": [
+    "bash",
+    "/workspace/.edhr-cloud-tools/mvn-edhr",
+    "-f",
+    "gmp-platform/backend/pom.xml",
+    "-Dtest=DhrAttachmentTransactionPostgresTest,DhrAttachmentAndArchiveTest,DhrSummaryServiceTest,DhrReviewLifecycleIntegrationTest,FileControllerTest,FileCopyOwnershipTest,FileHttpBoundaryTest,FileUploadResourceTest,FileUploadTransactionIntegrationTest,FileUploadTransactionPostgresTest,FileUploadTransactionFailureTest,FileDeleteTransactionIntegrationTest,FileDeleteTransactionPostgresTest,FileDeleteTransactionFailureTest,DhrFormFilesTest,ExecutionAccessTest",
+    "test"
+  ],
+  "startedEpoch": 1793622849.2370358,
+  "cwd": "/workspace/edhr-nexus-frontend",
+  "head": "ab5adafb9629b94f95eb88825ec0a4ea06f4efb1",
+  "sourceSnapshot": [
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrAttachmentService.java",
+      "bytes": 16473,
+      "sha256": "783c6f3338cd97b5b4cbfc0c3bc35c12707a7b0fc094912d28735a3b7c1a2bba"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrAttachmentTransactionPostgresTest.java",
+      "bytes": 15572,
+      "sha256": "de1b1705d3eec75c385524f9874518ca4a5376d30f74aeeadf81f164e81aed40"
+    }
+  ],
+  "dhrUrl": "jdbc:postgresql://127.0.0.1:32768/edhr_dhr_attachment_transaction_test",
+  "uploadUrl": "jdbc:postgresql://127.0.0.1:32768/edhr_upload_transaction_test"
+}

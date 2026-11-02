@@ -8,6 +8,7 @@ import com.zencas.edhr.common.util.SnowflakeIdGenerator;
 import com.zencas.edhr.compliance.entity.AuditEvent;
 import com.zencas.edhr.compliance.repository.AuditEventRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
@@ -31,6 +32,7 @@ import static com.zencas.edhr.production.service.ExecutionSnapshotBuilder.invali
 /** Immutable file bytes and auditable DHR association; removing a link never removes historical bytes. */
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class DhrAttachmentService {
     private static final long MAX_BYTES = 50L * 1024 * 1024;
     private static final Set<String> SOURCE_KINDS = Set.of("EXTERNAL_REPORT", "CERTIFICATE", "PAPER_SCAN", "OTHER");
@@ -100,7 +102,14 @@ public class DhrAttachmentService {
         if (TransactionSynchronizationManager.isSynchronizationActive())
             TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
                 @Override public void afterCompletion(int status) {
-                    if (status != STATUS_COMMITTED) try { Files.deleteIfExists(stored); } catch (IOException ignored) { }
+                    if (status == STATUS_ROLLED_BACK) {
+                        try { Files.deleteIfExists(stored); }
+                        catch (IOException | RuntimeException cleanupFailure) {
+                            log.error("Failed to remove rolled-back DHR attachment: id={}, path={}", id, stored, cleanupFailure);
+                        }
+                    } else if (status == STATUS_UNKNOWN) {
+                        log.error("DHR attachment transaction outcome unknown; original retained: id={}, path={}", id, stored);
+                    }
                 }
             });
         String digest = sha256(bytes);
