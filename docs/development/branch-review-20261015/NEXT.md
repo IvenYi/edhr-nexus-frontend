@@ -2,6 +2,8 @@
 
 ## PR55追加：用户确认下载元数据复用
 
+已更新[PR55](https://github.com/IvenYi/edhr-nexus-frontend/pull/55)为“复用附件下载元数据并验证查询与锁”，原分支→edhr-dev，观察OPEN/MERGEABLE/CLEAN，建议人工merge当前组合。代码b5cbdf07及a1109d6e质量归档已正常推送，当前仅L0交付登记；受测产品/测试/知识/契约/决策包/source-review/performance与原件包保持。交付观察见本批evidence/delivery-verification.json，下一批先fetch实际合入/增量，继续讨论汇总5+2N和导出内存及整体审计，原旧队列/暂缓保持，不自动merge/deploy/恢复。
+
 新组合已通过全新最终质量：clean受测b5cbdf076dbb55e57ba1ae93837d721da4940778、13/13必需检查passed/FINAL，独立80/80、容量1/12组84请求、知识89均0F/E/S；独立旧同11为2真查询断言红9正，原始12JFR另重解析，所有专业角色/子角色FINAL。本体NA/FINAL，14ID/25指纹/330知识不变。106最终原件加manifest与原96主侧/本体原件加manifest归档。全部新角色FINAL后实际无漂移/阶段复核并fetch目标仍8ec，当前只L0原件/验收/范围/交付，受测已有6812路径除NEXT保持；新内部名字读取时点有意合并，未删资格/SHA。下文“当前待新QA”为历史阶段，不覆盖本段。
 
 用户明确回复“先做这项复用（推荐）”，PR55仍OPEN，target最新fetch仍8ec8391721858a7f96d73a5d293d93f43679118a，无外部代码/知识/契约增量；在原分支追加小提交，[本批](../branch-review-20261102-dhr-download-metadata/README.md)L2只末尾文件名复用。三产品文件：末次路径/SHA查询带名字，私有原完整性方法经内部Download(Path,name)返回，两个Controller不再另查名；保留两DHR、active/冻结id+SHA、任务资格、完整摘要后输出。名字读取有意合并到摘要前，不声称所有字段时点相同。原file Path及两列SQL不动，Summary/Archive无新列或业务fallback，无新索引/缓存/框架/UI。
