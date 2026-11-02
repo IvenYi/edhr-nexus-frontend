@@ -79,7 +79,7 @@ class DhrAttachmentAndArchiveTest {
         var original = attachmentFile(extension);
         var attachment = attachments.upload(1L, original, "EXTERNAL_REPORT", "委外检验", null, null);
         Long attachmentId = Long.valueOf(attachment.path("attachmentId").asText());
-        assertThat(Files.readAllBytes(attachments.downloadableFile(1L, attachmentId, null))).isEqualTo(original.getBytes());
+        assertThat(Files.readAllBytes(attachments.downloadableFile(1L, attachmentId, null).path())).isEqualTo(original.getBytes());
         assertThat(attachments.snapshot(1L).get(0).path("name").asText()).isEqualTo(original.getOriginalFilename());
         var response = new com.zencas.edhr.production.controller.DhrAttachmentController(attachments).download(1L, attachmentId, null);
         assertThat(response.getHeaders().getContentDisposition().getFilename()).isEqualTo(original.getOriginalFilename());
@@ -211,7 +211,7 @@ class DhrAttachmentAndArchiveTest {
         assertThatThrownBy(() -> archives.export(1L, 10L, "FULL", Set.of(), Set.of())).hasMessageContaining("审批签署证据摘要不一致");
         jdbc.update("UPDATE signature SET snapshot_hash=? WHERE id=41", reviewDigest);
         attachments.unlink(1L, attachmentId, "更换报告");
-        assertThat(attachments.downloadableFile(1L, attachmentId, 10L)).isRegularFile();
+        assertThat(attachments.downloadableFile(1L, attachmentId, 10L).path()).isRegularFile();
         assertThatThrownBy(() -> attachments.downloadableFile(1L, attachmentId, null)).hasMessageContaining("已解除关联");
         Files.write(attachments.file(1L, attachmentId), new byte[]{1, 2, 3});
         assertThatThrownBy(() -> archives.export(1L, 10L, "FULL", Set.of(), Set.of())).hasMessageContaining("摘要不一致");

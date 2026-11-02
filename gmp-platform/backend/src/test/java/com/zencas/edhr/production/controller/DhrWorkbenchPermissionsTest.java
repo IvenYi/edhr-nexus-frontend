@@ -67,13 +67,19 @@ class DhrWorkbenchPermissionsTest {
         detail.putObject("dhr").put("id", "11");
         detail.putObject("version").put("id", "22");
         when(reviews.detail(7L)).thenReturn(detail);
-        when(attachments.downloadableFile(11L, 3L, 22L)).thenReturn(java.nio.file.Path.of("test.doc"));
-        when(attachments.originalName(11L, 3L)).thenReturn("委外 检验报告.doc");
+        when(attachments.downloadableFile(11L, 3L, 22L)).thenReturn(
+                new DhrAttachmentService.Download(java.nio.file.Path.of("test.doc"), "委外 检验报告.doc"));
         var response = review.attachment(7L, 3L);
         assertThat(response.getHeaders().getContentDisposition().getFilename()).isEqualTo("委外 检验报告.doc");
         assertThat(response.getHeaders().getContentDisposition().getType()).isEqualTo("attachment");
         assertThat(response.getHeaders().getFirst("X-Content-Type-Options")).isEqualTo("nosniff");
         verify(attachments).downloadableFile(11L, 3L, 22L);
+    }
+    @Test void reviewDownloadChecksTaskBeforeReadingOriginal() {
+        auth("records.dhr-review");
+        when(reviews.detail(7L)).thenThrow(new AccessDeniedException("not assigned"));
+        assertThatThrownBy(() -> review.attachment(7L, 3L)).isInstanceOf(AccessDeniedException.class);
+        verifyNoInteractions(attachments);
     }
     @Test void reorganizingDoesNotInheritOrdinaryEditOrSubmitPermission() {
         auth("records.dhr-summary", "dhr.summaries.edit", "dhr.summaries.submit");

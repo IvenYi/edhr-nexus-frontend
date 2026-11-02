@@ -173,15 +173,11 @@ public class DhrAttachmentService {
         ensureDhr(dhrId, false);
         var rows = jdbc.queryForList("SELECT stored_path,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", dhrId, attachmentId);
         if (rows.isEmpty()) throw invalid("附件不存在");
-        Path file = Path.of(String.valueOf(rows.getFirst().get("stored_path")));
-        try {
-            if (!Files.isRegularFile(file) || !sha256(file).equals(rows.getFirst().get("sha256"))) throw invalid("附件丢失或摘要不一致");
-        } catch (IOException ex) { throw invalid("附件无法读取"); }
-        return file;
+        return verifiedFile(rows.getFirst());
     }
 
     @Transactional(readOnly = true)
-    public Path downloadableFile(Long dhrId, Long attachmentId, Long versionId) {
+    public Download downloadableFile(Long dhrId, Long attachmentId, Long versionId) {
         ensureDhr(dhrId, false);
         var rows = jdbc.queryForList("SELECT active,sha256 FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", dhrId, attachmentId);
         if (rows.isEmpty()) throw invalid("附件不存在");
@@ -198,13 +194,21 @@ public class DhrAttachmentService {
             if (!included) throw invalid("附件不属于指定的冻结版本");
         }
         else if (!Boolean.TRUE.equals(rows.getFirst().get("active"))) throw invalid("附件已解除关联，请从包含该附件的冻结版本查看");
-        return file(dhrId, attachmentId);
+        ensureDhr(dhrId, false);
+        var originals = jdbc.queryForList("SELECT stored_path,sha256,original_name FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?", dhrId, attachmentId);
+        if (originals.isEmpty()) throw invalid("附件不存在");
+        var original = originals.getFirst();
+        return new Download(verifiedFile(original), (String) original.get("original_name"));
     }
 
-    @Transactional(readOnly = true)
-    public String originalName(Long dhrId, Long attachmentId) {
-        return jdbc.queryForObject("SELECT original_name FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?",
-                String.class, dhrId, attachmentId);
+    public record Download(Path path, String originalName) {}
+
+    private Path verifiedFile(Map<String, Object> original) {
+        Path file = Path.of(String.valueOf(original.get("stored_path")));
+        try {
+            if (!Files.isRegularFile(file) || !sha256(file).equals(original.get("sha256"))) throw invalid("附件丢失或摘要不一致");
+        } catch (IOException ex) { throw invalid("附件无法读取"); }
+        return file;
     }
 
     private void ensureDhr(Long dhrId, boolean editable) {
