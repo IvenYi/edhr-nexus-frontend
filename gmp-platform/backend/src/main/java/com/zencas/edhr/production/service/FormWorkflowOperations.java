@@ -125,7 +125,8 @@ public class FormWorkflowOperations {
     public List<Map<String,String>> targets(String key, String keyword) {
         TaskKey task = parseTask(key); Context c = load(task.recordId()); requireActive(c, task.nodeId());
         String previous = c.progress().path("transferAssignees").path(task.nodeId()).asText("");
-        return new TenantTransferTargets(users).search(tenant(), previous, keyword).stream().filter(u -> qualified(u.get("id"))).toList();
+        return new TenantTransferTargets(users).search(tenant(), previous, keyword,
+                Set.of("production.execution", "form-management.review"));
     }
 
     @PreAuthorize("hasAuthority('workflow.intervene')")

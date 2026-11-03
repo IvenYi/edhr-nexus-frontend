@@ -194,6 +194,9 @@ public class WorkflowResponsibilityService {
     }
 
     private List<Map<String, String>> targets(WorkflowInstance instance, WorkflowTask task, String keyword, boolean reassignment) {
+        if ("DHR_SUMMARY".equals(instance.getBusinessType()) && reassignment)
+            return new TenantTransferTargets(users).search(tenant(instance), task.getAssigneeId(), keyword,
+                    Set.of("records.dhr-review", "dhr.reviews.act"));
         return new TenantTransferTargets(users).search(tenant(instance), task.getAssigneeId(), keyword).stream()
                 .filter(user -> reassignment || !Objects.equals(user.get("id"), AuditContext.getOperatorId()))
                 .filter(user -> eligible(instance, task, user.get("id"), reassignment)).toList();
