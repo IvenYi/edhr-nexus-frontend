@@ -1,0 +1,145 @@
+{
+  "candidate": "1b4d5c2b1399b6203b5123f8650873d25909f3e5",
+  "candidateTree": "443ff4d7d5e24cf3f10512f082d9df357d1753ed",
+  "candidateTrackedPaths": 7413,
+  "trackedDeltaAtArchive": [],
+  "allOtherExistingCandidatePathsUnchangedByGitDiff": true,
+  "sourceFingerprints": [
+    {
+      "path": "DESIGN.md",
+      "bytes": 12592,
+      "sha256": "23bcefdb3989761c940aab8cd6b15cce6f69107be6c94e304c61308096b49d7d"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/controller/AuditController.java",
+      "bytes": 14918,
+      "sha256": "8a1f7b0c24515ef93b7c817512574be3470b312c947579d9c9f3cc44bca70b5e"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/identity/service/TenantTransferTargets.java",
+      "bytes": 4886,
+      "sha256": "0ca27f3672fe033593145ec757c91b734888aa59795826003e131823416ade8c"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormWorkflowOperations.java",
+      "bytes": 19446,
+      "sha256": "428ac43f257f01a1168c0fc7a2a685235d7d52c013bd1c6a3b38018561920cc7"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/RecordControlWorkflowController.java",
+      "bytes": 1735,
+      "sha256": "53a71fdc5a0271883577bbb588defd8a4b645d3265da8cece3392fcf025c96f1"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowOperationsController.java",
+      "bytes": 2957,
+      "sha256": "10e75f8c89f8fe29da3a9c313999ed9d9ab4734528c0da5d59c3cf48e24cd5b1"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/WorkflowOperationsQuery.java",
+      "bytes": 9393,
+      "sha256": "b59d4d91b44b62081d45fc45fbafeab258300459282a6254819067b62d6f357b"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/WorkflowResponsibilityService.java",
+      "bytes": 17554,
+      "sha256": "35671ffd76c325155ede6ee16ae093bbc522565432fe9bc405a26586be518642"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql",
+      "bytes": 106718,
+      "sha256": "61560f972ef9eeeb8f69620c947b54b2326ad9341d929b19385653bec81cf99b"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/recordcontrol/service/RecordControlPostgresIntegrationTest.java",
+      "bytes": 74852,
+      "sha256": "45854df544008d18b7fe17b860cdeb919649c3a51ce05157834a39820dff3d8c"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/RecordControlCandidateAuthorizationTest.java",
+      "bytes": 3320,
+      "sha256": "cde3f93514e8f08c6ab63324799d52f8c90d7e7baa0e5342f9dbecc316d6442f"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/RecordControlWorkflowControllerTest.java",
+      "bytes": 1808,
+      "sha256": "4a706570fcb1c0babb0b3a74c661f7ff43fc389dd8af0736d2471c93a0971bcf"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/engine/WorkflowTransferPostgresTest.java",
+      "bytes": 28384,
+      "sha256": "e1eec50df9c931fd2671c31ec22c5e8aca241e8151a9302543d838f1884999c5"
+    },
+    {
+      "path": "gmp-platform/frontend/src/api/workflow-operations.ts",
+      "bytes": 3108,
+      "sha256": "af893413c16db2aa9273c465aa7f6168114ddc7f5e7739270b4d3b30a8c78989"
+    },
+    {
+      "path": "gmp-platform/frontend/src/components/workflow/WorkflowResponsibilityDialog.tsx",
+      "bytes": 6613,
+      "sha256": "253b26b70a27d399e5e87f3a96da39491bc3a48e0ab673d006216ded42d5d5a1"
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/dhr-management/DhrFillingPage.tsx",
+      "bytes": 25137,
+      "sha256": "55c9bf1b9ba1442290fd06e9d93bb410f91786e8217eaff3bf3584bf543056ad"
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/dhr-management/dhrAuditPresentation.ts",
+      "bytes": 5783,
+      "sha256": "82e5e7da08f28b67eef63bcee8af3d1265628b2a8ab4b2e70e0abcb8cc0cd8f1"
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/form-management/FormFillingPage.tsx",
+      "bytes": 47042,
+      "sha256": "98ef7de7b093e0790c114926074990a63868196df56eaa9456001f4127c6a1fd"
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/form-management/FormInstanceListPage.tsx",
+      "bytes": 32424,
+      "sha256": "b4734b1912a6cf52eb3ed62eeebd153663b6f8e15464956437368f3eb95961ef"
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/form-management/FormReviewPage.tsx",
+      "bytes": 43323,
+      "sha256": "fa9368fa87b1a52c0c5b5ee2b1f362a42a5b07146b04f700ddb5f20fb1beb1d2"
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/record-control/RecordApprovalPage.tsx",
+      "bytes": 6357,
+      "sha256": "02e9e1f6c17f23aba4a46e5d48606131ce2075a9782d0826de5a5f87ea36bd4e"
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/record-control/RecordChangePage.tsx",
+      "bytes": 18375,
+      "sha256": "a9bda71572f3d733da9ebdc09eb9a3761167c25ebb360be004babf5ed3f13bae"
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/record-control/RecordRequestListPage.tsx",
+      "bytes": 10260,
+      "sha256": "a97b1cced94a295eff68de1e1f1f11eec6b94b77de54d7839c43decd73983bf9"
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/workflow-center/InstanceList.tsx",
+      "bytes": 14159,
+      "sha256": "971a129802348e936ce40b7ac18d01cab39ca74e0383b26dd0ec85b3aff3afe7"
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/workflow-center/WorkflowInstancePanel.tsx",
+      "bytes": 7997,
+      "sha256": "647e0891341be2e9c094c983cca3211ee6558ef7388845809f5f7fbb04c020d9"
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/workflow-center/WorkflowReassignmentEntry.tsx",
+      "bytes": 3102,
+      "sha256": "3e80e947b666abec935806c0a0c992256781f2d2e51bd5f87c0b084d1efb2f2e"
+    },
+    {
+      "path": "gmp-platform/frontend/src/utils/productionAudit.ts",
+      "bytes": 5729,
+      "sha256": "1890b30b4742eda90e1107fd509a4e7fe1332873d2eba42149041f334053426e"
+    }
+  ],
+  "note": "Only NEXT may receive L0 status updates; new QA/evidence/acceptance/scope/delivery records may be added. Git byte-preservation is not semantic completion."
+}
