@@ -1,0 +1,52 @@
+{
+  "executionLevel": "L2",
+  "baseCommit": "7c2c74d0a9f6b30c6e2dfbd9ad1620d5d29f9a37",
+  "testedCandidate": "1b4d5c2b1399b6203b5123f8650873d25909f3e5",
+  "ontologyResult": "not-applicable",
+  "qualityResult": "passed",
+  "requiredChecks": 11,
+  "fixedScope": "Ordinary form and DHR managerial reassignment search: existing permission qualification before100 instead of tenant first100 then permission filters.",
+  "productFilesChanged": 3,
+  "testFilesChanged": 1,
+  "mainBackendTests": 130,
+  "knowledgeTests": 89,
+  "oldControl": {
+    "tests": 2,
+    "realAssertionFailures": 2,
+    "errors": 0,
+    "skipped": 0
+  },
+  "nativeRecordControlClassTests": 44,
+  "normalNativeTransferTests": 23,
+  "syntheticBrowserTests": 40,
+  "browserWidths": [
+    1440,
+    390
+  ],
+  "liveBrowserBackend": false,
+  "frontendBuildAndListContractPassed": true,
+  "globalUiStrict": {
+    "passed": false,
+    "exitCode": 2,
+    "pendingDiagnosticCandidates": 86,
+    "notAConfirmedBugCount": true
+  },
+  "knowledge": {
+    "files": 345,
+    "finiteRelatedIds": 25,
+    "incrementPaths": 34,
+    "nestedIncrementCandidates": 931,
+    "incrementCandidatesDisposition": "pending",
+    "fullSemanticAuditComplete": false
+  },
+  "wholeFileCompletion": 0,
+  "historicalUniqueIncrement": null,
+  "wholeAuditComplete": false,
+  "residuals": [
+    "Other frozen-candidate post100 paths; central JSON/full count/name lookup candidates; Summary605 and ZIP memory remain",
+    "Full UI/keyboard/account/recipient/ACL/concurrency and original high/A12/gaps/paused scopes remain",
+    "Current record control and notification capabilities are implemented and have finite tests; full quality/exception/source-signature change reasoning and DHR directory combinations remain",
+    "No production latency/all-distribution EXPLAIN/full browser-to-backend signature certification in this finite repair"
+  ],
+  "recommendation": "Manual merge of this finite batch only; no automatic merge/deploy/history restoration."
+}

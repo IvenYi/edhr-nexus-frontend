@@ -1,0 +1,41 @@
+{
+  "observedOnUtcDate": "2026-11-03",
+  "pullRequest": {
+    "number": 56,
+    "url": "https://github.com/IvenYi/edhr-nexus-frontend/pull/56",
+    "title": "fix(workflow): 修复普通表单与DHR改派目标漏列",
+    "state": "open",
+    "merged": false,
+    "mergeable": true,
+    "mergeableState": "clean",
+    "baseBranch": "edhr-dev",
+    "baseCommit": "7c2c74d0a9f6b30c6e2dfbd9ad1620d5d29f9a37",
+    "sourceBranch": "audit/edhr-dev-increment-review-20261103",
+    "headAtObservationBeforeThisRegistration": "26d3478c6a082e44fd1e9ba4794b864b5a9c591b"
+  },
+  "testedCandidate": "1b4d5c2b1399b6203b5123f8650873d25909f3e5",
+  "archiveCommit": "26d3478c6a082e44fd1e9ba4794b864b5a9c591b",
+  "finalIndependentQuality": {
+    "result": "passed",
+    "status": "FINAL",
+    "requiredChecksPassed": 11,
+    "allDispatchedRolesAndChildrenFinal": true,
+    "originalManifestSha256": "2684af196a67e1eb1efc3af964a82df0d2aab12cf23dc4c4199fd5aae001c231",
+    "rawOriginals": 479,
+    "archivedMembersIncludingManifestAndDigestReceipt": 481
+  },
+  "preservation": {
+    "existingCandidatePathsMayChangeOnly": ["docs/development/branch-review-20261015/NEXT.md"],
+    "subsequentAdditions": "L0 evidence, acceptance, scope review and delivery records in this batch only",
+    "sourceFingerprintsVerifiedUnchanged": 27,
+    "runtimeTestKnowledgeContractDecisionInventoryAndPrimaryEvidenceUnchanged": true,
+    "archiveMemberBytesAndStorageSha256Verified": true,
+    "note": "Observation precedes this registration commit to avoid a self-referential commit hash. After push, final local/remote/PR head equality and unchanged target are checked separately. This record is not a new runtime or CI result."
+  },
+  "wholeAuditComplete": false,
+  "globalStrictUiPassed": false,
+  "globalStrictDiagnosticCandidatesPending": 86,
+  "knowledgeIncrementCandidatesPending": 931,
+  "recommendation": "Manual merge of finite repair only; continue overall audit from NEXT.md",
+  "automaticMergeDeploymentHistoryRestoreOrCiActionsQueryTrigger": false
+}

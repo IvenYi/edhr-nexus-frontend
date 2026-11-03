@@ -1,0 +1,244 @@
+qualityResult:
+  result: passed
+  baseCommit: 7c2c74d0a9f6b30c6e2dfbd9ad1620d5d29f9a37
+  headCommit: 1b4d5c2b1399b6203b5123f8650873d25909f3e5
+  contractBaseline:
+    sourceCommit: 1b4d5c2b1399b6203b5123f8650873d25909f3e5
+    targetBranch: edhr-dev
+    targetCommit: 7c2c74d0a9f6b30c6e2dfbd9ad1620d5d29f9a37
+    contractReadCommit: 1b4d5c2b1399b6203b5123f8650873d25909f3e5
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: clean
+    includedPaths: []
+    excludedPaths: []
+    untrackedPaths: []
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+  - id: check.final-baseline-and-contract
+    required: true
+    category: documentation
+    description: Independent fetch at start/end confirms target7c unchanged, clean candidate1b4, target ancestor
+      and tested merge candidate1b4. Read AGENTS/handoff/quality-verifier at candidate; no contract delta from target.
+    method: command
+    command: git fetch origin edhr-dev; git rev-parse HEAD origin/edhr-dev; git status --porcelain; git merge-base
+      --is-ancestor target head; git diff target head -- AGENTS.md docs/agents
+    outcome: passed
+    evidence:
+    - baseline-start.json
+    - final-baseline.json
+    - source-snapshot/AGENTS.md
+    - source-snapshot/docs/agents/agent-handoff-contract.md
+    - source-snapshot/docs/agents/quality-verifier.md
+  - id: check.current-confirmed-policy
+    required: true
+    category: requirements
+    description: Current DEC0093 original confirmation permits Form/DHR signed managerial reassignment; DHR handler
+      transfer/withdrawal/general approval bypass remain forbidden. DEC0094 authenticated read does not grant writes.
+      Exact code mapping remains engineering choice.
+    method: inspection
+    command: Read candidate knowledge README/open-questions/DEC0093/DEC0094/original confirmations and relevant
+      workflow-central-entry rules
+    outcome: passed
+    evidence:
+    - policy-snapshot/
+    - independent-source-review.md
+    - evidence-contract/semantic-review.md
+  - id: check.qualify-before-limit-and-fresh-write-guards
+    required: true
+    category: security
+    description: AND separate correlated permission EXISTS plus current-assignee exclusion precede limit100; original
+      three-arg delegation passes empty scope. Qualified/eligible/signature/state/lock/audit/freeze write methods
+      unchanged; no UI/migration/policy delta.
+    method: inspection
+    command: git diff target head; inspect all changed methods in full context and compare unchanged write method
+      byte fingerprints
+    outcome: passed
+    evidence:
+    - product-test.diff
+    - source-fingerprints.json
+    - independent-source-equivalence.json
+    - independent-source-review.md
+  - id: check.real-old-source-negative-control
+    required: true
+    category: integration
+    description: Fresh independent child retained7c products with exact candidate test bytes. Both new cases fail
+      expected43 versus actual[], 2 real assertion failures/0 errors/skips after full Liquibase. Pre-test tooling
+      error preserved separately.
+    method: automated-test
+    command: PGUSER=postgres RECORD_CONTROL_TEST_DATABASE_URL=<own random loopback PostgreSQL> bash /workspace/.edhr-cloud-tools/mvn-edhr
+      -f <old worktree>/gmp-platform/backend/pom.xml -Dtest=RecordControlPostgresIntegrationTest#formReassignmentSearchQualifiesBeforeLimitingUsers+dhrReassignmentSearchQualifiesBeforeLimitingUsers
+      test
+    outcome: passed
+    evidence:
+    - old-source-control/result.yaml
+    - old-source-control/attempt-02/11-maven-negative.stdout
+    - old-source-control/attempt-02/surefire-reports/TEST-com.zencas.edhr.recordcontrol.service.RecordControlPostgresIntegrationTest.xml
+    - old-source-control/attempt-02/source-fingerprints.json
+    - old-source-control/attempt-02/12-post-test-database-state.stdout
+  - id: check.native-candidate-130
+    required: true
+    category: integration
+    description: Own detached candidate worktree/own PostgreSQL16.15 random loopback/full configured Liquibase,
+      role edhr and transfer DB precreated. 9 classes130 actual tests0F/E/S (44+23+22+13+12+6+3+2+5). No assertions
+      or fixtures altered.
+    method: automated-test
+    command: PGUSER=postgres RECORD_CONTROL_TEST_DATABASE_URL=<record URL from run.json> W3_TRANSFER_DATABASE_URL=<transfer
+      URL from run.json> bash /workspace/.edhr-cloud-tools/mvn-edhr -f gmp-platform/backend/pom.xml -Dtest=RecordControlPostgresIntegrationTest,WorkflowTransferPostgresTest,ProductionExecutionEngineTest,ExecutionAccessTest,DhrReviewServiceTest,DhrReviewLifecycleIntegrationTest,RecordControlCandidateAuthorizationTest,RecordControlWorkflowControllerTest,WorkflowTaskControllerTest
+      test
+    outcome: passed
+    evidence:
+    - run.json
+    - native/maven.log
+    - native/test-summary.json
+    - native/surefire/
+    - native/postgres.log
+    - orchestration-commands.json
+  - id: check.formal-knowledge-89-and-unchanged-bytes
+    required: true
+    category: ontology
+    description: 89 actual tests0F/E/S plus independently compared345 knowledge files unchanged. Formal model validation
+      does not equal full semantic/runtime verification or stage promotion.
+    method: automated-test
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f tools/knowledge-model/pom.xml test; Git blob SHA256 comparison
+      of345 knowledge paths
+    outcome: passed
+    evidence:
+    - knowledge/maven.log
+    - knowledge/test-summary.json
+    - knowledge/surefire/
+    - knowledge-byte-check.json
+  - id: check.increment-originals-and-scope-accounting
+    required: true
+    category: documentation
+    description: Independent evidence subrole verifies154 originals+manifest155,27 current sources/old red3, final/initial
+      report separation and628-path increment.34 paths931 candidates allpending separate25 finite;7402/135/464/216
+      inventory only, wholeFile0/historyUniqueunknown retained.
+    method: command
+    command: python3 evidence-contract/audit-evidence.py; python3 evidence-contract/finalize-review.py; final subrole
+      manifest verification
+    outcome: passed
+    evidence:
+    - evidence-contract/result.yaml
+    - evidence-contract/checks.json
+    - evidence-contract/nested-manifest-verification.json
+    - evidence-contract/semantic-review.md
+    - subrole-final-verification.json
+  - id: check.finite-build-and-list-style
+    required: true
+    category: regression
+    description: Read-only independent UI child executes production build and maintained list-style verification
+      in separate candidate worktree. Candidate frontend source delta is empty.
+    method: command
+    command: npm run build; npm run verify:list-table-style
+    outcome: passed
+    evidence:
+    - ui/commands.json
+    - ui/build.log
+    - ui/list-style.log
+    - ui/frontend-diff.log
+  - id: check.finite-browser-and-screenshot-review
+    required: true
+    category: visual
+    description: Independent UI child runs40 Chromium cases1440/390 with maintained UI and synthetic intercepted
+      API; saves48 PNG and actually views7. Does not establish backend/JWT/real electronic-signature E2E.
+    method: browser
+    command: WORKFLOW_LIST_ARTIFACTS=<own output>/browser node scripts/test-workflow-list-ui-browser.mjs; view_image
+      seven originals
+    outcome: passed
+    evidence:
+    - ui/browser.log
+    - ui/browser/result.json
+    - ui/screenshot-review.json
+    - ui/browser/
+    - ui/result.yaml
+  - id: check.A23-performance-and-extraction-boundaries
+    required: true
+    category: documentation
+    description: Read notes include concrete read-projection/domain strategy extraction, owner/lock/transaction/regression/rollback
+      limits; necessary fresh write guards retained. Existing indexes inspected; no production-scale EXPLAIN/SLA
+      or unrelated optimizations claimed.
+    method: inspection
+    command: Inspect FormWorkflowOperations/WorkflowResponsibilityService methods, baseline indexDDL, current review-notes
+      and independent evidence semantic review
+    outcome: passed
+    evidence:
+    - independent-source-review.md
+    - independent-source-equivalence.json
+    - evidence-contract/semantic-review.md
+    - evidence-contract/read-sources/docs/development/branch-review-20261103-workflow-targets/review-notes.md
+  - id: check.resource-isolation-cleanup-and-final-subroles
+    required: true
+    category: documentation
+    description: Three independent read-only subroles FINAL before root final. Own native/old/UI worktrees and containers/tooling
+      cleaned; shared resources and repository unmodified. Initial helper/environment failures retained honestly,
+      unique counts not inflated.
+    method: command
+    command: Validate final subrole results/manifests; verify own cleanup and main Git state
+    outcome: passed
+    evidence:
+    - subrole-final-verification.json
+    - cleanup.json
+    - old-source-control/result.yaml
+    - ui/resource-cleanup.log
+    - environment-history.md
+    - final-baseline.json
+  - id: check.full-project-premium-strict-diagnostic
+    required: false
+    category: visual
+    description: Actual strict exit2:86 raw candidates14ownership+68actionless+3noValidate+1scrollbar remain unadjudicated.
+      This non-gating full-repository diagnostic is failed, not86 proven bugs; repair has no frontend delta and
+      W6/W7 queue remains.
+    method: command
+    command: python3 ui/audit_project.py <own candidate worktree> --mode strict --output <own output>/premium-audit.json
+    outcome: failed
+    evidence:
+    - ui/commands.json
+    - ui/premium-strict.log
+    - ui/premium-audit.json
+    - ui/auditor-source.json
+    - ui/incoming-frontend-scope.json
+  findings: []
+  residualRisks:
+  - id: residual.full-audit-and-knowledge-pending
+    description: This is finite backend repair acceptance.34 knowledge increment paths/931 nested candidates remain
+      pending,25 limited existing IDs are separate;7402 paths/135 migration files/464HTTP/216routes are inventory,
+      wholeFile0/historyUniqueunknown.
+    impact: No whole-branch/code-to-all-ontology or release-readiness certification.
+    mitigation: Continue W2 remainder/W3-W5 and W6/W7 with latest remote increment checkpoints and original audit
+      ledger.
+  - id: residual.strict-ui-and-bounded-visual
+    description: Full strict remains exit2/86 unadjudicated candidates; browser40 uses synthetic APIs, limited screenshots
+      and no full keyboard/reader/zoom/CRUD/account matrix.
+    impact: No full UI compliance, real backend/JWT/signature E2E, or all14 incoming frontend sources fully reviewed.
+    mitigation: Keep strict diagnostics raw, adjudicate in W6/W7; preserve paused production modal and friend-owned
+      signature-password page.
+  - id: residual.other-target-and-performance-candidates
+    description: Other frozen-candidate-after100 paths, per-task name N+1, JSON lateral/count cost, summary5+2N/605/export
+      accumulation and wide-record trade-offs are separate unresolved candidates; no large-scale EXPLAIN/SLA.
+    impact: This fix does not close every target-list or performance concern or establish production capacity.
+    mitigation: Add bounded real cases/SQL counts and inspect production-like plans/index selectivity before discussing
+      optimizations; do not add speculative indexes or change policy.
+  - id: residual.business-and-historical-gaps
+    description: Existing oldhigh/A12/history search/rebuild, complete automatic quality/exception/source-signature
+      change interpretation and DHR directory combinations remain; record-control/active notifications/admin reassignment
+      already implemented within actual evidence.
+    impact: No historical data repair, archive completeness or overall ontology-stage advancement implied.
+    mitigation: Retain current precise scope and original paused/gap ledger; ask only actual business ambiguities
+      while continuing independent work.
+  blockingConditions: []
+verificationScope:
+  status: FINAL
+  independence: Fresh final QA and read-only children did not participate in implementation or repair product/tests/fixtures.
+  testedCandidate: 1b4d5c2b1399b6203b5123f8650873d25909f3e5
+  targetAtStartAndFinish: 7c2c74d0a9f6b30c6e2dfbd9ad1620d5d29f9a37
+  uniqueNativeTests: 130
+  uniqueFormalKnowledgeTests: 89
+  syntheticBrowserCases: 40
+  oldSourceExpectedFailures: 2
+  allThreeSubrolesFinal: true
+  environmentHistory: environment-history.md
+  nonGatingFailedDiagnostic: full-project premium strict exit2/86 pending candidates; global UI acceptance remains
+    incomplete
+  permittedSubsequentWork: Only L0 evidence/acceptance/scope/delivery/NEXT additions may be appended without changing
+    any other candidate path; any tested product/test/knowledge/contract change requires reassessment.

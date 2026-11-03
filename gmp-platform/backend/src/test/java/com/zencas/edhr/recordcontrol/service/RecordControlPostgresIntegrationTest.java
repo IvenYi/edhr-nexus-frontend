@@ -448,6 +448,28 @@ class RecordControlPostgresIntegrationTest {
         jdbc.update("UPDATE production_execution SET snapshot_json=?,state_json=?",snapshot.toString(),state.toString());
         return "form-"+scalar("SELECT id FROM form_instance_record");
     }
+    private void unqualifiedUsersBeforeReviewTarget() {
+        jdbc.update("UPDATE user_account SET display_name='target-scope-Z' WHERE id=43");
+        jdbc.update("""
+            INSERT INTO user_account(id,tenant_id,username,display_name,password_hash,status)
+            SELECT id,0,'target-limit-'||id,'target-scope-0-'||id,'not-used','ACTIVE'
+            FROM generate_series(1000,1119) id
+            """);
+        grant(1000,"production.execution");
+        grant(1001,"form-management.review");
+        grant(1002,"records.dhr-review");
+        grant(1003,"dhr.reviews.act");
+    }
+    @Test void formReassignmentSearchQualifiesBeforeLimitingUsers() throws Exception {
+        personnel(); grant(43,"production.execution","form-management.review");
+        String id=activeForm(); manager(); unqualifiedUsersBeforeReviewTarget();
+        assertThat(formOperations.targets(id+":review","target-scope")).extracting(row->row.get("id")).containsExactly("43");
+    }
+    @Test void dhrReassignmentSearchQualifiesBeforeLimitingUsers() {
+        personnel(); grant(43,"records.dhr-review","dhr.reviews.act");
+        dhr(true); summaries.submit(1000L,summaryCommand()); manager(); unqualifiedUsersBeforeReviewTarget();
+        assertThat(responsibility.reassignmentTargets(dhrTask(),"target-scope")).extracting(row->row.get("id")).containsExactly("43");
+    }
     @SuppressWarnings("unchecked") private com.zencas.edhr.workflow.service.WorkflowResponsibilityService.Command formCommand(String id) {
         var tasks=(List<java.util.Map<String,Object>>)formOperations.detail(Long.parseLong(id.substring(5))).get("tasks");
         return new com.zencas.edhr.workflow.service.WorkflowResponsibilityService.Command("43","值班审批人调整",tasks.getFirst().get("taskState").toString(),"rc-manager","test-signature-password");
