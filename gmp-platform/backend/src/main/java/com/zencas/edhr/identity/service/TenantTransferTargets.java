@@ -26,6 +26,15 @@ public class TenantTransferTargets {
     }
 
     public List<Map<String, String>> search(Long tenantId, String operatorId, String keyword, Set<String> requiredPermissions) {
+        return search(tenantId, operatorId, keyword, requiredPermissions, (root, query, cb) -> cb.conjunction());
+    }
+
+    public List<Map<String, String>> search(Long tenantId, String operatorId, String keyword, Specification<UserAccount> scope) {
+        return search(tenantId, operatorId, keyword, Set.of(), scope);
+    }
+
+    private List<Map<String, String>> search(Long tenantId, String operatorId, String keyword,
+                                            Set<String> requiredPermissions, Specification<UserAccount> scope) {
         if (tenantId == null) throw new IllegalArgumentException("无法确定转办的租户范围");
         String query = keyword == null ? "" : keyword.strip().toLowerCase(Locale.ROOT);
         LocalDateTime now = LocalDateTime.now();
@@ -51,7 +60,7 @@ public class TenantTransferTargets {
             return cb.and(eligible, cb.or(cb.like(cb.lower(root.get("displayName")), like),
                     cb.like(cb.lower(root.get("username")), like)));
         };
-        return users.findAll(specification, PageRequest.of(0, 100,
+        return users.findAll(specification.and(scope), PageRequest.of(0, 100,
                         Sort.by("displayName").ascending().and(Sort.by("id").ascending()))).getContent().stream()
                 .filter(user -> available(user, tenantId, now))
                 .filter(user -> !String.valueOf(user.getId()).equals(operatorId))

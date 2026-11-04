@@ -1,0 +1,62 @@
+{
+  "target": "c0a9d5ac33690d10d009e768c286671475db0943",
+  "scope": "Finite target-read methods and unchanged write/call-chain references; hashes do not claim whole-file review",
+  "sourceFingerprints": [
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/identity/service/TenantTransferTargets.java",
+      "bytes": 5434,
+      "sha256": "2878992aed2e574224fb3646e6c5607850a074a3c6257f3eda40e5bb09350cfa"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/WorkflowResponsibilityService.java",
+      "bytes": 18432,
+      "sha256": "a8395ff9b57a7a52f27e1423a19acdcd9611f850f3e9dfb30e8fd6a7b57b92f5"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/recordcontrol/service/RecordControlPostgresIntegrationTest.java",
+      "bytes": 77904,
+      "sha256": "811cb3511204eb7a78f200a3f45796041c9d704839a7a36eedc2ee27aafb1be2"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/WorkflowOperationsQuery.java",
+      "bytes": 9393,
+      "sha256": "b59d4d91b44b62081d45fc45fbafeab258300459282a6254819067b62d6f357b"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowOperationsController.java",
+      "bytes": 2957,
+      "sha256": "10e75f8c89f8fe29da3a9c313999ed9d9ab4734528c0da5d59c3cf48e24cd5b1"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormWorkflowOperations.java",
+      "bytes": 19446,
+      "sha256": "428ac43f257f01a1168c0fc7a2a685235d7d52c013bd1c6a3b38018561920cc7"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java",
+      "bytes": 53872,
+      "sha256": "7b29f2a1d4f5d3997ddbc952ae256cda66fad7d5ce02b61558e72d6bb16a24fd"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionAccess.java",
+      "bytes": 19931,
+      "sha256": "4cc08bef2602a87812713e43e94001485ad47f287899dd336e5e74872a3b273d"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql",
+      "bytes": 106718,
+      "sha256": "61560f972ef9eeeb8f69620c947b54b2326ad9341d929b19385653bec81cf99b"
+    }
+  ],
+  "reviewedMethodGroups": [
+    "TenantTransferTargets all search overloads, require, available",
+    "WorkflowResponsibilityService targets, eligible, change, requireActive, requireOperator, tenant, JSON/taskState",
+    "WorkflowOperationsController target/transfer routes; WorkflowEngine transfer target and action domain boundary",
+    "WorkflowOperationsQuery detail static name-query candidate"
+  ],
+  "wholeFileComplete": 0,
+  "historicalUniqueCoverage": null,
+  "A23": "review-notes.md",
+  "extractionPlan": "review-notes.md",
+  "pendingAllOtherQueues": true
+}

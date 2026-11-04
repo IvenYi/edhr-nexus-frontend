@@ -594,6 +594,48 @@ class RecordControlPostgresIntegrationTest {
         assertThat(count("workflow_intervention")).isEqualTo(1);
     }
 
+    @ParameterizedTest @ValueSource(strings = {"CHANGE", "OBSOLETE", "SYNTHETIC_CASE"})
+    void frozenReassignmentSearchQualifiesBeforeLimitingUsers(String businessType) {
+        requests.submit(command(businessType.equals("SYNTHETIC_CASE") ? BusinessType.CHANGE : BusinessType.valueOf(businessType)));
+        personnel(); manager(); long task = taskId(); unqualifiedUsersBeforeReviewTarget();
+        if (businessType.equals("SYNTHETIC_CASE")) jdbc.update("UPDATE workflow_instance SET business_type=?", businessType);
+        assertThat(responsibility.reassignmentTargets(task, "target-scope")).extracting(row -> row.get("id")).containsExactly("43");
+    }
+
+    @ParameterizedTest @ValueSource(strings = {"CHANGE", "OBSOLETE"})
+    void recordControlTransferSearchQualifiesBeforeLimitingUsers(String businessType) {
+        requests.submit(command(BusinessType.valueOf(businessType))); personnel(); long task = taskId();
+        unqualifiedUsersBeforeReviewTarget(); AuditContext.setOperator("42", "审批人");
+        assertThat(responsibility.transferTargets(task, "target-scope")).extracting(row -> row.get("id")).containsExactly("43");
+    }
+
+    @Test void repeatedResponsibilitySearchUsesOriginalCandidatesBeforeLimit() {
+        requests.submit(command(BusinessType.CHANGE)); personnel(); manager(); long task = taskId();
+        responsibility.reassign(task, reassignment(task, "43", "test-signature-password"));
+        unqualifiedUsersBeforeReviewTarget(); jdbc.update("UPDATE user_account SET display_name='target-scope-Z2' WHERE id=42");
+        String before = scalar("SELECT candidate_snapshot::text FROM workflow_task");
+        AuditContext.setOperator("43", "新审批人");
+        assertThat(responsibility.transferTargets(task, "target-scope")).extracting(row -> row.get("id")).containsExactly("42");
+        assertThat(scalar("SELECT candidate_snapshot::text FROM workflow_task")).isEqualTo(before);
+    }
+
+    @Test void unrestrictedRecordControlTargetsExcludeApplicantBeforeLimit() {
+        requests.submit(command(BusinessType.CHANGE)); personnel(); manager(); long task = taskId();
+        unqualifiedUsersBeforeReviewTarget();
+        jdbc.update("UPDATE user_account SET display_name='limit-scope-'||id WHERE id>=1000");
+        jdbc.update("UPDATE user_account SET display_name='limit-scope' WHERE id=41");
+        jdbc.update("UPDATE workflow_task SET candidate_snapshot='{\"unrestricted\":true}'::jsonb");
+        var targets = responsibility.reassignmentTargets(task, "limit-scope");
+        assertThat(targets).hasSize(100);
+        assertThat(targets).extracting(row -> row.get("id")).doesNotContain("41", "42");
+    }
+
+    @Test void emptyFrozenCandidatesDoNotBecomeUnrestricted() {
+        requests.submit(command(BusinessType.CHANGE)); personnel(); manager(); long task = taskId();
+        unqualifiedUsersBeforeReviewTarget(); jdbc.update("UPDATE workflow_task SET candidate_snapshot='{\"userIds\":[]}'::jsonb");
+        assertThat(responsibility.reassignmentTargets(task, "target-scope")).isEmpty();
+    }
+
     @Test void withdrawalAndFinalApprovalHaveExactlyOneWinner() throws Exception {
         var request = requests.submit(command(BusinessType.CHANGE)); long task = taskId();
         var pool = Executors.newFixedThreadPool(2); var start = new CountDownLatch(1);

@@ -1,0 +1,73 @@
+decisionPackage:
+  id: DEC-PACKAGE-AUDIT-FROZEN-TARGET-SCOPE-20261104
+  scope: PR56合入后的持续全审；记录控制转办和管理员改派、通用任务改派的既有候选条件先于100人限量
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: c0a9d5ac33690d10d009e768c286671475db0943
+    targetBranch: edhr-dev
+    targetCommit: c0a9d5ac33690d10d009e768c286671475db0943
+    contractReadCommit: c0a9d5ac33690d10d009e768c286671475db0943
+    uncommittedContractPaths: []
+  summary: PR56人工合入且整树与上一交付相同，无外部代码或知识增量。候选集合、申请人回避和转出人排除在100条之后执行，可能漏列真实候选或少返回一行；用真实PG边界复现并前移等价条件，最终写入资格与签名状态复核不变。
+  confirmed: {concepts: [], relationships: [], rules: [], executionContracts: []}
+  inferred:
+    - id: inference.frozen-target-filter-before-limit
+      statement: 将既有eligible的原候选成员/unrestricted/记录控制申请人回避和转办人排除转为SQL查询条件，按现有含义筛选后排序限量。
+      rationale: DEC0092-02/03/05、DEC0081及DEC0093局部替代；不以工程资格谓词补录新的用户政策。
+      relatedIds: [DEC-0092-02, DEC-0092-03, DEC-0081-01, DEC-0093-02]
+  unresolved: []
+  replacementScopes: []
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - area: workflow-target-read
+        change: 复用目录查询的Specification组合能力，把领域条件置于PageRequest之前。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/WorkflowResponsibilityService.java, gmp-platform/backend/src/main/java/com/zencas/edhr/identity/service/TenantTransferTargets.java]
+    transitiveImpacts:
+      - area: shared-directory
+        change: 现有三参租户内转办和双权限读取仍用原条件；DHR/普通表单PR56修复须回归。
+        evidenceReferences: []
+    potentialImpacts:
+      - area: large-candidate-snapshot
+        concern: 大原候选集合产生IN参数；先核原始数组与查询行为，不增加索引或宣称生产容量，另量化边界。
+        evidenceReferences: []
+    unaffectedAreas:
+      - area: write-runtime-and-UI
+        change: 不改通用/记录控制/普通表单/DHR目标政策、写入eligible、签名/权限/任务状态/锁/事务/审计/冻结或前端与接口。
+        evidenceReferences: [docs/knowledge/decisions/DEC-0092-workflow-operations-entry-and-actions.yaml, docs/knowledge/decisions/DEC-0093-central-form-dhr-workflow-responsibility.yaml]
+    compatibilityAndMigration: []
+    snapshotImpacts:
+      - area: original-candidate
+        change: 按已有originSnapshot文本读取原候选；不修改当前责任或历史证据，不恢复缺失历史。
+        evidenceReferences: []
+    auditImpacts:
+      - area: read-only
+        change: 查询不落签名、任务或审计；现有责任改变同事务写入保持。
+        evidenceReferences: []
+    permissionImpacts:
+      - area: same-eligibility
+        change: 记录控制仍原候选且申请人回避，通用改派仍原候选；通用本人转办仍同租户委托；空候选不变为unrestricted，当前任务/签名资格执行时再次检查。
+        evidenceReferences: []
+    testImpacts:
+      - scope: native-postgres
+        scenarios: [120前置非候选不遮挡真候选, CHANGE和OBSOLETE及通用改派, 两类记录控制转办, 重复责任变化后原候选, unrestricted申请人回避先于限量, 空候选不放宽, 现有130项相邻回归]
+        evidenceReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/recordcontrol/service/RecordControlPostgresIntegrationTest.java]
+    evidenceGaps: [不是全账号或真实浏览器到数据库签署整链, 非全量原候选规模/生产延迟或EXPLAIN验收, 原931知识增量候选/全仓UI86诊断及W2-W7余项保持]
+  extensionStrategy:
+    selectedPaths: [product-core]
+    rationale: 使用现有Spring Data Specification组合目录与领域条件，无新策略框架、配置或业务分支。
+    ownershipBoundaries:
+      - owner: identity-personnel
+        responsibility: 租户可用用户、排序和100上限；接受调用者的查询谓词。
+      - owner: workflow-responsibility
+        responsibility: 指定原候选、申请人和转办人范围；写入端继续实时校验。
+  affectedFiles:
+    - {path: gmp-platform/backend/src/main/java/com/zencas/edhr/identity/service/TenantTransferTargets.java, changeType: update, reason: 组合领域条件后限量}
+    - {path: gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/WorkflowResponsibilityService.java, changeType: update, reason: 前移既有候选与排除谓词}
+    - {path: gmp-platform/backend/src/test/java/com/zencas/edhr/recordcontrol/service/RecordControlPostgresIntegrationTest.java, changeType: update, reason: 真正数据库边界回归}
+  acceptanceScenarios:
+    - id: scenario.frozen-targets-before-limit
+      given: 前120个租户有效用户不在原候选，排序在后的43号是合法目标
+      when: 读取记录控制转办或改派、通用任务改派目标
+      then: 返回43，申请人及当前处理人仍排除，空候选不放宽；原责任写入和签署保护保持
+      evidenceRequirements: [原c0产品同字节用例负控, 主侧原生回归, 本体有限ID核对, 全新独立最终质量]
