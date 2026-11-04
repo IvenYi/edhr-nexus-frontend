@@ -7,6 +7,7 @@ import com.zencas.edhr.identity.service.TenantTransferTargets;
 import org.hibernate.resource.jdbc.spi.StatementInspector;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -30,6 +31,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
@@ -100,6 +102,76 @@ class WorkflowReadObservationPostgresTest {
         }
         record("workflow-detail", Map.of("tasks", count, "existingAssignees", Math.min(count, 2),
                 "returnedTasks", tasks.size(), "assigneeKinds", "two repeated existing IDs, null, missing ID"), read);
+        assertThat(nameReads(read)).isLessThanOrEqualTo(1);
+        assertThat(read.jdbcSql.size() + read.hibernateSql.size()).isLessThanOrEqualTo(count == 0 ? 5 : 6);
+    }
+
+    @Test void noAssigneesSkipTheNameRead() throws Exception {
+        jdbc.update("""
+                INSERT INTO workflow_task(id,instance_id,node_id,status,candidate_snapshot)
+                SELECT 10000+n,900100,900103,'COMPLETED','{}'::jsonb FROM generate_series(0,24) n
+                """);
+        Read<Map<String, Object>> read = capture(() -> operations.detail(900100L));
+        @SuppressWarnings("unchecked") var tasks = (List<Map<String, Object>>) read.value.get("tasks");
+        assertThat(tasks).hasSize(25).allSatisfy(task -> {
+            assertThat(task.get("assigneeId")).isNull();
+            assertThat(task.get("assigneeName")).isEqualTo("待候选人处理");
+        });
+        record("workflow-detail-null-only", Map.of("tasks", 25), read);
+        assertThat(nameReads(read)).isZero();
+        assertThat(read.jdbcSql.size() + read.hibernateSql.size()).isEqualTo(5);
+    }
+
+    @Test void batchNamesPreserveTextIdentityAndHistoricalEvidence() throws Exception {
+        jdbc.update("INSERT INTO user_account(id,tenant_id,username,display_name,password_hash,status) VALUES (-1,0,'read-negative','负ID账户','not-used','ACTIVE'),(44,0,'read-blank','','not-used','ACTIVE')");
+        var assignees = Arrays.asList("42", "43", "42", null, "999999", "00042", " 42", "42 ", "+42", "not-an-id", "", "9223372036854775808", "' OR 1=1 --", "-1", "44");
+        var rows = new ArrayList<Object[]>();
+        for (int i = 0; i < assignees.size(); i++) rows.add(new Object[]{10000L + i, assignees.get(i)});
+        jdbc.batchUpdate("INSERT INTO workflow_task(id,instance_id,node_id,status,assignee_id,candidate_snapshot,opinion,action,signature_id) VALUES(?,900100,900103,'COMPLETED',?,'{}'::jsonb,'保留意见','APPROVE',777)", rows);
+        jdbc.update("INSERT INTO signature(id,target_type,target_id,meaning,signer_id,signer_name,signature_password_hash,snapshot_data) VALUES(777,'WORKFLOW_TASK','10000','审批','42','签署时旧名','not-used','{\"signerName\":\"签署时旧名\"}'::jsonb)");
+        jdbc.update("INSERT INTO workflow_action_log(id,instance_id,task_id,node_id,action,operator_id,operator_name,snapshot) VALUES(920001,900100,10000,'900103','TASK_COMPLETE','42','日志存储旧名','{\"signerName\":\"快照旧名\"}'::jsonb)");
+        String frozenSignature = jdbc.queryForObject("SELECT snapshot_data::text FROM signature WHERE id=777", String.class);
+        String candidate = jdbc.queryForObject("SELECT candidate_snapshot::text FROM workflow_task WHERE id=10000", String.class);
+        Read<Map<String, Object>> read = capture(() -> operations.detail(900100L));
+        @SuppressWarnings("unchecked") var tasks = (List<Map<String, Object>>) read.value.get("tasks");
+        assertThat(tasks).hasSize(assignees.size());
+        for (var task : tasks) {
+            int ordinal = Integer.parseInt(task.get("id").toString()) - 10000;
+            String assignee = assignees.get(ordinal);
+            assertThat(task.get("assigneeId")).isEqualTo(assignee);
+            String name = "42".equals(assignee) ? "甲审批人" : "43".equals(assignee) ? "乙审批人"
+                    : "-1".equals(assignee) ? "负ID账户" : "44".equals(assignee) ? "" : "待候选人处理";
+            assertThat(task.get("assigneeName")).isEqualTo(name);
+            assertThat(task.get("opinion")).isEqualTo("保留意见");
+            assertThat(task.get("action")).isEqualTo("APPROVE");
+            assertThat(task.get("signatureId")).isEqualTo("777");
+            assertThat(task.get("taskState")).isEqualTo(WorkflowResponsibilityService.taskState(
+                    com.zencas.edhr.workflow.entity.WorkflowTask.builder().id(10000L + ordinal).nodeId(900103L)
+                            .status("COMPLETED").assigneeId(assignee).candidateSnapshot(candidate).build()));
+        }
+        @SuppressWarnings("unchecked") var logs = (List<Map<String, Object>>) read.value.get("logs");
+        assertThat(logs).hasSize(1);
+        assertThat(logs.getFirst().get("operatorName")).isEqualTo("甲审批人");
+        assertThat(mapper.readTree(logs.getFirst().get("snapshot").toString()).path("signerName").asText()).isEqualTo("快照旧名");
+        assertThat(jdbc.queryForObject("SELECT snapshot_data::text FROM signature WHERE id=777", String.class)).isEqualTo(frozenSignature);
+        record("workflow-detail-text-identities", Map.of("tasks", assignees.size()), read);
+        assertThat(nameReads(read)).isLessThanOrEqualTo(1);
+    }
+
+    @Test void distinctAssigneesAreReadTogether() throws Exception {
+        jdbc.update("INSERT INTO user_account(id,tenant_id,username,display_name,password_hash,status) SELECT 40000+n,0,'distinct-'||n,'批量姓名-'||n,'not-used','ACTIVE' FROM generate_series(0,999) n");
+        jdbc.update("INSERT INTO workflow_task(id,instance_id,node_id,status,assignee_id,candidate_snapshot) SELECT 10000+n,900100,900103,'COMPLETED',(40000+n)::text,'{}'::jsonb FROM generate_series(0,999) n");
+        Read<Map<String, Object>> read = capture(() -> operations.detail(900100L));
+        @SuppressWarnings("unchecked") var tasks = (List<Map<String, Object>>) read.value.get("tasks");
+        assertThat(tasks).hasSize(1000);
+        for (var task : tasks) assertThat(task.get("assigneeName")).isEqualTo("批量姓名-" + (Integer.parseInt(task.get("id").toString()) - 10000));
+        record("workflow-detail-distinct-identities", Map.of("tasks", 1000, "distinctAssignees", 1000), read);
+        assertThat(nameReads(read)).isLessThanOrEqualTo(1);
+        assertThat(read.jdbcSql.size() + read.hibernateSql.size()).isLessThanOrEqualTo(6);
+    }
+
+    private static long nameReads(Read<?> read) {
+        return read.jdbcSql.stream().filter(sql -> sql.contains("FROM user_account WHERE CAST(id AS VARCHAR)")).count();
     }
 
     @ParameterizedTest @ValueSource(ints = {0, 1, 99, 100, 101, 5000})

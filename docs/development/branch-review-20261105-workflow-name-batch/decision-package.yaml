@@ -1,0 +1,70 @@
+decisionPackage:
+  id: DEC-PACKAGE-AUDIT-WORKFLOW-NAME-BATCH-20261105
+  scope: 在未合入PR58原分支追加中央流程详情当前处理人姓名批量读取；目录COUNT不优化
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: 5e2d1c084eea20a8d1be6f86bda4121b612cacce
+    targetBranch: edhr-dev
+    targetCommit: fa5921698f5fa4024ad7ca86ee2a90e3cd3a9620
+    contractReadCommit: 5e2d1c084eea20a8d1be6f86bda4121b612cacce
+    uncommittedContractPaths: []
+  summary: 用户2026-11-05对既有性能提案明确选择“先做姓名批量读取（推荐）”。PR58仍OPEN，target无新增提交；在同一分支追加小改、保留原取证，更新PR最终说明。只优化WorkflowOperationsQuery.detail姓名，原读取授权、当前名字/fallback、任务摘要/形状、日志及历史签署证据保持。
+  confirmed: {concepts: [], relationships: [], rules: [], executionContracts: []}
+  inferred:
+    - id: inference.request-local-name-batch
+      statement: 复用已有任务集合，收集不同的非NULL文本处理人ID，以一个varchar数组参数读取匹配的当前姓名；无ID时不查。保持原文本比较，不转Long/trim，不跨请求缓存。
+      rationale: 用户授权性能选择及原detail逐任务CAST(id AS VARCHAR)等值语义；数组绑定避免随不同ID数增加SQL参数个数，不声称生产容量已验收。
+      relatedIds: [DEC-0074-01, DEC-0092-01, DEC-0093-01]
+  unresolved: []
+  replacementScopes: []
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - area: workflow-detail-name-read
+        change: 同一请求一次读取任务，批量当前姓名映射供所有任务复用；不改投影视图字段或任务排序。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/WorkflowOperationsQuery.java]
+    transitiveImpacts:
+      - area: evidence-and-regression
+        change: 原观测新增有意义的有界查询预算，补全NULL、非规范文本、负ID、缺失账户/空姓名、状态摘要及签署/日志证据保持和1000不同人员。
+        evidenceReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/service/WorkflowReadObservationPostgresTest.java]
+    potentialImpacts:
+      - area: query-scale-and-name-time
+        concern: 当前姓名读取时点由逐任务改为一次，仍读当前目录而非历史签名；Map/数组随不同处理人数增长。保留文本CAST，未新增索引或承诺大分布EXPLAIN/生产SLA。
+        evidenceReferences: []
+    unaffectedAreas:
+      - area: remaining-product
+        change: 目录COUNT、普通表单独立详情、列表、业务规则、读权限/visibility、责任写入/签名/锁/事务/审计/冻结、前端、迁移和索引不改。
+        evidenceReferences: []
+    compatibilityAndMigration: []
+    snapshotImpacts:
+      - area: signature-and-history
+        change: 当前名不替代历史签署或日志快照；不恢复旧数据或改写责任候选。
+        evidenceReferences: [docs/knowledge/decisions/DEC-0093-central-form-dhr-workflow-responsibility.yaml]
+    auditImpacts:
+      - area: read-only
+        change: 保持原日志当前名优先及snapshot原件，读取不新增签名/审计或写业务数据。
+        evidenceReferences: []
+    permissionImpacts:
+      - area: existing-read-scope
+        change: 可见实例检查仍先执行，批量只查实际任务中的ID，不查全租户；不授予新处理权或扩大读取入口。
+        evidenceReferences: []
+    testImpacts:
+      - scope: native-name-batch
+        scenarios: [0/1/100/1000任务有界查询, 全NULL不读姓名, 非规范/超Long范围文本保留fallback及SQL安全绑定, 1000不同有效人员一次读全, taskState/原签署及日志快照保持, 原目录和138相邻回归]
+        evidenceReferences: []
+    evidenceGaps: [非实际HTTP/JWT/浏览器签署整链或全账号矩阵, 大分布EXPLAIN/并发改名/生产延迟及巨大候选参数仍另审, 原931知识/86 UI及W2-W7高风险/A12/全审余项保持]
+  extensionStrategy:
+    selectedPaths: [product-core]
+    rationale: 在现有只读投影中增加私有请求内姓名映射，使用已有Spring6.1.8 SqlArrayValue，不增加缓存/框架/依赖或配置。
+    ownershipBoundaries:
+      - owner: workflow-operations-query
+        responsibility: 当前目录姓名批量读取与任务投影；领域授权和签署/责任写入保持原所有者。
+  affectedFiles:
+    - {path: gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/WorkflowOperationsQuery.java, changeType: update, reason: 去掉逐任务姓名SQL，仅查询实际不同非NULL ID}
+    - {path: gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/service/WorkflowReadObservationPostgresTest.java, changeType: update, reason: 增加查询预算和文本/历史/不同人员原生回归}
+  acceptanceScenarios:
+    - id: scenario.batch-name-projection-equivalent
+      given: 实际任务包含重复、不同有效人员、NULL、缺失及非规范文本ID，并有已有签署及日志快照
+      when: 从原详情服务读取
+      then: 0姓名ID不查，其余至多一次当前姓名SQL，普通详情至多6条业务读SQL；原字段、任务摘要/顺序、读取资格、fallback及历史证据保持
+      evidenceRequirements: [旧5e2产品同最终测试真实负控, 主侧151原生回归, 有限本体核对, 全新独立最终质量及服务器SQL复测]

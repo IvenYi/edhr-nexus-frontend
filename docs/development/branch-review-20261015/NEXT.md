@@ -1,5 +1,13 @@
 # 持续推进台账
 
+## PR58仍OPEN：用户授权姓名批量读取
+
+用户2026-11-05明确“先做姓名批量读取（推荐）”；实际fetch target仍fa5921698f5fa4024ad7ca86ee2a90e3cd3a9620，PR58未合入，无外部增量。在原分支追加[新批次](../branch-review-20261105-workflow-name-batch/README.md)，原取证原件/旧质量保持历史范围，不覆盖本次产品实现。单产品WorkflowOperationsQuery私有请求内姓名Map复用同一任务集合，以一varchar数组参数匹配原文本ID；不trim/转Long/全租户抓取/跨请求缓存。列表/visibility/日志、写入/签名/锁/事务/审计/冻结与前端/迁移/索引保持，目录COUNT明确不做。
+
+最终主侧151/151（13观测边界+原138）0F/E/S；详情0/1/100/1000任务5/6/6/6，25全NULL5，15文本身份6，1000不同人6；原同字节7旧控5真性能红/2正/0E/S。首旧控2夹具E由同节点多PENDING违反活动唯一索引，改为COMPLETED历史；初修后150正/1空MapNULL错误由新用例捕获，主审改为空HashMap后全151重跑通过。所有阶段分离留原件，不降低断言/约束、不累计旧通过；当前待本体FINAL及全新独立最终质量，不提前宣称完成。
+
+仅姓名性能问题有实现，目录6例仍1/1/1/2/2/2，其他所有全审/性能余项及旧931知识/86 UI继续。原8既有声明/345知识和P0边界待本批角色正式回执；原b687 QA及1130服务器对数不能替代新组合。全部角色FINAL后实际PR前漂移/阶段复核，再更新PR58标题正文反映最终范围；不自动merge/deploy/恢复/扫删或查询触发CI。
+
 ## PR57已合入：流程详情姓名及目录计数取证
 
 已交付[PR58](https://github.com/IvenYi/edhr-nexus-frontend/pull/58)，audit/edhr-dev-detail-read-audit-20261104→edhr-dev，观察OPEN/MERGEABLE/CLEAN，建议人工合入本批取证测试/记录，不当性能修复合入。受测b687300a及归档340b74d3后只L0交付登记，其他受测既有路径保持；本批evidence/delivery-verification.json保留实际观察。下一批先fetch真实merge/增量，按用户选择确定姓名/目录优化；未选时继续无依赖的候选参数/文本ID计划及全审取证，两个性能发现、W6/W7和所有原队列不关闭，不自动merge/deploy/恢复。
