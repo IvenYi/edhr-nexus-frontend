@@ -1,5 +1,21 @@
 # 持续推进台账
 
+## PR56已合入：记录控制及通用改派原候选漏列
+
+已交付[PR57](https://github.com/IvenYi/edhr-nexus-frontend/pull/57)，audit/edhr-dev-frozen-target-review-20261104→edhr-dev，观察OPEN/MERGEABLE/CLEAN，建议本批人工合入。受测代码2e2cde63及归档93cefaeb后仅L0交付登记，其他受测既有路径保持；实际观察见本批evidence/delivery-verification.json。下一批先fetch真实merge/新提交，量化中央详情逐任务姓名及目录满页额外COUNT/文本ID谓词与大候选参数，不把静态5+N当运行数据；W6/W7及全部原余项保持，不自动merge/deploy/恢复。
+
+本批全新最终质量已对clean受测`2e2cde63d1a247942e94b8e5b941f6c1e174b6db`正式passed/FINAL，11/11必需检查、独立138/138和知识89/89全过；独立原c0同8为7真断言红/1空候选正控/0E/S。两个质量子角色、本体及其子角色均FINAL，自有资源清理完成。145最终产物加manifest/回执共147成员原字节归档，初helper/清理观察错误保留而不计产品失败。全部角色FINAL后实际完成PR前无漂移/阶段/余项复核，target仍c0；后续仅L0归档/验收/范围/交付/NEXT，其余受测既有路径保持。本批可人工合入，不代表全审完成；下文待QA/本体是历史阶段。
+
+本体现已NA/FINAL，19既有ID有限重审（子角色15声明重叠不相加）、345知识字节不变、89正式知识测试通过、23来源指纹及6组写入保护保持，子角色FINAL。主侧/本体93份原件原字节归档，主侧绿138/红8原件分离；正在锁clean候选交全新最终质量，下文待本体是历史阶段，不提前宣称quality passed。
+
+实际fetch最新edhr-dev@c0a9d5ac33690d10d009e768c286671475db0943，PR56人工合入且整树同e284dd6b，无外部产品/知识/契约增量；新分支audit/edhr-dev-frozen-target-review-20261104。[本批](../branch-review-20261104-frozen-targets/README.md)L2继续上一队列，两个产品文件把已有原候选/unrestricted、记录控制申请人回避/转出人排除置于SQL限100之前；普通本人转办租户范围及表单/DHR原双权限保持，写入eligible/签名/状态/锁/事务/审计/冻结原字节不动。
+
+原c0同最终测试8项为7真实断言红/1空候选正控/0E/S，主侧9类138/138通过（当前记录控制52/普通转办23/相邻63），不是138新增或7种根因。前置120非候选造成漏列及unrestricted申请人后过滤仅99行同根修复；不提高100、不放宽候选。当前待本体正式FINAL及全新独立最终质量，不提前resolved；原件各阶段分开留存，未改旧结果。
+
+固定c0的7420路径仅盘点；沿前7c清单并明确3产品/交付记录差异，不拿旧指纹冒充新源。整文件0/历史unique未知，旧931知识候选和86 UI诊断仍pending，本批无前端变化亦未重跑UI或宣称真实账号签署E2E。具体方法范围、A23与候选解码纯函数和较长模块拆分方案见review-notes。中央详情姓名逐任务查、JSON/COUNT、汇总605及导出内存、超大原候选IN参数/计划仍独立量化后讨论，未实施性能优化/索引。
+
+整体W3/W4/W5交叉、W2余项、W6健壮性/性能/抽取/A23含旧已审、W7新提交保持。记录控制/提醒/改派已实现和完整质量/异常/源签署判读、DHR目录、A12历史/重建及归档/放行后变更剩余缺口分别处理；原全账号/收件人/ACL引用并发和用户暂缓保持。全部派发角色FINAL后实际做PR前无漂移/阶段/余项复核再交付；不自动merge/deploy/恢复/扫删，不查询触发CI。
+
 ## PR55已合入：流程增量与改派目标漏列
 
 已交付[PR56](https://github.com/IvenYi/edhr-nexus-frontend/pull/56)，audit/edhr-dev-increment-review-20261103→edhr-dev，观察OPEN/MERGEABLE/CLEAN，建议本批人工合入。产品受测提交1b4d5c2b、归档26d3478c后仅L0交付登记，其他受测路径保持；本批evidence/delivery-verification.json记录实际观察及字节保持边界。下一批先fetch真实merge和新提交，优先其他改派候选限量边界及中央详情名字查询，继续知识增量和W6/W7，不自动merge/deploy/恢复。

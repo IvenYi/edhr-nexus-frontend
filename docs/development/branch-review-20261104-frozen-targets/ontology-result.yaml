@@ -1,0 +1,197 @@
+ontologyResult:
+  result: not-applicable
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: c0a9d5ac33690d10d009e768c286671475db0943
+    targetBranch: edhr-dev
+    targetCommit: c0a9d5ac33690d10d009e768c286671475db0943
+    contractReadCommit: c0a9d5ac33690d10d009e768c286671475db0943
+    uncommittedContractPaths: []
+  reason: 本次仅把既有原候选/unrestricted、申请人回避及转出人排除前移到数据库限100之前，保持实际目标资格、双权限分支及最终签署/状态/锁/审计/冻结复核；没有新政策、当前定义替代或业务歧义，无需更新知识。
+  changedArtifacts: []
+  knowledgeSync:
+  - id: DEC-0081-01
+    disposition: retained
+    scope: 普通任务及普通表单本人转办可集合外同租户，不能扩给记录控制或管理员改派
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0081-tenant-scoped-task-delegation.yaml
+    - docs/knowledge/evidence/tenant-task-delegation-2026-10-20.md
+  - id: DEC-0081-02
+    disposition: retained
+    scope: 原候选来源留存与当前责任分开，originSnapshot不重新授权旧候选
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0081-tenant-scoped-task-delegation.yaml
+    - docs/knowledge/evidence/tenant-task-delegation-2026-10-20.md
+  - id: DEC-0081-03
+    disposition: retained
+    scope: 转办仅改责任，不推进节点或形成审批结果，必填原因及历史审计保持
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0081-tenant-scoped-task-delegation.yaml
+    - docs/knowledge/evidence/tenant-task-delegation-2026-10-20.md
+  - id: DEC-0081-04
+    disposition: retained
+    scope: DHR本人转办和通用绕过禁令保留；管理员改派未开放范围已被DEC0093-02局部替代，原文保留
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0081-tenant-scoped-task-delegation.yaml
+    - docs/knowledge/evidence/central-form-dhr-workflow-20261102.md
+  - id: DEC-0091-01
+    disposition: retained
+    scope: 记录控制重新分配必须有效电子签名，读名单不替代签名
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0091-workflow-reassignment-signature.yaml
+    - docs/knowledge/evidence/workflow-reassignment-signature-confirmed.md
+  - id: DEC-0091-02
+    disposition: retained
+    scope: 管理权限、合法目标、原因、签名与审计分别强制，只改任务责任
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0091-workflow-reassignment-signature.yaml
+    - docs/knowledge/evidence/workflow-reassignment-signature-confirmed.md
+  - id: DEC-0091-03
+    disposition: retained
+    scope: 保留调研时点与禁止动作；DHR管理员未开放旧范围按DEC0093局部替代
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0091-workflow-reassignment-signature.yaml
+    - docs/knowledge/evidence/central-form-dhr-workflow-20261102.md
+  - id: DEC-0092-02
+    disposition: retained
+    scope: 记录控制变更/作废转办限原授权候选，申请人回避；候选与排除条件前移不扩范围
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0092-workflow-operations-entry-and-actions.yaml
+    - docs/knowledge/evidence/workflow-operations-20261030.md
+  - id: DEC-0092-03
+    disposition: retained
+    scope: 重新分配必签、专门权限、合法目标/原因、实际签署身份和事务审计均保持
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0092-workflow-operations-entry-and-actions.yaml
+    - docs/knowledge/evidence/workflow-operations-20261030.md
+  - id: DEC-0092-04
+    disposition: retained
+    scope: 受限撤回属于独立动作，不受目标读取修复改变
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0092-workflow-operations-entry-and-actions.yaml
+    - docs/knowledge/evidence/workflow-operations-20261030.md
+  - id: DEC-0092-05
+    disposition: retained
+    scope: 运行日志与合规审计分层、不形成批准及其他禁令保持；DHR管理员未开放旧范围局部替代
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0092-workflow-operations-entry-and-actions.yaml
+    - docs/knowledge/evidence/central-form-dhr-workflow-20261102.md
+  - id: DEC-0093-02
+    disposition: retained
+    scope: 普通表单/DHR管理员签名改派保持；DHR本人转办/撤回/通用批准仍禁止
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0093-central-form-dhr-workflow-responsibility.yaml
+    - docs/knowledge/evidence/central-form-dhr-workflow-20261102.md
+  - id: DEC-0093-03
+    disposition: retained
+    scope: 集中历史与表单/DHR领域审计同事务留证，本次读取不改写证据
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0093-central-form-dhr-workflow-responsibility.yaml
+    - docs/knowledge/evidence/central-form-dhr-workflow-20261102.md
+  - id: DEC-0093-04
+    disposition: retained
+    scope: 权限码/查询实现属于工程选择，不能以本次等价过滤捏造新政策或全系统验收
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0093-central-form-dhr-workflow-responsibility.yaml
+    - docs/knowledge/evidence/central-form-dhr-workflow-20261102.md
+  - id: rule.workflow.task-creation-freezes-candidate-resolution
+    disposition: retained
+    scope: 创建来源冻结，不因组织变化重算；原来源与当前受让人分别解释
+    sourceReferences:
+    - docs/knowledge/rules/identity.yaml
+    - docs/knowledge/evidence/tenant-task-delegation-2026-10-20.md
+  - id: rule.workflow.task-any-candidate-completes-and-closes-siblings
+    disposition: retained
+    scope: 当前处理资格与历史原候选不同；名单读取不重新赋予旧候选当前办理权
+    sourceReferences:
+    - docs/knowledge/rules/identity.yaml
+    - docs/knowledge/evidence/tenant-task-delegation-2026-10-20.md
+  - id: rule.identity.empty-subjects-do-not-expand-users
+    disposition: retained
+    scope: 公共空主体不展开全量用户；空冻结userIds不自动变为unrestricted，显式分支分别解释
+    sourceReferences:
+    - docs/knowledge/rules/identity.yaml
+    - docs/knowledge/evidence/tenant-task-delegation-2026-10-20.md
+  - id: rule.workflow-central-entry.signed-responsibility-change
+    disposition: retained
+    scope: 管理员改派签名、执行时状态复核、领域资格、冻结和双层审计保持
+    sourceReferences:
+    - docs/knowledge/rules/workflow-central-entry.yaml
+    - docs/knowledge/evidence/central-form-dhr-workflow-20261102.md
+  - id: question.multi-tenant-workflow-isolation
+    disposition: deferred
+    scope: 既有完整多租户隔离仍未决，局部同租户目标查询不关闭它；非本批阻断
+    sourceReferences:
+    - docs/knowledge/open-questions.yaml
+    - docs/knowledge/evidence/tenant-task-delegation-2026-10-20.md
+  conflicts: []
+  questions: []
+  validationEvidence:
+  - id: validation.formal-knowledge-89
+    checkType: schema
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f tools/knowledge-model/pom.xml
+      test
+    outcome: passed
+    evidence:
+    - knowledge-command.json
+    - knowledge-test.log
+    - knowledge-test-summary.json
+    - surefire/
+  - id: validation.knowledge-345-byte-preservation
+    checkType: reference
+    command: Compare all tracked docs/knowledge file bytes to c0 Git blobs
+    outcome: passed
+    evidence:
+    - knowledge-byte-check.json
+  - id: validation.existing-policy-19-and-child15
+    checkType: evidence-path
+    command: Read original user confirmations and current definitions; finite target
+      boundary review; child FINAL and manifest verified
+    outcome: passed
+    evidence:
+    - finite-id-review.json
+    - semantic-review.md
+    - policy-readonly/result.yaml
+    - child-final-receipt.json
+  - id: validation.current-source-and-write-guards
+    checkType: evidence-path
+    command: Inspect stable two-product diff; compare six write/adjacent source ranges
+      byte-for-byte to c0; snapshot23 current paths
+    outcome: passed
+    evidence:
+    - source-fingerprints.json
+    - guard-byte-equivalence.json
+    - product.diff
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages:
+    - P1
+    - P2
+    - P3
+verificationScope:
+  status: FINAL
+  runtimeTestsExecutedByThisRole: false
+  formalKnowledgeTestsExecuted: 89
+  knowledgeFilesUnchanged: 345
+  sourceFingerprints: 23
+  finiteExistingIdsReviewed: 19
+  overlappingChildStatements: 15
+  historicalKnowledgeIncrementCandidatesStillPending: 931
+  wholeKnowledgeSemanticAuditComplete: false
+  sourceWorkingTree:
+    sourceHead: c0a9d5ac33690d10d009e768c286671475db0943
+    modifiedIncludedPaths:
+    - gmp-platform/backend/src/main/java/com/zencas/edhr/identity/service/TenantTransferTargets.java
+    - gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/WorkflowResponsibilityService.java
+    - gmp-platform/backend/src/test/java/com/zencas/edhr/recordcontrol/service/RecordControlPostgresIntegrationTest.java
+    note: Source fingerprints locate uncommitted stable candidate; no fabricated product
+      commit. Contract/knowledge paths unchanged.
+  residuals:
+  - Large frozen-candidate IN parameter and production-scale EXPLAIN/latency untested
+  - Actual native-service regression and fresh final QA belong to main workflow
+  - Full account/UI/signature E2E and all prior W2-W7/high/A12 gaps remain
+  - Complete multi-tenant runtime isolation remains existing open question, not this
+    finite repair blocker

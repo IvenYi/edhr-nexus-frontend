@@ -19,6 +19,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.LockModeType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -197,9 +198,22 @@ public class WorkflowResponsibilityService {
         if ("DHR_SUMMARY".equals(instance.getBusinessType()) && reassignment)
             return new TenantTransferTargets(users).search(tenant(instance), task.getAssigneeId(), keyword,
                     Set.of("records.dhr-review", "dhr.reviews.act"));
-        return new TenantTransferTargets(users).search(tenant(instance), task.getAssigneeId(), keyword).stream()
-                .filter(user -> reassignment || !Objects.equals(user.get("id"), AuditContext.getOperatorId()))
-                .filter(user -> eligible(instance, task, user.get("id"), reassignment)).toList();
+        Specification<UserAccount> scope = (root, query, cb) -> cb.conjunction();
+        String operator = AuditContext.getOperatorId();
+        if (!reassignment && operator != null)
+            scope = scope.and((root, query, cb) -> cb.notEqual(root.get("id").as(String.class), operator));
+        if (recordControl(instance) || reassignment) {
+            JsonNode origin = json(task.getCandidateSnapshot());
+            if (origin.has("originSnapshot")) origin = json(origin.path("originSnapshot").asText());
+            if (!origin.path("unrestricted").asBoolean(false)) {
+                List<String> candidates = new ArrayList<>();
+                for (JsonNode user : origin.path("userIds")) candidates.add(user.asText());
+                scope = scope.and((root, query, cb) -> root.get("id").as(String.class).in(candidates));
+            }
+            if (recordControl(instance))
+                scope = scope.and((root, query, cb) -> cb.notEqual(root.get("id").as(String.class), instance.getInitiatorId()));
+        }
+        return new TenantTransferTargets(users).search(tenant(instance), task.getAssigneeId(), keyword, scope);
     }
 
     private boolean eligible(WorkflowInstance instance, WorkflowTask task, String target, boolean reassignment) {
