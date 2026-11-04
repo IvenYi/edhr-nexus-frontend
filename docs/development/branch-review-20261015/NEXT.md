@@ -2,6 +2,8 @@
 
 ## PR57已合入：流程详情姓名及目录计数取证
 
+已交付[PR58](https://github.com/IvenYi/edhr-nexus-frontend/pull/58)，audit/edhr-dev-detail-read-audit-20261104→edhr-dev，观察OPEN/MERGEABLE/CLEAN，建议人工合入本批取证测试/记录，不当性能修复合入。受测b687300a及归档340b74d3后只L0交付登记，其他受测既有路径保持；本批evidence/delivery-verification.json保留实际观察。下一批先fetch真实merge/增量，按用户选择确定姓名/目录优化；未选时继续无依赖的候选参数/文本ID计划及全审取证，两个性能发现、W6/W7和所有原队列不关闭，不自动merge/deploy/恢复。
+
 本批全新最终质量对clean受测`b687300ac8f02b9c6a307f58c8ddc525e7e7b6e5`正式passed/FINAL，11/11必需检查、独立148/148和知识89/89全过；服务器子项另10例复测，8查询签名1130次与事件精确匹配（姓名1101），29其他SELECT明确排除，不计额外unique或全部网络SQL。两个质量子角色和本体均FINAL，自有资源清理完成；工具将依赖软链误判dirty的断言原件保留，不是产品红。126最终产物加manifest/摘要回执共128成员归档，原70份主侧/本体原件保持。全部FINAL后实际PR前无漂移/阶段/余项复核，target仍fa；后续只L0归档/验收/范围/交付/NEXT，其他受测既有路径保持。两个性能发现仍open/未修复，方案选择仍待用户答复；下文待QA为历史阶段。
 
 实际fetch最新edhr-dev@fa5921698f5fa4024ad7ca86ee2a90e3cd3a9620，PR57人工合入且整树同8b53，无外部产品/知识/契约增量。新分支audit/edhr-dev-detail-read-audit-20261104；[本批](../branch-review-20261104-detail-reads/README.md)L2只新增显式opt-in真实PG观察测试，产品/页面/政策/迁移/索引不动。
