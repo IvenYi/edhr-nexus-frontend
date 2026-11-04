@@ -2,6 +2,8 @@
 
 ## PR58仍OPEN：用户授权姓名批量读取
 
+已更新[PR58](https://github.com/IvenYi/edhr-nexus-frontend/pull/58)为“批量读取详情处理人姓名并保留原投影”，正常推送原分支→edhr-dev，观察OPEN/MERGEABLE/CLEAN，建议人工合入当前实现及取证组合。受测代码6e10604c及归档1b95ac55后仅L0交付登记，其他受测既有路径保持；实际观察见本批evidence/delivery-verification.json。下一批先fetch真实合入/新提交，继续目录COUNT及其余全审队列；不再把用户姓名选择当未答或将旧b687质量覆盖新实现，不自动merge/deploy/恢复。
+
 组合已对clean受测`6e10604c7121c3e9ddb7196b560e1a079fd1ccf9`取得全新最终quality passed/FINAL、12/12必需检查；独立151/151和知识89/89全过。旧源最终7=5真性能红/2正/0E/S，服务器13例的8签名49 SELECT精确匹配，5次姓名读取均一个数组参数；32其他SELECT明确排除，不称全部网络SQL。三个质量子角色与本体均FINAL、资源清理，167最终产物加manifest/摘要回执共169成员按原字节归档，原109及全部旧阶段保持。全部FINAL后已实际PR前无漂移/阶段/余项复核，target仍fa且PR58仍OPEN；后续仅L0验收/原件/范围/交付/NEXT，其他受测既有路径保持。姓名N+1仅在本批范围verified-resolved，目录COUNT及原队列继续；下文待本体/QA为历史阶段。
 
 用户2026-11-05明确“先做姓名批量读取（推荐）”；实际fetch target仍fa5921698f5fa4024ad7ca86ee2a90e3cd3a9620，PR58未合入，无外部增量。在原分支追加[新批次](../branch-review-20261105-workflow-name-batch/README.md)，原取证原件/旧质量保持历史范围，不覆盖本次产品实现。单产品WorkflowOperationsQuery私有请求内姓名Map复用同一任务集合，以一varchar数组参数匹配原文本ID；不trim/转Long/全租户抓取/跨请求缓存。列表/visibility/日志、写入/签名/锁/事务/审计/冻结与前端/迁移/索引保持，目录COUNT明确不做。
