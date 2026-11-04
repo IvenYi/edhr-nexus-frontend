@@ -1,0 +1,214 @@
+qualityResult:
+  result: passed
+  baseCommit: fa5921698f5fa4024ad7ca86ee2a90e3cd3a9620
+  headCommit: b687300ac8f02b9c6a307f58c8ddc525e7e7b6e5
+  contractBaseline:
+    sourceCommit: b687300ac8f02b9c6a307f58c8ddc525e7e7b6e5
+    targetBranch: edhr-dev
+    targetCommit: fa5921698f5fa4024ad7ca86ee2a90e3cd3a9620
+    contractReadCommit: b687300ac8f02b9c6a307f58c8ddc525e7e7b6e5
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: clean
+    includedPaths: []
+    excludedPaths: []
+    untrackedPaths: []
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+  - id: check.baseline-contract-and-candidate
+    required: true
+    category: documentation
+    description: Independent start/end fetch confirms targetfa unchanged, clean candidateb687 and ancestry; current
+      contracts read at b687, no contract delta.
+    method: command
+    command: git fetch origin edhr-dev; rev-parse/status/merge-base; read current AGENTS/handoff/quality role
+    outcome: passed
+    evidence:
+    - baseline-start.json
+    - final-baseline.json
+    - source-snapshot/AGENTS.md
+    - source-snapshot/docs/agents/
+  - id: check.confirmed-policy-and-projection-boundary
+    required: true
+    category: requirements
+    description: DEC0074/0092/0093 and original confirmations retain read ownership, current directory names versus
+      stored signing evidence, existing fallback and authorization; no new policy or maturity promotion.
+    method: inspection
+    command: Read current decisions/original confirmations and measured source in full context
+    outcome: passed
+    evidence:
+    - policy-snapshot/
+    - independent-source-review.md
+    - evidence-scope/semantic-review.md
+  - id: check.product-and-original-test-preservation
+    required: true
+    category: security
+    description: All product/frontend/resources/migrations/architecture/contracts and preexisting tests/fixtures
+      unchanged; only new opt-in test and development records.
+    method: command
+    command: git diff base head across protected paths and old test modifications; compare source fingerprints
+    outcome: passed
+    evidence:
+    - candidate.diff.txt
+    - existing-source-preservation.json
+    - source-fingerprints.json
+  - id: check.observer-scope-and-functional-assertions
+    required: true
+    category: integration
+    description: Dual opt-in and owned URL guard, explicit TestConfiguration import, current-thread finally cleanup;
+      names/null/missing fallback, task shape and directory order/100 checked without fixing inefficient counts
+      as a contract.
+    method: inspection
+    command: Read WorkflowReadObservationPostgresTest, actual product queries and test-context isolation
+    outcome: passed
+    evidence:
+    - source-snapshot/gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/service/WorkflowReadObservationPostgresTest.java
+    - independent-source-review.md
+    - evidence-scope/result.yaml
+  - id: check.native-candidate-148
+    required: true
+    category: regression
+    description: Own detached candidate, PG16.15 and separate record/read/transfer DBs;10 classes148 actual tests0F/E/S.
+      Read/record each executes configured11 Liquibase changesets.
+    method: automated-test
+    command: PGUSER=postgres WORKFLOW_READ_TEST_DATABASE_URL=<own> RECORD_CONTROL_TEST_DATABASE_URL=<own> W3_TRANSFER_DATABASE_URL=<own>
+      mvn-edhr -Dedhr.audit.workflowReads=true -Dedhr.audit.workflowReadOutput=<own>/observations.jsonl -Dtest=<ten
+      classes in commands> test
+    outcome: passed
+    evidence:
+    - run-result.json
+    - native/maven.log
+    - native/test-summary.json
+    - native/surefire/
+    - native/liquibase-edhr_workflow_read_test_finalqa.txt
+    - native/liquibase-edhr_record_control_test_reads_finalqa.txt
+  - id: check.formal-knowledge-89-and-unchanged-files
+    required: true
+    category: ontology
+    description: 89 actual formal knowledge tests0F/E/S; independently compared345 knowledge files byte-identical
+      to target. Not full semantic audit or P0 promotion.
+    method: automated-test
+    command: mvn-edhr -f tools/knowledge-model/pom.xml test; compare345 tracked knowledge Git blobs
+    outcome: passed
+    evidence:
+    - knowledge/maven.log
+    - knowledge/test-summary.json
+    - knowledge/surefire/
+    - knowledge-byte-check.json
+  - id: check.independent-ten-observation-comparison
+    required: true
+    category: database
+    description: 'Fresh148 includes10 observation events, contents and logical counts match primary: detail5/6/105/1005;
+      directory1/1/1/2/2/2. Elapsed values not equality/SLA requirements.'
+    method: query
+    command: Parse own observation JSONL and compare semantic metadata/counts with pinned primary report
+    outcome: passed
+    evidence:
+    - native/observations.jsonl
+    - independent-observation-comparison.json
+  - id: check.server-executed-sql-crosscheck
+    required: true
+    category: database
+    description: 'Independent child10/10: all8 observed signatures match1130 actual PostgreSQL execute statements,
+      names1101;29 other SELECT messages outside observed signatures excluded. Aggregate current-path proof, not
+      all network/transactions.'
+    method: query
+    command: Run10 unmodified tests on own PG log_statement=all; normalize exact observed signatures and count server
+      execute messages
+    outcome: passed
+    evidence:
+    - server-sql/result.yaml
+    - server-sql/postgres.log
+    - server-sql/observations.jsonl
+    - server-sql/crosscheck.py
+    - server-sql/server-crosscheck.json
+  - id: check.original-evidence-and-scope-accounting
+    required: true
+    category: documentation
+    description: Evidence child independently verifies70 originals/gzip plus35 nested ontology originals,9/25 source
+      fingerprints,148 versus initial10 separation and finite8-ID/931/86/wholeFile0/historyUnknown accounting.
+    method: command
+    command: python3 evidence-scope/check-evidence.py; verify frozen child manifests and source scopes
+    outcome: passed
+    evidence:
+    - evidence-scope/result.yaml
+    - evidence-scope/checks.json
+    - evidence-scope/archive-verification.json
+    - subrole-final-verification.json
+  - id: check.A23-performance-and-extraction-limits
+    required: true
+    category: documentation
+    description: Known N+1/unused COUNT remain open pending user selection; documented private read-owner/bounded-content
+      proposals preserve qualification/state/signature history. No implementation, index, latency, huge-IN plan,
+      UI or whole-audit certification claimed.
+    method: inspection
+    command: Read current review notes/performance report and source; inspect helper/current-name/SQL and untouched
+      write boundaries
+    outcome: passed
+    evidence:
+    - independent-source-review.md
+    - evidence-scope/semantic-review.md
+  - id: check.resources-helper-accounting-and-subroles-final
+    required: true
+    category: documentation
+    description: Both read-only subroles FINAL. Own PG/worktree/tool link removed and main clean. Post-test tooling-link
+      assertion errors preserved/reconciled with actual Maven exit0, unchanged sources and no rerun or inflated
+      coverage.
+    method: command
+    command: Verify child manifests/FINAL/cleanup and own original status/source preservation/cleanup/end baseline
+    outcome: passed
+    evidence:
+    - subrole-final-verification.json
+    - cleanup.json
+    - runner-postcheck-reconciliation.json
+    - environment-history.md
+    - tools/runner-stdout.log
+    - server-sql/runner-postcheck-reconciliation.json
+    - final-baseline.json
+  findings: []
+  residualRisks:
+  - id: residual.existing-performance-findings-open
+    description: PERF-WORKFLOW-DETAIL-NAMES-20261104 medium and PERF-TENANT-DIRECTORY-COUNT-20261104 low remain
+      known open performance findings. This candidate implements diagnostic tests/evidence only; user selection
+      not received.
+    impact: Passed quality does not mean optimized code, performance remediation or release readiness.
+    mitigation: Keep both findings open; separately implement an authorized change and freshly validate its actual
+      candidate.
+  - id: residual.finite-measurement-and-test-context
+    description: Manual existing intervention read identity, synthetic0/1/100/1000 tasks and0/1/99/100/101/5000
+      directory users; no full HTTP/JWT/browser/signature/account/tenant matrix. Observer covers current queryForList/ORM
+      same thread; server proof matches aggregate8 signatures and excludes29 other SELECTs/control traffic.
+    impact: No arbitrary future-JDBC observability, per-network-packet proof or production latency/throughput/concurrency
+      SLA.1000 tasks is not asserted normal DHR/form size.
+    mitigation: Preserve raw scope; add targeted real-account/HTTP/scale checks only for actual next implementation
+      or deployment requirements.
+  - id: residual.other-audit-and-capacity-queues
+    description: Huge original-candidate IN/text-ID plans, Form name reads/JSON COUNT, summary5+2N/605/export memory
+      and all original W2-W7/high/A12/quality/DHR-directory/archive/account/recipient/ACL/concurrency gaps remain.931
+      knowledge candidates and86 previous UI diagnostics pending, wholeFile0/historyUniqueunknown retained.
+    impact: No whole-code/code-to-all-ontology/full UI conformance completion or production certification.
+    mitigation: Continue ledger and latest remote increment checkpoints; retain user-paused production modal/friend-owned
+      task-signature page.
+  blockingConditions: []
+verificationScope:
+  status: FINAL
+  independence: Fresh final QA and two read-only children did not participate in product/test/fixture/config implementation
+    or repair.
+  testedCandidate: b687300ac8f02b9c6a307f58c8ddc525e7e7b6e5
+  targetAtStartAndFinish: fa5921698f5fa4024ad7ca86ee2a90e3cd3a9620
+  uniqueNativeTests: 148
+  uniqueKnowledgeTests: 89
+  observationCasesWithinNative: 10
+  independentChildRepeatCasesNotAdditionalUnique: 10
+  serverObservedSqlSignatures: 8
+  serverMatchedSqlStatements: 1130
+  nameLookupStatements: 1101
+  serverOtherSelectMessagesExcluded: 29
+  allTwoSubrolesFinal: true
+  browserExecuted: false
+  globalUiStrictExecuted: false
+  performanceFixed: false
+  wholeAuditComplete: false
+  temporaryWorktreeToolingUntrackedPathOnly: gmp-platform/frontend/node_modules
+  permittedSubsequentWork: Only L0 evidence/acceptance/scope/delivery additions and NEXT status updates; all other
+    candidate paths unchanged. Reassess any product/test/knowledge/contract change.
