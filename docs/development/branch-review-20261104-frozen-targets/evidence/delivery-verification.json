@@ -1,0 +1,41 @@
+{
+  "observedClientDate": "2026-11-04",
+  "clientTimezone": "Asia/Shanghai",
+  "pullRequest": {
+    "number": 57,
+    "url": "https://github.com/IvenYi/edhr-nexus-frontend/pull/57",
+    "title": "fix(workflow): 修复原候选名单在限量后过滤导致漏列",
+    "state": "open",
+    "merged": false,
+    "mergeable": true,
+    "mergeableState": "clean",
+    "baseBranch": "edhr-dev",
+    "baseCommit": "c0a9d5ac33690d10d009e768c286671475db0943",
+    "sourceBranch": "audit/edhr-dev-frozen-target-review-20261104",
+    "headAtObservationBeforeThisRegistration": "93cefaeb64de59712adf2883e9ef32ed312681aa"
+  },
+  "testedCandidate": "2e2cde63d1a247942e94b8e5b941f6c1e174b6db",
+  "finalQuality": {
+    "result": "passed",
+    "status": "FINAL",
+    "requiredChecksPassed": 11,
+    "allDispatchedRolesAndChildrenFinal": true,
+    "originalManifestSha256": "b93c66ab146af12b13f04d0eb138b43d8492b53df8df208809c7447816fa20f6",
+    "artifacts": 145,
+    "archivedMembersIncludingManifestAndDigestReceipt": 147
+  },
+  "preservation": {
+    "onlyExistingCandidatePathAllowedToChange": "docs/development/branch-review-20261015/NEXT.md",
+    "allowedAdditions": "L0 evidence/acceptance/scope/delivery records in this batch",
+    "runtimeTestKnowledgeContractDecisionInventorySourceReviewAndPrimaryEvidenceUnchanged": true,
+    "nineCurrentSourceFingerprintsVerified": true,
+    "archiveMemberBytesAndStoredSha256Verified": true,
+    "note": "This observation precedes its registration commit. Final local/remote/PR head equality and unchanged target are checked after push, without a self-referential hash. This record is not a new runtime or CI result."
+  },
+  "wholeAuditComplete": false,
+  "pendingKnowledgeIncrementCandidates": 931,
+  "priorUiDiagnosticCandidatesPending": 86,
+  "browserOrGlobalStrictRerunThisBatch": false,
+  "recommendation": "Manual merge finite repair; continue overall audit from NEXT.md",
+  "automaticMergeDeploymentHistoryRestorationOrCiActionsQueryTrigger": false
+}
