@@ -1,5 +1,15 @@
 # 持续推进台账
 
+## PR57已合入：流程详情姓名及目录计数取证
+
+实际fetch最新edhr-dev@fa5921698f5fa4024ad7ca86ee2a90e3cd3a9620，PR57人工合入且整树同8b53，无外部产品/知识/契约增量。新分支audit/edhr-dev-detail-read-audit-20261104；[本批](../branch-review-20261104-detail-reads/README.md)L2只新增显式opt-in真实PG观察测试，产品/页面/政策/迁移/索引不动。
+
+主侧单次148/148（新观测10+原138）0F/E/S，初聚焦10不重复累计。详情0/1/100/1000任务实际5/6/105/1005条SQL，重复两个有效处理人及NULL/缺失账户仍逐任务查名；目录0/1/99为1条、100/101/5000为2条含未使用COUNT。两个性能发现仍open，未把取证通过当已修复；未固定低效次数作断言。已有实际数据和姓名批量读取方案已问用户，尚未收到选择，不把等待当批准；无依赖取证/验收继续。
+
+本体NA/FINAL，8既有声明有限核对，345知识及产品字节不变；该角色未跑89/原生/浏览器，正式知识由最终独立质量执行，当前待全新QA不提前宣称passed。7435路径是固定盘点，整文件0/历史unique未知，931知识候选/86旧UI诊断继续pending；方法范围/A23及姓名私有读取方法、目录不取total方案/边界见本批review-notes，不是大重构或全仓完成。
+
+整体W3/W4/W5交叉/W2余项/W6健壮性性能抽取A23含旧已审/W7增量保持；巨大原候选参数/文本ID计划与匹配人员5000不是同一测试。汇总605/导出内存及全部原高风险/A12/完整矩阵/用户暂缓保持。所有派发角色FINAL后实际PR前无漂移/阶段/余项复核再交付；不自动merge/deploy/恢复/扫删，不查询触发CI。
+
 ## PR56已合入：记录控制及通用改派原候选漏列
 
 已交付[PR57](https://github.com/IvenYi/edhr-nexus-frontend/pull/57)，audit/edhr-dev-frozen-target-review-20261104→edhr-dev，观察OPEN/MERGEABLE/CLEAN，建议本批人工合入。受测代码2e2cde63及归档93cefaeb后仅L0交付登记，其他受测既有路径保持；实际观察见本批evidence/delivery-verification.json。下一批先fetch真实merge/新提交，量化中央详情逐任务姓名及目录满页额外COUNT/文本ID谓词与大候选参数，不把静态5+N当运行数据；W6/W7及全部原余项保持，不自动merge/deploy/恢复。
