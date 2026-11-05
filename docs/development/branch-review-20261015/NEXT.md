@@ -1,6 +1,8 @@
 # 持续推进台账
 
-## PR63已合入：提交附件元数据复用已验收
+## PR64已交付：提交附件元数据复用已验收
+
+已交付[PR64](https://github.com/IvenYi/edhr-nexus-frontend/pull/64)，audit/edhr-dev-dhr-summary-attachment-review-20261105→edhr-dev，观察OPEN/MERGEABLE/CLEAN，建议人工合入。受测48be11f4、验收归档1d2d631e后仅L0交付登记，登记后核对本地/真实远端/PR head一致。下一轮先fetch真实merge/新提交与相关契约增量，再继续整体审计原队列；不自动merge/deploy/恢复。
 
 已fetch edhr-dev@a429f983a7a69553753034e9306d12598fcc15be，PR63人工合入、整树同f133e315，无外部代码/知识/契约增量；新分支audit/edhr-dev-dhr-summary-attachment-review-20261105。[本批](../branch-review-20261105-dhr-summary-attachments/README.md)L2继续原汇总附件循环元数据队列，用完整canonical迁移和真实成功提交/摘要/失败回滚及锁/计划/读取分配补证，旧605局部前缀不冒称全请求。
 

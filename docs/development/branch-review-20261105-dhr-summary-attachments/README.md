@@ -1,5 +1,7 @@
 # DHR汇总附件提交读取审查
 
+已交付[PR64](https://github.com/IvenYi/edhr-nexus-frontend/pull/64)，本分支→edhr-dev，观察OPEN/MERGEABLE/CLEAN，建议人工合入。受测48be11f4、验收归档1d2d631e后仅L0交付登记；登记后再次核对本地/真实远端/PR head一致，原观察见evidence/delivery-verification.json。当前仅关闭声明路径重复metadata，其他全审/容量余项保留，不自动merge/deploy。
+
 L2，edhr-dev@a429f983a7a69553753034e9306d12598fcc15be；PR63已合入，整树同f133e315，无外部代码/知识/契约增量。新分支audit/edhr-dev-dhr-summary-attachment-review-20261105。
 
 继续原汇总附件5+2N队列。完整canonical真实成功提交取证后，用户已明确批准“先做提交内元数据复用”：最终仅改DhrAttachmentService、DhrSummaryService两个产品文件，新增原生测试并补原无附件mock，业务政策/接口/索引/迁移保持。旧605只认证局部guard/七表PK/替身依赖，不当本轮完整请求数。
