@@ -1,6 +1,8 @@
 # 持续推进台账
 
-## PR62已合入：DHR签名图片复用已验收
+## PR63已交付：DHR签名图片复用已验收
+
+已交付[PR63](https://github.com/IvenYi/edhr-nexus-frontend/pull/63)，audit/edhr-dev-dhr-export-review-20261105→edhr-dev，观察OPEN/MERGEABLE/CLEAN，建议人工合入本批局部性能修复。受测1eff0b51、验收归档b4c26889后仅L0交付登记；登记后核对本地/真实远端/PR head一致。下一批先fetch实际merge和外部增量，再继续原全审队列；不自动merge/deploy/恢复。
 
 实际fetch目标`edhr-dev@5bfd96ff1e10a665a41db8fdf88352f65b1288a3`，PR62人工合入、整树同97621802，无外部代码/知识/契约增量；新分支audit/edhr-dev-dhr-export-review-20261105。[本批](../branch-review-20261105-dhr-export/README.md)L2继续原归档/导出资源队列，核冻结版本/完整性/资源释放和实际读取分配，不先改产品性能。
 

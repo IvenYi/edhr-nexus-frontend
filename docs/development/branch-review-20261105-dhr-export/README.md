@@ -1,5 +1,7 @@
 # DHR归档读取、完整性与资源审查
 
+已交付[PR63](https://github.com/IvenYi/edhr-nexus-frontend/pull/63)，本分支→edhr-dev，观察OPEN/MERGEABLE/CLEAN，建议人工合入本批局部复用。受测1eff0b51、验收归档b4c26889后仅L0交付登记；登记后再次核对本地/真实远端/PR head一致，原观察见evidence/delivery-verification.json。PDF容量及整体审计原余项继续，不自动merge/deploy。
+
 L2；`edhr-dev@5bfd96ff1e10a665a41db8fdf88352f65b1288a3`，PR62已合入、整树同97621802，无外部代码/知识/契约增量。新分支audit/edhr-dev-dhr-export-review-20261105。
 
 本轮继续原导出内存队列，核对显式冻结版本、FULL/SELECTED、附件/签署完整性、流失败与临时ZIP释放及真实读取资源。实测后用户已批准“先修复重复图片读取”：只在一次表单resolve中复用完整校验后的签名图片显示编码，普通附件缓存独立，不跨调用，不改签署/冻结/资格或导出内容。PDF累计内存保持开放风险。
