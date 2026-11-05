@@ -1,0 +1,82 @@
+decisionPackage:
+  id: DEC-PACKAGE-DHR-SUMMARY-ATTACHMENT-20261105
+  scope: edhr-dev DHR summary submission attachment metadata, integrity, transaction locks and native capacity audit
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: a429f983a7a69553753034e9306d12598fcc15be
+    targetBranch: edhr-dev
+    targetCommit: a429f983a7a69553753034e9306d12598fcc15be
+    contractReadCommit: a429f983a7a69553753034e9306d12598fcc15be
+    uncommittedContractPaths: []
+  summary: PR63合入且整树同f133e315；继续原汇总附件循环读取队列，以完整canonical迁移及真实服务成功提交补足旧局部前缀证据，先取证讨论性能，不预设产品优化或改变政策。
+  confirmed:
+    concepts: []
+    relationships: []
+    rules: []
+    executionContracts: []
+  inferred:
+    - id: inference.summary-attachment-repeated-metadata
+      statement: snapshot已读取有效附件元数据但submit逐项file仍查询DHR和路径，父锁下有复用候选；旧605仅局部guard前缀，需在真实成功事务和完整索引上重新核对。
+      rationale: DhrSummaryService.submit和DhrAttachmentService.snapshot/file/ensureDhr实际源码；旧观察未完整安装canonical迁移及真实detail/impact。
+      relatedIds: [rule.dhr-summary-freeze-version, rule.dhr-summary-controlled-attachment-upload]
+  unresolved: []
+  replacementScopes: []
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - area: dhr-summary-submit
+        change: 新增显式opt-in原生观察，实际保存草稿/提交冻结/导出后摘要核对，产品当前只读。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrSummaryService.java, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrAttachmentService.java]
+    transitiveImpacts:
+      - area: evidence-and-file-integrity
+        change: 真实detail/impact/forms和冻结完整性服务；测试坏文件、未核验、来源变化及失败回滚，不以mock替代这些边界。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrFrozenEvidenceIntegrity.java]
+    potentialImpacts:
+      - area: metadata-reuse-and-index
+        concern: 元数据查询次数/实际执行计划和全字节SHA/持锁时间分别量化；批读复用或索引方案先讨论，不以单一SQL次数判断生产容量。
+        evidenceReferences: []
+    unaffectedAreas:
+      - area: policies-and-pr63
+        change: 签名图局部复用、人员完整分页、下载/导出资格及冻结政策保持，不修历史/本体旧规则或暂停页面。
+        evidenceReferences: []
+    compatibilityAndMigration:
+      - area: no-migration
+        change: 当前仅测试/审计记录；完整隔离库使用既有迁移，不改schema/索引或历史数据。
+        evidenceReferences: []
+    snapshotImpacts:
+      - area: successful-summary-freeze
+        change: 合法完成生产对象/现有源表单夹具由真实saveDraft/submit形成新冻结版，再核元数据/摘要/顺序及草稿删除，不宣称首次START/生产完成路径验收。
+        evidenceReferences: []
+    auditImpacts:
+      - area: submit-and-unlink-audit
+        change: 实际JPA审计写入及失败事务回滚，运行计数分开SELECT/写入/初始化/断言。
+        evidenceReferences: []
+    permissionImpacts:
+      - area: service-boundary
+        change: 服务级真实租户/DHR成员/核验/SHA/冻结资格及父锁；不认证完整登录HTTP/RBAC/真实部署多租户。
+        evidenceReferences: []
+    testImpacts:
+      - scope: native-summary-attachment
+        scenarios: [0/1/10/100/300小附件成功冻结, 原件逻辑读取与线程分配, 单附件50MiB边界, 缺失/坏原件/未核验/来源变化回滚, 合法unlink被实际提交父锁串行化, 完整现有索引与混合分布计划, 相关DHR摘要/持久化/附件回归]
+        evidenceReferences: []
+    evidenceGaps: [生产并发及SLA/完整HTTP与首次START不覆盖, 七格式及上传/核验完整矩阵不因本轮读取自动完成, PDF累计内存和原全审931知识/86UI及暂停保留]
+  extensionStrategy:
+    selectedPaths: [product-core]
+    rationale: 在既有业务服务/真实Spring事务和PG上取证，不提前创建通用批处理/全局缓存或把stored_path暴露到响应。
+    ownershipBoundaries:
+      - owner: dhr-summary
+        responsibility: 父对象/DHR锁顺序、来源集合/人工确认、冻结与审计。
+      - owner: dhr-attachment
+        responsibility: 有效关联元数据及完整SHA/核验/存量下载资格。
+      - owner: audit-observation
+        responsibility: 可复现SQL/计划/JFR和容量/失败证据，性能取舍待实际确认。
+  affectedFiles:
+    - {path: gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrSummaryAttachmentObservationPostgresTest.java, changeType: create, reason: canonical实际成功提交与资源/锁观察}
+    - {path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrSummaryService.java, changeType: read-only, reason: 循环读取/锁定与冻结源码}
+    - {path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrAttachmentService.java, changeType: read-only, reason: 元数据/完整摘要/核验及unlink边界}
+  acceptanceScenarios:
+    - id: scenario.native-summary-attachment-read-audit
+      given: 完整canonical隔离库中的合法完成对象和真实现有附件原件
+      when: 实际保存草稿、提交汇总并核冻结摘要，及并发解除/非法原件
+      then: 元数据与顺序/原字节/冻结身份保持、失败回滚/父锁有证据，分列真实SQL与JFR资源，不将取证视作优化或完整发布验收
+      evidenceRequirements: [新鲜XML/命令/源码指纹, 原始PG日志/计划及JFR, 有限本体核对, 全新独立最终质量, 全部FINAL后任务漂移复核]
