@@ -1,5 +1,13 @@
 # 持续推进台账
 
+## PR58已合入：人员目标目录免未用COUNT
+
+实际fetch最新edhr-dev@00f864cdaf0796c9410173c835a477c7a3068d06，PR58人工合入、整树同90cca，无外部产品/知识/契约增量。新分支audit/edhr-dev-personnel-list-count-20261105；[本批](../branch-review-20261105-personnel-count/README.md)L2沿已讨论且已取证的独立COUNT队列推进，仅TenantTransferTargets原Page内容改为Spring Data3.3 findBy/原sort/limit100/all有界列表，完整Specification、后置检查及写入资格/签署/审计/冻结保持，PR58姓名优化完整保留，无业务政策/前端/迁移/索引/依赖更改。
+
+主侧152/152（14读取观测边界+原138）0F/E/S；0/1/99/100/101/5000匹配人员及同名120+无效前缀均1条、无COUNT，原排序/字段/100上限保持。原00f同字节7例4真性能预算红/3正控/0E/S。新同名夹具以反向用户名确认数字ID升序前100并核跨租户/停用/未来锁定/当前人前置排除；数据库限量API源码及原生SQL留证，非Java全量截断。当前待本体正式FINAL及全新独立最终质量，不提前宣称完成或复用旧151/89。
+
+旧931知识/86 UI及整文件0/历史unique未知保持，原7c清单只固定盘点，不伪装本轮全仓语义通过。当前A23/小方法复用与无需多建框架的依据见review-notes。其他普通表单详情/中央JSON/COUNT/巨大原候选参数/文本ID计划/汇总605/导出内存、W2-W7高风险/A12/完整矩阵和用户暂停队列继续；全部派发角色FINAL后实际PR前无漂移/阶段/余项复核再交付，不自动merge/deploy/恢复/扫删，不查询触发CI。
+
 ## PR58仍OPEN：用户授权姓名批量读取
 
 已更新[PR58](https://github.com/IvenYi/edhr-nexus-frontend/pull/58)为“批量读取详情处理人姓名并保留原投影”，正常推送原分支→edhr-dev，观察OPEN/MERGEABLE/CLEAN，建议人工合入当前实现及取证组合。受测代码6e10604c及归档1b95ac55后仅L0交付登记，其他受测既有路径保持；实际观察见本批evidence/delivery-verification.json。下一批先fetch真实合入/新提交，继续目录COUNT及其余全审队列；不再把用户姓名选择当未答或将旧b687质量覆盖新实现，不自动merge/deploy/恢复。

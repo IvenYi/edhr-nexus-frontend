@@ -188,6 +188,35 @@ class WorkflowReadObservationPostgresTest {
             assertThat(read.value.get(i).get("name")).isEqualTo("dir-scope-%05d".formatted(i));
         }
         record("personnel-directory", Map.of("matchingPersonnel", count, "resultLimit", 100, "returnedPersonnel", read.value.size()), read);
+        assertThat(read.jdbcSql.size() + read.hibernateSql.size()).isLessThanOrEqualTo(1);
+        assertThat(read.hibernateSql).noneMatch(sql -> sql.toLowerCase(java.util.Locale.ROOT).contains("count("));
+        assertThat(read.hibernateSql).anyMatch(sql -> sql.toLowerCase(java.util.Locale.ROOT).contains("fetch first")
+                || sql.toLowerCase(java.util.Locale.ROOT).contains("limit"));
+    }
+
+    @Test void personnelDirectoryKeepsEligibilityAndTieOrder() throws Exception {
+        jdbc.update("""
+                INSERT INTO user_account(id,tenant_id,username,display_name,password_hash,status)
+                SELECT 30000+n,0,'tie-reverse-'||(120-n),'tied-directory','not-used','ACTIVE'
+                FROM generate_series(0,119) n
+                """);
+        jdbc.update("""
+                INSERT INTO user_account(id,tenant_id,username,display_name,password_hash,status,locked_until)
+                VALUES(29999,1,'tie-other-tenant','tied-directory','not-used','ACTIVE',NULL),
+                      (29998,0,'tie-disabled','tied-directory','not-used','DISABLED',NULL),
+                      (29997,0,'tie-locked','tied-directory','not-used','ACTIVE',CURRENT_TIMESTAMP+INTERVAL '1 day')
+                """);
+        jdbc.update("UPDATE user_account SET display_name='tied-directory' WHERE id=42");
+        Read<List<Map<String, String>>> read = capture(() -> new TenantTransferTargets(users).search(0L, "42", "  TiEd-DiReCtOrY  "));
+        assertThat(read.value).hasSize(100);
+        for (int i = 0; i < read.value.size(); i++) {
+            assertThat(read.value.get(i)).containsExactlyInAnyOrderEntriesOf(Map.of(
+                    "id", String.valueOf(30000 + i), "name", "tied-directory", "username", "tie-reverse-" + (120 - i)));
+        }
+        record("personnel-directory-eligibility-tie", Map.of("eligiblePersonnel", 120, "excludedPrefixAndCurrent", 4,
+                "returnedPersonnel", read.value.size()), read);
+        assertThat(read.jdbcSql.size() + read.hibernateSql.size()).isLessThanOrEqualTo(1);
+        assertThat(read.hibernateSql).noneMatch(sql -> sql.toLowerCase(java.util.Locale.ROOT).contains("count("));
     }
 
     private static class Read<T> {

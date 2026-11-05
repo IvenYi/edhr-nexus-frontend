@@ -12,7 +12,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 
@@ -60,8 +59,9 @@ public class TenantTransferTargets {
             return cb.and(eligible, cb.or(cb.like(cb.lower(root.get("displayName")), like),
                     cb.like(cb.lower(root.get("username")), like)));
         };
-        return users.findAll(specification.and(scope), PageRequest.of(0, 100,
-                        Sort.by("displayName").ascending().and(Sort.by("id").ascending()))).getContent().stream()
+        return users.findBy(specification.and(scope), finder -> finder
+                        .sortBy(Sort.by("displayName").ascending().and(Sort.by("id").ascending()))
+                        .limit(100).all()).stream()
                 .filter(user -> available(user, tenantId, now))
                 .filter(user -> !String.valueOf(user.getId()).equals(operatorId))
                 .map(user -> Map.of("id", String.valueOf(user.getId()), "name", user.getDisplayName(), "username", user.getUsername()))
