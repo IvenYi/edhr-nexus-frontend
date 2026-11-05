@@ -93,7 +93,9 @@ class DhrSummaryAttachmentObservationPostgresTest {
         var result = observe("submit_" + count, Map.of("attachments", count, "fileBytes", count == 0 ? 0 : Files.size(originals.values().iterator().next())), null, () -> summaries.submit(1L, command));
         assertFrozen(result, count);
         long expectedBytes = 0; for (Path path : originals.values()) expectedBytes += Files.size(path);
-        assertThat(mapper.readTree(Files.readString(output().resolve("submit_" + count + ".json"))).path("trackedLogicalReadBytes").asLong()).isEqualTo(expectedBytes);
+        var observation = mapper.readTree(Files.readString(output().resolve("submit_" + count + ".json")));
+        assertThat(observation.path("trackedLogicalReadBytes").asLong()).isEqualTo(expectedBytes);
+        assertThat(observation.path("selectStatements").asLong()).isLessThanOrEqualTo(13);
     }
 
     @Test void fiftyMiBOriginalIsFullyReadWithoutWholeFileDigestBuffer() throws Exception {
@@ -103,6 +105,25 @@ class DhrSummaryAttachmentObservationPostgresTest {
         var observation = mapper.readTree(Files.readString(output().resolve("submit_50mib.json")));
         assertThat(observation.path("trackedLogicalReadBytes").asLong()).isEqualTo(50L * 1024 * 1024);
         assertThat(observation.path("threadAllocatedBytes").asLong()).isLessThan(25L * 1024 * 1024);
+        assertThat(observation.path("selectStatements").asLong()).isLessThanOrEqualTo(13);
+    }
+
+    @Test void submissionExcludesOtherDhrTenantAndInactiveOriginals() throws Exception {
+        seedAttachments(1, 0);
+        jdbc.update("INSERT INTO dhr_attachment(id,tenant_id,dhr_instance_id,original_name,stored_path,mime_type,file_size,sha256,source_kind,purpose,active,verification_status,linked_at) VALUES(2000,'default',2,'other-dhr.png','/not-read/other-dhr.png','image/png',1,repeat('0',64),'OTHER','excluded',TRUE,'VERIFIED',CURRENT_TIMESTAMP),(2001,'other',1,'other-tenant.png','/not-read/other-tenant.png','image/png',1,repeat('0',64),'OTHER','excluded',TRUE,'VERIFIED',CURRENT_TIMESTAMP),(2002,'default',1,'inactive.png','/not-read/inactive.png','image/png',1,repeat('0',64),'OTHER','excluded',FALSE,'VERIFIED',CURRENT_TIMESTAMP)");
+        ObjectNode command = saveDraft();
+        var result = observe("submit_scope", Map.of("attachments", 1, "excludedMissingOriginals", 3), null, () -> summaries.submit(1L, command));
+        assertFrozen(result, 1);
+    }
+
+    @ParameterizedTest @ValueSource(booleans = {true, false})
+    void originalAndVerificationFailuresKeepSnapshotOrder(boolean missingFirst) throws Exception {
+        seedAttachments(2, 0);
+        jdbc.update("UPDATE dhr_attachment SET verification_status='PENDING' WHERE id=?", missingFirst ? 1001L : 1000L);
+        ObjectNode command = saveDraft(); Files.delete(originals.get(missingFirst ? 1000L : 1001L));
+        observe("reject_order_" + missingFirst, Map.of("missingFirst", missingFirst), missingFirst ? "附件丢失或摘要不一致" : "尚未核验", () -> summaries.submit(1L, command));
+        assertThat(jdbc.queryForObject("SELECT count(*) FROM dhr_summary_version", Integer.class)).isZero();
+        assertThat(jdbc.queryForObject("SELECT count(*) FROM dhr_summary_draft", Integer.class)).isEqualTo(1);
     }
 
     @ParameterizedTest @ValueSource(strings = {"missing", "tampered", "pending", "source_changed", "manual_review", "stale_revision"})

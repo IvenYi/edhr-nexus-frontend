@@ -23,6 +23,8 @@ import java.nio.file.Path;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HexFormat;
 import java.util.List;
 import java.util.Map;
@@ -35,6 +37,7 @@ import static com.zencas.edhr.production.service.ExecutionSnapshotBuilder.invali
 @RequiredArgsConstructor
 @Slf4j
 public class DhrAttachmentService {
+    private static final String ACTIVE_ATTACHMENTS = "SELECT * FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND active=TRUE ORDER BY linked_at,id";
     private static final long MAX_BYTES = 50L * 1024 * 1024;
     private static final Set<String> SOURCE_KINDS = Set.of("EXTERNAL_REPORT", "CERTIFICATE", "PAPER_SCAN", "OTHER");
     private final JdbcTemplate jdbc;
@@ -54,8 +57,38 @@ public class DhrAttachmentService {
     @Transactional(readOnly = true)
     public ArrayNode snapshot(Long dhrId) {
         ArrayNode result = mapper.createArrayNode();
-        jdbc.query("SELECT * FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND active=TRUE ORDER BY linked_at,id",
-                (org.springframework.jdbc.core.RowCallbackHandler) rs -> result.addObject()
+        jdbc.query(ACTIVE_ATTACHMENTS,
+                (org.springframework.jdbc.core.RowCallbackHandler) rs -> result.add(snapshotRow(rs)), dhrId);
+        return result;
+    }
+
+    /** Only summary submission, after locking the parent DHR, may reuse these internal originals. */
+    SubmissionAttachments forSubmission(Long dhrId) {
+        ArrayNode snapshot = mapper.createArrayNode();
+        List<Map<String, Object>> originals = new ArrayList<>();
+        jdbc.query(ACTIVE_ATTACHMENTS, (org.springframework.jdbc.core.RowCallbackHandler) rs -> {
+            snapshot.add(snapshotRow(rs));
+            Map<String, Object> original = new HashMap<>();
+            original.put("stored_path", rs.getObject("stored_path"));
+            original.put("sha256", rs.getObject("sha256"));
+            originals.add(original);
+        }, dhrId);
+        return new SubmissionAttachments(snapshot, originals);
+    }
+
+    void verifyForSubmission(SubmissionAttachments source) {
+        for (int index = 0; index < source.snapshot().size(); index++) {
+            var attachment = source.snapshot().get(index);
+            if (!"VERIFIED".equals(attachment.path("verificationStatus").asText()))
+                throw invalid("附件“" + attachment.path("name").asText() + "”尚未核验，不能提交汇总");
+            verifiedFile(source.originals().get(index));
+        }
+    }
+
+    record SubmissionAttachments(ArrayNode snapshot, List<Map<String, Object>> originals) {}
+
+    private ObjectNode snapshotRow(java.sql.ResultSet rs) throws java.sql.SQLException {
+        return mapper.createObjectNode()
                         .put("id", rs.getString("id")).put("name", rs.getString("original_name"))
                         .put("mimeType", rs.getString("mime_type")).put("size", rs.getLong("file_size"))
                         .put("sha256", rs.getString("sha256")).put("sourceKind", rs.getString("source_kind"))
@@ -66,8 +99,7 @@ public class DhrAttachmentService {
                         .put("verifiedBy", rs.getString("verified_by"))
                         .put("verifiedAt", rs.getTimestamp("verified_at") == null ? null : rs.getTimestamp("verified_at").toLocalDateTime().toString())
                         .put("linkedBy", rs.getString("linked_by"))
-                        .put("linkedAt", rs.getTimestamp("linked_at").toLocalDateTime().toString()), dhrId);
-        return result;
+                        .put("linkedAt", rs.getTimestamp("linked_at").toLocalDateTime().toString());
     }
 
     @Transactional

@@ -1,0 +1,207 @@
+qualityResult:
+  result: passed
+  baseCommit: a429f983a7a69553753034e9306d12598fcc15be
+  headCommit: 7704f11267a810b2bda82e99f049a0206a5e73c7
+  contractBaseline:
+    sourceCommit: 7704f11267a810b2bda82e99f049a0206a5e73c7
+    targetBranch: edhr-dev
+    targetCommit: a429f983a7a69553753034e9306d12598fcc15be
+    contractReadCommit: 7704f11267a810b2bda82e99f049a0206a5e73c7
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: clean
+    includedPaths: []
+    excludedPaths: []
+    untrackedPaths: []
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+  - id: check.actual-contract-and-merge-candidate
+    required: true
+    category: documentation
+    description: 实际读取固定候选契约；开始和结束fetch目标a429，无目标增量，受测7704已包含目标。候选本阶段clean，临时依赖软链单列后移除。
+    method: command
+    command: git fetch/rev-parse/diff/status; actual contract reads
+    outcome: passed
+    evidence:
+    - contract-and-source.json
+    - cleanup.json
+    - target base a429f983a7a69553753034e9306d12598fcc15be; feature head/tested merge
+      candidate/actual contract read 7704f11267a810b2bda82e99f049a0206a5e73c7
+  - id: check.authorized-test-only-scope
+    required: true
+    category: requirements
+    description: 本阶段仅新增一项opt-in原生测试与研发记录，DP的完整L2影响/扩展边界与实际变化一致；用户后续批准的产品优化不在7704内。
+    method: inspection
+    command: Read fixed decisionPackage, feature diff and user scope
+    outcome: passed
+    evidence:
+    - read-snapshots/docs/development/branch-review-20261105-dhr-summary-attachments/decision-package.yaml
+    - contract-and-source.json
+    - review-notes.md
+  - id: check.protected-product-and-knowledge
+    required: true
+    category: security
+    description: 1122份产品/前端/知识/契约保护指纹不变；PR63签名图复用、原完整人员分页及全部下载/冻结/签署规则未回退。
+    method: command
+    command: Compare actual base/candidate paths and SHA256
+    outcome: passed
+    evidence:
+    - contract-and-source.json
+    - evidence-review/result.json
+  - id: check.fresh-native-and-adjacent69
+    required: true
+    category: regression
+    description: 自有detached工作树新原生15+相邻54=69/69，0F/E/S，新鲜XML与受测源码指纹一致；相邻H2/Mockito不冒充全PG。
+    method: command
+    command: EDHR_AUDIT_ROOT=<owned worktree> python run-native.py full2
+    outcome: passed
+    evidence:
+    - native-full2/run.json
+    - native-full2/test-summary.json
+  - id: check.knowledge89
+    required: true
+    category: ontology
+    description: 独立知识89/89，0F/E/S；工具校验通过不替代350文件全量语义审查。
+    method: command
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f tools/knowledge-model/pom.xml
+      test
+    outcome: passed
+    evidence:
+    - knowledge/maven.log
+    - knowledge/test-summary.json
+  - id: check.canonical-successful-freeze
+    required: true
+    category: integration
+    description: 完整canonical当前图11及实际Spring服务成功saveDraft/submit、独立FrozenIntegrity、原JSON字节/顺序、单源证据、草稿删除、定稿与提交审计实际验证。
+    method: automated-test
+    command: DhrSummaryAttachmentObservationPostgresTest successfulSubmit and frozen
+      checks
+    outcome: passed
+    evidence:
+    - native-full2/TEST-com.zencas.edhr.production.service.DhrSummaryAttachmentObservationPostgresTest.xml
+    - native-full2/maven.log
+    - review-notes.md
+  - id: check.rejection-and-rollback
+    required: true
+    category: audit
+    description: 缺失/篡改/PENDING/来源变化/人工确认缺失/旧revision六负例实际拒绝，DRAFT和草稿保留，无新冻结/提交审计。
+    method: automated-test
+    command: failedSubmitRetainsDraftAndDoesNotCreateFrozenOrAudit six variants
+    outcome: passed
+    evidence:
+    - native-full2/TEST-com.zencas.edhr.production.service.DhrSummaryAttachmentObservationPostgresTest.xml
+    - native-full2/observations
+  - id: check.actual-parent-lock-double-axis
+    required: true
+    category: database
+    description: pg_stat_activity观察unlink的Lock等待；提交成功定稿后拒绝unlink且无解除审计，回滚后可解除并保留原件。
+    method: automated-test
+    command: parentLockRechecksUnlinkAfterSuccessfulOrRolledBackSubmit both variants
+    outcome: passed
+    evidence:
+    - native-full2/observations/parent-lock-true.json
+    - native-full2/observations/parent-lock-false.json
+    - native-full2/postgres.log
+  - id: check.server-sql-shapes-and-writes
+    required: true
+    category: database
+    description: 16业务动作998 SELECT逐完整SQL形状与服务器吻合；tag内另1条jsonb驱动解析SELECT明确分列，44业务写/16SET另列，不称全部网络SQL。
+    method: command
+    command: python analyze-runtime.py; parse successful execute by actual application_name
+    outcome: passed
+    evidence:
+    - server-sql-review.json
+    - native-full2/postgres.log
+    - verifier-tool-notes.json
+  - id: check.jfr-thread-path-recalculation
+    required: true
+    category: integration
+    description: 外部jfr逐16原件按eventThreadId/实际原件路径重算bytes/events全吻合，排除并发录制另一线程事件；调用线程分配和全JVM堆快照分开。
+    method: command
+    command: Java21 jfr print --json --events jdk.FileRead; independent JSON calculation
+    outcome: passed
+    evidence:
+    - jfr-allocation-review.json
+    - jfr-json
+    - native-full2/observations
+  - id: check.fifty-mib-read-budget
+    required: true
+    category: regression
+    description: 50MiB原件完整读52428800B，调用线程分配412656B低于25MiB资源预算；不把直接登记VERIFIED夹具称上传/核验/七格式验收。
+    method: automated-test
+    command: fiftyMiBOriginalIsFullyReadWithoutWholeFileDigestBuffer; independent
+      JFR allocation read
+    outcome: passed
+    evidence:
+    - jfr-allocation-review.json
+    - native-full2/TEST-com.zencas.edhr.production.service.DhrSummaryAttachmentObservationPostgresTest.xml
+  - id: check.existing-index-plans
+    required: true
+    category: database
+    description: 同DHR5000inactive/其他DHR5000混合/300active实测活动组合索引及id主键命中，Sort106KiB内存/Temp0；不擅加索引或外推生产计划。
+    method: command
+    command: Read fresh EXPLAIN ANALYZE BUFFERS JSON from actual canonical fixture
+    outcome: passed
+    evidence:
+    - index-plan-review.json
+    - native-full2/observations/existing-index-plans.json
+  - id: check.original-evidence-integrity-and-history
+    required: true
+    category: documentation
+    description: 三归档208原件SHA、首编译无JUnit、首69六数值节点断言F与最终69真过原件吻合；原序列化字节比较未削弱摘要/数量/顺序或关数据库约束。
+    method: command
+    command: Evidence child exact archive hashes/XML/source capture review
+    outcome: passed
+    evidence:
+    - evidence-review/result.json
+    - evidence-review/review-notes.md
+  - id: check.finite-ontology-and-inventory
+    required: true
+    category: ontology
+    description: 15有限记录13一致2完整场景gap、350知识/7591路径仅盘点，整文件0/历史unique未知；原成熟度/931/86/全审和暂停保留。
+    method: inspection
+    command: Read actual selected IDs/support Markdown/current consumers and finite
+      ontology result
+    outcome: passed
+    evidence:
+    - evidence-review/result.json
+    - read-snapshots/docs/development/branch-review-20261105-dhr-summary-attachments/ontology-result.yaml
+    - review-notes.md
+  - id: check.a23-and-concrete-extraction
+    required: true
+    category: requirements
+    description: 资格/核验/scope/SHA/人工确认/独立冻结摘要各有依据；局部SubmissionAttachments及四方法拆分为具体提案，7704无大重构或推测防御分支。
+    method: inspection
+    command: Review actual DhrSummaryService/DhrAttachmentService/FrozenIntegrity
+      and proposals
+    outcome: passed
+    evidence:
+    - read-snapshots/gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrSummaryService.java
+    - read-snapshots/gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrAttachmentService.java
+    - review-notes.md
+  - id: check.resources-and-final-child
+    required: true
+    category: documentation
+    description: 证据子项FINAL/passed7项，自有PG/依赖软链/worktree清理，来源指纹保留；未改仓库、参与修复或查询触发CI。
+    method: command
+    command: Final fetch/source fingerprint check and owned resource cleanup
+    outcome: passed
+    evidence:
+    - cleanup.json
+    - evidence-review/result.json
+    - verifier-tool-notes.json
+  findings: []
+  residualRisks:
+  - id: risk.metadata-loop-remains-in-7704
+    description: 固定7704仍为13+2N的本夹具业务读取，元数据复用尚未在该候选实现。用户在验证后批准主侧继续产品优化。
+    impact: 本结果不关闭性能问题，不覆盖随后产品/测试或未来候选。
+    mitigation: 主侧完成新实现和基础测试后另派未参与修复的全新最终质量实例。
+  - id: limit.runtime-and-capacity
+    description: 完成对象/单WORK/空operations/VERIFIED PNG均直接SQL种入；NONE提交和局部服务/锁/50MiB摘要不能代表来源生成START、REQUIRED、三来源、七格式上传核验、HTTP/RBAC或生产并发峰值。
+    impact: 完整验收矩阵和PDF/上传/核验/导出容量仍未由本批关闭。
+    mitigation: 保留原两广域场景gap及容量队列，按真实需求继续。
+  - id: risk.remaining-whole-audit
+    description: 931知识候选、86 UI、W2余项/W3-W5交叉/W6健壮性性能抽取A23含旧已审/W7增量、原high/A12/全部原矩阵和用户暂停保持。
+    impact: 当前passed只表示本阶段测试/取证交付通过，不表示整体审计或全部业务本体一致完成。
+    mitigation: 保留固定盘点与逐批有限结论，每轮先fetch增量，不因89校验或局部运行提高成熟度。
+  blockingConditions: []

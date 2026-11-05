@@ -243,14 +243,11 @@ public class DhrSummaryService {
         ArrayNode placements = (ArrayNode) json(String.valueOf(draft.get("evidence_placement_json")), "汇总证据草稿");
         ObjectNode detail = dhrInstances.detail(dhrId);
         ArrayNode candidateSnapshot = candidates(detail);
-        ArrayNode attachmentSnapshot = attachments.snapshot(dhrId);
+        var submissionAttachments = attachments.forSubmission(dhrId);
+        ArrayNode attachmentSnapshot = submissionAttachments.snapshot();
         if (!scopeHash(candidateSnapshot, attachmentSnapshot).equals(draft.get("source_scope_hash")))
             throw invalid("来源记录或附件在核查后发生变化，请刷新并重新确认汇总草稿");
-        for (JsonNode attachment : attachmentSnapshot) {
-            if (!"VERIFIED".equals(attachment.path("verificationStatus").asText()))
-                throw invalid("附件“" + attachment.path("name").asText() + "”尚未核验，不能提交汇总");
-            attachments.file(dhrId, Long.valueOf(attachment.path("id").asText()));
-        }
+        attachments.verifyForSubmission(submissionAttachments);
         // Unsaved supplemental copies have no form_instance_record yet, but are still unfinished evidence.
         if (detail.hasNonNull("productionObjectId")) {
             var states = jdbc.queryForList("SELECT snapshot_json,state_json FROM production_execution WHERE object_id=?", Long.valueOf(detail.path("productionObjectId").asText()));

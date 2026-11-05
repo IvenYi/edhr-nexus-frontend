@@ -2,8 +2,10 @@
 
 L2，edhr-dev@a429f983a7a69553753034e9306d12598fcc15be；PR63已合入，整树同f133e315，无外部代码/知识/契约增量。新分支audit/edhr-dev-dhr-summary-attachment-review-20261105。
 
-继续原汇总附件5+2N队列，旧605只认证局部手工guard前缀/七表PK/替身依赖。本轮拟用完整canonical迁移及实际服务成功saveDraft/submit、真实冻结摘要、坏文件回滚/父锁并发、0/1/10/100/300及50MiB读取分配和现有索引混合分布计划补证。仅新增opt-in测试与研发记录；未批准批读/分块优化，不先改产品或业务。
+继续原汇总附件5+2N队列。完整canonical真实成功提交取证后，用户已明确批准“先做提交内元数据复用”：最终仅改DhrAttachmentService、DhrSummaryService两个产品文件，新增原生测试并补原无附件mock，业务政策/接口/索引/迁移保持。旧605只认证局部guard/七表PK/替身依赖，不当本轮完整请求数。
 
-主侧69/69（新原生15+相邻54）、知识89/89均0F/E/S。16观察实际998 SELECT，逐application_name/SQL形状与PG成功execute完全吻合；44写入另列（22INSERT/15UPDATE/7DELETE），16SET不混计。0/1/10/100/300附件实测13/15/33/213/613读取；50MiB完整读取、调用线程分配约0.4MiB；均非生产SLA/峰值。完整索引混合分布查询：active组合索引命中，300行内存排序106KiB、无临时块；id主键命中，不加推测索引。性能复用提案已向用户提出，尚未获答，不把等待当批准。
+最终主侧72/72（新18+相邻54）均0F/E/S，原知识89及350字节基线保持。旧产品+完全同字节新18为13正/5真查询预算红/0E/S。0/1/10/100/300及50MiB声明场景现在均13 SELECT；300由613→13，完整字节读取保持。最终19观察195业务SELECT（旧同测试1035），50写/19SET另列；逐tag/完整形状与PG成功execute吻合。单50MiB仍完整读约0.37MiB线程分配；300小附件由约13.67→7.34MiB累计分配，均非峰值/RSS/SLA。来源hash、逐份VERIFIED→完整SHA、错误顺序、冻结与两种并发unlink均保持。
 
-源码/本体子项FINAL，15有限记录=14既有ID+1Markdown，13明确子范围一致/2完整场景gap，350知识及版本阶段不变；当前待全新独立最终质量与全部FINAL后实际PR前漂移复核。[详细结论](review-notes.md)、[实测](performance-report.json)、[主侧验证](main-validation.json)、[服务器核对](server-sql-review.json)、[固定盘点](inventory-summary.json)。PR63签名图片复用保持；PDF累计内存/931知识候选/86UI/所有原全审余项和用户暂停保持，不自动merge/deploy/恢复或查询触发CI。
+完整索引混合分布：active组合索引命中，300行内存排序106KiB无临时块；id主键命中，不加推测索引。公开snapshot共用原字段/顺序映射，upload/verify/unlink/file/下载/导出资格尾部原字节保持；内部上下文仅同次父锁事务，不暴露路径、不跨请求缓存，元数据内存仍随N增长。
+
+7704阶段原test-only质量16/16、69/89正式FINAL，仅认证其历史阶段，不覆盖新产品；新本体delta及最终全新质量收尾中，全部FINAL后实际PR前漂移复核。原15有限记录=13一致/2完整场景gap，delta只重核子集、不叠加unique；350知识/版本/P0保持。[最新整改结论](reuse-review-notes.md)、[最终实测](reuse-performance-report.json)、[最终主侧验证](reuse-main-validation.json)、[旧源预算](reuse-negative-control.json)、[最终服务器核对](reuse-server-sql-review.json)、[固定盘点](inventory-summary.json)。原[取证说明](review-notes.md)和无reuse前缀数据保留7704时点。PR63签名图片复用、PDF累计内存/931知识/86UI及所有原全审余项和暂停保持，不自动merge/deploy/恢复或查询触发CI。

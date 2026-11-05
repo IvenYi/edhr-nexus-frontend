@@ -3,12 +3,12 @@ decisionPackage:
   scope: edhr-dev DHR summary submission attachment metadata, integrity, transaction locks and native capacity audit
   knowledgeBaselineVersion: 0.3.25
   contractBaseline:
-    sourceCommit: a429f983a7a69553753034e9306d12598fcc15be
+    sourceCommit: 7704f11267a810b2bda82e99f049a0206a5e73c7
     targetBranch: edhr-dev
     targetCommit: a429f983a7a69553753034e9306d12598fcc15be
     contractReadCommit: a429f983a7a69553753034e9306d12598fcc15be
     uncommittedContractPaths: []
-  summary: PR63合入且整树同f133e315；继续原汇总附件循环读取队列，以完整canonical迁移及真实服务成功提交补足旧局部前缀证据，先取证讨论性能，不预设产品优化或改变政策。
+  summary: 同一批完整canonical取证后，用户明确批准提交内附件元数据复用；仅在已持父DHR锁的提交事务中，一次构建公开快照与内部路径/SHA上下文，原核验/完整摘要/来源hash/错误顺序与冻结保持，下载和历史导出入口不改。
   confirmed:
     concepts: []
     relationships: []
@@ -21,11 +21,17 @@ decisionPackage:
       relatedIds: [rule.dhr-summary-freeze-version, rule.dhr-summary-controlled-attachment-upload]
   unresolved: []
   replacementScopes: []
+  engineeringDecisions:
+    - id: decision.summary-attachment-call-context
+      status: user-confirmed
+      source: 用户本轮异步明确回复“先做提交内元数据复用（推荐）”
+      scope: 同一次实际提交父锁内读取活动关联集合并复用内部路径/SHA；不跨请求缓存、不暴露stored_path、不全局改变file/下载/历史导出。
+      invariants: [固定生产对象/DHR/草稿锁顺序, 租户/DHR/active完整集合, 来源hash先于原件校验, 按原顺序VERIFIED及完整SHA和错误优先级, 公开快照字段/顺序/冻结摘要/审计保持]
   impactAnalysis:
     level: L2
     directImpacts:
       - area: dhr-summary-submit
-        change: 新增显式opt-in原生观察，实际保存草稿/提交冻结/导出后摘要核对，产品当前只读。
+        change: 新增显式opt-in原生观察及预算；AttachmentService内部同次上下文复用与SummaryService.submit消费者局部改动，真实保存草稿/提交冻结及摘要复验。
         evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrSummaryService.java, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrAttachmentService.java]
     transitiveImpacts:
       - area: evidence-and-file-integrity
@@ -41,7 +47,7 @@ decisionPackage:
         evidenceReferences: []
     compatibilityAndMigration:
       - area: no-migration
-        change: 当前仅测试/审计记录；完整隔离库使用既有迁移，不改schema/索引或历史数据。
+        change: 局部提交读取与测试/审计记录；完整隔离库使用既有迁移，不改schema/索引或历史数据。
         evidenceReferences: []
     snapshotImpacts:
       - area: successful-summary-freeze
@@ -57,12 +63,12 @@ decisionPackage:
         evidenceReferences: []
     testImpacts:
       - scope: native-summary-attachment
-        scenarios: [0/1/10/100/300小附件成功冻结, 原件逻辑读取与线程分配, 单附件50MiB边界, 缺失/坏原件/未核验/来源变化回滚, 合法unlink被实际提交父锁串行化, 完整现有索引与混合分布计划, 相关DHR摘要/持久化/附件回归]
+        scenarios: [0/1/10/100/300及50MiB提交查询预算/旧源反证, 原件逻辑读取与线程分配, 缺失/坏原件/未核验/来源变化回滚, DHR/tenant/inactive排除, 缺失及未核验错误优先级, 合法unlink被实际提交父锁串行化, 完整现有索引与混合分布计划, 相关DHR摘要/持久化/附件回归]
         evidenceReferences: []
     evidenceGaps: [生产并发及SLA/完整HTTP与首次START不覆盖, 七格式及上传/核验完整矩阵不因本轮读取自动完成, PDF累计内存和原全审931知识/86UI及暂停保留]
   extensionStrategy:
     selectedPaths: [product-core]
-    rationale: 在既有业务服务/真实Spring事务和PG上取证，不提前创建通用批处理/全局缓存或把stored_path暴露到响应。
+    rationale: 在既有服务内用包内SubmissionAttachments保存公开快照及内部路径/SHA，复用既有完整文件校验；公共snapshot共用相同单行映射，不创建通用批处理/全局缓存或暴露stored_path。
     ownershipBoundaries:
       - owner: dhr-summary
         responsibility: 父对象/DHR锁顺序、来源集合/人工确认、冻结与审计。
@@ -72,8 +78,9 @@ decisionPackage:
         responsibility: 可复现SQL/计划/JFR和容量/失败证据，性能取舍待实际确认。
   affectedFiles:
     - {path: gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrSummaryAttachmentObservationPostgresTest.java, changeType: create, reason: canonical实际成功提交与资源/锁观察}
-    - {path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrSummaryService.java, changeType: read-only, reason: 循环读取/锁定与冻结源码}
-    - {path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrAttachmentService.java, changeType: read-only, reason: 元数据/完整摘要/核验及unlink边界}
+    - {path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrSummaryService.java, changeType: update, reason: 同次提交使用已锁内部附件上下文}
+    - {path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrAttachmentService.java, changeType: update, reason: 单查询内部上下文及原映射/校验复用，外部资格入口保持}
+    - {path: gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrSummaryPersistenceTest.java, changeType: update, reason: 原无附件单测更新内部上下文mock，原断言不变}
   acceptanceScenarios:
     - id: scenario.native-summary-attachment-read-audit
       given: 完整canonical隔离库中的合法完成对象和真实现有附件原件

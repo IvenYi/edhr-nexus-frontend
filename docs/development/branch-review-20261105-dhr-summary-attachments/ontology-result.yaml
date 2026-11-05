@@ -3,44 +3,48 @@ ontologyResult:
   baselineBefore: 0.3.25
   baselineAfter: 0.3.25
   contractBaseline:
-    sourceCommit: a429f983a7a69553753034e9306d12598fcc15be
+    sourceCommit: 7704f11267a810b2bda82e99f049a0206a5e73c7
     targetBranch: edhr-dev
     targetCommit: a429f983a7a69553753034e9306d12598fcc15be
-    contractReadCommit: a429f983a7a69553753034e9306d12598fcc15be
+    contractReadCommit: 7704f11267a810b2bda82e99f049a0206a5e73c7
     uncommittedContractPaths: []
-  reason: Current scope only adds native audit tests/development records, without
-    confirmed semantic/policy replacement or product-source mutation. Current source/definitions
-    agree in declared finite subscopes. Performance metadata reuse remains unapproved
-    and unimplemented; full scenarios retain evidence gaps.
+  reason: 'User approved local submission metadata reuse, an engineering change preserving
+    existing business definitions. Six already-scoped IDs rechecked: same default
+    tenant/DHR/active membership, public snapshot/order, scopeHash-before-validation,
+    VERIFIED-before-complete-SHA and locked transaction/freeze/audit; two whole scenarios
+    retain evidence gaps. No ontology policy, knowledge IDs or maturity changes required.'
   changedArtifacts: []
   knowledgeSync: []
   conflicts: []
   questions: []
   validationEvidence:
-  - id: validation.summary-attachment-package-and-result
+  - id: validation.summary-reuse-result
     checkType: schema
-    command: python /tmp/build-summary-attachment-ontology.py; local strict result/decision
-      package invariant checks
+    command: python /tmp/build-summary-attachments-reuse-ontology.py plus strict result-field
+      checks
     outcome: passed
     evidence:
     - validation-result.log
-    - finite-audit-summary.json
-  - id: validation.summary-attachment-existing-records
+    - delta-summary.json
+  - id: validation.summary-reuse-definition-and-source
     checkType: reference
-    command: Resolve selected IDs in actual current YAML and source paths/line anchors;
-      no new formal rule IDs
+    command: Read actual current same-DP/source diff/tests and retain original 15
+      actual knowledge records; exact protected row/SQL/tail checks
     outcome: passed
     evidence:
-    - finite-audit-records.jsonl
-    - source-snapshot-manifest.json
-  - id: validation.summary-attachment-baseline
+    - delta-audit-records.jsonl
+    - original15-dispositions.jsonl
+    - protected-reader-checks.json
+  - id: validation.summary-reuse-baseline
     checkType: evidence-path
-    command: git baseline/source snapshots and 350 current knowledge byte fingerprints
+    command: actual source/target contract equality, 350 current knowledge fingerprints
+      and original FINAL manifest verification
     outcome: passed
     evidence:
     - baseline.json
-    - knowledge-fingerprint-inventory.json
     - source-snapshot-manifest.json
+    - knowledge-fingerprint-inventory.json
+    - prior-final/manifest.json
   roadmapProgress:
     stage: P0
     status: in-progress
