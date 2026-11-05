@@ -2,6 +2,8 @@
 
 ## PR59已合入：普通表单详情与原候选容量取证
 
+已交付[PR60](https://github.com/IvenYi/edhr-nexus-frontend/pull/60)，audit/edhr-dev-form-detail-read-20261105→edhr-dev，观察OPEN/MERGEABLE/CLEAN，建议人工合入本批测试/取证，不当性能修复或整体审计完成。受测04fc893f、归档a7070795后仅L0交付登记，其他受测既有路径保持；实际观察见本批evidence/delivery-verification.json，登记提交后再次核对本地/远端/PR head一致。下批先fetch真实合入及增量，按姓名方案答复或继续中央JSONCOUNT/候选参数与文本ID计划，全审余项和三性能发现保持open，不自动merge/deploy/恢复。
+
 本批对clean受测`04fc893f3df9de8d345fa32a7699f61f7cbc53ae`取得全新最终quality passed/FINAL，13/13必需检查、独立167/167和知识89/89通过。服务器独立29/29，298条业务SELECT/16签名吻合；11次目录实际限100无COUNT、5次姓名单数组保持，84条其他SELECT分项排除。两个子项及本体均正式FINAL，自有资源清理；152份最终文件新增归档，96份原主侧/本体原件保持。隔离依赖缺失、原件分析字段遗漏及自有软链dirty误判等编排错误原件保留，未混入产品/JUnit失败。
 
 全部FINAL后已实际完成[PR前漂移与阶段复核](../branch-review-20261105-form-detail/scope-review.md)，交付前fetch目标仍ea5c，无范围漂移。本批只交付取证测试，三个性能发现仍open；合成100节点未验创建/START、历史APPROVE仅核存储姓名与签名引用，不认证密码/真实签署。后续只新增L0归档/验收/scope/delivery与NEXT，其余受测既有路径保持；下文待QA为历史阶段。下一批按姓名方案答复或继续无依赖的中央JSONCOUNT及候选计划，所有原余项保持。
