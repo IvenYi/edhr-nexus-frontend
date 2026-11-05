@@ -1,0 +1,213 @@
+qualityResult:
+  result: passed
+  baseCommit: a429f983a7a69553753034e9306d12598fcc15be
+  headCommit: 48be11f44962b2dfe7390f7bb45b1ec833ac2bd3
+  contractBaseline:
+    sourceCommit: 48be11f44962b2dfe7390f7bb45b1ec833ac2bd3
+    targetBranch: edhr-dev
+    targetCommit: a429f983a7a69553753034e9306d12598fcc15be
+    contractReadCommit: 48be11f44962b2dfe7390f7bb45b1ec833ac2bd3
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: clean
+    includedPaths: []
+    excludedPaths: []
+    untrackedPaths: []
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+  - id: check.actual-candidate-contracts
+    required: true
+    category: documentation
+    description: 实际读48be项目/角色/交接契约，起止fetch目标a429无增量；候选包含目标且收尾clean。
+    method: command
+    command: git fetch/rev-parse/diff/status; read actual contracts
+    outcome: passed
+    evidence:
+    - contract-and-source.json
+    - cleanup.json
+    - target base a429f983a7a69553753034e9306d12598fcc15be; feature head/tested merge candidate 48be11f44962b2dfe7390f7bb45b1ec833ac2bd3;
+      actual contract read 48be11f44962b2dfe7390f7bb45b1ec833ac2bd3
+  - id: check.approved-scope-impact
+    required: true
+    category: requirements
+    description: 用户批准的同次提交元数据复用与同一L2影响分析/产品内核归属一致，无新增政策/接口/框架。
+    method: inspection
+    command: Read approved engineering decision, L2 impactAnalysis/extensionStrategy and product diff
+    outcome: passed
+    evidence:
+    - read-snapshots/docs/development/branch-review-20261105-dhr-summary-attachments/decision-package.yaml
+    - review-notes.md
+  - id: check.protected-source-regions
+    required: true
+    category: security
+    description: 1122保护指纹吻合、只2产品变；Attachment从upload起与Summary上下文前/原件验证后尾部原字节保持。
+    method: command
+    command: Compare base/candidate protected bytes and snapshots
+    outcome: passed
+    evidence:
+    - contract-and-source.json
+    - evidence-review/result.json
+  - id: check.public-snapshot-and-private-originals
+    required: true
+    category: api
+    description: 公开put链/顺序不变，内部路径/SHA仅同一结果行上下文，不进JSON、不跨请求；包内方法仅submit调用。
+    method: inspection
+    command: Read actual snapshot/forSubmission/verifyForSubmission and all production callers
+    outcome: passed
+    evidence:
+    - read-snapshots/gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrAttachmentService.java
+    - review-notes.md
+    - evidence-review/result.json
+  - id: check.transaction-and-validation-order
+    required: true
+    category: integration
+    description: 生产对象/DHR/草稿锁保持；scopeHash先于原件，逐项VERIFIED后完整SHA，人工确认/冻结/审计不改。
+    method: inspection
+    command: Read actual submit/locks/writers and current native assertions
+    outcome: passed
+    evidence:
+    - read-snapshots/gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrSummaryService.java
+    - native-optimized/test-summary.json
+    - review-notes.md
+  - id: check.integrity-scope-freeze-rollback
+    required: true
+    category: audit
+    description: 真实服务核冻结摘要/公开附件JSON逐字相同/源证据/提交身份/草稿删除与审计；跨DHR/tenant/inactive及6拒绝/两错误顺序通过。
+    method: automated-test
+    command: DhrSummaryAttachmentObservationPostgresTest selected18; real canonical PG services/transactions
+    outcome: passed
+    evidence:
+    - native-optimized/TEST-com.zencas.edhr.production.service.DhrSummaryAttachmentObservationPostgresTest.xml
+    - native-optimized/observations/submit_scope.json
+    - native-optimized/observations/reject_order_true.json
+    - native-optimized/observations/reject_order_false.json
+  - id: check.independent72
+    required: true
+    category: regression
+    description: 全新自有工作树18原生+54相邻=72/72，0F/E/S，fresh XML与当前候选指纹匹配；相邻H2/mock范围单列。
+    method: command
+    command: EDHR_AUDIT_ROOT=<owned-worktree> python run-native.py optimized
+    outcome: passed
+    evidence:
+    - native-optimized/run.json
+    - native-optimized/test-summary.json
+    - review-notes.md
+  - id: check.independent-knowledge89
+    required: true
+    category: ontology
+    description: 89/89独立校验，350知识及0.3.25/schema1.2/P0不变；有限人工语义不由自动通过扩展。
+    method: command
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f tools/knowledge-model/pom.xml test
+    outcome: passed
+    evidence:
+    - knowledge/maven.log
+    - knowledge/test-summary.json
+    - contract-and-source.json
+  - id: check.budget-and-old-source-control
+    required: true
+    category: database
+    description: 0/1/10/100/300及50MiB均13；旧产品+同字节新native18为13正5真预算红，无E/S；仅声明夹具配置。
+    method: automated-test
+    command: Run native18; independently inspect old-source XML/fingerprints and budget failures
+    outcome: passed
+    evidence:
+    - native-optimized/test-summary.json
+    - native-optimized/observations/submit_300.json
+    - native-optimized/observations/submit_50mib.json
+    - evidence-review/result.json
+  - id: check.server-business-and-driver-sql
+    required: true
+    category: database
+    description: 19动作195业务SELECT逐完整形状对齐，另1驱动jsonb catalog读；25INSERT/17UPDATE/8DELETE及19SET分列，395 tag外成功execute SELECT不混计。
+    method: command
+    command: python analyze-runtime.py; inspect successful execute PG logs and driver parameter detail
+    outcome: passed
+    evidence:
+    - server-sql-review.json
+    - native-optimized/postgres.log
+  - id: check.external-jfr-bytes-allocation
+    required: true
+    category: integration
+    description: 外部重算19 JFR按原件path/Java线程，字节及事件全同；50MiB全读且分配388672B，低于25MiB预算；非峰值/SLA。
+    method: command
+    command: jdk21/bin/jfr print --json --events jdk.FileRead; python analyze-runtime.py
+    outcome: passed
+    evidence:
+    - jfr-allocation-review.json
+    - external-jfr-json/submit_50mib.json
+    - native-optimized/observations/submit_50mib.json
+  - id: check.actual-parent-lock-outcomes
+    required: true
+    category: database
+    description: 两种真实pg_stat_activity Lock等待：成功定稿后unlink拒绝无审计；回滚后可unlink且保留原件。
+    method: automated-test
+    command: Run both parentLockRechecksUnlinkAfterSuccessfulOrRolledBackSubmit cases
+    outcome: passed
+    evidence:
+    - native-optimized/observations/parent-lock-true.json
+    - native-optimized/observations/parent-lock-false.json
+    - native-optimized/observations/lock_unlink_true.json
+    - native-optimized/observations/lock_unlink_false.json
+  - id: check.canonical-and-index-boundary
+    required: true
+    category: database
+    description: 实际canonical11 changesets完整图；10000历史/无关+300活动命中既有组合与PK，排序106KiB无temp，不新增推测索引。
+    method: command
+    command: Actual Liquibase startup and EXPLAIN ANALYZE BUFFERS FORMAT JSON; inspect plans
+    outcome: passed
+    evidence:
+    - native-optimized/maven.log
+    - index-review.json
+    - native-optimized/observations/existing-index-plans.json
+  - id: check.original-archives-finite-coverage
+    required: true
+    category: documentation
+    description: 证据子项FINAL/passed8：6归档737原件、38主侧JFR、负控/72XML；原15有限+delta子集/2gap、7591盘点/wholeFile0/unique未知和原队列保持。
+    method: inspection
+    command: Independent evidence child validates hashes/XML/JFR/finite ontology and fixed-commit source
+    outcome: passed
+    evidence:
+    - evidence-review/result.json
+    - evidence-review/review-notes.md
+    - read-snapshots/docs/development/branch-review-20261105-dhr-summary-attachments/finite-audit-summary.json
+    - review-notes.md
+  - id: check.a23-and-local-extraction
+    required: true
+    category: requirements
+    description: 保留不同摘要/资格/人工确认守卫，局部上下文与共享映射足够；具体大方法方案仍提案，不因行数重构。
+    method: inspection
+    command: Read actual product and A23/extraction proposals
+    outcome: passed
+    evidence:
+    - review-notes.md
+    - read-snapshots/docs/development/branch-review-20261105-dhr-summary-attachments/reuse-review-notes.md
+  - id: check.final-resources-and-child-final
+    required: true
+    category: documentation
+    description: 全部子项FINAL，自有PG/软链/工作树清理且源指纹保持，末fetch目标仍a429，无repo修复或CI操作。
+    method: command
+    command: Final source fingerprints, target fetch and owned resource cleanup
+    outcome: passed
+    evidence:
+    - cleanup.json
+    - evidence-review/result.json
+    - verifier-tool-notes.json
+  findings: []
+  residualRisks:
+  - id: risk.capacity-outside-local-reuse
+    description: 元数据上下文仍O(N)，完整SHA及父锁时长随总字节增长；upload/verify数组、PDF/清单累计与生产并发仍开放。
+    impact: 本批不是整个导出/汇总内存有界或生产SLA/峰值认证。
+    mitigation: 保持原输出/完整性，后续按原性能队列量化讨论；不引入数量上限或擅自优化。
+  - id: limit.runtime-matrices
+    description: 直接SQL完成对象/单WORK/空operations和VERIFIED附件夹具，实际NONE提交；不是START/来源生成/真实生产完成/REQUIRED/三源/全HTTP/RBAC/七格式矩阵。
+    impact: 局部服务回归不能替代完整业务生命周期或DEC0090归档/放行验收。
+    mitigation: 原两完整场景evidence-gap及相关运行矩阵保持，后续逐条验收。
+  - id: limit.driver-and-measurement-scope
+    description: 独立tag内额外1次驱动jsonb类型查询已分列；JFR是逻辑读且warm-cache，分配为调用线程累计而非进程峰值。
+    impact: 不能把195当全网络查询，或把样本速度/分配推广到生产负载。
+    mitigation: 保留全部PG/JFR原件、参数/控制范围与明确测量限制。
+  - id: risk.remaining-whole-audit
+    description: 931知识/86UI、W2余项/W3-W5交叉/W6健壮性性能抽取A23含旧已审/W7、原DHR high/A12及所有暂停继续。
+    impact: 本批不是整体审计完成或全部本体一致/发布通过。
+    mitigation: 持续台账与最新目标增量复核，保留原分母和有限证据范围。
+  blockingConditions: []

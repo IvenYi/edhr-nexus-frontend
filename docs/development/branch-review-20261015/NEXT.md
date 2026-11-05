@@ -1,12 +1,14 @@
 # 持续推进台账
 
-## PR63已合入：汇总附件真实提交与读取审查进行中
+## PR63已合入：提交附件元数据复用已验收
 
 已fetch edhr-dev@a429f983a7a69553753034e9306d12598fcc15be，PR63人工合入、整树同f133e315，无外部代码/知识/契约增量；新分支audit/edhr-dev-dhr-summary-attachment-review-20261105。[本批](../branch-review-20261105-dhr-summary-attachments/README.md)L2继续原汇总附件循环元数据队列，用完整canonical迁移和真实成功提交/摘要/失败回滚及锁/计划/读取分配补证，旧605局部前缀不冒称全请求。
 
 用户已明确批准提交内元数据复用，仅改AttachmentService内部同次上下文与Summary.submit消费；公开映射链和上传/核验/下载/历史导出尾部、锁/来源hash/全SHA/冻结/审计保持。最终主侧72/72（新18+相邻54）；旧产品+同字节新18为13正/5真预算红/0E/S。0/1/10/100/300及50MiB均13 SELECT，300由613→13，完整读取量保持。19观察195业务SELECT（旧同19为1035），50写/19SET另列；50MiB分配约0.37MiB，300分配约13.67→7.34MiB，非峰值/SLA。现有索引命中/300排序106KiB无临时块，不新增索引。
 
-7704 test-only已取得独立16项/69/89通过及FINAL，只覆盖历史阶段不覆盖新产品。原15有限本体FINAL，批准复用delta收尾；待全新最终质量及全部FINAL后实际PR前漂移复核。7591仅盘点、350知识/版本阶段不变，整文件0/历史unique未知，PR63签名图复用及所有原全审/性能/暂停队列保持，不自动merge/deploy/恢复或查询触发CI。
+clean受测48be11f4已取得全新quality passed/FINAL：16/16必需项，无发现/阻断，独立72/72和知识89/89均0F/E/S。195业务SELECT/另1驱动catalog/50写/19SET分列及19外部JFR吻合；所有资源清理，两个本体NA及全部角色/子项FINAL后已实际完成[PR前无漂移复核](../branch-review-20261105-dhr-summary-attachments/scope-review.md)，目标仍a429，之后仅L0验收/归档/交付。
+
+7704原质量仅历史test-only。15有限及delta子集不叠加unique，350知识/版本/P0不变；7591仅盘点，整文件0/历史unique未知。本批仅关闭声明路径的重复metadata；下一轮先fetch真实merge/新提交，继续上传/核验内存与事务失败、PDF/多附件容量及原全审队列；931/86/原high/A12/完整矩阵及朋友签署页/生产弹窗暂停保持，不自动merge/deploy/恢复或查询触发CI。
 
 ## PR63已交付：DHR签名图片复用已验收
 

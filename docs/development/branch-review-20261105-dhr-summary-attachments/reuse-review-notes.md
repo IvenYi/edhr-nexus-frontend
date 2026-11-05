@@ -33,4 +33,4 @@ AttachmentService增加包内SubmissionAttachments，forSubmission在已有父DH
 
 本次消除的是同次已锁提交内重复读取，不是删除普通入口资格。来源hash、核验、全SHA、各冻结hash和人工三确认仍保护不同依据；没有新“缺失就忽略”、额外兜底或隐式状态。必要共同row映射及内部上下文已局部抽取，原服务仍拥有事务；后续readSubmissionSourcesAndCheckDraftScope/buildFrozenSummary/persistSummaryVersion等具体拆分继续作为审查方案，不为行数实施大重构或建通用批处理框架。
 
-知识350及0.3.25/schema1.2/P0不变；原15有限及delta子集保持两完整场景gap，不叠加unique。直接SQL完成对象/单WORK/空operations夹具证明服务提交读者，不能认证START/来源生成/真实生产完成、REQUIRED/三来源/七格式上传核验/HTTP/RBAC/受控归档。原7591盘点、wholeFile0/历史unique未知、931知识/86UI、W2余项/W3-W5交叉/W6健壮性性能抽取A23含旧已审/W7增量、旧DHR high/A12/全部运行矩阵和用户暂停保留。最终新质量及全部角色FINAL后再实际做PR前无漂移复核，不自动merge/deploy/恢复或查询触发CI。
+知识350及0.3.25/schema1.2/P0不变；原15有限及delta子集保持两完整场景gap，不叠加unique。直接SQL完成对象/单WORK/空operations夹具证明服务提交读者，不能认证START/来源生成/真实生产完成、REQUIRED/三来源/七格式上传核验/HTTP/RBAC/受控归档。原7591盘点、wholeFile0/历史unique未知、931知识/86UI、W2余项/W3-W5交叉/W6健壮性性能抽取A23含旧已审/W7增量、旧DHR high/A12/全部运行矩阵和用户暂停保留。最终已取得48be新quality passed/16项、独立72/89及全部角色FINAL，实际PR前无漂移复核见scope-review.md，不自动merge/deploy/恢复或查询触发CI。
