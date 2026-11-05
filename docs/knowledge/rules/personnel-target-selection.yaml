@@ -1,0 +1,23 @@
+knowledgeModelVersion: 0.3.25
+rules:
+  - id: rule.personnel-targets-complete-qualified-navigation
+    name: 人员目标选择须覆盖全部符合入口资格的人员
+    status: specified
+    visibility: internal
+    trigger: personnel-target.select
+    scope: transfer-and-managerial-reassignment-personnel-selection
+    condition:
+      any:
+        - {fact: intervention.type, operator: equals, value: ORDINARY_TRANSFER}
+        - {fact: intervention.type, operator: equals, value: MANAGERIAL_REASSIGNMENT}
+    result:
+      type: return-query-projection
+      source: existing-domain-qualified-personnel
+      eligibleSetCompleteness: all-matching-qualified-personnel-reachable
+      fixedTotalSelectionCap: false
+      supportsBatchedNavigation: true
+      singleBatchLimitIsNotTotalLimit: true
+      qualificationBeforePagination: true
+      grantsActionPermission: false
+    explanation: DEC-0095-01要求当前人员选择入口的全部合法匹配人员均可通过分页或分批加载到达，不能把单批100或任何其他批量大小解释为总可选人数上限。条件复用已有intervention.type的转办/管理员重新分配动作语义映射，仅定位本规则的选择阶段，不新增运行任务、持久化动作或通用事实提供器。集合仍由DEC-0081/0092/0093等各入口原租户、状态、锁定、当前人排除、原候选、申请人回避及领域权限决定；完整资格先筛后分页，提交时仍即时重核。具体页大小和续页协议属工程选择，规则保持specified/internal，不能由知识校验或局部代码存在性推定全部入口、浏览器、签署或生产性能已验收。
+    evidenceIds: [evidence.qualified-personnel-selection-user-confirmed, evidence.qualified-personnel-directory-source, evidence.qualified-personnel-domain-target-source, evidence.qualified-personnel-selector-source]

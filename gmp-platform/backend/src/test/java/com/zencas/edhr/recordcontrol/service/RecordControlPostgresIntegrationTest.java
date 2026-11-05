@@ -361,7 +361,7 @@ class RecordControlPostgresIntegrationTest {
         assertThat(signature.path("values").path("targetUserId").asText()).isEqualTo("43");
         assertThat(signature.path("values").path("taskState").asText()).isEqualTo(command.expectedTaskState());
         AuditContext.setOperator("42", "原处理人");
-        assertThatThrownBy(() -> responsibility.transferTargets(task, "")).hasMessageContaining("无权");
+        assertThatThrownBy(() -> responsibility.transferTargets(task, "", 1, 100).content()).hasMessageContaining("无权");
         assertThat(request.path("workflow_instance_id").asText()).isNotBlank();
     }
     @Test void reassignmentRejectsUnqualifiedTargetsAndSignerWithoutInterventionPermission() {
@@ -420,6 +420,54 @@ class RecordControlPostgresIntegrationTest {
         jdbc.update("INSERT INTO user_role(id,user_id,role_id) VALUES (?,?,?) ON CONFLICT(id) DO NOTHING",role,user,role);
         for (String code : codes) jdbc.update("INSERT INTO role_permission(id,role_id,permission_id) SELECT ?,?,id FROM permission WHERE code=? ON CONFLICT(role_id,permission_id) DO NOTHING",ids.nextId(),role,code);
     }
+    private void pagedPersonnel() {
+        personnel();
+        jdbc.update("INSERT INTO role(id,tenant_id,code,name) VALUES(8100000,0,'PAGED_PERSONNEL_TEST','分页人员测试')");
+        for (String code : List.of("production.execution","form-management.review","records.dhr-review","dhr.reviews.act"))
+            jdbc.update("INSERT INTO role_permission(id,role_id,permission_id) SELECT ?,8100000,id FROM permission WHERE code=?", ids.nextId(), code);
+        jdbc.update("INSERT INTO user_account(id,tenant_id,username,display_name,password_hash,status) SELECT 1000+n,0,'paged-admin-'||n,'paged-admin','not-used','ACTIVE' FROM generate_series(0,150) n");
+        var memberships = new java.util.ArrayList<Object[]>();
+        for (int i = 0; i < 151; i++) memberships.add(new Object[]{ids.nextId(), 1000L + i, 8100000L});
+        jdbc.batchUpdate("INSERT INTO user_role(id,user_id,role_id) VALUES(?,?,?)", memberships);
+    }
+    @AfterEach void clearPagedPersonnelRole() {
+        jdbc.update("DELETE FROM user_role WHERE role_id=8100000");
+        jdbc.update("DELETE FROM role_permission WHERE role_id=8100000");
+        jdbc.update("DELETE FROM role WHERE id=8100000");
+    }
+    private void expectLaterPersonnelPage(String endpoint, String token, String... parameters) throws Exception {
+        var request = org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get(endpoint)
+                .header("Authorization", "Bearer " + token).param("keyword", "paged-admin").param("page", "3").param("size", "50");
+        for (int i = 0; i < parameters.length; i += 2) request.param(parameters[i], parameters[i + 1]);
+        mvc.perform(request).andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isOk())
+                .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath("$.data.content.length()").value(50))
+                .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath("$.data.content[0].id").value("1100"))
+                .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath("$.data.hasNext").value(true));
+    }
+    @Test void centralFormAndProductionTransferApisExposeQualifiedLaterPages() throws Exception {
+        pagedPersonnel(); String id = activeForm();
+        var form = (ObjectNode) snapshot.path("operations").get(0).path("forms").get(0);
+        ((ObjectNode) form.path("flow").path("nodes").get(1).path("data").path("config"))
+                .putArray("buttons").addObject().put("action", "TRANSFER").put("visible", true);
+        jdbc.update("UPDATE production_execution SET snapshot_json=?", snapshot.toString());
+        String managerToken = tokens.generateToken("44", "rc-manager", "干预人", 5, List.of("workflow.intervene"));
+        expectLaterPersonnelPage("/api/v1/workflow/operations/tasks/" + id + ":review/reassignment-targets", managerToken);
+        String reviewerToken = tokens.generateToken("42", "rc-reviewer", "审批人", 5, List.of("production.execution", "form-management.review"));
+        expectLaterPersonnelPage("/api/v1/production/execution/109/transfer-targets", reviewerToken,
+                "operationId", "op", "formId", "form", "instanceId", "form");
+    }
+    @Test void recordControlTargetApiKeepsItsScopeOnLaterPages() throws Exception {
+        requests.submit(command(BusinessType.CHANGE)); pagedPersonnel(); long recordTask = taskId();
+        jdbc.update("UPDATE workflow_task SET candidate_snapshot=jsonb_build_object('userIds',(SELECT jsonb_agg(id::text) FROM user_account WHERE id IN (42,43) OR id BETWEEN 1000 AND 1150)) WHERE id=?", recordTask);
+        String reviewerToken = tokens.generateToken("42", "rc-reviewer", "审批人", 5, List.of("workflow.tasks"));
+        expectLaterPersonnelPage("/api/v1/workflow/operations/tasks/" + recordTask + "/transfer-targets", reviewerToken);
+    }
+    @Test void dhrTargetApiKeepsItsPermissionsOnLaterPages() throws Exception {
+        pagedPersonnel();
+        dhr(true); summaries.submit(1000L,summaryCommand());
+        String managerToken = tokens.generateToken("44", "rc-manager", "干预人", 5, List.of("workflow.intervene"));
+        expectLaterPersonnelPage("/api/v1/workflow/operations/tasks/" + dhrTask() + "/reassignment-targets", managerToken);
+    }
     private void login(String id, String... permissions) {
         AuditContext.setOperator(id,"用户"+id);
         org.springframework.security.core.context.SecurityContextHolder.getContext().setAuthentication(
@@ -463,12 +511,12 @@ class RecordControlPostgresIntegrationTest {
     @Test void formReassignmentSearchQualifiesBeforeLimitingUsers() throws Exception {
         personnel(); grant(43,"production.execution","form-management.review");
         String id=activeForm(); manager(); unqualifiedUsersBeforeReviewTarget();
-        assertThat(formOperations.targets(id+":review","target-scope")).extracting(row->row.get("id")).containsExactly("43");
+        assertThat(formOperations.targets(id+":review","target-scope", 1, 100).content()).extracting(row->row.get("id")).containsExactly("43");
     }
     @Test void dhrReassignmentSearchQualifiesBeforeLimitingUsers() {
         personnel(); grant(43,"records.dhr-review","dhr.reviews.act");
         dhr(true); summaries.submit(1000L,summaryCommand()); manager(); unqualifiedUsersBeforeReviewTarget();
-        assertThat(responsibility.reassignmentTargets(dhrTask(),"target-scope")).extracting(row->row.get("id")).containsExactly("43");
+        assertThat(responsibility.reassignmentTargets(dhrTask(),"target-scope", 1, 100).content()).extracting(row->row.get("id")).containsExactly("43");
     }
     @SuppressWarnings("unchecked") private com.zencas.edhr.workflow.service.WorkflowResponsibilityService.Command formCommand(String id) {
         var tasks=(List<java.util.Map<String,Object>>)formOperations.detail(Long.parseLong(id.substring(5))).get("tasks");
@@ -482,7 +530,7 @@ class RecordControlPostgresIntegrationTest {
         String source=scalar("SELECT values_json FROM form_instance_record");
         assertThat(operations.list(1,20,"DHR-LINKAGE","",false).getContent()).hasSize(1);
         assertThat(operations.detail(instance).get("businessKey")).isEqualTo("DHR-LINKAGE · V1");
-        assertThat(responsibility.reassignmentTargets(task,"")).extracting(r->r.get("id")).containsExactly("43");
+        assertThat(responsibility.reassignmentTargets(task,"", 1, 100).content()).extracting(r->r.get("id")).containsExactly("43");
         var command=reassignment(task,"43","test-signature-password"); responsibility.reassign(task,command);
         assertThatThrownBy(()->responsibility.reassign(task,command)).hasMessageContaining("已变化");
         assertThat(scalar("SELECT candidate_snapshot->>'originSnapshot' FROM workflow_task WHERE id="+task)).contains("42");
@@ -524,7 +572,7 @@ class RecordControlPostgresIntegrationTest {
         String record=scalar("SELECT snapshot_json||values_json FROM form_instance_record");
         var command=formCommand(id); long signatures=count("signature");
         assertThatThrownBy(()->formOperations.reassign(key,new com.zencas.edhr.workflow.service.WorkflowResponsibilityService.Command("43","原因",command.expectedTaskState(),"rc-manager",""))).hasMessageContaining("密码");
-        assertThat(formOperations.targets(key,"")).extracting(r->r.get("id")).containsExactly("43");
+        assertThat(formOperations.targets(key,"", 1, 100).content()).extracting(r->r.get("id")).containsExactly("43");
         formOperations.reassign(key,command);
         assertThat(count("signature")).isEqualTo(signatures+1);
         assertThat(scalar("SELECT snapshot_json||values_json FROM form_instance_record")).isEqualTo(record);
@@ -587,7 +635,7 @@ class RecordControlPostgresIntegrationTest {
     @Test void genericReassignmentStillRequiresSignatureAndOriginalHandlingQualification() {
         requests.submit(command(BusinessType.CHANGE)); personnel(); manager(); long task = taskId();
         jdbc.update("UPDATE workflow_instance SET business_type='SYNTHETIC_CASE'");
-        assertThat(responsibility.reassignmentTargets(task, "")).extracting(row -> row.get("id")).containsExactly("43");
+        assertThat(responsibility.reassignmentTargets(task, "", 1, 100).content()).extracting(row -> row.get("id")).containsExactly("43");
         assertThatThrownBy(() -> responsibility.reassign(task, reassignment(task, "44", "test-signature-password"))).hasMessageContaining("候选范围");
         responsibility.reassign(task, reassignment(task, "43", "test-signature-password"));
         assertThat(scalar("SELECT assignee_id FROM workflow_task")).isEqualTo("43");
@@ -599,14 +647,14 @@ class RecordControlPostgresIntegrationTest {
         requests.submit(command(businessType.equals("SYNTHETIC_CASE") ? BusinessType.CHANGE : BusinessType.valueOf(businessType)));
         personnel(); manager(); long task = taskId(); unqualifiedUsersBeforeReviewTarget();
         if (businessType.equals("SYNTHETIC_CASE")) jdbc.update("UPDATE workflow_instance SET business_type=?", businessType);
-        assertThat(responsibility.reassignmentTargets(task, "target-scope")).extracting(row -> row.get("id")).containsExactly("43");
+        assertThat(responsibility.reassignmentTargets(task, "target-scope", 1, 100).content()).extracting(row -> row.get("id")).containsExactly("43");
     }
 
     @ParameterizedTest @ValueSource(strings = {"CHANGE", "OBSOLETE"})
     void recordControlTransferSearchQualifiesBeforeLimitingUsers(String businessType) {
         requests.submit(command(BusinessType.valueOf(businessType))); personnel(); long task = taskId();
         unqualifiedUsersBeforeReviewTarget(); AuditContext.setOperator("42", "审批人");
-        assertThat(responsibility.transferTargets(task, "target-scope")).extracting(row -> row.get("id")).containsExactly("43");
+        assertThat(responsibility.transferTargets(task, "target-scope", 1, 100).content()).extracting(row -> row.get("id")).containsExactly("43");
     }
 
     @Test void repeatedResponsibilitySearchUsesOriginalCandidatesBeforeLimit() {
@@ -615,7 +663,7 @@ class RecordControlPostgresIntegrationTest {
         unqualifiedUsersBeforeReviewTarget(); jdbc.update("UPDATE user_account SET display_name='target-scope-Z2' WHERE id=42");
         String before = scalar("SELECT candidate_snapshot::text FROM workflow_task");
         AuditContext.setOperator("43", "新审批人");
-        assertThat(responsibility.transferTargets(task, "target-scope")).extracting(row -> row.get("id")).containsExactly("42");
+        assertThat(responsibility.transferTargets(task, "target-scope", 1, 100).content()).extracting(row -> row.get("id")).containsExactly("42");
         assertThat(scalar("SELECT candidate_snapshot::text FROM workflow_task")).isEqualTo(before);
     }
 
@@ -625,7 +673,7 @@ class RecordControlPostgresIntegrationTest {
         jdbc.update("UPDATE user_account SET display_name='limit-scope-'||id WHERE id>=1000");
         jdbc.update("UPDATE user_account SET display_name='limit-scope' WHERE id=41");
         jdbc.update("UPDATE workflow_task SET candidate_snapshot='{\"unrestricted\":true}'::jsonb");
-        var targets = responsibility.reassignmentTargets(task, "limit-scope");
+        var targets = responsibility.reassignmentTargets(task, "limit-scope", 1, 100).content();
         assertThat(targets).hasSize(100);
         assertThat(targets).extracting(row -> row.get("id")).doesNotContain("41", "42");
     }
@@ -633,7 +681,7 @@ class RecordControlPostgresIntegrationTest {
     @Test void emptyFrozenCandidatesDoNotBecomeUnrestricted() {
         requests.submit(command(BusinessType.CHANGE)); personnel(); manager(); long task = taskId();
         unqualifiedUsersBeforeReviewTarget(); jdbc.update("UPDATE workflow_task SET candidate_snapshot='{\"userIds\":[]}'::jsonb");
-        assertThat(responsibility.reassignmentTargets(task, "target-scope")).isEmpty();
+        assertThat(responsibility.reassignmentTargets(task, "target-scope", 1, 100).content()).isEmpty();
     }
 
     @Test void withdrawalAndFinalApprovalHaveExactlyOneWinner() throws Exception {

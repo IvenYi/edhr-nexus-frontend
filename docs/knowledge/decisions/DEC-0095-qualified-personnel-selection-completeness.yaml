@@ -1,0 +1,35 @@
+knowledgeModelVersion: 0.3.25
+decisions:
+  - id: DEC-0095
+    title: 人员选择覆盖全部符合入口资格的人员
+    status: specified
+    visibility: internal
+    context: user-confirmed；2026-11-05整体审计取证后，用户授权修复普通表单详情当前姓名的条件性N+1及原候选逐ID绑定参数增长，并明确否定人员选择只能展示前100名的总量截断，要求此前提到的100名匹配人员目录及同类入口统一支持完整可选范围。此前100是实际工程读取上限，不是已确认的业务人数政策；本决策补充选择覆盖规范，不改写旧PR或原始测试当时的结果，不替代各领域原目标资格及动作边界。分页、懒加载和单批大小由工程设计，不能升格为用户确认的总人数上限。
+    decisionStatements:
+      - id: DEC-0095-01
+        statement: user-confirmed；人员选择必须使全部符合当前入口权限和资格条件的人员能够被找到和选择，不得只提供前100名或以其他固定总人数截断可选集合。允许分页或分批懒加载控制单次读取量；单批最多返回若干人不代表总共只能选择这些人，存在后续符合条件的人员时须有可继续到达的方式。此前提到的100名匹配人员目录及同类转办、重新分配入口统一遵守此要求。
+        status: specified
+        visibility: internal
+      - id: DEC-0095-02
+        statement: existing-policy-and-scope-boundary；完整可选集合始终由各入口原资格决定。通用任务和普通表单处理人转办继续按DEC-0081的同租户有效未锁定其他用户范围；记录控制保留原候选和禁止申请人自审；管理员重新分配保留相应领域资格，DHR仍只开放其已确认的管理员签名改派而不开放本人转办、撤回或通用批准绕过。完整资格筛选须先于分页，选择列表不替代提交时的状态、目标、原因、签名及权限复核，不改变原候选、当前责任、节点、内容、冻结版本、签名和审计。
+        status: specified
+        visibility: internal
+      - id: DEC-0095-03
+        statement: implementation-choice-and-evidence-boundary；具体页号、每批大小、单请求最大批量、续页字段、组件和有界查询方式是工程选择，不是用户逐字段确认。原候选精确文本身份及普通表单当前姓名的原数值解析、空值和缺失回退应按各自既有行为验证，历史姓名与签名引用保持原证据来源。用户本轮未要求实施6.5万合成账户下的文本ID索引方案，不从本决策推定生产规模、延迟、吞吐、完整多租户隔离或真实签署整链已验收。
+        status: specified
+        visibility: internal
+    supersedes: []
+    evidenceIds: [evidence.qualified-personnel-selection-user-confirmed, evidence.qualified-personnel-directory-source, evidence.qualified-personnel-domain-target-source, evidence.qualified-personnel-selector-source]
+    acceptanceScenarios:
+      - id: scenario.qualified-personnel-selection-beyond-first-batch
+        given: 当前入口有超过100名符合原资格的人员，并有同名人员及不符合资格的前置记录
+        when: 用户搜索并继续加载后续批次
+        then: 全部匹配且符合资格的人员均能到达并选择，稳定顺序不因姓名相同丢失合法人员；不存在固定总人数截断，不把无资格人员带入结果
+        evidenceIds: [evidence.qualified-personnel-selection-user-confirmed, evidence.qualified-personnel-directory-source, evidence.qualified-personnel-selector-source]
+        evidenceRequirements: [超过100人员的跨批次完整性与顺序, 完整资格在分页前应用, 后续批次实际选择, 搜索清除与加载失败恢复]
+      - id: scenario.qualified-personnel-selection-preserves-domain-actions
+        given: 不同领域分别有原候选、租户、权限、申请人回避及DHR动作限制
+        when: 用户查询后续批次或对所选目标提交转办或重新分配
+        then: 读取及提交继续执行各自原资格，列表扩大可到达范围不扩大授权集合；非法、变化或过期请求被拒绝且原业务证据保持
+        evidenceIds: [evidence.qualified-personnel-selection-user-confirmed, evidence.qualified-personnel-domain-target-source, evidence.central-form-dhr-workflow-tests]
+        evidenceRequirements: [各入口资格与越权负例, 目录和提交时复核, 原候选及签名审计冻结保持]

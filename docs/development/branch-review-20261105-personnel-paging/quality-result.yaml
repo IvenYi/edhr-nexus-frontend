@@ -1,0 +1,336 @@
+qualityResult:
+  result: passed
+  baseCommit: f8638f5400356c4820d59bf26be50a79b453ca12
+  headCommit: b81b67ed7602740cda7b43cadcd3ce7bf8ba928a
+  contractBaseline:
+    sourceCommit: b81b67ed7602740cda7b43cadcd3ce7bf8ba928a
+    targetBranch: edhr-dev
+    targetCommit: f8638f5400356c4820d59bf26be50a79b453ca12
+    contractReadCommit: b81b67ed7602740cda7b43cadcd3ce7bf8ba928a
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: clean
+    includedPaths: []
+    excludedPaths: []
+    untrackedPaths: []
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+  - id: check.fixed-candidate-contract
+    required: true
+    category: documentation
+    description: Independent candidate/target/contract baseline read, target ancestry and final fresh-fetch unchanged;
+      root and owned candidate clean.
+    method: inspection
+    command: git fetch origin edhr-dev; git rev-parse HEAD origin/edhr-dev; compare candidate input bytes and git
+      show
+    outcome: passed
+    evidence:
+    - base=f8638f5400356c4820d59bf26be50a79b453ca12
+    - head/tested-candidate=b81b67ed7602740cda7b43cadcd3ce7bf8ba928a
+    - final-baseline.json
+    - read-input-fingerprints.json
+    - candidate-final-path-fingerprints.json
+    - 28 contract/knowledge/design/decision inputs and all45 changed paths equal locked candidate.
+  - id: check.requirements-impact-drift
+    required: true
+    category: requirements
+    description: Authorized two read optimizations and full qualified-personnel reachability only; actual L2 impact,
+      compatibility and extension paths agree.
+    method: inspection
+    command: Read decisionPackage, user-confirmed, DEC0081/0092/0093/0095, changes and source graph
+    outcome: passed
+    evidence:
+    - base=f8638f5400356c4820d59bf26be50a79b453ca12
+    - head/tested-candidate=b81b67ed7602740cda7b43cadcd3ce7bf8ba928a
+    - independent-manual-review.json
+    - evidence-scope/semantic-review.md
+    - API Page shape requires frontend/backend delivered together; no historical policy restoration, writes or index
+      changes.
+  - id: check.evidence-knowledge-scope
+    required: true
+    category: ontology
+    description: Fresh evidence child FINAL30/30; raw archive/knowledge semantics and unchanged old audit gaps verified
+      without converting gaps to passed.
+    method: inspection
+    command: python3 evidence-scope/verify.py; evidence-scope/finalize.py; verify child manifest hashes
+    outcome: passed
+    evidence:
+    - base=f8638f5400356c4820d59bf26be50a79b453ca12
+    - head/tested-candidate=b81b67ed7602740cda7b43cadcd3ce7bf8ba928a
+    - evidence-scope/result.yaml
+    - evidence-scope/manifest.json
+    - 299 primary originals;105 ontology originals+manifest/digest;350 current knowledge fingerprints;12 new IDs;old13
+      scopes retained.
+  - id: check.qualification-and-write-protection
+    required: true
+    category: security
+    description: Original qualification, dual permissions, applicant/current-person exclusions, submit recheck,
+      locks/signatures/audit/freeze and old assertions preserved.
+    method: inspection
+    command: Inspect candidate source/test diff and compare14 protected base regions
+    outcome: passed
+    evidence:
+    - base=f8638f5400356c4820d59bf26be50a79b453ca12
+    - head/tested-candidate=b81b67ed7602740cda7b43cadcd3ce7bf8ba928a
+    - independent-manual-review.json
+    - evidence-scope/verification-checks.json
+    - evidence-scope/candidate-test-diff.stdout
+    - 14 original protection checks remain identical; native adjacent guards still required.
+  - id: check.native177
+    required: true
+    category: integration
+    description: Own PostgreSQL16 native regression177/177,0 failures/errors/skipped across10 classes.
+    method: automated-test
+    command: python3 run-independent-native.py full5
+    outcome: passed
+    evidence:
+    - base=f8638f5400356c4820d59bf26be50a79b453ca12
+    - head/tested-candidate=b81b67ed7602740cda7b43cadcd3ce7bf8ba928a
+    - native/run.json
+    - native/test-summary.json
+    - native/maven.log
+    - native/TEST-com.zencas.edhr.workflow.service.WorkflowReadObservationPostgresTest.xml
+    - Observer35+record55+transfer24+adjacent63; exact source fingerprints before execution.
+  - id: check.knowledge89
+    required: true
+    category: ontology
+    description: Own formal knowledge module89/89,0 failures/errors/skipped on candidate.
+    method: automated-test
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f tools/knowledge-model/pom.xml test
+    outcome: passed
+    evidence:
+    - base=f8638f5400356c4820d59bf26be50a79b453ca12
+    - head/tested-candidate=b81b67ed7602740cda7b43cadcd3ce7bf8ba928a
+    - knowledge/summary.json
+    - knowledge/maven.log
+    - knowledge/TEST-com.zencas.edhr.knowledge.BusinessKnowledgeModelTest.xml
+    - Formal model validation plus separate manual semantics; no claim full old931 audit closed.
+  - id: check.server-native-sql
+    required: true
+    category: database
+    description: Fresh SQL child FINAL7/7 with its ownPG/native35.90 observation events/296 businessSELECT/17 signatures
+      match real execution.
+    method: query
+    command: python3 server-sql/run-server-native.py; python3 server-sql/crosscheck.py
+    outcome: passed
+    evidence:
+    - base=f8638f5400356c4820d59bf26be50a79b453ca12
+    - head/tested-candidate=b81b67ed7602740cda7b43cadcd3ce7bf8ba928a
+    - server-sql/result.yaml
+    - server-sql/server-sql-summary.json
+    - server-sql/postgres.log
+    - 69 directory queries use51x9 or101x60,zero directoryCOUNT;55 candidate queries singleJSON;9 current bigint+5
+      generic varchar arrays.
+    - 392 successful SELECT total;96 bootstrap/metadata/fixtures/assertions excluded by category. One expected Liquibase
+      empty-db probe ERROR,zero product runtime errors. Initial analysis wrong parameter assumption corrected and
+      preserved.
+  - id: check.all-qualified-pages-and-budgets
+    required: true
+    category: api
+    description: Native逐ID and HTTP later-page assertions prove100 is a batch limit, not a total cap; exact original
+      candidate text retained.
+    method: automated-test
+    command: Same native177 command; inspect observer and route assertions and real bound parameters
+    outcome: passed
+    evidence:
+    - base=f8638f5400356c4820d59bf26be50a79b453ca12
+    - head/tested-candidate=b81b67ed7602740cda7b43cadcd3ce7bf8ba928a
+    - native/test-summary.json
+    - native/observations.jsonl
+    - server-sql/candidate-array-parameter-checks.json
+    - server-sql/directory-limit-parameter-checks.json
+    - 251 same-name users:6 nonempty+7th empty page,no repeats;5000 original candidates50 pages,eachID;HTTP3rdpage
+      exceeds100.
+    - Candidate keyword directory params5007->8 first/9 next,2 no-keyword exact-text cases6params;current100 different/missing
+      names101->2 SELECT;empty1,sameexisting2.
+  - id: check.browser11
+    required: true
+    category: e2e
+    description: Own Chromium11/11 green,9 source fingerprints before/after unchanged; no full real-auth/signature
+      claim.
+    method: browser
+    command: EDHR_PLAYWRIGHT_MODULE=/workspace/.edhr-browser-tools/node_modules/playwright/index.mjs CHROME_PATH=/usr/bin/chromium
+      EDHR_PERSONNEL_OUTPUT=<owned> npm run test:personnel-targets-browser
+    outcome: passed
+    evidence:
+    - base=f8638f5400356c4820d59bf26be50a79b453ca12
+    - head/tested-candidate=b81b67ed7602740cda7b43cadcd3ce7bf8ba928a
+    - browser-final-run.json
+    - browser-final/result.json
+    - browser-final.log
+    - 151 all pages/after100 selectable;IME/clear,stale response+scope isolation,first/later retry,keyboard,actualTaskDetail+ResponsibilityDialog
+      and2 real API-adapter widget fixtures.
+  - id: check.manual-visual
+    required: true
+    category: visual
+    description: Own desktop and390px screenshots viewed; input/dropdown width and load-more button unobscured,keyboard
+      reachable.
+    method: inspection
+    command: View browser/desktop-popup.png and browser/narrow-popup.png; browser assertions
+    outcome: passed
+    evidence:
+    - base=f8638f5400356c4820d59bf26be50a79b453ca12
+    - head/tested-candidate=b81b67ed7602740cda7b43cadcd3ce7bf8ba928a
+    - browser/desktop-popup.png
+    - browser/narrow-popup.png
+    - browser-final/desktop-popup.png
+    - browser-final/narrow-popup.png
+    - independent-manual-review.json
+  - id: check.full-frontend-build
+    required: true
+    category: regression
+    description: Full TypeScript and Vite production build exit0.
+    method: command
+    command: npm run build
+    outcome: passed
+    evidence:
+    - base=f8638f5400356c4820d59bf26be50a79b453ca12
+    - head/tested-candidate=b81b67ed7602740cda7b43cadcd3ce7bf8ba928a
+    - frontend-build-format-run.json
+    - frontend-build.log
+  - id: check.new-files-format
+    required: true
+    category: documentation
+    description: Three new frontend component/type/browser-test files satisfy formatter exit0.
+    method: command
+    command: npx prettier --check src/components/identity/PersonnelTargetSelect.tsx src/types/personnel.ts scripts/test-personnel-targets-browser.mjs
+    outcome: passed
+    evidence:
+    - base=f8638f5400356c4820d59bf26be50a79b453ca12
+    - head/tested-candidate=b81b67ed7602740cda7b43cadcd3ce7bf8ba928a
+    - frontend-build-format-run.json
+    - frontend-format.log
+  - id: check.new-owner-recommended-lint
+    required: true
+    category: regression
+    description: New shared owner and personnel types pass official recommended ESLint/TypeScript rules withzero
+      warnings.
+    method: command
+    command: npx eslint --no-eslintrc --config <owned>/eslint-new-owner.json --resolve-plugins-relative-to . src/components/identity/PersonnelTargetSelect.tsx
+      src/types/personnel.ts --max-warnings 0
+    outcome: passed
+    evidence:
+    - base=f8638f5400356c4820d59bf26be50a79b453ca12
+    - head/tested-candidate=b81b67ed7602740cda7b43cadcd3ce7bf8ba928a
+    - frontend-lint-run.json
+    - frontend-lint.log
+    - eslint-new-owner.json
+    - Private supplemental rules only; repository-wide lint has no maintained config and is not claimed passed.
+  - id: check.scoped-premium-owner
+    required: true
+    category: visual
+    description: Official skill audit strict0 for selected shared personnel owner under canonical ownership map.
+    method: command
+    command: python3 audit_project.py <candidate> --mode strict --config docs/development/branch-review-20261105-personnel-paging/premium-ui.json
+      --output <owned>/premium-owner.json
+    outcome: passed
+    evidence:
+    - base=f8638f5400356c4820d59bf26be50a79b453ca12
+    - head/tested-candidate=b81b67ed7602740cda7b43cadcd3ce7bf8ba928a
+    - premium-owner.json
+    - premium-runs.json
+    - skills/frontend-design.md
+    - skills/frontend-design-premium.md
+  - id: check.whole-premium-no-added-findings
+    required: true
+    category: visual
+    description: Baseline and candidate whole-project86 findings and summaries exactly equal,no introduced; neither
+      whole-project strict result called passed.
+    method: command
+    command: python3 audit_project.py <baseline/candidate> --mode strict --output <owned>/premium-whole-*.json;
+      compare findings
+    outcome: passed
+    evidence:
+    - base=f8638f5400356c4820d59bf26be50a79b453ca12
+    - head/tested-candidate=b81b67ed7602740cda7b43cadcd3ce7bf8ba928a
+    - premium-comparison.json
+    - premium-whole-baseline.json
+    - premium-whole-candidate.json
+    - premium-runs.json
+    - Both whole-project strict commands exit2 for known86 findings; owner strict exit0.
+  - id: check.final-roles-cleanup-source
+    required: true
+    category: documentation
+    description: All final roles complete,all owned resources cleaned and candidate/target/source still fixed; no
+      source mutation by any quality role.
+    method: inspection
+    command: Verify childFINAL manifests; remove only owned worktrees/dependency link; inspect only owned container;
+      final rootstatus
+    outcome: passed
+    evidence:
+    - base=f8638f5400356c4820d59bf26be50a79b453ca12
+    - head/tested-candidate=b81b67ed7602740cda7b43cadcd3ce7bf8ba928a
+    - children-final.json
+    - cleanup.json
+    - final-baseline.json
+    - candidate-final-path-fingerprints.json
+    - native/cleanup.json
+    - server-sql/cleanup.json
+  findings: []
+  residualRisks:
+  - id: risk.synchronized-api-deployment
+    description: Target endpoints nowreturn Page rather thanList.
+    impact: Old frontend with separately deployed new backend is outside compatible shape.
+    mitigation: Deploy repository frontend/backend together; do not add silent first100 fallback.
+  - id: risk.bounded-live-directory
+    description: Offset pages represent live qualification,not cross-request frozen account population. Text-ID
+      cast/scan and index plan explicitly deferred by user.
+    impact: Concurrent directory edits may move entries; this batch does not assertall-scaleSLA.
+    mitigation: Keep submit-time authoritative eligibility recheck; discuss actual workload/index changes separately.
+  - id: risk.browser-and-http-boundaries
+    description: 'Chromium uses isolatedHTTP fixtures: actualTaskDetail/ResponsibilityDialog and two real API-adapter
+      selector fixtures. Production/review full parent pages and ordinary task fullJWT chain not newlytested.'
+    impact: No claim complete account/ACL/e-signature/productionUI matrix.
+    mitigation: Preserve current nativeJWT+MockMvc tests for record/form/DHR and standaloneMVC task scope; continue
+      original complete matrix queue.
+  - id: risk.known-static-debt
+    description: Whole-project officialpremium remains86 findings; repository-wideESLint lacks maintained config.
+    impact: This finite batch is not whole-project static orvisual acceptance.
+    mitigation: Scoped ownerstrict0,recommended supplemental lint,fullbuild and baseline comparison passed; keep86
+      queue open.
+  - id: risk.unchanged-audit-debt
+    description: Old931 knowledge candidates,W2-W7/high/A12/fulltenant and ACL/concurrency/signature matrices,other
+      performance,A23 redundant eligibility/wholeFile0/historyuniqueunknown remain unchanged.
+    impact: Finite personnel slice does not complete full-branch audit or production readiness.
+    mitigation: Continue ledgers with fresh fetch and incremental audit; retain pausedTaskDetail passwordchain and
+      production-dialog redesign.
+  - id: risk.evidence-not-negative-control
+    description: 'No old-source runtime control: old API signatures differ. Intermediate main red phases are preserved
+      as own-stage errors,not claimed old defect reproductions.'
+    impact: No quantified productionlatency or full currentcreate/START/highconcurrency/cryptographic signature
+      proof.
+    mitigation: Report candidate regressions,exact contents and actual querybindings only; retain existing baseline
+      and old evidence gaps.
+  blockingConditions: []
+verificationScope:
+  role: fresh-independent-L2-final-quality
+  independence: No participation in product/test/fixture/config/knowledge repair. All runtime/static checks independently
+    executed in own candidate worktree,PG andbrowser.
+  ownRequiredChecks: 16
+  ownNativeTests: 177
+  ownKnowledgeTests: 89
+  ownBrowserScenarios: 11
+  browserRepeat: Two independent executions11green preserved;final run9source fingerprints unchanged. Counts are
+    scenarios,not22distinctcoverage.
+  children:
+  - role: evidence-scope
+    formalStatus: FINAL
+    result: passed
+    requiredChecks: 30
+    manifestSha256: 158b7da92a79c2a061b28462fd548818d18b3ae41bb80549ed1c926dea2a0904
+    resultPath: evidence-scope/result.yaml
+    manifestPath: evidence-scope/manifest.json
+    rawArtifacts: 79
+  - role: server-sql
+    formalStatus: FINAL
+    result: passed
+    requiredChecks: 7
+    manifestSha256: 5c5898f8f3647a53446b1fba3f0a2064b7313df8d41ac6e4cf666521e1bd575d
+    resultPath: server-sql/result.yaml
+    manifestPath: server-sql/manifest.json
+    rawArtifacts: 50
+  counting: SQL child35 is a subset repetition of parent177,not35additionalcoverage;child37checks are independent
+    scopes,notadded runtime tests.
+  resourceCleanup: All ownedworktrees/container/dependencylink/browser/server/temp harness removed;no resources
+    belonging to others touched.
+  limits: No CI/Actions query or trigger,no merge/deploy/historyrestore/orphan cleanup;no wholesaleauditcompletion.

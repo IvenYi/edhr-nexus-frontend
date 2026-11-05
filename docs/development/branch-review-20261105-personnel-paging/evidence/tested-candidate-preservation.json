@@ -1,0 +1,208 @@
+{
+  "candidate": "b81b67ed7602740cda7b43cadcd3ce7bf8ba928a",
+  "candidateTree": "140a594df749a35f04de08178785c98a9834b48e",
+  "existingCandidatePaths": 7522,
+  "changedExistingPathsAtArchive": [],
+  "allOtherExistingCandidatePathsUnchanged": true,
+  "sourceFingerprints": [
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/identity/service/TenantTransferTargets.java",
+      "bytes": 6005,
+      "sha256": "a819d8aba4f9e4f1babc9438272b14e282b3df6e2756d0c5a86d19f2b628e187",
+      "sameAsTarget": false
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/ProductionExecutionController.java",
+      "bytes": 4100,
+      "sha256": "dbdadaced2b3cf731b2cd210ead20e32ba14041dbb3cab9033525b0d3c5f2300",
+      "sameAsTarget": false
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionAccess.java",
+      "bytes": 19964,
+      "sha256": "8666e955a875b72118da9a8a10bcf9e13d47f18d2b135a9817570ace3ef2c5ef",
+      "sameAsTarget": false
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormWorkflowOperations.java",
+      "bytes": 20621,
+      "sha256": "fb936fef5ef52eed16f9e4f48cbfb76912156bbecd5b4370db0e839137f25a2d",
+      "sameAsTarget": false
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionEngine.java",
+      "bytes": 68898,
+      "sha256": "b0fe0300f65dea4e8879868ef0a7d326965fa07f580466bc6c7f6a5f9ccb7f3a",
+      "sameAsTarget": false
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java",
+      "bytes": 35944,
+      "sha256": "b804dc2cdb34a18a6077ae2bfd1a6b2d783a316722493f97dbabf0b6d0002814",
+      "sameAsTarget": false
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowOperationsController.java",
+      "bytes": 3251,
+      "sha256": "b721a9e8edf18042f501dd0a026d8cdba1a37790ecf357112ead05e05b0b91c4",
+      "sameAsTarget": false
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowTaskController.java",
+      "bytes": 8671,
+      "sha256": "8f08e8b655b5c45f820cc26eb7df0871c021fbb15c65ac6b549c38e00d39ad14",
+      "sameAsTarget": false
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java",
+      "bytes": 53905,
+      "sha256": "902a253d84347caf165a5988933061132d72abda29ed94f84114d3eb2b9f497e",
+      "sameAsTarget": false
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/WorkflowResponsibilityService.java",
+      "bytes": 18865,
+      "sha256": "6882e97ac8e68fec78ad71e456bc04d81cf64268f55af9bbb799f19ce34e246f",
+      "sameAsTarget": false
+    },
+    {
+      "path": "gmp-platform/frontend/src/api/production-execution.ts",
+      "bytes": 7513,
+      "sha256": "70c26074923f64134f06a86aa4283256ee7aef6bfa89abbffcf118cb6e4388bb",
+      "sameAsTarget": false
+    },
+    {
+      "path": "gmp-platform/frontend/src/api/workflow-operations.ts",
+      "bytes": 3451,
+      "sha256": "a66ce91f7c5e36db9f17057a803222b90189297e45fc4f3eab10c8b7c80ff39c",
+      "sameAsTarget": false
+    },
+    {
+      "path": "gmp-platform/frontend/src/components/workflow/WorkflowResponsibilityDialog.tsx",
+      "bytes": 5232,
+      "sha256": "1827f60ea57dfd4418d6122c9469ad43ea59b17e3e32468a120de7d96fa24cbc",
+      "sameAsTarget": false
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/form-management/FormReviewPage.tsx",
+      "bytes": 41463,
+      "sha256": "f83bb5de7c9748085fdad88d85212a034f4f68fd625cf456d7064dbd7aa58dda",
+      "sameAsTarget": false
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/production/ProductionExecutionPage.tsx",
+      "bytes": 62101,
+      "sha256": "9fd0a120970d7c922d2c5784fa65ba9b76ac834bc0bfcbc8aea173f06a6fd401",
+      "sameAsTarget": false
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/workflow-center/TaskDetail.tsx",
+      "bytes": 7395,
+      "sha256": "53d505f996cff18906aa793be60682714a92c15e1c7db7a8ae0740ae6ade4536",
+      "sameAsTarget": false
+    },
+    {
+      "path": "gmp-platform/frontend/src/components/identity/PersonnelTargetSelect.tsx",
+      "bytes": 7352,
+      "sha256": "c870bb324ff02013c2c51825d47df1a011cc4dc28e4a06e4cdd0211ca1703f06",
+      "sameAsTarget": false
+    },
+    {
+      "path": "gmp-platform/frontend/src/types/personnel.ts",
+      "bytes": 210,
+      "sha256": "f07d9e493871ca28ec8f9d93f842699cf2ab614f0b281e269b99cbe0e170167d",
+      "sameAsTarget": false
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/recordcontrol/service/RecordControlPostgresIntegrationTest.java",
+      "bytes": 82445,
+      "sha256": "ed278968cb8b1aade7dccef98416656889c952e0ca4eccfc879e67d09ab52b83",
+      "sameAsTarget": false
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/engine/WorkflowTransferPostgresTest.java",
+      "bytes": 29668,
+      "sha256": "e2d765dda6274474e4f37ae0ae1450c0ffa18da21dcef1293bf4f0a495642c7f",
+      "sameAsTarget": false
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/service/WorkflowReadObservationPostgresTest.java",
+      "bytes": 36719,
+      "sha256": "e573291a6ffed60f8f9642cfad88d75f0d1cf495f9570e9be9d97a651aab428c",
+      "sameAsTarget": false
+    },
+    {
+      "path": "gmp-platform/frontend/scripts/test-personnel-targets-browser.mjs",
+      "bytes": 15803,
+      "sha256": "156c14075a0b3c47f0036261096dd102ef4ab4e607d69ec2cfb684c7895e34fd",
+      "sameAsTarget": false
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/WorkflowOperationsQuery.java",
+      "bytes": 10122,
+      "sha256": "8111b25d328cce2a8d37466c51207c626d1fca87c22d565ebc978d4019d6fc42",
+      "sameAsTarget": true
+    },
+    {
+      "path": "gmp-platform/frontend/src/components/identity/SubjectSelector.tsx",
+      "bytes": 29582,
+      "sha256": "9b45840c4f30b6e223d8ad56a7d08ad78e12f5d79cee25ed6a376919270a78ba",
+      "sameAsTarget": true
+    },
+    {
+      "path": "gmp-platform/frontend/src/components/form-renderer/ReferencePickerDialog.tsx",
+      "bytes": 9571,
+      "sha256": "42351c0ea07da97754a56f8866bd560d71e991c6b48afefa4cc25cea4b50962f",
+      "sameAsTarget": true
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/system/UserPage.tsx",
+      "bytes": 88781,
+      "sha256": "b071508deedd296688a24266a8b4c54960cd3199794a65057258abadea1d60d3",
+      "sameAsTarget": true
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/system/RolePage.tsx",
+      "bytes": 87147,
+      "sha256": "57565af3f4d3645a5af7bbb0edc12c3df3a3380a20e45cfea2fbb81aef472284",
+      "sameAsTarget": true
+    },
+    {
+      "path": "gmp-platform/frontend/src/api/client.ts",
+      "bytes": 2678,
+      "sha256": "cb6292e987edcd52470166c71b8460c9da5695f2877ff50771ad5839db93b83a",
+      "sameAsTarget": true
+    },
+    {
+      "path": "AGENTS.md",
+      "bytes": 25065,
+      "sha256": "13dc7cdacea0b1bb0aef2abb268781f9c69584acd4879b204d2b7fd81a2927fc",
+      "sameAsTarget": true
+    },
+    {
+      "path": "codeplzreadme.md",
+      "bytes": 3035,
+      "sha256": "7a1be8efffec596b034335058dca2860346d256622f899c8dac97c5172dd6df2",
+      "sameAsTarget": true
+    },
+    {
+      "path": "docs/agents/agent-handoff-contract.md",
+      "bytes": 31233,
+      "sha256": "3439a35dd1baa77ac723f1b5afa237a338d56e31386f06b02b4aacfd754e3a12",
+      "sameAsTarget": true
+    },
+    {
+      "path": "docs/agents/business-knowledge-modeler.md",
+      "bytes": 15881,
+      "sha256": "9806c900f98e1cbcf4f8d68a998a07a5449369df037183c75ec08cd666bf56ae",
+      "sameAsTarget": true
+    },
+    {
+      "path": "docs/agents/quality-verifier.md",
+      "bytes": 7519,
+      "sha256": "6b3de9323924fb4ba5ae87be76c5136d28e754810c46b22b8e3d1cdd6c2f826f",
+      "sameAsTarget": true
+    }
+  ],
+  "permittedSubsequentWork": "Only NEXT status and new L0 evidence/acceptance/scope/delivery"
+}

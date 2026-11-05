@@ -1,0 +1,22 @@
+knowledgeModelVersion: 0.3.25
+evidence:
+  - id: evidence.qualified-personnel-selection-user-confirmed
+    type: document
+    path: docs/knowledge/evidence/qualified-personnel-selection-20261105.md
+    description: user-confirmed与implementation-choice分列；保留用户2026-11-05授权姓名及候选参数优化、要求全部符合原资格人员可选择且100只能作单批量的两次原话。旧100为工程截断而非历史业务政策；DEC-0095补充覆盖规范，不改变既有资格、签署、冻结或DHR动作边界，不把页大小及UI协议写成用户逐字段确认。
+    visibility: internal
+  - id: evidence.qualified-personnel-directory-source
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/identity/service/TenantTransferTargets.java
+    description: original-evidence入口定位；TenantTransferTargets.search集中组合租户、ACTIVE、锁定、当前人、关键词、必要权限及领域scope，原有限100读取正由本轮主审改为有界分页/续页。资格必须在分页前应用，单批约束不能截断全集；require保留提交时资格复核。实际SQL、续页完整性及最终集成验收须取本批候选及原件，不从本索引认定已通过。
+    visibility: internal
+  - id: evidence.qualified-personnel-domain-target-source
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/WorkflowResponsibilityService.java
+    description: original-evidence领域定位；transferTargets/reassignmentTargets及targets保留记录控制原候选/申请人回避、普通通用改派原候选和DHR双权限专用分支，eligible及change继续写入即时复核。FormWorkflowOperations.targets、WorkflowEngine.transferTargets与ProductionExecutionService/ProductionExecutionEngine/ExecutionAccess.transferTargets分别承载其原入口资格；本轮分页协议及精确文本候选数组不改变这些授权集合或写入动作。
+    visibility: internal
+  - id: evidence.qualified-personnel-selector-source
+    type: code
+    path: gmp-platform/frontend/src/components/identity/PersonnelTargetSelect.tsx
+    description: original-evidence界面入口定位；共享PersonnelTargetSelect承载有界页内容及续页信号、搜索/清除/旧响应和失败恢复；集中责任弹窗、通用TaskDetail转办、生产执行及FormReviewPage转办共同需要复用完整可选范围的分批导航。这里只索引当前实现及待验收入口，不宣称所有消费者或真实浏览器已验收；通用任务签名密码链及生产弹窗样式继续保持各自原暂缓范围。
+    visibility: internal

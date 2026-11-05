@@ -1,7 +1,8 @@
+import PersonnelTargetSelect from '@/components/identity/PersonnelTargetSelect';
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import {
-  Alert, Autocomplete, Box, Button, CircularProgress, Collapse, DialogActions, DialogContent, DialogTitle, Drawer,
+  Alert, Box, Button, CircularProgress, Collapse, DialogActions, DialogContent, DialogTitle, Drawer,
   IconButton, InputAdornment, MenuItem, Stack, Tab, Table, TableBody, TableCell,
   TableHead, TableRow, Tabs, TextField, Tooltip, Typography,
 } from '@mui/material';
@@ -207,7 +208,6 @@ export default function FormReviewPage() {
   const [detailIdentity, setDetailIdentity] = useState<FormWorklistIdentity | null>(null);
   const [detailTab, setDetailTab] = useState(0);
   const [transferIdentity, setTransferIdentity] = useState<FormWorklistRow | null>(null);
-  const [transferKeyword, setTransferKeyword] = useState('');
   const [transferTarget, setTransferTarget] = useState<ExecutionTransferTarget | null>(null);
   const [transferReason, setTransferReason] = useState('');
   const [transferBusy, setTransferBusy] = useState(false);
@@ -216,11 +216,6 @@ export default function FormReviewPage() {
   const query = useQuery({ placeholderData: (previous, previousQuery) => previousQuery?.queryKey[1] === view ? previous : undefined, queryKey: ['form-review-worklist', view, queryParams], queryFn: () => listFormWorklist(view, queryParams), retry: false, refetchOnMount: 'always' });
   const detailQuery = useQuery({ queryKey: ['form-review-detail', view, detailIdentity], queryFn: () => getFormWorklistDetail(view, detailIdentity!), enabled: Boolean(detailIdentity), retry: false });
   const auditQuery = useQuery({ queryKey: ['form-review-audit', detailIdentity], queryFn: () => loadProductionAuditLogs(detailIdentity!.productionObjectId, detailIdentity!.operationId, detailIdentity!), enabled: Boolean(detailIdentity && detailTab === 1), retry: false });
-  const transferTargetsQuery = useQuery({
-    queryKey: ['form-review-transfer-targets', transferIdentity, transferKeyword],
-    queryFn: () => getExecutionTransferTargets(transferIdentity!.productionObjectId, transferIdentity!.operationId, transferIdentity!.formId, transferIdentity!.copyId, transferKeyword),
-    enabled: Boolean(transferIdentity), retry: false,
-  });
   const activeView = views.find((item) => item.id === view)!;
   const visibleColumns = useMemo(() => [
     ...columnSettings.order.filter((id) => !columnSettings.hidden.includes(id) && (id !== 'result' || view === 'REVIEW_DONE')).map((id) => REVIEW_COLUMNS.find((column) => column.id === id)!),
@@ -232,7 +227,7 @@ export default function FormReviewPage() {
   const reset = () => { const next = emptyFilters(); setDraft(next); setFilters(next); setPage(0); };
   const openDetail = (row: FormWorklistRow) => { setDetailIdentity(toWorklistIdentity(row)); setDetailTab(0); };
   const openTask = (row: FormWorklistRow, readOnly: boolean) => { setTaskReadOnly(readOnly); setIdentity(toWorklistIdentity(row)); };
-  const openTransfer = (row: FormWorklistRow) => { setTransferIdentity(row); setTransferKeyword(''); setTransferTarget(null); setTransferReason(''); setTransferError(''); };
+  const openTransfer = (row: FormWorklistRow) => { setTransferIdentity(row); setTransferTarget(null); setTransferReason(''); setTransferError(''); };
   const closeTransfer = () => { if (!transferBusy) setTransferIdentity(null); };
   const submitTransfer = async () => {
     if (!transferIdentity || !transferTarget || !transferReason.trim() || transferBusy) return;
@@ -326,42 +321,11 @@ export default function FormReviewPage() {
             <Typography variant="body2" sx={{ fontWeight: 600, color: '#303133' }}>当前审批任务</Typography>
             <Typography variant="caption" color="text.secondary">可转办给本租户其他正常可用用户，原审批候选依据保留</Typography>
           </Box>
-          <Autocomplete
-            openOnFocus
-            options={transferTargetsQuery.data ?? []}
-            value={transferTarget}
-            loading={transferTargetsQuery.isFetching}
-            filterOptions={(options) => options}
-            getOptionLabel={(option) => `${option.name}（${option.username}）`}
-            isOptionEqualToValue={(option, value) => option.id === value.id}
-            onInputChange={(_, value, reason) => {
-              if (reason === 'input') {
-                setTransferKeyword(value);
-                setTransferTarget(null);
-              }
-            }}
-            onChange={(_, value) => setTransferTarget(value)}
-            disabled={transferBusy}
-            loadingText="正在加载可转办用户…"
-            noOptionsText={transferTargetsQuery.isError ? '候选用户加载失败，请稍后重试' : transferKeyword.trim() ? '没有找到匹配的可转办用户' : '本租户没有其他可转办用户'}
-            renderOption={(props, option) => (
-              <Box component="li" {...props} key={option.id} sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start !important', gap: 0.25 }}>
-                <Typography variant="body2" sx={{ color: '#303133' }}>{option.name}</Typography>
-                <Typography variant="caption" sx={{ color: '#909399' }}>{option.username}</Typography>
-              </Box>
-            )}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                label="转办给"
-                required
-                placeholder="输入姓名或账号查询"
-                error={transferTargetsQuery.isError}
-                helperText={transferTargetsQuery.isError ? '请检查网络或稍后重试' : '请选择本租户已启用且未锁定的其他用户，不限原审批候选人'}
-              />
-            )}
-          />
-          {transferTargetsQuery.isSuccess && transferTargetsQuery.data.length === 0 ? <Alert severity="warning" variant="outlined">{transferKeyword.trim() ? '没有找到匹配的可转办用户，请尝试其他姓名或账号。' : '本租户没有其他正常可用的用户；不能转办给当前处理人。'}</Alert> : null}
+          {transferIdentity && <PersonnelTargetSelect key={`${transferIdentity.productionObjectId}:${transferIdentity.operationId}:${transferIdentity.copyId}`}
+            scope={['form-review', transferIdentity.productionObjectId, transferIdentity.operationId, transferIdentity.formId, transferIdentity.copyId]}
+            loadPage={(page, keyword, signal) => getExecutionTransferTargets(transferIdentity.productionObjectId, transferIdentity.operationId, transferIdentity.formId, transferIdentity.copyId, keyword, page, signal)}
+            value={transferTarget} onChange={setTransferTarget} disabled={transferBusy} label="转办给" size="medium"
+            helperText="可选择本租户已启用且未锁定的其他用户，不限原审批候选人" />}
           <TextField label="转办原因" required value={transferReason} onChange={(event) => setTransferReason(event.target.value)} multiline minRows={3} inputProps={{ maxLength: 500 }} helperText={`${transferReason.length}/500`} disabled={transferBusy} />
           <Alert severity="info">转办不会推进审批流程，也不会修改表单内容；受让人处理后，流程才会继续。</Alert>
           {transferError ? <Alert severity="error">{transferError}</Alert> : null}
