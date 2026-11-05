@@ -1,6 +1,8 @@
 # 持续推进台账
 
-## PR61已合入：中央流程列表JSON/COUNT审查进行中
+## PR61已合入：中央流程列表JSON/COUNT取证完成
+
+已交付[PR62](https://github.com/IvenYi/edhr-nexus-frontend/pull/62)，audit/edhr-dev-central-list-audit-20261105→edhr-dev，观察OPEN/MERGEABLE/CLEAN；建议人工合入本批测试/取证，不把中央JSON性能风险当已修复。受测900edae7、归档271a5384后仅L0交付登记，其他受测既有路径保持；实际观察见本批evidence/delivery-verification.json，登记后再次核对本地/远端/PR head。下一批先fetch真实合入/增量，按用户实际答复验证按对象复用JSON或继续无依赖队列；所有原余项和暂停保持，不自动merge/deploy/恢复。
 
 本批已对clean受测`900edae735f5bd37e070a4c2f519e06e4e8728e3`取得全新最终quality passed/FINAL，13/13必需检查；主侧184/184、独立86/86、知识89/89均0F/E/S。主侧115观察344业务SELECT，新中央25事件48请求SELECT（24COUNT），独立服务器16签名吻合；28EXPLAIN与25初始化SELECT分列，不称全部网络SQL。本体NA/FINAL有限12ID=10一致/1局部替代/1旧多租户gap，350知识及阶段不变；全部子项FINAL、资源清理。分析初次误判Liquibase空库探测的原件保持，非产品/JUnit失败。
 

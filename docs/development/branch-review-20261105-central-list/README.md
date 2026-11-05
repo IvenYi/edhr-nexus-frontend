@@ -2,6 +2,8 @@
 
 L2；目标 `edhr-dev@b52138259111dd5a0d99299087913500eff627f4`，PR61已合入且整树同3597a81c，无额外增量。真实入口流程中心→流程日志 `/workflow/instances`、流程干预 `/workflow/interventions`，共同列表API。
 
+交付[PR62](https://github.com/IvenYi/edhr-nexus-frontend/pull/62)，已观察OPEN/MERGEABLE/CLEAN，建议人工合入本轮测试/证据。受测900edae7、归档271a5384后仅L0交付登记；最终推送状态再次核对，原始观察见evidence/delivery-verification.json。性能风险不因此关闭，不自动merge或部署。
+
 先核对现有计数/分页/过滤/权限，再新增显式opt-in PostgreSQL取证，分离每对象表单量及累计对象量；COUNT用于页数不可当无用查询直接删除。性能发现讨论后再定整改；本批不预设产品修改。
 
 当前状态：受测候选 `900edae735f5bd37e070a4c2f519e06e4e8728e3` 已取得全新独立最终质量 `passed/FINAL`，13/13必需检查通过，无发现/阻断。主侧完整184/184（新增7含于其中）、独立86/86、知识89/89均0F/E/S；完整运行115观察事件/344业务SELECT，其中新中央25事件/48请求SELECT（24COUNT），独立服务器16签名吻合，28EXPLAIN回放及25初始化SELECT单列。主侧原运行是b521+dirty新增测试，实际源码指纹吻合后来900候选，不改写当时提交。
