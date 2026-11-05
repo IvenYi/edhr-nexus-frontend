@@ -1,5 +1,15 @@
 # 持续推进台账
 
+## PR59已合入：普通表单详情与原候选容量取证
+
+实际fetch目标edhr-dev@ea5c57e63cb4980961498c4c192705ef91a37170，PR59人工合入、整树同33763f3c，无外部产品/知识/契约增量。新分支audit/edhr-dev-form-detail-read-20261105；[本批](../branch-review-20261105-form-detail/README.md)L2仅扩既有显式opt-in观察测试，产品/前端/迁移/索引/依赖/知识原字节保持。
+
+主侧167/167（读取29=原14+新15，原相邻138）0F/E/S。普通表单当前节点0/100空各1SQL；1/10/100同一现存人员各2；10/100不同或重复缺失人员11/101，历史姓名及签名引用仍来自history、不查当前目录，无权1SQL后拒绝。真实管理员原候选0/1/100/5000各4SQL、最多返回100，目录占位符7/8/107/5007，原候选不被截断。29次观察共298逻辑SELECT；不称全部网络SQL。
+
+另以原观察HibernateSQL在65005控制账户重放PREPARE/custom EXPLAIN，1/100/5000原候选均Seq Scan。此为分布有限的查询/索引匹配风险，不作生产慢查询或SLA保证，不新加索引。姓名条件性N+1、原候选参数增长、文本ID计划三项open，姓名方案已问用户、未答不当批准；本批是取证而非性能整改。实际SQL/计划/来源及A23/具体私有方法与投影拆分方案见本批review-notes。
+
+本体NA/FINAL：13相关ID=12一致/1保留完整多租户证据缺口，345知识不变，未跑89/原生/浏览器；当前待全新独立最终质量，不复用旧152/89。7484路径只盘点，wholeFile0/历史unique未知，931知识/86UI及W2-W7、原高风险/A12/完整矩阵/中央JSONCOUNT/汇总605/导出内存和所有原暂停继续。全部派发角色FINAL后实际PR前漂移/阶段/余项复核；不自动merge/deploy/恢复/扫删或查询触发CI。
+
 ## PR58已合入：人员目标目录免未用COUNT
 
 已交付[PR59](https://github.com/IvenYi/edhr-nexus-frontend/pull/59)，audit/edhr-dev-personnel-list-count-20261105→edhr-dev，观察OPEN/MERGEABLE/CLEAN，建议人工合入本批有限COUNT优化。受测代码ca836ef6、归档f575885b后仅L0交付登记，其他受测既有路径保持；实际观察见本批evidence/delivery-verification.json，登记提交后再次核对本地/远端/PR head一致。下一批先fetch真实合入/增量，继续普通表单独立详情和候选参数/文本ID计划等全审队列，不自动merge/deploy/恢复。

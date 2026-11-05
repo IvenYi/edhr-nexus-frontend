@@ -1,0 +1,83 @@
+decisionPackage:
+  id: DEC-PACKAGE-AUDIT-FORM-DETAIL-READ-20261105
+  scope: edhr-dev ordinary form workflow detail and original-candidate query evidence; continued whole-branch audit
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: ea5c57e63cb4980961498c4c192705ef91a37170
+    targetBranch: edhr-dev
+    targetCommit: ea5c57e63cb4980961498c4c192705ef91a37170
+    contractReadCommit: ea5c57e63cb4980961498c4c192705ef91a37170
+    uncommittedContractPaths: []
+  summary: PR59已人工合入且整树与33763f3c相同。本批先补普通表单详情及大原候选集合的实际PG取证，不因源码循环或原清单自动宣称缺陷，不改业务或实施未讨论的性能取舍。
+  confirmed:
+    concepts: []
+    relationships: []
+    rules: []
+    executionContracts: []
+  inferred:
+    - id: inference.form-detail-native-observation
+      statement: 逐节点findById可能受到同一只读事务的JPA一级缓存影响，现存重复人员与缺失人员须分别取证，姓名当前目录来源与历史签署来源分开。
+      rationale: FormWorkflowOperations.detail/name原始源码；不能把静态循环直接等同逐节点SQL。
+      relatedIds: [DEC-0093-03, DEC-0093-04]
+    - id: inference.original-candidate-parameter-growth
+      statement: 原冻结候选文本IN集合与上批5000匹配人员不是同一个规模维度，应从真实责任服务入口观察SQL和执行计划。
+      rationale: WorkflowResponsibilityService.targets生成文本ID IN谓词，仍须保留原候选和申请人回避。
+      relatedIds: [DEC-0092-02, DEC-0093-04]
+  unresolved: []
+  replacementScopes: []
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - area: test-only-form-and-candidate-observation
+        change: 真实一次性PG内观测普通表单节点、历史、授权及大原候选目录的查询成本，产品文件先保持原字节。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormWorkflowOperations.java, gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/WorkflowResponsibilityService.java]
+    transitiveImpacts:
+      - area: shared-regression
+        change: 新测试使用已有显式opt-in数据库观察上下文，保留原14读取/138相邻回归，不把旧数量当本轮结果。
+        evidenceReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/service/WorkflowReadObservationPostgresTest.java]
+    potentialImpacts:
+      - area: scale-and-cache
+        concern: 不同人员/缺失人员、并行节点和原候选集合会有不同查询/CPU成本，未实测前不定生产严重度或新增索引。
+        evidenceReferences: []
+    unaffectedAreas:
+      - area: product-runtime
+        change: 产品、前端、迁移、索引、依赖、配置和业务知识保持；当前PR58姓名批量及PR59无COUNT实现不改。
+        evidenceReferences: []
+    compatibilityAndMigration: []
+    snapshotImpacts:
+      - area: unchanged-original-evidence
+        change: 只读观察不改原候选、当前责任、节点、表单内容、签署或冻结；夹具与输出位于一次性数据库和本批证据。
+        evidenceReferences: []
+    auditImpacts:
+      - area: historical-name-and-signature
+        change: 核历史operatorName及signatureId来源保持，测试前后原件比较；不改客户历史解释。
+        evidenceReferences: []
+    permissionImpacts:
+      - area: unchanged-scope
+        change: 通过实际Spring代理及原权限过滤取证，覆盖无权拒绝；不把管理读取授权外推为写入授权。
+        evidenceReferences: []
+    testImpacts:
+      - scope: native-form-detail-and-original-candidates
+        scenarios: [同一现存人员及不同现存人员, 重复缺失/空处理人, 历史批准退回来源, 无权拒绝, 0/1/100/5000原候选, 原152相邻回归]
+        evidenceReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/service/WorkflowReadObservationPostgresTest.java]
+    evidenceGaps: [完整多租户和全账号HTTP/JWT/浏览器签署矩阵保持, 生产延迟/吞吐/并发/SLA未验证, 中央JSONCOUNT/汇总605/导出内存/931知识/86UI及所有W2-W7高风险与暂停队列继续]
+  extensionStrategy:
+    selectedPaths: [product-core]
+    rationale: 在现有显式opt-in测试内观察现有产品入口，不新增运行框架或第二套表单任务。
+    ownershipBoundaries:
+      - owner: main-auditor
+        responsibility: 源码映射、测试夹具、实际取证、确定性修复与台账；性能取舍先报告讨论。
+      - owner: ontology-modeler
+        responsibility: 有限相关ID与当前决策/原始实现的语义核对，不修改运行代码或发明政策。
+      - owner: fresh-quality-verifier
+        responsibility: 收尾独立核对受测候选及原始SQL证据，不参与修复。
+  affectedFiles:
+    - {path: gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/service/WorkflowReadObservationPostgresTest.java, changeType: update, reason: 普通表单详情与原候选集合实际观测}
+    - {path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormWorkflowOperations.java, changeType: read-only, reason: 原姓名缓存/历史来源/读取和写入保护核对}
+    - {path: gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/WorkflowResponsibilityService.java, changeType: read-only, reason: 原候选范围及参数增长核对}
+  acceptanceScenarios:
+    - id: scenario.native-form-detail-read-cost
+      given: 原生已持久化普通表单执行及历史，当前审批处理人存在/缺失/空或不同
+      when: 通过原服务代理查询详情和大候选目录
+      then: 内容、授权、历史及冻结保持，实际SQL与数据分布有可复验原件；不把已知低效次数写成必须保留的产品契约
+      evidenceRequirements: [主侧聚焦与相邻回归, 原始XML/SQL/命令/来源指纹, 本体相关ID核对, 全新独立质量与服务器交叉复测, PR前无漂移及阶段复核]

@@ -1,0 +1,296 @@
+{
+  "scope": "test-only native observation; findings remain open, no product optimization",
+  "totalRegressionTests": 167,
+  "readObservationInvocations": 29,
+  "newObservationInvocations": 15,
+  "baselineAdjacentInvocations": 138,
+  "observationSelects": 298,
+  "formAndOriginalCandidateObservations": [
+    {
+      "kind": "form-detail-current-names",
+      "data": {
+        "activeApprovalNodes": 0,
+        "assigneeKind": "blank",
+        "returnedTasks": 0
+      },
+      "jdbcStatements": 1,
+      "hibernateStatements": 0,
+      "totalStatements": 1
+    },
+    {
+      "kind": "form-detail-current-names",
+      "data": {
+        "activeApprovalNodes": 1,
+        "assigneeKind": "repeated",
+        "returnedTasks": 1
+      },
+      "jdbcStatements": 1,
+      "hibernateStatements": 1,
+      "totalStatements": 2
+    },
+    {
+      "kind": "form-detail-current-names",
+      "data": {
+        "activeApprovalNodes": 10,
+        "assigneeKind": "repeated",
+        "returnedTasks": 10
+      },
+      "jdbcStatements": 1,
+      "hibernateStatements": 1,
+      "totalStatements": 2
+    },
+    {
+      "kind": "form-detail-current-names",
+      "data": {
+        "activeApprovalNodes": 100,
+        "assigneeKind": "repeated",
+        "returnedTasks": 100
+      },
+      "jdbcStatements": 1,
+      "hibernateStatements": 1,
+      "totalStatements": 2
+    },
+    {
+      "kind": "form-detail-current-names",
+      "data": {
+        "activeApprovalNodes": 10,
+        "assigneeKind": "distinct",
+        "returnedTasks": 10
+      },
+      "jdbcStatements": 1,
+      "hibernateStatements": 10,
+      "totalStatements": 11
+    },
+    {
+      "kind": "form-detail-current-names",
+      "data": {
+        "activeApprovalNodes": 100,
+        "assigneeKind": "distinct",
+        "returnedTasks": 100
+      },
+      "jdbcStatements": 1,
+      "hibernateStatements": 100,
+      "totalStatements": 101
+    },
+    {
+      "kind": "form-detail-current-names",
+      "data": {
+        "activeApprovalNodes": 10,
+        "assigneeKind": "missing",
+        "returnedTasks": 10
+      },
+      "jdbcStatements": 1,
+      "hibernateStatements": 10,
+      "totalStatements": 11
+    },
+    {
+      "kind": "form-detail-current-names",
+      "data": {
+        "activeApprovalNodes": 100,
+        "assigneeKind": "missing",
+        "returnedTasks": 100
+      },
+      "jdbcStatements": 1,
+      "hibernateStatements": 100,
+      "totalStatements": 101
+    },
+    {
+      "kind": "form-detail-current-names",
+      "data": {
+        "activeApprovalNodes": 100,
+        "assigneeKind": "blank",
+        "returnedTasks": 100
+      },
+      "jdbcStatements": 1,
+      "hibernateStatements": 0,
+      "totalStatements": 1
+    },
+    {
+      "kind": "original-candidate-directory",
+      "data": {
+        "returnedPersonnel": 0,
+        "hibernatePlaceholders": 10,
+        "originalCandidates": 0
+      },
+      "jdbcStatements": 0,
+      "hibernateStatements": 4,
+      "totalStatements": 4
+    },
+    {
+      "kind": "original-candidate-directory",
+      "data": {
+        "returnedPersonnel": 1,
+        "hibernatePlaceholders": 11,
+        "originalCandidates": 1
+      },
+      "jdbcStatements": 0,
+      "hibernateStatements": 4,
+      "totalStatements": 4
+    },
+    {
+      "kind": "original-candidate-directory",
+      "data": {
+        "returnedPersonnel": 100,
+        "hibernatePlaceholders": 110,
+        "originalCandidates": 100
+      },
+      "jdbcStatements": 0,
+      "hibernateStatements": 4,
+      "totalStatements": 4
+    },
+    {
+      "kind": "original-candidate-directory",
+      "data": {
+        "returnedPersonnel": 100,
+        "hibernatePlaceholders": 5010,
+        "originalCandidates": 5000
+      },
+      "jdbcStatements": 0,
+      "hibernateStatements": 4,
+      "totalStatements": 4
+    },
+    {
+      "kind": "form-detail-unauthorized",
+      "data": {
+        "activeApprovalNodes": 10
+      },
+      "jdbcStatements": 1,
+      "hibernateStatements": 0,
+      "totalStatements": 1
+    },
+    {
+      "kind": "form-detail-history",
+      "data": {
+        "activeApprovalNodes": 1,
+        "matchingHistoricalTasks": 1,
+        "unrelatedCopyHistory": 1
+      },
+      "jdbcStatements": 1,
+      "hibernateStatements": 1,
+      "totalStatements": 2
+    }
+  ],
+  "controlledCandidatePlans": {
+    "scope": "Observed Hibernate query replayed as PostgreSQL PREPARE/custom EXPLAIN; controlled 60000 background and 5000 origin users on real configured schema, not production distribution or SLA",
+    "plans": [
+      {
+        "originalCandidates": 1,
+        "replayedDirectoryPlaceholders": 8,
+        "planningTimeMs": 0.904,
+        "executionTimeMs": 11.128,
+        "planNodes": [
+          {
+            "Node Type": "Limit",
+            "Actual Rows": 1,
+            "Actual Loops": 1,
+            "Shared Hit Blocks": 1007,
+            "Shared Read Blocks": 0
+          },
+          {
+            "Node Type": "Sort",
+            "Actual Rows": 1,
+            "Actual Loops": 1,
+            "Shared Hit Blocks": 1007,
+            "Shared Read Blocks": 0
+          },
+          {
+            "Node Type": "Seq Scan",
+            "Relation Name": "user_account",
+            "Actual Rows": 1,
+            "Actual Loops": 1,
+            "Rows Removed by Filter": 65004,
+            "Shared Hit Blocks": 1001,
+            "Shared Read Blocks": 0
+          }
+        ]
+      },
+      {
+        "originalCandidates": 100,
+        "replayedDirectoryPlaceholders": 107,
+        "planningTimeMs": 1.275,
+        "executionTimeMs": 22.718,
+        "planNodes": [
+          {
+            "Node Type": "Limit",
+            "Actual Rows": 100,
+            "Actual Loops": 1,
+            "Shared Hit Blocks": 1007,
+            "Shared Read Blocks": 0
+          },
+          {
+            "Node Type": "Sort",
+            "Actual Rows": 100,
+            "Actual Loops": 1,
+            "Shared Hit Blocks": 1007,
+            "Shared Read Blocks": 0
+          },
+          {
+            "Node Type": "Seq Scan",
+            "Relation Name": "user_account",
+            "Actual Rows": 100,
+            "Actual Loops": 1,
+            "Rows Removed by Filter": 64905,
+            "Shared Hit Blocks": 1001,
+            "Shared Read Blocks": 0
+          }
+        ]
+      },
+      {
+        "originalCandidates": 5000,
+        "replayedDirectoryPlaceholders": 5007,
+        "planningTimeMs": 7.267,
+        "executionTimeMs": 24.371,
+        "planNodes": [
+          {
+            "Node Type": "Limit",
+            "Actual Rows": 100,
+            "Actual Loops": 1,
+            "Shared Hit Blocks": 1007,
+            "Shared Read Blocks": 0
+          },
+          {
+            "Node Type": "Sort",
+            "Actual Rows": 100,
+            "Actual Loops": 1,
+            "Shared Hit Blocks": 1007,
+            "Shared Read Blocks": 0
+          },
+          {
+            "Node Type": "Seq Scan",
+            "Relation Name": "user_account",
+            "Actual Rows": 5000,
+            "Actual Loops": 1,
+            "Rows Removed by Filter": 60005,
+            "Shared Hit Blocks": 1001,
+            "Shared Read Blocks": 0
+          }
+        ]
+      }
+    ],
+    "rowDistribution": "0|35005\n1|30000"
+  },
+  "findings": [
+    {
+      "id": "PERF-FORM-DETAIL-CURRENT-NAMES-20261105",
+      "status": "open",
+      "evidence": "Different existing assignees or repeated missing ID cause 1+N SELECT; repeated existing ID benefits from first-level cache; blanks skip",
+      "proposal": "Batch only current active approval assignees, preserve ordinary-form numeric parsing/fallback and history sources; asked user, no answer assumed"
+    },
+    {
+      "id": "PERF-ORIGIN-CANDIDATE-PARAMETERS-20261105",
+      "status": "open",
+      "evidence": "1/100/5000 original candidates yield directory 8/107/5007 placeholders; four service SELECTs and bounded returned content remain",
+      "proposal": "Evaluate one typed text-array predicate independently; preserve original text identity; no cap or write-policy change"
+    },
+    {
+      "id": "PERF-ORIGIN-TEXT-ID-PLAN-20261105",
+      "status": "open",
+      "evidence": "Observed query PREPARE/custom plan replay on 65005 accounts scans all account rows for 1/100/5000 origin candidates",
+      "proposal": "Compare canonical identity predicate or expression-index alternatives against real tenant/search/sort distribution before changing code/index; no production SLA claim"
+    }
+  ],
+  "productFilesChanged": 0,
+  "newIndexes": 0,
+  "browserOrFullHttpE2E": false,
+  "wholeAuditComplete": false
+}

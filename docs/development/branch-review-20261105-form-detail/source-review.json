@@ -1,0 +1,89 @@
+{
+  "sourceCommit": "ea5c57e63cb4980961498c4c192705ef91a37170",
+  "sourceFingerprints": [
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormWorkflowOperations.java",
+      "bytes": 19446,
+      "sha256": "428ac43f257f01a1168c0fc7a2a685235d7d52c013bd1c6a3b38018561920cc7",
+      "sameAsTarget": true
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/WorkflowOperationsQuery.java",
+      "bytes": 10122,
+      "sha256": "8111b25d328cce2a8d37466c51207c626d1fca87c22d565ebc978d4019d6fc42",
+      "sameAsTarget": true
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/WorkflowResponsibilityService.java",
+      "bytes": 18432,
+      "sha256": "a8395ff9b57a7a52f27e1423a19acdcd9611f850f3e9dfb30e8fd6a7b57b92f5",
+      "sameAsTarget": true
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/identity/service/TenantTransferTargets.java",
+      "bytes": 5412,
+      "sha256": "3cc13372876d1a60932916235f7e22bf4f5f35a25974188aa4e2fd8af994ddde",
+      "sameAsTarget": true
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/identity/entity/UserAccount.java",
+      "bytes": 1676,
+      "sha256": "599f4f147512209882524a95f673a98bf41a50ff33a201854af4f342879d960e",
+      "sameAsTarget": true
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/identity/repository/UserAccountRepository.java",
+      "bytes": 1096,
+      "sha256": "948fb479ccf3c86f9f939f9b72de6b5cdeaef9faccbd4b206c9ebe73901280f9",
+      "sameAsTarget": true
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionEngine.java",
+      "bytes": 68832,
+      "sha256": "d58fd29f2c4e7a00d9d56c725559c51bc186d9d0be3d42cfb6c7b8c377b493c1",
+      "sameAsTarget": true
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionAccess.java",
+      "bytes": 19931,
+      "sha256": "4cc08bef2602a87812713e43e94001485ad47f287899dd336e5e74872a3b273d",
+      "sameAsTarget": true
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowOperationsController.java",
+      "bytes": 2957,
+      "sha256": "10e75f8c89f8fe29da3a9c313999ed9d9ab4734528c0da5d59c3cf48e24cd5b1",
+      "sameAsTarget": true
+    },
+    {
+      "path": "gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql",
+      "bytes": 106718,
+      "sha256": "61560f972ef9eeeb8f69620c947b54b2326ad9341d929b19385653bec81cf99b",
+      "sameAsTarget": true
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/service/WorkflowReadObservationPostgresTest.java",
+      "bytes": 29283,
+      "sha256": "be50950e325cf12242a8bc0c95b58ef85627bece205509b18cf28a3675fa0ff7",
+      "sameAsTarget": false
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/recordcontrol/service/RecordControlPostgresIntegrationTest.java",
+      "bytes": 77904,
+      "sha256": "811cb3511204eb7a78f200a3f45796041c9d704839a7a36eedc2ee27aafb1be2",
+      "sameAsTarget": true
+    }
+  ],
+  "reviewedMethods": [
+    "FormWorkflowOperations.detail/context/name/state/matches/visibility/visibilityArgs and source/targets/reassign/requireActive boundaries",
+    "WorkflowResponsibilityService.reassignmentTargets/targets/eligible original-snapshot scope and tenant/read/write separation",
+    "TenantTransferTargets SQL scope/sort/limit/all and require/available boundaries; prior COUNT implementation preserved",
+    "ProductionExecutionEngine initializeGraph/finishNode parallel eligibility source mapping, not 100-node create/START acceptance",
+    "Controller central form-id dispatch; request-scoped JPA persistence context and identity source differences"
+  ],
+  "wholeFileComplete": 0,
+  "historicalUniqueCoverage": null,
+  "productFilesChanged": 0,
+  "testFilesChanged": 1,
+  "allOtherAuditQueuesRemain": true
+}
