@@ -1,0 +1,80 @@
+decisionPackage:
+  id: DEC-PACKAGE-CENTRAL-LIST-20261105
+  scope: edhr-dev central workflow log/intervention union list read correctness and native JSON/COUNT cost observation
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: b52138259111dd5a0d99299087913500eff627f4
+    targetBranch: edhr-dev
+    targetCommit: b52138259111dd5a0d99299087913500eff627f4
+    contractReadCommit: b52138259111dd5a0d99299087913500eff627f4
+    uncommittedContractPaths: []
+  summary: PR61已人工合入且整树同3597a81c，无外部增量。继续既定中央列表JSON/COUNT取证队列；业务/接口/索引不预先优化，确定性问题有依据再修复，性能取舍先讨论。
+  confirmed:
+    concepts: []
+    relationships: []
+    rules: []
+    executionContracts: []
+  inferred:
+    - id: inference.central-form-json-scaling
+      statement: 普通表单源按每份记录连接执行快照并枚举作业与表单，COUNT和内容查询可能重复解析大JSON，长期多对象累计时即使每对象不超过300表单也可能增加成本。
+      rationale: WorkflowOperationsQuery.list复用同一union两次，FormWorkflowOperations.FROM具有jsonb横向枚举；需原生计划确认实际loops及耗时，不能仅按SQL条数判断。
+      relatedIds: []
+  unresolved: []
+  replacementScopes: []
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - area: workflow-central-read
+        change: 新增显式opt-in原生观察与边界回归；两源列表的过滤、可见性、计数和排序分页对齐并测量SQL执行计划。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/WorkflowOperationsQuery.java, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormWorkflowOperations.java]
+    transitiveImpacts:
+      - area: workflow-log-and-intervention-pages
+        change: 同一个列表API服务流程日志和流程干预，内容与总数均需保留真实原权限和状态语义。
+        evidenceReferences: [gmp-platform/frontend/src/pages/workflow-center/InstanceList.tsx]
+    potentialImpacts:
+      - area: json-count-cost
+        concern: 按每对象表单数及累计对象数分轴观察，普通权限history/候选分支另测；记录合成环境限制，不将实验毫秒数当生产SLA。
+        evidenceReferences: []
+    unaffectedAreas:
+      - area: runtime-and-personnel-paging
+        change: PR61完整资格人员分页、业务写入、权限、转办、签名、锁序、事务、审计、START冻结和历史来源保持；朋友负责签名链/生产弹窗样式继续暂停。
+        evidenceReferences: []
+    compatibilityAndMigration:
+      - area: unchanged-product
+        change: 本批计划测试/研发证据，不更改响应或数据库结构、不添加索引或回写存量。
+        evidenceReferences: []
+    snapshotImpacts:
+      - area: read-only-fixtures
+        change: 合成夹具直接持久化已有快照形状用于读取实验，不宣称验证创建或START，也不修改真实冻结数据。
+        evidenceReferences: []
+    auditImpacts:
+      - area: test-observation
+        change: 必须同时捕获COUNT和内容查询；SQL与EXPLAIN在隔离测试库执行，原件/失败更正分别保留。
+        evidenceReferences: []
+    permissionImpacts:
+      - area: existing-visibility
+        change: 管理员、普通参与人及无权读取分开核对；COUNT采用同一权限过滤，不把性能问题作为扩大可见范围依据。
+        evidenceReferences: []
+    testImpacts:
+      - scope: native-central-list
+        scenarios: [对象内1与300表单, 多对象累计, 日志与运行干预, 后续页与空页, 状态和字面关键词, 普通参与/无权, COUNT和内容原生计划, 原人员和责任/记录控制相邻回归]
+        evidenceReferences: []
+    evidenceGaps: [真实生产数据分布/并发/SLA与完整多租户矩阵未覆盖, 全量知识931候选/86UI及W2-W7和原高风险继续]
+  extensionStrategy:
+    selectedPaths: [product-core]
+    rationale: 复用现有显式opt-in JdbcTemplate观察测试和真实PostgreSQL，不新建产品仓储框架或加入推测性兜底。
+    ownershipBoundaries:
+      - owner: workflow-and-production
+        responsibility: 保留各域既有查询/可见性/生命周期定义，主审定位边界并提出具体局部优化或拆分方案。
+      - owner: audit-native-test
+        responsibility: 可重跑数据/参数/计划/查询计数和独立复验原件，不替代业务语义全审。
+  affectedFiles:
+    - {path: gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/service/WorkflowReadObservationPostgresTest.java, changeType: update, reason: COUNT观察和中央列表场景}
+    - {path: gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/WorkflowOperationsQuery.java, changeType: read-only, reason: 两源计数/分页/筛选}
+    - {path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormWorkflowOperations.java, changeType: read-only, reason: JSON连接及领域可见性}
+  acceptanceScenarios:
+    - id: scenario.central-list-native-evidence
+      given: 已有真实数据库迁移上构造两源及多对象多表单，并按不同权限读取
+      when: 请求流程日志/流程干预的第一页、后续页、筛选或空结果
+      then: 返回有限页且计数/资格/状态一致；COUNT与内容均计入成本，计划原件可追溯且不锁死低效查询次数
+      evidenceRequirements: [新原生断言及XML, 绑定参数和EXPLAIN原件, 来源指纹, 有限知识一致性核对, 全新独立质量]

@@ -40,6 +40,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 /** Opt-in native read-cost observation. SQL counts are evidence, not inefficient contracts to preserve. */
 @EnabledIfSystemProperty(named = "edhr.audit.workflowReads", matches = "true")
@@ -407,6 +408,149 @@ class WorkflowReadObservationPostgresTest {
         record("form-detail-invalid-identity", Map.of("activeApprovalNodes", 1), read);
     }
 
+    @ParameterizedTest @CsvSource({"1,1", "1,30", "1,300", "30,100"})
+    void centralListsObserveObjectAndFormScale(int objects, int formsPerObject) throws Exception {
+        seedCentralForms(objects, formsPerObject);
+        var expected = centralIds(objects, formsPerObject);
+        for (boolean runningOnly : List.of(false, true)) {
+            var read = capture(() -> operations.list(1, 20, "", "", runningOnly));
+            assertThat(read.value.getTotalElements()).isEqualTo(expected.size());
+            assertThat(read.value.getTotalPages()).isEqualTo((expected.size() + 19) / 20);
+            assertThat(read.value.getContent()).extracting(row -> row.get("id").toString())
+                    .containsExactlyElementsOf(expected.subList(0, Math.min(20, expected.size())));
+            recordCentral("central-list-scale", Map.of("objects", objects, "formsPerObject", formsPerObject,
+                    "runningOnly", runningOnly, "page", 1, "size", 20), read, true);
+        }
+        int page = (expected.size() + 19) / 20;
+        var last = capture(() -> operations.list(page, 20, "", "", false));
+        assertThat(last.value.getTotalElements()).isEqualTo(expected.size());
+        assertThat(last.value.getContent()).extracting(row -> row.get("id").toString())
+                .containsExactlyElementsOf(expected.subList((page - 1) * 20, expected.size()));
+        recordCentral("central-list-last-page", Map.of("objects", objects, "formsPerObject", formsPerObject,
+                "page", page, "size", 20), last, objects > 1);
+    }
+
+    @Test void centralListScopesBothCountAndContentBeforePaging() throws Exception {
+        seedCentralForms(1, 30);
+        jdbc.update("DELETE FROM workflow_instance WHERE id=900100");
+        jdbc.update("UPDATE production_execution SET state_json=jsonb_set(state_json::jsonb,'{history}',?::jsonb)::text",
+                "[{\"operationId\":\"op\",\"formId\":\"f-0\",\"copyId\":\"f-0\",\"operator\":\"43\"}]");
+        var scopes = List.of(
+                Map.of("actor", "42", "authorities", List.of("production.execution", "form-management.review"), "total", 30),
+                Map.of("actor", "43", "authorities", List.of("production.execution", "form-management.filling"), "total", 1),
+                Map.of("actor", "44", "authorities", List.of("production.execution", "form-management.filling"), "total", 0),
+                Map.of("actor", "45", "authorities", List.of("production.execution", "form-instances.view"), "total", 30),
+                Map.of("actor", "42", "authorities", List.of("workflow.logs"), "total", 0));
+        for (var scope : scopes) {
+            String actor = scope.get("actor").toString(); AuditContext.setOperator(actor, "读取观测");
+            @SuppressWarnings("unchecked") var authorities = (List<String>) scope.get("authorities");
+            SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(actor, null,
+                    authorities.stream().map(SimpleGrantedAuthority::new).toList()));
+            var read = capture(() -> operations.list(1, 7, "", "", false));
+            int total = (Integer) scope.get("total");
+            assertThat(read.value.getTotalElements()).isEqualTo(total);
+            assertThat(read.value.getContent()).hasSize(Math.min(total, 7));
+            if (total == 1) assertThat(read.value.getContent().getFirst()).containsEntry("id", "form-2000000");
+            recordCentral("central-list-visibility", Map.of("actor", actor, "authorities", authorities,
+                    "expectedTotal", total, "page", 1, "size", 7), read, true);
+        }
+    }
+
+    @Test void centralListFiltersLiteralKeywordsStatesAndEmptyPages() throws Exception {
+        seedCentralForms(1, 3);
+        jdbc.update("UPDATE production_execution SET state_json=jsonb_set(state_json::jsonb,'{operations,op,forms,f-0,status}','\"COMPLETED\"'::jsonb)::text");
+        jdbc.update("UPDATE form_instance_record SET status='APPROVED',template_name='中央%_!表单' WHERE id=2000000");
+        var cases = List.of(
+                Map.of("keyword", "", "status", "RUNNING", "runningOnly", false, "page", 1, "total", 3),
+                Map.of("keyword", "", "status", "COMPLETED", "runningOnly", false, "page", 1, "total", 1),
+                Map.of("keyword", "%_!", "status", "", "runningOnly", false, "page", 1, "total", 1),
+                Map.of("keyword", "form-2000001", "status", "", "runningOnly", false, "page", 1, "total", 1),
+                Map.of("keyword", "READ-OBS-1", "status", "", "runningOnly", false, "page", 1, "total", 1),
+                Map.of("keyword", "", "status", "", "runningOnly", false, "page", 9, "total", 4),
+                Map.of("keyword", "", "status", "COMPLETED", "runningOnly", true, "page", 1, "total", 3));
+        for (var value : cases) {
+            int page = (Integer) value.get("page");
+            var read = capture(() -> operations.list(page, 20, (String) value.get("keyword"),
+                    (String) value.get("status"), (Boolean) value.get("runningOnly")));
+            assertThat(read.value.getTotalElements()).isEqualTo(((Integer) value.get("total")).longValue());
+            assertThat(read.value.getContent()).hasSize(page == 9 ? 0 : (Integer) value.get("total"));
+            if ("COMPLETED".equals(value.get("status")) && !(Boolean) value.get("runningOnly"))
+                assertThat(read.value.getContent().getFirst()).containsEntry("id", "form-2000000").containsEntry("status", "COMPLETED");
+            recordCentral("central-list-filters", new java.util.LinkedHashMap<>(value), read, false);
+        }
+    }
+
+    @Test void centralListInvalidInputDoesNotReadTheDatabase() throws Exception {
+        var read = capture(() -> {
+            assertThatThrownBy(() -> operations.list(0, 20, "", "", false)).hasMessageContaining("分页");
+            assertThatThrownBy(() -> operations.list(1, 101, "", "", false)).hasMessageContaining("分页");
+            assertThatThrownBy(() -> operations.list(1, 20, "x".repeat(129), "", false)).hasMessageContaining("128");
+            assertThatThrownBy(() -> operations.list(1, 20, "", "invalid", false)).hasMessageContaining("状态");
+            return "rejected";
+        });
+        assertThat(read.jdbcSql).isEmpty(); assertThat(read.hibernateSql).isEmpty();
+        record("central-list-invalid-input", Map.of("rejectedInputs", 4), read);
+    }
+
+    private void seedCentralForms(int objects, int formsPerObject) throws Exception {
+        seedForm(1, "blank");
+        jdbc.update("DELETE FROM form_instance_record WHERE object_id=910109");
+        jdbc.update("UPDATE workflow_instance SET started_at='2026-01-03 00:00:00' WHERE id=900100");
+        var snapshot = mapper.createObjectNode(); var op = snapshot.putArray("operations").addObject().put("id", "op");
+        var forms = op.putArray("forms"); var state = mapper.createObjectNode();
+        var progress = state.putObject("operations").putObject("op").put("status", "IN_PROGRESS").putObject("forms");
+        state.putArray("history");
+        for (int i = 0; i < formsPerObject; i++) {
+            String id = "f-" + i;
+            var form = forms.addObject().put("id", id).put("versionId", "910111").put("sourceType", "ROUTE");
+            var nodes = form.putObject("flow").putArray("nodes");
+            nodes.addObject().put("id", "fill").putObject("data").put("kind", "START");
+            nodes.addObject().put("id", "review").putObject("data").put("kind", "APPROVAL");
+            var fields = form.putArray("fields");
+            for (int f = 0; f < 10; f++) fields.addObject().put("id", "field-" + f).put("type", "text").put("label", "现场记录字段" + f);
+            var p = progress.putObject(id).put("status", "ACTIVE"); p.putArray("active").add("review");
+            p.putObject("approvers").putArray("review").add("42"); p.putObject("restrictedApprovers").put("review", true);
+        }
+        String frozen = snapshot.toString(), current = state.toString();
+        var records = new ArrayList<Object[]>();
+        for (int o = 0; o < objects; o++) {
+            long object = 910109L + o;
+            if (o > 0) jdbc.update("INSERT INTO production_object(id,work_order_id,object_no,object_type,process_version_id,target_quantity,status) VALUES(?,910108,?,'BATCH',910107,1,'IN_PROGRESS')", object, "CENTRAL-BATCH-" + o);
+            jdbc.update("INSERT INTO production_execution(object_id,snapshot_json,state_json,started_at,updated_at) VALUES(?,?,?,'2026-01-02','2026-01-02') ON CONFLICT(object_id) DO UPDATE SET snapshot_json=excluded.snapshot_json,state_json=excluded.state_json", object, frozen, current);
+            for (int i = 0; i < formsPerObject; i++) records.add(new Object[]{2000000L + o * 1000L + i,
+                    "CENTRAL-" + o + "-" + i, object, "f-" + i, "f-" + i, forms.get(i).toString()});
+        }
+        jdbc.batchUpdate("""
+                INSERT INTO form_instance_record(id,tenant_id,instance_no,object_id,operation_id,form_id,copy_id,template_id,version_id,
+                  snapshot_json,values_json,status,created_at,updated_at,template_name,created_by_id,source_type)
+                VALUES(?,'default',?,?,'op',?,?,910110,910111,?,'{}','IN_REVIEW','2026-01-02','2026-01-02','中央列表表单','41','ROUTE')
+                """, records);
+        jdbc.execute("ANALYZE form_instance_record; ANALYZE production_execution; ANALYZE production_object; ANALYZE work_order; ANALYZE workflow_instance");
+    }
+
+    private List<String> centralIds(int objects, int formsPerObject) {
+        var formIds = new ArrayList<String>();
+        for (int o = 0; o < objects; o++) for (int f = 0; f < formsPerObject; f++) formIds.add("form-" + (2000000L + o * 1000L + f));
+        formIds.sort(java.util.Comparator.reverseOrder());
+        var ids = new ArrayList<String>(); ids.add("900100"); ids.addAll(formIds); return ids;
+    }
+
+    private void recordCentral(String kind, Map<String, Object> input, Read<?> read, boolean explain) throws Exception {
+        var data = new java.util.LinkedHashMap<String, Object>(input);
+        var statements = new ArrayList<Map<String, Object>>();
+        for (var query : read.boundJdbc) {
+            var statement = new java.util.LinkedHashMap<String, Object>(); statement.put("sql", query.sql());
+            statement.put("parameters", Arrays.asList(query.args()));
+            if (explain) statement.put("plan", mapper.readTree(jdbc.queryForObject(
+                    "EXPLAIN (ANALYZE,BUFFERS,FORMAT JSON) " + query.sql(), String.class, query.args())));
+            statements.add(statement);
+        }
+        data.put("statements", statements); data.put("plansAreSeparateReplays", explain);
+        record(kind, data, read);
+        assertThat(read.jdbcSql.stream().filter(sql -> sql.startsWith("SELECT count(*)"))).hasSize(1);
+        assertThat(read.jdbcSql.size() + read.hibernateSql.size()).isLessThanOrEqualTo(2);
+    }
+
     private void seedForm(int count, String kind) throws Exception {
         jdbc.update("INSERT INTO material(id,code,name) VALUES(910101,'READ-PRODUCT','读取观测产品')");
         jdbc.update("INSERT INTO route(id,code,name) VALUES(910102,'READ-ROUTE','读取观测路线')");
@@ -452,6 +596,12 @@ class WorkflowReadObservationPostgresTest {
         long elapsedNanos;
         final List<String> jdbcSql = new ArrayList<>();
         final List<String> hibernateSql = new ArrayList<>();
+        final List<BoundQuery> boundJdbc = new ArrayList<>();
+    }
+    private record BoundQuery(String sql, Object[] args) { }
+    private static void observeJdbc(String sql, Object[] args) {
+        Read<?> read = CURRENT.get();
+        if (read != null) { read.jdbcSql.add(sql); read.boundJdbc.add(new BoundQuery(sql, args.clone())); }
     }
     private static <T> Read<T> capture(Supplier<T> action) {
         var read = new Read<T>(); CURRENT.set(read); long started = System.nanoTime();
@@ -472,8 +622,12 @@ class WorkflowReadObservationPostgresTest {
         @Bean JdbcTemplate observedJdbc(DataSource source) {
             return new JdbcTemplate(source) {
                 @Override public List<Map<String, Object>> queryForList(String sql, Object... args) {
-                    Read<?> read = CURRENT.get(); if (read != null) read.jdbcSql.add(sql);
+                    observeJdbc(sql, args);
                     return super.queryForList(sql, args);
+                }
+                @Override public <T> T queryForObject(String sql, Class<T> requiredType, Object... args) {
+                    observeJdbc(sql, args);
+                    return super.queryForObject(sql, requiredType, args);
                 }
             };
         }

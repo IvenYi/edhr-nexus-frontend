@@ -1,5 +1,11 @@
 # 持续推进台账
 
+## PR61已合入：中央流程列表JSON/COUNT审查进行中
+
+实际fetch目标`edhr-dev@b52138259111dd5a0d99299087913500eff627f4`，PR61已人工合入且整树同3597a81c，无外部代码/知识/契约增量；新分支audit/edhr-dev-central-list-audit-20261105。[本批](../branch-review-20261105-central-list/README.md)L2按既定队列检查流程日志/流程干预的两源列表，先做真实PG JSON/COUNT规模、权限及分页证据，不预先删UI使用的总数或更改索引/业务。
+
+主审及只读源码子项进行中，待新增观察、原相邻回归、本体有限核对、全新独立质量和全部FINAL后PR前漂移复核。PR61全部资格人员持续分页规则保持，第三文本ID索引/汇总605/导出内存及931知识/86UI、W2-W7/原高风险/A12/完整矩阵和用户暂停项继续；全文件0/历史unique未知，不自动merge/deploy/恢复或查询触发CI。
+
 ## PR60已合入：姓名/候选参数优化及人员完整分页选择
 
 已交付[PR61](https://github.com/IvenYi/edhr-nexus-frontend/pull/61)，audit/edhr-dev-personnel-paging-20261105→edhr-dev，观察OPEN/MERGEABLE/CLEAN，建议人工合入当前前后端配套修复。受测代码b81b67ed、归档689e42c0后仅L0交付登记，其他受测既有路径保持；实际观察见本批evidence/delivery-verification.json，登记提交后再次核对本地/远端/PR head一致。下一批先fetch真实合入和外部增量，继续既定全审队列；第三索引未做、全部旧余项保持，不自动merge/deploy/恢复。
