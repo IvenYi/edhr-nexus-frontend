@@ -3,32 +3,32 @@ ontologyResult:
   baselineBefore: 0.3.25
   baselineAfter: 0.3.25
   contractBaseline:
-    sourceCommit: 82786ee87cb2d18d748711691611212d0e8703ca
+    sourceCommit: d32b99c54b0d65bd2717274ee39135927b423acb
     targetBranch: edhr-dev
     targetCommit: b52138259111dd5a0d99299087913500eff627f4
     contractReadCommit: 82786ee87cb2d18d748711691611212d0e8703ca
     uncommittedContractPaths: []
-  reason: 用户已同意中央列表在隔离验证后实施查询内按对象复用快照。实际核对LIST_CONTEXT/source/list及原定义，当前仅改变解析/关联与等价关键词和运行谓词的执行位置，继续读取execution冻结snapshot及state，保持object/operation/form/copy身份、精确总数/分页、原visibility与DHR锁和领域所有权；共享FROM及详情/签名改派写路径字节保持。未新增或修改业务政策、审计/签署/生命周期/冻结契约，故无需改写知识。13个既有ID有限核对为11一致、1局部替代、1既有多租户缺口，350知识指纹仅证明未改动；0.3.25/schema1.2.0/P0及全部旧余项保持。当前dirty实现的真实路径/指纹另记，主侧原型及最终运行验收不由本角色替代。
+  reason: 同一切片仅将LIST_CONTEXT外层上下文driver限制为default表单记录引用的DISTINCT object_id再JOIN execution，避免无记录对象初始化空上下文。实际两行diff后其他列表/共享FROM/权限及写路径保护全部保持；对象ID去重未折叠实际表单、copy、快照目录或结果行，没有新增业务数量约束、资格、状态、冻结或审计政策。增量3个既有ID均在此有限范围一致，原13项结果与其局部替代/多租户gap原件保留不覆盖。350知识未改，0.3.25/schema1.2.0/P0及其余全审缺口保持，故仍无需更新知识。源工作树dirty已留真实指纹；本角色沿827实际已读且经无增量核对的契约，不虚称重读d32或运行测试通过。
   changedArtifacts: []
   knowledgeSync: []
   conflicts: []
   questions: []
   validationEvidence:
-    - id: validation.central-reuse-contract-baseline
+    - id: validation.central-driver-contract-and-dirty-source
       checkType: evidence-path
-      command: git rev-parse HEAD origin/edhr-dev; git status --short; git diff HEAD origin/edhr-dev -- AGENTS.md codeplzreadme.md docs/agents; preserve current read snapshots and SHA256
+      command: git rev-parse HEAD origin/edhr-dev; git status --short; git diff HEAD -- FormWorkflowOperations.java; compare827-read contract SHA256 and827-to-d32 git contract delta
       outcome: passed
-      evidence: [contract-baseline.json, read-snapshots/]
-    - id: validation.central-reuse-knowledge-preservation
-      checkType: evidence-path
-      command: Enumerate HEAD docs/knowledge files and compare each current byte stream to git show HEAD:path; count 350 unchanged files, no formal Maven test executed by ontology
-      outcome: passed
-      evidence: [knowledge-fingerprints.json, contract-baseline.json]
-    - id: validation.central-reuse-finite-projection-alignment
+      evidence: [contract-baseline.json, source-delta.patch, read-snapshots/]
+    - id: validation.central-driver-projection-delta
       checkType: projection
-      command: Inspect DEC0092/0093/0095 and 13 listed definitions against actual LIST_CONTEXT/source/list/controller/UI and source tests; compare shared FROM and protected method tails to HEAD; no runtime tests executed
+      command: Read actual two-line referenced-object driver and sparse test; assert only expected driver replacement, shared FROM/protected class tails and WorkflowOperationsQuery unchanged; inspect 3 finite definition mappings
       outcome: passed
-      evidence: [audit-records.jsonl, review-notes.md, contract-baseline.json, read-snapshots/]
+      evidence: [delta-records.jsonl, review-notes.md, contract-baseline.json, source-delta.patch]
+    - id: validation.central-driver-prior-knowledge-preserved
+      checkType: evidence-path
+      command: Verify prior ontology manifest and all its file hashes unchanged; compare350 knowledge bytes to prior-read fingerprints; no Maven/runtime execution by this role
+      outcome: passed
+      evidence: [knowledge-preservation.json, contract-baseline.json]
   roadmapProgress:
     stage: P0
     status: in-progress

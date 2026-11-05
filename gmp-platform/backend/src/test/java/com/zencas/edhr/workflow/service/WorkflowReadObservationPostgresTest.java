@@ -600,6 +600,25 @@ class WorkflowReadObservationPostgresTest {
         recordCentral("central-list-work-memory", Map.of("workMem", memory, "objects", 30, "formsPerObject", 100), read, true);
     }
 
+    @ParameterizedTest @ValueSource(ints = {0, 1000, 10000})
+    void centralListInitializesContextsOnlyForObjectsWithFormRecords(int unrecorded) throws Exception {
+        seedCentralForms(1, 1);
+        jdbc.update("""
+                INSERT INTO production_object(id,work_order_id,object_no,object_type,process_version_id,target_quantity,status)
+                SELECT 8000000+n,910108,'SPARSE-'||n,'BATCH',910107,1,'IN_PROGRESS' FROM generate_series(1,?)n
+                """, unrecorded);
+        jdbc.update("""
+                INSERT INTO production_execution(object_id,snapshot_json,state_json,started_at,updated_at)
+                SELECT o.id,e.snapshot_json,'{"operations":{}}',CURRENT_TIMESTAMP,CURRENT_TIMESTAMP
+                FROM production_object o CROSS JOIN production_execution e WHERE o.id>=8000000 AND e.object_id=910109
+                """);
+        jdbc.execute("ANALYZE production_object; ANALYZE production_execution; ANALYZE form_instance_record");
+        var read = capture(() -> operations.list(1, 20, "", "", false));
+        assertThat(read.value.getTotalElements()).isEqualTo(2);
+        assertThat(read.value.getContent()).extracting(row -> row.get("id")).containsExactly("900100", "form-2000000");
+        recordCentral("central-list-sparse-executions", Map.of("unrecordedExecutions", unrecorded, "contextBudget", 1), read, true);
+    }
+
     private void seedCentralForms(int objects, int formsPerObject) throws Exception {
         seedForm(1, "blank");
         jdbc.update("DELETE FROM form_instance_record WHERE object_id=910109");
@@ -658,6 +677,9 @@ class WorkflowReadObservationPostgresTest {
                     assertThat(expandedFormCandidates(plan.path(0).path("Plan")))
                             .as("form catalog expansion must grow with frozen entries, not their square").isLessThanOrEqualTo(budget);
                 }
+                if (input.containsKey("contextBudget")) assertThat(initializedObjectContexts(plan.path(0).path("Plan")))
+                        .as("unrecorded executions must not initialize form-query contexts")
+                        .isLessThanOrEqualTo(((Number) input.get("contextBudget")).longValue());
             }
             statements.add(statement);
         }
@@ -671,6 +693,12 @@ class WorkflowReadObservationPostgresTest {
         long count = "Function Scan".equals(node.path("Node Type").asText()) && "f".equals(node.path("Alias").asText())
                 ? node.path("Actual Rows").asLong() * node.path("Actual Loops").asLong() : 0;
         for (var child : node.path("Plans")) count += expandedFormCandidates(child);
+        return count;
+    }
+
+    private long initializedObjectContexts(com.fasterxml.jackson.databind.JsonNode node) {
+        long count = "CTE record_scope".equals(node.path("Subplan Name").asText()) ? node.path("Actual Loops").asLong() : 0;
+        for (var child : node.path("Plans")) count += initializedObjectContexts(child);
         return count;
     }
 

@@ -36,8 +36,8 @@
     },
     {
       "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormWorkflowOperations.java",
-      "bytes": 23428,
-      "sha256": "9237a5c3735427cda73897acd609868ae76de1cbde1de71ebb33815326ba33f7",
+      "bytes": 23576,
+      "sha256": "005bbdeaf96fb4ed489f5d4bce4a663f7bd1a4695dda6f6a55fa83320c94ae9d",
       "sameAsSource": false
     },
     {
@@ -48,8 +48,8 @@
     },
     {
       "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/service/WorkflowReadObservationPostgresTest.java",
-      "bytes": 57732,
-      "sha256": "08a3a16b39b258e876a996e4ce510211bdbb1d3e7f5061472fe7ad0c8811ce5e",
+      "bytes": 59749,
+      "sha256": "438438d15054eb7d281edc69bbc6c1cba9758bba826e865ac29a9ffa47ca40c2",
       "sameAsSource": false
     },
     {
@@ -86,5 +86,9 @@
   "testFilesChanged": 1,
   "wholeFileComplete": 0,
   "historicalUniqueCoverage": null,
-  "reviewedScope": "central list snapshot/query-local reuse, predicates and bounded catalog; not full service audit"
+  "reviewedScope": "central list snapshot/query-local reuse, predicates and bounded catalog; not full service audit",
+  "priorCandidate": "d32b99c54b0d65bd2717274ee39135927b423acb",
+  "finalRunHead": "d32b99c54b0d65bd2717274ee39135927b423acb",
+  "finalRunWorkingTree": "dirty outer driver filter and sparse tests, actual bytes fingerprinted",
+  "driverNegativeWholeTestFileMatchesFinal": true
 }

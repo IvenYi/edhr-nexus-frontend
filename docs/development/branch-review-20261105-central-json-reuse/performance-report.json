@@ -1,17 +1,16 @@
 {
-  "source": "/tmp/edhr-central-json-reuse-20261105/native-full/observations.jsonl",
-  "sourceSha256": "d2a81577fd958c6dd8183d91184ab16809b11e2fabc9c7348e72d0eed92b7690",
-  "allObservationEvents": 137,
-  "allLogicalSelects": 388,
-  "centralEvents": 47,
-  "centralLogicalSelects": 92,
-  "centralCountSelects": 46,
-  "separateExplainReplays": 70,
+  "source": "/tmp/edhr-central-json-reuse-20261105/native-full2/observations.jsonl",
+  "sourceSha256": "a7e8a7c7a5315a4c166953b08a4d546e6dddf5138fa937a515491dca86e21aee",
+  "allObservationEvents": 140,
+  "allLogicalSelects": 394,
+  "centralEvents": 50,
+  "centralLogicalSelects": 98,
+  "centralCountSelects": 49,
+  "separateExplainReplays": 76,
   "scenarios": [
     {
       "kind": "central-list-visibility",
       "input": {
-        "page": 1,
         "expectedTotal": 30,
         "actor": "42",
         "authorities": [
@@ -19,18 +18,19 @@
           "form-management.review"
         ],
         "size": 7,
+        "page": 1,
         "plansAreSeparateReplays": true
       },
-      "requestElapsedMs": 18.434538,
+      "requestElapsedMs": 20.495572,
       "logicalSelects": 2,
       "countSelects": 1,
       "plans": [
         {
           "kind": "count",
-          "executionMs": 1.91,
-          "planningMs": 2.16,
+          "executionMs": 2.331,
+          "planningMs": 2.418,
           "rootBuffers": {
-            "Shared Hit Blocks": 8,
+            "Shared Hit Blocks": 12,
             "Shared Read Blocks": 0,
             "Temp Read Blocks": 0,
             "Temp Written Blocks": 0
@@ -73,10 +73,10 @@
         },
         {
           "kind": "content",
-          "executionMs": 1.938,
-          "planningMs": 2.551,
+          "executionMs": 1.778,
+          "planningMs": 2.208,
           "rootBuffers": {
-            "Shared Hit Blocks": 8,
+            "Shared Hit Blocks": 12,
             "Shared Read Blocks": 0,
             "Temp Read Blocks": 0,
             "Temp Written Blocks": 0
@@ -133,7 +133,6 @@
     {
       "kind": "central-list-visibility",
       "input": {
-        "page": 1,
         "expectedTotal": 1,
         "actor": "43",
         "authorities": [
@@ -141,18 +140,19 @@
           "form-management.filling"
         ],
         "size": 7,
+        "page": 1,
         "plansAreSeparateReplays": true
       },
-      "requestElapsedMs": 12.957879,
+      "requestElapsedMs": 25.829758,
       "logicalSelects": 2,
       "countSelects": 1,
       "plans": [
         {
           "kind": "count",
-          "executionMs": 1.388,
-          "planningMs": 2.348,
+          "executionMs": 1.633,
+          "planningMs": 2.916,
           "rootBuffers": {
-            "Shared Hit Blocks": 8,
+            "Shared Hit Blocks": 12,
             "Shared Read Blocks": 0,
             "Temp Read Blocks": 0,
             "Temp Written Blocks": 0
@@ -194,10 +194,10 @@
         },
         {
           "kind": "content",
-          "executionMs": 1.521,
-          "planningMs": 2.497,
+          "executionMs": 1.87,
+          "planningMs": 3.444,
           "rootBuffers": {
-            "Shared Hit Blocks": 8,
+            "Shared Hit Blocks": 12,
             "Shared Read Blocks": 0,
             "Temp Read Blocks": 0,
             "Temp Written Blocks": 0
@@ -253,7 +253,6 @@
     {
       "kind": "central-list-visibility",
       "input": {
-        "page": 1,
         "expectedTotal": 0,
         "actor": "44",
         "authorities": [
@@ -261,18 +260,19 @@
           "form-management.filling"
         ],
         "size": 7,
+        "page": 1,
         "plansAreSeparateReplays": true
       },
-      "requestElapsedMs": 14.755757,
+      "requestElapsedMs": 40.542551,
       "logicalSelects": 2,
       "countSelects": 1,
       "plans": [
         {
           "kind": "count",
-          "executionMs": 1.216,
-          "planningMs": 2.263,
+          "executionMs": 2.203,
+          "planningMs": 3.36,
           "rootBuffers": {
-            "Shared Hit Blocks": 8,
+            "Shared Hit Blocks": 12,
             "Shared Read Blocks": 0,
             "Temp Read Blocks": 0,
             "Temp Written Blocks": 0
@@ -314,10 +314,10 @@
         },
         {
           "kind": "content",
-          "executionMs": 1.448,
-          "planningMs": 2.204,
+          "executionMs": 2.64,
+          "planningMs": 4.925,
           "rootBuffers": {
-            "Shared Hit Blocks": 8,
+            "Shared Hit Blocks": 12,
             "Shared Read Blocks": 0,
             "Temp Read Blocks": 0,
             "Temp Written Blocks": 0
@@ -373,7 +373,6 @@
     {
       "kind": "central-list-visibility",
       "input": {
-        "page": 1,
         "expectedTotal": 30,
         "actor": "45",
         "authorities": [
@@ -381,18 +380,19 @@
           "form-instances.view"
         ],
         "size": 7,
+        "page": 1,
         "plansAreSeparateReplays": true
       },
-      "requestElapsedMs": 12.212889,
+      "requestElapsedMs": 21.146035,
       "logicalSelects": 2,
       "countSelects": 1,
       "plans": [
         {
           "kind": "count",
-          "executionMs": 1.595,
-          "planningMs": 2.196,
+          "executionMs": 1.875,
+          "planningMs": 2.987,
           "rootBuffers": {
-            "Shared Hit Blocks": 8,
+            "Shared Hit Blocks": 12,
             "Shared Read Blocks": 0,
             "Temp Read Blocks": 0,
             "Temp Written Blocks": 0
@@ -419,10 +419,10 @@
         },
         {
           "kind": "content",
-          "executionMs": 1.465,
-          "planningMs": 2.093,
+          "executionMs": 2.194,
+          "planningMs": 4.446,
           "rootBuffers": {
-            "Shared Hit Blocks": 8,
+            "Shared Hit Blocks": 12,
             "Shared Read Blocks": 0,
             "Temp Read Blocks": 0,
             "Temp Written Blocks": 0
@@ -463,23 +463,23 @@
     {
       "kind": "central-list-visibility",
       "input": {
-        "page": 1,
         "expectedTotal": 0,
         "actor": "42",
         "authorities": [
           "workflow.logs"
         ],
         "size": 7,
+        "page": 1,
         "plansAreSeparateReplays": true
       },
-      "requestElapsedMs": 11.680738,
+      "requestElapsedMs": 12.806307,
       "logicalSelects": 2,
       "countSelects": 1,
       "plans": [
         {
           "kind": "count",
-          "executionMs": 0.24,
-          "planningMs": 2.123,
+          "executionMs": 0.274,
+          "planningMs": 3.124,
           "rootBuffers": {
             "Shared Hit Blocks": 1,
             "Shared Read Blocks": 0,
@@ -493,8 +493,8 @@
         },
         {
           "kind": "content",
-          "executionMs": 0.216,
-          "planningMs": 2.087,
+          "executionMs": 0.289,
+          "planningMs": 2.949,
           "rootBuffers": {
             "Shared Hit Blocks": 1,
             "Shared Read Blocks": 0,
@@ -522,21 +522,21 @@
     {
       "kind": "central-list-work-memory",
       "input": {
-        "formsPerObject": 100,
         "objects": 30,
         "workMem": "64kB",
+        "formsPerObject": 100,
         "plansAreSeparateReplays": true
       },
-      "requestElapsedMs": 215.552934,
+      "requestElapsedMs": 267.193791,
       "logicalSelects": 2,
       "countSelects": 1,
       "plans": [
         {
           "kind": "count",
-          "executionMs": 104.337,
-          "planningMs": 1.598,
+          "executionMs": 111.555,
+          "planningMs": 2.046,
           "rootBuffers": {
-            "Shared Hit Blocks": 581,
+            "Shared Hit Blocks": 956,
             "Shared Read Blocks": 0,
             "Temp Read Blocks": 900,
             "Temp Written Blocks": 1289
@@ -563,10 +563,10 @@
         },
         {
           "kind": "content",
-          "executionMs": 105.136,
-          "planningMs": 1.668,
+          "executionMs": 109.604,
+          "planningMs": 1.6,
           "rootBuffers": {
-            "Shared Hit Blocks": 581,
+            "Shared Hit Blocks": 956,
             "Shared Read Blocks": 0,
             "Temp Read Blocks": 900,
             "Temp Written Blocks": 1289
@@ -607,21 +607,21 @@
     {
       "kind": "central-list-work-memory",
       "input": {
-        "formsPerObject": 100,
         "objects": 30,
         "workMem": "4MB",
+        "formsPerObject": 100,
         "plansAreSeparateReplays": true
       },
-      "requestElapsedMs": 197.517838,
+      "requestElapsedMs": 210.175396,
       "logicalSelects": 2,
       "countSelects": 1,
       "plans": [
         {
           "kind": "count",
-          "executionMs": 91.33,
-          "planningMs": 1.56,
+          "executionMs": 97.177,
+          "planningMs": 1.821,
           "rootBuffers": {
-            "Shared Hit Blocks": 581,
+            "Shared Hit Blocks": 956,
             "Shared Read Blocks": 0,
             "Temp Read Blocks": 0,
             "Temp Written Blocks": 0
@@ -648,10 +648,10 @@
         },
         {
           "kind": "content",
-          "executionMs": 97.38,
-          "planningMs": 1.624,
+          "executionMs": 94.697,
+          "planningMs": 1.691,
           "rootBuffers": {
-            "Shared Hit Blocks": 581,
+            "Shared Hit Blocks": 956,
             "Shared Read Blocks": 0,
             "Temp Read Blocks": 0,
             "Temp Written Blocks": 0
@@ -692,14 +692,14 @@
     {
       "kind": "central-list-filters",
       "input": {
-        "page": 1,
-        "status": "RUNNING",
         "total": 3,
         "runningOnly": false,
         "keyword": "",
+        "page": 1,
+        "status": "RUNNING",
         "plansAreSeparateReplays": false
       },
-      "requestElapsedMs": 10.363738,
+      "requestElapsedMs": 13.457445,
       "logicalSelects": 2,
       "countSelects": 1,
       "plans": []
@@ -707,14 +707,14 @@
     {
       "kind": "central-list-filters",
       "input": {
-        "page": 1,
-        "status": "COMPLETED",
         "total": 1,
         "runningOnly": false,
         "keyword": "",
+        "page": 1,
+        "status": "COMPLETED",
         "plansAreSeparateReplays": false
       },
-      "requestElapsedMs": 10.206604,
+      "requestElapsedMs": 9.183179,
       "logicalSelects": 2,
       "countSelects": 1,
       "plans": []
@@ -722,14 +722,14 @@
     {
       "kind": "central-list-filters",
       "input": {
-        "page": 1,
-        "status": "",
         "total": 1,
         "runningOnly": false,
         "keyword": "%_!",
+        "page": 1,
+        "status": "",
         "plansAreSeparateReplays": false
       },
-      "requestElapsedMs": 9.306007,
+      "requestElapsedMs": 10.655856,
       "logicalSelects": 2,
       "countSelects": 1,
       "plans": []
@@ -737,14 +737,14 @@
     {
       "kind": "central-list-filters",
       "input": {
-        "page": 1,
-        "status": "",
         "total": 1,
         "runningOnly": false,
         "keyword": "form-2000001",
+        "page": 1,
+        "status": "",
         "plansAreSeparateReplays": false
       },
-      "requestElapsedMs": 8.744109,
+      "requestElapsedMs": 11.176688,
       "logicalSelects": 2,
       "countSelects": 1,
       "plans": []
@@ -752,14 +752,14 @@
     {
       "kind": "central-list-filters",
       "input": {
-        "page": 1,
-        "status": "",
         "total": 1,
         "runningOnly": false,
         "keyword": "READ-OBS-1",
+        "page": 1,
+        "status": "",
         "plansAreSeparateReplays": false
       },
-      "requestElapsedMs": 7.813871,
+      "requestElapsedMs": 10.782177,
       "logicalSelects": 2,
       "countSelects": 1,
       "plans": []
@@ -767,14 +767,14 @@
     {
       "kind": "central-list-filters",
       "input": {
-        "page": 9,
-        "status": "",
         "total": 4,
         "runningOnly": false,
         "keyword": "",
+        "page": 9,
+        "status": "",
         "plansAreSeparateReplays": false
       },
-      "requestElapsedMs": 8.683015,
+      "requestElapsedMs": 11.82549,
       "logicalSelects": 2,
       "countSelects": 1,
       "plans": []
@@ -782,14 +782,14 @@
     {
       "kind": "central-list-filters",
       "input": {
-        "page": 1,
-        "status": "COMPLETED",
         "total": 3,
         "runningOnly": true,
         "keyword": "",
+        "page": 1,
+        "status": "COMPLETED",
         "plansAreSeparateReplays": false
       },
-      "requestElapsedMs": 10.042049,
+      "requestElapsedMs": 10.493405,
       "logicalSelects": 2,
       "countSelects": 1,
       "plans": []
@@ -801,16 +801,16 @@
         "expectedForms": 1,
         "plansAreSeparateReplays": true
       },
-      "requestElapsedMs": 11.026573,
+      "requestElapsedMs": 13.199487,
       "logicalSelects": 2,
       "countSelects": 1,
       "plans": [
         {
           "kind": "count",
-          "executionMs": 0.464,
-          "planningMs": 1.742,
+          "executionMs": 0.493,
+          "planningMs": 1.962,
           "rootBuffers": {
-            "Shared Hit Blocks": 14,
+            "Shared Hit Blocks": 15,
             "Shared Read Blocks": 0,
             "Temp Read Blocks": 0,
             "Temp Written Blocks": 0
@@ -841,14 +841,24 @@
           ],
           "memoize": [],
           "joinFilters": [],
-          "sorts": []
+          "sorts": [
+            {
+              "Actual Rows": 1,
+              "Sort Key": [
+                "form_instance_record.object_id"
+              ],
+              "Sort Method": "quicksort",
+              "Sort Space Used": 25,
+              "Sort Space Type": "Memory"
+            }
+          ]
         },
         {
           "kind": "content",
-          "executionMs": 0.493,
-          "planningMs": 2.173,
+          "executionMs": 0.672,
+          "planningMs": 2.022,
           "rootBuffers": {
-            "Shared Hit Blocks": 14,
+            "Shared Hit Blocks": 15,
             "Shared Read Blocks": 0,
             "Temp Read Blocks": 0,
             "Temp Written Blocks": 0
@@ -885,6 +895,15 @@
               "Sort Key": [
                 "((i.started_at)::character varying) DESC",
                 "((i.id)::character varying) DESC"
+              ],
+              "Sort Method": "quicksort",
+              "Sort Space Used": 25,
+              "Sort Space Type": "Memory"
+            },
+            {
+              "Actual Rows": 1,
+              "Sort Key": [
+                "form_instance_record.object_id"
               ],
               "Sort Method": "quicksort",
               "Sort Space Used": 25,
@@ -901,16 +920,16 @@
         "expectedForms": 1,
         "plansAreSeparateReplays": true
       },
-      "requestElapsedMs": 13.018609,
+      "requestElapsedMs": 14.514143,
       "logicalSelects": 2,
       "countSelects": 1,
       "plans": [
         {
           "kind": "count",
-          "executionMs": 0.535,
-          "planningMs": 1.946,
+          "executionMs": 0.513,
+          "planningMs": 1.974,
           "rootBuffers": {
-            "Shared Hit Blocks": 14,
+            "Shared Hit Blocks": 15,
             "Shared Read Blocks": 0,
             "Temp Read Blocks": 0,
             "Temp Written Blocks": 0
@@ -941,14 +960,24 @@
           ],
           "memoize": [],
           "joinFilters": [],
-          "sorts": []
+          "sorts": [
+            {
+              "Actual Rows": 1,
+              "Sort Key": [
+                "form_instance_record.object_id"
+              ],
+              "Sort Method": "quicksort",
+              "Sort Space Used": 25,
+              "Sort Space Type": "Memory"
+            }
+          ]
         },
         {
           "kind": "content",
-          "executionMs": 0.552,
-          "planningMs": 1.896,
+          "executionMs": 0.515,
+          "planningMs": 2.016,
           "rootBuffers": {
-            "Shared Hit Blocks": 14,
+            "Shared Hit Blocks": 15,
             "Shared Read Blocks": 0,
             "Temp Read Blocks": 0,
             "Temp Written Blocks": 0
@@ -989,6 +1018,15 @@
               "Sort Method": "quicksort",
               "Sort Space Used": 25,
               "Sort Space Type": "Memory"
+            },
+            {
+              "Actual Rows": 1,
+              "Sort Key": [
+                "form_instance_record.object_id"
+              ],
+              "Sort Method": "quicksort",
+              "Sort Space Used": 25,
+              "Sort Space Type": "Memory"
             }
           ]
         }
@@ -1001,16 +1039,16 @@
         "expectedForms": 0,
         "plansAreSeparateReplays": true
       },
-      "requestElapsedMs": 12.024427,
+      "requestElapsedMs": 14.684401,
       "logicalSelects": 2,
       "countSelects": 1,
       "plans": [
         {
           "kind": "count",
-          "executionMs": 0.346,
-          "planningMs": 2.115,
+          "executionMs": 0.412,
+          "planningMs": 1.98,
           "rootBuffers": {
-            "Shared Hit Blocks": 14,
+            "Shared Hit Blocks": 15,
             "Shared Read Blocks": 0,
             "Temp Read Blocks": 0,
             "Temp Written Blocks": 0
@@ -1041,14 +1079,24 @@
           ],
           "memoize": [],
           "joinFilters": [],
-          "sorts": []
+          "sorts": [
+            {
+              "Actual Rows": 1,
+              "Sort Key": [
+                "form_instance_record.object_id"
+              ],
+              "Sort Method": "quicksort",
+              "Sort Space Used": 25,
+              "Sort Space Type": "Memory"
+            }
+          ]
         },
         {
           "kind": "content",
           "executionMs": 0.37,
-          "planningMs": 1.911,
+          "planningMs": 1.861,
           "rootBuffers": {
-            "Shared Hit Blocks": 14,
+            "Shared Hit Blocks": 15,
             "Shared Read Blocks": 0,
             "Temp Read Blocks": 0,
             "Temp Written Blocks": 0
@@ -1085,6 +1133,15 @@
               "Sort Key": [
                 "((i.started_at)::character varying) DESC",
                 "((i.id)::character varying) DESC"
+              ],
+              "Sort Method": "quicksort",
+              "Sort Space Used": 25,
+              "Sort Space Type": "Memory"
+            },
+            {
+              "Actual Rows": 1,
+              "Sort Key": [
+                "form_instance_record.object_id"
               ],
               "Sort Method": "quicksort",
               "Sort Space Used": 25,
@@ -1101,16 +1158,16 @@
         "expectedForms": 0,
         "plansAreSeparateReplays": true
       },
-      "requestElapsedMs": 11.284886,
+      "requestElapsedMs": 13.509936,
       "logicalSelects": 2,
       "countSelects": 1,
       "plans": [
         {
           "kind": "count",
-          "executionMs": 0.579,
-          "planningMs": 2.597,
+          "executionMs": 0.706,
+          "planningMs": 2.369,
           "rootBuffers": {
-            "Shared Hit Blocks": 14,
+            "Shared Hit Blocks": 15,
             "Shared Read Blocks": 0,
             "Temp Read Blocks": 0,
             "Temp Written Blocks": 0
@@ -1141,14 +1198,24 @@
           ],
           "memoize": [],
           "joinFilters": [],
-          "sorts": []
+          "sorts": [
+            {
+              "Actual Rows": 1,
+              "Sort Key": [
+                "form_instance_record.object_id"
+              ],
+              "Sort Method": "quicksort",
+              "Sort Space Used": 25,
+              "Sort Space Type": "Memory"
+            }
+          ]
         },
         {
           "kind": "content",
-          "executionMs": 0.422,
-          "planningMs": 1.929,
+          "executionMs": 0.477,
+          "planningMs": 2.365,
           "rootBuffers": {
-            "Shared Hit Blocks": 14,
+            "Shared Hit Blocks": 15,
             "Shared Read Blocks": 0,
             "Temp Read Blocks": 0,
             "Temp Written Blocks": 0
@@ -1189,6 +1256,15 @@
               "Sort Method": "quicksort",
               "Sort Space Used": 25,
               "Sort Space Type": "Memory"
+            },
+            {
+              "Actual Rows": 1,
+              "Sort Key": [
+                "form_instance_record.object_id"
+              ],
+              "Sort Method": "quicksort",
+              "Sort Space Used": 25,
+              "Sort Space Type": "Memory"
             }
           ]
         }
@@ -1200,16 +1276,16 @@
         "runningOnly": false,
         "plansAreSeparateReplays": true
       },
-      "requestElapsedMs": 11.275981,
+      "requestElapsedMs": 11.770816,
       "logicalSelects": 2,
       "countSelects": 1,
       "plans": [
         {
           "kind": "count",
-          "executionMs": 0.449,
-          "planningMs": 1.546,
+          "executionMs": 0.481,
+          "planningMs": 1.56,
           "rootBuffers": {
-            "Shared Hit Blocks": 16,
+            "Shared Hit Blocks": 17,
             "Shared Read Blocks": 0,
             "Temp Read Blocks": 0,
             "Temp Written Blocks": 0
@@ -1232,14 +1308,24 @@
           ],
           "memoize": [],
           "joinFilters": [],
-          "sorts": []
+          "sorts": [
+            {
+              "Actual Rows": 3,
+              "Sort Key": [
+                "form_instance_record.object_id"
+              ],
+              "Sort Method": "quicksort",
+              "Sort Space Used": 25,
+              "Sort Space Type": "Memory"
+            }
+          ]
         },
         {
           "kind": "content",
-          "executionMs": 0.809,
-          "planningMs": 1.69,
+          "executionMs": 0.646,
+          "planningMs": 1.646,
           "rootBuffers": {
-            "Shared Hit Blocks": 16,
+            "Shared Hit Blocks": 17,
             "Shared Read Blocks": 0,
             "Temp Read Blocks": 0,
             "Temp Written Blocks": 0
@@ -1272,6 +1358,15 @@
               "Sort Method": "quicksort",
               "Sort Space Used": 25,
               "Sort Space Type": "Memory"
+            },
+            {
+              "Actual Rows": 3,
+              "Sort Key": [
+                "form_instance_record.object_id"
+              ],
+              "Sort Method": "quicksort",
+              "Sort Space Used": 25,
+              "Sort Space Type": "Memory"
             }
           ]
         }
@@ -1283,16 +1378,16 @@
         "runningOnly": true,
         "plansAreSeparateReplays": true
       },
-      "requestElapsedMs": 10.326909,
+      "requestElapsedMs": 9.013179,
       "logicalSelects": 2,
       "countSelects": 1,
       "plans": [
         {
           "kind": "count",
-          "executionMs": 0.784,
-          "planningMs": 2.328,
+          "executionMs": 0.552,
+          "planningMs": 1.901,
           "rootBuffers": {
-            "Shared Hit Blocks": 22,
+            "Shared Hit Blocks": 23,
             "Shared Read Blocks": 0,
             "Temp Read Blocks": 0,
             "Temp Written Blocks": 0
@@ -1330,14 +1425,24 @@
               "Actual Rows": 2
             }
           ],
-          "sorts": []
+          "sorts": [
+            {
+              "Actual Rows": 3,
+              "Sort Key": [
+                "form_instance_record.object_id"
+              ],
+              "Sort Method": "quicksort",
+              "Sort Space Used": 25,
+              "Sort Space Type": "Memory"
+            }
+          ]
         },
         {
           "kind": "content",
-          "executionMs": 0.707,
-          "planningMs": 1.885,
+          "executionMs": 0.864,
+          "planningMs": 2.494,
           "rootBuffers": {
-            "Shared Hit Blocks": 22,
+            "Shared Hit Blocks": 23,
             "Shared Read Blocks": 0,
             "Temp Read Blocks": 0,
             "Temp Written Blocks": 0
@@ -1381,6 +1486,15 @@
               "Sort Key": [
                 "((i.started_at)::character varying) DESC",
                 "((i.id)::character varying) DESC"
+              ],
+              "Sort Method": "quicksort",
+              "Sort Space Used": 25,
+              "Sort Space Type": "Memory"
+            },
+            {
+              "Actual Rows": 3,
+              "Sort Key": [
+                "form_instance_record.object_id"
               ],
               "Sort Method": "quicksort",
               "Sort Space Used": 25,
@@ -1396,31 +1510,28 @@
         "status": "COMPLETED",
         "plansAreSeparateReplays": false
       },
-      "requestElapsedMs": 9.511729,
+      "requestElapsedMs": 8.978623,
       "logicalSelects": 2,
       "countSelects": 1,
       "plans": []
     },
     {
-      "kind": "central-list-scale",
+      "kind": "central-list-sparse-executions",
       "input": {
-        "page": 1,
-        "objects": 1,
-        "runningOnly": false,
-        "formsPerObject": 1,
-        "size": 20,
+        "contextBudget": 1,
+        "unrecordedExecutions": 0,
         "plansAreSeparateReplays": true
       },
-      "requestElapsedMs": 11.633502,
+      "requestElapsedMs": 11.70484,
       "logicalSelects": 2,
       "countSelects": 1,
       "plans": [
         {
           "kind": "count",
-          "executionMs": 0.555,
-          "planningMs": 1.587,
+          "executionMs": 1.205,
+          "planningMs": 1.848,
           "rootBuffers": {
-            "Shared Hit Blocks": 12,
+            "Shared Hit Blocks": 13,
             "Shared Read Blocks": 0,
             "Temp Read Blocks": 0,
             "Temp Written Blocks": 0
@@ -1443,14 +1554,24 @@
           ],
           "memoize": [],
           "joinFilters": [],
-          "sorts": []
+          "sorts": [
+            {
+              "Actual Rows": 1,
+              "Sort Key": [
+                "form_instance_record.object_id"
+              ],
+              "Sort Method": "quicksort",
+              "Sort Space Used": 25,
+              "Sort Space Type": "Memory"
+            }
+          ]
         },
         {
           "kind": "content",
-          "executionMs": 0.453,
-          "planningMs": 2.094,
+          "executionMs": 0.559,
+          "planningMs": 1.97,
           "rootBuffers": {
-            "Shared Hit Blocks": 12,
+            "Shared Hit Blocks": 13,
             "Shared Read Blocks": 0,
             "Temp Read Blocks": 0,
             "Temp Written Blocks": 0
@@ -1483,6 +1604,221 @@
               "Sort Method": "quicksort",
               "Sort Space Used": 25,
               "Sort Space Type": "Memory"
+            },
+            {
+              "Actual Rows": 1,
+              "Sort Key": [
+                "form_instance_record.object_id"
+              ],
+              "Sort Method": "quicksort",
+              "Sort Space Used": 25,
+              "Sort Space Type": "Memory"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "central-list-sparse-executions",
+      "input": {
+        "contextBudget": 1,
+        "unrecordedExecutions": 1000,
+        "plansAreSeparateReplays": true
+      },
+      "requestElapsedMs": 13.36224,
+      "logicalSelects": 2,
+      "countSelects": 1,
+      "plans": [
+        {
+          "kind": "count",
+          "executionMs": 0.837,
+          "planningMs": 2.14,
+          "rootBuffers": {
+            "Shared Hit Blocks": 17,
+            "Shared Read Blocks": 0,
+            "Temp Read Blocks": 0,
+            "Temp Written Blocks": 0
+          },
+          "functionScans": [
+            {
+              "Node Type": "Function Scan",
+              "Alias": "op",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 1,
+              "Actual Rows": 1
+            },
+            {
+              "Node Type": "Function Scan",
+              "Alias": "f",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 1,
+              "Actual Rows": 1
+            }
+          ],
+          "memoize": [],
+          "joinFilters": [],
+          "sorts": [
+            {
+              "Actual Rows": 1,
+              "Sort Key": [
+                "form_instance_record.object_id"
+              ],
+              "Sort Method": "quicksort",
+              "Sort Space Used": 25,
+              "Sort Space Type": "Memory"
+            }
+          ]
+        },
+        {
+          "kind": "content",
+          "executionMs": 0.547,
+          "planningMs": 2.193,
+          "rootBuffers": {
+            "Shared Hit Blocks": 17,
+            "Shared Read Blocks": 0,
+            "Temp Read Blocks": 0,
+            "Temp Written Blocks": 0
+          },
+          "functionScans": [
+            {
+              "Node Type": "Function Scan",
+              "Alias": "op",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 1,
+              "Actual Rows": 1
+            },
+            {
+              "Node Type": "Function Scan",
+              "Alias": "f",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 1,
+              "Actual Rows": 1
+            }
+          ],
+          "memoize": [],
+          "joinFilters": [],
+          "sorts": [
+            {
+              "Actual Rows": 2,
+              "Sort Key": [
+                "((i.started_at)::character varying) DESC",
+                "((i.id)::character varying) DESC"
+              ],
+              "Sort Method": "quicksort",
+              "Sort Space Used": 25,
+              "Sort Space Type": "Memory"
+            },
+            {
+              "Actual Rows": 1,
+              "Sort Key": [
+                "form_instance_record.object_id"
+              ],
+              "Sort Method": "quicksort",
+              "Sort Space Used": 25,
+              "Sort Space Type": "Memory"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "central-list-sparse-executions",
+      "input": {
+        "contextBudget": 1,
+        "unrecordedExecutions": 10000,
+        "plansAreSeparateReplays": true
+      },
+      "requestElapsedMs": 14.378006,
+      "logicalSelects": 2,
+      "countSelects": 1,
+      "plans": [
+        {
+          "kind": "count",
+          "executionMs": 0.539,
+          "planningMs": 1.714,
+          "rootBuffers": {
+            "Shared Hit Blocks": 17,
+            "Shared Read Blocks": 0,
+            "Temp Read Blocks": 0,
+            "Temp Written Blocks": 0
+          },
+          "functionScans": [
+            {
+              "Node Type": "Function Scan",
+              "Alias": "op",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 1,
+              "Actual Rows": 1
+            },
+            {
+              "Node Type": "Function Scan",
+              "Alias": "f",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 1,
+              "Actual Rows": 1
+            }
+          ],
+          "memoize": [],
+          "joinFilters": [],
+          "sorts": [
+            {
+              "Actual Rows": 1,
+              "Sort Key": [
+                "form_instance_record.object_id"
+              ],
+              "Sort Method": "quicksort",
+              "Sort Space Used": 25,
+              "Sort Space Type": "Memory"
+            }
+          ]
+        },
+        {
+          "kind": "content",
+          "executionMs": 0.829,
+          "planningMs": 2.103,
+          "rootBuffers": {
+            "Shared Hit Blocks": 17,
+            "Shared Read Blocks": 0,
+            "Temp Read Blocks": 0,
+            "Temp Written Blocks": 0
+          },
+          "functionScans": [
+            {
+              "Node Type": "Function Scan",
+              "Alias": "op",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 1,
+              "Actual Rows": 1
+            },
+            {
+              "Node Type": "Function Scan",
+              "Alias": "f",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 1,
+              "Actual Rows": 1
+            }
+          ],
+          "memoize": [],
+          "joinFilters": [],
+          "sorts": [
+            {
+              "Actual Rows": 2,
+              "Sort Key": [
+                "((i.started_at)::character varying) DESC",
+                "((i.id)::character varying) DESC"
+              ],
+              "Sort Method": "quicksort",
+              "Sort Space Used": 25,
+              "Sort Space Type": "Memory"
+            },
+            {
+              "Actual Rows": 1,
+              "Sort Key": [
+                "form_instance_record.object_id"
+              ],
+              "Sort Method": "quicksort",
+              "Sort Space Used": 25,
+              "Sort Space Type": "Memory"
             }
           ]
         }
@@ -1491,23 +1827,129 @@
     {
       "kind": "central-list-scale",
       "input": {
-        "page": 1,
-        "objects": 1,
-        "runningOnly": true,
+        "runningOnly": false,
         "formsPerObject": 1,
         "size": 20,
+        "page": 1,
+        "objects": 1,
         "plansAreSeparateReplays": true
       },
-      "requestElapsedMs": 8.538318,
+      "requestElapsedMs": 11.911098,
       "logicalSelects": 2,
       "countSelects": 1,
       "plans": [
         {
           "kind": "count",
-          "executionMs": 0.45,
-          "planningMs": 2.003,
+          "executionMs": 0.629,
+          "planningMs": 1.65,
           "rootBuffers": {
-            "Shared Hit Blocks": 14,
+            "Shared Hit Blocks": 13,
+            "Shared Read Blocks": 0,
+            "Temp Read Blocks": 0,
+            "Temp Written Blocks": 0
+          },
+          "functionScans": [
+            {
+              "Node Type": "Function Scan",
+              "Alias": "op",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 1,
+              "Actual Rows": 1
+            },
+            {
+              "Node Type": "Function Scan",
+              "Alias": "f",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 1,
+              "Actual Rows": 1
+            }
+          ],
+          "memoize": [],
+          "joinFilters": [],
+          "sorts": [
+            {
+              "Actual Rows": 1,
+              "Sort Key": [
+                "form_instance_record.object_id"
+              ],
+              "Sort Method": "quicksort",
+              "Sort Space Used": 25,
+              "Sort Space Type": "Memory"
+            }
+          ]
+        },
+        {
+          "kind": "content",
+          "executionMs": 0.444,
+          "planningMs": 2.034,
+          "rootBuffers": {
+            "Shared Hit Blocks": 13,
+            "Shared Read Blocks": 0,
+            "Temp Read Blocks": 0,
+            "Temp Written Blocks": 0
+          },
+          "functionScans": [
+            {
+              "Node Type": "Function Scan",
+              "Alias": "op",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 1,
+              "Actual Rows": 1
+            },
+            {
+              "Node Type": "Function Scan",
+              "Alias": "f",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 1,
+              "Actual Rows": 1
+            }
+          ],
+          "memoize": [],
+          "joinFilters": [],
+          "sorts": [
+            {
+              "Actual Rows": 2,
+              "Sort Key": [
+                "((i.started_at)::character varying) DESC",
+                "((i.id)::character varying) DESC"
+              ],
+              "Sort Method": "quicksort",
+              "Sort Space Used": 25,
+              "Sort Space Type": "Memory"
+            },
+            {
+              "Actual Rows": 1,
+              "Sort Key": [
+                "form_instance_record.object_id"
+              ],
+              "Sort Method": "quicksort",
+              "Sort Space Used": 25,
+              "Sort Space Type": "Memory"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "central-list-scale",
+      "input": {
+        "runningOnly": true,
+        "formsPerObject": 1,
+        "size": 20,
+        "page": 1,
+        "objects": 1,
+        "plansAreSeparateReplays": true
+      },
+      "requestElapsedMs": 14.043387,
+      "logicalSelects": 2,
+      "countSelects": 1,
+      "plans": [
+        {
+          "kind": "count",
+          "executionMs": 0.939,
+          "planningMs": 2.713,
+          "rootBuffers": {
+            "Shared Hit Blocks": 15,
             "Shared Read Blocks": 0,
             "Temp Read Blocks": 0,
             "Temp Written Blocks": 0
@@ -1538,14 +1980,24 @@
           ],
           "memoize": [],
           "joinFilters": [],
-          "sorts": []
+          "sorts": [
+            {
+              "Actual Rows": 1,
+              "Sort Key": [
+                "form_instance_record.object_id"
+              ],
+              "Sort Method": "quicksort",
+              "Sort Space Used": 25,
+              "Sort Space Type": "Memory"
+            }
+          ]
         },
         {
           "kind": "content",
-          "executionMs": 0.475,
-          "planningMs": 2.321,
+          "executionMs": 0.681,
+          "planningMs": 2.778,
           "rootBuffers": {
-            "Shared Hit Blocks": 14,
+            "Shared Hit Blocks": 15,
             "Shared Read Blocks": 0,
             "Temp Read Blocks": 0,
             "Temp Written Blocks": 0
@@ -1582,6 +2034,15 @@
               "Sort Key": [
                 "((i.started_at)::character varying) DESC",
                 "((i.id)::character varying) DESC"
+              ],
+              "Sort Method": "quicksort",
+              "Sort Space Used": 25,
+              "Sort Space Type": "Memory"
+            },
+            {
+              "Actual Rows": 1,
+              "Sort Key": [
+                "form_instance_record.object_id"
               ],
               "Sort Method": "quicksort",
               "Sort Space Used": 25,
@@ -1594,13 +2055,13 @@
     {
       "kind": "central-list-last-page",
       "input": {
-        "size": 20,
-        "page": 1,
         "formsPerObject": 1,
         "objects": 1,
+        "size": 20,
+        "page": 1,
         "plansAreSeparateReplays": false
       },
-      "requestElapsedMs": 5.294523,
+      "requestElapsedMs": 5.461792,
       "logicalSelects": 2,
       "countSelects": 1,
       "plans": []
@@ -1608,23 +2069,23 @@
     {
       "kind": "central-list-scale",
       "input": {
-        "page": 1,
-        "objects": 1,
         "runningOnly": false,
         "formsPerObject": 30,
         "size": 20,
+        "page": 1,
+        "objects": 1,
         "plansAreSeparateReplays": true
       },
-      "requestElapsedMs": 12.204756,
+      "requestElapsedMs": 19.406873,
       "logicalSelects": 2,
       "countSelects": 1,
       "plans": [
         {
           "kind": "count",
-          "executionMs": 1.544,
-          "planningMs": 1.779,
+          "executionMs": 1.975,
+          "planningMs": 1.742,
           "rootBuffers": {
-            "Shared Hit Blocks": 15,
+            "Shared Hit Blocks": 19,
             "Shared Read Blocks": 0,
             "Temp Read Blocks": 0,
             "Temp Written Blocks": 0
@@ -1651,10 +2112,10 @@
         },
         {
           "kind": "content",
-          "executionMs": 1.635,
-          "planningMs": 1.673,
+          "executionMs": 1.677,
+          "planningMs": 1.834,
           "rootBuffers": {
-            "Shared Hit Blocks": 15,
+            "Shared Hit Blocks": 19,
             "Shared Read Blocks": 0,
             "Temp Read Blocks": 0,
             "Temp Written Blocks": 0
@@ -1695,23 +2156,23 @@
     {
       "kind": "central-list-scale",
       "input": {
-        "page": 1,
-        "objects": 1,
         "runningOnly": true,
         "formsPerObject": 30,
         "size": 20,
+        "page": 1,
+        "objects": 1,
         "plansAreSeparateReplays": true
       },
-      "requestElapsedMs": 10.511372,
+      "requestElapsedMs": 11.682428,
       "logicalSelects": 2,
       "countSelects": 1,
       "plans": [
         {
           "kind": "count",
-          "executionMs": 1.739,
-          "planningMs": 1.967,
+          "executionMs": 1.771,
+          "planningMs": 2.35,
           "rootBuffers": {
-            "Shared Hit Blocks": 17,
+            "Shared Hit Blocks": 21,
             "Shared Read Blocks": 0,
             "Temp Read Blocks": 0,
             "Temp Written Blocks": 0
@@ -1746,10 +2207,10 @@
         },
         {
           "kind": "content",
-          "executionMs": 1.495,
-          "planningMs": 1.897,
+          "executionMs": 2.013,
+          "planningMs": 2.191,
           "rootBuffers": {
-            "Shared Hit Blocks": 17,
+            "Shared Hit Blocks": 21,
             "Shared Read Blocks": 0,
             "Temp Read Blocks": 0,
             "Temp Written Blocks": 0
@@ -1798,13 +2259,13 @@
     {
       "kind": "central-list-last-page",
       "input": {
+        "formsPerObject": 30,
+        "objects": 1,
         "size": 20,
         "page": 2,
-        "formsPerObject": 30,
-        "objects": 1,
         "plansAreSeparateReplays": false
       },
-      "requestElapsedMs": 6.726133,
+      "requestElapsedMs": 5.028904,
       "logicalSelects": 2,
       "countSelects": 1,
       "plans": []
@@ -1812,23 +2273,23 @@
     {
       "kind": "central-list-scale",
       "input": {
-        "page": 1,
-        "objects": 1,
         "runningOnly": false,
         "formsPerObject": 300,
         "size": 20,
+        "page": 1,
+        "objects": 1,
         "plansAreSeparateReplays": true
       },
-      "requestElapsedMs": 44.085664,
+      "requestElapsedMs": 62.701072,
       "logicalSelects": 2,
       "countSelects": 1,
       "plans": [
         {
           "kind": "count",
-          "executionMs": 18.5,
-          "planningMs": 1.68,
+          "executionMs": 22.246,
+          "planningMs": 3.173,
           "rootBuffers": {
-            "Shared Hit Blocks": 51,
+            "Shared Hit Blocks": 89,
             "Shared Read Blocks": 0,
             "Temp Read Blocks": 0,
             "Temp Written Blocks": 0
@@ -1865,10 +2326,10 @@
         },
         {
           "kind": "content",
-          "executionMs": 16.266,
-          "planningMs": 1.568,
+          "executionMs": 14.627,
+          "planningMs": 2.049,
           "rootBuffers": {
-            "Shared Hit Blocks": 51,
+            "Shared Hit Blocks": 89,
             "Shared Read Blocks": 0,
             "Temp Read Blocks": 0,
             "Temp Written Blocks": 0
@@ -1918,23 +2379,23 @@
     {
       "kind": "central-list-scale",
       "input": {
-        "page": 1,
-        "objects": 1,
         "runningOnly": true,
         "formsPerObject": 300,
         "size": 20,
+        "page": 1,
+        "objects": 1,
         "plansAreSeparateReplays": true
       },
-      "requestElapsedMs": 54.477478,
+      "requestElapsedMs": 74.006052,
       "logicalSelects": 2,
       "countSelects": 1,
       "plans": [
         {
           "kind": "count",
-          "executionMs": 23.181,
-          "planningMs": 2.288,
+          "executionMs": 31.43,
+          "planningMs": 2.842,
           "rootBuffers": {
-            "Shared Hit Blocks": 53,
+            "Shared Hit Blocks": 91,
             "Shared Read Blocks": 0,
             "Temp Read Blocks": 0,
             "Temp Written Blocks": 0
@@ -1969,10 +2430,10 @@
         },
         {
           "kind": "content",
-          "executionMs": 21.493,
-          "planningMs": 2.032,
+          "executionMs": 30.665,
+          "planningMs": 2.805,
           "rootBuffers": {
-            "Shared Hit Blocks": 53,
+            "Shared Hit Blocks": 91,
             "Shared Read Blocks": 0,
             "Temp Read Blocks": 0,
             "Temp Written Blocks": 0
@@ -2021,13 +2482,13 @@
     {
       "kind": "central-list-last-page",
       "input": {
+        "formsPerObject": 300,
+        "objects": 1,
         "size": 20,
         "page": 16,
-        "formsPerObject": 300,
-        "objects": 1,
         "plansAreSeparateReplays": false
       },
-      "requestElapsedMs": 34.691074,
+      "requestElapsedMs": 36.966601,
       "logicalSelects": 2,
       "countSelects": 1,
       "plans": []
@@ -2035,23 +2496,23 @@
     {
       "kind": "central-list-scale",
       "input": {
-        "page": 1,
-        "objects": 30,
         "runningOnly": false,
         "formsPerObject": 100,
         "size": 20,
+        "page": 1,
+        "objects": 30,
         "plansAreSeparateReplays": true
       },
-      "requestElapsedMs": 203.925717,
+      "requestElapsedMs": 198.605752,
       "logicalSelects": 2,
       "countSelects": 1,
       "plans": [
         {
           "kind": "count",
-          "executionMs": 93.42,
-          "planningMs": 1.609,
+          "executionMs": 96.242,
+          "planningMs": 2.171,
           "rootBuffers": {
-            "Shared Hit Blocks": 582,
+            "Shared Hit Blocks": 957,
             "Shared Read Blocks": 0,
             "Temp Read Blocks": 0,
             "Temp Written Blocks": 0
@@ -2078,10 +2539,10 @@
         },
         {
           "kind": "content",
-          "executionMs": 129.881,
-          "planningMs": 1.661,
+          "executionMs": 98.21,
+          "planningMs": 2.644,
           "rootBuffers": {
-            "Shared Hit Blocks": 582,
+            "Shared Hit Blocks": 957,
             "Shared Read Blocks": 0,
             "Temp Read Blocks": 0,
             "Temp Written Blocks": 0
@@ -2122,23 +2583,23 @@
     {
       "kind": "central-list-scale",
       "input": {
-        "page": 1,
-        "objects": 30,
         "runningOnly": true,
         "formsPerObject": 100,
         "size": 20,
+        "page": 1,
+        "objects": 30,
         "plansAreSeparateReplays": true
       },
-      "requestElapsedMs": 229.6616,
+      "requestElapsedMs": 243.745602,
       "logicalSelects": 2,
       "countSelects": 1,
       "plans": [
         {
           "kind": "count",
-          "executionMs": 102.049,
-          "planningMs": 2.648,
+          "executionMs": 109.019,
+          "planningMs": 3.004,
           "rootBuffers": {
-            "Shared Hit Blocks": 642,
+            "Shared Hit Blocks": 1017,
             "Shared Read Blocks": 0,
             "Temp Read Blocks": 0,
             "Temp Written Blocks": 0
@@ -2168,22 +2629,15 @@
             }
           ],
           "memoize": [],
-          "joinFilters": [
-            {
-              "Join Filter": "(((u.id)::character varying)::text = (i.initiator_id)::text)",
-              "Rows Removed by Join Filter": 2,
-              "Actual Loops": 1,
-              "Actual Rows": 1
-            }
-          ],
+          "joinFilters": [],
           "sorts": []
         },
         {
           "kind": "content",
-          "executionMs": 120.097,
-          "planningMs": 2.541,
+          "executionMs": 111.757,
+          "planningMs": 2.464,
           "rootBuffers": {
-            "Shared Hit Blocks": 642,
+            "Shared Hit Blocks": 1017,
             "Shared Read Blocks": 0,
             "Temp Read Blocks": 0,
             "Temp Written Blocks": 0
@@ -2213,14 +2667,7 @@
             }
           ],
           "memoize": [],
-          "joinFilters": [
-            {
-              "Join Filter": "(((u.id)::character varying)::text = (i.initiator_id)::text)",
-              "Rows Removed by Join Filter": 2,
-              "Actual Loops": 1,
-              "Actual Rows": 1
-            }
-          ],
+          "joinFilters": [],
           "sorts": [
             {
               "Actual Rows": 20,
@@ -2239,22 +2686,22 @@
     {
       "kind": "central-list-last-page",
       "input": {
-        "size": 20,
-        "page": 151,
         "formsPerObject": 100,
         "objects": 30,
+        "size": 20,
+        "page": 151,
         "plansAreSeparateReplays": true
       },
-      "requestElapsedMs": 180.802409,
+      "requestElapsedMs": 330.112954,
       "logicalSelects": 2,
       "countSelects": 1,
       "plans": [
         {
           "kind": "count",
-          "executionMs": 89.881,
-          "planningMs": 1.677,
+          "executionMs": 173.21,
+          "planningMs": 4.55,
           "rootBuffers": {
-            "Shared Hit Blocks": 582,
+            "Shared Hit Blocks": 957,
             "Shared Read Blocks": 0,
             "Temp Read Blocks": 0,
             "Temp Written Blocks": 0
@@ -2276,22 +2723,15 @@
             }
           ],
           "memoize": [],
-          "joinFilters": [
-            {
-              "Join Filter": "(((u.id)::character varying)::text = (i.initiator_id)::text)",
-              "Rows Removed by Join Filter": 2,
-              "Actual Loops": 1,
-              "Actual Rows": 1
-            }
-          ],
+          "joinFilters": [],
           "sorts": []
         },
         {
           "kind": "content",
-          "executionMs": 96.797,
-          "planningMs": 2.159,
+          "executionMs": 93.911,
+          "planningMs": 2.724,
           "rootBuffers": {
-            "Shared Hit Blocks": 582,
+            "Shared Hit Blocks": 957,
             "Shared Read Blocks": 0,
             "Temp Read Blocks": 0,
             "Temp Written Blocks": 0
@@ -2313,14 +2753,7 @@
             }
           ],
           "memoize": [],
-          "joinFilters": [
-            {
-              "Join Filter": "(((u.id)::character varying)::text = (i.initiator_id)::text)",
-              "Rows Removed by Join Filter": 2,
-              "Actual Loops": 1,
-              "Actual Rows": 1
-            }
-          ],
+          "joinFilters": [],
           "sorts": [
             {
               "Actual Rows": 3001,
@@ -2343,16 +2776,16 @@
         "malformedColumn": "state_json",
         "plansAreSeparateReplays": true
       },
-      "requestElapsedMs": 10.649004,
+      "requestElapsedMs": 14.063839,
       "logicalSelects": 2,
       "countSelects": 1,
       "plans": [
         {
           "kind": "count",
-          "executionMs": 0.499,
-          "planningMs": 1.602,
+          "executionMs": 0.482,
+          "planningMs": 1.842,
           "rootBuffers": {
-            "Shared Hit Blocks": 13,
+            "Shared Hit Blocks": 14,
             "Shared Read Blocks": 0,
             "Temp Read Blocks": 0,
             "Temp Written Blocks": 0
@@ -2375,14 +2808,24 @@
           ],
           "memoize": [],
           "joinFilters": [],
-          "sorts": []
+          "sorts": [
+            {
+              "Actual Rows": 2,
+              "Sort Key": [
+                "form_instance_record.object_id"
+              ],
+              "Sort Method": "quicksort",
+              "Sort Space Used": 25,
+              "Sort Space Type": "Memory"
+            }
+          ]
         },
         {
           "kind": "content",
-          "executionMs": 0.45,
-          "planningMs": 1.716,
+          "executionMs": 0.588,
+          "planningMs": 1.697,
           "rootBuffers": {
-            "Shared Hit Blocks": 13,
+            "Shared Hit Blocks": 14,
             "Shared Read Blocks": 0,
             "Temp Read Blocks": 0,
             "Temp Written Blocks": 0
@@ -2411,6 +2854,15 @@
               "Sort Key": [
                 "sources.\"startTime\" DESC",
                 "sources.id DESC"
+              ],
+              "Sort Method": "quicksort",
+              "Sort Space Used": 25,
+              "Sort Space Type": "Memory"
+            },
+            {
+              "Actual Rows": 2,
+              "Sort Key": [
+                "form_instance_record.object_id"
               ],
               "Sort Method": "quicksort",
               "Sort Space Used": 25,
@@ -2427,16 +2879,16 @@
         "malformedColumn": "state_json",
         "plansAreSeparateReplays": true
       },
-      "requestElapsedMs": 8.010837,
+      "requestElapsedMs": 11.351674,
       "logicalSelects": 2,
       "countSelects": 1,
       "plans": [
         {
           "kind": "count",
-          "executionMs": 0.297,
-          "planningMs": 1.63,
+          "executionMs": 0.355,
+          "planningMs": 1.62,
           "rootBuffers": {
-            "Shared Hit Blocks": 11,
+            "Shared Hit Blocks": 12,
             "Shared Read Blocks": 0,
             "Temp Read Blocks": 0,
             "Temp Written Blocks": 0
@@ -2459,14 +2911,24 @@
           ],
           "memoize": [],
           "joinFilters": [],
-          "sorts": []
+          "sorts": [
+            {
+              "Actual Rows": 2,
+              "Sort Key": [
+                "form_instance_record.object_id"
+              ],
+              "Sort Method": "quicksort",
+              "Sort Space Used": 25,
+              "Sort Space Type": "Memory"
+            }
+          ]
         },
         {
           "kind": "content",
-          "executionMs": 0.466,
-          "planningMs": 1.849,
+          "executionMs": 0.314,
+          "planningMs": 1.648,
           "rootBuffers": {
-            "Shared Hit Blocks": 11,
+            "Shared Hit Blocks": 12,
             "Shared Read Blocks": 0,
             "Temp Read Blocks": 0,
             "Temp Written Blocks": 0
@@ -2499,6 +2961,15 @@
               "Sort Method": "quicksort",
               "Sort Space Used": 25,
               "Sort Space Type": "Memory"
+            },
+            {
+              "Actual Rows": 2,
+              "Sort Key": [
+                "form_instance_record.object_id"
+              ],
+              "Sort Method": "quicksort",
+              "Sort Space Used": 25,
+              "Sort Space Type": "Memory"
             }
           ]
         }
@@ -2511,16 +2982,16 @@
         "malformedColumn": "state_json",
         "plansAreSeparateReplays": true
       },
-      "requestElapsedMs": 8.847554,
+      "requestElapsedMs": 6.970396,
       "logicalSelects": 2,
       "countSelects": 1,
       "plans": [
         {
           "kind": "count",
-          "executionMs": 0.328,
-          "planningMs": 2.087,
+          "executionMs": 0.487,
+          "planningMs": 2.241,
           "rootBuffers": {
-            "Shared Hit Blocks": 11,
+            "Shared Hit Blocks": 12,
             "Shared Read Blocks": 0,
             "Temp Read Blocks": 0,
             "Temp Written Blocks": 0
@@ -2543,14 +3014,24 @@
           ],
           "memoize": [],
           "joinFilters": [],
-          "sorts": []
+          "sorts": [
+            {
+              "Actual Rows": 2,
+              "Sort Key": [
+                "form_instance_record.object_id"
+              ],
+              "Sort Method": "quicksort",
+              "Sort Space Used": 25,
+              "Sort Space Type": "Memory"
+            }
+          ]
         },
         {
           "kind": "content",
-          "executionMs": 0.287,
-          "planningMs": 2.093,
+          "executionMs": 0.471,
+          "planningMs": 2.534,
           "rootBuffers": {
-            "Shared Hit Blocks": 11,
+            "Shared Hit Blocks": 12,
             "Shared Read Blocks": 0,
             "Temp Read Blocks": 0,
             "Temp Written Blocks": 0
@@ -2579,6 +3060,15 @@
               "Sort Key": [
                 "sources.\"startTime\" DESC",
                 "sources.id DESC"
+              ],
+              "Sort Method": "quicksort",
+              "Sort Space Used": 25,
+              "Sort Space Type": "Memory"
+            },
+            {
+              "Actual Rows": 2,
+              "Sort Key": [
+                "form_instance_record.object_id"
               ],
               "Sort Method": "quicksort",
               "Sort Space Used": 25,
@@ -2595,16 +3085,16 @@
         "malformedColumn": "snapshot_json",
         "plansAreSeparateReplays": true
       },
-      "requestElapsedMs": 10.683352,
+      "requestElapsedMs": 11.150751,
       "logicalSelects": 2,
       "countSelects": 1,
       "plans": [
         {
           "kind": "count",
-          "executionMs": 0.516,
-          "planningMs": 2.152,
+          "executionMs": 0.532,
+          "planningMs": 1.965,
           "rootBuffers": {
-            "Shared Hit Blocks": 13,
+            "Shared Hit Blocks": 14,
             "Shared Read Blocks": 0,
             "Temp Read Blocks": 0,
             "Temp Written Blocks": 0
@@ -2627,14 +3117,24 @@
           ],
           "memoize": [],
           "joinFilters": [],
-          "sorts": []
+          "sorts": [
+            {
+              "Actual Rows": 2,
+              "Sort Key": [
+                "form_instance_record.object_id"
+              ],
+              "Sort Method": "quicksort",
+              "Sort Space Used": 25,
+              "Sort Space Type": "Memory"
+            }
+          ]
         },
         {
           "kind": "content",
-          "executionMs": 0.411,
-          "planningMs": 1.799,
+          "executionMs": 0.454,
+          "planningMs": 1.821,
           "rootBuffers": {
-            "Shared Hit Blocks": 13,
+            "Shared Hit Blocks": 14,
             "Shared Read Blocks": 0,
             "Temp Read Blocks": 0,
             "Temp Written Blocks": 0
@@ -2663,6 +3163,15 @@
               "Sort Key": [
                 "sources.\"startTime\" DESC",
                 "sources.id DESC"
+              ],
+              "Sort Method": "quicksort",
+              "Sort Space Used": 25,
+              "Sort Space Type": "Memory"
+            },
+            {
+              "Actual Rows": 2,
+              "Sort Key": [
+                "form_instance_record.object_id"
               ],
               "Sort Method": "quicksort",
               "Sort Space Used": 25,
@@ -2679,16 +3188,16 @@
         "malformedColumn": "snapshot_json",
         "plansAreSeparateReplays": true
       },
-      "requestElapsedMs": 8.345521,
+      "requestElapsedMs": 6.711467,
       "logicalSelects": 2,
       "countSelects": 1,
       "plans": [
         {
           "kind": "count",
-          "executionMs": 0.294,
-          "planningMs": 1.749,
+          "executionMs": 0.63,
+          "planningMs": 2.219,
           "rootBuffers": {
-            "Shared Hit Blocks": 11,
+            "Shared Hit Blocks": 12,
             "Shared Read Blocks": 0,
             "Temp Read Blocks": 0,
             "Temp Written Blocks": 0
@@ -2711,14 +3220,24 @@
           ],
           "memoize": [],
           "joinFilters": [],
-          "sorts": []
+          "sorts": [
+            {
+              "Actual Rows": 2,
+              "Sort Key": [
+                "form_instance_record.object_id"
+              ],
+              "Sort Method": "quicksort",
+              "Sort Space Used": 25,
+              "Sort Space Type": "Memory"
+            }
+          ]
         },
         {
           "kind": "content",
-          "executionMs": 0.322,
-          "planningMs": 1.66,
+          "executionMs": 0.354,
+          "planningMs": 2.839,
           "rootBuffers": {
-            "Shared Hit Blocks": 11,
+            "Shared Hit Blocks": 12,
             "Shared Read Blocks": 0,
             "Temp Read Blocks": 0,
             "Temp Written Blocks": 0
@@ -2751,6 +3270,15 @@
               "Sort Method": "quicksort",
               "Sort Space Used": 25,
               "Sort Space Type": "Memory"
+            },
+            {
+              "Actual Rows": 2,
+              "Sort Key": [
+                "form_instance_record.object_id"
+              ],
+              "Sort Method": "quicksort",
+              "Sort Space Used": 25,
+              "Sort Space Type": "Memory"
             }
           ]
         }
@@ -2763,16 +3291,16 @@
         "malformedColumn": "snapshot_json",
         "plansAreSeparateReplays": true
       },
-      "requestElapsedMs": 6.615589,
+      "requestElapsedMs": 6.21625,
       "logicalSelects": 2,
       "countSelects": 1,
       "plans": [
         {
           "kind": "count",
-          "executionMs": 0.304,
-          "planningMs": 1.743,
+          "executionMs": 0.454,
+          "planningMs": 1.686,
           "rootBuffers": {
-            "Shared Hit Blocks": 11,
+            "Shared Hit Blocks": 12,
             "Shared Read Blocks": 0,
             "Temp Read Blocks": 0,
             "Temp Written Blocks": 0
@@ -2795,14 +3323,24 @@
           ],
           "memoize": [],
           "joinFilters": [],
-          "sorts": []
+          "sorts": [
+            {
+              "Actual Rows": 2,
+              "Sort Key": [
+                "form_instance_record.object_id"
+              ],
+              "Sort Method": "quicksort",
+              "Sort Space Used": 25,
+              "Sort Space Type": "Memory"
+            }
+          ]
         },
         {
           "kind": "content",
-          "executionMs": 0.378,
-          "planningMs": 1.666,
+          "executionMs": 0.339,
+          "planningMs": 1.72,
           "rootBuffers": {
-            "Shared Hit Blocks": 11,
+            "Shared Hit Blocks": 12,
             "Shared Read Blocks": 0,
             "Temp Read Blocks": 0,
             "Temp Written Blocks": 0
@@ -2835,6 +3373,15 @@
               "Sort Method": "quicksort",
               "Sort Space Used": 25,
               "Sort Space Type": "Memory"
+            },
+            {
+              "Actual Rows": 2,
+              "Sort Key": [
+                "form_instance_record.object_id"
+              ],
+              "Sort Method": "quicksort",
+              "Sort Space Used": 25,
+              "Sort Space Type": "Memory"
             }
           ]
         }
@@ -2846,16 +3393,16 @@
         "duplicateSnapshotEntries": 2,
         "plansAreSeparateReplays": true
       },
-      "requestElapsedMs": 11.581085,
+      "requestElapsedMs": 12.69553,
       "logicalSelects": 2,
       "countSelects": 1,
       "plans": [
         {
           "kind": "count",
-          "executionMs": 0.463,
-          "planningMs": 1.971,
+          "executionMs": 0.551,
+          "planningMs": 1.645,
           "rootBuffers": {
-            "Shared Hit Blocks": 12,
+            "Shared Hit Blocks": 13,
             "Shared Read Blocks": 0,
             "Temp Read Blocks": 0,
             "Temp Written Blocks": 0
@@ -2878,14 +3425,24 @@
           ],
           "memoize": [],
           "joinFilters": [],
-          "sorts": []
+          "sorts": [
+            {
+              "Actual Rows": 1,
+              "Sort Key": [
+                "form_instance_record.object_id"
+              ],
+              "Sort Method": "quicksort",
+              "Sort Space Used": 25,
+              "Sort Space Type": "Memory"
+            }
+          ]
         },
         {
           "kind": "content",
-          "executionMs": 0.639,
-          "planningMs": 2.499,
+          "executionMs": 1.036,
+          "planningMs": 2.533,
           "rootBuffers": {
-            "Shared Hit Blocks": 12,
+            "Shared Hit Blocks": 13,
             "Shared Read Blocks": 0,
             "Temp Read Blocks": 0,
             "Temp Written Blocks": 0
@@ -2918,6 +3475,15 @@
               "Sort Method": "quicksort",
               "Sort Space Used": 25,
               "Sort Space Type": "Memory"
+            },
+            {
+              "Actual Rows": 1,
+              "Sort Key": [
+                "form_instance_record.object_id"
+              ],
+              "Sort Method": "quicksort",
+              "Sort Space Used": 25,
+              "Sort Space Type": "Memory"
             }
           ]
         }
@@ -2926,22 +3492,22 @@
     {
       "kind": "central-list-running-guards",
       "input": {
+        "source": "ROUTE",
         "objectStatus": "IN_PROGRESS",
         "orderStatus": "CREATED",
         "expectedForms": 1,
-        "source": "ROUTE",
         "plansAreSeparateReplays": true
       },
-      "requestElapsedMs": 13.226059,
+      "requestElapsedMs": 16.273808,
       "logicalSelects": 2,
       "countSelects": 1,
       "plans": [
         {
           "kind": "count",
-          "executionMs": 0.631,
-          "planningMs": 1.902,
+          "executionMs": 1.038,
+          "planningMs": 1.847,
           "rootBuffers": {
-            "Shared Hit Blocks": 14,
+            "Shared Hit Blocks": 15,
             "Shared Read Blocks": 0,
             "Temp Read Blocks": 0,
             "Temp Written Blocks": 0
@@ -2972,14 +3538,24 @@
           ],
           "memoize": [],
           "joinFilters": [],
-          "sorts": []
+          "sorts": [
+            {
+              "Actual Rows": 1,
+              "Sort Key": [
+                "form_instance_record.object_id"
+              ],
+              "Sort Method": "quicksort",
+              "Sort Space Used": 25,
+              "Sort Space Type": "Memory"
+            }
+          ]
         },
         {
           "kind": "content",
-          "executionMs": 0.534,
-          "planningMs": 2.046,
+          "executionMs": 0.477,
+          "planningMs": 1.815,
           "rootBuffers": {
-            "Shared Hit Blocks": 14,
+            "Shared Hit Blocks": 15,
             "Shared Read Blocks": 0,
             "Temp Read Blocks": 0,
             "Temp Written Blocks": 0
@@ -3020,6 +3596,15 @@
               "Sort Method": "quicksort",
               "Sort Space Used": 25,
               "Sort Space Type": "Memory"
+            },
+            {
+              "Actual Rows": 1,
+              "Sort Key": [
+                "form_instance_record.object_id"
+              ],
+              "Sort Method": "quicksort",
+              "Sort Space Used": 25,
+              "Sort Space Type": "Memory"
             }
           ]
         }
@@ -3028,22 +3613,22 @@
     {
       "kind": "central-list-running-guards",
       "input": {
+        "source": "ROUTE",
         "objectStatus": "COMPLETED",
         "orderStatus": "COMPLETED",
         "expectedForms": 0,
-        "source": "ROUTE",
         "plansAreSeparateReplays": true
       },
-      "requestElapsedMs": 11.260377,
+      "requestElapsedMs": 19.144459,
       "logicalSelects": 2,
       "countSelects": 1,
       "plans": [
         {
           "kind": "count",
-          "executionMs": 0.548,
-          "planningMs": 2.032,
+          "executionMs": 0.491,
+          "planningMs": 2.269,
           "rootBuffers": {
-            "Shared Hit Blocks": 14,
+            "Shared Hit Blocks": 15,
             "Shared Read Blocks": 0,
             "Temp Read Blocks": 0,
             "Temp Written Blocks": 0
@@ -3074,6 +3659,12 @@
           ],
           "memoize": [],
           "joinFilters": [
+            {
+              "Join Filter": "(((u.id)::character varying)::text = (i.initiator_id)::text)",
+              "Rows Removed by Join Filter": 2,
+              "Actual Loops": 1,
+              "Actual Rows": 1
+            },
             {
               "Join Filter": "((((c.f ->> 'sourceType'::text) = 'CUSTOM'::text) AND ((e.state_json #>> (ARRAY['operations'::character varying, r_1.operation_id, 'status'::character varying])::text[]) = ANY ('{IN_PROGRESS,COMPLETED}'::text[]))) OR ((COALESCE((c.f ->> 'sourceType'::text), ''::text) <> 'CUSTOM'::text) AND ((r_1.object_status)::text = 'IN_PROGRESS'::text) AND ((r_1.work_order_status)::text = ANY ('{CREATED,IN_PROCESS}'::text[])) AND ((e.state_json #>> (ARRAY['operations'::character varying, r_1.operation_id, 'status'::character varying])::text[]) = 'IN_PROGRESS'::text)))",
               "Rows Removed by Join Filter": 1,
@@ -3081,14 +3672,24 @@
               "Actual Rows": 0
             }
           ],
-          "sorts": []
+          "sorts": [
+            {
+              "Actual Rows": 1,
+              "Sort Key": [
+                "form_instance_record.object_id"
+              ],
+              "Sort Method": "quicksort",
+              "Sort Space Used": 25,
+              "Sort Space Type": "Memory"
+            }
+          ]
         },
         {
           "kind": "content",
-          "executionMs": 0.495,
-          "planningMs": 2.266,
+          "executionMs": 0.464,
+          "planningMs": 1.94,
           "rootBuffers": {
-            "Shared Hit Blocks": 14,
+            "Shared Hit Blocks": 15,
             "Shared Read Blocks": 0,
             "Temp Read Blocks": 0,
             "Temp Written Blocks": 0
@@ -3119,6 +3720,12 @@
           ],
           "memoize": [],
           "joinFilters": [
+            {
+              "Join Filter": "(((u.id)::character varying)::text = (i.initiator_id)::text)",
+              "Rows Removed by Join Filter": 2,
+              "Actual Loops": 1,
+              "Actual Rows": 1
+            },
             {
               "Join Filter": "((((c.f ->> 'sourceType'::text) = 'CUSTOM'::text) AND ((e.state_json #>> (ARRAY['operations'::character varying, r_1.operation_id, 'status'::character varying])::text[]) = ANY ('{IN_PROGRESS,COMPLETED}'::text[]))) OR ((COALESCE((c.f ->> 'sourceType'::text), ''::text) <> 'CUSTOM'::text) AND ((r_1.object_status)::text = 'IN_PROGRESS'::text) AND ((r_1.work_order_status)::text = ANY ('{CREATED,IN_PROCESS}'::text[])) AND ((e.state_json #>> (ARRAY['operations'::character varying, r_1.operation_id, 'status'::character varying])::text[]) = 'IN_PROGRESS'::text)))",
               "Rows Removed by Join Filter": 1,
@@ -3136,6 +3743,15 @@
               "Sort Method": "quicksort",
               "Sort Space Used": 25,
               "Sort Space Type": "Memory"
+            },
+            {
+              "Actual Rows": 1,
+              "Sort Key": [
+                "form_instance_record.object_id"
+              ],
+              "Sort Method": "quicksort",
+              "Sort Space Used": 25,
+              "Sort Space Type": "Memory"
             }
           ]
         }
@@ -3144,22 +3760,22 @@
     {
       "kind": "central-list-running-guards",
       "input": {
+        "source": "CUSTOM",
         "objectStatus": "COMPLETED",
         "orderStatus": "COMPLETED",
         "expectedForms": 1,
-        "source": "CUSTOM",
         "plansAreSeparateReplays": true
       },
-      "requestElapsedMs": 12.303138,
+      "requestElapsedMs": 17.403917,
       "logicalSelects": 2,
       "countSelects": 1,
       "plans": [
         {
           "kind": "count",
-          "executionMs": 0.69,
-          "planningMs": 2.312,
+          "executionMs": 0.491,
+          "planningMs": 2.411,
           "rootBuffers": {
-            "Shared Hit Blocks": 14,
+            "Shared Hit Blocks": 15,
             "Shared Read Blocks": 0,
             "Temp Read Blocks": 0,
             "Temp Written Blocks": 0
@@ -3190,14 +3806,24 @@
           ],
           "memoize": [],
           "joinFilters": [],
-          "sorts": []
+          "sorts": [
+            {
+              "Actual Rows": 1,
+              "Sort Key": [
+                "form_instance_record.object_id"
+              ],
+              "Sort Method": "quicksort",
+              "Sort Space Used": 25,
+              "Sort Space Type": "Memory"
+            }
+          ]
         },
         {
           "kind": "content",
-          "executionMs": 0.471,
-          "planningMs": 2.011,
+          "executionMs": 0.639,
+          "planningMs": 1.83,
           "rootBuffers": {
-            "Shared Hit Blocks": 14,
+            "Shared Hit Blocks": 15,
             "Shared Read Blocks": 0,
             "Temp Read Blocks": 0,
             "Temp Written Blocks": 0
@@ -3238,6 +3864,15 @@
               "Sort Method": "quicksort",
               "Sort Space Used": 25,
               "Sort Space Type": "Memory"
+            },
+            {
+              "Actual Rows": 1,
+              "Sort Key": [
+                "form_instance_record.object_id"
+              ],
+              "Sort Method": "quicksort",
+              "Sort Space Used": 25,
+              "Sort Space Type": "Memory"
             }
           ]
         }
@@ -3246,22 +3881,22 @@
     {
       "kind": "central-list-running-guards",
       "input": {
+        "source": "ROUTE",
         "objectStatus": "CANCELLED",
         "orderStatus": "CREATED",
         "expectedForms": 0,
-        "source": "ROUTE",
         "plansAreSeparateReplays": true
       },
-      "requestElapsedMs": 11.729671,
+      "requestElapsedMs": 11.428206,
       "logicalSelects": 2,
       "countSelects": 1,
       "plans": [
         {
           "kind": "count",
-          "executionMs": 0.394,
-          "planningMs": 1.861,
+          "executionMs": 0.731,
+          "planningMs": 2.673,
           "rootBuffers": {
-            "Shared Hit Blocks": 11,
+            "Shared Hit Blocks": 12,
             "Shared Read Blocks": 0,
             "Temp Read Blocks": 0,
             "Temp Written Blocks": 0
@@ -3292,14 +3927,24 @@
           ],
           "memoize": [],
           "joinFilters": [],
-          "sorts": []
+          "sorts": [
+            {
+              "Actual Rows": 1,
+              "Sort Key": [
+                "form_instance_record.object_id"
+              ],
+              "Sort Method": "quicksort",
+              "Sort Space Used": 25,
+              "Sort Space Type": "Memory"
+            }
+          ]
         },
         {
           "kind": "content",
-          "executionMs": 0.515,
-          "planningMs": 3.07,
+          "executionMs": 0.351,
+          "planningMs": 1.812,
           "rootBuffers": {
-            "Shared Hit Blocks": 11,
+            "Shared Hit Blocks": 12,
             "Shared Read Blocks": 0,
             "Temp Read Blocks": 0,
             "Temp Written Blocks": 0
@@ -3340,6 +3985,15 @@
               "Sort Method": "quicksort",
               "Sort Space Used": 25,
               "Sort Space Type": "Memory"
+            },
+            {
+              "Actual Rows": 1,
+              "Sort Key": [
+                "form_instance_record.object_id"
+              ],
+              "Sort Method": "quicksort",
+              "Sort Space Used": 25,
+              "Sort Space Type": "Memory"
             }
           ]
         }
@@ -3348,22 +4002,22 @@
     {
       "kind": "central-list-running-guards",
       "input": {
+        "source": "ROUTE",
         "objectStatus": "IN_PROGRESS",
         "orderStatus": "CANCELLED",
         "expectedForms": 0,
-        "source": "ROUTE",
         "plansAreSeparateReplays": true
       },
-      "requestElapsedMs": 11.10537,
+      "requestElapsedMs": 13.625606,
       "logicalSelects": 2,
       "countSelects": 1,
       "plans": [
         {
           "kind": "count",
-          "executionMs": 0.303,
-          "planningMs": 2.061,
+          "executionMs": 0.556,
+          "planningMs": 2.399,
           "rootBuffers": {
-            "Shared Hit Blocks": 12,
+            "Shared Hit Blocks": 13,
             "Shared Read Blocks": 0,
             "Temp Read Blocks": 0,
             "Temp Written Blocks": 0
@@ -3394,14 +4048,24 @@
           ],
           "memoize": [],
           "joinFilters": [],
-          "sorts": []
+          "sorts": [
+            {
+              "Actual Rows": 1,
+              "Sort Key": [
+                "form_instance_record.object_id"
+              ],
+              "Sort Method": "quicksort",
+              "Sort Space Used": 25,
+              "Sort Space Type": "Memory"
+            }
+          ]
         },
         {
           "kind": "content",
-          "executionMs": 0.642,
-          "planningMs": 1.858,
+          "executionMs": 0.486,
+          "planningMs": 2.758,
           "rootBuffers": {
-            "Shared Hit Blocks": 12,
+            "Shared Hit Blocks": 13,
             "Shared Read Blocks": 0,
             "Temp Read Blocks": 0,
             "Temp Written Blocks": 0
@@ -3438,6 +4102,15 @@
               "Sort Key": [
                 "((i.started_at)::character varying) DESC",
                 "((i.id)::character varying) DESC"
+              ],
+              "Sort Method": "quicksort",
+              "Sort Space Used": 25,
+              "Sort Space Type": "Memory"
+            },
+            {
+              "Actual Rows": 1,
+              "Sort Key": [
+                "form_instance_record.object_id"
               ],
               "Sort Method": "quicksort",
               "Sort Space Used": 25,
@@ -3454,16 +4127,16 @@
         "missingProgress": 1,
         "plansAreSeparateReplays": true
       },
-      "requestElapsedMs": 13.309142,
+      "requestElapsedMs": 11.652464,
       "logicalSelects": 2,
       "countSelects": 1,
       "plans": [
         {
           "kind": "count",
-          "executionMs": 0.326,
-          "planningMs": 2.183,
+          "executionMs": 0.438,
+          "planningMs": 1.858,
           "rootBuffers": {
-            "Shared Hit Blocks": 13,
+            "Shared Hit Blocks": 14,
             "Shared Read Blocks": 0,
             "Temp Read Blocks": 0,
             "Temp Written Blocks": 0
@@ -3486,14 +4159,24 @@
           ],
           "memoize": [],
           "joinFilters": [],
-          "sorts": []
+          "sorts": [
+            {
+              "Actual Rows": 1,
+              "Sort Key": [
+                "form_instance_record.object_id"
+              ],
+              "Sort Method": "quicksort",
+              "Sort Space Used": 25,
+              "Sort Space Type": "Memory"
+            }
+          ]
         },
         {
           "kind": "content",
-          "executionMs": 0.518,
-          "planningMs": 1.863,
+          "executionMs": 0.464,
+          "planningMs": 1.664,
           "rootBuffers": {
-            "Shared Hit Blocks": 13,
+            "Shared Hit Blocks": 14,
             "Shared Read Blocks": 0,
             "Temp Read Blocks": 0,
             "Temp Written Blocks": 0
@@ -3526,6 +4209,15 @@
               "Sort Method": "quicksort",
               "Sort Space Used": 25,
               "Sort Space Type": "Memory"
+            },
+            {
+              "Actual Rows": 1,
+              "Sort Key": [
+                "form_instance_record.object_id"
+              ],
+              "Sort Method": "quicksort",
+              "Sort Space Used": 25,
+              "Sort Space Type": "Memory"
             }
           ]
         }
@@ -3536,7 +4228,7 @@
       "input": {
         "rejectedInputs": 4
       },
-      "requestElapsedMs": 1.220637,
+      "requestElapsedMs": 1.600613,
       "logicalSelects": 0,
       "countSelects": 0,
       "plans": []

@@ -50,7 +50,8 @@ public class FormWorkflowOperations {
 
     /** Query-local contexts are correlated to one execution; wide JSON is never copied into catalog rows. */
     private static final String LIST_CONTEXT = """
-        SELECT projected.* FROM production_execution execution
+        SELECT projected.* FROM (SELECT DISTINCT object_id FROM form_instance_record WHERE tenant_id='default') referenced
+        JOIN production_execution execution ON execution.object_id=referenced.object_id
         CROSS JOIN LATERAL (
           WITH record_scope AS MATERIALIZED (
             SELECT r.id,r.tenant_id,r.object_id,r.operation_id,r.form_id,r.copy_id,r.template_name,r.instance_no,
