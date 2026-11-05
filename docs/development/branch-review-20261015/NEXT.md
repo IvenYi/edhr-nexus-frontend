@@ -2,6 +2,8 @@
 
 ## PR60已合入：姓名/候选参数优化及人员完整分页选择
 
+已交付[PR61](https://github.com/IvenYi/edhr-nexus-frontend/pull/61)，audit/edhr-dev-personnel-paging-20261105→edhr-dev，观察OPEN/MERGEABLE/CLEAN，建议人工合入当前前后端配套修复。受测代码b81b67ed、归档689e42c0后仅L0交付登记，其他受测既有路径保持；实际观察见本批evidence/delivery-verification.json，登记提交后再次核对本地/远端/PR head一致。下一批先fetch真实合入和外部增量，继续既定全审队列；第三索引未做、全部旧余项保持，不自动merge/deploy/恢复。
+
 本批clean受测`b81b67ed7602740cda7b43cadcd3ce7bf8ba928a`取得全新最终quality passed/FINAL，16/16必需检查；独立177/177、知识89/89、真实Chromium11/11、TSC+Vite/格式/聚焦推荐lint/新owner严格0通过。全仓premium仍86逐项同基线，不声称全仓过。服务器独立35用例/90事件/296业务SELECT/17签名吻合；69目录实际限量51×9/101×60（1行lookahead），55次候选单JSON，普通/通用姓名9次bigint/5次varchar数组；96其他成功SELECT分列排除，不称全部网络SQL。
 
 本体及质量两个子项均正式FINAL，自有PG/worktree/依赖/浏览器资源已清理。224份最终文件新增归档，原299份主侧/本体原件保持；Liquibase空库探测ERROR及分析工具错误/更正原件保留，不计产品错误。全部FINAL后已实际完成[PR前范围与阶段复核](../branch-review-20261105-personnel-paging/scope-review.md)，再次fetch仍f863，无范围漂移；随后仅新增L0验收/归档/交付与NEXT，其余受测既有路径保持。两性能项及总100截断仅在本批有限范围verified-resolved；第三索引及所有全审余项保持。下文待质量为历史阶段，前后端分页响应需同版本交付。
