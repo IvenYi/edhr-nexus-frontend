@@ -1,5 +1,19 @@
 # 持续推进台账
 
+## PR58已合入：人员目标目录免未用COUNT
+
+已交付[PR59](https://github.com/IvenYi/edhr-nexus-frontend/pull/59)，audit/edhr-dev-personnel-list-count-20261105→edhr-dev，观察OPEN/MERGEABLE/CLEAN，建议人工合入本批有限COUNT优化。受测代码ca836ef6、归档f575885b后仅L0交付登记，其他受测既有路径保持；实际观察见本批evidence/delivery-verification.json，登记提交后再次核对本地/远端/PR head一致。下一批先fetch真实合入/增量，继续普通表单独立详情和候选参数/文本ID计划等全审队列，不自动merge/deploy/恢复。
+
+本批对clean受测`ca836ef60415d61cf352cc3375a23106ec0f46a3`取得全新独立最终quality passed/FINAL：13/13必需检查、152/152原生回归和89/89知识校验通过；旧源同字节7项为4真预算失败/3正控/0E/S。服务器独立14项复测，47条业务SELECT/7签名吻合，7次目录读取各1条无COUNT、实际数据库限100；5次姓名数组读取保持。32条其他SELECT明确排除，不称全部网络SQL。三个质量子项及本体均FINAL，资源清理；232份最终文件按原字节归档，原76份主侧/本体原件不改。
+
+全部FINAL后已实际完成[PR前范围与阶段复核](../branch-review-20261105-personnel-count/scope-review.md)，再次fetch目标仍00f，无范围漂移；本体9个既有ID为8一致/1保留完整多租户证据缺口，345知识保持。后续只新增L0归档/验收/交付及NEXT状态，其他受测既有路径保持。人员目录未用COUNT仅在本批有限范围verified-resolved，所有全审余项继续，下文“待本体/QA”为历史阶段。下一批继续先fetch真实合入与增量，核查普通表单独立详情和候选参数/文本ID计划；不自动实施未经讨论的性能取舍或索引。
+
+实际fetch最新edhr-dev@00f864cdaf0796c9410173c835a477c7a3068d06，PR58人工合入、整树同90cca，无外部产品/知识/契约增量。新分支audit/edhr-dev-personnel-list-count-20261105；[本批](../branch-review-20261105-personnel-count/README.md)L2沿已讨论且已取证的独立COUNT队列推进，仅TenantTransferTargets原Page内容改为Spring Data3.3 findBy/原sort/limit100/all有界列表，完整Specification、后置检查及写入资格/签署/审计/冻结保持，PR58姓名优化完整保留，无业务政策/前端/迁移/索引/依赖更改。
+
+主侧152/152（14读取观测边界+原138）0F/E/S；0/1/99/100/101/5000匹配人员及同名120+无效前缀均1条、无COUNT，原排序/字段/100上限保持。原00f同字节7例4真性能预算红/3正控/0E/S。新同名夹具以反向用户名确认数字ID升序前100并核跨租户/停用/未来锁定/当前人前置排除；数据库限量API源码及原生SQL留证，非Java全量截断。当前待本体正式FINAL及全新独立最终质量，不提前宣称完成或复用旧151/89。
+
+旧931知识/86 UI及整文件0/历史unique未知保持，原7c清单只固定盘点，不伪装本轮全仓语义通过。当前A23/小方法复用与无需多建框架的依据见review-notes。其他普通表单详情/中央JSON/COUNT/巨大原候选参数/文本ID计划/汇总605/导出内存、W2-W7高风险/A12/完整矩阵和用户暂停队列继续；全部派发角色FINAL后实际PR前无漂移/阶段/余项复核再交付，不自动merge/deploy/恢复/扫删，不查询触发CI。
+
 ## PR58仍OPEN：用户授权姓名批量读取
 
 已更新[PR58](https://github.com/IvenYi/edhr-nexus-frontend/pull/58)为“批量读取详情处理人姓名并保留原投影”，正常推送原分支→edhr-dev，观察OPEN/MERGEABLE/CLEAN，建议人工合入当前实现及取证组合。受测代码6e10604c及归档1b95ac55后仅L0交付登记，其他受测既有路径保持；实际观察见本批evidence/delivery-verification.json。下一批先fetch真实合入/新提交，继续目录COUNT及其余全审队列；不再把用户姓名选择当未答或将旧b687质量覆盖新实现，不自动merge/deploy/恢复。

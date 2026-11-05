@@ -1,0 +1,44 @@
+{
+  "observedAtUtc": "2026-11-05T05:53:09.349973+00:00",
+  "observationKind": "GitHub pull metadata and git remote refs; no CI/Actions query",
+  "pullRequest": {
+    "base": {
+      "ref": "edhr-dev",
+      "sha": "00f864cdaf0796c9410173c835a477c7a3068d06"
+    },
+    "draft": false,
+    "head": {
+      "ref": "audit/edhr-dev-personnel-list-count-20261105",
+      "sha": "f575885b182302732e546d30bc3f51bd964b8c8e"
+    },
+    "html_url": "https://github.com/IvenYi/edhr-nexus-frontend/pull/59",
+    "mergeable": true,
+    "mergeable_state": "clean",
+    "number": 59,
+    "state": "open"
+  },
+  "localHeadAtObservation": "f575885b182302732e546d30bc3f51bd964b8c8e",
+  "remoteRefsAtObservation": {
+    "refs/heads/audit/edhr-dev-personnel-list-count-20261105": "f575885b182302732e546d30bc3f51bd964b8c8e",
+    "refs/heads/edhr-dev": "00f864cdaf0796c9410173c835a477c7a3068d06"
+  },
+  "testedCodeCommit": "ca836ef60415d61cf352cc3375a23106ec0f46a3",
+  "qualityResult": "passed",
+  "ontologyResult": "not-applicable",
+  "testedCandidatePathDelta": [
+    "M\tdocs/development/branch-review-20261015/NEXT.md",
+    "A\tdocs/development/branch-review-20261105-personnel-count/acceptance.json",
+    "A\tdocs/development/branch-review-20261105-personnel-count/evidence/final-independent.tar.gz",
+    "A\tdocs/development/branch-review-20261105-personnel-count/evidence/tested-candidate-preservation.json",
+    "A\tdocs/development/branch-review-20261105-personnel-count/final-quality-manifest.json",
+    "A\tdocs/development/branch-review-20261105-personnel-count/quality-result.yaml",
+    "A\tdocs/development/branch-review-20261105-personnel-count/scope-review.md"
+  ],
+  "existingCandidatePathsModified": [
+    "docs/development/branch-review-20261015/NEXT.md"
+  ],
+  "allOtherExistingCandidatePathsUnchanged": true,
+  "postObservationWork": "This new L0 delivery record and NEXT update receive a separate skip-ci commit; final local/remote/PR head equality checked after push. The observed head above intentionally precedes this record.",
+  "automaticMergeDeployRestoreOrCi": false,
+  "recommendation": "Manual merge PR59 for finite personnel directory COUNT optimization; whole audit remains open"
+}

@@ -1,0 +1,343 @@
+qualityResult:
+  result: passed
+  baseCommit: 00f864cdaf0796c9410173c835a477c7a3068d06
+  headCommit: ca836ef60415d61cf352cc3375a23106ec0f46a3
+  contractBaseline:
+    sourceCommit: ca836ef60415d61cf352cc3375a23106ec0f46a3
+    targetBranch: edhr-dev
+    targetCommit: 00f864cdaf0796c9410173c835a477c7a3068d06
+    contractReadCommit: ca836ef60415d61cf352cc3375a23106ec0f46a3
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: clean
+    includedPaths: []
+    excludedPaths: []
+    untrackedPaths: []
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+  - id: qa.actual-candidate-contract-target
+    required: true
+    category: documentation
+    description: Fresh independent fetch at start/end; target is ancestor of actual
+      clean tested candidate; candidate contracts actually read; target tree equals
+      previously delivered90cca, not assumed by version label.
+    method: command
+    command: git fetch origin edhr-dev; rev-parse; merge-base --is-ancestor; git status;
+      source-contract-review.py
+    outcome: passed
+    evidence:
+    - native/baseline-start.json
+    - source-review/baseline.json
+    - source-review/input-fingerprints.json
+    - baseline-end.json
+    - final-baseline-commands.json
+  - id: qa.requirements-minimal-scope
+    required: true
+    category: requirements
+    description: Only1 product file terminal query/import and1 corresponding test
+      file; no new business rule, UI, dependencies, configuration, framework, migration
+      or index. List consumers do not consume total.
+    method: inspection
+    command: Inspect candidate product/test diff, all shared-helper consumer paths,
+      decisionPackage impactAnalysis and extensionStrategy
+    outcome: passed
+    evidence:
+    - source-review/product-test.diff
+    - source-review/changed-paths.txt
+    - semantic-source-review.md
+    - source-review/inputs/docs/development/branch-review-20261105-personnel-count/decision-package.yaml
+  - id: qa.installed-api-bounded-list
+    required: true
+    category: database
+    description: 'Installed Spring Data Commons/JPA3.3.0 API and implementation: all->getResultList
+      through query with setMaxResults, no count operation; database limiting, not
+      Java full-load truncation.'
+    method: command
+    command: source-contract-review.py using explicit installed JDK21 javap and JAR
+      fingerprints
+    outcome: passed
+    evidence:
+    - source-review/installed-api.txt
+    - source-review/installed-jpa-implementation.txt
+    - source-review/framework-extract.txt
+    - source-review/framework-check.json
+  - id: qa.qualification-and-write-equivalence
+    required: true
+    category: security
+    description: Byte-exact helper reconstruction preserves complete Specification,
+      dual permission AND before limit, domain candidate/applicant scope, sort100,
+      mapping and post-filters. Adjacent require/state/eligibility/signature/locks/audit/freeze
+      owners and PR58 name-batch complete source unchanged.
+    method: inspection
+    command: source-contract-review.py compare expected query-only reconstruction
+      and six complete adjacent product/repository files
+    outcome: passed
+    evidence:
+    - source-review/protected-byte-check.json
+    - source-review/input-fingerprints.json
+    - semantic-source-review.md
+    - evidence-scope/guard-verification.json
+  - id: qa.finite-ontology-policy-provenance
+    required: true
+    category: ontology
+    description: Current DEC0081/0092/0093 and original confirmations retain tenant
+      delegation, record-control original candidates/applicant avoidance, signed managerial
+      reassignment and dedicated DHR. Finite9=8consistent+1 retained full-multitenant
+      gap; ontology FINAL not-applicable,345 knowledge files unchanged.
+    method: inspection
+    command: Read current knowledge/original confirmations and ontology receipt; independently
+      compare345 tracked Git/working bytes
+    outcome: passed
+    evidence:
+    - source-review/knowledge-byte-check.json
+    - semantic-source-review.md
+    - evidence-scope/ontology-verification.json
+    - evidence-scope/result.yaml
+  - id: qa.full-selected-regression152
+    required: true
+    category: regression
+    description: Independent final candidate native/service/controller/adjacent regression10
+      classes:152 tests,0 failures/errors/skips, fresh XML;14 read observations plus
+      original138; no count accumulation across PR58 or other runs.
+    method: automated-test
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f gmp-platform/backend/pom.xml
+      -Dedhr.audit.workflowReads=true -Dedhr.audit.workflowReadOutput=<own>/native/observations.jsonl
+      -Dtest=<10 exact classes in native/run.json> test
+    outcome: passed
+    evidence:
+    - native/run.json
+    - native/maven-native.log
+    - native/native-reports/summary.json
+    - native/source-fingerprints.json
+  - id: qa.formal-knowledge89
+    required: true
+    category: ontology
+    description: Independently executed formal BusinessKnowledgeModelTest89/89,0F/E/S
+      on candidate; validates applicable structural/ref/projection constraints, does
+      not claim full semantic audit.
+    method: automated-test
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f tools/knowledge-model/pom.xml
+      test
+    outcome: passed
+    evidence:
+    - native/run.json
+    - native/maven-knowledge.log
+    - native/knowledge-reports/summary.json
+    - native/knowledge-reports/TEST-com.zencas.edhr.knowledge.BusinessKnowledgeModelTest.xml
+  - id: qa.directory-result-order-and-query-budget
+    required: true
+    category: integration
+    description: Current0/1/99/100/101/5000 and120same-name fixtures all1SELECT/noCOUNT/DB
+      bound100; preserve exact contents, numeric-ID tie order, reverse usernames,
+      normalized search and earlier foreign/disabled/future-locked/current-person
+      exclusion; PR58 name semantics/history retained.
+    method: automated-test
+    command: Original full WorkflowReadObservationPostgresTest within full152; independently
+      classify14 events against main reported dimensions/query counts
+    outcome: passed
+    evidence:
+    - native/native-reports/TEST-com.zencas.edhr.workflow.service.WorkflowReadObservationPostgresTest.xml
+    - native/observations.jsonl
+    - independent-observation-summary.json
+    - semantic-source-review.md
+  - id: qa.old-product-meaningful-controls
+    required: true
+    category: regression
+    description: Independent original00f products with exact candidate test blob9510ed65:7
+      controls,4 genuine2>1 budget failures after original semantic assertions,3 positive
+      controls,0E/S; old server7content+4COUNT and limit100. Expected red proves changed
+      query cost, not env/fixture errors.
+    method: automated-test
+    command: Independent child old-source-control original native selected7; exact
+      command and source assembly in child result/run.json
+    outcome: passed
+    evidence:
+    - old-source-control/result.yaml
+    - old-source-control/assembly.json
+    - old-source-control/test-summary.json
+    - old-source-control/negative-control-analysis.json
+    - old-source-control/source-fingerprints.json
+  - id: qa.server-actual-sql-and-parameters
+    required: true
+    category: database
+    description: Independent server14/14,0F/E/S:47 current businessSELECTs/7signatures
+      match service observations;7directory content reads noCOUNT and bind limit100;5one-array
+      name batches. Startup/fixture/history/metadata exclusions retained; not all
+      network SQL.
+    method: query
+    command: Own PostgreSQL16 log_statement=all; original14 tests; classify-server-sql.py
+      exact normalized-signature/parameter crosscheck
+    outcome: passed
+    evidence:
+    - server-sql/result.yaml
+    - server-sql/server-sql-crosscheck.json
+    - server-sql/postgres-server.log
+    - server-sql/observations.jsonl
+  - id: qa.real-initialization-owned-cleanup
+    required: true
+    category: database
+    description: Own PostgreSQL16.15 randomloopback DBs; record-control and observer
+      configured Liquibase graph11 changesets each EXECUTED. Native worktree/dependency
+      symlink/container removed normally; no main repo mutation. All child owned resources
+      also cleaned.
+    method: query
+    command: Read own databasechangelog CSV, runner commands and cleanup receipts
+    outcome: passed
+    evidence:
+    - native/edhr_record_control_test_final_count_qa-liquibase.csv
+    - native/edhr_workflow_read_test_final_count_qa-liquibase.csv
+    - native/commands.json
+    - native/cleanup.json
+    - server-sql/cleanup.json
+    - old-source-control/cleanup.json
+    - baseline-end.json
+  - id: qa.primary-evidence-and-audit-noninflation
+    required: true
+    category: audit
+    description: Independently validate76 archived originals plus nested ontology40/26inputs/11protections
+      and9source fingerprints; main152/old7 XML/events valid; unchanged7468 target
+      denominator vs historical fixed inventory distinguished; whole-file0/uniqueunknown,931knowledge/86UI
+      and all broader queues retained.
+    method: inspection
+    command: Read-only evidence child20 checks and own source/baseline/event comparison;
+      no native/browser run attributed to evidence child
+    outcome: passed
+    evidence:
+    - evidence-scope/result.yaml
+    - evidence-scope/archive-verification.json
+    - evidence-scope/ontology-verification.json
+    - evidence-scope/raw-test-and-event-verification.json
+    - baseline-end.json
+    - semantic-source-review.md
+  - id: qa.all-child-final-and-integrity
+    required: true
+    category: documentation
+    description: All3 delegated read-only children returned formalFINAL passed; each
+      manifest and every listed artifact rehashed. No child implemented any fix or
+      weakened tests. QA-only PATH/classifier errors preserved separately from product/test
+      outcomes.
+    method: command
+    command: finalize-quality.py verifies all child FINAL result/manifest SHA and
+      all artifact sizes/hashes
+    outcome: passed
+    evidence:
+    - child-results-verification.json
+    - server-sql/result.yaml
+    - old-source-control/result.yaml
+    - evidence-scope/result.yaml
+    - source-review/framework-check.json
+  findings: []
+  residualRisks:
+  - id: qa.production-performance
+    description: Only defined native cardinality fixtures and matching service SELECTs
+      are accepted; no production latency, throughput, concurrency, full-distribution
+      EXPLAIN or complete network SQL certification.
+    impact: No production SLA conclusion and no speculative index added.
+    mitigation: Keep wider performance and index-plan audit scoped to real scale/distribution
+      evidence.
+  - id: qa.full-http-and-permission-matrices
+    description: Service security context and focused native/controller regression
+      do not certify the complete HTTP/JWT/browser signature flow or every qualification
+      combination at every data scale.
+    impact: No complete authentication/account/recipient/ACL/signing matrix closure.
+    mitigation: Preserve original matrix queues; candidate write/qualification owners
+      are byte-unchanged and applicable focused tests passed.
+  - id: qa.complete-multi-tenant-gap
+    description: question.multi-tenant-workflow-isolation remains an existing nonMVP
+      evidence gap; local tenant predicate is not full-domain tenant isolation.
+    impact: Do not enable multi-tenant production from this result.
+    mitigation: Retain current question and its full authenticated-context/by-ID design
+      and validation work.
+  - id: qa.whole-audit-progress
+    description: Whole-file complete0; historical unique coverageunknown;931knowledge
+      candidates,86priorUIdiagnostics,W2-W7/high-risk/A12/history/rule reconstruction
+      and full matrices remain.
+    impact: This result closes only current unused-directory-COUNT slice, not entire
+      branch audit.
+    mitigation: Continue versioned ledger and latest-remote incremental review; do
+      not accumulate overlapping test counts as unique coverage.
+  - id: qa.remaining-performance-and-paused-scope
+    description: Independent ordinary-form detail/central JSON andCOUNT,large candidate/textID
+      plans,summary605/export memory/wide records and other original performance queues
+      remain; production modal design and friend-owned signature page remain paused.
+    impact: No broader optimization or UI/signature issue closed.
+    mitigation: Discuss real product/performance tradeoffs separately and continue
+      unblocked authorized audit; no UI/browser or full strict rerun claimed here.
+  blockingConditions: []
+verificationScope:
+  status: FINAL
+  executionLevel: L2
+  role: fresh independent final quality, no implementation/repair participation
+  testedCandidate: ca836ef60415d61cf352cc3375a23106ec0f46a3
+  candidateTree: 3be9a2a68901292e915cbb5f0434e9570db49e60
+  targetAtStart: 00f864cdaf0796c9410173c835a477c7a3068d06
+  targetAtEnd: 00f864cdaf0796c9410173c835a477c7a3068d06
+  nativeRegression:
+    tests: 152
+    failures: 0
+    errors: 0
+    skipped: 0
+  formalKnowledge:
+    tests: 89
+    failures: 0
+    errors: 0
+    skipped: 0
+  nativeClassCount: 10
+  readObservationCountWithinNative152: 14
+  adjacentOriginalRegressionCountWithinNative152: 138
+  independentServerRerunCount: 14
+  independentOldControl:
+    tests: 7
+    expectedRealBudgetFailures: 4
+    positiveControls: 3
+    errors: 0
+    skipped: 0
+  countsAreDistinctRunsNotAccumulatedUniqueCoverage: true
+  validatedFindingId: PERF-TENANT-DIRECTORY-COUNT-20261104
+  directoryCurrentReads: 7
+  directoryCurrentCountQueries: 0
+  directoryDatabaseLimit: 100
+  serverObservedBusinessSelects: 47
+  serverBusinessSelectSignatures: 7
+  ontologyResult: not-applicable
+  finiteKnowledgeReview:
+    relatedIds: 9
+    consistent: 8
+    existingEvidenceGap: 1
+    unchangedFiles: 345
+  allDelegatedChildren:
+  - role: old-source-control
+    status: FINAL
+    qualityResult: passed
+    manifestSha256: cec6acfc5b30d6c47778830b8181a40378e2fd87bf4dc8c679b7bf0a99933c87
+    verifiedArtifacts: 26
+    resultPath: old-source-control/result.yaml
+    formalFinalReceipt: collaboration child FINAL received by independent final QA
+  - role: server-sql
+    status: FINAL
+    qualityResult: passed
+    manifestSha256: 1e24932c9579a63e21ba2760f1290e10467b153050f91c07dbec4dce8c1a5c66
+    verifiedArtifacts: 56
+    resultPath: server-sql/result.yaml
+    formalFinalReceipt: collaboration child FINAL received by independent final QA
+  - role: evidence-scope
+    status: FINAL
+    qualityResult: passed
+    manifestSha256: e92b62cc723f126a892a2d732774f3253d3200136e0f072237451493686f1ea3
+    verifiedArtifacts: 55
+    resultPath: evidence-scope/result.yaml
+    formalFinalReceipt: collaboration child FINAL received by independent final QA
+  wholeAuditComplete: false
+  wholeFileComplete: 0
+  historyUniqueCoverage: null
+  browserExecuted: false
+  allMigrationsExecuted: false
+  configuredLiquibaseGraphChangesExecuted: 11
+  knowledgeStageAdvanced: false
+  productionSlaCertified: false
+  allNetworkSqlCertified: false
+  httpJwtSignatureEndToEndCertified: false
+  productTestFixtureConfigKnowledgeChangesByThisRole: []
+  postFinalAllowance: Parent may add only new L0 raw evidence/acceptance/scope/delivery
+    documents and NEXT update; existing candidate paths otherwise unchanged. Product/test/fixture/config/contract/knowledge
+    edits or target delta require impact reassessment and applicable rerun.

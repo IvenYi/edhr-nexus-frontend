@@ -1,0 +1,169 @@
+{
+  "implementationStatus": "main-passed-awaiting-fresh-final-QA",
+  "resolvesFindingId": "PERF-TENANT-DIRECTORY-COUNT-20261104",
+  "closureRequiresFreshFinalQA": true,
+  "observations": [
+    {
+      "kind": "personnel-directory",
+      "data": {
+        "matchingPersonnel": 0,
+        "resultLimit": 100,
+        "returnedPersonnel": 0
+      },
+      "totalStatements": 1,
+      "countStatements": 0
+    },
+    {
+      "kind": "personnel-directory",
+      "data": {
+        "matchingPersonnel": 1,
+        "resultLimit": 100,
+        "returnedPersonnel": 1
+      },
+      "totalStatements": 1,
+      "countStatements": 0
+    },
+    {
+      "kind": "personnel-directory",
+      "data": {
+        "matchingPersonnel": 99,
+        "resultLimit": 100,
+        "returnedPersonnel": 99
+      },
+      "totalStatements": 1,
+      "countStatements": 0
+    },
+    {
+      "kind": "personnel-directory",
+      "data": {
+        "matchingPersonnel": 100,
+        "resultLimit": 100,
+        "returnedPersonnel": 100
+      },
+      "totalStatements": 1,
+      "countStatements": 0
+    },
+    {
+      "kind": "personnel-directory",
+      "data": {
+        "matchingPersonnel": 101,
+        "resultLimit": 100,
+        "returnedPersonnel": 100
+      },
+      "totalStatements": 1,
+      "countStatements": 0
+    },
+    {
+      "kind": "personnel-directory",
+      "data": {
+        "matchingPersonnel": 5000,
+        "resultLimit": 100,
+        "returnedPersonnel": 100
+      },
+      "totalStatements": 1,
+      "countStatements": 0
+    },
+    {
+      "kind": "workflow-detail-distinct-identities",
+      "data": {
+        "tasks": 1000,
+        "distinctAssignees": 1000
+      },
+      "totalStatements": 6,
+      "countStatements": 0
+    },
+    {
+      "kind": "workflow-detail",
+      "data": {
+        "existingAssignees": 0,
+        "assigneeKinds": "two repeated existing IDs, null, missing ID",
+        "returnedTasks": 0,
+        "tasks": 0
+      },
+      "totalStatements": 5,
+      "countStatements": 0
+    },
+    {
+      "kind": "workflow-detail",
+      "data": {
+        "existingAssignees": 1,
+        "assigneeKinds": "two repeated existing IDs, null, missing ID",
+        "returnedTasks": 1,
+        "tasks": 1
+      },
+      "totalStatements": 6,
+      "countStatements": 0
+    },
+    {
+      "kind": "workflow-detail",
+      "data": {
+        "existingAssignees": 2,
+        "assigneeKinds": "two repeated existing IDs, null, missing ID",
+        "returnedTasks": 100,
+        "tasks": 100
+      },
+      "totalStatements": 6,
+      "countStatements": 0
+    },
+    {
+      "kind": "workflow-detail",
+      "data": {
+        "existingAssignees": 2,
+        "assigneeKinds": "two repeated existing IDs, null, missing ID",
+        "returnedTasks": 1000,
+        "tasks": 1000
+      },
+      "totalStatements": 6,
+      "countStatements": 0
+    },
+    {
+      "kind": "personnel-directory-eligibility-tie",
+      "data": {
+        "excludedPrefixAndCurrent": 4,
+        "returnedPersonnel": 100,
+        "eligiblePersonnel": 120
+      },
+      "totalStatements": 1,
+      "countStatements": 0
+    },
+    {
+      "kind": "workflow-detail-null-only",
+      "data": {
+        "tasks": 25
+      },
+      "totalStatements": 5,
+      "countStatements": 0
+    },
+    {
+      "kind": "workflow-detail-text-identities",
+      "data": {
+        "tasks": 15
+      },
+      "totalStatements": 6,
+      "countStatements": 0
+    }
+  ],
+  "currentTotalObservedSelects": 47,
+  "oldFinalControl": {
+    "tests": 7,
+    "failures": 4,
+    "errors": 0,
+    "skipped": 0
+  },
+  "mainFinalNative": {
+    "tests": 152,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "unchangedNameBatchFinding": "PERF-WORKFLOW-DETAIL-NAMES-20261104",
+  "databaseBound": "Spring Data3.3 limit -> TypedQuery.setMaxResults; native SQL fetch/limit present, no Java full-load truncation",
+  "coverageNotCumulative": true,
+  "notCertified": [
+    "production latency/network/concurrency/SLA/full-distribution EXPLAIN",
+    "all-domain permission predicate combinations at every data scale",
+    "full account/HTTP/JWT/browser/signature E2E",
+    "whole code/knowledge audit"
+  ],
+  "wholeAuditComplete": false
+}

@@ -1,0 +1,149 @@
+ontologyResult:
+  result: not-applicable
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: 00f864cdaf0796c9410173c835a477c7a3068d06
+    targetBranch: edhr-dev
+    targetCommit: 00f864cdaf0796c9410173c835a477c7a3068d06
+    contractReadCommit: 00f864cdaf0796c9410173c835a477c7a3068d06
+    uncommittedContractPaths: []
+  reason: 本轮仅将未消费总数的Page内容读取改为同一Specification/scope、displayName/id排序及数据库100条上限的List读取。有限9ID核对及保护段字节对比未发现业务语义变化；名单查询不是最终写入授权。100上限/SQL/API为既有工程契约，不将本次持续审计伪记为用户新确认政策；无权威知识需要修改。
+  changedArtifacts: []
+  knowledgeSync:
+  - id: DEC-0081-01
+    disposition: retained
+    scope: 同租户正常可用、非当前处理人目标读取保持；通用及普通生产表单原处理人委托范围不改。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0081-tenant-scoped-task-delegation.yaml
+    - gmp-platform/backend/src/main/java/com/zencas/edhr/identity/service/TenantTransferTargets.java
+    - gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java
+    - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionAccess.java
+    - docs/knowledge/evidence/tenant-task-delegation-2026-10-20.md
+  - id: DEC-0081-02
+    disposition: retained
+    scope: 只读目录不写原候选依据或当前责任；当前目标、原始候选和冻结证据的分离保持。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0081-tenant-scoped-task-delegation.yaml
+    - gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/WorkflowResponsibilityService.java
+    - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormWorkflowOperations.java
+    - gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java
+    - docs/knowledge/evidence/tenant-task-delegation-2026-10-20.md
+  - id: DEC-0081-03
+    disposition: retained
+    scope: 去除未消费COUNT不改转办原因、实际操作者、时间、签署或同事务历史审计；本轮只核调用链与字节不变。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0081-tenant-scoped-task-delegation.yaml
+    - gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/WorkflowResponsibilityService.java
+    - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormWorkflowOperations.java
+    - gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java
+    - docs/knowledge/evidence/tenant-task-delegation-2026-10-20.md
+  - id: DEC-0092-02
+    disposition: retained
+    scope: CHANGE/OBSOLETE目标SQL仍叠加原候选scope并回避申请人，不能套用通用表单租户委托范围。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0092-workflow-operations-entry-and-actions.yaml
+    - gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/WorkflowResponsibilityService.java
+    - gmp-platform/backend/src/main/java/com/zencas/edhr/identity/service/TenantTransferTargets.java
+    - docs/knowledge/evidence/workflow-operations-20261030.md
+  - id: DEC-0092-03
+    disposition: retained
+    scope: 管理员权限、真实签署人、有效签名及目标执行时复核代码整文件未变；列表不授予最终写入资格。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0092-workflow-operations-entry-and-actions.yaml
+    - gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/WorkflowResponsibilityService.java
+    - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormWorkflowOperations.java
+    - docs/knowledge/evidence/workflow-operations-20261030.md
+  - id: DEC-0093-02
+    disposition: retained
+    scope: 普通表单原转办及管理员签名改派、DHR仅管理员签名改派的当前边界保持；不恢复本人DHR转办或通用批准旁路。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0093-central-form-dhr-workflow-responsibility.yaml
+    - gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/WorkflowResponsibilityService.java
+    - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormWorkflowOperations.java
+    - docs/knowledge/evidence/central-form-dhr-workflow-20261102.md
+    - docs/development/workflow-central-entry-extension-20261102/user-confirmed.md
+  - id: DEC-0093-03
+    disposition: retained
+    scope: 本次目录只读查询不写责任、签名、集中历史或领域审计；原同事务证据代码字节保持，不冒称重跑全审计矩阵。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0093-central-form-dhr-workflow-responsibility.yaml
+    - gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/WorkflowResponsibilityService.java
+    - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormWorkflowOperations.java
+    - docs/knowledge/evidence/central-form-dhr-workflow-20261102.md
+  - id: DEC-0093-04
+    disposition: retained
+    scope: DHR records.dhr-review与dhr.reviews.act、普通表单production.execution与form-management.review双权限AND及SQL先过滤后限量保持；具体权限码、100条目录上限和去COUNT为工程契约，非用户新增政策。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0093-central-form-dhr-workflow-responsibility.yaml
+    - gmp-platform/backend/src/main/java/com/zencas/edhr/identity/service/TenantTransferTargets.java
+    - gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/WorkflowResponsibilityService.java
+    - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormWorkflowOperations.java
+    - docs/knowledge/evidence/central-form-dhr-workflow-20261102.md
+  - id: question.multi-tenant-workflow-isolation
+    disposition: deferred
+    scope: 保留非MVP完整多租户隔离开放项；局部目录tenant过滤不关闭认证、所有ID路径或全工作流隔离问题，本轮不阻塞该窄读取优化。
+    sourceReferences:
+    - docs/knowledge/open-questions.yaml
+    - docs/knowledge/open-questions.yaml
+    - docs/knowledge/evidence/tenant-task-delegation-2026-10-20.md
+    - docs/knowledge/evidence/central-form-dhr-workflow-20261102.md
+  conflicts: []
+  questions: []
+  validationEvidence:
+  - id: validation.current-contract-and-source-fingerprints
+    checkType: evidence-path
+    command: python /tmp/build-personnel-count-ontology-20261105.py (Git read and input snapshot capture)
+    outcome: passed
+    evidence:
+    - baseline.json
+    - source-fingerprints.json
+    - contract-byte-check.json
+    - command-log.json
+  - id: validation.finite-policy-source-mapping
+    checkType: reference
+    command: Read current DEC-0081/0092/0093, original confirmation evidence and directory consumer methods; finite scope
+      recorded in read-scope.json
+    outcome: passed
+    evidence:
+    - finite-id-review.json
+    - read-scope.json
+    - semantic-review.md
+  - id: validation.qualification-and-write-guard-byte-equivalence
+    checkType: projection
+    command: python /tmp/build-personnel-count-ontology-20261105.py (compare protected source bytes with Git source baseline)
+    outcome: passed
+    evidence:
+    - guard-byte-equivalence.json
+    - product.diff
+  - id: validation.knowledge-unchanged
+    checkType: status-transition
+    command: python /tmp/build-personnel-count-ontology-20261105.py (git ls-files docs/knowledge/**; compare each Git blob
+      with working tree)
+    outcome: passed
+    evidence:
+    - knowledge-byte-check.json
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages:
+    - P1
+    - P2
+    - P3
+verificationScope:
+  status: FINAL
+  formalKnowledgeTestsExecuted: false
+  nativeTestsExecuted: false
+  browserExecuted: false
+  semanticScope: 本批目录去除未消费COUNT的9个相关ID有限核对，8 consistent/1保留既有evidence-gap；不构成931知识候选全审或历史unique新增。
+  inputFingerprintFileCount: 26
+  knowledgeUnchangedFileCount: 345
+  productOrTestChangesByThisRole: []
+  stageAdvanced: false
+  remainingBoundaries:
+  - 正式89及152原生测试由主侧/全新独立QA运行，本角色未执行或宣称其通过
+  - 完整多租户认证上下文及按ID运行操作矩阵未收口
+  - 931知识候选、86 UI、W2-W7高风险/A12、其余全审及暂停范围保持
+  - 巨大候选集合参数/文本ID查询计划/全账号矩阵另审
+  - 非生产吞吐延迟/全数据分布EXPLAIN及完整HTTP/JWT/浏览器签署链未由本角色验证
