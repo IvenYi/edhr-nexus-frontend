@@ -1,0 +1,232 @@
+qualityResult:
+  result: passed
+  baseCommit: ea5c57e63cb4980961498c4c192705ef91a37170
+  headCommit: 04fc893f3df9de8d345fa32a7699f61f7cbc53ae
+  contractBaseline:
+    sourceCommit: 04fc893f3df9de8d345fa32a7699f61f7cbc53ae
+    targetBranch: edhr-dev
+    targetCommit: ea5c57e63cb4980961498c4c192705ef91a37170
+    contractReadCommit: 04fc893f3df9de8d345fa32a7699f61f7cbc53ae
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: clean
+    includedPaths: []
+    excludedPaths: []
+    untrackedPaths: []
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+  - id: check.contract-baseline
+    required: true
+    category: documentation
+    description: 实际来源/目标/契约差异核对，版本号不替代Git提交
+    method: inspection
+    command: python3 finalize-quality.py; independent commands and exact source retained in run.json/child outputs
+    outcome: passed
+    evidence:
+    - own-inspection.json
+    - read-input-fingerprints.json
+    - final-baseline-cleanup.json
+  - id: check.actual-integration-candidate
+    required: true
+    category: requirements
+    description: ea目标为04fc祖先，目标整树同PR59交付且最终fetch未变
+    method: command
+    command: python3 finalize-quality.py; independent commands and exact source retained in run.json/child outputs
+    outcome: passed
+    evidence:
+    - candidate-diff.txt
+    - final-baseline-cleanup.json
+  - id: check.test-only-product-preservation
+    required: true
+    category: requirements
+    description: 仅一测试与本批记录，产品/前端/迁移/索引/依赖/知识/契约不改
+    method: inspection
+    command: python3 finalize-quality.py; independent commands and exact source retained in run.json/child outputs
+    outcome: passed
+    evidence:
+    - own-inspection.json
+    - evidence-scope/check-results.json
+  - id: check.native167
+    required: true
+    category: regression
+    description: 独立自有worktree/PG原生167，0F/E/S，29观察加138相邻
+    method: automated-test
+    command: python3 finalize-quality.py; independent commands and exact source retained in run.json/child outputs
+    outcome: passed
+    evidence:
+    - native/full/test-summary.json
+    - native/full/maven.log
+    - native/full/run.json
+  - id: check.knowledge89
+    required: true
+    category: ontology
+    description: 独立正式知识89，0F/E/S，0.3.25/schema1.2.0/P0保持
+    method: automated-test
+    command: python3 finalize-quality.py; independent commands and exact source retained in run.json/child outputs
+    outcome: passed
+    evidence:
+    - knowledge/run.json
+    - knowledge/maven.log
+  - id: check.form-cache-and-candidate-observations
+    required: true
+    category: database
+    description: 29事件298逻辑SELECT，现存缓存/不同/缺失/空及原候选参数分别核对
+    method: inspection
+    command: python3 finalize-quality.py; independent commands and exact source retained in run.json/child outputs
+    outcome: passed
+    evidence:
+    - independent-runtime-summary.json
+    - native/full/observations.jsonl
+  - id: check.independent-server-crosscheck
+    required: true
+    category: database
+    description: 另独立29原生，298业务SELECT/16签名、11目录限100无COUNT，排除84其他SELECT
+    method: automated-test
+    command: python3 finalize-quality.py; independent commands and exact source retained in run.json/child outputs
+    outcome: passed
+    evidence:
+    - server-sql/result.yaml
+    - server-sql/server-sql-summary.json
+  - id: check.controlled-prepared-plans
+    required: true
+    category: database
+    description: 独立重放观察SQL的1/100/5000原候选控制计划，65005账户，非生产SLA
+    method: query
+    command: python3 finalize-quality.py; independent commands and exact source retained in run.json/child outputs
+    outcome: passed
+    evidence:
+    - native/full/plan-summary.json
+    - native/full/plan-origin-1.sql
+    - native/full/plan-origin-100.sql
+    - native/full/plan-origin-5000.sql
+  - id: check.raw-evidence-integrity
+    required: true
+    category: documentation
+    description: 96原件及本体/输入/保护/当前指纹逐字节SHA核验，原15与167不相加
+    method: command
+    command: python3 finalize-quality.py; independent commands and exact source retained in run.json/child outputs
+    outcome: passed
+    evidence:
+    - evidence-scope/result.yaml
+    - evidence-scope/check-results.json
+  - id: check.finite-ontology-boundary
+    required: true
+    category: ontology
+    description: 13相关ID为12一致1既有多租户证据缺口，345知识不变，不当全审完成
+    method: inspection
+    command: python3 finalize-quality.py; independent commands and exact source retained in run.json/child outputs
+    outcome: passed
+    evidence:
+    - evidence-scope/semantic-review.md
+    - evidence-scope/check-results.json
+  - id: check.read-authority-and-history-ownership
+    required: true
+    category: security
+    description: 授权先于姓名，普通数值解析/回退与通用文本匹配区分，历史存储名/签名引用保持
+    method: inspection
+    command: python3 finalize-quality.py; independent commands and exact source retained in run.json/child outputs
+    outcome: passed
+    evidence:
+    - own-inspection.json
+    - evidence-scope/semantic-review.md
+    - native/full/observations.jsonl
+  - id: check.robustness-and-concrete-split-scope
+    required: true
+    category: documentation
+    description: A23区分重复计算与写入必要保护，具体私有读方法/纯投影拆分，三性能发现保留open
+    method: inspection
+    command: python3 finalize-quality.py; independent commands and exact source retained in run.json/child outputs
+    outcome: passed
+    evidence:
+    - evidence-scope/semantic-review.md
+    - own-inspection.json
+  - id: check.all-final-cleanup-final-target
+    required: true
+    category: documentation
+    description: 两个子项正式FINAL，全部自有资源清理，结束目标/候选/源字节保持
+    method: inspection
+    command: python3 finalize-quality.py; independent commands and exact source retained in run.json/child outputs
+    outcome: passed
+    evidence:
+    - final-baseline-cleanup.json
+    - child-final-status.json
+  findings: []
+  residualRisks:
+  - id: PERF-FORM-DETAIL-CURRENT-NAMES-20261105
+    description: 已实测不同或重复缺失处理人1+N，现存重复有一级缓存；本批只取证，仍open
+    impact: 大量当前并行节点时数据库往返增长，非日常规模结论
+    mitigation: 姓名批量方案等待用户选择；只读证据交付不依赖该可选后续
+  - id: PERF-ORIGIN-CANDIDATE-PARAMETERS-20261105
+    description: 5000原候选目录5007绑定参数，结果限100，未测试驱动最大边界，仍open
+    impact: 更大集合的参数/解析成本需独立量化
+    mitigation: 保持原候选和文本身份，另评估数组；不截断候选
+  - id: PERF-ORIGIN-TEXT-ID-PLAN-20261105
+    description: 65005控制分布重放为Seq Scan，仍open
+    impact: 不能推断全部生产分布或立即新增索引
+    mitigation: 保留原SQL/参数/索引/计划，先比较真实租户/关键词/排序与写放大
+  - id: gap.full-tenant-and-whole-audit
+    description: 本体13个ID有1既有完整多租户evidence-gap，931知识候选/86UI及W2-W7/A12/原高风险/完整矩阵继续
+    impact: 有限批次不等于全仓/多租户运行验收
+    mitigation: 保留原台账及阶段；不将盘点/版本/schema/测试通过视为全部语义一致
+  - id: gap.synthetic-read-and-signature-boundary
+    description: 表单状态直接持久化，未通过create/START；新匹配历史正例只有APPROVE，RETURN为其他copy排除，777仅签名引用
+    impact: 本批不认证创建/100节点日常容量或真实签名有效性
+    mitigation: 源码与runtime范围分列；签署完整矩阵保留
+  - id: gap.http-browser-and-production-performance
+    description: 未执行浏览器/全账号HTTP-JWT/生产延迟吞吐并发或全部迁移验收
+    impact: 不构成上线/生产SLA证明
+    mitigation: 11项配置迁移及本次服务读取按实际证据说明；无UI/产品改动
+  - id: gap.paused-and-other-performance-queues
+    description: 朋友任务密码页、生产弹窗暂停；中央JSONCOUNT/汇总605/导出内存等继续
+    impact: 未在本批关闭这些事项
+    mitigation: 下一批先fetch增量，再按原队列/用户选择小批推进
+  blockingConditions: []
+verificationScope:
+  executionLevel: L2
+  actualTestedCandidate: 04fc893f3df9de8d345fa32a7699f61f7cbc53ae
+  targetAtStartAndEnd: ea5c57e63cb4980961498c4c192705ef91a37170
+  nativeTests: 167
+  formalKnowledgeTests: 89
+  serverSubrunTests: 29
+  serverSubrunIsSubsetNotAdditionalUnique: true
+  observerBusinessSelects: 298
+  serverBusinessSignatures: 16
+  directoryCalls: 11
+  directoryLimit: 100
+  directoryCountQueries: 0
+  excludedOtherServerSelects: 84
+  preservedSingleArrayNameCalls: 5
+  productFilesChanged: 0
+  testFilesChanged: 1
+  rawPrimaryArtifactsVerified: 96
+  ontologyFiniteIds: 13
+  ontologyConsistent: 12
+  ontologyExistingEvidenceGap: 1
+  unchangedKnowledgeFiles: 345
+  wholeAuditComplete: false
+  childrenAllFormalFinal: true
+  subitems:
+  - role: evidence-scope
+    formalStatus: FINAL
+    result: passed
+    requiredChecks: 22
+    manifestSha256: 8f11053f1440e740a3a8fd3704fd6c6dd29d30c4c66bac9f3476ab4e3e9ad48b
+    rawArtifacts: 43
+  - role: server-sql
+    formalStatus: FINAL
+    result: passed
+    requiredChecks: 6
+    manifestSha256: ea2ac3ff2a73d30fd359a9ec560493a397fe1fb1e6e7799de1f69d13c3c9c1a1
+    rawArtifacts: 35
+  environmentAndAnalysisEvents:
+  - Parent native initial missing node_modules caused vite exit127 before tests; fixed only owned environment link
+    and reran exact source
+  - Server child same initial dependency exit127 before tests and post-success only-owned-link dirty assertion;
+    original evidence retained, JUnit29 passed
+  - Evidence child initial analysis script omitted explanation field; original error and corrected analysis retained,
+    no repository edits
+  independentWorktreeDependencyNote: Only external installed node_modules symlink was untracked while tests ran;
+    removed and worktree verified clean before removal. Candidate source/test/config/knowledge bytes stayed exact;
+    main candidate tree stayed clean.
+  postQualityAllowedWork: Only new L0 archive/acceptance/scope/delivery and NEXT status; any product/test/knowledge/contract
+    or target change requires reevaluation

@@ -1,0 +1,58 @@
+{
+  "executionLevel": "L2",
+  "targetCommit": "ea5c57e63cb4980961498c4c192705ef91a37170",
+  "testedCandidate": "04fc893f3df9de8d345fa32a7699f61f7cbc53ae",
+  "scope": "Test-only native ordinary form workflow detail and original candidate scale observation",
+  "ontologyResult": "not-applicable",
+  "qualityResult": "passed",
+  "requiredChecksPassed": 13,
+  "productFilesChanged": 0,
+  "testFilesChanged": 1,
+  "nativeTests": 167,
+  "readObservationInvocations": 29,
+  "newObservationInvocations": 15,
+  "baselineAdjacentInvocations": 138,
+  "formalKnowledgeTests": 89,
+  "logicalBusinessSelectsIn29Observations": 298,
+  "independentServerCrosscheck": {
+    "testInvocations": 29,
+    "businessSelects": 298,
+    "querySignatures": 16,
+    "directoryCalls": 11,
+    "actualDirectoryLimit": 100,
+    "directoryCountQueries": 0,
+    "nameSingleArrayCalls": 5,
+    "excludedOtherSelects": 84
+  },
+  "historyObservationBoundary": "APPROVE positive case and unchanged stored signature reference 777; not cryptographic signature or RETURN runtime acceptance",
+  "personnelCandidateLimitUnchanged": 100,
+  "oldCountAndNameBatchImplementationsPreserved": true,
+  "performanceFindingsOpen": [
+    "PERF-FORM-DETAIL-CURRENT-NAMES-20261105",
+    "PERF-ORIGIN-CANDIDATE-PARAMETERS-20261105",
+    "PERF-ORIGIN-TEXT-ID-PLAN-20261105"
+  ],
+  "performanceFindingsResolved": [],
+  "controlledPlanReplayAccounts": 65005,
+  "newIndexesUiMigrationDependencyPolicy": false,
+  "runtimeBrowserOrFullHttpE2E": false,
+  "syntheticPersistedContextNotCreateStartAcceptance": true,
+  "knowledge": {
+    "unchangedFiles": 345,
+    "finiteExistingIds": 13,
+    "consistent": 12,
+    "fullTenantEvidenceGapRetained": 1,
+    "pendingIncrementCandidates": 931,
+    "fullSemanticAuditComplete": false
+  },
+  "priorUiDiagnosticCandidatesPending": 86,
+  "wholeFileComplete": 0,
+  "historicalUniqueCoverage": null,
+  "wholeAuditComplete": false,
+  "residuals": [
+    "No production latency/throughput/network/concurrency/SLA or full distribution EXPLAIN",
+    "All original W2-W7/high/A12/full account/recipient/ACL/signature/browser and user paused scopes continue",
+    "Candidate array/identity/index alternatives and current-form names proposal require subsequent scoped implementation; no policy/authorization shrink"
+  ],
+  "recommendation": "Manual merge test/evidence batch only; no automatic merge/deploy/restore/CI query or trigger"
+}

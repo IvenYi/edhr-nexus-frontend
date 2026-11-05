@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zencas.edhr.common.audit.AuditContext;
 import com.zencas.edhr.identity.repository.UserAccountRepository;
 import com.zencas.edhr.identity.service.TenantTransferTargets;
+import com.zencas.edhr.production.service.FormWorkflowOperations;
 import org.hibernate.resource.jdbc.spi.StatementInspector;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,6 +13,7 @@ import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernatePropertiesCustomizer;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -49,6 +51,8 @@ class WorkflowReadObservationPostgresTest {
     private static final ThreadLocal<Read<?>> CURRENT = new ThreadLocal<>();
     @Autowired JdbcTemplate jdbc;
     @Autowired WorkflowOperationsQuery operations;
+    @Autowired FormWorkflowOperations formOperations;
+    @Autowired WorkflowResponsibilityService responsibility;
     @Autowired UserAccountRepository users;
     @Autowired ObjectMapper mapper;
     @MockBean com.zencas.edhr.production.service.FormProjectionWorker worker;
@@ -64,7 +68,7 @@ class WorkflowReadObservationPostgresTest {
     }
 
     @BeforeEach void fixture() {
-        jdbc.execute("TRUNCATE workflow_task,workflow_instance,workflow_node,workflow_edge,workflow_action_log,workflow_definition,user_account CASCADE");
+        jdbc.execute("TRUNCATE workflow_task,workflow_instance,workflow_node,workflow_edge,workflow_action_log,workflow_definition,user_account,material,form_template,route,dhr_template,production_execution,production_object,work_order,product_process_version,product_process CASCADE");
         jdbc.update("INSERT INTO user_account(id,tenant_id,username,display_name,password_hash,status) VALUES (41,0,'read-applicant','申请人','not-used','ACTIVE'),(42,0,'read-assignee-a','甲审批人','not-used','ACTIVE'),(43,0,'read-assignee-b','乙审批人','not-used','ACTIVE')");
         jdbc.update("INSERT INTO workflow_definition(id,name,type,business_type,status) VALUES(900101,'读取观测','GENERAL','READ_OBSERVATION','PUBLISHED')");
         jdbc.update("INSERT INTO workflow_definition_version(id,definition_id,status,is_current,nodes_json,edges_json) VALUES(900102,900101,'PUBLISHED',true,'[]','[]')");
@@ -217,6 +221,132 @@ class WorkflowReadObservationPostgresTest {
                 "returnedPersonnel", read.value.size()), read);
         assertThat(read.jdbcSql.size() + read.hibernateSql.size()).isLessThanOrEqualTo(1);
         assertThat(read.hibernateSql).noneMatch(sql -> sql.toLowerCase(java.util.Locale.ROOT).contains("count("));
+    }
+
+    @ParameterizedTest
+    @CsvSource({"0,blank", "1,repeated", "10,repeated", "100,repeated", "10,distinct", "100,distinct",
+            "10,missing", "100,missing", "100,blank"})
+    void formDetailObservesCurrentNamesAndPersistenceContext(int count, String kind) throws Exception {
+        seedForm(count, kind);
+        String before = formEvidence();
+        Read<Map<String, Object>> read = capture(() -> formOperations.detail(910112L));
+        @SuppressWarnings("unchecked") var tasks = (List<Map<String, Object>>) read.value.get("tasks");
+        @SuppressWarnings("unchecked") var nodes = (List<Map<String, Object>>) read.value.get("nodes");
+        assertThat(read.value).containsEntry("id", "form-910112").containsEntry("businessType", "FORM_PROCESS")
+                .containsEntry("status", "RUNNING").containsEntry("versionId", "910111");
+        assertThat(nodes).hasSize(count + 1);
+        assertThat(tasks).hasSize(count);
+        for (int i = 0; i < count; i++) {
+            String id = switch (kind) { case "distinct" -> String.valueOf(40000 + i); case "missing" -> "999999";
+                case "blank" -> null; default -> "42"; };
+            String name = switch (kind) { case "distinct" -> "表单当前名-" + i; case "missing" -> "999999";
+                case "blank" -> "候选人待处理"; default -> "甲审批人"; };
+            assertThat(tasks.get(i)).containsEntry("id", "form-910112:review-" + i).containsEntry("nodeId", "review-" + i)
+                    .containsEntry("assigneeId", id).containsEntry("assigneeName", name).containsEntry("status", "PENDING");
+            assertThat(tasks.get(i).get("taskState").toString()).hasSize(64);
+        }
+        assertThat(formEvidence()).isEqualTo(before);
+        record("form-detail-current-names", Map.of("activeApprovalNodes", count, "assigneeKind", kind,
+                "returnedTasks", tasks.size()), read);
+    }
+
+    @Test void formDetailKeepsStoredHistoryAndDoesNotReadNamesForHistoricalTasks() throws Exception {
+        seedForm(1, "repeated");
+        var state = (com.fasterxml.jackson.databind.node.ObjectNode) mapper.readTree(
+                jdbc.queryForObject("SELECT state_json FROM production_execution WHERE object_id=910109", String.class));
+        state.withArray("/history").addObject().put("operationId", "op").put("formId", "form").put("copyId", "form")
+                .put("nodeId", "review-0").put("nodeName", "冻结复核节点").put("actionCode", "APPROVE")
+                .put("operator", "42").put("operatorName", "签署时旧名").put("opinion", "历史意见").put("signatureId", "777");
+        state.withArray("/history").addObject().put("operationId", "op").put("formId", "form").put("copyId", "other-copy")
+                .put("actionCode", "RETURN").put("operatorName", "其他份不应混入");
+        jdbc.update("UPDATE production_execution SET state_json=? WHERE object_id=910109", state.toString());
+        String before = formEvidence();
+        Read<Map<String, Object>> read = capture(() -> formOperations.detail(910112L));
+        @SuppressWarnings("unchecked") var tasks = (List<Map<String, Object>>) read.value.get("tasks");
+        @SuppressWarnings("unchecked") var logs = (List<Map<String, Object>>) read.value.get("logs");
+        assertThat(tasks).hasSize(2);
+        assertThat(tasks.get(0)).containsEntry("assigneeName", "甲审批人").containsEntry("status", "PENDING");
+        assertThat(tasks.get(1)).containsEntry("assigneeName", "签署时旧名").containsEntry("status", "COMPLETED")
+                .containsEntry("opinion", "历史意见").containsEntry("signatureId", "777");
+        assertThat(logs).hasSize(1);
+        assertThat(logs.getFirst()).containsEntry("operatorName", "签署时旧名").containsEntry("nodeName", "冻结复核节点");
+        assertThat(mapper.readTree(logs.getFirst().get("snapshot").toString()).path("signatureId").asText()).isEqualTo("777");
+        assertThat(formEvidence()).isEqualTo(before);
+        record("form-detail-history", Map.of("activeApprovalNodes", 1, "matchingHistoricalTasks", 1, "unrelatedCopyHistory", 1), read);
+    }
+
+    @Test void unauthorizedFormDetailStopsBeforeNameReads() throws Exception {
+        seedForm(10, "distinct");
+        SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken("41", null,
+                List.of(new SimpleGrantedAuthority("workflow.logs"))));
+        String before = formEvidence();
+        Read<String> read = capture(() -> {
+            try { formOperations.detail(910112L); throw new AssertionError("Unauthorized detail must be rejected"); }
+            catch (org.springframework.security.access.AccessDeniedException expected) { return expected.getMessage(); }
+        });
+        assertThat(read.value).contains("无权查看");
+        assertThat(read.hibernateSql).isEmpty();
+        assertThat(formEvidence()).isEqualTo(before);
+        record("form-detail-unauthorized", Map.of("activeApprovalNodes", 10), read);
+    }
+
+    @ParameterizedTest @ValueSource(ints = {0, 1, 100, 5000})
+    void originalCandidateDirectoryObservesParameterGrowth(int count) throws Exception {
+        jdbc.update("INSERT INTO user_account(id,tenant_id,username,display_name,password_hash,status) SELECT 40000+n,0,'origin-'||n,'origin-scope-'||lpad(n::text,5,'0'),'not-used','ACTIVE' FROM generate_series(0,?-1) n", count);
+        jdbc.update("""
+                INSERT INTO workflow_task(id,instance_id,node_id,status,assignee_id,candidate_snapshot)
+                SELECT 900104,900100,900103,'PENDING','42',jsonb_build_object('userIds',
+                  COALESCE(jsonb_agg((40000+n)::text),'[]'::jsonb),'unrestricted',false)
+                FROM generate_series(0,?-1) n
+                """, count);
+        String before = jdbc.queryForObject("SELECT candidate_snapshot::text FROM workflow_task WHERE id=900104", String.class);
+        Read<List<Map<String, String>>> read = capture(() -> responsibility.reassignmentTargets(900104L, "origin-scope"));
+        assertThat(read.value).hasSize(Math.min(count, 100));
+        for (int i = 0; i < read.value.size(); i++) assertThat(read.value.get(i)).containsEntry("id", String.valueOf(40000 + i))
+                .containsEntry("name", "origin-scope-%05d".formatted(i));
+        assertThat(jdbc.queryForObject("SELECT candidate_snapshot::text FROM workflow_task WHERE id=900104", String.class)).isEqualTo(before);
+        record("original-candidate-directory", Map.of("originalCandidates", count, "returnedPersonnel", read.value.size(),
+                "hibernatePlaceholders", read.hibernateSql.stream().mapToLong(sql -> sql.chars().filter(c -> c == '?').count()).sum()), read);
+    }
+
+    private void seedForm(int count, String kind) throws Exception {
+        jdbc.update("INSERT INTO material(id,code,name) VALUES(910101,'READ-PRODUCT','读取观测产品')");
+        jdbc.update("INSERT INTO route(id,code,name) VALUES(910102,'READ-ROUTE','读取观测路线')");
+        jdbc.update("INSERT INTO route_version(id,route_id,version,code) VALUES(910103,910102,'1','READ-RV')");
+        jdbc.update("INSERT INTO dhr_template(id,code,name) VALUES(910104,'READ-DHR','读取观测目录')");
+        jdbc.update("INSERT INTO dhr_template_version(id,dhr_template_id,version_label) VALUES(910105,910104,'1')");
+        jdbc.update("INSERT INTO product_process(id,owner_type,owner_id) VALUES(910106,'PRODUCT',910101)");
+        jdbc.update("INSERT INTO product_process_version(id,product_process_id,version_label,production_mode,production_form,route_version_id,dhr_template_version_id) VALUES(910107,910106,'1','量产','批次',910103,910105)");
+        jdbc.update("INSERT INTO work_order(id,order_no,product_id,planned_quantity) VALUES(910108,'READ-WO',910101,1)");
+        jdbc.update("INSERT INTO production_object(id,work_order_id,object_no,object_type,process_version_id,target_quantity,status) VALUES(910109,910108,'READ-BATCH','BATCH',910107,1,'IN_PROGRESS')");
+        jdbc.update("INSERT INTO form_template(id,code,name) VALUES(910110,'READ-FORM','读取观测表单')");
+        jdbc.update("INSERT INTO form_template_version(id,template_id) VALUES(910111,910110)");
+        if (kind.equals("distinct")) jdbc.update("INSERT INTO user_account(id,tenant_id,username,display_name,password_hash,status) SELECT 40000+n,0,'form-name-'||n,'表单当前名-'||n,'not-used','ACTIVE' FROM generate_series(0,?-1) n", count);
+        var snapshot = mapper.createObjectNode(); var operation = snapshot.putArray("operations").addObject().put("id", "op");
+        var form = operation.putArray("forms").addObject().put("id", "form").put("versionId", "910111");
+        var flow = form.putObject("flow"); var nodes = flow.putArray("nodes"); flow.putArray("edges");
+        nodes.addObject().put("id", "fill").putObject("data").put("kind", "START").put("label", "填写");
+        var state = mapper.createObjectNode(); var progress = state.putObject("operations").putObject("op")
+                .put("status", "IN_PROGRESS").putObject("forms").putObject("form").put("status", "ACTIVE");
+        var active = progress.putArray("active"); var transferred = progress.putObject("transferAssignees");
+        for (int i = 0; i < count; i++) {
+            String node = "review-" + i;
+            nodes.addObject().put("id", node).putObject("data").put("kind", "APPROVAL").put("label", "复核" + i);
+            active.add(node);
+            transferred.put(node, switch (kind) { case "distinct" -> String.valueOf(40000 + i);
+                case "missing" -> "999999"; case "blank" -> ""; default -> "42"; });
+        }
+        jdbc.update("INSERT INTO production_execution(object_id,snapshot_json,state_json,started_at,updated_at) VALUES(910109,?,?,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP)", snapshot.toString(), state.toString());
+        jdbc.update("""
+                INSERT INTO form_instance_record(id,tenant_id,instance_no,object_id,operation_id,form_id,copy_id,template_id,version_id,
+                  snapshot_json,values_json,status,updated_at,template_name,created_by_id,source_type)
+                VALUES(910112,'default','READ-FORM-INSTANCE',910109,'op','form','form',910110,910111,?,'{}','IN_REVIEW',CURRENT_TIMESTAMP,'读取观测表单','41','ROUTE')
+                """, form.toString());
+    }
+
+    private String formEvidence() {
+        return jdbc.queryForObject("SELECT snapshot_json||state_json||revision FROM production_execution WHERE object_id=910109", String.class)
+                + jdbc.queryForObject("SELECT snapshot_json||values_json||status FROM form_instance_record WHERE id=910112", String.class);
     }
 
     private static class Read<T> {

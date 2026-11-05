@@ -1,5 +1,21 @@
 # 持续推进台账
 
+## PR59已合入：普通表单详情与原候选容量取证
+
+已交付[PR60](https://github.com/IvenYi/edhr-nexus-frontend/pull/60)，audit/edhr-dev-form-detail-read-20261105→edhr-dev，观察OPEN/MERGEABLE/CLEAN，建议人工合入本批测试/取证，不当性能修复或整体审计完成。受测04fc893f、归档a7070795后仅L0交付登记，其他受测既有路径保持；实际观察见本批evidence/delivery-verification.json，登记提交后再次核对本地/远端/PR head一致。下批先fetch真实合入及增量，按姓名方案答复或继续中央JSONCOUNT/候选参数与文本ID计划，全审余项和三性能发现保持open，不自动merge/deploy/恢复。
+
+本批对clean受测`04fc893f3df9de8d345fa32a7699f61f7cbc53ae`取得全新最终quality passed/FINAL，13/13必需检查、独立167/167和知识89/89通过。服务器独立29/29，298条业务SELECT/16签名吻合；11次目录实际限100无COUNT、5次姓名单数组保持，84条其他SELECT分项排除。两个子项及本体均正式FINAL，自有资源清理；152份最终文件新增归档，96份原主侧/本体原件保持。隔离依赖缺失、原件分析字段遗漏及自有软链dirty误判等编排错误原件保留，未混入产品/JUnit失败。
+
+全部FINAL后已实际完成[PR前漂移与阶段复核](../branch-review-20261105-form-detail/scope-review.md)，交付前fetch目标仍ea5c，无范围漂移。本批只交付取证测试，三个性能发现仍open；合成100节点未验创建/START、历史APPROVE仅核存储姓名与签名引用，不认证密码/真实签署。后续只新增L0归档/验收/scope/delivery与NEXT，其余受测既有路径保持；下文待QA为历史阶段。下一批按姓名方案答复或继续无依赖的中央JSONCOUNT及候选计划，所有原余项保持。
+
+实际fetch目标edhr-dev@ea5c57e63cb4980961498c4c192705ef91a37170，PR59人工合入、整树同33763f3c，无外部产品/知识/契约增量。新分支audit/edhr-dev-form-detail-read-20261105；[本批](../branch-review-20261105-form-detail/README.md)L2仅扩既有显式opt-in观察测试，产品/前端/迁移/索引/依赖/知识原字节保持。
+
+主侧167/167（读取29=原14+新15，原相邻138）0F/E/S。普通表单当前节点0/100空各1SQL；1/10/100同一现存人员各2；10/100不同或重复缺失人员11/101，历史姓名及签名引用仍来自history、不查当前目录，无权1SQL后拒绝。真实管理员原候选0/1/100/5000各4SQL、最多返回100，目录占位符7/8/107/5007，原候选不被截断。29次观察共298逻辑SELECT；不称全部网络SQL。
+
+另以原观察HibernateSQL在65005控制账户重放PREPARE/custom EXPLAIN，1/100/5000原候选均Seq Scan。此为分布有限的查询/索引匹配风险，不作生产慢查询或SLA保证，不新加索引。姓名条件性N+1、原候选参数增长、文本ID计划三项open，姓名方案已问用户、未答不当批准；本批是取证而非性能整改。实际SQL/计划/来源及A23/具体私有方法与投影拆分方案见本批review-notes。
+
+本体NA/FINAL：13相关ID=12一致/1保留完整多租户证据缺口，345知识不变，未跑89/原生/浏览器；当前待全新独立最终质量，不复用旧152/89。7484路径只盘点，wholeFile0/历史unique未知，931知识/86UI及W2-W7、原高风险/A12/完整矩阵/中央JSONCOUNT/汇总605/导出内存和所有原暂停继续。全部派发角色FINAL后实际PR前漂移/阶段/余项复核；不自动merge/deploy/恢复/扫删或查询触发CI。
+
 ## PR58已合入：人员目标目录免未用COUNT
 
 已交付[PR59](https://github.com/IvenYi/edhr-nexus-frontend/pull/59)，audit/edhr-dev-personnel-list-count-20261105→edhr-dev，观察OPEN/MERGEABLE/CLEAN，建议人工合入本批有限COUNT优化。受测代码ca836ef6、归档f575885b后仅L0交付登记，其他受测既有路径保持；实际观察见本批evidence/delivery-verification.json，登记提交后再次核对本地/远端/PR head一致。下一批先fetch真实合入/增量，继续普通表单独立详情和候选参数/文本ID计划等全审队列，不自动merge/deploy/恢复。
