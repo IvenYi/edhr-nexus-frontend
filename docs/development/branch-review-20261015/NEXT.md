@@ -1,5 +1,17 @@
 # 持续推进台账
 
+## PR63已交付：DHR签名图片复用已验收
+
+已交付[PR63](https://github.com/IvenYi/edhr-nexus-frontend/pull/63)，audit/edhr-dev-dhr-export-review-20261105→edhr-dev，观察OPEN/MERGEABLE/CLEAN，建议人工合入本批局部性能修复。受测1eff0b51、验收归档b4c26889后仅L0交付登记；登记后核对本地/真实远端/PR head一致。下一批先fetch实际merge和外部增量，再继续原全审队列；不自动merge/deploy/恢复。
+
+实际fetch目标`edhr-dev@5bfd96ff1e10a665a41db8fdf88352f65b1288a3`，PR62人工合入、整树同97621802，无外部代码/知识/契约增量；新分支audit/edhr-dev-dhr-export-review-20261105。[本批](../branch-review-20261105-dhr-export/README.md)L2继续原归档/导出资源队列，核冻结版本/完整性/资源释放和实际读取分配，不先改产品性能。
+
+用户已明确批准签名图复用，产品仅在一次resolve内缓存完整校验后的data URL；不跨调用、不混普通附件、不改冻结/资格/签名ID。主侧最终49/49、知识89/89；旧源预算19=16正/3真红/0E/S。100重复字段由100→1查询、25→0.25MiB逻辑读量、127.30→1.34MiB线程累计分配；不是生产峰值/SLA。PDF100张约38MiB ZIP、148MiB生成分配的风险仍open，打印器容量部分mock隔离，未实施磁盘方案。
+
+clean受测1eff0b51已取得全新quality passed/FINAL：16/16必需检查，无发现/阻断，独立49/49及知识89/89均0F/E/S；服务器33业务SELECT/3审计INSERT分列及11JFR吻合，资源清理。旧源原生预算同字节可证，旧unit仅原XML且缺预运行源码快照，限制明确保留。两个本体结果均NA，原20有限及delta子集不叠加unique，所有角色/子项正式FINAL后已实际完成[PR前无漂移/阶段复核](../branch-review-20261105-dhr-export/scope-review.md)，目标仍5bfd。之后仅L0归档与交付，受测既有路径保持。
+
+PDF源关闭假设被反证，中文长编号仅宽列/历史边界，不据此改正常路径。7562仅固定盘点、350知识不变、整文件0/历史unique未知，W3-W5交叉、W2余项/W6专项含旧已审A23/W7增量及931/86全部原队列保持。下一轮先fetch真实merge/新提交，再推进汇总附件循环元数据与导出容量；朋友签署页/生产弹窗暂停保持，不自动merge/deploy/恢复或查询触发CI。
+
 ## PR62已更新：中央列表快照复用及稀疏对象范围修复
 
 已更新[PR62](https://github.com/IvenYi/edhr-nexus-frontend/pull/62)标题正文为最终产品优化，正常推送原分支→edhr-dev，观察OPEN/MERGEABLE/CLEAN，建议人工合入。受测8a72398c、最终验收归档d482ba22后仅L0交付登记；实际观察见本批evidence/delivery-verification.json，登记后再次核对本地/真实远端/PR head一致。两个明确性能缺陷仅按本批范围关闭，下一批先fetch真实merge和新提交，再继续整体审计原队列；不自动merge/deploy/恢复或查询触发CI。

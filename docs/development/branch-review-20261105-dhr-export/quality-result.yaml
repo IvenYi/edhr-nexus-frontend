@@ -1,0 +1,208 @@
+qualityResult:
+  result: passed
+  baseCommit: 5bfd96ff1e10a665a41db8fdf88352f65b1288a3
+  headCommit: 1eff0b51fbec41ce272f51a1089a670697b86384
+  contractBaseline:
+    sourceCommit: 1eff0b51fbec41ce272f51a1089a670697b86384
+    targetBranch: edhr-dev
+    targetCommit: 5bfd96ff1e10a665a41db8fdf88352f65b1288a3
+    contractReadCommit: 1eff0b51fbec41ce272f51a1089a670697b86384
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: clean
+    includedPaths: []
+    excludedPaths: []
+    untrackedPaths: []
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+  - id: check.actual-contract-candidate
+    required: true
+    category: documentation
+    description: 实际读取1eff契约，开始/结束fetch仍5bfd；候选含目标。运行时仅自有node_modules软链，删除后工作树全clean，再正常移除；源码指纹保持。
+    method: command
+    command: git fetch/rev-parse/status/diff/merge-base; actual contracts
+    outcome: passed
+    evidence:
+    - contract-and-source.json
+    - cleanup.json
+  - id: check.authorized-impact-and-extension
+    required: true
+    category: requirements
+    description: 用户批准先修复重复签名图；同一L2 impact/extension覆盖直接、相邻、快照、审计、权限、迁移和证据缺口，产品仅一处局部Map，未扩范围。
+    method: inspection
+    command: Read decisionPackage and source diff
+    outcome: passed
+    evidence:
+    - read-snapshots/docs/development/branch-review-20261105-dhr-export/decision-package.yaml
+    - review-notes.md
+  - id: check.call-local-reuse-and-identity
+    required: true
+    category: security
+    description: 首次原read+PNG/JPEG成功后缓存；每resolve新Map，不跨调用/截止时点/普通文件类型，输入deepCopy，签名ID与原件ZIP输出保持。
+    method: inspection
+    command: Review DhrFormFiles and current assertions
+    outcome: passed
+    evidence:
+    - native-optimized/source/gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrFormFiles.java
+    - native-optimized/source/gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrFormFilesTest.java
+    - review-notes.md
+  - id: check.native49-fresh
+    required: true
+    category: regression
+    description: 自有detached候选及独立PG完整执行49/49、0F/E/S；新观察12、流3、原归档13、文件4、版式3、汇总8、真实renderer6，fresh
+      XML。
+    method: command
+    command: python run-native.py optimized
+    outcome: passed
+    evidence:
+    - native-optimized/run.json
+    - native-optimized/test-summary.json
+  - id: check.unique-image-budget-and-failures
+    required: true
+    category: integration
+    description: 0/1/10/100图片读取预算、嵌套2身份PNG/JPEG、跨调用/普通类型及损坏/截止/租户拒绝实际通过；未弱化原断言。
+    method: automated-test
+    command: Selected DhrExportReadObservationPostgresTest and DhrFormFilesTest
+    outcome: passed
+    evidence:
+    - native-optimized/TEST-com.zencas.edhr.production.service.DhrExportReadObservationPostgresTest.xml
+    - native-optimized/TEST-com.zencas.edhr.production.service.DhrFormFilesTest.xml
+  - id: check.canonical-archive-integrity
+    required: true
+    category: audit
+    description: 实际canonical冻结版本/逐源摘要、1/10/100有效PDF ZIP解压、清单SHA和字节、合并页数、真实EXPORT审计通过；打印器容量mock隔离而非START/Chromium容量。
+    method: automated-test
+    command: Native archive capacity and original archive tests
+    outcome: passed
+    evidence:
+    - native-optimized/TEST-com.zencas.edhr.production.service.DhrExportReadObservationPostgresTest.xml
+    - native-optimized/TEST-com.zencas.edhr.production.service.DhrAttachmentAndArchiveTest.xml
+    - review-notes.md
+  - id: check.stream-lifetime
+    required: true
+    category: unit
+    description: 直接响应回调成功/8字节后输出中断均删除自有ZIP，异常传播；非法ID调用服务前拒绝。未声称HTTP/RBAC/异步拒绝矩阵。
+    method: automated-test
+    command: DhrArchiveControllerStreamingTest
+    outcome: passed
+    evidence:
+    - native-optimized/TEST-com.zencas.edhr.production.controller.DhrArchiveControllerStreamingTest.xml
+    - review-notes.md
+  - id: check.real-chromium-and-sample-visual
+    required: true
+    category: visual
+    description: 真实Chromium6必需方法执行通过；亲自逐图查看中文首张、长表3/3末行ROW060、横向版式3样本，不等于全app或所有模板。
+    method: inspection
+    command: Real renderer tests; pdftoppm and view_image three focused samples
+    outcome: passed
+    evidence:
+    - native-optimized/TEST-com.zencas.edhr.production.service.DhrPdfRendererTest.xml
+    - real-print/chinese-first.png
+    - real-print/long-last.png
+    - real-print/landscape.png
+  - id: check.server-query-math
+    required: true
+    category: database
+    description: 11SQL签名与自有服务器成功execute逐项对应：33观察SELECT、3审计INSERT；图片6业务+13控制=19。另26初始化/驱动、3后断言、1runner版本SELECT分列。
+    method: query
+    command: Parse own PG successful execute/statement records and compare native
+      SQL
+    outcome: passed
+    evidence:
+    - server-sql-review.json
+    - native-optimized/postgres.log
+    - analyze-runtime.py
+  - id: check.external-jfr-and-allocation-scope
+    required: true
+    category: integration
+    description: 外部JFR工具独立重读11记录，按原件/ZIP路径重算事件与字节全等；signature100 1次/262144B/约1.335MiB分配；PDF100约38MiB
+      ZIP/148.43MiB分配仍open。
+    method: command
+    command: JDK jfr print --json --events jdk.FileRead; independent path sums
+    outcome: passed
+    evidence:
+    - jfr-allocation-review.json
+    - jfr-json/signature-100.json
+    - jfr-json/archive-100.json
+  - id: check.old-source-evidence
+    required: true
+    category: regression
+    description: 原档旧源19项16正/3红/0E/S；原生预算源码同字节可证。旧unit仅XML/主侧修改历史，没有预运行源码快照，不冒称独立重跑。首次3夹具E单列。
+    method: inspection
+    command: Read original archive XML, fingerprints and negative control
+    outcome: passed
+    evidence:
+    - evidence-review/result.json
+    - review-notes.md
+  - id: check.all-original-bytes
+    required: true
+    category: documentation
+    description: 4归档273文件外层及逐文件哈希吻合；四阶段XML/SQL数学、41JFR主原件与最终源7指纹通过。
+    method: command
+    command: Read-only evidence child hash/XML/JFR verification
+    outcome: passed
+    evidence:
+    - evidence-review/result.json
+    - evidence-review/manifest.json
+  - id: check.knowledge89-and-finite-ontology
+    required: true
+    category: ontology
+    description: 独立知识89/89；350知识/0.3.25/schema1.2/P0保持，原20记录18有限一致2gap，delta6既有ID子集+2gap，两个本体NA，无政策漂移。
+    method: command
+    command: mvn -f tools/knowledge-model/pom.xml test; finite source/definition review
+    outcome: passed
+    evidence:
+    - knowledge/maven.log
+    - knowledge/test-summary.json
+    - evidence-review/result.json
+    - review-notes.md
+  - id: check.protected-baseline-and-inventory
+    required: true
+    category: documentation
+    description: 1122保护指纹只一产品文件变化；基线7562路径仅盘点、wholeFile0/历史unique未知。931/86及全部原队列和用户暂停保留。
+    method: command
+    command: Compare baseline/current protected groups and fixed inventory
+    outcome: passed
+    evidence:
+    - contract-and-source.json
+    - evidence-review/result.json
+  - id: check.a23-and-concrete-extraction
+    required: true
+    category: requirements
+    description: 不同冻结/源/原件摘要与选择范围保护各有依据，不机械删除；局部map足够，具体三私有writer/context拆分仍提案，不做大重构/假设修复。
+    method: inspection
+    command: Read actual DhrArchiveService/DhrFormFiles/PDFMerger and review proposals
+    outcome: passed
+    evidence:
+    - review-notes.md
+    - evidence-review/result.json
+  - id: check.final-resources-and-children
+    required: true
+    category: documentation
+    description: 证据子项正式FINAL/passed8项；自有PG、软链、工作树已清理；终取目标仍5bfd；验证工具两非产品错误留记录，未修改repo或查询触发CI。
+    method: command
+    command: Final target fetch, candidate fingerprint check and owned cleanup
+    outcome: passed
+    evidence:
+    - cleanup.json
+    - evidence-review/result.json
+    - verifier-tool-notes.json
+  findings: []
+  residualRisks:
+  - id: risk.pdf-buffer-capacity
+    description: 100张隔离有效PDF约38MiB ZIP/148MiB线程累计分配；PDF数组/合并/序列化累计风险仍open。
+    impact: 真实Chromium、图像重量、进程峰值和并发容量未认证。
+    mitigation: 保留原输出与完整性，后续讨论磁盘/增量资源方案，未在本批自动优化。
+  - id: limit.runtime-matrices
+    description: 直接服务/流回调及有限真实renderer样本，不覆盖创建START、完整HTTP/RBAC/异步拒绝、七格式/50MiB完整矩阵。
+    impact: 局部通过不能替代全系统/发布认证或DEC0090受控归档生命周期。
+    mitigation: 两完整场景保持evidence-gap，按原全审队列继续。
+  - id: limit.old-unit-source-snapshot
+    description: 旧源预算unit原XML存在，但主runner未捕获DhrFormFilesTest预运行源码；同字节可证范围为原生预算测试。
+    impact: 不声称独立旧源unit复跑或补造缺失快照。
+    mitigation: 当前unit由本实例独立执行通过；保留原XML与修改历史限定，主侧L0收尾明确简称。
+  - id: risk.remaining-whole-audit
+    description: 931知识候选/86UI、W2余项、W3-W5交叉、W6健壮性/性能/抽取/A23及旧代码复查、W7增量及原其他队列保持。
+    impact: 本批不是整体代码审计完成或全部业务本体一致通过。
+    mitigation: 持续台账；每轮先拉取目标并审增量，暂停项不自动恢复。
+  blockingConditions: []

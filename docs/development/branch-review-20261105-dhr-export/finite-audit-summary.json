@@ -1,0 +1,28 @@
+{
+  "scope": "finite baseline DHR frozen ZIP/PDF read contracts, numbering and signature presentation",
+  "records": 20,
+  "knowledgeIds": 19,
+  "supportMarkdownFiles": 1,
+  "reviewStatusCounts": {
+    "reviewed": 20
+  },
+  "conclusionCounts": {
+    "consistent": 18,
+    "evidence-gap": 2
+  },
+  "knowledgeFilesInventory": 350,
+  "knowledgeFilesSemanticallyReviewed": null,
+  "wholeAuditNotClosed": true,
+  "originalWholeAuditKnowledgeCandidates": 931,
+  "originalWholeAuditUiDiagnostics": 86,
+  "preservedGaps": [
+    "multi-tenant isolation",
+    "general quality/exception/source-signature automatic comparison",
+    "A12 full history",
+    "DHR archive lifecycle/release/backup-and-recovery",
+    "full HTTP/auth matrix/real full PDF layout",
+    "original whole-audit outstanding items and user pauses"
+  ],
+  "notPerformanceOptimizationApproval": true,
+  "runtimeTestsExecutedByThisRole": []
+}

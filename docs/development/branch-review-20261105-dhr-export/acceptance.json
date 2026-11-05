@@ -1,0 +1,52 @@
+{
+  "result": "passed",
+  "executionLevel": "L2",
+  "baseCommit": "5bfd96ff1e10a665a41db8fdf88352f65b1288a3",
+  "testedCandidate": "1eff0b51fbec41ce272f51a1089a670697b86384",
+  "actualQualityContractReadCommit": "1eff0b51fbec41ce272f51a1089a670697b86384",
+  "prePrTargetFetchedCommit": "5bfd96ff1e10a665a41db8fdf88352f65b1288a3",
+  "mainNative": {
+    "tests": 49,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "independentSummary": {
+    "result": "passed",
+    "baseCommit": "5bfd96ff1e10a665a41db8fdf88352f65b1288a3",
+    "headCommit": "1eff0b51fbec41ce272f51a1089a670697b86384",
+    "requiredChecks": 16,
+    "passedChecks": 16,
+    "native": {
+      "tests": 49,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "knowledge": {
+      "tests": 89,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "serverMeasuredSELECT": 33,
+    "serverAuditINSERT": 3,
+    "independentJfrRecords": 11,
+    "evidenceChild": {
+      "result": "passed",
+      "checks": 8,
+      "status": "FINAL"
+    },
+    "resourcesClean": true,
+    "findings": 0,
+    "blockingConditions": 0,
+    "generatedAt": "2026-11-05T14:53:43.415109+00:00"
+  },
+  "ontologyResult": "not-applicable",
+  "allRolesAndChildrenFinal": true,
+  "driftReview": "scope-review.md",
+  "remainingScope": "PDF capacity and original whole-audit queues stay open",
+  "negativeControlLimit": "Native budget exact test bytes captured; old unit only original XML, no pre-run source snapshot; no independent old-unit rerun claimed",
+  "protectedClosure": "After tested candidate only L0 evidence/acceptance/README/NEXT/delivery docs; source/test/knowledge/config unchanged",
+  "generatedAt": "2026-11-05T14:55:25.923411+00:00"
+}

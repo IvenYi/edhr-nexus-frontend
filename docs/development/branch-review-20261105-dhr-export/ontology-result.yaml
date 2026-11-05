@@ -1,0 +1,47 @@
+ontologyResult:
+  result: not-applicable
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: 5bfd96ff1e10a665a41db8fdf88352f65b1288a3
+    targetBranch: edhr-dev
+    targetCommit: 5bfd96ff1e10a665a41db8fdf88352f65b1288a3
+    contractReadCommit: 5bfd96ff1e10a665a41db8fdf88352f65b1288a3
+    uncommittedContractPaths: []
+  reason: >-
+    用户已确认仅修复重复签名图片读取；最新同一L2决策包将其明确为工程增量。
+    当前工作树DhrFormFiles在一次resolve内按签名图片fileId复用通过原read及MIME检查的data URL，
+    每次调用新建局部Map，与普通原件map独立，首次的租户/类型/cutoff/size/MD5及PNG/JPEG校验不变。
+    冻结输入仍deep-copy，每字段签名ID及元数据保持，不新建签署事件、不增加ZIP独立签名图附件，
+    不修改认证、权限、编号、FULL/SELECTED、原件输出、冻结摘要、追溯和DHR归档生命周期政策。
+    原20条有限范围保留：本次重核6个受影响既有ID并重申2个完整验收scenario的证据缺口，
+    其余12条按未变字节与无语义依赖变化保留，不扩大全库一致性声明。
+    未新增业务语义或声明替代，知识350文件原字节未变，保持0.3.25/schema1.2.0/P0 in-progress；
+    不抬高成熟度，不新建知识记录，931知识候选、86UI及全部原全审余项和用户暂停保持。
+    原FINAL目录和77份已列文件经摘要复核未覆盖。本角色仅核对源码/测试断言和证据边界，
+    未执行或认证主侧旧源红例、49项运行测试、独立质量、PDF视觉、HTTP或生产性能。
+  changedArtifacts: []
+  knowledgeSync: []
+  conflicts: []
+  questions: []
+  validationEvidence:
+    - id: validation.image-reuse-delta-references
+      checkType: reference
+      command: python /tmp/edhr-export-reuse-ontology-20261105/validate_delta.py references
+      outcome: passed
+      evidence: [delta-audit-records.jsonl, original-scope-dispositions.jsonl, delta-summary.json, validation-references.log]
+    - id: validation.image-reuse-baseline-and-original-final
+      checkType: evidence-path
+      command: python /tmp/edhr-export-reuse-ontology-20261105/validate_delta.py baseline
+      outcome: passed
+      evidence: [baseline.json, source-snapshot-manifest.json, knowledge-fingerprint-inventory.json, DhrFormFiles-working-tree.patch, validation-baseline.log]
+    - id: validation.image-reuse-local-handoff-format
+      checkType: schema
+      command: python /tmp/edhr-export-reuse-ontology-20261105/validate_delta.py result
+      outcome: passed
+      evidence: [validation-result.log, 本地结果字段断言并非正式BusinessKnowledgeModelTest或运行验收。]
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages: [P1, P2, P3]

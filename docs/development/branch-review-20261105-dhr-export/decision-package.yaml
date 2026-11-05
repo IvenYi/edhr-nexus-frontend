@@ -1,0 +1,88 @@
+decisionPackage:
+  id: DEC-PACKAGE-DHR-EXPORT-READ-20261105
+  scope: edhr-dev DHR frozen archive read integrity, resource lifetime and native read/allocation observation
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: 5bfd96ff1e10a665a41db8fdf88352f65b1288a3
+    targetBranch: edhr-dev
+    targetCommit: 5bfd96ff1e10a665a41db8fdf88352f65b1288a3
+    contractReadCommit: 5bfd96ff1e10a665a41db8fdf88352f65b1288a3
+    uncommittedContractPaths: []
+  summary: PR62已合入无外部增量；沿原导出资源队列实测后，用户明确批准同一次表单解析中复用已校验签名图片及显示编码。仅局部复用，不改变资格/摘要/冻结/导出内容；PDF累计资源保持开放风险。
+  confirmed:
+    concepts: []
+    relationships: []
+    rules: []
+    executionContracts: []
+  inferred:
+    - id: inference.dhr-export-resource-cost
+      statement: 重复签名图片每字段读取和base64转换、表单PDF数组及合并文档可能放大读取/内存；需要实际原件/SQL/分配及失败路径证据，不仅按源码或SQL条数判断。
+      rationale: DhrFormFiles.resolveValues直接read签名图，ArchiveService保存formPdfs并生成combined字节；生产signField复用认证图片fileId，重复字段引用是可达来源。
+      relatedIds: [rule.dhr-summary-zip-source-trace]
+  unresolved: []
+  replacementScopes: []
+  engineeringDecisions:
+    - id: decision.dhr-export-signature-image-call-reuse
+      status: user-confirmed
+      source: 用户本轮异步回复“先修复重复图片读取（推荐）”
+      scope: 一次DhrFormFiles.resolve内部，按签名图片fileId复用已经完整校验的显示data URL；不跨表单/调用，不与普通附件共享缓存。
+      invariants: [租户/文件类型/创建截止时点/登记长度和MD5检查保留, PNG/JPEG限制保留, 冻结输入不变, 签名ID及全部字段元数据不变, 签名图不新增为ZIP独立附件]
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - area: frozen-export-read
+        change: 源码及新增观察/测试核对显式版本、完整性、实际ZIP可解压和资源生命周期；仅在一次resolve内复用签名图片已校验的data URL。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrArchiveService.java, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrFormFiles.java]
+    transitiveImpacts:
+      - area: archive-controller-and-rendering
+        change: 控制器流出ZIP的成功/断流清理及PDF文件可读性；容量隔离打印器与真实打印回归分开报告。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrArchiveController.java, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrPdfRenderer.java]
+    potentialImpacts:
+      - area: repeat-identity-and-allocation
+        concern: 区分同fileId在普通附件与签名图的复用、JPA open-in-view=false真实查询、文件逻辑读量和线程分配；PDF缓冲合并的累计内存与失败清理需测。
+        evidenceReferences: []
+    unaffectedAreas:
+      - area: policies-and-writes
+        change: 原签名认证/资格/冻结/摘要/导出范围及FR编号保持；普通原件缓存保持独立，不修历史坏数据或为假设改业务；PR62和人员完整续页及用户暂停页面保持。
+        evidenceReferences: []
+    compatibilityAndMigration:
+      - area: no-product-migration
+        change: 局部调用级复用及测试/研发记录，无接口、目录格式、schema/索引或历史数据迁移。
+        evidenceReferences: []
+    snapshotImpacts:
+      - area: explicit-frozen-source
+        change: 直接持久化受校验的冻结夹具，仅证明读取不证明创建/START；不以当前值替代冻结事实。
+        evidenceReferences: []
+    auditImpacts:
+      - area: generated-archive-evidence
+        change: 容量部分实际生成ZIP并核对清单摘要/完整性，真实保存导出审计；与客户端已接收和完整HTTP验收区分。
+        evidenceReferences: []
+    permissionImpacts:
+      - area: read-scope
+        change: 原Controller双权限、文件租户/来源/cutoff/摘要保护保持，直接服务观察不认证完整登录/RBAC矩阵。
+        evidenceReferences: []
+    testImpacts:
+      - scope: native-helper-archive-and-controller
+        scenarios: [0/1/10/100重复普通附件与签名图读取预算, 原源预算反证, 嵌套PNG/JPEG独立身份复用, 不跨调用及普通类型且失败不复用, JFR逻辑文件读量与线程分配, 冻结原件资格及坏文件拒绝, 1/10/100有效PDF归档累计, 原冻结摘要/清单/页数与实际解压, 成功/输出失败临时文件清理, 原DHR导出/文件/PDF/汇总相邻回归]
+        evidenceReferences: []
+    evidenceGaps: [生产并发/SLA/完整HTTP与创建START未覆盖, 超长非现行FR编号和坏历史数据不当正常写入口缺陷, 931知识候选/86UI及全部原全审余项保留]
+  extensionStrategy:
+    selectedPaths: [product-core]
+    rationale: 在既有DHR文件读者加入局部Map，保存已校验的显示data URL；复用真实PG/JPA/JFR及实际ZIP/PDF解析取证，不新建产品框架、全局缓存或防御分支。
+    ownershipBoundaries:
+      - owner: dhr-export
+        responsibility: 同一冻结版本、证据原件/摘要、选择范围与档案输出。
+      - owner: audit-observation
+        responsibility: 原生SQL、逻辑文件读取、分配及原件归档和独立验收，不能用性能假设改变政策。
+  affectedFiles:
+    - {path: gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrExportReadObservationPostgresTest.java, changeType: create, reason: 实际读者资源和归档完整性观察}
+    - {path: gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/DhrArchiveControllerStreamingTest.java, changeType: create, reason: 控制器临时文件生命周期回归}
+    - {path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrArchiveService.java, changeType: read-only, reason: 显式冻结归档及资源链}
+    - {path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrFormFiles.java, changeType: update, reason: 单次解析复用已校验签名图显示编码}
+    - {path: gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrFormFilesTest.java, changeType: update, reason: 嵌套重复PNG/JPEG及不跨调用/类型的边界回归}
+  acceptanceScenarios:
+    - id: scenario.dhr-export-read-observation
+      given: 真实迁移隔离库中可验证的冻结版本和受控原件，普通/签名图复用引用
+      when: 调用实际resolve或export及Controller流回调
+      then: 资格与冻结身份/原字节/清单摘要保持，实际ZIP可解压/PDF可读，失败清理有证据，SQL/逻辑读量/分配分列且不固定低效次数为契约
+      evidenceRequirements: [新XML及原始观察/PG日志/JFR, 实际解压与PDF检查, 来源指纹与有限本体核对, 全新独立质量及范围复核]

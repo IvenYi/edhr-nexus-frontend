@@ -1,0 +1,33 @@
+{
+  "scope": "old base DhrFormFiles bytes + same new budget tests prior to product edit",
+  "totals": {
+    "tests": 19,
+    "failures": 3,
+    "errors": 0,
+    "skipped": 0
+  },
+  "failures": [
+    {
+      "class": "com.zencas.edhr.production.service.DhrFormFilesTest",
+      "name": "reusesEachSignatureImageAcrossNestedFieldsWithoutChangingFrozenEvidence",
+      "type": "failure",
+      "message": "\nfileObjectRepository.findById(20L);\nWanted 1 time:\n-> at com.zencas.edhr.production.service.DhrFormFilesTest.reusesEachSignatureImageAcrossNestedFieldsWithoutChangingFrozenEvidence(DhrFormFilesTest.java:41)\nBut was 50 times:\n-> at com.zencas.edhr.production.service.DhrFormFiles.requireFile(DhrFormFiles.java:110)\n-> at com.zencas.edhr.production.service.DhrFormFiles.requireFile(DhrFormFiles.java:110)\n-> at com.zencas.edhr.production.service.DhrFormFiles.requireFile(DhrFormFiles.java:110)\n-> at com.zencas.edhr.production.service.DhrFormFiles.requireFile(DhrFormFiles.java:110)\n-> at com.zencas.edhr.production.service.DhrFormFiles.requireFile(DhrFormFiles.java:110)\n-> at com.zencas.edhr.production.service.DhrFormFiles.requireFile(DhrFormFiles.java:110)\n-> at com.zencas.edhr.production.service.DhrFormFiles.requireFile(DhrFormFiles.java:110)\n-> at com.zencas.edhr.production.service.DhrFormFiles.requireFile(DhrFormFiles.java:110)\n-> at com.zencas.edhr.production.service.DhrFormFiles.requireFile(DhrFormFiles.java:110)\n-> at com.zencas.edhr.production.service.DhrFormFiles.requireFile(DhrFormFiles.java:110)\n-> at com.zencas.edhr.production.service.DhrFormFiles.requireFile(DhrFormFiles.java:110)\n-> at com.zencas.edhr.production.service.DhrFormFiles.requireFile(DhrFormFiles.java:110)\n-> at com.zencas.edhr.production.service.DhrFormFiles.requireFile(DhrFormFiles.java:110)\n-> at com.zencas.edhr.production.service.DhrFormFiles.requireFile(DhrFormFiles.java:110)\n-> at com.zencas.edhr.production.service.DhrFormFiles.requireFile(DhrFormFiles.java:110)\n-> at com.zencas.edhr.production.service.DhrFormFiles.requireFile(DhrFormFiles.java:110)\n-> at com.zencas.edhr.production.service.DhrFormFiles.requireFile(DhrFormFiles.java:110)\n-> at com.zencas.edhr.production.service.DhrFormFiles.requireFile(DhrFormFiles.java:110)\n-> at com.zencas.edhr.production.service.DhrFormFiles.requireFile(DhrFormFiles.java:110)\n-> at com.zencas.edhr.production.service.DhrFormFiles.requireFile(DhrFormFiles.java:110)\n-> at com.zencas.edhr.production.service.DhrFormFiles.requireFile(DhrFormFiles.java:110)\n-> at com.zencas.edhr.production.service.DhrFormFiles.requireFile(DhrFormFiles.java:110)\n-> at com.zencas.edhr.production.service.DhrFormFiles.requireFile(DhrFormFiles.java:110)\n-> at com.zencas.edhr.production.service.DhrFormFiles.requireFile(DhrFormFiles.java:110)\n-> at com.zencas.edhr.production.service.DhrFormFiles.requireFile(DhrFormFiles.java:110)\n-> at com.zencas.edhr.production.service.DhrFormFiles.requireFile(DhrFormFiles.java:110)\n-> at com.zencas.edhr.production.service.DhrFormFiles.requireFile(DhrFormFiles.java:110)\n-> at com.zencas.edhr.production.service.DhrFormFiles.requireFile(DhrFormFiles.java:110)\n-> at com.zencas.edhr.production.service.DhrFormFiles.requireFile(DhrFormFiles.java:110)\n-> at com.zencas.edhr.production.service.DhrFormFiles.requireFile(DhrFormFiles.java:110)\n-> at com.zencas.edhr.production.service.DhrFormFiles.requireFile(DhrFormFiles.java:110)\n-> at com.zencas.edhr.production.service.DhrFormFiles.requireFile(DhrFormFiles.java:110)\n-> at com.zencas.edhr.production.service.DhrFormFiles.requireFile(DhrFormFiles.java:110)\n-> at com.zencas.edhr.production.service.DhrFormFiles.requireFile(DhrFormFiles.java:110)\n-> at com.zencas.edhr.production.service.DhrFormFiles.requireFile(DhrFormFiles.java:110)\n-> at com.zencas.edhr.production.service.DhrFormFiles.requireFile(DhrFormFiles.java:110)\n-> at com.zencas.edhr.production.service.DhrFormFiles.requireFile(DhrFormFiles.java:110)\n-> at com.zencas.edhr.production.service.DhrFormFiles.requireFile(DhrFormFiles.java:110)\n-> at com.zencas.edhr.production.service.DhrFormFiles.requireFile(DhrFormFiles.java:110)\n-> at com.zencas.edhr.production.service.DhrFormFiles.requireFile(DhrFormFiles.java:110)\n-> at com.zencas.edhr.production.service.DhrFormFiles.requireFile(DhrFormFiles.java:110)\n-> at com.zencas.edhr.production.service.DhrFormFiles.requireFile(DhrFormFiles.java:110)\n-> at com.zencas.edhr.production.service.DhrFormFiles.requireFile(DhrFormFiles.java:110)\n-> at com.zencas.edhr.production.service.DhrFormFiles.requireFile(DhrFormFiles.java:110)\n-> at com.zencas.edhr.production.service.DhrFormFiles.requireFile(DhrFormFiles.java:110)\n-> at com.zencas.edhr.production.service.DhrFormFiles.requireFile(DhrFormFiles.java:110)\n-> at com.zencas.edhr.production.service.DhrFormFiles.requireFile(DhrFormFiles.java:110)\n-> at com.zencas.edhr.production.service.DhrFormFiles.requireFile(DhrFormFiles.java:110)\n-> at com.zencas.edhr.production.service.DhrFormFiles.requireFile(DhrFormFiles.java:110)\n-> at com.zencas.edhr.production.service.DhrFormFiles.requireFile(DhrFormFiles.java:110)\n\n"
+    },
+    {
+      "class": "com.zencas.edhr.production.service.DhrExportReadObservationPostgresTest",
+      "name": "repeatedSignatureImageReadsPreserveEveryFrozenField(int)[3]",
+      "type": "failure",
+      "message": "\nexpected: 1L\n but was: 10L"
+    },
+    {
+      "class": "com.zencas.edhr.production.service.DhrExportReadObservationPostgresTest",
+      "name": "repeatedSignatureImageReadsPreserveEveryFrozenField(int)[4]",
+      "type": "failure",
+      "message": "\nexpected: 1L\n but was: 100L"
+    }
+  ],
+  "baselineSourceSha256": "5fee2445f853d6fddd3202aa46a03efcbc5446989aabe36cbf6bf76814d4da8c",
+  "finalObservationTestSha256": "940dffecc977aacc21acf10fb1422f782be5dde9f0c28f435c1d80e049b21de7",
+  "budgetObservationTestSha256": "940dffecc977aacc21acf10fb1422f782be5dde9f0c28f435c1d80e049b21de7",
+  "initialFixtureErrors": "native-focused 15=12 pass/3 canonical not-null fixture E; corrected main fixture, no product/constraint changes; original logs kept separately, not counted as regression evidence"
+}
