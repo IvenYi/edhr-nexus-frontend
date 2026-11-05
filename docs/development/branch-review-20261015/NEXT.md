@@ -1,5 +1,13 @@
 # 持续推进台账
 
+## PR62已合入：DHR冻结归档读取与资源审查进行中
+
+实际fetch目标`edhr-dev@5bfd96ff1e10a665a41db8fdf88352f65b1288a3`，PR62人工合入、整树同97621802，无外部代码/知识/契约增量；新分支audit/edhr-dev-dhr-export-review-20261105。[本批](../branch-review-20261105-dhr-export/README.md)L2继续原归档/导出资源队列，核冻结版本/完整性/资源释放和实际读取分配，不先改产品性能。
+
+用户已明确批准签名图复用，产品仅在一次resolve内缓存完整校验后的data URL；不跨调用、不混普通附件、不改冻结/资格/签名ID。主侧最终49/49、知识89/89；旧源预算19=16正/3真红/0E/S。100重复字段由100→1查询、25→0.25MiB逻辑读量、127.30→1.34MiB线程累计分配；不是生产峰值/SLA。PDF100张约38MiB ZIP、148MiB生成分配的风险仍open，打印器容量部分mock隔离，未实施磁盘方案。
+
+源码子项FINAL：PDF源流关闭假设被现行PDFMerger/真实文字多页测试反证；中文长实例号仅宽列/历史边界，当前新号固定ASCII，不据此改正常路径。原20本体有限核对FINAL，复用delta与全新独立质量收尾，全部FINAL后PR前漂移复核；7562仅固定盘点、350知识不变、整文件0/历史unique未知，所有原全审/性能/暂停队列保持，不自动merge/deploy/恢复或查询触发CI。
+
 ## PR62已更新：中央列表快照复用及稀疏对象范围修复
 
 已更新[PR62](https://github.com/IvenYi/edhr-nexus-frontend/pull/62)标题正文为最终产品优化，正常推送原分支→edhr-dev，观察OPEN/MERGEABLE/CLEAN，建议人工合入。受测8a72398c、最终验收归档d482ba22后仅L0交付登记；实际观察见本批evidence/delivery-verification.json，登记后再次核对本地/真实远端/PR head一致。两个明确性能缺陷仅按本批范围关闭，下一批先fetch真实merge和新提交，再继续整体审计原队列；不自动merge/deploy/恢复或查询触发CI。

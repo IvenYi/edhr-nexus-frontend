@@ -1,0 +1,1424 @@
+{
+  "baselineCommit": "5bfd96ff1e10a665a41db8fdf88352f65b1288a3",
+  "generatedAt": "2026-11-05T14:42:34.926541+00:00",
+  "phases": {
+    "focused": {
+      "tests": {
+        "totals": {
+          "tests": 15,
+          "failures": 0,
+          "errors": 3,
+          "skipped": 0
+        },
+        "classes": [
+          {
+            "class": "com.zencas.edhr.production.service.DhrExportReadObservationPostgresTest",
+            "tests": 12,
+            "failures": 0,
+            "errors": 3,
+            "skipped": 0
+          },
+          {
+            "class": "com.zencas.edhr.production.controller.DhrArchiveControllerStreamingTest",
+            "tests": 3,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        ],
+        "missingFreshReports": []
+      },
+      "events": [
+        {
+          "name": "ordinary-0",
+          "elapsedNanos": 31448,
+          "threadAllocatedBytes": 616,
+          "heapBefore": 174838304,
+          "heapAfter": 174838304,
+          "trackedLogicalReadBytes": 0,
+          "trackedReadEvents": 0,
+          "data": {
+            "sameFileIdentity": true,
+            "fields": 0,
+            "imageBytes": 262144,
+            "kind": "ordinary"
+          },
+          "selectStatements": 0
+        },
+        {
+          "name": "ordinary-1",
+          "elapsedNanos": 2486851,
+          "threadAllocatedBytes": 550376,
+          "heapBefore": 182178336,
+          "heapAfter": 183226912,
+          "trackedLogicalReadBytes": 262144,
+          "trackedReadEvents": 2,
+          "data": {
+            "sameFileIdentity": true,
+            "fields": 1,
+            "imageBytes": 262144,
+            "kind": "ordinary"
+          },
+          "selectStatements": 1
+        },
+        {
+          "name": "ordinary-10",
+          "elapsedNanos": 2403225,
+          "threadAllocatedBytes": 291968,
+          "heapBefore": 188469792,
+          "heapAfter": 188469792,
+          "trackedLogicalReadBytes": 262144,
+          "trackedReadEvents": 2,
+          "data": {
+            "sameFileIdentity": true,
+            "fields": 10,
+            "imageBytes": 262144,
+            "kind": "ordinary"
+          },
+          "selectStatements": 1
+        },
+        {
+          "name": "ordinary-100",
+          "elapsedNanos": 2589435,
+          "threadAllocatedBytes": 325896,
+          "heapBefore": 192664096,
+          "heapAfter": 192664096,
+          "trackedLogicalReadBytes": 262144,
+          "trackedReadEvents": 2,
+          "data": {
+            "sameFileIdentity": true,
+            "fields": 100,
+            "imageBytes": 262144,
+            "kind": "ordinary"
+          },
+          "selectStatements": 1
+        },
+        {
+          "name": "signature-0",
+          "elapsedNanos": 41913,
+          "threadAllocatedBytes": 616,
+          "heapBefore": 200004128,
+          "heapAfter": 200004128,
+          "trackedLogicalReadBytes": 0,
+          "trackedReadEvents": 0,
+          "data": {
+            "sameFileIdentity": true,
+            "fields": 0,
+            "imageBytes": 262144,
+            "kind": "signature"
+          },
+          "selectStatements": 0
+        },
+        {
+          "name": "signature-1",
+          "elapsedNanos": 2645690,
+          "threadAllocatedBytes": 1335504,
+          "heapBefore": 206295584,
+          "heapAfter": 207344160,
+          "trackedLogicalReadBytes": 262144,
+          "trackedReadEvents": 2,
+          "data": {
+            "sameFileIdentity": true,
+            "fields": 1,
+            "imageBytes": 262144,
+            "kind": "signature"
+          },
+          "selectStatements": 1
+        },
+        {
+          "name": "signature-10",
+          "elapsedNanos": 28612325,
+          "threadAllocatedBytes": 13347768,
+          "heapBefore": 214684192,
+          "heapAfter": 116282408,
+          "trackedLogicalReadBytes": 2621440,
+          "trackedReadEvents": 20,
+          "data": {
+            "sameFileIdentity": true,
+            "fields": 10,
+            "imageBytes": 262144,
+            "kind": "signature"
+          },
+          "selectStatements": 10
+        },
+        {
+          "name": "signature-100",
+          "elapsedNanos": 202686014,
+          "threadAllocatedBytes": 133491336,
+          "heapBefore": 132011048,
+          "heapAfter": 200521888,
+          "trackedLogicalReadBytes": 26214400,
+          "trackedReadEvents": 200,
+          "data": {
+            "sameFileIdentity": true,
+            "fields": 100,
+            "imageBytes": 262144,
+            "kind": "signature"
+          },
+          "selectStatements": 100
+        }
+      ],
+      "logicalSelectStatements": 114,
+      "hibernateNonSelectStatements": 0,
+      "sqlShapes": [
+        {
+          "sql": "select fo1_0.id,fo1_0.created_at,fo1_0.file_size,fo1_0.md5_hash,fo1_0.mime_type,fo1_0.original_name,fo1_0.stored_path,fo1_0.target_id,fo1_0.target_type,fo1_0.tenant_id,fo1_0.uploaded_by from file_object fo1_0 where fo1_0.id=?",
+          "count": 114
+        }
+      ],
+      "cleanup": {
+        "ownedContainer": "edhr-dhr-export-main-focused-20261105",
+        "removed": true
+      }
+    },
+    "full": {
+      "tests": {
+        "totals": {
+          "tests": 47,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        "classes": [
+          {
+            "class": "com.zencas.edhr.production.service.DhrExportReadObservationPostgresTest",
+            "tests": 12,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          {
+            "class": "com.zencas.edhr.production.controller.DhrArchiveControllerStreamingTest",
+            "tests": 3,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          {
+            "class": "com.zencas.edhr.production.service.DhrAttachmentAndArchiveTest",
+            "tests": 13,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          {
+            "class": "com.zencas.edhr.production.service.DhrFormFilesTest",
+            "tests": 2,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          {
+            "class": "com.zencas.edhr.production.service.DhrArchiveLayoutReaderTest",
+            "tests": 3,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          {
+            "class": "com.zencas.edhr.production.service.DhrSummaryServiceTest",
+            "tests": 8,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          {
+            "class": "com.zencas.edhr.production.service.DhrPdfRendererTest",
+            "tests": 6,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        ],
+        "missingFreshReports": []
+      },
+      "events": [
+        {
+          "name": "ordinary-0",
+          "elapsedNanos": 54242,
+          "threadAllocatedBytes": 640,
+          "heapBefore": 150470656,
+          "heapAfter": 150470656,
+          "trackedLogicalReadBytes": 0,
+          "trackedReadEvents": 0,
+          "data": {
+            "kind": "ordinary",
+            "imageBytes": 262144,
+            "fields": 0,
+            "sameFileIdentity": true
+          },
+          "selectStatements": 0
+        },
+        {
+          "name": "ordinary-1",
+          "elapsedNanos": 2075636,
+          "threadAllocatedBytes": 550400,
+          "heapBefore": 156762112,
+          "heapAfter": 156762112,
+          "trackedLogicalReadBytes": 262144,
+          "trackedReadEvents": 2,
+          "data": {
+            "kind": "ordinary",
+            "imageBytes": 262144,
+            "fields": 1,
+            "sameFileIdentity": true
+          },
+          "selectStatements": 1
+        },
+        {
+          "name": "ordinary-10",
+          "elapsedNanos": 1987974,
+          "threadAllocatedBytes": 291992,
+          "heapBefore": 162004992,
+          "heapAfter": 162004992,
+          "trackedLogicalReadBytes": 262144,
+          "trackedReadEvents": 2,
+          "data": {
+            "kind": "ordinary",
+            "imageBytes": 262144,
+            "fields": 10,
+            "sameFileIdentity": true
+          },
+          "selectStatements": 1
+        },
+        {
+          "name": "ordinary-100",
+          "elapsedNanos": 2229968,
+          "threadAllocatedBytes": 325920,
+          "heapBefore": 167247872,
+          "heapAfter": 167247872,
+          "trackedLogicalReadBytes": 262144,
+          "trackedReadEvents": 2,
+          "data": {
+            "kind": "ordinary",
+            "imageBytes": 262144,
+            "fields": 100,
+            "sameFileIdentity": true
+          },
+          "selectStatements": 1
+        },
+        {
+          "name": "signature-0",
+          "elapsedNanos": 12639,
+          "threadAllocatedBytes": 640,
+          "heapBefore": 172490752,
+          "heapAfter": 172490752,
+          "trackedLogicalReadBytes": 0,
+          "trackedReadEvents": 0,
+          "data": {
+            "kind": "signature",
+            "imageBytes": 262144,
+            "fields": 0,
+            "sameFileIdentity": true
+          },
+          "selectStatements": 0
+        },
+        {
+          "name": "signature-1",
+          "elapsedNanos": 2077659,
+          "threadAllocatedBytes": 1335528,
+          "heapBefore": 178782208,
+          "heapAfter": 179830784,
+          "trackedLogicalReadBytes": 262144,
+          "trackedReadEvents": 2,
+          "data": {
+            "kind": "signature",
+            "imageBytes": 262144,
+            "fields": 1,
+            "sameFileIdentity": true
+          },
+          "selectStatements": 1
+        },
+        {
+          "name": "signature-10",
+          "elapsedNanos": 15943858,
+          "threadAllocatedBytes": 13347872,
+          "heapBefore": 187170816,
+          "heapAfter": 202899456,
+          "trackedLogicalReadBytes": 2621440,
+          "trackedReadEvents": 20,
+          "data": {
+            "kind": "signature",
+            "imageBytes": 262144,
+            "fields": 10,
+            "sameFileIdentity": true
+          },
+          "selectStatements": 10
+        },
+        {
+          "name": "signature-100",
+          "elapsedNanos": 243201976,
+          "threadAllocatedBytes": 133479632,
+          "heapBefore": 219676672,
+          "heapAfter": 183151360,
+          "trackedLogicalReadBytes": 26214400,
+          "trackedReadEvents": 200,
+          "data": {
+            "kind": "signature",
+            "imageBytes": 262144,
+            "fields": 100,
+            "sameFileIdentity": true
+          },
+          "selectStatements": 100
+        },
+        {
+          "name": "archive-1",
+          "elapsedNanos": 93035101,
+          "threadAllocatedBytes": 5054896,
+          "heapBefore": 185598080,
+          "heapAfter": 176148448,
+          "trackedLogicalReadBytes": 597174,
+          "trackedReadEvents": 74,
+          "data": {
+            "forms": 1,
+            "pdfBytesPerForm": 197878,
+            "rendering": "valid synthetic PDF, renderer mocked; actual frozen integrity/archive/merge/audit"
+          },
+          "selectStatements": 9,
+          "outputArchiveBytes": 597174
+        },
+        {
+          "name": "archive-10",
+          "elapsedNanos": 134895609,
+          "threadAllocatedBytes": 13782320,
+          "heapBefore": 185585632,
+          "heapAfter": 202362848,
+          "trackedLogicalReadBytes": 4167984,
+          "trackedReadEvents": 510,
+          "data": {
+            "forms": 10,
+            "pdfBytesPerForm": 197878,
+            "rendering": "valid synthetic PDF, renderer mocked; actual frozen integrity/archive/merge/audit"
+          },
+          "selectStatements": 9,
+          "outputArchiveBytes": 4167984
+        },
+        {
+          "name": "archive-100",
+          "elapsedNanos": 1038997995,
+          "threadAllocatedBytes": 155730656,
+          "heapBefore": 225431520,
+          "heapAfter": 385863648,
+          "trackedLogicalReadBytes": 39878147,
+          "trackedReadEvents": 4869,
+          "data": {
+            "forms": 100,
+            "pdfBytesPerForm": 197878,
+            "rendering": "valid synthetic PDF, renderer mocked; actual frozen integrity/archive/merge/audit"
+          },
+          "selectStatements": 9,
+          "outputArchiveBytes": 39878147
+        }
+      ],
+      "logicalSelectStatements": 141,
+      "hibernateNonSelectStatements": 3,
+      "sqlShapes": [
+        {
+          "sql": "select fo1_0.id,fo1_0.created_at,fo1_0.file_size,fo1_0.md5_hash,fo1_0.mime_type,fo1_0.original_name,fo1_0.stored_path,fo1_0.target_id,fo1_0.target_type,fo1_0.tenant_id,fo1_0.uploaded_by from file_object fo1_0 where fo1_0.id=?",
+          "count": 114
+        },
+        {
+          "sql": "select v.*,d.dhr_no,d.object_no,d.object_type,d.production_object_id,d.status as dhr_status from dhr_summary_version v join dhr_instance d on d.id=v.dhr_instance_id and d.tenant_id=v.tenant_id where v.tenant_id='default' and v.dhr_instance_id=? and v.id=?",
+          "count": 3
+        },
+        {
+          "sql": "select source_record_id,target_node_key,before_node_key,display_order,display_name,source_snapshot,source_hash from dhr_summary_evidence where tenant_id='default' and summary_version_id=? order by id",
+          "count": 3
+        },
+        {
+          "sql": "select dhr_instance_id,version_no,status,review_mode,review_workflow_definition_id, review_workflow_version_id,base_directory_snapshot,overlay_directory_snapshot, candidate_snapshot,attachment_snapshot,check_result_snapshot,snapshot_hash from dhr_summary_version where tenant_id='default' and id=?",
+          "count": 3
+        },
+        {
+          "sql": "select source_record_id,target_node_key,before_node_key,display_order,display_name from dhr_summary_evidence where tenant_id='default' and summary_version_id=? order by id",
+          "count": 3
+        },
+        {
+          "sql": "select id,entity_type,entity_id,action,content_before,content_after,snapshot_hash,operator_id,operator_name,created_at from audit_event where tenant_id='default' and ((entity_type='dhr_instance' and entity_id=?) or (entity_type in ('dhr_summary_version','dhr_summary_review','dhr_summary_export') and entity_id=?) or (entity_type in ('dhr_summary_draft','dhr_attachment') and data_summary=?)) order by created_at,id",
+          "count": 3
+        },
+        {
+          "sql": "select id,action,content_before,content_after,snapshot_hash,operator_id,operator_name,created_at,data_summary from audit_event where tenant_id='default' and entity_type='production_execution' and entity_id=? and created_at<=? order by created_at,id",
+          "count": 3
+        },
+        {
+          "sql": "select id,meaning,signer_id,signer_name,auth_method,auth_event_ref,snapshot_hash,snapshot_data,signed_at from signature where tenant_id='default' and target_type='production_execution' and target_id=? and signed_at<=? order by signed_at,id",
+          "count": 3
+        },
+        {
+          "sql": "select s.id,s.meaning,s.signer_id,s.signer_name,s.auth_method,s.auth_event_ref,s.snapshot_hash,s.snapshot_data,s.signed_at, t.id as task_id,t.action,t.opinion from dhr_summary_review r join workflow_task t on t.instance_id=r.workflow_instance_id join signature s on s.id=t.signature_id where r.summary_version_id=? order by s.signed_at,s.id",
+          "count": 3
+        },
+        {
+          "sql": "select ae1_0.id,ae1_0.action,ae1_0.content_after,ae1_0.content_before,ae1_0.created_at,ae1_0.data_summary,ae1_0.entity_id,ae1_0.entity_type,ae1_0.function_name,ae1_0.ip_address,ae1_0.menu_name,ae1_0.module_name,ae1_0.operator_account,ae1_0.operator_id,ae1_0.operator_name,ae1_0.reason,ae1_0.snapshot_hash,ae1_0.source,ae1_0.tenant_id from audit_event ae1_0 where ae1_0.id=?",
+          "count": 3
+        },
+        {
+          "sql": "insert into audit_event (action,content_after,content_before,created_at,data_summary,entity_id,entity_type,function_name,ip_address,menu_name,module_name,operator_account,operator_id,operator_name,reason,snapshot_hash,source,tenant_id,id) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+          "count": 3
+        }
+      ],
+      "cleanup": {
+        "ownedContainer": "edhr-dhr-export-main-full-20261105",
+        "removed": true
+      }
+    },
+    "budget": {
+      "tests": {
+        "totals": {
+          "tests": 19,
+          "failures": 3,
+          "errors": 0,
+          "skipped": 0
+        },
+        "classes": [
+          {
+            "class": "com.zencas.edhr.production.service.DhrExportReadObservationPostgresTest",
+            "tests": 12,
+            "failures": 2,
+            "errors": 0,
+            "skipped": 0
+          },
+          {
+            "class": "com.zencas.edhr.production.controller.DhrArchiveControllerStreamingTest",
+            "tests": 3,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          {
+            "class": "com.zencas.edhr.production.service.DhrFormFilesTest",
+            "tests": 4,
+            "failures": 1,
+            "errors": 0,
+            "skipped": 0
+          }
+        ],
+        "missingFreshReports": []
+      },
+      "events": [
+        {
+          "name": "ordinary-0",
+          "elapsedNanos": 37366,
+          "threadAllocatedBytes": 616,
+          "heapBefore": 213178752,
+          "heapAfter": 213178752,
+          "trackedLogicalReadBytes": 0,
+          "trackedReadEvents": 0,
+          "data": {
+            "imageBytes": 262144,
+            "kind": "ordinary",
+            "sameFileIdentity": true,
+            "fields": 0
+          },
+          "selectStatements": 0
+        },
+        {
+          "name": "ordinary-1",
+          "elapsedNanos": 2395935,
+          "threadAllocatedBytes": 550376,
+          "heapBefore": 220518784,
+          "heapAfter": 220518784,
+          "trackedLogicalReadBytes": 262144,
+          "trackedReadEvents": 2,
+          "data": {
+            "imageBytes": 262144,
+            "kind": "ordinary",
+            "sameFileIdentity": true,
+            "fields": 1
+          },
+          "selectStatements": 1
+        },
+        {
+          "name": "ordinary-10",
+          "elapsedNanos": 2065158,
+          "threadAllocatedBytes": 291968,
+          "heapBefore": 113246208,
+          "heapAfter": 114294784,
+          "trackedLogicalReadBytes": 262144,
+          "trackedReadEvents": 2,
+          "data": {
+            "imageBytes": 262144,
+            "kind": "ordinary",
+            "sameFileIdentity": true,
+            "fields": 10
+          },
+          "selectStatements": 1
+        },
+        {
+          "name": "ordinary-100",
+          "elapsedNanos": 2175865,
+          "threadAllocatedBytes": 325896,
+          "heapBefore": 118489088,
+          "heapAfter": 119537664,
+          "trackedLogicalReadBytes": 262144,
+          "trackedReadEvents": 2,
+          "data": {
+            "imageBytes": 262144,
+            "kind": "ordinary",
+            "sameFileIdentity": true,
+            "fields": 100
+          },
+          "selectStatements": 1
+        },
+        {
+          "name": "signature-0",
+          "elapsedNanos": 12108,
+          "threadAllocatedBytes": 616,
+          "heapBefore": 124780544,
+          "heapAfter": 124780544,
+          "trackedLogicalReadBytes": 0,
+          "trackedReadEvents": 0,
+          "data": {
+            "imageBytes": 262144,
+            "kind": "signature",
+            "sameFileIdentity": true,
+            "fields": 0
+          },
+          "selectStatements": 0
+        },
+        {
+          "name": "signature-1",
+          "elapsedNanos": 2751752,
+          "threadAllocatedBytes": 1335504,
+          "heapBefore": 131072000,
+          "heapAfter": 132120576,
+          "trackedLogicalReadBytes": 262144,
+          "trackedReadEvents": 2,
+          "data": {
+            "imageBytes": 262144,
+            "kind": "signature",
+            "sameFileIdentity": true,
+            "fields": 1
+          },
+          "selectStatements": 1
+        },
+        {
+          "name": "signature-10",
+          "elapsedNanos": 19358256,
+          "threadAllocatedBytes": 13347768,
+          "heapBefore": 139460608,
+          "heapAfter": 155189248,
+          "trackedLogicalReadBytes": 2621440,
+          "trackedReadEvents": 20,
+          "data": {
+            "imageBytes": 262144,
+            "kind": "signature",
+            "sameFileIdentity": true,
+            "fields": 10
+          },
+          "selectStatements": 10
+        },
+        {
+          "name": "signature-100",
+          "elapsedNanos": 242430629,
+          "threadAllocatedBytes": 133479888,
+          "heapBefore": 161480704,
+          "heapAfter": 220550528,
+          "trackedLogicalReadBytes": 26214400,
+          "trackedReadEvents": 200,
+          "data": {
+            "imageBytes": 262144,
+            "kind": "signature",
+            "sameFileIdentity": true,
+            "fields": 100
+          },
+          "selectStatements": 100
+        },
+        {
+          "name": "archive-1",
+          "elapsedNanos": 103142224,
+          "threadAllocatedBytes": 6640456,
+          "heapBefore": 123543520,
+          "heapAfter": 130883552,
+          "trackedLogicalReadBytes": 597183,
+          "trackedReadEvents": 74,
+          "data": {
+            "pdfBytesPerForm": 197878,
+            "forms": 1,
+            "rendering": "valid synthetic PDF, renderer mocked; actual frozen integrity/archive/merge/audit"
+          },
+          "selectStatements": 9,
+          "outputArchiveBytes": 597183
+        },
+        {
+          "name": "archive-10",
+          "elapsedNanos": 141248415,
+          "threadAllocatedBytes": 13770648,
+          "heapBefore": 139272160,
+          "heapAfter": 157097952,
+          "trackedLogicalReadBytes": 4167981,
+          "trackedReadEvents": 510,
+          "data": {
+            "pdfBytesPerForm": 197878,
+            "forms": 10,
+            "rendering": "valid synthetic PDF, renderer mocked; actual frozen integrity/archive/merge/audit"
+          },
+          "selectStatements": 9,
+          "outputArchiveBytes": 4167981
+        },
+        {
+          "name": "archive-100",
+          "elapsedNanos": 1095891623,
+          "threadAllocatedBytes": 155694872,
+          "heapBefore": 180166624,
+          "heapAfter": 238087536,
+          "trackedLogicalReadBytes": 39878145,
+          "trackedReadEvents": 4869,
+          "data": {
+            "pdfBytesPerForm": 197878,
+            "forms": 100,
+            "rendering": "valid synthetic PDF, renderer mocked; actual frozen integrity/archive/merge/audit"
+          },
+          "selectStatements": 9,
+          "outputArchiveBytes": 39878145
+        }
+      ],
+      "logicalSelectStatements": 141,
+      "hibernateNonSelectStatements": 3,
+      "sqlShapes": [
+        {
+          "sql": "select fo1_0.id,fo1_0.created_at,fo1_0.file_size,fo1_0.md5_hash,fo1_0.mime_type,fo1_0.original_name,fo1_0.stored_path,fo1_0.target_id,fo1_0.target_type,fo1_0.tenant_id,fo1_0.uploaded_by from file_object fo1_0 where fo1_0.id=?",
+          "count": 114
+        },
+        {
+          "sql": "select v.*,d.dhr_no,d.object_no,d.object_type,d.production_object_id,d.status as dhr_status from dhr_summary_version v join dhr_instance d on d.id=v.dhr_instance_id and d.tenant_id=v.tenant_id where v.tenant_id='default' and v.dhr_instance_id=? and v.id=?",
+          "count": 3
+        },
+        {
+          "sql": "select source_record_id,target_node_key,before_node_key,display_order,display_name,source_snapshot,source_hash from dhr_summary_evidence where tenant_id='default' and summary_version_id=? order by id",
+          "count": 3
+        },
+        {
+          "sql": "select dhr_instance_id,version_no,status,review_mode,review_workflow_definition_id, review_workflow_version_id,base_directory_snapshot,overlay_directory_snapshot, candidate_snapshot,attachment_snapshot,check_result_snapshot,snapshot_hash from dhr_summary_version where tenant_id='default' and id=?",
+          "count": 3
+        },
+        {
+          "sql": "select source_record_id,target_node_key,before_node_key,display_order,display_name from dhr_summary_evidence where tenant_id='default' and summary_version_id=? order by id",
+          "count": 3
+        },
+        {
+          "sql": "select id,entity_type,entity_id,action,content_before,content_after,snapshot_hash,operator_id,operator_name,created_at from audit_event where tenant_id='default' and ((entity_type='dhr_instance' and entity_id=?) or (entity_type in ('dhr_summary_version','dhr_summary_review','dhr_summary_export') and entity_id=?) or (entity_type in ('dhr_summary_draft','dhr_attachment') and data_summary=?)) order by created_at,id",
+          "count": 3
+        },
+        {
+          "sql": "select id,action,content_before,content_after,snapshot_hash,operator_id,operator_name,created_at,data_summary from audit_event where tenant_id='default' and entity_type='production_execution' and entity_id=? and created_at<=? order by created_at,id",
+          "count": 3
+        },
+        {
+          "sql": "select id,meaning,signer_id,signer_name,auth_method,auth_event_ref,snapshot_hash,snapshot_data,signed_at from signature where tenant_id='default' and target_type='production_execution' and target_id=? and signed_at<=? order by signed_at,id",
+          "count": 3
+        },
+        {
+          "sql": "select s.id,s.meaning,s.signer_id,s.signer_name,s.auth_method,s.auth_event_ref,s.snapshot_hash,s.snapshot_data,s.signed_at, t.id as task_id,t.action,t.opinion from dhr_summary_review r join workflow_task t on t.instance_id=r.workflow_instance_id join signature s on s.id=t.signature_id where r.summary_version_id=? order by s.signed_at,s.id",
+          "count": 3
+        },
+        {
+          "sql": "select ae1_0.id,ae1_0.action,ae1_0.content_after,ae1_0.content_before,ae1_0.created_at,ae1_0.data_summary,ae1_0.entity_id,ae1_0.entity_type,ae1_0.function_name,ae1_0.ip_address,ae1_0.menu_name,ae1_0.module_name,ae1_0.operator_account,ae1_0.operator_id,ae1_0.operator_name,ae1_0.reason,ae1_0.snapshot_hash,ae1_0.source,ae1_0.tenant_id from audit_event ae1_0 where ae1_0.id=?",
+          "count": 3
+        },
+        {
+          "sql": "insert into audit_event (action,content_after,content_before,created_at,data_summary,entity_id,entity_type,function_name,ip_address,menu_name,module_name,operator_account,operator_id,operator_name,reason,snapshot_hash,source,tenant_id,id) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+          "count": 3
+        }
+      ],
+      "cleanup": {
+        "ownedContainer": "edhr-dhr-export-main-budget-20261105",
+        "removed": true
+      }
+    },
+    "optimized": {
+      "tests": {
+        "totals": {
+          "tests": 49,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        "classes": [
+          {
+            "class": "com.zencas.edhr.production.service.DhrExportReadObservationPostgresTest",
+            "tests": 12,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          {
+            "class": "com.zencas.edhr.production.controller.DhrArchiveControllerStreamingTest",
+            "tests": 3,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          {
+            "class": "com.zencas.edhr.production.service.DhrAttachmentAndArchiveTest",
+            "tests": 13,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          {
+            "class": "com.zencas.edhr.production.service.DhrFormFilesTest",
+            "tests": 4,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          {
+            "class": "com.zencas.edhr.production.service.DhrArchiveLayoutReaderTest",
+            "tests": 3,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          {
+            "class": "com.zencas.edhr.production.service.DhrSummaryServiceTest",
+            "tests": 8,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          {
+            "class": "com.zencas.edhr.production.service.DhrPdfRendererTest",
+            "tests": 6,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        ],
+        "missingFreshReports": []
+      },
+      "events": [
+        {
+          "name": "ordinary-0",
+          "elapsedNanos": 97447,
+          "threadAllocatedBytes": 688,
+          "heapBefore": 195260040,
+          "heapAfter": 195260040,
+          "trackedLogicalReadBytes": 0,
+          "trackedReadEvents": 0,
+          "data": {
+            "kind": "ordinary",
+            "imageBytes": 262144,
+            "fields": 0,
+            "sameFileIdentity": true
+          },
+          "selectStatements": 0
+        },
+        {
+          "name": "ordinary-1",
+          "elapsedNanos": 3955052,
+          "threadAllocatedBytes": 550448,
+          "heapBefore": 201551496,
+          "heapAfter": 201551496,
+          "trackedLogicalReadBytes": 262144,
+          "trackedReadEvents": 2,
+          "data": {
+            "kind": "ordinary",
+            "imageBytes": 262144,
+            "fields": 1,
+            "sameFileIdentity": true
+          },
+          "selectStatements": 1
+        },
+        {
+          "name": "ordinary-10",
+          "elapsedNanos": 4543182,
+          "threadAllocatedBytes": 292040,
+          "heapBefore": 206794376,
+          "heapAfter": 207842952,
+          "trackedLogicalReadBytes": 262144,
+          "trackedReadEvents": 2,
+          "data": {
+            "kind": "ordinary",
+            "imageBytes": 262144,
+            "fields": 10,
+            "sameFileIdentity": true
+          },
+          "selectStatements": 1
+        },
+        {
+          "name": "ordinary-100",
+          "elapsedNanos": 17928951,
+          "threadAllocatedBytes": 325968,
+          "heapBefore": 212037256,
+          "heapAfter": 125246368,
+          "trackedLogicalReadBytes": 262144,
+          "trackedReadEvents": 2,
+          "data": {
+            "kind": "ordinary",
+            "imageBytes": 262144,
+            "fields": 100,
+            "sameFileIdentity": true
+          },
+          "selectStatements": 1
+        },
+        {
+          "name": "signature-0",
+          "elapsedNanos": 32920,
+          "threadAllocatedBytes": 688,
+          "heapBefore": 130489248,
+          "heapAfter": 130489248,
+          "trackedLogicalReadBytes": 0,
+          "trackedReadEvents": 0,
+          "data": {
+            "kind": "signature",
+            "imageBytes": 262144,
+            "fields": 0,
+            "sameFileIdentity": true
+          },
+          "selectStatements": 0
+        },
+        {
+          "name": "signature-1",
+          "elapsedNanos": 2738801,
+          "threadAllocatedBytes": 1335688,
+          "heapBefore": 136780704,
+          "heapAfter": 137829280,
+          "trackedLogicalReadBytes": 262144,
+          "trackedReadEvents": 2,
+          "data": {
+            "kind": "signature",
+            "imageBytes": 262144,
+            "fields": 1,
+            "sameFileIdentity": true
+          },
+          "selectStatements": 1
+        },
+        {
+          "name": "signature-10",
+          "elapsedNanos": 2830210,
+          "threadAllocatedBytes": 1341376,
+          "heapBefore": 145169312,
+          "heapAfter": 146217888,
+          "trackedLogicalReadBytes": 262144,
+          "trackedReadEvents": 2,
+          "data": {
+            "kind": "signature",
+            "imageBytes": 262144,
+            "fields": 10,
+            "sameFileIdentity": true
+          },
+          "selectStatements": 1
+        },
+        {
+          "name": "signature-100",
+          "elapsedNanos": 2939404,
+          "threadAllocatedBytes": 1400240,
+          "heapBefore": 162995104,
+          "heapAfter": 164043680,
+          "trackedLogicalReadBytes": 262144,
+          "trackedReadEvents": 2,
+          "data": {
+            "kind": "signature",
+            "imageBytes": 262144,
+            "fields": 100,
+            "sameFileIdentity": true
+          },
+          "selectStatements": 1
+        },
+        {
+          "name": "archive-1",
+          "elapsedNanos": 81020795,
+          "threadAllocatedBytes": 5032752,
+          "heapBefore": 190446272,
+          "heapAfter": 195689152,
+          "trackedLogicalReadBytes": 597174,
+          "trackedReadEvents": 74,
+          "data": {
+            "forms": 1,
+            "pdfBytesPerForm": 197878,
+            "rendering": "valid synthetic PDF, renderer mocked; actual frozen integrity/archive/merge/audit"
+          },
+          "selectStatements": 9,
+          "outputArchiveBytes": 597174
+        },
+        {
+          "name": "archive-10",
+          "elapsedNanos": 150462036,
+          "threadAllocatedBytes": 13832272,
+          "heapBefore": 206174912,
+          "heapAfter": 222952128,
+          "trackedLogicalReadBytes": 4167984,
+          "trackedReadEvents": 510,
+          "data": {
+            "forms": 10,
+            "pdfBytesPerForm": 197878,
+            "rendering": "valid synthetic PDF, renderer mocked; actual frozen integrity/archive/merge/audit"
+          },
+          "selectStatements": 9,
+          "outputArchiveBytes": 4167984
+        },
+        {
+          "name": "archive-100",
+          "elapsedNanos": 1031452253,
+          "threadAllocatedBytes": 155680840,
+          "heapBefore": 142435728,
+          "heapAfter": 303916432,
+          "trackedLogicalReadBytes": 39878148,
+          "trackedReadEvents": 4869,
+          "data": {
+            "forms": 100,
+            "pdfBytesPerForm": 197878,
+            "rendering": "valid synthetic PDF, renderer mocked; actual frozen integrity/archive/merge/audit"
+          },
+          "selectStatements": 9,
+          "outputArchiveBytes": 39878148
+        }
+      ],
+      "logicalSelectStatements": 33,
+      "hibernateNonSelectStatements": 3,
+      "sqlShapes": [
+        {
+          "sql": "select fo1_0.id,fo1_0.created_at,fo1_0.file_size,fo1_0.md5_hash,fo1_0.mime_type,fo1_0.original_name,fo1_0.stored_path,fo1_0.target_id,fo1_0.target_type,fo1_0.tenant_id,fo1_0.uploaded_by from file_object fo1_0 where fo1_0.id=?",
+          "count": 6
+        },
+        {
+          "sql": "select v.*,d.dhr_no,d.object_no,d.object_type,d.production_object_id,d.status as dhr_status from dhr_summary_version v join dhr_instance d on d.id=v.dhr_instance_id and d.tenant_id=v.tenant_id where v.tenant_id='default' and v.dhr_instance_id=? and v.id=?",
+          "count": 3
+        },
+        {
+          "sql": "select source_record_id,target_node_key,before_node_key,display_order,display_name,source_snapshot,source_hash from dhr_summary_evidence where tenant_id='default' and summary_version_id=? order by id",
+          "count": 3
+        },
+        {
+          "sql": "select dhr_instance_id,version_no,status,review_mode,review_workflow_definition_id, review_workflow_version_id,base_directory_snapshot,overlay_directory_snapshot, candidate_snapshot,attachment_snapshot,check_result_snapshot,snapshot_hash from dhr_summary_version where tenant_id='default' and id=?",
+          "count": 3
+        },
+        {
+          "sql": "select source_record_id,target_node_key,before_node_key,display_order,display_name from dhr_summary_evidence where tenant_id='default' and summary_version_id=? order by id",
+          "count": 3
+        },
+        {
+          "sql": "select id,entity_type,entity_id,action,content_before,content_after,snapshot_hash,operator_id,operator_name,created_at from audit_event where tenant_id='default' and ((entity_type='dhr_instance' and entity_id=?) or (entity_type in ('dhr_summary_version','dhr_summary_review','dhr_summary_export') and entity_id=?) or (entity_type in ('dhr_summary_draft','dhr_attachment') and data_summary=?)) order by created_at,id",
+          "count": 3
+        },
+        {
+          "sql": "select id,action,content_before,content_after,snapshot_hash,operator_id,operator_name,created_at,data_summary from audit_event where tenant_id='default' and entity_type='production_execution' and entity_id=? and created_at<=? order by created_at,id",
+          "count": 3
+        },
+        {
+          "sql": "select id,meaning,signer_id,signer_name,auth_method,auth_event_ref,snapshot_hash,snapshot_data,signed_at from signature where tenant_id='default' and target_type='production_execution' and target_id=? and signed_at<=? order by signed_at,id",
+          "count": 3
+        },
+        {
+          "sql": "select s.id,s.meaning,s.signer_id,s.signer_name,s.auth_method,s.auth_event_ref,s.snapshot_hash,s.snapshot_data,s.signed_at, t.id as task_id,t.action,t.opinion from dhr_summary_review r join workflow_task t on t.instance_id=r.workflow_instance_id join signature s on s.id=t.signature_id where r.summary_version_id=? order by s.signed_at,s.id",
+          "count": 3
+        },
+        {
+          "sql": "select ae1_0.id,ae1_0.action,ae1_0.content_after,ae1_0.content_before,ae1_0.created_at,ae1_0.data_summary,ae1_0.entity_id,ae1_0.entity_type,ae1_0.function_name,ae1_0.ip_address,ae1_0.menu_name,ae1_0.module_name,ae1_0.operator_account,ae1_0.operator_id,ae1_0.operator_name,ae1_0.reason,ae1_0.snapshot_hash,ae1_0.source,ae1_0.tenant_id from audit_event ae1_0 where ae1_0.id=?",
+          "count": 3
+        },
+        {
+          "sql": "insert into audit_event (action,content_after,content_before,created_at,data_summary,entity_id,entity_type,function_name,ip_address,menu_name,module_name,operator_account,operator_id,operator_name,reason,snapshot_hash,source,tenant_id,id) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+          "count": 3
+        }
+      ],
+      "cleanup": {
+        "ownedContainer": "edhr-dhr-export-main-optimized-20261105",
+        "removed": true
+      }
+    }
+  },
+  "comparison": [
+    {
+      "name": "ordinary-0",
+      "before": {
+        "name": "ordinary-0",
+        "elapsedNanos": 54242,
+        "threadAllocatedBytes": 640,
+        "heapBefore": 150470656,
+        "heapAfter": 150470656,
+        "trackedLogicalReadBytes": 0,
+        "trackedReadEvents": 0,
+        "data": {
+          "kind": "ordinary",
+          "imageBytes": 262144,
+          "fields": 0,
+          "sameFileIdentity": true
+        },
+        "selectStatements": 0
+      },
+      "after": {
+        "name": "ordinary-0",
+        "elapsedNanos": 97447,
+        "threadAllocatedBytes": 688,
+        "heapBefore": 195260040,
+        "heapAfter": 195260040,
+        "trackedLogicalReadBytes": 0,
+        "trackedReadEvents": 0,
+        "data": {
+          "kind": "ordinary",
+          "imageBytes": 262144,
+          "fields": 0,
+          "sameFileIdentity": true
+        },
+        "selectStatements": 0
+      }
+    },
+    {
+      "name": "ordinary-1",
+      "before": {
+        "name": "ordinary-1",
+        "elapsedNanos": 2075636,
+        "threadAllocatedBytes": 550400,
+        "heapBefore": 156762112,
+        "heapAfter": 156762112,
+        "trackedLogicalReadBytes": 262144,
+        "trackedReadEvents": 2,
+        "data": {
+          "kind": "ordinary",
+          "imageBytes": 262144,
+          "fields": 1,
+          "sameFileIdentity": true
+        },
+        "selectStatements": 1
+      },
+      "after": {
+        "name": "ordinary-1",
+        "elapsedNanos": 3955052,
+        "threadAllocatedBytes": 550448,
+        "heapBefore": 201551496,
+        "heapAfter": 201551496,
+        "trackedLogicalReadBytes": 262144,
+        "trackedReadEvents": 2,
+        "data": {
+          "kind": "ordinary",
+          "imageBytes": 262144,
+          "fields": 1,
+          "sameFileIdentity": true
+        },
+        "selectStatements": 1
+      }
+    },
+    {
+      "name": "ordinary-10",
+      "before": {
+        "name": "ordinary-10",
+        "elapsedNanos": 1987974,
+        "threadAllocatedBytes": 291992,
+        "heapBefore": 162004992,
+        "heapAfter": 162004992,
+        "trackedLogicalReadBytes": 262144,
+        "trackedReadEvents": 2,
+        "data": {
+          "kind": "ordinary",
+          "imageBytes": 262144,
+          "fields": 10,
+          "sameFileIdentity": true
+        },
+        "selectStatements": 1
+      },
+      "after": {
+        "name": "ordinary-10",
+        "elapsedNanos": 4543182,
+        "threadAllocatedBytes": 292040,
+        "heapBefore": 206794376,
+        "heapAfter": 207842952,
+        "trackedLogicalReadBytes": 262144,
+        "trackedReadEvents": 2,
+        "data": {
+          "kind": "ordinary",
+          "imageBytes": 262144,
+          "fields": 10,
+          "sameFileIdentity": true
+        },
+        "selectStatements": 1
+      }
+    },
+    {
+      "name": "ordinary-100",
+      "before": {
+        "name": "ordinary-100",
+        "elapsedNanos": 2229968,
+        "threadAllocatedBytes": 325920,
+        "heapBefore": 167247872,
+        "heapAfter": 167247872,
+        "trackedLogicalReadBytes": 262144,
+        "trackedReadEvents": 2,
+        "data": {
+          "kind": "ordinary",
+          "imageBytes": 262144,
+          "fields": 100,
+          "sameFileIdentity": true
+        },
+        "selectStatements": 1
+      },
+      "after": {
+        "name": "ordinary-100",
+        "elapsedNanos": 17928951,
+        "threadAllocatedBytes": 325968,
+        "heapBefore": 212037256,
+        "heapAfter": 125246368,
+        "trackedLogicalReadBytes": 262144,
+        "trackedReadEvents": 2,
+        "data": {
+          "kind": "ordinary",
+          "imageBytes": 262144,
+          "fields": 100,
+          "sameFileIdentity": true
+        },
+        "selectStatements": 1
+      }
+    },
+    {
+      "name": "signature-0",
+      "before": {
+        "name": "signature-0",
+        "elapsedNanos": 12639,
+        "threadAllocatedBytes": 640,
+        "heapBefore": 172490752,
+        "heapAfter": 172490752,
+        "trackedLogicalReadBytes": 0,
+        "trackedReadEvents": 0,
+        "data": {
+          "kind": "signature",
+          "imageBytes": 262144,
+          "fields": 0,
+          "sameFileIdentity": true
+        },
+        "selectStatements": 0
+      },
+      "after": {
+        "name": "signature-0",
+        "elapsedNanos": 32920,
+        "threadAllocatedBytes": 688,
+        "heapBefore": 130489248,
+        "heapAfter": 130489248,
+        "trackedLogicalReadBytes": 0,
+        "trackedReadEvents": 0,
+        "data": {
+          "kind": "signature",
+          "imageBytes": 262144,
+          "fields": 0,
+          "sameFileIdentity": true
+        },
+        "selectStatements": 0
+      }
+    },
+    {
+      "name": "signature-1",
+      "before": {
+        "name": "signature-1",
+        "elapsedNanos": 2077659,
+        "threadAllocatedBytes": 1335528,
+        "heapBefore": 178782208,
+        "heapAfter": 179830784,
+        "trackedLogicalReadBytes": 262144,
+        "trackedReadEvents": 2,
+        "data": {
+          "kind": "signature",
+          "imageBytes": 262144,
+          "fields": 1,
+          "sameFileIdentity": true
+        },
+        "selectStatements": 1
+      },
+      "after": {
+        "name": "signature-1",
+        "elapsedNanos": 2738801,
+        "threadAllocatedBytes": 1335688,
+        "heapBefore": 136780704,
+        "heapAfter": 137829280,
+        "trackedLogicalReadBytes": 262144,
+        "trackedReadEvents": 2,
+        "data": {
+          "kind": "signature",
+          "imageBytes": 262144,
+          "fields": 1,
+          "sameFileIdentity": true
+        },
+        "selectStatements": 1
+      }
+    },
+    {
+      "name": "signature-10",
+      "before": {
+        "name": "signature-10",
+        "elapsedNanos": 15943858,
+        "threadAllocatedBytes": 13347872,
+        "heapBefore": 187170816,
+        "heapAfter": 202899456,
+        "trackedLogicalReadBytes": 2621440,
+        "trackedReadEvents": 20,
+        "data": {
+          "kind": "signature",
+          "imageBytes": 262144,
+          "fields": 10,
+          "sameFileIdentity": true
+        },
+        "selectStatements": 10
+      },
+      "after": {
+        "name": "signature-10",
+        "elapsedNanos": 2830210,
+        "threadAllocatedBytes": 1341376,
+        "heapBefore": 145169312,
+        "heapAfter": 146217888,
+        "trackedLogicalReadBytes": 262144,
+        "trackedReadEvents": 2,
+        "data": {
+          "kind": "signature",
+          "imageBytes": 262144,
+          "fields": 10,
+          "sameFileIdentity": true
+        },
+        "selectStatements": 1
+      }
+    },
+    {
+      "name": "signature-100",
+      "before": {
+        "name": "signature-100",
+        "elapsedNanos": 243201976,
+        "threadAllocatedBytes": 133479632,
+        "heapBefore": 219676672,
+        "heapAfter": 183151360,
+        "trackedLogicalReadBytes": 26214400,
+        "trackedReadEvents": 200,
+        "data": {
+          "kind": "signature",
+          "imageBytes": 262144,
+          "fields": 100,
+          "sameFileIdentity": true
+        },
+        "selectStatements": 100
+      },
+      "after": {
+        "name": "signature-100",
+        "elapsedNanos": 2939404,
+        "threadAllocatedBytes": 1400240,
+        "heapBefore": 162995104,
+        "heapAfter": 164043680,
+        "trackedLogicalReadBytes": 262144,
+        "trackedReadEvents": 2,
+        "data": {
+          "kind": "signature",
+          "imageBytes": 262144,
+          "fields": 100,
+          "sameFileIdentity": true
+        },
+        "selectStatements": 1
+      }
+    },
+    {
+      "name": "archive-1",
+      "before": {
+        "name": "archive-1",
+        "elapsedNanos": 93035101,
+        "threadAllocatedBytes": 5054896,
+        "heapBefore": 185598080,
+        "heapAfter": 176148448,
+        "trackedLogicalReadBytes": 597174,
+        "trackedReadEvents": 74,
+        "data": {
+          "forms": 1,
+          "pdfBytesPerForm": 197878,
+          "rendering": "valid synthetic PDF, renderer mocked; actual frozen integrity/archive/merge/audit"
+        },
+        "selectStatements": 9,
+        "outputArchiveBytes": 597174
+      },
+      "after": {
+        "name": "archive-1",
+        "elapsedNanos": 81020795,
+        "threadAllocatedBytes": 5032752,
+        "heapBefore": 190446272,
+        "heapAfter": 195689152,
+        "trackedLogicalReadBytes": 597174,
+        "trackedReadEvents": 74,
+        "data": {
+          "forms": 1,
+          "pdfBytesPerForm": 197878,
+          "rendering": "valid synthetic PDF, renderer mocked; actual frozen integrity/archive/merge/audit"
+        },
+        "selectStatements": 9,
+        "outputArchiveBytes": 597174
+      }
+    },
+    {
+      "name": "archive-10",
+      "before": {
+        "name": "archive-10",
+        "elapsedNanos": 134895609,
+        "threadAllocatedBytes": 13782320,
+        "heapBefore": 185585632,
+        "heapAfter": 202362848,
+        "trackedLogicalReadBytes": 4167984,
+        "trackedReadEvents": 510,
+        "data": {
+          "forms": 10,
+          "pdfBytesPerForm": 197878,
+          "rendering": "valid synthetic PDF, renderer mocked; actual frozen integrity/archive/merge/audit"
+        },
+        "selectStatements": 9,
+        "outputArchiveBytes": 4167984
+      },
+      "after": {
+        "name": "archive-10",
+        "elapsedNanos": 150462036,
+        "threadAllocatedBytes": 13832272,
+        "heapBefore": 206174912,
+        "heapAfter": 222952128,
+        "trackedLogicalReadBytes": 4167984,
+        "trackedReadEvents": 510,
+        "data": {
+          "forms": 10,
+          "pdfBytesPerForm": 197878,
+          "rendering": "valid synthetic PDF, renderer mocked; actual frozen integrity/archive/merge/audit"
+        },
+        "selectStatements": 9,
+        "outputArchiveBytes": 4167984
+      }
+    },
+    {
+      "name": "archive-100",
+      "before": {
+        "name": "archive-100",
+        "elapsedNanos": 1038997995,
+        "threadAllocatedBytes": 155730656,
+        "heapBefore": 225431520,
+        "heapAfter": 385863648,
+        "trackedLogicalReadBytes": 39878147,
+        "trackedReadEvents": 4869,
+        "data": {
+          "forms": 100,
+          "pdfBytesPerForm": 197878,
+          "rendering": "valid synthetic PDF, renderer mocked; actual frozen integrity/archive/merge/audit"
+        },
+        "selectStatements": 9,
+        "outputArchiveBytes": 39878147
+      },
+      "after": {
+        "name": "archive-100",
+        "elapsedNanos": 1031452253,
+        "threadAllocatedBytes": 155680840,
+        "heapBefore": 142435728,
+        "heapAfter": 303916432,
+        "trackedLogicalReadBytes": 39878148,
+        "trackedReadEvents": 4869,
+        "data": {
+          "forms": 100,
+          "pdfBytesPerForm": 197878,
+          "rendering": "valid synthetic PDF, renderer mocked; actual frozen integrity/archive/merge/audit"
+        },
+        "selectStatements": 9,
+        "outputArchiveBytes": 39878148
+      }
+    }
+  ],
+  "measurementScope": [
+    "resolve/ArchiveService action only, native PG/JPA with open-in-view=false",
+    "FileRead JFR tracked path logical bytes, warm file cache, not physical disk IO",
+    "ThreadMXBean allocated bytes are cumulative allocations on calling thread, not retained heap/peak/RSS",
+    "Heap snapshots before/after permit GC and do not prove peak",
+    "Capacity renderer is mocked valid 190KiB PDF per form, actual archive/integrity/merge/audit; not Chromium capacity",
+    "8 file warmups+5 guard reads and 3 post-archive assertion SELECT excluded from measured request statements",
+    "Real Chromium renderer tests executed separately; direct Controller callback is not authenticated HTTP E2E"
+  ],
+  "openRisks": [
+    "PDF arrays/combined document/serialization accumulation; disk-backed proposal not implemented",
+    "50MiB originals and source audit/signature manifest payload capacity need later axes",
+    "Production concurrency, full HTTP permissions/timeout/cancel and archival lifecycle remain unverified"
+  ]
+}

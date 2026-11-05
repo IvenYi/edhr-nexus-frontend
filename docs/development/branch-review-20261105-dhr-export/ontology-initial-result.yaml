@@ -1,0 +1,55 @@
+ontologyResult:
+  result: not-applicable
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: 5bfd96ff1e10a665a41db8fdf88352f65b1288a3
+    targetBranch: edhr-dev
+    targetCommit: 5bfd96ff1e10a665a41db8fdf88352f65b1288a3
+    contractReadCommit: 5bfd96ff1e10a665a41db8fdf88352f65b1288a3
+    uncommittedContractPaths: []
+  reason: >-
+    本批决策包仅新增DHR指定冻结版本导出读者的原生资源观察、控制器流生命周期回归及研发证据，
+    产品源码、接口、编号、权限、冻结/摘要、签署、归档生命周期政策和知识字节未变。
+    有限20条审读（19个稳定ID及1份Markdown支撑文件）中18条在明确子范围内一致，
+    两项广域验收场景保留证据缺口；350份文件指纹只证明基线相同，不是全库语义通过。
+    原签名认证图片可多字段引用的来源真实，但导出嵌图不是电子签署；新编号由服务端生成ASCII并更新保号，
+    长中文旧号仅为历史/列宽假设，不能据此建立新命名或业务限制。
+    FULL/SELECTED同版成员、原件拒绝、原文签名摘要及追溯范围保持，mock打印器容量不认证真实完整PDF版式，
+    直接持久化冻结夹具不认证提交/START，生成ZIP审计不等于客户端已接收或完成DHR归档。
+    未新增已确认业务语义、声明替代或客户/运行时投影，因此不修改知识、成熟度或P0状态；
+    本角色未执行或认证主侧运行测试，931知识候选、86UI及原全审余项/用户暂停均保持。
+  changedArtifacts: []
+  knowledgeSync: []
+  conflicts: []
+  questions: []
+  validationEvidence:
+    - id: validation.dhr-export-finite-reference-boundary
+      checkType: reference
+      command: python /tmp/edhr-export-ontology-20261105/validate.py finite
+      outcome: passed
+      evidence:
+        - finite-audit-records.jsonl
+        - finite-audit-summary.json
+        - validation-finite.log
+    - id: validation.dhr-export-baseline-and-raw-sources
+      checkType: evidence-path
+      command: python /tmp/edhr-export-ontology-20261105/validate.py baseline
+      outcome: passed
+      evidence:
+        - baseline.json
+        - source-snapshot-manifest.json
+        - knowledge-fingerprint-inventory.json
+        - validation-baseline.log
+    - id: validation.dhr-export-handoff-format
+      checkType: schema
+      command: python /tmp/edhr-export-ontology-20261105/validate.py result
+      outcome: passed
+      evidence:
+        - validation-result.log
+        - 此项为本地结果字段断言；不是正式BusinessKnowledgeModelTest、全库语义门禁或运行验收。
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages: [P1, P2, P3]
