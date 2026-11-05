@@ -36,14 +36,16 @@ public class WorkflowOperationsController {
     public ApiResponse<Map<String,Object>> context(@PathVariable Long id) { return ApiResponse.success(responsibility.transferContext(id)); }
 
     @GetMapping("/tasks/{id}/transfer-targets")
-    public ApiResponse<List<Map<String,String>>> transferTargets(@PathVariable Long id,@RequestParam(required=false) String keyword) {
-        return ApiResponse.success(responsibility.transferTargets(id,keyword));
+    public ApiResponse<com.zencas.edhr.identity.service.TenantTransferTargets.Page> transferTargets(@PathVariable Long id,@RequestParam(required=false) String keyword,
+            @RequestParam(defaultValue="1") int page, @RequestParam(defaultValue="50") int size) {
+        return ApiResponse.success(responsibility.transferTargets(id,keyword,page,size));
     }
 
     @GetMapping("/tasks/{id}/reassignment-targets")
     @PreAuthorize("hasAuthority('workflow.intervene')")
-    public ApiResponse<List<Map<String,String>>> targets(@PathVariable String id,@RequestParam(required=false) String keyword) {
-        return ApiResponse.success(id.startsWith("form-") ? forms.targets(id,keyword) : responsibility.reassignmentTargets(Long.valueOf(id),keyword));
+    public ApiResponse<com.zencas.edhr.identity.service.TenantTransferTargets.Page> targets(@PathVariable String id,@RequestParam(required=false) String keyword,
+            @RequestParam(defaultValue="1") int page, @RequestParam(defaultValue="50") int size) {
+        return ApiResponse.success(id.startsWith("form-") ? forms.targets(id,keyword,page,size) : responsibility.reassignmentTargets(Long.valueOf(id),keyword,page,size));
     }
 
     @PostMapping("/tasks/{id}/reassign")

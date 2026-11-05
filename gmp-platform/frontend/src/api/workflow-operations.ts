@@ -1,4 +1,5 @@
 import client from './client';
+import type { PersonnelTargetPage } from '@/types/personnel';
 export interface WorkflowInstanceRow {
   id: string; templateName: string; businessKey: string; businessType: string | null; status: string;
   startUserName: string; startTime: string; endTime: string | null;
@@ -17,8 +18,10 @@ export interface ResponsibilityCommand { targetUserId: string; reason: string; e
 export const listWorkflowOperations = async (params: Record<string, unknown>): Promise<{ content: WorkflowInstanceRow[]; totalElements: number; totalPages: number }> =>
   (await client.get('/workflow/operations/instances', { params })).data.data;
 export const getWorkflowOperation = async (id: string): Promise<WorkflowInstanceView> => (await client.get(`/workflow/operations/instances/${encodeURIComponent(id)}`)).data.data;
-export const getResponsibilityTargets = async (id: string, reassign: boolean, keyword: string, signal: AbortSignal): Promise<Array<{ id: string; name: string; username: string }>> =>
-  (await client.get(`/workflow/operations/tasks/${encodeURIComponent(id)}/${reassign ? 'reassignment' : 'transfer'}-targets`, { params: { keyword }, signal })).data.data;
+export const getResponsibilityTargets = async (id: string, reassign: boolean, keyword: string, page: number, signal: AbortSignal): Promise<PersonnelTargetPage> =>
+  (await client.get(`/workflow/operations/tasks/${encodeURIComponent(id)}/${reassign ? 'reassignment' : 'transfer'}-targets`, { params: { keyword, page, size: 50 }, signal })).data.data;
+export const getTaskTransferTargets = async (id: string, keyword: string, page: number, signal: AbortSignal): Promise<PersonnelTargetPage> =>
+  (await client.get(`/workflow/tasks/${encodeURIComponent(id)}/transfer-targets`, { params: { keyword, page, size: 50 }, signal })).data.data;
 export const getTransferContext = async (id: string): Promise<{ taskState: string; signatureRequired: boolean; canTransfer: boolean }> =>
   (await client.get(`/workflow/operations/tasks/${id}/transfer-context`)).data.data;
 export const changeTaskResponsibility = async (id: string, reassign: boolean, command: ResponsibilityCommand) =>

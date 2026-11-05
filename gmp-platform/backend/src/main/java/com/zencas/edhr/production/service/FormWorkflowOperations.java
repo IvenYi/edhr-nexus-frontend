@@ -87,6 +87,7 @@ public class FormWorkflowOperations {
         var rows = jdbc.queryForList("SELECT r.*,e.state_json,e.snapshot_json AS execution_snapshot,e.revision" + " " + FROM + visibility() + " AND r.id=?", args.toArray());
         if (rows.isEmpty()) throw new AccessDeniedException("表单流程不存在或无权查看");
         Context c = context(rows.getFirst());
+        var currentNames = currentAssigneeNames(c);
         var result = new LinkedHashMap<String, Object>();
         result.put("id", "form-" + id); result.put("templateName", c.row().get("template_name")); result.put("businessKey", c.row().get("instance_no"));
         result.put("businessType", "FORM_PROCESS"); result.put("status", active(c) ? "RUNNING" : "COMPLETED");
@@ -100,7 +101,9 @@ public class FormWorkflowOperations {
             if (current && "APPROVAL".equals(n.path("data").path("kind").asText())) {
                 String assignee = c.progress().path("transferAssignees").path(nodeId).asText("");
                 var task = new LinkedHashMap<String,Object>(); task.put("id", taskKey(id, nodeId)); task.put("nodeId", nodeId); task.put("status", "PENDING");
-                task.put("assigneeId", assignee.isBlank() ? null : assignee); task.put("assigneeName", name(assignee)); task.put("taskState", state(c, nodeId)); tasks.add(task);
+                task.put("assigneeId", assignee.isBlank() ? null : assignee);
+                task.put("assigneeName", assignee.isBlank() ? "候选人待处理" : currentNames.getOrDefault(Long.valueOf(assignee), assignee));
+                task.put("taskState", state(c, nodeId)); tasks.add(task);
             }
         }
         for (JsonNode e : c.form().path("flow").path("edges")) {
@@ -122,11 +125,11 @@ public class FormWorkflowOperations {
 
     @PreAuthorize("hasAuthority('workflow.intervene')")
     @Transactional(readOnly = true)
-    public List<Map<String,String>> targets(String key, String keyword) {
+    public TenantTransferTargets.Page targets(String key, String keyword, int page, int size) {
         TaskKey task = parseTask(key); Context c = load(task.recordId()); requireActive(c, task.nodeId());
         String previous = c.progress().path("transferAssignees").path(task.nodeId()).asText("");
         return new TenantTransferTargets(users).search(tenant(), previous, keyword,
-                Set.of("production.execution", "form-management.review"));
+                Set.of("production.execution", "form-management.review"), page, size);
     }
 
     @PreAuthorize("hasAuthority('workflow.intervene')")
@@ -166,6 +169,21 @@ public class FormWorkflowOperations {
     private Context load(long id) {
         var rows = jdbc.queryForList("SELECT r.*,e.state_json,e.snapshot_json AS execution_snapshot,e.revision,o.object_no,o.work_order_id AS source_work_order_id,o.status AS object_status,w.status AS order_status "+FROM+" AND r.id=?",id);
         if (rows.isEmpty()) throw invalid("表单流程不存在"); return context(rows.getFirst());
+    }
+    private Map<Long, String> currentAssigneeNames(Context c) {
+        Set<Long> assignees = new LinkedHashSet<>();
+        if (active(c)) for (JsonNode node : c.form().path("flow").path("nodes")) {
+            if (!"APPROVAL".equals(node.path("data").path("kind").asText())
+                    || !contains(c.progress().path("active"), node.path("id").asText())) continue;
+            String id = c.progress().path("transferAssignees").path(node.path("id").asText()).asText("");
+            if (!id.isBlank()) assignees.add(Long.valueOf(id));
+        }
+        Map<Long, String> names = new HashMap<>();
+        if (!assignees.isEmpty()) for (var row : jdbc.queryForList("SELECT id,display_name FROM user_account WHERE id=ANY(?)",
+                new org.springframework.jdbc.support.SqlArrayValue("bigint", assignees.toArray()))) {
+            names.put(((Number) row.get("id")).longValue(), (String) row.get("display_name"));
+        }
+        return names;
     }
     private Context context(Map<String,Object> row) {
         ObjectNode state = json(row.get("state_json")); JsonNode snapshot = json(row.get("execution_snapshot"));

@@ -1,0 +1,59 @@
+{
+  "status": "main-passed-awaiting-independent-final",
+  "nativeTests": 177,
+  "readObservationInvocations": 35,
+  "observationEvents": 90,
+  "logicalObservedSelects": 296,
+  "nameComparison": {
+    "before100DistinctOrMissing": 101,
+    "after100DistinctOrMissing": 2,
+    "repeatedExisting": 2,
+    "blank": 1,
+    "historySourceUnchanged": true
+  },
+  "candidateParameters": {
+    "originalCandidates": [
+      0,
+      1,
+      100,
+      5000
+    ],
+    "directoryFirstPage": [
+      8,
+      8,
+      8,
+      8
+    ],
+    "directoryLaterPage": 9,
+    "serviceFirstPage": 11,
+    "serviceLaterPage": 12,
+    "previous5000Directory": 5007,
+    "boundCandidateValue": "one JSON array String, exact text membership"
+  },
+  "completeNavigation": {
+    "sameNameEligible": 251,
+    "nonEmptyPagesAt50": 6,
+    "extraEmptyPage": 7,
+    "originalCandidates": 5000,
+    "candidatePagesAt100": 50,
+    "allIdsCompared": true,
+    "globalCap": false,
+    "defaultBatch": 50,
+    "maxSingleBatch": 100,
+    "databaseLookahead": 1,
+    "unusedCountQueries": 0
+  },
+  "finiteFixCandidates": [
+    "PERF-FORM-DETAIL-CURRENT-NAMES-20261105",
+    "PERF-ORIGIN-CANDIDATE-PARAMETERS-20261105",
+    "QUALIFIED-PERSONNEL-TOTAL-CAP-20261105"
+  ],
+  "deferred": [
+    "PERF-ORIGIN-TEXT-ID-PLAN-20261105",
+    "Production SLA/full distribution plans",
+    "All original whole-audit queues"
+  ],
+  "browserCases": 11,
+  "browserScope": "Actual shared widget, TaskDetail, ResponsibilityDialog and two real API-adapter fixtures; isolated HTTP, not complete actual production/form-review page authentication E2E",
+  "wholeAuditComplete": false
+}

@@ -1,0 +1,100 @@
+decisionPackage:
+  id: DEC-PACKAGE-PERSONNEL-PAGING-20261105
+  scope: ordinary-form current-name batching, original candidate array predicate, all qualified personnel reachable through paged target selectors
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: f8638f5400356c4820d59bf26be50a79b453ca12
+    targetBranch: edhr-dev
+    targetCommit: f8638f5400356c4820d59bf26be50a79b453ca12
+    contractReadCommit: f8638f5400356c4820d59bf26be50a79b453ca12
+    uncommittedContractPaths: []
+  summary: PR60已人工合入、整树同e76325f0。用户授权修复姓名N+1及原候选参数增长，并明确全部符合入口原资格的人员必须可选择；100仅可作单批读取量，不能作总可选人数上限。统一覆盖此前100匹配目录及所有实际调用入口。
+  confirmed:
+    concepts: []
+    relationships: []
+    rules:
+      - id: rule.personnel-targets-complete-qualified-navigation
+        name: 人员目标选择须覆盖全部符合入口资格的人员
+        status: specified
+        trigger: personnel-target.select
+        condition:
+          any:
+            - {fact: intervention.type, operator: equals, value: ORDINARY_TRANSFER}
+            - {fact: intervention.type, operator: equals, value: MANAGERIAL_REASSIGNMENT}
+        result:
+          type: return-query-projection
+          source: existing-domain-qualified-personnel
+          eligibleSetCompleteness: all-matching-qualified-personnel-reachable
+          fixedTotalSelectionCap: false
+          supportsBatchedNavigation: true
+          singleBatchLimitIsNotTotalLimit: true
+          qualificationBeforePagination: true
+          grantsActionPermission: false
+        sourceReferences: [docs/development/branch-review-20261105-personnel-paging/user-confirmed.md]
+    executionContracts: []
+  inferred:
+    - id: inference.personnel-paged-implementation
+      statement: 采用服务端有界窗口及可继续加载的共享MUI人员选择器，每批50（最大单批100）且hasNext，不计算未使用总数；页号从1起，稳定姓名+数字ID顺序，关键词变化重置页和旧请求。
+      rationale: 现有MUI Autocomplete、React Query及Spring Data3.3滚动窗口可复用；单批限制不截断全集，不一次加载全部人员。
+      relatedIds: []
+  unresolved: []
+  replacementScopes: []
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - area: personnel-selection-and-read-projection
+        change: 当前表单节点姓名一次批量读取；原候选精确文本ID以单数组绑定；人员目录分页延续至全部符合资格人员。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormWorkflowOperations.java, gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/WorkflowResponsibilityService.java, gmp-platform/backend/src/main/java/com/zencas/edhr/identity/service/TenantTransferTargets.java]
+    transitiveImpacts:
+      - area: target-endpoints-and-selectors
+        change: 同步普通任务转办、集中通用/记录控制转办及管理员改派、普通表单/DHR管理员改派、生产执行和表单审批列表转办的目录响应与选择器；旧List接口内部调用全部迁移，不能留下首100人的实际入口。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowTaskController.java, gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowOperationsController.java, gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/ProductionExecutionController.java]
+    potentialImpacts:
+      - area: pagination-and-query-shape
+        concern: 分页须在完整资格谓词后执行；同名排序、末页、空页及搜索重置/IME/陈旧响应/失败重试/跨任务隔离需验证；Hibernate数组绑定及窗口offset实际PG取证。
+        evidenceReferences: []
+    unaffectedAreas:
+      - area: domain-policy-and-writes
+        change: 各入口原租户/ACTIVE/锁定/当前人/原候选/申请人回避/双权限等资格及提交重核、签署、原因、状态、锁序、事务、审计、冻结与历史来源保持；不实现第三项索引或全租户治理，不修朋友负责的签名密码链或重设生产弹窗样式。
+        evidenceReferences: []
+    compatibilityAndMigration:
+      - area: api-shape
+        change: 同仓全部实际目录调用同步由List迁移到content/page/size/hasNext；不为旧前端保留静默首100旁路。无数据库迁移，不回写历史数据。
+        evidenceReferences: []
+    snapshotImpacts:
+      - area: unchanged-evidence
+        change: 保留原候选文本精确匹配，不将00042转换42；普通表单姓名保留原Long解析及空/缺失回退，历史姓名和签名引用沿原history。
+        evidenceReferences: []
+    auditImpacts:
+      - area: read-only-optimization
+        change: 只改读取与选择，不更改写入审计/签署/责任历史；原始旧源反证与最终绿回归分开保留。
+        evidenceReferences: []
+    permissionImpacts:
+      - area: exhaustive-authorized-navigation
+        change: 允许找到全部原有资格人员，不扩大任何领域可授权集合；列表不能替代提交时复核；服务端分页参数校验只限单请求工作量。
+        evidenceReferences: []
+    testImpacts:
+      - scope: native-and-browser
+        scenarios: [姓名不同/缺失单批与历史保持, 候选5000单数组绑定, 原数字/非规范文本候选不变, 超100人员跨页无丢失/重复/同名顺序, 完整权限前置与无权拒绝, 全部端点响应/消费者迁移, 加载更多/末页/搜索IME/清除/陈旧响应/失败重试/键盘/窄屏, 原167相邻回归及正式知识/前端构建]
+        evidenceReferences: []
+    evidenceGaps: [第三项文本ID扫描/索引和生产SLA暂不实施, 完整多租户/全账号签署矩阵及931知识/86UI/W2-W7高风险与原暂停范围继续]
+  extensionStrategy:
+    selectedPaths: [product-core]
+    rationale: 复用当前Spring Data窗口、Hibernate静态SQL片段的单JSON数组参数、JdbcTemplate与MUI/React Query；共享人员选择器覆盖同类入口，不新增运行引擎或通用仓储框架。
+    ownershipBoundaries:
+      - owner: identity-directory
+        responsibility: 服务端完整资格后有界分页与续页信号，不能定义额外总人数上限。
+      - owner: domain-services
+        responsibility: 原候选/领域权限及最终写入保护，普通表单当前姓名与历史投影来源。
+      - owner: shared-personnel-selector
+        responsibility: 复用Autocomplete提供搜索、分页继续、加载/空/错/重试/取消/键盘状态；不决定后端授权。
+  affectedFiles:
+    - {path: gmp-platform/backend/src/main/java/com/zencas/edhr/identity/service/TenantTransferTargets.java, changeType: update, reason: 无总人数截断的分页目录}
+    - {path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormWorkflowOperations.java, changeType: update, reason: 普通表单姓名批量及管理员目录分页}
+    - {path: gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/WorkflowResponsibilityService.java, changeType: update, reason: 精确文本数组及目录分页}
+  acceptanceScenarios:
+    - id: scenario.all-qualified-personnel-reachable
+      given: 同一入口有超过100名符合原资格的人员，并有无资格前置人员及同名人员
+      when: 用户搜索并持续加载后续批次
+      then: 全部合格人员均可到达并选择，无越权、总人数截断或一次全量读取；最终提交仍重新检查资格
+      evidenceRequirements: [实际PG全页比较与绑定SQL, 全入口契约回归, 真实浏览器选中100之后人员及负向状态, 知识同步与全新独立质量]

@@ -185,7 +185,7 @@ class WorkflowReadObservationPostgresTest {
                 SELECT 30000+n,0,'directory-read-'||n,'dir-scope-'||lpad(n::text,5,'0'),'not-used','ACTIVE'
                 FROM generate_series(0,?-1) n
                 """, count);
-        Read<List<Map<String, String>>> read = capture(() -> new TenantTransferTargets(users).search(0L, "42", "dir-scope"));
+        Read<List<Map<String, String>>> read = capture(() -> new TenantTransferTargets(users).search(0L, "42", "dir-scope", 1, 100).content());
         assertThat(read.value).hasSize(Math.min(count, 100));
         for (int i = 0; i < read.value.size(); i++) {
             assertThat(read.value.get(i).get("id")).isEqualTo(String.valueOf(30000 + i));
@@ -211,7 +211,7 @@ class WorkflowReadObservationPostgresTest {
                       (29997,0,'tie-locked','tied-directory','not-used','ACTIVE',CURRENT_TIMESTAMP+INTERVAL '1 day')
                 """);
         jdbc.update("UPDATE user_account SET display_name='tied-directory' WHERE id=42");
-        Read<List<Map<String, String>>> read = capture(() -> new TenantTransferTargets(users).search(0L, "42", "  TiEd-DiReCtOrY  "));
+        Read<List<Map<String, String>>> read = capture(() -> new TenantTransferTargets(users).search(0L, "42", "  TiEd-DiReCtOrY  ", 1, 100).content());
         assertThat(read.value).hasSize(100);
         for (int i = 0; i < read.value.size(); i++) {
             assertThat(read.value.get(i)).containsExactlyInAnyOrderEntriesOf(Map.of(
@@ -248,6 +248,9 @@ class WorkflowReadObservationPostgresTest {
         assertThat(formEvidence()).isEqualTo(before);
         record("form-detail-current-names", Map.of("activeApprovalNodes", count, "assigneeKind", kind,
                 "returnedTasks", tasks.size()), read);
+        assertThat(read.jdbcSql.size() + read.hibernateSql.size()).isLessThanOrEqualTo(2);
+        assertThat(read.jdbcSql.stream().filter(sql -> sql.contains("FROM user_account WHERE id=ANY(?)")).count())
+                .isEqualTo(count > 0 && !kind.equals("blank") ? 1 : 0);
     }
 
     @Test void formDetailKeepsStoredHistoryAndDoesNotReadNamesForHistoricalTasks() throws Exception {
@@ -300,13 +303,108 @@ class WorkflowReadObservationPostgresTest {
                 FROM generate_series(0,?-1) n
                 """, count);
         String before = jdbc.queryForObject("SELECT candidate_snapshot::text FROM workflow_task WHERE id=900104", String.class);
-        Read<List<Map<String, String>>> read = capture(() -> responsibility.reassignmentTargets(900104L, "origin-scope"));
+        Read<List<Map<String, String>>> read = capture(() -> responsibility.reassignmentTargets(900104L, "origin-scope", 1, 100).content());
         assertThat(read.value).hasSize(Math.min(count, 100));
         for (int i = 0; i < read.value.size(); i++) assertThat(read.value.get(i)).containsEntry("id", String.valueOf(40000 + i))
                 .containsEntry("name", "origin-scope-%05d".formatted(i));
         assertThat(jdbc.queryForObject("SELECT candidate_snapshot::text FROM workflow_task WHERE id=900104", String.class)).isEqualTo(before);
         record("original-candidate-directory", Map.of("originalCandidates", count, "returnedPersonnel", read.value.size(),
                 "hibernatePlaceholders", read.hibernateSql.stream().mapToLong(sql -> sql.chars().filter(c -> c == '?').count()).sum()), read);
+        assertThat(read.hibernateSql.stream().mapToLong(sql -> sql.chars().filter(c -> c == '?').count()).sum()).isLessThanOrEqualTo(12);
+        if (count == 5000) {
+            var all = new ArrayList<>(read.value);
+            for (int page = 2; page <= 50; page++) {
+                int currentPage = page;
+                Read<TenantTransferTargets.Page> next = capture(() -> responsibility.reassignmentTargets(900104L, "origin-scope", currentPage, 100));
+                assertThat(next.value.content()).hasSize(100);
+                assertThat(next.value.hasNext()).isEqualTo(page < 50);
+                assertThat(next.hibernateSql.stream().mapToLong(sql -> sql.chars().filter(c -> c == '?').count()).sum()).isLessThanOrEqualTo(12);
+                all.addAll(next.value.content());
+                record("original-candidate-next-page", Map.of("originalCandidates", count, "page", page), next);
+            }
+            assertThat(all).hasSize(5000);
+            for (int i = 0; i < all.size(); i++) assertThat(all.get(i).get("id")).isEqualTo(String.valueOf(40000 + i));
+        }
+    }
+
+    @Test void allQualifiedPersonnelRemainReachableAcrossPages() throws Exception {
+        jdbc.update("INSERT INTO user_account(id,tenant_id,username,display_name,password_hash,status) SELECT 40000+n,0,'paged-reverse-'||(251-n),'paged-tie','not-used','ACTIVE' FROM generate_series(0,250) n");
+        jdbc.update("""
+                INSERT INTO user_account(id,tenant_id,username,display_name,password_hash,status,locked_until)
+                VALUES(39999,1,'paged-cross','paged-tie','not-used','ACTIVE',NULL),
+                      (39998,0,'paged-disabled','paged-tie','not-used','DISABLED',NULL),
+                      (39997,0,'paged-locked','paged-tie','not-used','ACTIVE',CURRENT_TIMESTAMP+INTERVAL '1 day')
+                """);
+        jdbc.update("UPDATE user_account SET display_name='paged-tie' WHERE id=42");
+        List<String> ids = new ArrayList<>();
+        for (int page = 1; page <= 7; page++) {
+            int currentPage = page;
+            Read<TenantTransferTargets.Page> read = capture(() -> new TenantTransferTargets(users).search(0L, "42", "paged-tie", currentPage, 50));
+            assertThat(read.value.page()).isEqualTo(page);
+            assertThat(read.value.size()).isEqualTo(50);
+            assertThat(read.value.hasNext()).isEqualTo(page < 6);
+            assertThat(read.value.content()).hasSize(page <= 5 ? 50 : page == 6 ? 1 : 0);
+            ids.addAll(read.value.content().stream().map(row -> row.get("id")).toList());
+            assertThat(read.hibernateSql).hasSize(1).noneMatch(sql -> sql.toLowerCase(java.util.Locale.ROOT).contains("count("));
+            record("personnel-directory-next-page", Map.of("eligible", 251, "page", page, "returned", read.value.content().size()), read);
+        }
+        assertThat(ids).hasSize(251).doesNotHaveDuplicates();
+        for (int i = 0; i < ids.size(); i++) assertThat(ids.get(i)).isEqualTo(String.valueOf(40000 + i));
+    }
+
+    @Test void invalidPagingIsRejectedWithoutQuerying() throws Exception {
+        Read<String> read = capture(() -> {
+            for (int[] args : new int[][]{{0, 50}, {-1, 50}, {1, 0}, {1, 101}})
+                org.assertj.core.api.Assertions.assertThatThrownBy(() -> new TenantTransferTargets(users).search(0L, "42", "", args[0], args[1]))
+                        .isInstanceOf(IllegalArgumentException.class).hasMessageContaining("页码");
+            return "rejected";
+        });
+        assertThat(read.jdbcSql).isEmpty(); assertThat(read.hibernateSql).isEmpty();
+        record("personnel-invalid-paging", Map.of("rejectedInputs", 4), read);
+    }
+
+    @ParameterizedTest @ValueSource(booleans = {false, true})
+    void candidateArrayKeepsExactTextIdentityAndOriginalSnapshot(boolean wrapped) throws Exception {
+        String origin = "{\"userIds\":[\"00042\",\"+42\",\" 42\",\"42 \",\"9223372036854775808\",\"not-an-id\",\"' OR 1=1 --\",\"43\",\"43\"],\"unrestricted\":false}";
+        var wrapper = mapper.createObjectNode().put("originSnapshot", origin);
+        wrapper.putArray("userIds").add("42");
+        String snapshot = wrapped ? wrapper.toString() : origin;
+        jdbc.update("INSERT INTO workflow_task(id,instance_id,node_id,status,assignee_id,candidate_snapshot) VALUES(900104,900100,900103,'PENDING','41',?::jsonb)", snapshot);
+        Read<TenantTransferTargets.Page> read = capture(() -> responsibility.reassignmentTargets(900104L, "", 1, 50));
+        assertThat(read.value.content()).extracting(row -> row.get("id")).containsExactly("43");
+        assertThat(read.value.hasNext()).isFalse();
+        assertThat(mapper.readTree(jdbc.queryForObject("SELECT candidate_snapshot::text FROM workflow_task WHERE id=900104", String.class)))
+                .isEqualTo(mapper.readTree(snapshot));
+        record("candidate-array-text-identities", Map.of("wrappedOrigin", wrapped), read);
+    }
+
+    @Test void formNameBatchKeepsNumericAliasesAndMissingFallback() throws Exception {
+        seedForm(5, "blank");
+        var state = (com.fasterxml.jackson.databind.node.ObjectNode) mapper.readTree(jdbc.queryForObject("SELECT state_json FROM production_execution WHERE object_id=910109", String.class));
+        var assignees = (com.fasterxml.jackson.databind.node.ObjectNode) state.path("operations").path("op").path("forms").path("form").path("transferAssignees");
+        var inputs = List.of("00042", "+42", "43", "999999", "");
+        for (int i = 0; i < inputs.size(); i++) assignees.put("review-" + i, inputs.get(i));
+        jdbc.update("UPDATE production_execution SET state_json=? WHERE object_id=910109", state.toString());
+        String before = formEvidence();
+        Read<Map<String, Object>> read = capture(() -> formOperations.detail(910112L));
+        @SuppressWarnings("unchecked") var tasks = (List<Map<String, Object>>) read.value.get("tasks");
+        assertThat(tasks).extracting(row -> row.get("assigneeName")).containsExactly("甲审批人", "甲审批人", "乙审批人", "999999", "候选人待处理");
+        assertThat(tasks).extracting(row -> row.get("assigneeId")).containsExactly("00042", "+42", "43", "999999", null);
+        assertThat(read.jdbcSql).hasSize(2); assertThat(read.hibernateSql).isEmpty();
+        assertThat(formEvidence()).isEqualTo(before);
+        record("form-detail-numeric-identities", Map.of("activeApprovalNodes", 5), read);
+    }
+
+    @Test void malformedFormAssigneeKeepsExistingFailure() throws Exception {
+        seedForm(1, "missing");
+        jdbc.update("UPDATE production_execution SET state_json=replace(state_json,'999999','not-an-id') WHERE object_id=910109");
+        String before = formEvidence();
+        Read<String> read = capture(() -> {
+            org.assertj.core.api.Assertions.assertThatThrownBy(() -> formOperations.detail(910112L)).isInstanceOf(NumberFormatException.class);
+            return "existing failure retained";
+        });
+        assertThat(formEvidence()).isEqualTo(before);
+        record("form-detail-invalid-identity", Map.of("activeApprovalNodes", 1), read);
     }
 
     private void seedForm(int count, String kind) throws Exception {

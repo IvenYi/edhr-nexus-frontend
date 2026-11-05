@@ -146,9 +146,10 @@ public class WorkflowTaskController {
      * Transfer a task to another assignee (转办).
      */
     @GetMapping("/{id}/transfer-targets")
-    public ApiResponse<List<Map<String, String>>> transferTargets(
-            @PathVariable Long id, @RequestParam(required = false) String keyword) {
-        return ApiResponse.success(workflowEngine.transferTargets(id, currentOperatorId(), keyword));
+    public ApiResponse<com.zencas.edhr.identity.service.TenantTransferTargets.Page> transferTargets(
+            @PathVariable Long id, @RequestParam(required = false) String keyword,
+            @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "50") int size) {
+        return ApiResponse.success(workflowEngine.transferTargets(id, currentOperatorId(), keyword, page, size));
     }
 
     @PostMapping("/{id}/transfer")

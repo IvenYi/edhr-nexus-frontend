@@ -44,10 +44,11 @@ public class ProductionExecutionController {
     }
 
     @GetMapping("/{id}/transfer-targets")
-    public ApiResponse<java.util.List<java.util.Map<String, String>>> transferTargets(@PathVariable Long id,
+    public ApiResponse<com.zencas.edhr.identity.service.TenantTransferTargets.Page> transferTargets(@PathVariable Long id,
             @RequestParam String operationId, @RequestParam String formId, @RequestParam(required = false) String instanceId,
-            @RequestParam(defaultValue = "") String keyword) {
-        return ApiResponse.success(service.transferTargets(id, operationId, formId, instanceId, keyword));
+            @RequestParam(defaultValue = "") String keyword,
+            @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "50") int size) {
+        return ApiResponse.success(service.transferTargets(id, operationId, formId, instanceId, keyword, page, size));
     }
 
     @PostMapping("/{id}/actions")

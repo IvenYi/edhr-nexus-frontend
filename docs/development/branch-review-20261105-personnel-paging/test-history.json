@@ -1,0 +1,89 @@
+{
+  "nativePhases": [
+    {
+      "phase": "full",
+      "totals": {
+        "tests": 173,
+        "failures": 1,
+        "errors": 14,
+        "skipped": 0
+      },
+      "note": "Interim product Hibernate arrayContains type failure14 and old response JSON assertion1; not old-source defect control. Fixed binding and contract assertion.",
+      "rawRoot": "primary/native-full"
+    },
+    {
+      "phase": "full2",
+      "totals": {
+        "tests": 173,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "note": "173 passed before added HTTP page cases, not cumulative final.",
+      "rawRoot": "primary/native-full2"
+    },
+    {
+      "phase": "full3",
+      "totals": {
+        "tests": 176,
+        "failures": 1,
+        "errors": 2,
+        "skipped": 0
+      },
+      "note": "New fixtures: wrong tenant, role PK reuse and mixed pending record-control/DHR blocked correctly; fixtures corrected, guards unchanged.",
+      "rawRoot": "primary/native-full3"
+    },
+    {
+      "phase": "full4",
+      "totals": {
+        "tests": 177,
+        "failures": 2,
+        "errors": 0,
+        "skipped": 0
+      },
+      "note": "New test membership grants leaked into prior qualification fixtures; dedicated role and afterEach cleanup corrected, original assertions kept.",
+      "rawRoot": "primary/native-full4"
+    },
+    {
+      "phase": "full5",
+      "totals": {
+        "tests": 177,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "note": "Final177 passed, independent final quality still required.",
+      "rawRoot": "primary/native-full5"
+    }
+  ],
+  "browserPhases": [
+    {
+      "phase": "first",
+      "result": "failed",
+      "classification": "product: popup obscured load-more; moved action beside input"
+    },
+    {
+      "phase": "second",
+      "result": "failed",
+      "classification": "test interaction: clicking already-open input toggled popup closed; use standard keyboard open"
+    },
+    {
+      "phase": "third",
+      "result": "failed",
+      "classification": "product: MUI clear icon absent for unselected search text; added explicit search clear"
+    },
+    {
+      "phase": "fourth",
+      "result": "passed",
+      "cases": 11,
+      "classification": "Before whitespace formatting only; not final source-byte proof"
+    },
+    {
+      "phase": "final",
+      "result": "passed",
+      "cases": 11,
+      "classification": "Nine final source fingerprints unchanged during run"
+    }
+  ],
+  "scope": "All phases preserved separately; no cumulative old greens, no claim interim failures are original-source negative controls"
+}

@@ -742,7 +742,7 @@ public class WorkflowEngine implements com.zencas.edhr.workflow.contract.RecordC
     }
 
     @Transactional(readOnly = true)
-    public List<Map<String, String>> transferTargets(Long taskId, String operatorId, String keyword) {
+    public TenantTransferTargets.Page transferTargets(Long taskId, String operatorId, String keyword, int page, int size) {
         assertNotDhrTask(taskId);
         WorkflowTask task = taskRepository.findById(taskId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.WF_006));
@@ -754,7 +754,7 @@ public class WorkflowEngine implements com.zencas.edhr.workflow.contract.RecordC
             throw new BusinessException(ErrorCode.WF_007, "当前用户无权转办此任务");
         }
         try {
-            return new TenantTransferTargets(userAccountRepository).search(resolveInstanceTenant(instance), operatorId, keyword);
+            return new TenantTransferTargets(userAccountRepository).search(resolveInstanceTenant(instance), operatorId, keyword, page, size);
         } catch (IllegalArgumentException exception) {
             throw new BusinessException(ErrorCode.WF_007, exception.getMessage());
         }

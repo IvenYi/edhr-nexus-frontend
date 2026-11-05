@@ -1,7 +1,8 @@
+import PersonnelTargetSelect from '@/components/identity/PersonnelTargetSelect';
 import { useCallback, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { UNSAFE_NavigationContext, useLocation } from 'react-router-dom';
-import { Alert, Autocomplete, Box, Button, Chip, CircularProgress, ClickAwayListener, DialogActions, DialogContent, DialogTitle, Drawer, IconButton, InputAdornment, LinearProgress, List, ListItemButton, Snackbar, Stack, TextField, Tooltip, Typography } from '@mui/material';
+import { Alert, Box, Button, Chip, CircularProgress, ClickAwayListener, DialogActions, DialogContent, DialogTitle, Drawer, IconButton, InputAdornment, LinearProgress, List, ListItemButton, Snackbar, Stack, TextField, Tooltip, Typography } from '@mui/material';
 import { ArrowForwardRounded, CheckCircleRounded, CloseRounded, ExpandMoreRounded, FullscreenRounded, InfoOutlined, LockOutlined, MenuBookRounded, FactCheckRounded, HistoryRounded, PlayArrowRounded, QrCodeScannerRounded, RefreshRounded, SwapHorizRounded, ViewListOutlined, TableChartOutlined } from '@mui/icons-material';
 import AppDialog from '@/components/AppDialog';
 import ConfirmDialog from '@/components/ConfirmDialog';
@@ -67,14 +68,9 @@ export default function ProductionExecutionPage() {
   const [pendingSwitch, setPendingSwitch] = useState<(() => void) | null>(null);
   const [signing, setSigning] = useState<(ExecutionButton & { signatureTarget?: SignatureTarget }) | null>(null);
   const [transferButton, setTransferButton] = useState<ExecutionButton | null>(null);
-  const [transferKeyword, setTransferKeyword] = useState('');
-  const [transferInput, setTransferInput] = useState('');
   const [transferTarget, setTransferTarget] = useState<ExecutionTransferTarget | null>(null);
   const [transferReason, setTransferReason] = useState('');
-  const [transferTargets, setTransferTargets] = useState<ExecutionTransferTarget[]>([]);
-  const [transferLoading, setTransferLoading] = useState(false);
   const [transferError, setTransferError] = useState('');
-  const transferRequestRef = useRef(0);
   const [account, setAccount] = useState('');
   const [password, setPassword] = useState('');
   const signaturePasswordError = Boolean(signing?.signatureTarget) && error === '电子签名密码错误';
@@ -253,23 +249,6 @@ export default function ProductionExecutionPage() {
     setFormId(nextId); setInstanceId(selected); setValues(source?.state.operations[owner]?.forms[selected]?.values ?? {}); setDirty(false);
   };
 
-  useEffect(() => {
-    if (!transferButton || !context || !formId || !selectedInstanceId) {
-      setTransferTargets([]);
-      setTransferLoading(false);
-      return;
-    }
-    const request = ++transferRequestRef.current;
-    setTransferLoading(true);
-    setTransferError('');
-    getExecutionTransferTargets(context.objectId, formOperationId, formId, selectedInstanceId, transferKeyword)
-      .then((items) => { if (request === transferRequestRef.current) setTransferTargets(items); })
-      .catch((reason) => { if (request === transferRequestRef.current) {
-        setTransferTargets([]); setTransferTarget(null); setTransferError(errorText(reason));
-      } })
-      .finally(() => { if (request === transferRequestRef.current) setTransferLoading(false); });
-    return () => { transferRequestRef.current++; };
-  }, [context?.objectId, formId, formOperationId, selectedInstanceId, transferButton, transferKeyword]);
   const chooseOperation = (id: string, source = view) => {
     setOperationId(id);
     const next = source?.snapshot.operations.find((item) => item.id === id);
@@ -349,7 +328,7 @@ export default function ProductionExecutionPage() {
       else receive(next);
       setSigning(null); setAccount(''); setPassword(''); setOpinion('');
       if (command.action === 'TRANSFER') {
-        setTransferButton(null); setTransferTarget(null); setTransferKeyword(''); setTransferInput(''); setTransferReason(''); setTransferTargets([]); setTransferError('');
+        setTransferButton(null); setTransferTarget(null); setTransferReason(''); setTransferError('');
       }
       void Promise.all([
         queryClient.invalidateQueries({ queryKey: ['form-management-global-list'] }),
@@ -372,7 +351,7 @@ export default function ProductionExecutionPage() {
   };
   const formAction = (button: ExecutionButton) => {
     if (button.action === 'TRANSFER') {
-      setTransferButton(button); setTransferKeyword(''); setTransferInput(''); setTransferTarget(null); setTransferReason(''); setTransferError('');
+      setTransferButton(button); setTransferTarget(null); setTransferReason(''); setTransferError('');
       return;
     }
     if (button.requiresSignature || button.requireOpinion || button.action === 'RETURN') {
@@ -616,20 +595,19 @@ export default function ProductionExecutionPage() {
       <DialogActions><Button disabled={busy} onClick={() => setSupplementCommand(null)}>取消</Button><Button variant="contained" disabled={busy || !supplementReason.trim()} onClick={async () => { if (supplementCommand && await act({ ...supplementCommand, reason: supplementReason.trim() })) setSupplementCommand(null); }}>确认并继续</Button></DialogActions>
     </AppDialog>
     <ConfirmDialog container={() => rootRef.current} initialFocus="cancel" destructive open={Boolean(pendingSwitch)} title="当前表单尚未保存" message={`${context?.objectNo ?? ''} · ${op?.name ?? ''} · ${form?.name ?? '当前表单'}：切换会丢弃未保存内容。可以返回继续填写并保存，或放弃修改后切换。`} confirmText="放弃修改并切换" cancelText="返回表单" onCancel={() => { setPendingSwitch(null); setOperationDrawerOpen(false); }} onConfirm={() => { const next = pendingSwitch; setPendingSwitch(null); setDirty(false); next?.(); }} />
-    <AppDialog open={Boolean(transferButton)} onClose={busy ? undefined : () => { setTransferButton(null); setTransferTarget(null); setTransferReason(''); setTransferKeyword(''); setTransferError(''); }} maxWidth="sm" fullWidth>
+    <AppDialog open={Boolean(transferButton)} onClose={busy ? undefined : () => { setTransferButton(null); setTransferTarget(null); setTransferReason(''); setTransferError(''); }} maxWidth="sm" fullWidth>
       <DialogTitle>转办审批</DialogTitle>
       <DialogContent><Stack spacing={2} sx={{ pt: 1 }}>
         <Typography variant="body2" color="text.secondary">将当前审批节点转办给本租户的其他可用用户。原审批候选来源保留，转办不会推进流程，受让人处理后流程才会继续。</Typography>
-        <Autocomplete options={transferTargets} value={transferTarget} inputValue={transferInput} loading={transferLoading} disabled={busy}
-          filterOptions={(options) => options} getOptionLabel={(option) => `${option.name}（${option.username}）`} isOptionEqualToValue={(option, value) => option.id === value.id}
-          onChange={(_, value) => setTransferTarget(value)} onInputChange={(_, value, reason) => {
-            if (reason !== 'reset' || value) setTransferInput(value);
-            if (reason === 'input' || reason === 'clear') { setTransferKeyword(value); setTransferTarget(null); }
-          }} noOptionsText={transferError ? '候选用户加载失败' : transferKeyword.trim() ? '没有找到匹配的可转办用户' : '本租户内没有其他可转办用户'}
-          renderInput={(params) => <TextField {...params} label="转办给" required error={Boolean(transferError)} helperText={transferError || '可选择本租户已启用且未锁定的其他用户，不限原审批候选人'} />} />
+        {context && <PersonnelTargetSelect key={`${context.objectId}:${formOperationId}:${formId}:${selectedInstanceId}`}
+          scope={['production', context.objectId, formOperationId, formId, selectedInstanceId]}
+          loadPage={(page, keyword, signal) => getExecutionTransferTargets(context.objectId, formOperationId, formId, selectedInstanceId, keyword, page, signal)}
+          value={transferTarget} onChange={setTransferTarget} disabled={busy} enabled={Boolean(transferButton)} label="转办给"
+          helperText="可选择本租户已启用且未锁定的其他用户，不限原审批候选人" />}
+        {transferError && <Alert severity="error">{transferError}</Alert>}
         <TextField label="转办原因" required value={transferReason} onChange={(event) => setTransferReason(event.target.value)} multiline minRows={3} inputProps={{ maxLength: 500 }} helperText={`${transferReason.length}/500`} disabled={busy} />
       </Stack></DialogContent>
-      <DialogActions><Button disabled={busy} onClick={() => { setTransferButton(null); setTransferTarget(null); setTransferReason(''); setTransferKeyword(''); setTransferError(''); }}>取消</Button><Button variant="contained" disabled={busy || transferLoading || !transferTarget || !transferReason.trim()} onClick={() => { if (transferTarget) void act({ action: 'TRANSFER', formId, instanceId: selectedInstanceId, targetUserId: transferTarget.id, reason: transferReason.trim() }); }}>{busy ? '正在转办…' : '确认转办'}</Button></DialogActions>
+      <DialogActions><Button disabled={busy} onClick={() => { setTransferButton(null); setTransferTarget(null); setTransferReason(''); setTransferError(''); }}>取消</Button><Button variant="contained" disabled={busy || !transferTarget || !transferReason.trim()} onClick={() => { if (transferTarget) void act({ action: 'TRANSFER', formId, instanceId: selectedInstanceId, targetUserId: transferTarget.id, reason: transferReason.trim() }); }}>{busy ? '正在转办…' : '确认转办'}</Button></DialogActions>
     </AppDialog>
     <AppDialog open={Boolean(signing)} onClose={busy ? undefined : () => { setSigning(null); setAccount(''); setPassword(''); setError(''); }} maxWidth="xs" fullWidth><DialogTitle>{signing?.signatureTarget ? '签署签名' : signing?.label}{signing?.requiresSignature ? ' · 账户签署' : ''}</DialogTitle><DialogContent><Stack spacing={2} sx={{ pt: 1 }}>
       {!signing?.signatureTarget && <Box sx={{ p: 1.5, bgcolor: '#f3f6fa', borderRadius: 1 }}><Typography variant="body2" fontWeight={600}>{context?.objectNo}</Typography><Typography variant="body2" color="text.secondary">{op?.name} · {form?.name} · 第 {instanceIds.indexOf(selectedInstanceId) + 1} 份</Typography><Typography variant="caption" color="text.secondary">本次操作：{signing?.label}</Typography></Box>}

@@ -1,0 +1,16 @@
+{
+  "profile": "product-admin",
+  "sourceRoots": ["gmp-platform/frontend/src/components/identity"],
+  "locale": "zh-CN",
+  "canonicalMap": "docs/frontend/personnel-target-selection.md",
+  "requiredCapabilities": ["Select/Listbox"],
+  "ownership": {"Select/Listbox": "authored"},
+  "requiredCommands": ["browser", "build"],
+  "commands": {
+    "browser": "cd gmp-platform/frontend && npm run test:personnel-targets-browser",
+    "build": "cd gmp-platform/frontend && npm run build"
+  },
+  "evidence": {
+    "selectorBrowserStates": "gmp-platform/frontend/scripts/test-personnel-targets-browser.mjs"
+  }
+}
