@@ -1,0 +1,89 @@
+{
+  "executionLevel": "L2",
+  "targetCommit": "fa5921698f5fa4024ad7ca86ee2a90e3cd3a9620",
+  "testedCandidate": "6e10604c7121c3e9ddb7196b560e1a079fd1ccf9",
+  "ontologyResult": "not-applicable",
+  "qualityResult": "passed",
+  "requiredChecksPassed": 12,
+  "authorizedChoice": "2026-11-05:先做姓名批量读取（推荐）",
+  "scope": "WorkflowOperationsQuery.detail current assignee names only; original textual ID/current-name/fallback/visibility/task-state/history semantics retained",
+  "productFilesChanged": 1,
+  "testFilesChanged": 1,
+  "nativeTests": 151,
+  "observationAndBoundaryInvocations": 13,
+  "baselineAdjacentInvocations": 138,
+  "formalKnowledgeTests": 89,
+  "oldFinalControl": {
+    "tests": 7,
+    "realPerformanceAssertionFailures": 5,
+    "positiveControls": 2,
+    "errors": 0,
+    "skipped": 0
+  },
+  "initialPhaseFailuresRetained": [
+    "old initial fixture invalid active-node duplicates:3F2E2positive",
+    "new initial Map.of null-key bug:150pass1E; fixed by main, same final test bytes rerun151"
+  ],
+  "verifiedFiniteFindingResolved": "PERF-WORKFLOW-DETAIL-NAMES-20261104",
+  "directoryCountFindingStillOpen": "PERF-TENANT-DIRECTORY-COUNT-20261104",
+  "detailBefore": {
+    "tasks": [
+      0,
+      1,
+      100,
+      1000
+    ],
+    "sql": [
+      5,
+      6,
+      105,
+      1005
+    ]
+  },
+  "detailAfter": {
+    "tasks": [
+      0,
+      1,
+      100,
+      1000
+    ],
+    "sql": [
+      5,
+      6,
+      6,
+      6
+    ]
+  },
+  "additionalCases": {
+    "nullOnly25": 5,
+    "textIdentity15": 6,
+    "distinctPeople1000": 6
+  },
+  "nameSqlArguments": "One varchar array bind; no null IDs/cross-request cache/numeric normalization",
+  "runtimeBrowserOrHttpE2E": false,
+  "newBusinessPolicyUiMigrationIndexDependency": false,
+  "knowledge": {
+    "unchangedFiles": 345,
+    "finiteExistingStatements": 8,
+    "pendingIncrementCandidates": 931,
+    "fullSemanticAuditComplete": false
+  },
+  "priorUiDiagnosticCandidatesPending": 86,
+  "wholeFileComplete": 0,
+  "historicalUniqueCoverage": null,
+  "wholeAuditComplete": false,
+  "residuals": [
+    "Directory unusedCOUNT/Form independent detail/central JSONCOUNT/Summary605/export accumulation and huge original-candidate parameters remain",
+    "Array/map memory grows with distinct assignees; CAST planning/production network/concurrency/SLA not certified",
+    "Original W2-W7/high/A12/complete account/recipient/ACL/signature/browser and paused scopes continue"
+  ],
+  "recommendation": "Manual merge updated PR58 finite name-batch implementation plus diagnostics; no automatic merge/deploy/history restoration or CI query/trigger",
+  "independentServerCrosscheck": {
+    "querySignatures": 8,
+    "matchedSelectExecutions": 49,
+    "nameBatchExecutions": 5,
+    "oneArrayParameterForEachNameBatch": true,
+    "otherServerSelectsExcluded": 32,
+    "allNetworkSqlCertified": false
+  }
+}

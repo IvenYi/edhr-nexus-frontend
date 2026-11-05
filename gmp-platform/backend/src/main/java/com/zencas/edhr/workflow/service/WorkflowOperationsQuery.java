@@ -4,9 +4,11 @@ import com.zencas.edhr.common.dto.PageResult;
 import com.zencas.edhr.common.exception.BusinessException;
 import com.zencas.edhr.common.exception.ErrorCode;
 import com.zencas.edhr.workflow.repository.WorkflowTaskRepository;
+import com.zencas.edhr.workflow.entity.WorkflowTask;
 import com.zencas.edhr.production.service.FormWorkflowOperations;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.SqlArrayValue;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.zencas.edhr.common.audit.AuditContext;
@@ -79,14 +81,15 @@ public class WorkflowOperationsQuery {
                 SELECT CAST(e.id AS VARCHAR) AS "id",CAST(e.source_node_id AS VARCHAR) AS "source",CAST(e.target_node_id AS VARCHAR) AS "target",e.label
                 FROM workflow_edge e JOIN workflow_instance i ON i.version_id=e.version_id WHERE i.id=?
                 """, id));
-        result.put("tasks", tasks.findByInstanceId(id).stream().map(task -> {
+        var instanceTasks = tasks.findByInstanceId(id);
+        var assigneeNames = assigneeNames(instanceTasks);
+        result.put("tasks", instanceTasks.stream().map(task -> {
             Map<String, Object> view = new LinkedHashMap<>();
             view.put("id", task.getId().toString()); view.put("nodeId", task.getNodeId().toString()); view.put("status", task.getStatus());
             view.put("assigneeId", task.getAssigneeId()); view.put("taskState", WorkflowResponsibilityService.taskState(task));
             view.put("signatureId", task.getSignatureId() == null ? null : task.getSignatureId().toString());
             view.put("opinion", task.getOpinion()); view.put("action", task.getAction());
-            var names = jdbc.queryForList("SELECT display_name FROM user_account WHERE CAST(id AS VARCHAR)=?", task.getAssigneeId());
-            view.put("assigneeName", names.isEmpty() ? "待候选人处理" : names.getFirst().get("display_name"));
+            view.put("assigneeName", assigneeNames.getOrDefault(task.getAssigneeId(), "待候选人处理"));
             return view;
         }).toList());
         result.put("logs", jdbc.queryForList("""
@@ -99,6 +102,19 @@ public class WorkflowOperationsQuery {
                 """, id));
         return result;
     }
+
+    private Map<String, String> assigneeNames(List<WorkflowTask> instanceTasks) {
+        Object[] assigneeIds = instanceTasks.stream().map(WorkflowTask::getAssigneeId)
+                .filter(Objects::nonNull).distinct().toArray();
+        Map<String, String> names = new HashMap<>();
+        if (assigneeIds.length == 0) return names;
+        for (var row : jdbc.queryForList("SELECT CAST(id AS VARCHAR) AS id,display_name FROM user_account WHERE CAST(id AS VARCHAR)=ANY(?)",
+                new SqlArrayValue("varchar", assigneeIds))) {
+            names.put((String) row.get("id"), (String) row.get("display_name"));
+        }
+        return names;
+    }
+
     private String visibility(List<Object> args) {
         var auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth != null && auth.getAuthorities().stream().anyMatch(a -> "workflow.intervene".equals(a.getAuthority()))) return "";

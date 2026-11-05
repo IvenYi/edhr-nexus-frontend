@@ -1,0 +1,230 @@
+qualityResult:
+  result: passed
+  baseCommit: fa5921698f5fa4024ad7ca86ee2a90e3cd3a9620
+  headCommit: 6e10604c7121c3e9ddb7196b560e1a079fd1ccf9
+  contractBaseline:
+    sourceCommit: 6e10604c7121c3e9ddb7196b560e1a079fd1ccf9
+    targetBranch: edhr-dev
+    targetCommit: fa5921698f5fa4024ad7ca86ee2a90e3cd3a9620
+    contractReadCommit: 6e10604c7121c3e9ddb7196b560e1a079fd1ccf9
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: clean
+    includedPaths: []
+    excludedPaths: []
+    untrackedPaths: []
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+  - id: check.baseline-contract-and-candidate
+    required: true
+    category: documentation
+    description: Independent start/end fetch confirms clean6e candidate/targetfa unchanged and ancestor. Contracts
+      read at6e and unchanged from target; actual candidate6e tested.
+    method: command
+    command: git fetch/rev-parse/status/merge-base; read contracts
+    outcome: passed
+    evidence:
+    - baseline-start.json
+    - final-baseline.json
+    - source-snapshot/AGENTS.md
+    - source-snapshot/docs/agents/agent-handoff-contract.md
+    - source-snapshot/docs/agents/quality-verifier.md
+  - id: check.authorization-and-current-name-policy
+    required: true
+    category: requirements
+    description: 'Explicit user selection permits name batching only. Original DEC0074/0081/0092/0093 ownership
+      checked: current directory projection is not historical signer identity; no new policy.'
+    method: inspection
+    command: Read current decisionPackage, original user confirmations and relevant policy declarations
+    outcome: passed
+    evidence:
+    - policy-snapshot/
+    - independent-source-review.md
+    - evidence-scope/result.yaml
+  - id: check.source-and-protected-boundaries
+    required: true
+    category: security
+    description: Only one product class changes. Twelve byte-equivalence groups retain list/visibility/guard/nodes/edges/task
+      fields/logs/transaction and adjacent directory/write/signature/engine controller owners.
+    method: command
+    command: python3 inspect-workflow-name-final-qa.py; inspect full diff
+    outcome: passed
+    evidence:
+    - independent-source-equivalence.json
+    - source-fingerprints.json
+    - independent-source-review.md
+  - id: check.textual-array-binding-and-cleanup
+    required: true
+    category: security
+    description: Original non-null strings distinct in one varchar array bind; no trim/Long normalization/wider
+      directory/global cache. Empty HashMap supports null key fallback; existing SqlArrayValue creates/sets and
+      frees JDBC Array, setter disposes parameters.
+    method: inspection
+    command: Inspect method and installed Spring6.1.8 javap; actual native/server binding checks
+    outcome: passed
+    evidence:
+    - SqlArrayValue.javap.txt
+    - ArgumentPreparedStatementSetter.javap.txt
+    - native/observations.jsonl
+    - server-sql/server-crosscheck.json
+    - independent-source-review.md
+  - id: check.old-source-real-negative-control
+    required: true
+    category: integration
+    description: Fresh child runs original5e2 product plus exact6e test bytes:7 cases5 genuine performance assertion
+      failures+2 positives,0errors/skips. Content/history assertions precede failure; no fixture or assertion changed.
+    method: automated-test
+    command: Old isolated worktree + native PostgreSQL; four selected final methods expand to7
+    outcome: passed
+    evidence:
+    - old-source-control/result.yaml
+    - old-source-control/maven.log
+    - old-source-control/test-summary.json
+    - old-source-control/performance-failure-source-lines.json
+  - id: check.candidate-focused-151
+    required: true
+    category: integration
+    description: Own detached6e worktree and PostgreSQL16.15:10 suites1510F/E/S, including13 read boundaries and
+      original138 adjacent tests. Full configured Liquibase11 applied on observation and record-control DBs, separate
+      transfer DB/edhr role.
+    method: automated-test
+    command: Native command recorded in native/command.json; no product/test/config repair
+    outcome: passed
+    evidence:
+    - run-result.json
+    - native/command.json
+    - native/maven.log
+    - native/test-summary.json
+    - native/surefire/
+    - native/liquibase-applied.json
+    - native-postgres.log
+  - id: check.formal-knowledge-89-preserved-345
+    required: true
+    category: ontology
+    description: Formal89 tests0F/E/S; all345 knowledge files match source5e2,targetfa,candidate6e/current. Model0.3.25/schema1.2.0/P0
+      in progress retained; no full semantic/stage promotion.
+    method: automated-test
+    command: mvn -f tools/knowledge-model/pom.xml test; Git blob byte comparison
+    outcome: passed
+    evidence:
+    - knowledge/command.json
+    - knowledge/maven.log
+    - knowledge/test-summary.json
+    - knowledge/surefire/
+    - knowledge-byte-check.json
+  - id: check.read-content-and-query-budget
+    required: true
+    category: regression
+    description: 13 actual observations preserve task fields/state/signature reference/history snapshots, null/missing/noncanonical
+      IDs/blank name and1000 distinct users. Candidate service SQL5/6/6/6; null-only5; text6; distinct6; directory1/1/1/2/2/2
+      unchanged.
+    method: automated-test
+    command: Run exact final read test; compare own event data to independent server child
+    outcome: passed
+    evidence:
+    - native/observations.jsonl
+    - native/surefire/
+    - independent-observation-comparison.json
+    - server-sql/observations.jsonl
+  - id: check.server-executed-sql-crosscheck
+    required: true
+    category: database
+    description: Independent13-case child matches8 current signatures and49 SELECT executions, five single-array
+      name reads.32 other server SELECT excluded; no whole-protocol/SLA claim.
+    method: query
+    command: Own PostgreSQL log_statement=all; normalize observed SQL signatures and match actual executions
+    outcome: passed
+    evidence:
+    - server-sql/result.yaml
+    - server-sql/crosscheck.py
+    - server-sql/server-crosscheck.json
+    - server-sql/postgres.log
+  - id: check.original-evidence-and-phase-accounting
+    required: true
+    category: documentation
+    description: Evidence child verifies109 primary originals/nested40 ontology/9 and26 fingerprints/12 guards,
+      four phase XML and same final test bytes; initial invalid active fixture2E and initial Map.of1E retained,
+      not final product red or unique counts.
+    method: command
+    command: Independent original/archive/manifest and report verification scripts
+    outcome: passed
+    evidence:
+    - evidence-scope/result.yaml
+    - evidence-scope/checks.json
+    - subrole-final-verification.json
+  - id: check.A23-extraction-and-scale
+    required: true
+    category: documentation
+    description: Private request-local name method implements bounded-scope reuse; no policy/validation/caching
+      framework, write guards retained. DirectoryCOUNT, CAST/huge candidate plans, Summary605/export and old queues
+      remain.
+    method: inspection
+    command: Inspect full source, review-notes and independent source review
+    outcome: passed
+    evidence:
+    - independent-source-review.md
+    - independent-source-equivalence.json
+    - evidence-scope/result.yaml
+  - id: check.resources-and-all-subroles-final
+    required: true
+    category: documentation
+    description: All3 children FINAL/passed/manifests verified. Own detached worktrees/containers/tool links cleaned
+      normally; main repository unmodified/clean. Native runner succeeds with explicitly allowed temporary node_modules
+      link; child helper diagnostics retained.
+    method: command
+    command: Verify all role manifests/cleanup/owner statuses
+    outcome: passed
+    evidence:
+    - subrole-final-verification.json
+    - cleanup.json
+    - orchestration-commands.json
+    - old-source-control/cleanup.json
+    - server-sql/cleanup.json
+    - final-baseline.json
+  findings: []
+  residualRisks:
+  - id: residual.directory-and-other-performance
+    description: Directory unused COUNT intentionally remains1/1/1/2/2/2; ordinary Form independent detail, JSON/COUNT,
+      Summary605/export accumulation and huge original candidate/text-ID plans remain.
+    impact: Only central non-form current-name N+1 is closed within tested scope.
+    mitigation: Continue separately authorized, measured audit batches; no speculative indexes or policy changes.
+  - id: residual.scale-time-and-integration
+    description: Array/Map grows with distinct assignees; no large-distribution EXPLAIN, production network/concurrency/SLA
+      or concurrent-rename equivalence certified. Names are read once currently, not per-field at old individual
+      instants. Native service context and adjacent tests are not full browser/JWT/signature/account E2E.
+    impact: No production release/capacity or all-domain certification.
+    mitigation: Keep current-name semantics explicit and measure deployment-like volume/plans separately.
+  - id: residual.whole-audit-and-knowledge
+    description: 345 unchanged files and89 validation tests do not close931 pending knowledge candidates,86 old
+      UI diagnostics, whole-file0/historyUniqueunknown, all W2-W7/high/A12/account/recipient/ACL/concurrency/archive
+      gaps or user-paused production modal/friend-owned signature page.
+    impact: No whole-branch or ontology-stage completion claim.
+    mitigation: Continue latest-target increments and persistent audit ledger; preserve original evidence and paused
+      scope.
+  blockingConditions: []
+verificationScope:
+  status: FINAL
+  independence: Fresh final QA and three read-only children did not implement or repair product/test/fixture/config.
+  testedCandidate: 6e10604c7121c3e9ddb7196b560e1a079fd1ccf9
+  targetAtStartAndFinish: fa5921698f5fa4024ad7ca86ee2a90e3cd3a9620
+  uniqueFocusedTests: 151
+  uniqueFormalKnowledgeTests: 89
+  readCasesWithinFocused: 13
+  oldSourceCases: 7
+  oldSourceRealAssertionFailures: 5
+  oldSourcePositiveControls: 2
+  oldSourceErrorsOrSkips: 0
+  serverChildRepeatedCasesNotExtraUnique: 13
+  serverObservedSqlSignatures: 8
+  serverMatchedSelectExecutions: 49
+  batchNameExecutions: 5
+  singleArrayParameterVerified: true
+  otherServerSelectsExcluded: 32
+  allThreeSubrolesFinal: true
+  browserExecuted: false
+  globalUiStrictExecuted: false
+  directoryCountOptimized: false
+  finiteNameFindingVerified: PERF-WORKFLOW-DETAIL-NAMES-20261104
+  wholeAuditComplete: false
+  permittedSubsequentWork: Only L0 evidence/acceptance/scope/delivery additions and NEXT status; all other existing
+    candidate paths unchanged. Reassess runtime/test/knowledge/contract changes.

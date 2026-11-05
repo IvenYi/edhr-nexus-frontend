@@ -1,0 +1,176 @@
+{
+  "sourceCommit": "fa5921698f5fa4024ad7ca86ee2a90e3cd3a9620",
+  "stage": "unoptimized-native-observation",
+  "observations": [
+    {
+      "kind": "personnel-directory",
+      "data": {
+        "returnedPersonnel": 0,
+        "matchingPersonnel": 0,
+        "resultLimit": 100
+      },
+      "jdbcStatements": 0,
+      "hibernateStatements": 1,
+      "totalStatements": 1,
+      "nameLookupStatements": 0,
+      "countStatements": 0,
+      "elapsedNanos": 6969015
+    },
+    {
+      "kind": "personnel-directory",
+      "data": {
+        "returnedPersonnel": 1,
+        "matchingPersonnel": 1,
+        "resultLimit": 100
+      },
+      "jdbcStatements": 0,
+      "hibernateStatements": 1,
+      "totalStatements": 1,
+      "nameLookupStatements": 0,
+      "countStatements": 0,
+      "elapsedNanos": 3631853
+    },
+    {
+      "kind": "personnel-directory",
+      "data": {
+        "returnedPersonnel": 99,
+        "matchingPersonnel": 99,
+        "resultLimit": 100
+      },
+      "jdbcStatements": 0,
+      "hibernateStatements": 1,
+      "totalStatements": 1,
+      "nameLookupStatements": 0,
+      "countStatements": 0,
+      "elapsedNanos": 4915387
+    },
+    {
+      "kind": "personnel-directory",
+      "data": {
+        "returnedPersonnel": 100,
+        "matchingPersonnel": 100,
+        "resultLimit": 100
+      },
+      "jdbcStatements": 0,
+      "hibernateStatements": 2,
+      "totalStatements": 2,
+      "nameLookupStatements": 0,
+      "countStatements": 1,
+      "elapsedNanos": 8416292
+    },
+    {
+      "kind": "personnel-directory",
+      "data": {
+        "returnedPersonnel": 100,
+        "matchingPersonnel": 101,
+        "resultLimit": 100
+      },
+      "jdbcStatements": 0,
+      "hibernateStatements": 2,
+      "totalStatements": 2,
+      "nameLookupStatements": 0,
+      "countStatements": 1,
+      "elapsedNanos": 6594015
+    },
+    {
+      "kind": "personnel-directory",
+      "data": {
+        "returnedPersonnel": 100,
+        "matchingPersonnel": 5000,
+        "resultLimit": 100
+      },
+      "jdbcStatements": 0,
+      "hibernateStatements": 2,
+      "totalStatements": 2,
+      "nameLookupStatements": 0,
+      "countStatements": 1,
+      "elapsedNanos": 14375476
+    },
+    {
+      "kind": "workflow-detail",
+      "data": {
+        "existingAssignees": 0,
+        "assigneeKinds": "two repeated existing IDs, null, missing ID",
+        "returnedTasks": 0,
+        "tasks": 0
+      },
+      "jdbcStatements": 4,
+      "hibernateStatements": 1,
+      "totalStatements": 5,
+      "nameLookupStatements": 0,
+      "countStatements": 0,
+      "elapsedNanos": 11683974
+    },
+    {
+      "kind": "workflow-detail",
+      "data": {
+        "existingAssignees": 1,
+        "assigneeKinds": "two repeated existing IDs, null, missing ID",
+        "returnedTasks": 1,
+        "tasks": 1
+      },
+      "jdbcStatements": 5,
+      "hibernateStatements": 1,
+      "totalStatements": 6,
+      "nameLookupStatements": 1,
+      "countStatements": 0,
+      "elapsedNanos": 12540629
+    },
+    {
+      "kind": "workflow-detail",
+      "data": {
+        "existingAssignees": 2,
+        "assigneeKinds": "two repeated existing IDs, null, missing ID",
+        "returnedTasks": 100,
+        "tasks": 100
+      },
+      "jdbcStatements": 104,
+      "hibernateStatements": 1,
+      "totalStatements": 105,
+      "nameLookupStatements": 100,
+      "countStatements": 0,
+      "elapsedNanos": 53874716
+    },
+    {
+      "kind": "workflow-detail",
+      "data": {
+        "existingAssignees": 2,
+        "assigneeKinds": "two repeated existing IDs, null, missing ID",
+        "returnedTasks": 1000,
+        "tasks": 1000
+      },
+      "jdbcStatements": 1004,
+      "hibernateStatements": 1,
+      "totalStatements": 1005,
+      "nameLookupStatements": 1000,
+      "countStatements": 0,
+      "elapsedNanos": 286121274
+    }
+  ],
+  "findings": [
+    {
+      "id": "PERF-WORKFLOW-DETAIL-NAMES-20261104",
+      "status": "open-awaiting-implementation-discussion",
+      "severity": "medium",
+      "trigger": "Open one workflow log/intervention instance detail with many tasks; repeated/null/missing assignees do not reduce per-task lookups",
+      "actual": "0/1/100/1000 tasks:5/6/105/1005 total SQL statements",
+      "proposal": "Batch distinct non-null textual assignee IDs once; preserve exact current-name/fallback, state, visibility, existing historical signature records and task shape",
+      "migrationOrIndexProposed": false
+    },
+    {
+      "id": "PERF-TENANT-DIRECTORY-COUNT-20261104",
+      "status": "open-awaiting-implementation-discussion",
+      "severity": "low",
+      "trigger": "Matching eligible personnel at least100; reader only consumes first100 content",
+      "actual": "0/1/99 personnel:1 statement;100/101/5000:2, including one unused COUNT",
+      "proposal": "Fetch ordered bounded content without calculating total; retain all domain predicates and limit100",
+      "migrationOrIndexProposed": false
+    }
+  ],
+  "measurementScope": "Actual JdbcTemplate queryForList and Hibernate StatementInspector SQL during same-thread service calls on disposable native PostgreSQL/full configured Liquibase. These cover current measured read paths, not all possible JDBC methods. Fixture/setup, response checks, background threads and transaction-control packets excluded.",
+  "timingLimit": "Single-process local warm/order-dependent measurements; elapsed values are not production latency, network, concurrency or SLA claims.1000 tasks is synthetic scaling data, not asserted normal DHR/form size.",
+  "productCodeChanged": false,
+  "performanceFixed": false,
+  "runtimeBrowserOrHttpTested": false,
+  "wholeAuditComplete": false
+}

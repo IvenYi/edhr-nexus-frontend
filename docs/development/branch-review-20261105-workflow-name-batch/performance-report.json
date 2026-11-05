@@ -1,0 +1,163 @@
+{
+  "implementationStatus": "main-passed-awaiting-final-independent",
+  "authorizedChoice": "User2026-11-05:先做姓名批量读取（推荐）",
+  "resolvesFindingId": "PERF-WORKFLOW-DETAIL-NAMES-20261104",
+  "findingClosureRequiresFreshFinalQA": true,
+  "directoryFindingStillOpen": "PERF-TENANT-DIRECTORY-COUNT-20261104",
+  "observations": [
+    {
+      "kind": "personnel-directory",
+      "data": {
+        "returnedPersonnel": 0,
+        "matchingPersonnel": 0,
+        "resultLimit": 100
+      },
+      "totalStatements": 1,
+      "nameStatements": 0
+    },
+    {
+      "kind": "personnel-directory",
+      "data": {
+        "returnedPersonnel": 1,
+        "matchingPersonnel": 1,
+        "resultLimit": 100
+      },
+      "totalStatements": 1,
+      "nameStatements": 0
+    },
+    {
+      "kind": "personnel-directory",
+      "data": {
+        "returnedPersonnel": 99,
+        "matchingPersonnel": 99,
+        "resultLimit": 100
+      },
+      "totalStatements": 1,
+      "nameStatements": 0
+    },
+    {
+      "kind": "personnel-directory",
+      "data": {
+        "returnedPersonnel": 100,
+        "matchingPersonnel": 100,
+        "resultLimit": 100
+      },
+      "totalStatements": 2,
+      "nameStatements": 0
+    },
+    {
+      "kind": "personnel-directory",
+      "data": {
+        "returnedPersonnel": 100,
+        "matchingPersonnel": 101,
+        "resultLimit": 100
+      },
+      "totalStatements": 2,
+      "nameStatements": 0
+    },
+    {
+      "kind": "personnel-directory",
+      "data": {
+        "returnedPersonnel": 100,
+        "matchingPersonnel": 5000,
+        "resultLimit": 100
+      },
+      "totalStatements": 2,
+      "nameStatements": 0
+    },
+    {
+      "kind": "workflow-detail-distinct-identities",
+      "data": {
+        "distinctAssignees": 1000,
+        "tasks": 1000
+      },
+      "totalStatements": 6,
+      "nameStatements": 1
+    },
+    {
+      "kind": "workflow-detail",
+      "data": {
+        "existingAssignees": 0,
+        "assigneeKinds": "two repeated existing IDs, null, missing ID",
+        "returnedTasks": 0,
+        "tasks": 0
+      },
+      "totalStatements": 5,
+      "nameStatements": 0
+    },
+    {
+      "kind": "workflow-detail",
+      "data": {
+        "existingAssignees": 1,
+        "assigneeKinds": "two repeated existing IDs, null, missing ID",
+        "returnedTasks": 1,
+        "tasks": 1
+      },
+      "totalStatements": 6,
+      "nameStatements": 1
+    },
+    {
+      "kind": "workflow-detail",
+      "data": {
+        "existingAssignees": 2,
+        "assigneeKinds": "two repeated existing IDs, null, missing ID",
+        "returnedTasks": 100,
+        "tasks": 100
+      },
+      "totalStatements": 6,
+      "nameStatements": 1
+    },
+    {
+      "kind": "workflow-detail",
+      "data": {
+        "existingAssignees": 2,
+        "assigneeKinds": "two repeated existing IDs, null, missing ID",
+        "returnedTasks": 1000,
+        "tasks": 1000
+      },
+      "totalStatements": 6,
+      "nameStatements": 1
+    },
+    {
+      "kind": "workflow-detail-null-only",
+      "data": {
+        "tasks": 25
+      },
+      "totalStatements": 5,
+      "nameStatements": 0
+    },
+    {
+      "kind": "workflow-detail-text-identities",
+      "data": {
+        "tasks": 15
+      },
+      "totalStatements": 6,
+      "nameStatements": 1
+    }
+  ],
+  "oldFinalControl": {
+    "tests": 7,
+    "failures": 5,
+    "errors": 0,
+    "skipped": 0
+  },
+  "currentFinalNative": {
+    "tests": 151,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "bounds": "one textual varchar array bind; at most one name read; no cross-request cache; query memory grows with distinct task assignees",
+  "notMeasured": [
+    "production latency/network/concurrency/SLA",
+    "large-distribution EXPLAIN/text-ID expression index needs",
+    "ordinary Form independent detail and huge original-candidate parameters",
+    "all account/JWT/browser/signature E2E"
+  ],
+  "initialFailuresRetained": [
+    "old initial7=3F2E2pass, invalid multiple active same-node fixtures corrected to historical COMPLETED without constraint/assertion change",
+    "new initial151=150pass1E, Map.of null-key NPE corrected by request-local empty HashMap; final tests unchanged"
+  ],
+  "coverageNotCumulative": true,
+  "wholeAuditComplete": false
+}
