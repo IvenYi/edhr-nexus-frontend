@@ -1,5 +1,7 @@
 # 中央流程列表审查
 
+本目录记录PR62最初的取证阶段及900候选质量。用户随后批准局部优化，已在同一PR追加产品修复；最新实现、最终8a质量和交付请看[快照复用修复](../branch-review-20261105-central-json-reuse/README.md)。本目录旧结论和原件保留其时点，不表示当前仍未授权或未修复，也不覆盖后续候选。
+
 L2；目标 `edhr-dev@b52138259111dd5a0d99299087913500eff627f4`，PR61已合入且整树同3597a81c，无额外增量。真实入口流程中心→流程日志 `/workflow/instances`、流程干预 `/workflow/interventions`，共同列表API。
 
 交付[PR62](https://github.com/IvenYi/edhr-nexus-frontend/pull/62)，已观察OPEN/MERGEABLE/CLEAN，建议人工合入本轮测试/证据。受测900edae7、归档271a5384后仅L0交付登记；最终推送状态再次核对，原始观察见evidence/delivery-verification.json。性能风险不因此关闭，不自动merge或部署。

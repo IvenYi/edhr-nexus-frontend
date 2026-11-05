@@ -1,0 +1,95 @@
+{
+  "result": "passed",
+  "baseCommit": "b52138259111dd5a0d99299087913500eff627f4",
+  "testedCommit": "8a72398cbe3cf404fcddee9d1cef251f3ebc75dd",
+  "contractReadCommitMain": "82786ee87cb2d18d748711691611212d0e8703ca",
+  "contractReadCommitQuality": "8a72398cbe3cf404fcddee9d1cef251f3ebc75dd",
+  "allRolesAndChildrenFinal": true,
+  "ontologyResult": "not-applicable",
+  "qualityResult": "passed",
+  "requiredChecksPassed": 15,
+  "mainFinalNative": {
+    "tests": 203,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "observer": 61,
+    "adjacent": 142,
+    "originalRunHead": "d32b99c54b0d65bd2717274ee39135927b423acb",
+    "originalRunWorkingTree": "dirty final driver/test bytes; fingerprints verified equal to tested8a"
+  },
+  "independentFinalNative": {
+    "tests": 105,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "central": 26,
+    "recordControl": 55,
+    "transfer": 24
+  },
+  "independentKnowledge": 89,
+  "mainObservationEvents": 140,
+  "mainLogicalSelects": 394,
+  "independentCentralEvents": 50,
+  "requestSelects": 98,
+  "countSelects": 49,
+  "serverSignatures": 16,
+  "separateExplainReplays": 76,
+  "excludedInitSelects": 25,
+  "separateShowWorkMem": 2,
+  "priorQualityD32": {
+    "result": "passed",
+    "requiredChecks": 14,
+    "native": 102,
+    "knowledge": 89,
+    "notReusedForFinalCandidate": true
+  },
+  "negativeCatalog": {
+    "positive": 1,
+    "budgetFailures": 3,
+    "errors": 0,
+    "skipped": 0,
+    "scope": "original827 product; selected method bytes verified for d32 stage, not a claim of final entire test byte equality"
+  },
+  "negativeSparse": {
+    "positive": 1,
+    "budgetFailures": 2,
+    "errors": 0,
+    "skipped": 0,
+    "scope": "d32 product and final entire test class byte identical"
+  },
+  "productFilesChanged": 2,
+  "testFilesChanged": 1,
+  "knowledgeFilesChanged": 0,
+  "frontendAndDatabaseUnchanged": true,
+  "riskStates": {
+    "central-list-json-rescan": "verified-resolved-in-tested-scope",
+    "central-list-empty-context-init": "verified-resolved-in-tested-scope"
+  },
+  "resourcesClean": true,
+  "taskDrift": false,
+  "wholeAuditComplete": false,
+  "wholeFileComplete": 0,
+  "historicalUniqueCoverage": null,
+  "knowledgeSemanticUniqueReviewed": 13,
+  "ontologyDriverDeltaExistingSubset": 3,
+  "knowledgeEvidenceGapRetained": 1,
+  "pendingKnowledgeIncrementCandidates": 931,
+  "priorUiDiagnosticsPending": 86,
+  "residualRiskIds": [
+    "risk.production-capacity-not-certified",
+    "risk.referenced-object-and-history-scaling",
+    "risk.incomplete-global-runtime-matrix"
+  ],
+  "allPriorAuditQueuesAndUserPausesRetained": true,
+  "finalArchive": {
+    "path": "docs/development/branch-review-20261105-central-json-reuse/evidence/final-independent.tar.gz",
+    "bytes": 2555217,
+    "sha256": "39f6605fb40cd73fde6bb79c05d826e3e3746a7128bce055a29ec58fb8283ff9",
+    "rawQualityFiles": 75,
+    "qualityManifestAndDigestFiles": 2,
+    "archiveMemberCount": 78,
+    "qualityManifestSha256": "b33fa4f2a65f04ee82ce604334953767fb771b4c9320635dac875bb5bc1e083e"
+  },
+  "postQualityChanges": "L0 README/NEXT/old navigation/scope/acceptance/archive/delivery only; all tested product/test bytes preserved"
+}
