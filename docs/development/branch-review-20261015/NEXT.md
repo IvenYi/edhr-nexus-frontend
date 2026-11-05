@@ -2,6 +2,8 @@
 
 ## PR58已合入：人员目标目录免未用COUNT
 
+已交付[PR59](https://github.com/IvenYi/edhr-nexus-frontend/pull/59)，audit/edhr-dev-personnel-list-count-20261105→edhr-dev，观察OPEN/MERGEABLE/CLEAN，建议人工合入本批有限COUNT优化。受测代码ca836ef6、归档f575885b后仅L0交付登记，其他受测既有路径保持；实际观察见本批evidence/delivery-verification.json，登记提交后再次核对本地/远端/PR head一致。下一批先fetch真实合入/增量，继续普通表单独立详情和候选参数/文本ID计划等全审队列，不自动merge/deploy/恢复。
+
 本批对clean受测`ca836ef60415d61cf352cc3375a23106ec0f46a3`取得全新独立最终quality passed/FINAL：13/13必需检查、152/152原生回归和89/89知识校验通过；旧源同字节7项为4真预算失败/3正控/0E/S。服务器独立14项复测，47条业务SELECT/7签名吻合，7次目录读取各1条无COUNT、实际数据库限100；5次姓名数组读取保持。32条其他SELECT明确排除，不称全部网络SQL。三个质量子项及本体均FINAL，资源清理；232份最终文件按原字节归档，原76份主侧/本体原件不改。
 
 全部FINAL后已实际完成[PR前范围与阶段复核](../branch-review-20261105-personnel-count/scope-review.md)，再次fetch目标仍00f，无范围漂移；本体9个既有ID为8一致/1保留完整多租户证据缺口，345知识保持。后续只新增L0归档/验收/交付及NEXT状态，其他受测既有路径保持。人员目录未用COUNT仅在本批有限范围verified-resolved，所有全审余项继续，下文“待本体/QA”为历史阶段。下一批继续先fetch真实合入与增量，核查普通表单独立详情和候选参数/文本ID计划；不自动实施未经讨论的性能取舍或索引。
