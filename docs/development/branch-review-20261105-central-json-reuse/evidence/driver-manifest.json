@@ -1,0 +1,17 @@
+{
+  "path": "docs/development/branch-review-20261105-central-json-reuse/evidence/driver-fix-and-first-quality.tar.gz",
+  "bytes": 6159504,
+  "sha256": "0c8eed0f1a88b882f2be707f33fa48f4f0f434e1024833043facf73a53cb12c6",
+  "rawFileCount": 270,
+  "archiveMemberCount": 271,
+  "priorPrimaryArchiveUnchanged": true,
+  "stageSummary": {
+    "priorCandidate": "d32b99c54b0d65bd2717274ee39135927b423acb",
+    "finalMainTests": 203,
+    "finalRunSourceMatchesWorkingTree": true,
+    "driverNegative": "3 tests 1 positive/2 true budget failures/0E/S, final whole test class identical",
+    "phase1Quality": "14 passed, native102/knowledge89 only for d32; does not cover final driver",
+    "ontologyDriver": "NA FINAL; 3 existing IDs subset of original13",
+    "resourcesRemoved": true
+  }
+}

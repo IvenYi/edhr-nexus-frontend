@@ -1,0 +1,185 @@
+qualityResult:
+  result: passed
+  baseCommit: b52138259111dd5a0d99299087913500eff627f4
+  headCommit: 900edae735f5bd37e070a4c2f519e06e4e8728e3
+  contractBaseline:
+    sourceCommit: 900edae735f5bd37e070a4c2f519e06e4e8728e3
+    targetBranch: edhr-dev
+    targetCommit: b52138259111dd5a0d99299087913500eff627f4
+    contractReadCommit: 900edae735f5bd37e070a4c2f519e06e4e8728e3
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: clean
+    includedPaths: []
+    excludedPaths: []
+    untrackedPaths: []
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+  - id: check.contract-and-candidate
+    required: true
+    category: documentation
+    description: 实际读取候选契约、目标增量和clean被测候选，未复制主审contractReadCommit。
+    method: command
+    command: git fetch origin edhr-dev; git rev-parse HEAD origin/edhr-dev; git diff/status;
+      read contracts
+    outcome: passed
+    evidence:
+    - target base b52138259111dd5a0d99299087913500eff627f4; feature head/tested merge
+      candidate 900edae735f5bd37e070a4c2f519e06e4e8728e3; no target delta
+    - contract-and-source.json
+    - cleanup.json
+  - id: check.decision-impact-and-scope
+    required: true
+    category: requirements
+    description: L2完整影响分析、取证验收及product-core所有权与只改测试/研发证据一致；性能下一批方案未当批准。
+    method: inspection
+    command: Read decisionPackage, review-notes, changed paths and original source
+    outcome: passed
+    evidence:
+    - contract-and-source.json
+    - review-notes.md
+    - evidence-review/review-notes.md
+  - id: check.meaningful-test-and-observation
+    required: true
+    category: integration
+    description: 新增7例覆盖两源规模/有限权限/状态/字面过滤/后续空页及前置无SQL拒绝，COUNT观察不遗漏、EXPLAIN在capture之外。
+    method: inspection
+    command: Inspect source diff and native source fingerprints
+    outcome: passed
+    evidence:
+    - read-snapshots/gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/service/WorkflowReadObservationPostgresTest.java
+    - native/test-summary.json
+    - server-crosscheck.json
+  - id: check.protected-product-and-paging
+    required: true
+    category: security
+    description: 产品/前端/迁移/知识/契约字节不变，PR61全资格人员续页、领域写入签名/锁/审计边界未回退。
+    method: command
+    command: git diff base head -- product/frontend/knowledge/contracts; inspect TenantTransferTargets
+      and controller
+    outcome: passed
+    evidence:
+    - contract-and-source.json
+    - review-notes.md
+  - id: check.primary-raw-evidence
+    required: true
+    category: documentation
+    description: 主侧两层manifest、39快照/14指纹及XML/观察/计划算术逐项核对；b521+dirty测试指纹吻合后续900候选，不伪造原run
+      commit。
+    method: command
+    command: python3 evidence-review/verify-evidence.py
+    outcome: passed
+    evidence:
+    - evidence-review/result.json
+    - evidence-review/manifest.json
+    - evidence-review/review-notes.md
+  - id: check.finite-ontology-semantics
+    required: true
+    category: ontology
+    description: 12相关ID有限核对10consistent/1局部superseded/1旧多租户gap，知识350不变、版本阶段保持；不扩大成全量语义通过。
+    method: inspection
+    command: Read DEC0092/0093/0095, current rules, ontology result and archived finite
+      audit records
+    outcome: passed
+    evidence:
+    - evidence-review/result.json
+    - contract-and-source.json
+    - review-notes.md
+  - id: check.native86
+    required: true
+    category: regression
+    description: 独立新7+RecordControl55+WorkflowTransfer24=86/86，0F/E/S；原生PG16自有库和fresh
+      XML，非旧报告累计。
+    method: command
+    command: python3 run-native.py
+    outcome: passed
+    evidence:
+    - native/run.json
+    - native/test-summary.json
+    - native/TEST-com.zencas.edhr.workflow.service.WorkflowReadObservationPostgresTest.xml
+    - native/TEST-com.zencas.edhr.recordcontrol.service.RecordControlPostgresIntegrationTest.xml
+    - native/TEST-com.zencas.edhr.workflow.engine.WorkflowTransferPostgresTest.xml
+  - id: check.server-sql-crosscheck
+    required: true
+    category: database
+    description: 观察库25事件/48请求SELECT/24COUNT、16签名与服务器完全吻合；28EXPLAIN和25初始化SELECT及其他库SQL分列。
+    method: command
+    command: python3 crosscheck-server.py
+    outcome: passed
+    evidence:
+    - server-crosscheck.json
+    - server-crosscheck.log
+    - native/postgres.log
+    - crosscheck-server-phase1.log (own analysis assertion misclassified expected
+      Liquibase empty-lock probe; preserved, not JUnit failure)
+  - id: check.native-performance-evidence
+    required: true
+    category: database
+    description: 独立实际计划复现1x300每SQL9万、30x100每SQL30万表单候选；保留open风险、单次合成/非SLA/无优化边界。
+    method: query
+    command: Inspect actual captured native EXPLAIN plans and independently recompute
+      function rows*loops
+    outcome: passed
+    evidence:
+    - native-performance.json
+    - native/observations.jsonl
+    - review-notes.md
+  - id: check.formal-knowledge89
+    required: true
+    category: ontology
+    description: 实际独立知识工具89/89、0F/E/S，仅其自动校验范围。
+    method: command
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f tools/knowledge-model/pom.xml
+      test
+    outcome: passed
+    evidence:
+    - knowledge-summary.json
+    - knowledge.log
+    - TEST-com.zencas.edhr.knowledge.BusinessKnowledgeModelTest.xml
+  - id: check.a23-and-extraction
+    required: true
+    category: documentation
+    description: COUNT null兜底/visibility重推导有源码依据，具体Scope与FormWorkflowProjectionQuery拆分保留写事务所有权，不无故改业务。
+    method: inspection
+    command: Read current list/source/visibility and explicit A23/refactor proposals
+    outcome: passed
+    evidence:
+    - review-notes.md
+    - evidence-review/review-notes.md
+  - id: check.audit-progress-honesty
+    required: true
+    category: requirements
+    description: 7529固定盘点不等审计通过；全文件0/历史unique未知、931/86/W2-W7/旧余项与暂停保持。
+    method: inspection
+    command: Compare baseline-review/NEXT/source-review and finite records
+    outcome: passed
+    evidence:
+    - evidence-review/result.json
+    - contract-and-source.json
+    - review-notes.md
+  - id: check.resources-and-child-final
+    required: true
+    category: documentation
+    description: 自有PG/依赖软链/worktree已清理，证据子项已正式FINAL，受测工作树最终clean。
+    method: command
+    command: Inspect cleanup receipt and child FINAL/manifest
+    outcome: passed
+    evidence:
+    - cleanup.json
+    - native/cleanup.json
+    - evidence-review/result.json
+  findings: []
+  residualRisks:
+  - id: risk.central-list-json-rescan-open
+    description: 已复现集中列表重复JSON展开性能风险，本批仅测试/取证未修产品。
+    impact: 单对象表单较多或累计对象增加可能提高首屏/翻页成本；独立单次合成非生产SLA。
+    mitigation: 下一批待实际答复后验证按对象复用方案及资格/总数/内存/临时文件代价，保持风险open。
+  - id: risk.partial-runtime-and-semantic-coverage
+    description: 直接服务/合成认证与持久化快照，不覆盖真实登录、完整HTTP/创建START、多租户/并发生产分布、所有状态或全仓语义。
+    impact: 独立86+知识89和主侧184不能推广成整个产品或全部全审已完成。
+    mitigation: 保留原W2-W7/931知识/86UI/完整矩阵等队列，不修改暂停范围；前端字节同基线故未新增视觉/E2E结果。
+  - id: risk.no-production-memory-guarantee
+    description: 现有EXPLAIN缓冲统计不是未来物化方案峰值内存或生产吞吐保证。
+    impact: 局部复用或物化方案仍可能有中间数据/临时块取舍。
+    mitigation: 后续实际方案另验证资源并保持完整权限和精确总数，不通过删保护/总量截断换速度。
+  blockingConditions: []

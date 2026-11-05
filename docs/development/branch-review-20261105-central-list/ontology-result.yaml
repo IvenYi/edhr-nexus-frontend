@@ -1,0 +1,31 @@
+ontologyResult:
+  result: not-applicable
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: b52138259111dd5a0d99299087913500eff627f4
+    targetBranch: edhr-dev
+    targetCommit: b52138259111dd5a0d99299087913500eff627f4
+    contractReadCommit: b52138259111dd5a0d99299087913500eff627f4
+    uncommittedContractPaths: []
+  reason: 本批是中央流程日志/流程干预列表的显式opt-in PostgreSQL读取取证和测试，不改变业务概念、规则、生命周期、接口、权限、签署、快照或审计语义。实际读取DEC0092/0093及投影规则/事实/锚点、原始确认和list/source/controller/UI后，无需新增或改写正式知识；COUNT供现有总数/页数使用，其实现和潜在JSON成本属于工程证据，不是新政策。12个既有ID的有限静态语义核对单列，不替代主侧原生或最终独立质量。350份知识均与HEAD相同，schema1.2.0及P0 in-progress保持。
+  changedArtifacts: []
+  knowledgeSync: []
+  conflicts: []
+  questions: []
+  validationEvidence:
+    - id: validation.central-list-contract-and-knowledge-baseline
+      checkType: evidence-path
+      command: git rev-parse HEAD origin/edhr-dev; git diff --name-status HEAD origin/edhr-dev -- AGENTS.md codeplzreadme.md docs/agents docs/knowledge docs/architecture; git hash-object / git rev-parse HEAD:path for each knowledge file
+      outcome: passed
+      evidence: [contract-baseline.json, knowledge-fingerprints.json]
+    - id: validation.central-list-finite-source-semantic-review
+      checkType: projection
+      command: 逐项读取audit-records.jsonl中sourceLocator对应定义、DEC0092/0093原话、WorkflowOperationsQuery.list/visibility、FormWorkflowOperations.source/visibility、控制器和InstanceList；只读源断言，未执行测试
+      outcome: passed
+      evidence: [audit-records.jsonl, review-notes.md, read-snapshots/]
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages: [P1, P2, P3]

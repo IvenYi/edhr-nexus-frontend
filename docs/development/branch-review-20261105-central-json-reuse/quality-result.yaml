@@ -1,0 +1,201 @@
+qualityResult:
+  result: passed
+  baseCommit: b52138259111dd5a0d99299087913500eff627f4
+  headCommit: 8a72398cbe3cf404fcddee9d1cef251f3ebc75dd
+  contractBaseline:
+    sourceCommit: 8a72398cbe3cf404fcddee9d1cef251f3ebc75dd
+    targetBranch: edhr-dev
+    targetCommit: b52138259111dd5a0d99299087913500eff627f4
+    contractReadCommit: 8a72398cbe3cf404fcddee9d1cef251f3ebc75dd
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: clean
+    includedPaths: []
+    excludedPaths: []
+    untrackedPaths: []
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+  - id: check.contract-and-current-candidate
+    required: true
+    category: documentation
+    description: 实际读取8a候选契约；开始/结束fetch目标b521无增量，候选即包含目标的受测组合。验证依赖软链单列，移除后源指纹保持及全树clean。
+    method: command
+    command: git fetch/rev-parse/diff/status; read actual contracts
+    outcome: passed
+    evidence:
+    - contract-and-source.json
+    - cleanup.json
+    - target base b52138259111dd5a0d99299087913500eff627f4; feature head/tested merge
+      candidate 8a72398cbe3cf404fcddee9d1cef251f3ebc75dd; actual contract read 8a72398cbe3cf404fcddee9d1cef251f3ebc75dd
+  - id: check.authorized-scope-and-impact
+    required: true
+    category: requirements
+    description: 用户确认、同ID L2决策包与两产品读取文件及测试变更一致，不改政策、接口或引入新引擎。
+    method: inspection
+    command: Read user-confirmed, decisionPackage impactAnalysis/extensionStrategy,
+      source diff
+    outcome: passed
+    evidence:
+    - read-snapshots/docs/development/branch-review-20261105-central-list/decision-package.yaml
+    - review-notes.md
+    - evidence-review/result.json
+  - id: check.protected-write-and-personnel-boundaries
+    required: true
+    category: security
+    description: 共享FROM、表单visibility及其后尾部、Query详情尾部逐字保持；API/前端/知识/契约/迁移及PR61完整人员续页未回退。
+    method: command
+    command: Compare exact base/candidate regions and protected paths
+    outcome: passed
+    evidence:
+    - contract-and-source.json
+    - evidence-review/review-notes.md
+  - id: check.runtime-identity-and-filter-semantics
+    required: true
+    category: integration
+    description: 操作/copy/重复目录行、execution来源、关键词字面转义、空页、权限和DHR/对象/工单状态断言保留；DISTINCT只限制上下文驱动。
+    method: inspection
+    command: Review current source and fresh candidate runtime assertions
+    outcome: passed
+    evidence:
+    - native/test-summary.json
+    - read-snapshots/gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/service/WorkflowReadObservationPostgresTest.java
+    - review-notes.md
+  - id: check.native105
+    required: true
+    category: regression
+    description: 全新独立中央26+记录控制55+转办24=105/105，0F/E/S，fresh XML与当前源指纹一致。
+    method: command
+    command: python3 run-native.py
+    outcome: passed
+    evidence:
+    - native/run.json
+    - native/test-summary.json
+    - native/TEST-com.zencas.edhr.workflow.service.WorkflowReadObservationPostgresTest.xml
+    - native/TEST-com.zencas.edhr.recordcontrol.service.RecordControlPostgresIntegrationTest.xml
+    - native/TEST-com.zencas.edhr.workflow.engine.WorkflowTransferPostgresTest.xml
+  - id: check.formal-knowledge89
+    required: true
+    category: ontology
+    description: 正式知识工具独立89/89，0F/E/S；只覆盖其自动校验，不宣称全库语义通过。
+    method: command
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f tools/knowledge-model/pom.xml
+      test
+    outcome: passed
+    evidence:
+    - knowledge-summary.json
+    - knowledge.log
+    - TEST-com.zencas.edhr.knowledge.BusinessKnowledgeModelTest.xml
+  - id: check.server-query-crosscheck
+    required: true
+    category: database
+    description: 50观察/98请求SELECT/49COUNT与16服务器签名完全对齐；76EXPLAIN、25初始化SELECT与2SHOW分列。无意外观察库错误。
+    method: command
+    command: python3 crosscheck-server.py
+    outcome: passed
+    evidence:
+    - server-crosscheck.json
+    - server-crosscheck.log
+    - native/postgres.log
+  - id: check.catalog-expansion-budget
+    required: true
+    category: database
+    description: 独立计划实测每SQL 1x300为300、30x100为3000个f候选；明确非未找到节点的0兜底，不用毫秒门槛。
+    method: query
+    command: python3 analyze-native.py; inspect actual EXPLAIN function rows*loops
+    outcome: passed
+    evidence:
+    - native-performance.json
+    - native/observations.jsonl
+  - id: check.sparse-driver-budget
+    required: true
+    category: database
+    description: 0/1000/10000无表单记录execution均只初始化1个实际record_scope上下文，结果身份与计数正确。
+    method: query
+    command: Recompute actual CTE record_scope producer loops in three sparse scenarios
+    outcome: passed
+    evidence:
+    - native-performance.json
+    - native/observations.jsonl
+    - native/test-summary.json
+  - id: check.memory-and-temp-boundary
+    required: true
+    category: database
+    description: 同事务SET LOCAL+SHOW的64kB/4MB结果正确，64kB有临时块/4MB无；最终OS四对RSS及私有采样原件数学吻合，不扩成生产峰值保证。
+    method: query
+    command: Inspect own bound-transaction native plans and child verified final OS
+      samples
+    outcome: passed
+    evidence:
+    - native-performance.json
+    - server-crosscheck.json
+    - evidence-review/result.json
+    - evidence-review/review-notes.md
+  - id: check.raw-manifests-and-negative-controls
+    required: true
+    category: documentation
+    description: 两层416/270原件、203XML与两次负控字节范围/真实性通过；dirty原始源与后来候选按指纹关联，不伪造当时commit或累计旧通过。
+    method: command
+    command: python3 evidence-review/verify-evidence.py
+    outcome: passed
+    evidence:
+    - evidence-review/result.json
+    - evidence-review/manifest.json
+    - evidence-review/review-notes.md
+  - id: check.finite-ontology-and-stage
+    required: true
+    category: ontology
+    description: 原13ID有限结论和driver3个既有ID子集保留；350知识/0.3.25/schema1.2/P0保持，多租户gap不隐藏，不累计16
+      unique。
+    method: inspection
+    command: Read DEC0092/93/95, current rules and both archived ontology scopes
+    outcome: passed
+    evidence:
+    - contract-and-source.json
+    - evidence-review/result.json
+    - review-notes.md
+  - id: check.a23-and-extraction
+    required: true
+    category: documentation
+    description: query-local guard对应真实scope/进度/无记录边界；原冗余null/参数推导没有混做清理，具体Scope与ProjectionQuery拆分保留写领域所有权。
+    method: inspection
+    command: Review actual list/context guards and bounded extraction proposal
+    outcome: passed
+    evidence:
+    - review-notes.md
+    - evidence-review/review-notes.md
+  - id: check.audit-progress-honesty
+    required: true
+    category: requirements
+    description: 盘点与有限语义/运行/整改分别报告，整体全审未完成；原931知识/86UI/W2-W7及高风险/暂停不随本批通过关闭。
+    method: inspection
+    command: Compare current NEXT, baseline/source review and finite records
+    outcome: passed
+    evidence:
+    - evidence-review/result.json
+    - review-notes.md
+  - id: check.resources-and-child-final
+    required: true
+    category: documentation
+    description: 证据子项正式FINAL；自有PG、依赖软链及detached工作树清理，受测源码前后保持。
+    method: command
+    command: Inspect cleanup receipts and child manifest/result
+    outcome: passed
+    evidence:
+    - cleanup.json
+    - native/cleanup.json
+    - evidence-review/result.json
+  findings: []
+  residualRisks:
+  - id: risk.production-capacity-not-certified
+    description: 单次合成、直接服务认证和冻结夹具，不覆盖生产并发/全分布/百分位；VmHWM含会话/JIT/共享映射，私有采样为下界。
+    impact: 当前通过不能承诺生产SLA、吞吐或总峰值内存。
+    mitigation: 保留最终OS/计划来源限制，后续按真实生产规模验容量，不能把Buffers替代总峰值。
+  - id: risk.referenced-object-and-history-scaling
+    description: default已引用对象集合定位、复杂history及权限分布在更大历史规模仍有扫描成本，未由本次两种规模和稀疏轴证明全部容量。
+    impact: 本批仅关闭已测重复展开和无记录空上下文，不等于所有集中读取性能无风险。
+    mitigation: 按原全审性能队列继续，不以新索引/范围截断/删权限替代后续取证。
+  - id: risk.incomplete-global-runtime-matrix
+    description: 完整多租户/真实登录/HTTP账号/创建START/浏览器及原W2-W7、931知识、86UI和暂停场景未在本批完成。
+    impact: 105原生与89自动知识校验不得推广成全仓语义、全部运行或发布通过。
+    mitigation: 保留原ID及阶段/缺口，前端无改不新增未执行UI验证声明。
+  blockingConditions: []

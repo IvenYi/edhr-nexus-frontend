@@ -1,0 +1,96 @@
+{
+  "observedAt": "2026-11-05T12:28:25.788354+00:00",
+  "pullRequest": {
+    "base": "b52138259111dd5a0d99299087913500eff627f4",
+    "baseRef": "edhr-dev",
+    "head": "271a53847e5f13756193db7275f87a13ee11238f",
+    "headRef": "audit/edhr-dev-central-list-audit-20261105",
+    "html_url": "https://github.com/IvenYi/edhr-nexus-frontend/pull/62",
+    "mergeable": true,
+    "mergeable_state": "clean",
+    "merged": false,
+    "number": 62,
+    "state": "open"
+  },
+  "testedCommit": "900edae735f5bd37e070a4c2f519e06e4e8728e3",
+  "archiveCommit": "271a53847e5f13756193db7275f87a13ee11238f",
+  "allRolesFinal": true,
+  "allOwnedResourcesClean": true,
+  "taskDrift": false,
+  "sourceGuards": [
+    {
+      "path": "AGENTS.md",
+      "sha256": "13dc7cdacea0b1bb0aef2abb268781f9c69584acd4879b204d2b7fd81a2927fc",
+      "identicalToTestedCommit": true
+    },
+    {
+      "path": "codeplzreadme.md",
+      "sha256": "7a1be8efffec596b034335058dca2860346d256622f899c8dac97c5172dd6df2",
+      "identicalToTestedCommit": true
+    },
+    {
+      "path": "docs/agents/agent-handoff-contract.md",
+      "sha256": "3439a35dd1baa77ac723f1b5afa237a338d56e31386f06b02b4aacfd754e3a12",
+      "identicalToTestedCommit": true
+    },
+    {
+      "path": "docs/agents/quality-verifier.md",
+      "sha256": "6b3de9323924fb4ba5ae87be76c5136d28e754810c46b22b8e3d1cdd6c2f826f",
+      "identicalToTestedCommit": true
+    },
+    {
+      "path": "docs/agents/business-knowledge-modeler.md",
+      "sha256": "9806c900f98e1cbcf4f8d68a998a07a5449369df037183c75ec08cd666bf56ae",
+      "identicalToTestedCommit": true
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/WorkflowOperationsQuery.java",
+      "sha256": "8111b25d328cce2a8d37466c51207c626d1fca87c22d565ebc978d4019d6fc42",
+      "identicalToTestedCommit": true
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormWorkflowOperations.java",
+      "sha256": "fb936fef5ef52eed16f9e4f48cbfb76912156bbecd5b4370db0e839137f25a2d",
+      "identicalToTestedCommit": true
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/common/dto/PageResult.java",
+      "sha256": "ec374abfb27c655bf55f21900e837c8d635a33373e210a8d4b6cfffa9cdf2b62",
+      "identicalToTestedCommit": true
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowOperationsController.java",
+      "sha256": "b721a9e8edf18042f501dd0a026d8cdba1a37790ecf357112ead05e05b0b91c4",
+      "identicalToTestedCommit": true
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/workflow-center/InstanceList.tsx",
+      "sha256": "971a129802348e936ce40b7ac18d01cab39ca74e0383b26dd0ec85b3aff3afe7",
+      "identicalToTestedCommit": true
+    },
+    {
+      "path": "gmp-platform/frontend/src/api/workflow-operations.ts",
+      "sha256": "a66ce91f7c5e36db9f17057a803222b90189297e45fc4f3eab10c8b7c80ff39c",
+      "identicalToTestedCommit": true
+    },
+    {
+      "path": "gmp-platform/frontend/src/router/index.tsx",
+      "sha256": "180d4c7081b4ea4c157311eaa23282138ef9b2cf175ecf7af49fd44f584d756e",
+      "identicalToTestedCommit": true
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/service/WorkflowReadObservationPostgresTest.java",
+      "sha256": "3b4aced5359094bb32c3b2b4d7bca91ffbb1fc21d62655d8aa4bb94f6ff16d68",
+      "identicalToTestedCommit": true
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/recordcontrol/service/RecordControlPostgresIntegrationTest.java",
+      "sha256": "ed278968cb8b1aade7dccef98416656889c952e0ca4eccfc879e67d09ab52b83",
+      "identicalToTestedCommit": true
+    }
+  ],
+  "postArchiveChanges": "L0 README/NEXT/delivery record only; final registration commit will be pushed and heads checked again",
+  "noActionsApiQueriesOrManualTriggers": true,
+  "mergedOrDeployedByAgent": false,
+  "riskState": "central-list-json-rescan open; no optimization implemented; next strategy awaits actual user answer"
+}

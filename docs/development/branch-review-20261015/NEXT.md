@@ -1,5 +1,37 @@
 # 持续推进台账
 
+## PR62已更新：中央列表快照复用及稀疏对象范围修复
+
+已更新[PR62](https://github.com/IvenYi/edhr-nexus-frontend/pull/62)标题正文为最终产品优化，正常推送原分支→edhr-dev，观察OPEN/MERGEABLE/CLEAN，建议人工合入。受测8a72398c、最终验收归档d482ba22后仅L0交付登记；实际观察见本批evidence/delivery-verification.json，登记后再次核对本地/真实远端/PR head一致。两个明确性能缺陷仅按本批范围关闭，下一批先fetch真实merge和新提交，再继续整体审计原队列；不自动merge/deploy/恢复或查询触发CI。
+
+最终clean受测`8a72398cbe3cf404fcddee9d1cef251f3ebc75dd`已取得全新quality passed/FINAL，15/15必需检查，无发现/阻断；独立105/105、知识89/89、主侧203/203均0F/E/S。服务器中央50事件98请求SELECT/49COUNT/16签名吻合，76EXPLAIN、25初始化SELECT、2SHOW分列；目录300/3000、稀疏context1及默认/64kB均独立确认。原13知识及3子集delta均NA/FINAL，350知识/版本阶段不变，全部角色和子项FINAL、资源清理。
+
+全部FINAL后已实际完成[PR前无漂移复核](../branch-review-20261105-central-json-reuse/scope-review.md)，目标仍b521；之后仅L0验收/归档/交付与NEXT/旧阶段导航，产品测试保持。重复目录展开和无form对象空上下文仅在声明范围verified-resolved；不据此关闭history/生产容量/全审原余项/暂停。原900和d32通过保留其历史范围；旧进行中叙述为阶段记录，PR62将重写为当前产品优化范围，不自动merge/deploy/恢复。
+
+最终driver修正主侧完整203/203已过（观察61/记录控制55/转办24/邻63）；140事件394业务SELECT，中央50事件98请求SELECT/49COUNT，76EXPLAIN另列。每SQL目录300/3000及0/1000/10000稀疏轴上下文仅1均过。最终实际服务单次1×30063/74ms、30×100199/244ms；重测RSS4对3降1增416KiB，非SLA/生产峰值。原13有限ID保持、3既有ID增量NA/FINAL，350知识不变。当前待全新最终独立质量，d32/102/89/14仅是历史阶段，不能覆盖新driver候选；全部FINAL后实际PR前复核再更新PR62，原队列继续。
+
+补充稀疏执行对象轴发现d32仍为无form记录对象初始化空上下文：1万对象约118ms，原型加default表单object_id驱动后约0.7ms且结果全等。已新增0/1000/10000预算，d32原产品+新测试3=1正/2真预算红/0E/S；仅再改LIST_CONTEXT外层两行，最终203主回归与内存复测进行中。第一版d32已独立102/102、知识89/89及14/14通过且子项FINAL，原件保留但不覆盖后续候选；将另取全新最终质量，不提前关闭容量问题或全审队列。
+
+主侧列表专用实现已完成，2产品读路径+1opt-in测试；原共享FROM/详情/改派/写事务及原人员分页保持。单次完整200/200，137观察388业务SELECT；中央47事件92请求SELECT（46COUNT），70EXPLAIN另列。旧源预算4=1正/3真红/0E/S，后续仅纠正未入选夹具且不关触发器，首次21正/2夹具E原件保持。原型20旧新结果相同；最终服务1×300日志44ms/干预54ms、30×100为204ms/230ms，候选按每SQL由9万/30万到300/3000。默认/64kB事务内结果正确；OS后端RSS4组3降1增224KiB，非生产SLA/峰值保证。
+
+本体NA/FINAL有限13ID=11一致/1局部替代/1旧多租户gap，350知识及版本阶段保持；设计子项FINAL。当前待全新独立最终质量，不复用原900/13项或旧86/89，性能问题不提前关闭；所有角色FINAL后实际再做PR前漂移/阶段复核并重写PR62反映最终范围。全审原队列/暂停保持。
+
+实际fetch目标仍edhr-dev@b52138259111dd5a0d99299087913500eff627f4，来源82786ee8，PR62尚未合入；在原分支追加[本次实现](../branch-review-20261105-central-json-reuse/README.md)。用户已明确同意先隔离验证并通过后局部整改，不再把工程方案记成未答。原测试版900/13项质量保持其历史范围，不覆盖新产品实现。
+
+L2沿同一决策包增量：SQL原型20次旧/新结果全等且1×300及30×100/精确/通用仅命中改善；默认无临时块、64kB压力可落盘，非生产SLA/峰值保证。新预算/身份/状态/资源测试与旧源反证进行中，之后仅改列表路径，不动共享detail/load/改派及写事务/冻结/原人员完整续页。待主侧回归、本体有限核对、全新独立最终质量和全部FINAL后PR前复核，风险暂不提前关闭；全审原余项/暂停保持，不自动merge/deploy。
+
+## PR61已合入：中央流程列表JSON/COUNT取证完成
+
+已交付[PR62](https://github.com/IvenYi/edhr-nexus-frontend/pull/62)，audit/edhr-dev-central-list-audit-20261105→edhr-dev，观察OPEN/MERGEABLE/CLEAN；建议人工合入本批测试/取证，不把中央JSON性能风险当已修复。受测900edae7、归档271a5384后仅L0交付登记，其他受测既有路径保持；实际观察见本批evidence/delivery-verification.json，登记后再次核对本地/远端/PR head。下一批先fetch真实合入/增量，按用户实际答复验证按对象复用JSON或继续无依赖队列；所有原余项和暂停保持，不自动merge/deploy/恢复。
+
+本批已对clean受测`900edae735f5bd37e070a4c2f519e06e4e8728e3`取得全新最终quality passed/FINAL，13/13必需检查；主侧184/184、独立86/86、知识89/89均0F/E/S。主侧115观察344业务SELECT，新中央25事件48请求SELECT（24COUNT），独立服务器16签名吻合；28EXPLAIN与25初始化SELECT分列，不称全部网络SQL。本体NA/FINAL有限12ID=10一致/1局部替代/1旧多租户gap，350知识及阶段不变；全部子项FINAL、资源清理。分析初次误判Liquibase空库探测的原件保持，非产品/JUnit失败。
+
+全部角色FINAL后已实际完成[PR前漂移及阶段复核](../branch-review-20261105-central-list/scope-review.md)，目标仍b521，无漂移。本批只交付一个opt-in测试及取证，产品/前端/索引/业务保持；新增7不重复累计unique。已确认中央JSON性能风险仍open：每对象300及30×100每SQL分别展开9万/30万候选，COUNT与内容各做；局部复用方案已向用户提出，待实际答复，不将等待当批准。后续仅L0归档/验收/交付状态，受测既有路径保持；下文进行中为历史阶段，全部原全审/性能及用户暂停队列继续，不自动merge/deploy。
+
+实际fetch目标`edhr-dev@b52138259111dd5a0d99299087913500eff627f4`，PR61已人工合入且整树同3597a81c，无外部代码/知识/契约增量；新分支audit/edhr-dev-central-list-audit-20261105。[本批](../branch-review-20261105-central-list/README.md)L2按既定队列检查流程日志/流程干预的两源列表，先做真实PG JSON/COUNT规模、权限及分页证据，不预先删UI使用的总数或更改索引/业务。
+
+主审及只读源码子项进行中，待新增观察、原相邻回归、本体有限核对、全新独立质量和全部FINAL后PR前漂移复核。PR61全部资格人员持续分页规则保持，第三文本ID索引/汇总605/导出内存及931知识/86UI、W2-W7/原高风险/A12/完整矩阵和用户暂停项继续；全文件0/历史unique未知，不自动merge/deploy/恢复或查询触发CI。
+
 ## PR60已合入：姓名/候选参数优化及人员完整分页选择
 
 已交付[PR61](https://github.com/IvenYi/edhr-nexus-frontend/pull/61)，audit/edhr-dev-personnel-paging-20261105→edhr-dev，观察OPEN/MERGEABLE/CLEAN，建议人工合入当前前后端配套修复。受测代码b81b67ed、归档689e42c0后仅L0交付登记，其他受测既有路径保持；实际观察见本批evidence/delivery-verification.json，登记提交后再次核对本地/远端/PR head一致。下一批先fetch真实合入和外部增量，继续既定全审队列；第三索引未做、全部旧余项保持，不自动merge/deploy/恢复。

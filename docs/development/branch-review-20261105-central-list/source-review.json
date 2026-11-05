@@ -1,0 +1,100 @@
+{
+  "sourceCommit": "b52138259111dd5a0d99299087913500eff627f4",
+  "sourceFingerprints": [
+    {
+      "path": "AGENTS.md",
+      "bytes": 25065,
+      "sha256": "13dc7cdacea0b1bb0aef2abb268781f9c69584acd4879b204d2b7fd81a2927fc",
+      "sameAsTarget": true
+    },
+    {
+      "path": "codeplzreadme.md",
+      "bytes": 3035,
+      "sha256": "7a1be8efffec596b034335058dca2860346d256622f899c8dac97c5172dd6df2",
+      "sameAsTarget": true
+    },
+    {
+      "path": "docs/agents/agent-handoff-contract.md",
+      "bytes": 31233,
+      "sha256": "3439a35dd1baa77ac723f1b5afa237a338d56e31386f06b02b4aacfd754e3a12",
+      "sameAsTarget": true
+    },
+    {
+      "path": "docs/agents/quality-verifier.md",
+      "bytes": 7519,
+      "sha256": "6b3de9323924fb4ba5ae87be76c5136d28e754810c46b22b8e3d1cdd6c2f826f",
+      "sameAsTarget": true
+    },
+    {
+      "path": "docs/agents/business-knowledge-modeler.md",
+      "bytes": 15881,
+      "sha256": "9806c900f98e1cbcf4f8d68a998a07a5449369df037183c75ec08cd666bf56ae",
+      "sameAsTarget": true
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/WorkflowOperationsQuery.java",
+      "bytes": 10122,
+      "sha256": "8111b25d328cce2a8d37466c51207c626d1fca87c22d565ebc978d4019d6fc42",
+      "sameAsTarget": true
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormWorkflowOperations.java",
+      "bytes": 20621,
+      "sha256": "fb936fef5ef52eed16f9e4f48cbfb76912156bbecd5b4370db0e839137f25a2d",
+      "sameAsTarget": true
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/common/dto/PageResult.java",
+      "bytes": 1195,
+      "sha256": "ec374abfb27c655bf55f21900e837c8d635a33373e210a8d4b6cfffa9cdf2b62",
+      "sameAsTarget": true
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowOperationsController.java",
+      "bytes": 3251,
+      "sha256": "b721a9e8edf18042f501dd0a026d8cdba1a37790ecf357112ead05e05b0b91c4",
+      "sameAsTarget": true
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/workflow-center/InstanceList.tsx",
+      "bytes": 14159,
+      "sha256": "971a129802348e936ce40b7ac18d01cab39ca74e0383b26dd0ec85b3aff3afe7",
+      "sameAsTarget": true
+    },
+    {
+      "path": "gmp-platform/frontend/src/api/workflow-operations.ts",
+      "bytes": 3451,
+      "sha256": "a66ce91f7c5e36db9f17057a803222b90189297e45fc4f3eab10c8b7c80ff39c",
+      "sameAsTarget": true
+    },
+    {
+      "path": "gmp-platform/frontend/src/router/index.tsx",
+      "bytes": 13183,
+      "sha256": "180d4c7081b4ea4c157311eaa23282138ef9b2cf175ecf7af49fd44f584d756e",
+      "sameAsTarget": true
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/service/WorkflowReadObservationPostgresTest.java",
+      "bytes": 48279,
+      "sha256": "3b4aced5359094bb32c3b2b4d7bca91ffbb1fc21d62655d8aa4bb94f6ff16d68",
+      "sameAsTarget": false
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/recordcontrol/service/RecordControlPostgresIntegrationTest.java",
+      "bytes": 82445,
+      "sha256": "ed278968cb8b1aade7dccef98416656889c952e0ca4eccfc879e67d09ab52b83",
+      "sameAsTarget": true
+    }
+  ],
+  "reviewedMethods": [
+    "WorkflowOperationsQuery.list/visibility: union,count,outer filters,sort/offset,scopes",
+    "FormWorkflowOperations.source/visibility/visibilityArgs: progress/frozen JSON and domain scope only",
+    "WorkflowOperationsController.instances; InstanceList API call/count/pagination/router entry",
+    "new central native observation/fixtures and existing centralUnion/scoped tests"
+  ],
+  "wholeFileComplete": 0,
+  "historicalUniqueCoverage": null,
+  "productFilesChanged": 0,
+  "testFilesChanged": 1,
+  "allOtherAuditQueuesRemain": true
+}
