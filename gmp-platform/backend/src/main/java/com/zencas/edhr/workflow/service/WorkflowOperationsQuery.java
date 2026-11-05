@@ -42,7 +42,8 @@ public class WorkflowOperationsQuery {
         List<Object> args = new ArrayList<>();
         String where = " WHERE (i.business_type IS DISTINCT FROM 'DHR_SUMMARY' OR h.id IS NOT NULL)" + visibility(args);
         if (runningOnly) where += " AND i.status='RUNNING'";
-        var formSource = forms.source(runningOnly);
+        String pattern = query.isBlank() ? null : "%" + query.replace("!", "!!").replace("%", "!%").replace("_", "!_") + "%";
+        var formSource = forms.source(runningOnly, query, pattern);
         String source = "SELECT CAST(i.id AS VARCHAR) AS \"id\",d.name AS \"templateName\"," + BUSINESS_KEY + " AS \"businessKey\","
                 + "i.business_type AS \"businessType\",i.status,COALESCE(u.display_name,i.initiator_id) AS \"startUserName\","
                 + "CAST(i.started_at AS VARCHAR) AS \"startTime\",CAST(i.completed_at AS VARCHAR) AS \"endTime\" " + FROM + where
@@ -52,7 +53,6 @@ public class WorkflowOperationsQuery {
         if (!runningOnly && status != null && !status.isBlank()) { filter += " AND status=?"; args.add(status); }
         if (!query.isBlank()) {
             filter += " AND (id=? OR COALESCE(\"businessKey\",'') ILIKE ? ESCAPE '!' OR \"templateName\" ILIKE ? ESCAPE '!')";
-            String pattern = "%" + query.replace("!", "!!").replace("%", "!%").replace("_", "!_") + "%";
             args.add(query); args.add(pattern); args.add(pattern);
         }
         String from = " FROM (" + source + ") sources" + filter;

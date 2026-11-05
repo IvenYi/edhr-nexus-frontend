@@ -1,0 +1,114 @@
+{
+  "results": [
+    {
+      "objects": 1,
+      "formsPerObject": 300,
+      "runningOnly": false,
+      "variant": "baseline",
+      "pid": 126,
+      "repetitions": 3,
+      "samples": 32,
+      "firstRssKiB": 14404,
+      "kernelPeakRssKiB": 32196,
+      "peakSampledPrivateKiB": 19624,
+      "privateSampleAvailable": true
+    },
+    {
+      "objects": 1,
+      "formsPerObject": 300,
+      "runningOnly": false,
+      "variant": "optimized",
+      "pid": 326,
+      "repetitions": 3,
+      "samples": 7,
+      "firstRssKiB": 14424,
+      "kernelPeakRssKiB": 31004,
+      "peakSampledPrivateKiB": 15360,
+      "privateSampleAvailable": true
+    },
+    {
+      "objects": 1,
+      "formsPerObject": 300,
+      "runningOnly": true,
+      "variant": "baseline",
+      "pid": 380,
+      "repetitions": 3,
+      "samples": 86,
+      "firstRssKiB": 14360,
+      "kernelPeakRssKiB": 35064,
+      "peakSampledPrivateKiB": 22788,
+      "privateSampleAvailable": true
+    },
+    {
+      "objects": 1,
+      "formsPerObject": 300,
+      "runningOnly": true,
+      "variant": "optimized",
+      "pid": 905,
+      "repetitions": 3,
+      "samples": 7,
+      "firstRssKiB": 14424,
+      "kernelPeakRssKiB": 31556,
+      "peakSampledPrivateKiB": 19212,
+      "privateSampleAvailable": true
+    },
+    {
+      "objects": 30,
+      "formsPerObject": 100,
+      "runningOnly": false,
+      "variant": "baseline",
+      "pid": 966,
+      "repetitions": 3,
+      "samples": 69,
+      "firstRssKiB": 14424,
+      "kernelPeakRssKiB": 28496,
+      "peakSampledPrivateKiB": 16096,
+      "privateSampleAvailable": true
+    },
+    {
+      "objects": 30,
+      "formsPerObject": 100,
+      "runningOnly": false,
+      "variant": "optimized",
+      "pid": 1394,
+      "repetitions": 3,
+      "samples": 9,
+      "firstRssKiB": 14360,
+      "kernelPeakRssKiB": 28720,
+      "peakSampledPrivateKiB": 16404,
+      "privateSampleAvailable": true
+    },
+    {
+      "objects": 30,
+      "formsPerObject": 100,
+      "runningOnly": true,
+      "variant": "baseline",
+      "pid": 1460,
+      "repetitions": 3,
+      "samples": 148,
+      "firstRssKiB": 14424,
+      "kernelPeakRssKiB": 30080,
+      "peakSampledPrivateKiB": 17680,
+      "privateSampleAvailable": true
+    },
+    {
+      "objects": 30,
+      "formsPerObject": 100,
+      "runningOnly": true,
+      "variant": "optimized",
+      "pid": 2362,
+      "repetitions": 3,
+      "samples": 9,
+      "firstRssKiB": 15072,
+      "kernelPeakRssKiB": 29380,
+      "peakSampledPrivateKiB": 16984,
+      "privateSampleAvailable": true
+    }
+  ],
+  "limits": [
+    "fresh backend per workload; peak RSS includes session/JIT/shared mappings",
+    "sampled private peak is a lower bound; not a production concurrency or peak-memory guarantee",
+    "three repeated captured real-service content reads, no product GUC changes",
+    "schema exported read-only from owned migrated native DB; separate owned PG container"
+  ]
+}

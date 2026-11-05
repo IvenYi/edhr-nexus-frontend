@@ -1,14 +1,14 @@
 decisionPackage:
   id: DEC-PACKAGE-CENTRAL-LIST-20261105
-  scope: edhr-dev central workflow log/intervention union list read correctness and native JSON/COUNT cost observation
+  scope: edhr-dev central workflow log/intervention union list correctness, native JSON cost observation and user-authorized per-object query-local snapshot reuse
   knowledgeBaselineVersion: 0.3.25
   contractBaseline:
-    sourceCommit: b52138259111dd5a0d99299087913500eff627f4
+    sourceCommit: 82786ee87cb2d18d748711691611212d0e8703ca
     targetBranch: edhr-dev
     targetCommit: b52138259111dd5a0d99299087913500eff627f4
-    contractReadCommit: b52138259111dd5a0d99299087913500eff627f4
+    contractReadCommit: 82786ee87cb2d18d748711691611212d0e8703ca
     uncommittedContractPaths: []
-  summary: PR61已人工合入且整树同3597a81c，无外部增量。继续既定中央列表JSON/COUNT取证队列；业务/接口/索引不预先优化，确定性问题有依据再修复，性能取舍先讨论。
+  summary: PR62仍OPEN，用户已确认先隔离验证并在结果/资源边界通过后局部优化。追加原分支，按对象在查询内解析一次执行state/snapshot并展开窄目录，关键词先筛选；精确总数、分页、权限、copy/冻结/领域状态保持。旧取证/质量仅覆盖旧候选，新实现另取全新质量；不更改政策、接口或索引。
   confirmed:
     concepts: []
     relationships: []
@@ -16,8 +16,8 @@ decisionPackage:
     executionContracts: []
   inferred:
     - id: inference.central-form-json-scaling
-      statement: 普通表单源按每份记录连接执行快照并枚举作业与表单，COUNT和内容查询可能重复解析大JSON，长期多对象累计时即使每对象不超过300表单也可能增加成本。
-      rationale: WorkflowOperationsQuery.list复用同一union两次，FormWorkflowOperations.FROM具有jsonb横向枚举；需原生计划确认实际loops及耗时，不能仅按SQL条数判断。
+      statement: 使用每对象相关LATERAL内的物化上下文，限定相关记录后解析state，按copy获得progress，再解析snapshot及窄form目录；关键词等价下推，避免整租户物化及完整快照按表单复制。
+      rationale: 旧原生计划已确认每SQL9万/30万候选；新SQL原型20次结果全等且首屏/精确查询改善，默认无临时块、64kB压力可落盘。最终仍需实际服务/权限/状态/资源回归，不能将原型当产品已完成。
       relatedIds: []
   unresolved: []
   replacementScopes: []
@@ -25,7 +25,7 @@ decisionPackage:
     level: L2
     directImpacts:
       - area: workflow-central-read
-        change: 新增显式opt-in原生观察与边界回归；两源列表的过滤、可见性、计数和排序分页对齐并测量SQL执行计划。
+        change: 列表路径按对象复用解析和窄目录，查询内物化随对象释放；新增展开预算与copy/作业/来源/权限/状态/无命中/资源边界回归。共享detail/load/改派FROM保持。
         evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/WorkflowOperationsQuery.java, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormWorkflowOperations.java]
     transitiveImpacts:
       - area: workflow-log-and-intervention-pages
@@ -33,7 +33,7 @@ decisionPackage:
         evidenceReferences: [gmp-platform/frontend/src/pages/workflow-center/InstanceList.tsx]
     potentialImpacts:
       - area: json-count-cost
-        concern: 按每对象表单数及累计对象数分轴观察，普通权限history/候选分支另测；记录合成环境限制，不将实验毫秒数当生产SLA。
+        concern: 关键词先筛选、未知/无进度或无记录JSON不被扩大解析；精确/零命中和多对象内存/临时块另测，不丢失重复快照行乘数。history仍逐记录匹配，不能一并关闭其潜在成本；不将合成毫秒数当生产SLA。
         evidenceReferences: []
     unaffectedAreas:
       - area: runtime-and-personnel-paging
@@ -41,28 +41,28 @@ decisionPackage:
         evidenceReferences: []
     compatibilityAndMigration:
       - area: unchanged-product
-        change: 本批计划测试/研发证据，不更改响应或数据库结构、不添加索引或回写存量。
+        change: 仅内部source参数传递同一已归一化关键词/转义模式，HTTP响应/前端不变；无数据库迁移、索引或回写。旧取证版PR62不需先合入，更新同分支最终候选。
         evidenceReferences: []
     snapshotImpacts:
       - area: read-only-fixtures
-        change: 合成夹具直接持久化已有快照形状用于读取实验，不宣称验证创建或START，也不修改真实冻结数据。
+        change: 始终从execution冻结snapshot及state取flow/sourceType/progress，目录身份按object/operation/form，进度/历史另按copy；不改用r.status/source_type/snapshot。直接持久化合成快照不宣称创建/START验收。
         evidenceReferences: []
     auditImpacts:
       - area: test-observation
-        change: 必须同时捕获COUNT和内容查询；SQL与EXPLAIN在隔离测试库执行，原件/失败更正分别保留。
+        change: COUNT/内容及独立EXPLAIN分列；同字节旧代码预算反证与新最终通过分开，保留所有实验/失败/更正原件。读取不改业务审计或责任历史。
         evidenceReferences: []
     permissionImpacts:
       - area: existing-visibility
-        change: 管理员、普通参与人及无权读取分开核对；COUNT采用同一权限过滤，不把性能问题作为扩大可见范围依据。
+        change: 原visibility、运行资格及DHR摘要锁语义保持，关键词前置只排除不匹配记录，不能扩大资格；COUNT和内容同源，普通参与/无权及原人员完整续页保护继续。
         evidenceReferences: []
     testImpacts:
       - scope: native-central-list
-        scenarios: [对象内1与300表单, 多对象累计, 日志与运行干预, 后续页与空页, 状态和字面关键词, 普通参与/无权, COUNT和内容原生计划, 原人员和责任/记录控制相邻回归]
+        scenarios: [对象内1/30/300表单与多对象累计, 非平方展开预算及旧源反证, 日志/干预/末页/空页/精确/无命中, 同form跨作业和两copy状态, 重复快照ID乘数, 无记录/无进度/不匹配JSON排除, execution来源而非r状态或来源, 对象工单与DHR摘要锁, 普通参与/无权, 默认/64kB事务内资源, COUNT及内容计划和原相邻回归]
         evidenceReferences: []
     evidenceGaps: [真实生产数据分布/并发/SLA与完整多租户矩阵未覆盖, 全量知识931候选/86UI及W2-W7和原高风险继续]
   extensionStrategy:
     selectedPaths: [product-core]
-    rationale: 复用现有显式opt-in JdbcTemplate观察测试和真实PostgreSQL，不新建产品仓储框架或加入推测性兜底。
+    rationale: 在原普通表单投影服务增加列表专用局部SQL上下文，复用visibility及已校验关键词；相关LATERAL内物化约束每对象中间数据，不新建查询框架、全局缓存或吞错兜底。
     ownershipBoundaries:
       - owner: workflow-and-production
         responsibility: 保留各域既有查询/可见性/生命周期定义，主审定位边界并提出具体局部优化或拆分方案。
@@ -70,11 +70,11 @@ decisionPackage:
         responsibility: 可重跑数据/参数/计划/查询计数和独立复验原件，不替代业务语义全审。
   affectedFiles:
     - {path: gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/service/WorkflowReadObservationPostgresTest.java, changeType: update, reason: COUNT观察和中央列表场景}
-    - {path: gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/WorkflowOperationsQuery.java, changeType: read-only, reason: 两源计数/分页/筛选}
-    - {path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormWorkflowOperations.java, changeType: read-only, reason: JSON连接及领域可见性}
+    - {path: gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/WorkflowOperationsQuery.java, changeType: update, reason: 将同一关键词/转义模式传给表单源，保留外层筛选及总数分页}
+    - {path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormWorkflowOperations.java, changeType: update, reason: 仅列表按对象复用解析/窄目录，保留共享FROM和原领域资格}
   acceptanceScenarios:
     - id: scenario.central-list-native-evidence
       given: 已有真实数据库迁移上构造两源及多对象多表单，并按不同权限读取
       when: 请求流程日志/流程干预的第一页、后续页、筛选或空结果
-      then: 返回有限页且计数/资格/状态一致；COUNT与内容均计入成本，计划原件可追溯且不锁死低效查询次数
-      evidenceRequirements: [新原生断言及XML, 绑定参数和EXPLAIN原件, 来源指纹, 有限知识一致性核对, 全新独立质量]
+      then: 返回身份/顺序/计数/资格/状态保持，每对象目录不按记录数重复展开；精确及无命中不扩大解析范围，默认/受限内存结果一致。COUNT及内容都计成本，不将SQL只有两条当性能证明。
+      evidenceRequirements: [SQL原型旧新全等及资源回放, 新原生断言/XML及旧代码预算反证, 绑定参数和EXPLAIN原件, 来源指纹, 有限知识一致性核对, 全新独立质量]

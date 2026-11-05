@@ -48,20 +48,63 @@ public class FormWorkflowOperations {
           AND jsonb_array_length(COALESCE(f->'flow'->'nodes','[]'::jsonb))>0
         """;
 
+    /** Query-local contexts are correlated to one execution; wide JSON is never copied into catalog rows. */
+    private static final String LIST_CONTEXT = """
+        SELECT projected.* FROM production_execution execution
+        CROSS JOIN LATERAL (
+          WITH record_scope AS MATERIALIZED (
+            SELECT r.id,r.tenant_id,r.object_id,r.operation_id,r.form_id,r.copy_id,r.template_name,r.instance_no,
+                   r.created_by,r.created_by_id,r.created_at,o.status AS object_status,w.status AS work_order_status
+            FROM form_instance_record r JOIN production_object o ON o.id=r.object_id AND o.tenant_id=r.tenant_id
+            JOIN work_order w ON w.id=o.work_order_id AND w.tenant_id=o.tenant_id
+            WHERE r.object_id=execution.object_id AND r.tenant_id='default' %s
+          ), parsed_state AS MATERIALIZED (
+            SELECT CAST(execution.state_json AS jsonb) AS state_json WHERE EXISTS (SELECT 1 FROM record_scope)
+          ), progress_records AS MATERIALIZED (
+            SELECT r.*,s.progress FROM record_scope r CROSS JOIN parsed_state e
+            CROSS JOIN LATERAL (SELECT e.state_json #> ARRAY['operations',r.operation_id,'forms',r.copy_id] AS progress) s
+            WHERE jsonb_typeof(s.progress)='object' %s
+          ), parsed_snapshot AS MATERIALIZED (
+            SELECT CAST(execution.snapshot_json AS jsonb) AS snapshot_json WHERE EXISTS (SELECT 1 FROM progress_records)
+          ), form_catalog AS MATERIALIZED (
+            SELECT op->>'id' AS operation_id,f->>'id' AS form_id,
+                   jsonb_build_object('flow',f->'flow','sourceType',f->'sourceType') AS f
+            FROM parsed_snapshot e CROSS JOIN LATERAL jsonb_array_elements(e.snapshot_json->'operations') op
+            JOIN (SELECT DISTINCT operation_id FROM progress_records) wanted ON wanted.operation_id=op->>'id'
+            CROSS JOIN LATERAL jsonb_array_elements(op->'forms') f
+          )
+          %s
+        ) projected
+        """;
+
     public record Source(String sql, List<Object> args) { }
 
     /** SQL-level scope and state filters precede the shared count/pagination. */
-    public Source source(boolean runningOnly) {
+    public Source source(boolean runningOnly, String keyword, String pattern) {
+        String recordFilter = "";
+        var args = new ArrayList<Object>();
+        if (!keyword.isBlank()) {
+            recordFilter = " AND ('form-'||CAST(r.id AS VARCHAR)=? OR COALESCE(r.instance_no,'') ILIKE ? ESCAPE '!' OR r.template_name ILIKE ? ESCAPE '!')";
+            args.add(keyword); args.add(pattern); args.add(pattern);
+        }
         String where = visibility();
-        if (runningOnly) where += " AND s.progress->>'status'='ACTIVE' AND o.status IN ('IN_PROGRESS','COMPLETED') AND w.status IN ('CREATED','IN_PROCESS','COMPLETED')"
-                + " AND ((f->>'sourceType'='CUSTOM' AND (CAST(e.state_json AS jsonb)#>>ARRAY['operations',r.operation_id,'status']) IN ('IN_PROGRESS','COMPLETED')) OR (COALESCE(f->>'sourceType','')<>'CUSTOM' AND o.status='IN_PROGRESS' AND w.status IN ('CREATED','IN_PROCESS') AND (CAST(e.state_json AS jsonb)#>>ARRAY['operations',r.operation_id,'status'])='IN_PROGRESS'))"
-                + " AND NOT EXISTS (SELECT 1 FROM dhr_instance d WHERE d.tenant_id=r.tenant_id AND d.production_object_id=o.id AND (d.status NOT IN ('IN_PROGRESS','COMPLETED') OR d.summary_status NOT IN ('NOT_STARTED','DRAFT')))"
-                + " AND EXISTS (SELECT 1 FROM jsonb_array_elements(COALESCE(f->'flow'->'nodes','[]'::jsonb)) n WHERE n->'data'->>'kind'='APPROVAL' AND (s.progress->'active') ?? (n->>'id'))";
-        return new Source("""
+        if (runningOnly) {
+            recordFilter += " AND o.status IN ('IN_PROGRESS','COMPLETED') AND w.status IN ('CREATED','IN_PROCESS','COMPLETED')"
+                    + " AND NOT EXISTS (SELECT 1 FROM dhr_instance d WHERE d.tenant_id=r.tenant_id AND d.production_object_id=o.id AND (d.status NOT IN ('IN_PROGRESS','COMPLETED') OR d.summary_status NOT IN ('NOT_STARTED','DRAFT')))";
+            where += " AND ((f->>'sourceType'='CUSTOM' AND (e.state_json#>>ARRAY['operations',r.operation_id,'status']) IN ('IN_PROGRESS','COMPLETED')) OR (COALESCE(f->>'sourceType','')<>'CUSTOM' AND r.object_status='IN_PROGRESS' AND r.work_order_status IN ('CREATED','IN_PROCESS') AND (e.state_json#>>ARRAY['operations',r.operation_id,'status'])='IN_PROGRESS'))"
+                    + " AND EXISTS (SELECT 1 FROM jsonb_array_elements(COALESCE(f->'flow'->'nodes','[]'::jsonb)) n WHERE n->'data'->>'kind'='APPROVAL' AND (s.progress->'active') ?? (n->>'id'))";
+        }
+        String projection = """
             SELECT 'form-'||CAST(r.id AS VARCHAR) AS "id",r.template_name AS "templateName",r.instance_no AS "businessKey",
                 'FORM_PROCESS' AS "businessType",CASE WHEN s.progress->>'status'='ACTIVE' THEN 'RUNNING' ELSE 'COMPLETED' END AS status,
                 r.created_by AS "startUserName",CAST(r.created_at AS VARCHAR) AS "startTime",CAST(NULL AS VARCHAR) AS "endTime"
-            """ + FROM + where, visibilityArgs());
+            FROM progress_records r CROSS JOIN parsed_state e
+            JOIN form_catalog c ON c.operation_id=r.operation_id AND c.form_id=r.form_id
+            CROSS JOIN LATERAL (SELECT r.progress AS progress) s
+            WHERE jsonb_array_length(COALESCE(f->'flow'->'nodes','[]'::jsonb))>0
+            """ + where;
+        args.addAll(visibilityArgs());
+        return new Source(LIST_CONTEXT.formatted(recordFilter, runningOnly ? " AND s.progress->>'status'='ACTIVE'" : "", projection), args);
     }
 
     private String visibility() {

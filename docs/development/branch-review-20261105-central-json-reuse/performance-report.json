@@ -1,0 +1,3552 @@
+{
+  "source": "/tmp/edhr-central-json-reuse-20261105/native-full/observations.jsonl",
+  "sourceSha256": "d2a81577fd958c6dd8183d91184ab16809b11e2fabc9c7348e72d0eed92b7690",
+  "allObservationEvents": 137,
+  "allLogicalSelects": 388,
+  "centralEvents": 47,
+  "centralLogicalSelects": 92,
+  "centralCountSelects": 46,
+  "separateExplainReplays": 70,
+  "scenarios": [
+    {
+      "kind": "central-list-visibility",
+      "input": {
+        "page": 1,
+        "expectedTotal": 30,
+        "actor": "42",
+        "authorities": [
+          "production.execution",
+          "form-management.review"
+        ],
+        "size": 7,
+        "plansAreSeparateReplays": true
+      },
+      "requestElapsedMs": 18.434538,
+      "logicalSelects": 2,
+      "countSelects": 1,
+      "plans": [
+        {
+          "kind": "count",
+          "executionMs": 1.91,
+          "planningMs": 2.16,
+          "rootBuffers": {
+            "Shared Hit Blocks": 8,
+            "Shared Read Blocks": 0,
+            "Temp Read Blocks": 0,
+            "Temp Written Blocks": 0
+          },
+          "functionScans": [
+            {
+              "Node Type": "Function Scan",
+              "Alias": "op",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 1,
+              "Actual Rows": 1
+            },
+            {
+              "Node Type": "Function Scan",
+              "Alias": "f",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 1,
+              "Actual Rows": 30
+            },
+            {
+              "Node Type": "Function Scan",
+              "Alias": "h_1",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 30,
+              "Actual Rows": 0,
+              "Rows Removed by Filter": 1
+            },
+            {
+              "Node Type": "Function Scan",
+              "Alias": "n",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 30,
+              "Actual Rows": 1,
+              "Rows Removed by Filter": 1
+            }
+          ],
+          "memoize": [],
+          "joinFilters": [],
+          "sorts": []
+        },
+        {
+          "kind": "content",
+          "executionMs": 1.938,
+          "planningMs": 2.551,
+          "rootBuffers": {
+            "Shared Hit Blocks": 8,
+            "Shared Read Blocks": 0,
+            "Temp Read Blocks": 0,
+            "Temp Written Blocks": 0
+          },
+          "functionScans": [
+            {
+              "Node Type": "Function Scan",
+              "Alias": "op",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 1,
+              "Actual Rows": 1
+            },
+            {
+              "Node Type": "Function Scan",
+              "Alias": "f",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 1,
+              "Actual Rows": 30
+            },
+            {
+              "Node Type": "Function Scan",
+              "Alias": "h_1",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 30,
+              "Actual Rows": 0,
+              "Rows Removed by Filter": 1
+            },
+            {
+              "Node Type": "Function Scan",
+              "Alias": "n",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 30,
+              "Actual Rows": 1,
+              "Rows Removed by Filter": 1
+            }
+          ],
+          "memoize": [],
+          "joinFilters": [],
+          "sorts": [
+            {
+              "Actual Rows": 7,
+              "Sort Key": [
+                "((i.started_at)::character varying) DESC",
+                "((i.id)::character varying) DESC"
+              ],
+              "Sort Method": "top-N heapsort",
+              "Sort Space Used": 26,
+              "Sort Space Type": "Memory"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "central-list-visibility",
+      "input": {
+        "page": 1,
+        "expectedTotal": 1,
+        "actor": "43",
+        "authorities": [
+          "production.execution",
+          "form-management.filling"
+        ],
+        "size": 7,
+        "plansAreSeparateReplays": true
+      },
+      "requestElapsedMs": 12.957879,
+      "logicalSelects": 2,
+      "countSelects": 1,
+      "plans": [
+        {
+          "kind": "count",
+          "executionMs": 1.388,
+          "planningMs": 2.348,
+          "rootBuffers": {
+            "Shared Hit Blocks": 8,
+            "Shared Read Blocks": 0,
+            "Temp Read Blocks": 0,
+            "Temp Written Blocks": 0
+          },
+          "functionScans": [
+            {
+              "Node Type": "Function Scan",
+              "Alias": "op",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 1,
+              "Actual Rows": 1
+            },
+            {
+              "Node Type": "Function Scan",
+              "Alias": "f",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 1,
+              "Actual Rows": 30
+            },
+            {
+              "Node Type": "Function Scan",
+              "Alias": "h_1",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 30,
+              "Actual Rows": 0,
+              "Rows Removed by Filter": 1
+            }
+          ],
+          "memoize": [],
+          "joinFilters": [
+            {
+              "Join Filter": "(((r_1.created_by_id)::text = '43'::text) OR (SubPlan 10) OR (SubPlan 11))",
+              "Rows Removed by Join Filter": 29,
+              "Actual Loops": 1,
+              "Actual Rows": 1
+            }
+          ],
+          "sorts": []
+        },
+        {
+          "kind": "content",
+          "executionMs": 1.521,
+          "planningMs": 2.497,
+          "rootBuffers": {
+            "Shared Hit Blocks": 8,
+            "Shared Read Blocks": 0,
+            "Temp Read Blocks": 0,
+            "Temp Written Blocks": 0
+          },
+          "functionScans": [
+            {
+              "Node Type": "Function Scan",
+              "Alias": "op",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 1,
+              "Actual Rows": 1
+            },
+            {
+              "Node Type": "Function Scan",
+              "Alias": "f",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 1,
+              "Actual Rows": 30
+            },
+            {
+              "Node Type": "Function Scan",
+              "Alias": "h_1",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 30,
+              "Actual Rows": 0,
+              "Rows Removed by Filter": 1
+            }
+          ],
+          "memoize": [],
+          "joinFilters": [
+            {
+              "Join Filter": "(((r_1.created_by_id)::text = '43'::text) OR (SubPlan 10) OR (SubPlan 11))",
+              "Rows Removed by Join Filter": 29,
+              "Actual Loops": 1,
+              "Actual Rows": 1
+            }
+          ],
+          "sorts": [
+            {
+              "Actual Rows": 1,
+              "Sort Key": [
+                "((i.started_at)::character varying) DESC",
+                "((i.id)::character varying) DESC"
+              ],
+              "Sort Method": "quicksort",
+              "Sort Space Used": 25,
+              "Sort Space Type": "Memory"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "central-list-visibility",
+      "input": {
+        "page": 1,
+        "expectedTotal": 0,
+        "actor": "44",
+        "authorities": [
+          "production.execution",
+          "form-management.filling"
+        ],
+        "size": 7,
+        "plansAreSeparateReplays": true
+      },
+      "requestElapsedMs": 14.755757,
+      "logicalSelects": 2,
+      "countSelects": 1,
+      "plans": [
+        {
+          "kind": "count",
+          "executionMs": 1.216,
+          "planningMs": 2.263,
+          "rootBuffers": {
+            "Shared Hit Blocks": 8,
+            "Shared Read Blocks": 0,
+            "Temp Read Blocks": 0,
+            "Temp Written Blocks": 0
+          },
+          "functionScans": [
+            {
+              "Node Type": "Function Scan",
+              "Alias": "op",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 1,
+              "Actual Rows": 1
+            },
+            {
+              "Node Type": "Function Scan",
+              "Alias": "f",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 1,
+              "Actual Rows": 30
+            },
+            {
+              "Node Type": "Function Scan",
+              "Alias": "h_1",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 30,
+              "Actual Rows": 0,
+              "Rows Removed by Filter": 1
+            }
+          ],
+          "memoize": [],
+          "joinFilters": [
+            {
+              "Join Filter": "(((r_1.created_by_id)::text = '44'::text) OR (SubPlan 10) OR (SubPlan 11))",
+              "Rows Removed by Join Filter": 30,
+              "Actual Loops": 1,
+              "Actual Rows": 0
+            }
+          ],
+          "sorts": []
+        },
+        {
+          "kind": "content",
+          "executionMs": 1.448,
+          "planningMs": 2.204,
+          "rootBuffers": {
+            "Shared Hit Blocks": 8,
+            "Shared Read Blocks": 0,
+            "Temp Read Blocks": 0,
+            "Temp Written Blocks": 0
+          },
+          "functionScans": [
+            {
+              "Node Type": "Function Scan",
+              "Alias": "op",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 1,
+              "Actual Rows": 1
+            },
+            {
+              "Node Type": "Function Scan",
+              "Alias": "f",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 1,
+              "Actual Rows": 30
+            },
+            {
+              "Node Type": "Function Scan",
+              "Alias": "h_1",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 30,
+              "Actual Rows": 0,
+              "Rows Removed by Filter": 1
+            }
+          ],
+          "memoize": [],
+          "joinFilters": [
+            {
+              "Join Filter": "(((r_1.created_by_id)::text = '44'::text) OR (SubPlan 10) OR (SubPlan 11))",
+              "Rows Removed by Join Filter": 30,
+              "Actual Loops": 1,
+              "Actual Rows": 0
+            }
+          ],
+          "sorts": [
+            {
+              "Actual Rows": 0,
+              "Sort Key": [
+                "((i.started_at)::character varying) DESC",
+                "((i.id)::character varying) DESC"
+              ],
+              "Sort Method": "quicksort",
+              "Sort Space Used": 25,
+              "Sort Space Type": "Memory"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "central-list-visibility",
+      "input": {
+        "page": 1,
+        "expectedTotal": 30,
+        "actor": "45",
+        "authorities": [
+          "production.execution",
+          "form-instances.view"
+        ],
+        "size": 7,
+        "plansAreSeparateReplays": true
+      },
+      "requestElapsedMs": 12.212889,
+      "logicalSelects": 2,
+      "countSelects": 1,
+      "plans": [
+        {
+          "kind": "count",
+          "executionMs": 1.595,
+          "planningMs": 2.196,
+          "rootBuffers": {
+            "Shared Hit Blocks": 8,
+            "Shared Read Blocks": 0,
+            "Temp Read Blocks": 0,
+            "Temp Written Blocks": 0
+          },
+          "functionScans": [
+            {
+              "Node Type": "Function Scan",
+              "Alias": "op",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 1,
+              "Actual Rows": 1
+            },
+            {
+              "Node Type": "Function Scan",
+              "Alias": "f",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 1,
+              "Actual Rows": 30
+            }
+          ],
+          "memoize": [],
+          "joinFilters": [],
+          "sorts": []
+        },
+        {
+          "kind": "content",
+          "executionMs": 1.465,
+          "planningMs": 2.093,
+          "rootBuffers": {
+            "Shared Hit Blocks": 8,
+            "Shared Read Blocks": 0,
+            "Temp Read Blocks": 0,
+            "Temp Written Blocks": 0
+          },
+          "functionScans": [
+            {
+              "Node Type": "Function Scan",
+              "Alias": "op",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 1,
+              "Actual Rows": 1
+            },
+            {
+              "Node Type": "Function Scan",
+              "Alias": "f",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 1,
+              "Actual Rows": 30
+            }
+          ],
+          "memoize": [],
+          "joinFilters": [],
+          "sorts": [
+            {
+              "Actual Rows": 7,
+              "Sort Key": [
+                "((i.started_at)::character varying) DESC",
+                "((i.id)::character varying) DESC"
+              ],
+              "Sort Method": "top-N heapsort",
+              "Sort Space Used": 26,
+              "Sort Space Type": "Memory"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "central-list-visibility",
+      "input": {
+        "page": 1,
+        "expectedTotal": 0,
+        "actor": "42",
+        "authorities": [
+          "workflow.logs"
+        ],
+        "size": 7,
+        "plansAreSeparateReplays": true
+      },
+      "requestElapsedMs": 11.680738,
+      "logicalSelects": 2,
+      "countSelects": 1,
+      "plans": [
+        {
+          "kind": "count",
+          "executionMs": 0.24,
+          "planningMs": 2.123,
+          "rootBuffers": {
+            "Shared Hit Blocks": 1,
+            "Shared Read Blocks": 0,
+            "Temp Read Blocks": 0,
+            "Temp Written Blocks": 0
+          },
+          "functionScans": [],
+          "memoize": [],
+          "joinFilters": [],
+          "sorts": []
+        },
+        {
+          "kind": "content",
+          "executionMs": 0.216,
+          "planningMs": 2.087,
+          "rootBuffers": {
+            "Shared Hit Blocks": 1,
+            "Shared Read Blocks": 0,
+            "Temp Read Blocks": 0,
+            "Temp Written Blocks": 0
+          },
+          "functionScans": [],
+          "memoize": [],
+          "joinFilters": [],
+          "sorts": [
+            {
+              "Actual Rows": 0,
+              "Sort Key": [
+                "((i.started_at)::character varying) DESC",
+                "((i.id)::character varying) DESC"
+              ],
+              "Sort Method": "quicksort",
+              "Sort Space Used": 25,
+              "Sort Space Type": "Memory"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "central-list-work-memory",
+      "input": {
+        "formsPerObject": 100,
+        "objects": 30,
+        "workMem": "64kB",
+        "plansAreSeparateReplays": true
+      },
+      "requestElapsedMs": 215.552934,
+      "logicalSelects": 2,
+      "countSelects": 1,
+      "plans": [
+        {
+          "kind": "count",
+          "executionMs": 104.337,
+          "planningMs": 1.598,
+          "rootBuffers": {
+            "Shared Hit Blocks": 581,
+            "Shared Read Blocks": 0,
+            "Temp Read Blocks": 900,
+            "Temp Written Blocks": 1289
+          },
+          "functionScans": [
+            {
+              "Node Type": "Function Scan",
+              "Alias": "op",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 30,
+              "Actual Rows": 1
+            },
+            {
+              "Node Type": "Function Scan",
+              "Alias": "f",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 30,
+              "Actual Rows": 100
+            }
+          ],
+          "memoize": [],
+          "joinFilters": [],
+          "sorts": []
+        },
+        {
+          "kind": "content",
+          "executionMs": 105.136,
+          "planningMs": 1.668,
+          "rootBuffers": {
+            "Shared Hit Blocks": 581,
+            "Shared Read Blocks": 0,
+            "Temp Read Blocks": 900,
+            "Temp Written Blocks": 1289
+          },
+          "functionScans": [
+            {
+              "Node Type": "Function Scan",
+              "Alias": "op",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 30,
+              "Actual Rows": 1
+            },
+            {
+              "Node Type": "Function Scan",
+              "Alias": "f",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 30,
+              "Actual Rows": 100
+            }
+          ],
+          "memoize": [],
+          "joinFilters": [],
+          "sorts": [
+            {
+              "Actual Rows": 20,
+              "Sort Key": [
+                "((i.started_at)::character varying) DESC",
+                "((i.id)::character varying) DESC"
+              ],
+              "Sort Method": "top-N heapsort",
+              "Sort Space Used": 30,
+              "Sort Space Type": "Memory"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "central-list-work-memory",
+      "input": {
+        "formsPerObject": 100,
+        "objects": 30,
+        "workMem": "4MB",
+        "plansAreSeparateReplays": true
+      },
+      "requestElapsedMs": 197.517838,
+      "logicalSelects": 2,
+      "countSelects": 1,
+      "plans": [
+        {
+          "kind": "count",
+          "executionMs": 91.33,
+          "planningMs": 1.56,
+          "rootBuffers": {
+            "Shared Hit Blocks": 581,
+            "Shared Read Blocks": 0,
+            "Temp Read Blocks": 0,
+            "Temp Written Blocks": 0
+          },
+          "functionScans": [
+            {
+              "Node Type": "Function Scan",
+              "Alias": "op",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 30,
+              "Actual Rows": 1
+            },
+            {
+              "Node Type": "Function Scan",
+              "Alias": "f",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 30,
+              "Actual Rows": 100
+            }
+          ],
+          "memoize": [],
+          "joinFilters": [],
+          "sorts": []
+        },
+        {
+          "kind": "content",
+          "executionMs": 97.38,
+          "planningMs": 1.624,
+          "rootBuffers": {
+            "Shared Hit Blocks": 581,
+            "Shared Read Blocks": 0,
+            "Temp Read Blocks": 0,
+            "Temp Written Blocks": 0
+          },
+          "functionScans": [
+            {
+              "Node Type": "Function Scan",
+              "Alias": "op",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 30,
+              "Actual Rows": 1
+            },
+            {
+              "Node Type": "Function Scan",
+              "Alias": "f",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 30,
+              "Actual Rows": 100
+            }
+          ],
+          "memoize": [],
+          "joinFilters": [],
+          "sorts": [
+            {
+              "Actual Rows": 20,
+              "Sort Key": [
+                "((i.started_at)::character varying) DESC",
+                "((i.id)::character varying) DESC"
+              ],
+              "Sort Method": "top-N heapsort",
+              "Sort Space Used": 30,
+              "Sort Space Type": "Memory"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "central-list-filters",
+      "input": {
+        "page": 1,
+        "status": "RUNNING",
+        "total": 3,
+        "runningOnly": false,
+        "keyword": "",
+        "plansAreSeparateReplays": false
+      },
+      "requestElapsedMs": 10.363738,
+      "logicalSelects": 2,
+      "countSelects": 1,
+      "plans": []
+    },
+    {
+      "kind": "central-list-filters",
+      "input": {
+        "page": 1,
+        "status": "COMPLETED",
+        "total": 1,
+        "runningOnly": false,
+        "keyword": "",
+        "plansAreSeparateReplays": false
+      },
+      "requestElapsedMs": 10.206604,
+      "logicalSelects": 2,
+      "countSelects": 1,
+      "plans": []
+    },
+    {
+      "kind": "central-list-filters",
+      "input": {
+        "page": 1,
+        "status": "",
+        "total": 1,
+        "runningOnly": false,
+        "keyword": "%_!",
+        "plansAreSeparateReplays": false
+      },
+      "requestElapsedMs": 9.306007,
+      "logicalSelects": 2,
+      "countSelects": 1,
+      "plans": []
+    },
+    {
+      "kind": "central-list-filters",
+      "input": {
+        "page": 1,
+        "status": "",
+        "total": 1,
+        "runningOnly": false,
+        "keyword": "form-2000001",
+        "plansAreSeparateReplays": false
+      },
+      "requestElapsedMs": 8.744109,
+      "logicalSelects": 2,
+      "countSelects": 1,
+      "plans": []
+    },
+    {
+      "kind": "central-list-filters",
+      "input": {
+        "page": 1,
+        "status": "",
+        "total": 1,
+        "runningOnly": false,
+        "keyword": "READ-OBS-1",
+        "plansAreSeparateReplays": false
+      },
+      "requestElapsedMs": 7.813871,
+      "logicalSelects": 2,
+      "countSelects": 1,
+      "plans": []
+    },
+    {
+      "kind": "central-list-filters",
+      "input": {
+        "page": 9,
+        "status": "",
+        "total": 4,
+        "runningOnly": false,
+        "keyword": "",
+        "plansAreSeparateReplays": false
+      },
+      "requestElapsedMs": 8.683015,
+      "logicalSelects": 2,
+      "countSelects": 1,
+      "plans": []
+    },
+    {
+      "kind": "central-list-filters",
+      "input": {
+        "page": 1,
+        "status": "COMPLETED",
+        "total": 3,
+        "runningOnly": true,
+        "keyword": "",
+        "plansAreSeparateReplays": false
+      },
+      "requestElapsedMs": 10.042049,
+      "logicalSelects": 2,
+      "countSelects": 1,
+      "plans": []
+    },
+    {
+      "kind": "central-list-dhr-summary-lock",
+      "input": {
+        "summaryStatus": "NOT_STARTED",
+        "expectedForms": 1,
+        "plansAreSeparateReplays": true
+      },
+      "requestElapsedMs": 11.026573,
+      "logicalSelects": 2,
+      "countSelects": 1,
+      "plans": [
+        {
+          "kind": "count",
+          "executionMs": 0.464,
+          "planningMs": 1.742,
+          "rootBuffers": {
+            "Shared Hit Blocks": 14,
+            "Shared Read Blocks": 0,
+            "Temp Read Blocks": 0,
+            "Temp Written Blocks": 0
+          },
+          "functionScans": [
+            {
+              "Node Type": "Function Scan",
+              "Alias": "op",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 1,
+              "Actual Rows": 1
+            },
+            {
+              "Node Type": "Function Scan",
+              "Alias": "f",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 1,
+              "Actual Rows": 1
+            },
+            {
+              "Node Type": "Function Scan",
+              "Alias": "n",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 1,
+              "Actual Rows": 1,
+              "Rows Removed by Filter": 1
+            }
+          ],
+          "memoize": [],
+          "joinFilters": [],
+          "sorts": []
+        },
+        {
+          "kind": "content",
+          "executionMs": 0.493,
+          "planningMs": 2.173,
+          "rootBuffers": {
+            "Shared Hit Blocks": 14,
+            "Shared Read Blocks": 0,
+            "Temp Read Blocks": 0,
+            "Temp Written Blocks": 0
+          },
+          "functionScans": [
+            {
+              "Node Type": "Function Scan",
+              "Alias": "op",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 1,
+              "Actual Rows": 1
+            },
+            {
+              "Node Type": "Function Scan",
+              "Alias": "f",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 1,
+              "Actual Rows": 1
+            },
+            {
+              "Node Type": "Function Scan",
+              "Alias": "n",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 1,
+              "Actual Rows": 1,
+              "Rows Removed by Filter": 1
+            }
+          ],
+          "memoize": [],
+          "joinFilters": [],
+          "sorts": [
+            {
+              "Actual Rows": 2,
+              "Sort Key": [
+                "((i.started_at)::character varying) DESC",
+                "((i.id)::character varying) DESC"
+              ],
+              "Sort Method": "quicksort",
+              "Sort Space Used": 25,
+              "Sort Space Type": "Memory"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "central-list-dhr-summary-lock",
+      "input": {
+        "summaryStatus": "DRAFT",
+        "expectedForms": 1,
+        "plansAreSeparateReplays": true
+      },
+      "requestElapsedMs": 13.018609,
+      "logicalSelects": 2,
+      "countSelects": 1,
+      "plans": [
+        {
+          "kind": "count",
+          "executionMs": 0.535,
+          "planningMs": 1.946,
+          "rootBuffers": {
+            "Shared Hit Blocks": 14,
+            "Shared Read Blocks": 0,
+            "Temp Read Blocks": 0,
+            "Temp Written Blocks": 0
+          },
+          "functionScans": [
+            {
+              "Node Type": "Function Scan",
+              "Alias": "op",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 1,
+              "Actual Rows": 1
+            },
+            {
+              "Node Type": "Function Scan",
+              "Alias": "f",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 1,
+              "Actual Rows": 1
+            },
+            {
+              "Node Type": "Function Scan",
+              "Alias": "n",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 1,
+              "Actual Rows": 1,
+              "Rows Removed by Filter": 1
+            }
+          ],
+          "memoize": [],
+          "joinFilters": [],
+          "sorts": []
+        },
+        {
+          "kind": "content",
+          "executionMs": 0.552,
+          "planningMs": 1.896,
+          "rootBuffers": {
+            "Shared Hit Blocks": 14,
+            "Shared Read Blocks": 0,
+            "Temp Read Blocks": 0,
+            "Temp Written Blocks": 0
+          },
+          "functionScans": [
+            {
+              "Node Type": "Function Scan",
+              "Alias": "op",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 1,
+              "Actual Rows": 1
+            },
+            {
+              "Node Type": "Function Scan",
+              "Alias": "f",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 1,
+              "Actual Rows": 1
+            },
+            {
+              "Node Type": "Function Scan",
+              "Alias": "n",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 1,
+              "Actual Rows": 1,
+              "Rows Removed by Filter": 1
+            }
+          ],
+          "memoize": [],
+          "joinFilters": [],
+          "sorts": [
+            {
+              "Actual Rows": 2,
+              "Sort Key": [
+                "((i.started_at)::character varying) DESC",
+                "((i.id)::character varying) DESC"
+              ],
+              "Sort Method": "quicksort",
+              "Sort Space Used": 25,
+              "Sort Space Type": "Memory"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "central-list-dhr-summary-lock",
+      "input": {
+        "summaryStatus": "PENDING_REVIEW",
+        "expectedForms": 0,
+        "plansAreSeparateReplays": true
+      },
+      "requestElapsedMs": 12.024427,
+      "logicalSelects": 2,
+      "countSelects": 1,
+      "plans": [
+        {
+          "kind": "count",
+          "executionMs": 0.346,
+          "planningMs": 2.115,
+          "rootBuffers": {
+            "Shared Hit Blocks": 14,
+            "Shared Read Blocks": 0,
+            "Temp Read Blocks": 0,
+            "Temp Written Blocks": 0
+          },
+          "functionScans": [
+            {
+              "Node Type": "Function Scan",
+              "Alias": "op",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 0,
+              "Actual Rows": 0
+            },
+            {
+              "Node Type": "Function Scan",
+              "Alias": "f",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 0,
+              "Actual Rows": 0
+            },
+            {
+              "Node Type": "Function Scan",
+              "Alias": "n",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 0,
+              "Actual Rows": 0,
+              "Rows Removed by Filter": 0
+            }
+          ],
+          "memoize": [],
+          "joinFilters": [],
+          "sorts": []
+        },
+        {
+          "kind": "content",
+          "executionMs": 0.37,
+          "planningMs": 1.911,
+          "rootBuffers": {
+            "Shared Hit Blocks": 14,
+            "Shared Read Blocks": 0,
+            "Temp Read Blocks": 0,
+            "Temp Written Blocks": 0
+          },
+          "functionScans": [
+            {
+              "Node Type": "Function Scan",
+              "Alias": "op",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 0,
+              "Actual Rows": 0
+            },
+            {
+              "Node Type": "Function Scan",
+              "Alias": "f",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 0,
+              "Actual Rows": 0
+            },
+            {
+              "Node Type": "Function Scan",
+              "Alias": "n",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 0,
+              "Actual Rows": 0,
+              "Rows Removed by Filter": 0
+            }
+          ],
+          "memoize": [],
+          "joinFilters": [],
+          "sorts": [
+            {
+              "Actual Rows": 1,
+              "Sort Key": [
+                "((i.started_at)::character varying) DESC",
+                "((i.id)::character varying) DESC"
+              ],
+              "Sort Method": "quicksort",
+              "Sort Space Used": 25,
+              "Sort Space Type": "Memory"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "central-list-dhr-summary-lock",
+      "input": {
+        "summaryStatus": "FORMALIZED",
+        "expectedForms": 0,
+        "plansAreSeparateReplays": true
+      },
+      "requestElapsedMs": 11.284886,
+      "logicalSelects": 2,
+      "countSelects": 1,
+      "plans": [
+        {
+          "kind": "count",
+          "executionMs": 0.579,
+          "planningMs": 2.597,
+          "rootBuffers": {
+            "Shared Hit Blocks": 14,
+            "Shared Read Blocks": 0,
+            "Temp Read Blocks": 0,
+            "Temp Written Blocks": 0
+          },
+          "functionScans": [
+            {
+              "Node Type": "Function Scan",
+              "Alias": "op",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 0,
+              "Actual Rows": 0
+            },
+            {
+              "Node Type": "Function Scan",
+              "Alias": "f",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 0,
+              "Actual Rows": 0
+            },
+            {
+              "Node Type": "Function Scan",
+              "Alias": "n",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 0,
+              "Actual Rows": 0,
+              "Rows Removed by Filter": 0
+            }
+          ],
+          "memoize": [],
+          "joinFilters": [],
+          "sorts": []
+        },
+        {
+          "kind": "content",
+          "executionMs": 0.422,
+          "planningMs": 1.929,
+          "rootBuffers": {
+            "Shared Hit Blocks": 14,
+            "Shared Read Blocks": 0,
+            "Temp Read Blocks": 0,
+            "Temp Written Blocks": 0
+          },
+          "functionScans": [
+            {
+              "Node Type": "Function Scan",
+              "Alias": "op",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 0,
+              "Actual Rows": 0
+            },
+            {
+              "Node Type": "Function Scan",
+              "Alias": "f",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 0,
+              "Actual Rows": 0
+            },
+            {
+              "Node Type": "Function Scan",
+              "Alias": "n",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 0,
+              "Actual Rows": 0,
+              "Rows Removed by Filter": 0
+            }
+          ],
+          "memoize": [],
+          "joinFilters": [],
+          "sorts": [
+            {
+              "Actual Rows": 1,
+              "Sort Key": [
+                "((i.started_at)::character varying) DESC",
+                "((i.id)::character varying) DESC"
+              ],
+              "Sort Method": "quicksort",
+              "Sort Space Used": 25,
+              "Sort Space Type": "Memory"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "central-list-operation-copy",
+      "input": {
+        "runningOnly": false,
+        "plansAreSeparateReplays": true
+      },
+      "requestElapsedMs": 11.275981,
+      "logicalSelects": 2,
+      "countSelects": 1,
+      "plans": [
+        {
+          "kind": "count",
+          "executionMs": 0.449,
+          "planningMs": 1.546,
+          "rootBuffers": {
+            "Shared Hit Blocks": 16,
+            "Shared Read Blocks": 0,
+            "Temp Read Blocks": 0,
+            "Temp Written Blocks": 0
+          },
+          "functionScans": [
+            {
+              "Node Type": "Function Scan",
+              "Alias": "op",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 1,
+              "Actual Rows": 2
+            },
+            {
+              "Node Type": "Function Scan",
+              "Alias": "f",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 2,
+              "Actual Rows": 1
+            }
+          ],
+          "memoize": [],
+          "joinFilters": [],
+          "sorts": []
+        },
+        {
+          "kind": "content",
+          "executionMs": 0.809,
+          "planningMs": 1.69,
+          "rootBuffers": {
+            "Shared Hit Blocks": 16,
+            "Shared Read Blocks": 0,
+            "Temp Read Blocks": 0,
+            "Temp Written Blocks": 0
+          },
+          "functionScans": [
+            {
+              "Node Type": "Function Scan",
+              "Alias": "op",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 1,
+              "Actual Rows": 2
+            },
+            {
+              "Node Type": "Function Scan",
+              "Alias": "f",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 2,
+              "Actual Rows": 1
+            }
+          ],
+          "memoize": [],
+          "joinFilters": [],
+          "sorts": [
+            {
+              "Actual Rows": 3,
+              "Sort Key": [
+                "((i.started_at)::character varying) DESC",
+                "((i.id)::character varying) DESC"
+              ],
+              "Sort Method": "quicksort",
+              "Sort Space Used": 25,
+              "Sort Space Type": "Memory"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "central-list-operation-copy",
+      "input": {
+        "runningOnly": true,
+        "plansAreSeparateReplays": true
+      },
+      "requestElapsedMs": 10.326909,
+      "logicalSelects": 2,
+      "countSelects": 1,
+      "plans": [
+        {
+          "kind": "count",
+          "executionMs": 0.784,
+          "planningMs": 2.328,
+          "rootBuffers": {
+            "Shared Hit Blocks": 22,
+            "Shared Read Blocks": 0,
+            "Temp Read Blocks": 0,
+            "Temp Written Blocks": 0
+          },
+          "functionScans": [
+            {
+              "Node Type": "Function Scan",
+              "Alias": "op",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 1,
+              "Actual Rows": 2
+            },
+            {
+              "Node Type": "Function Scan",
+              "Alias": "f",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 2,
+              "Actual Rows": 1
+            },
+            {
+              "Node Type": "Function Scan",
+              "Alias": "n",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 1,
+              "Actual Rows": 1,
+              "Rows Removed by Filter": 1
+            }
+          ],
+          "memoize": [],
+          "joinFilters": [
+            {
+              "Join Filter": "((jsonb_typeof((e_1.state_json #> (ARRAY['operations'::character varying, r_3.operation_id, 'forms'::character varying, r_3.copy_id])::text[])) = 'object'::text) AND (((e_1.state_json #> (ARRAY['operations'::character varying, r_3.operation_id, 'forms'::character varying, r_3.copy_id])::text[]) ->> 'status'::text) = 'ACTIVE'::text))",
+              "Rows Removed by Join Filter": 1,
+              "Actual Loops": 1,
+              "Actual Rows": 2
+            }
+          ],
+          "sorts": []
+        },
+        {
+          "kind": "content",
+          "executionMs": 0.707,
+          "planningMs": 1.885,
+          "rootBuffers": {
+            "Shared Hit Blocks": 22,
+            "Shared Read Blocks": 0,
+            "Temp Read Blocks": 0,
+            "Temp Written Blocks": 0
+          },
+          "functionScans": [
+            {
+              "Node Type": "Function Scan",
+              "Alias": "op",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 1,
+              "Actual Rows": 2
+            },
+            {
+              "Node Type": "Function Scan",
+              "Alias": "f",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 2,
+              "Actual Rows": 1
+            },
+            {
+              "Node Type": "Function Scan",
+              "Alias": "n",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 1,
+              "Actual Rows": 1,
+              "Rows Removed by Filter": 1
+            }
+          ],
+          "memoize": [],
+          "joinFilters": [
+            {
+              "Join Filter": "((jsonb_typeof((e_1.state_json #> (ARRAY['operations'::character varying, r_3.operation_id, 'forms'::character varying, r_3.copy_id])::text[])) = 'object'::text) AND (((e_1.state_json #> (ARRAY['operations'::character varying, r_3.operation_id, 'forms'::character varying, r_3.copy_id])::text[]) ->> 'status'::text) = 'ACTIVE'::text))",
+              "Rows Removed by Join Filter": 1,
+              "Actual Loops": 1,
+              "Actual Rows": 2
+            }
+          ],
+          "sorts": [
+            {
+              "Actual Rows": 2,
+              "Sort Key": [
+                "((i.started_at)::character varying) DESC",
+                "((i.id)::character varying) DESC"
+              ],
+              "Sort Method": "quicksort",
+              "Sort Space Used": 25,
+              "Sort Space Type": "Memory"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "central-list-operation-copy",
+      "input": {
+        "status": "COMPLETED",
+        "plansAreSeparateReplays": false
+      },
+      "requestElapsedMs": 9.511729,
+      "logicalSelects": 2,
+      "countSelects": 1,
+      "plans": []
+    },
+    {
+      "kind": "central-list-scale",
+      "input": {
+        "page": 1,
+        "objects": 1,
+        "runningOnly": false,
+        "formsPerObject": 1,
+        "size": 20,
+        "plansAreSeparateReplays": true
+      },
+      "requestElapsedMs": 11.633502,
+      "logicalSelects": 2,
+      "countSelects": 1,
+      "plans": [
+        {
+          "kind": "count",
+          "executionMs": 0.555,
+          "planningMs": 1.587,
+          "rootBuffers": {
+            "Shared Hit Blocks": 12,
+            "Shared Read Blocks": 0,
+            "Temp Read Blocks": 0,
+            "Temp Written Blocks": 0
+          },
+          "functionScans": [
+            {
+              "Node Type": "Function Scan",
+              "Alias": "op",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 1,
+              "Actual Rows": 1
+            },
+            {
+              "Node Type": "Function Scan",
+              "Alias": "f",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 1,
+              "Actual Rows": 1
+            }
+          ],
+          "memoize": [],
+          "joinFilters": [],
+          "sorts": []
+        },
+        {
+          "kind": "content",
+          "executionMs": 0.453,
+          "planningMs": 2.094,
+          "rootBuffers": {
+            "Shared Hit Blocks": 12,
+            "Shared Read Blocks": 0,
+            "Temp Read Blocks": 0,
+            "Temp Written Blocks": 0
+          },
+          "functionScans": [
+            {
+              "Node Type": "Function Scan",
+              "Alias": "op",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 1,
+              "Actual Rows": 1
+            },
+            {
+              "Node Type": "Function Scan",
+              "Alias": "f",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 1,
+              "Actual Rows": 1
+            }
+          ],
+          "memoize": [],
+          "joinFilters": [],
+          "sorts": [
+            {
+              "Actual Rows": 2,
+              "Sort Key": [
+                "((i.started_at)::character varying) DESC",
+                "((i.id)::character varying) DESC"
+              ],
+              "Sort Method": "quicksort",
+              "Sort Space Used": 25,
+              "Sort Space Type": "Memory"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "central-list-scale",
+      "input": {
+        "page": 1,
+        "objects": 1,
+        "runningOnly": true,
+        "formsPerObject": 1,
+        "size": 20,
+        "plansAreSeparateReplays": true
+      },
+      "requestElapsedMs": 8.538318,
+      "logicalSelects": 2,
+      "countSelects": 1,
+      "plans": [
+        {
+          "kind": "count",
+          "executionMs": 0.45,
+          "planningMs": 2.003,
+          "rootBuffers": {
+            "Shared Hit Blocks": 14,
+            "Shared Read Blocks": 0,
+            "Temp Read Blocks": 0,
+            "Temp Written Blocks": 0
+          },
+          "functionScans": [
+            {
+              "Node Type": "Function Scan",
+              "Alias": "op",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 1,
+              "Actual Rows": 1
+            },
+            {
+              "Node Type": "Function Scan",
+              "Alias": "f",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 1,
+              "Actual Rows": 1
+            },
+            {
+              "Node Type": "Function Scan",
+              "Alias": "n",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 1,
+              "Actual Rows": 1,
+              "Rows Removed by Filter": 1
+            }
+          ],
+          "memoize": [],
+          "joinFilters": [],
+          "sorts": []
+        },
+        {
+          "kind": "content",
+          "executionMs": 0.475,
+          "planningMs": 2.321,
+          "rootBuffers": {
+            "Shared Hit Blocks": 14,
+            "Shared Read Blocks": 0,
+            "Temp Read Blocks": 0,
+            "Temp Written Blocks": 0
+          },
+          "functionScans": [
+            {
+              "Node Type": "Function Scan",
+              "Alias": "op",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 1,
+              "Actual Rows": 1
+            },
+            {
+              "Node Type": "Function Scan",
+              "Alias": "f",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 1,
+              "Actual Rows": 1
+            },
+            {
+              "Node Type": "Function Scan",
+              "Alias": "n",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 1,
+              "Actual Rows": 1,
+              "Rows Removed by Filter": 1
+            }
+          ],
+          "memoize": [],
+          "joinFilters": [],
+          "sorts": [
+            {
+              "Actual Rows": 2,
+              "Sort Key": [
+                "((i.started_at)::character varying) DESC",
+                "((i.id)::character varying) DESC"
+              ],
+              "Sort Method": "quicksort",
+              "Sort Space Used": 25,
+              "Sort Space Type": "Memory"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "central-list-last-page",
+      "input": {
+        "size": 20,
+        "page": 1,
+        "formsPerObject": 1,
+        "objects": 1,
+        "plansAreSeparateReplays": false
+      },
+      "requestElapsedMs": 5.294523,
+      "logicalSelects": 2,
+      "countSelects": 1,
+      "plans": []
+    },
+    {
+      "kind": "central-list-scale",
+      "input": {
+        "page": 1,
+        "objects": 1,
+        "runningOnly": false,
+        "formsPerObject": 30,
+        "size": 20,
+        "plansAreSeparateReplays": true
+      },
+      "requestElapsedMs": 12.204756,
+      "logicalSelects": 2,
+      "countSelects": 1,
+      "plans": [
+        {
+          "kind": "count",
+          "executionMs": 1.544,
+          "planningMs": 1.779,
+          "rootBuffers": {
+            "Shared Hit Blocks": 15,
+            "Shared Read Blocks": 0,
+            "Temp Read Blocks": 0,
+            "Temp Written Blocks": 0
+          },
+          "functionScans": [
+            {
+              "Node Type": "Function Scan",
+              "Alias": "op",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 1,
+              "Actual Rows": 1
+            },
+            {
+              "Node Type": "Function Scan",
+              "Alias": "f",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 1,
+              "Actual Rows": 30
+            }
+          ],
+          "memoize": [],
+          "joinFilters": [],
+          "sorts": []
+        },
+        {
+          "kind": "content",
+          "executionMs": 1.635,
+          "planningMs": 1.673,
+          "rootBuffers": {
+            "Shared Hit Blocks": 15,
+            "Shared Read Blocks": 0,
+            "Temp Read Blocks": 0,
+            "Temp Written Blocks": 0
+          },
+          "functionScans": [
+            {
+              "Node Type": "Function Scan",
+              "Alias": "op",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 1,
+              "Actual Rows": 1
+            },
+            {
+              "Node Type": "Function Scan",
+              "Alias": "f",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 1,
+              "Actual Rows": 30
+            }
+          ],
+          "memoize": [],
+          "joinFilters": [],
+          "sorts": [
+            {
+              "Actual Rows": 20,
+              "Sort Key": [
+                "((i.started_at)::character varying) DESC",
+                "((i.id)::character varying) DESC"
+              ],
+              "Sort Method": "quicksort",
+              "Sort Space Used": 29,
+              "Sort Space Type": "Memory"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "central-list-scale",
+      "input": {
+        "page": 1,
+        "objects": 1,
+        "runningOnly": true,
+        "formsPerObject": 30,
+        "size": 20,
+        "plansAreSeparateReplays": true
+      },
+      "requestElapsedMs": 10.511372,
+      "logicalSelects": 2,
+      "countSelects": 1,
+      "plans": [
+        {
+          "kind": "count",
+          "executionMs": 1.739,
+          "planningMs": 1.967,
+          "rootBuffers": {
+            "Shared Hit Blocks": 17,
+            "Shared Read Blocks": 0,
+            "Temp Read Blocks": 0,
+            "Temp Written Blocks": 0
+          },
+          "functionScans": [
+            {
+              "Node Type": "Function Scan",
+              "Alias": "op",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 1,
+              "Actual Rows": 1
+            },
+            {
+              "Node Type": "Function Scan",
+              "Alias": "f",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 1,
+              "Actual Rows": 30
+            },
+            {
+              "Node Type": "Function Scan",
+              "Alias": "n",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 30,
+              "Actual Rows": 1,
+              "Rows Removed by Filter": 1
+            }
+          ],
+          "memoize": [],
+          "joinFilters": [],
+          "sorts": []
+        },
+        {
+          "kind": "content",
+          "executionMs": 1.495,
+          "planningMs": 1.897,
+          "rootBuffers": {
+            "Shared Hit Blocks": 17,
+            "Shared Read Blocks": 0,
+            "Temp Read Blocks": 0,
+            "Temp Written Blocks": 0
+          },
+          "functionScans": [
+            {
+              "Node Type": "Function Scan",
+              "Alias": "op",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 1,
+              "Actual Rows": 1
+            },
+            {
+              "Node Type": "Function Scan",
+              "Alias": "f",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 1,
+              "Actual Rows": 30
+            },
+            {
+              "Node Type": "Function Scan",
+              "Alias": "n",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 30,
+              "Actual Rows": 1,
+              "Rows Removed by Filter": 1
+            }
+          ],
+          "memoize": [],
+          "joinFilters": [],
+          "sorts": [
+            {
+              "Actual Rows": 20,
+              "Sort Key": [
+                "((i.started_at)::character varying) DESC",
+                "((i.id)::character varying) DESC"
+              ],
+              "Sort Method": "quicksort",
+              "Sort Space Used": 29,
+              "Sort Space Type": "Memory"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "central-list-last-page",
+      "input": {
+        "size": 20,
+        "page": 2,
+        "formsPerObject": 30,
+        "objects": 1,
+        "plansAreSeparateReplays": false
+      },
+      "requestElapsedMs": 6.726133,
+      "logicalSelects": 2,
+      "countSelects": 1,
+      "plans": []
+    },
+    {
+      "kind": "central-list-scale",
+      "input": {
+        "page": 1,
+        "objects": 1,
+        "runningOnly": false,
+        "formsPerObject": 300,
+        "size": 20,
+        "plansAreSeparateReplays": true
+      },
+      "requestElapsedMs": 44.085664,
+      "logicalSelects": 2,
+      "countSelects": 1,
+      "plans": [
+        {
+          "kind": "count",
+          "executionMs": 18.5,
+          "planningMs": 1.68,
+          "rootBuffers": {
+            "Shared Hit Blocks": 51,
+            "Shared Read Blocks": 0,
+            "Temp Read Blocks": 0,
+            "Temp Written Blocks": 0
+          },
+          "functionScans": [
+            {
+              "Node Type": "Function Scan",
+              "Alias": "op",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 1,
+              "Actual Rows": 1
+            },
+            {
+              "Node Type": "Function Scan",
+              "Alias": "f",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 1,
+              "Actual Rows": 300
+            }
+          ],
+          "memoize": [],
+          "joinFilters": [],
+          "sorts": [
+            {
+              "Actual Rows": 300,
+              "Sort Key": [
+                "progress_records_1.operation_id"
+              ],
+              "Sort Method": "quicksort",
+              "Sort Space Used": 29,
+              "Sort Space Type": "Memory"
+            }
+          ]
+        },
+        {
+          "kind": "content",
+          "executionMs": 16.266,
+          "planningMs": 1.568,
+          "rootBuffers": {
+            "Shared Hit Blocks": 51,
+            "Shared Read Blocks": 0,
+            "Temp Read Blocks": 0,
+            "Temp Written Blocks": 0
+          },
+          "functionScans": [
+            {
+              "Node Type": "Function Scan",
+              "Alias": "op",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 1,
+              "Actual Rows": 1
+            },
+            {
+              "Node Type": "Function Scan",
+              "Alias": "f",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 1,
+              "Actual Rows": 300
+            }
+          ],
+          "memoize": [],
+          "joinFilters": [],
+          "sorts": [
+            {
+              "Actual Rows": 20,
+              "Sort Key": [
+                "((i.started_at)::character varying) DESC",
+                "((i.id)::character varying) DESC"
+              ],
+              "Sort Method": "top-N heapsort",
+              "Sort Space Used": 30,
+              "Sort Space Type": "Memory"
+            },
+            {
+              "Actual Rows": 300,
+              "Sort Key": [
+                "progress_records_1.operation_id"
+              ],
+              "Sort Method": "quicksort",
+              "Sort Space Used": 29,
+              "Sort Space Type": "Memory"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "central-list-scale",
+      "input": {
+        "page": 1,
+        "objects": 1,
+        "runningOnly": true,
+        "formsPerObject": 300,
+        "size": 20,
+        "plansAreSeparateReplays": true
+      },
+      "requestElapsedMs": 54.477478,
+      "logicalSelects": 2,
+      "countSelects": 1,
+      "plans": [
+        {
+          "kind": "count",
+          "executionMs": 23.181,
+          "planningMs": 2.288,
+          "rootBuffers": {
+            "Shared Hit Blocks": 53,
+            "Shared Read Blocks": 0,
+            "Temp Read Blocks": 0,
+            "Temp Written Blocks": 0
+          },
+          "functionScans": [
+            {
+              "Node Type": "Function Scan",
+              "Alias": "op",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 1,
+              "Actual Rows": 1
+            },
+            {
+              "Node Type": "Function Scan",
+              "Alias": "f",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 1,
+              "Actual Rows": 300
+            },
+            {
+              "Node Type": "Function Scan",
+              "Alias": "n",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 300,
+              "Actual Rows": 1,
+              "Rows Removed by Filter": 1
+            }
+          ],
+          "memoize": [],
+          "joinFilters": [],
+          "sorts": []
+        },
+        {
+          "kind": "content",
+          "executionMs": 21.493,
+          "planningMs": 2.032,
+          "rootBuffers": {
+            "Shared Hit Blocks": 53,
+            "Shared Read Blocks": 0,
+            "Temp Read Blocks": 0,
+            "Temp Written Blocks": 0
+          },
+          "functionScans": [
+            {
+              "Node Type": "Function Scan",
+              "Alias": "op",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 1,
+              "Actual Rows": 1
+            },
+            {
+              "Node Type": "Function Scan",
+              "Alias": "f",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 1,
+              "Actual Rows": 300
+            },
+            {
+              "Node Type": "Function Scan",
+              "Alias": "n",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 300,
+              "Actual Rows": 1,
+              "Rows Removed by Filter": 1
+            }
+          ],
+          "memoize": [],
+          "joinFilters": [],
+          "sorts": [
+            {
+              "Actual Rows": 20,
+              "Sort Key": [
+                "((i.started_at)::character varying) DESC",
+                "((i.id)::character varying) DESC"
+              ],
+              "Sort Method": "top-N heapsort",
+              "Sort Space Used": 30,
+              "Sort Space Type": "Memory"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "central-list-last-page",
+      "input": {
+        "size": 20,
+        "page": 16,
+        "formsPerObject": 300,
+        "objects": 1,
+        "plansAreSeparateReplays": false
+      },
+      "requestElapsedMs": 34.691074,
+      "logicalSelects": 2,
+      "countSelects": 1,
+      "plans": []
+    },
+    {
+      "kind": "central-list-scale",
+      "input": {
+        "page": 1,
+        "objects": 30,
+        "runningOnly": false,
+        "formsPerObject": 100,
+        "size": 20,
+        "plansAreSeparateReplays": true
+      },
+      "requestElapsedMs": 203.925717,
+      "logicalSelects": 2,
+      "countSelects": 1,
+      "plans": [
+        {
+          "kind": "count",
+          "executionMs": 93.42,
+          "planningMs": 1.609,
+          "rootBuffers": {
+            "Shared Hit Blocks": 582,
+            "Shared Read Blocks": 0,
+            "Temp Read Blocks": 0,
+            "Temp Written Blocks": 0
+          },
+          "functionScans": [
+            {
+              "Node Type": "Function Scan",
+              "Alias": "op",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 30,
+              "Actual Rows": 1
+            },
+            {
+              "Node Type": "Function Scan",
+              "Alias": "f",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 30,
+              "Actual Rows": 100
+            }
+          ],
+          "memoize": [],
+          "joinFilters": [],
+          "sorts": []
+        },
+        {
+          "kind": "content",
+          "executionMs": 129.881,
+          "planningMs": 1.661,
+          "rootBuffers": {
+            "Shared Hit Blocks": 582,
+            "Shared Read Blocks": 0,
+            "Temp Read Blocks": 0,
+            "Temp Written Blocks": 0
+          },
+          "functionScans": [
+            {
+              "Node Type": "Function Scan",
+              "Alias": "op",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 30,
+              "Actual Rows": 1
+            },
+            {
+              "Node Type": "Function Scan",
+              "Alias": "f",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 30,
+              "Actual Rows": 100
+            }
+          ],
+          "memoize": [],
+          "joinFilters": [],
+          "sorts": [
+            {
+              "Actual Rows": 20,
+              "Sort Key": [
+                "((i.started_at)::character varying) DESC",
+                "((i.id)::character varying) DESC"
+              ],
+              "Sort Method": "top-N heapsort",
+              "Sort Space Used": 30,
+              "Sort Space Type": "Memory"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "central-list-scale",
+      "input": {
+        "page": 1,
+        "objects": 30,
+        "runningOnly": true,
+        "formsPerObject": 100,
+        "size": 20,
+        "plansAreSeparateReplays": true
+      },
+      "requestElapsedMs": 229.6616,
+      "logicalSelects": 2,
+      "countSelects": 1,
+      "plans": [
+        {
+          "kind": "count",
+          "executionMs": 102.049,
+          "planningMs": 2.648,
+          "rootBuffers": {
+            "Shared Hit Blocks": 642,
+            "Shared Read Blocks": 0,
+            "Temp Read Blocks": 0,
+            "Temp Written Blocks": 0
+          },
+          "functionScans": [
+            {
+              "Node Type": "Function Scan",
+              "Alias": "op",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 30,
+              "Actual Rows": 1
+            },
+            {
+              "Node Type": "Function Scan",
+              "Alias": "f",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 30,
+              "Actual Rows": 100
+            },
+            {
+              "Node Type": "Function Scan",
+              "Alias": "n",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 3000,
+              "Actual Rows": 1,
+              "Rows Removed by Filter": 1
+            }
+          ],
+          "memoize": [],
+          "joinFilters": [
+            {
+              "Join Filter": "(((u.id)::character varying)::text = (i.initiator_id)::text)",
+              "Rows Removed by Join Filter": 2,
+              "Actual Loops": 1,
+              "Actual Rows": 1
+            }
+          ],
+          "sorts": []
+        },
+        {
+          "kind": "content",
+          "executionMs": 120.097,
+          "planningMs": 2.541,
+          "rootBuffers": {
+            "Shared Hit Blocks": 642,
+            "Shared Read Blocks": 0,
+            "Temp Read Blocks": 0,
+            "Temp Written Blocks": 0
+          },
+          "functionScans": [
+            {
+              "Node Type": "Function Scan",
+              "Alias": "op",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 30,
+              "Actual Rows": 1
+            },
+            {
+              "Node Type": "Function Scan",
+              "Alias": "f",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 30,
+              "Actual Rows": 100
+            },
+            {
+              "Node Type": "Function Scan",
+              "Alias": "n",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 3000,
+              "Actual Rows": 1,
+              "Rows Removed by Filter": 1
+            }
+          ],
+          "memoize": [],
+          "joinFilters": [
+            {
+              "Join Filter": "(((u.id)::character varying)::text = (i.initiator_id)::text)",
+              "Rows Removed by Join Filter": 2,
+              "Actual Loops": 1,
+              "Actual Rows": 1
+            }
+          ],
+          "sorts": [
+            {
+              "Actual Rows": 20,
+              "Sort Key": [
+                "((i.started_at)::character varying) DESC",
+                "((i.id)::character varying) DESC"
+              ],
+              "Sort Method": "top-N heapsort",
+              "Sort Space Used": 30,
+              "Sort Space Type": "Memory"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "central-list-last-page",
+      "input": {
+        "size": 20,
+        "page": 151,
+        "formsPerObject": 100,
+        "objects": 30,
+        "plansAreSeparateReplays": true
+      },
+      "requestElapsedMs": 180.802409,
+      "logicalSelects": 2,
+      "countSelects": 1,
+      "plans": [
+        {
+          "kind": "count",
+          "executionMs": 89.881,
+          "planningMs": 1.677,
+          "rootBuffers": {
+            "Shared Hit Blocks": 582,
+            "Shared Read Blocks": 0,
+            "Temp Read Blocks": 0,
+            "Temp Written Blocks": 0
+          },
+          "functionScans": [
+            {
+              "Node Type": "Function Scan",
+              "Alias": "op",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 30,
+              "Actual Rows": 1
+            },
+            {
+              "Node Type": "Function Scan",
+              "Alias": "f",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 30,
+              "Actual Rows": 100
+            }
+          ],
+          "memoize": [],
+          "joinFilters": [
+            {
+              "Join Filter": "(((u.id)::character varying)::text = (i.initiator_id)::text)",
+              "Rows Removed by Join Filter": 2,
+              "Actual Loops": 1,
+              "Actual Rows": 1
+            }
+          ],
+          "sorts": []
+        },
+        {
+          "kind": "content",
+          "executionMs": 96.797,
+          "planningMs": 2.159,
+          "rootBuffers": {
+            "Shared Hit Blocks": 582,
+            "Shared Read Blocks": 0,
+            "Temp Read Blocks": 0,
+            "Temp Written Blocks": 0
+          },
+          "functionScans": [
+            {
+              "Node Type": "Function Scan",
+              "Alias": "op",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 30,
+              "Actual Rows": 1
+            },
+            {
+              "Node Type": "Function Scan",
+              "Alias": "f",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 30,
+              "Actual Rows": 100
+            }
+          ],
+          "memoize": [],
+          "joinFilters": [
+            {
+              "Join Filter": "(((u.id)::character varying)::text = (i.initiator_id)::text)",
+              "Rows Removed by Join Filter": 2,
+              "Actual Loops": 1,
+              "Actual Rows": 1
+            }
+          ],
+          "sorts": [
+            {
+              "Actual Rows": 3001,
+              "Sort Key": [
+                "((i.started_at)::character varying) DESC",
+                "((i.id)::character varying) DESC"
+              ],
+              "Sort Method": "quicksort",
+              "Sort Space Used": 495,
+              "Sort Space Type": "Memory"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "central-list-narrow-unrelated-json",
+      "input": {
+        "keyword": "form-2000000",
+        "malformedColumn": "state_json",
+        "plansAreSeparateReplays": true
+      },
+      "requestElapsedMs": 10.649004,
+      "logicalSelects": 2,
+      "countSelects": 1,
+      "plans": [
+        {
+          "kind": "count",
+          "executionMs": 0.499,
+          "planningMs": 1.602,
+          "rootBuffers": {
+            "Shared Hit Blocks": 13,
+            "Shared Read Blocks": 0,
+            "Temp Read Blocks": 0,
+            "Temp Written Blocks": 0
+          },
+          "functionScans": [
+            {
+              "Node Type": "Function Scan",
+              "Alias": "op",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 1,
+              "Actual Rows": 1
+            },
+            {
+              "Node Type": "Function Scan",
+              "Alias": "f",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 1,
+              "Actual Rows": 1
+            }
+          ],
+          "memoize": [],
+          "joinFilters": [],
+          "sorts": []
+        },
+        {
+          "kind": "content",
+          "executionMs": 0.45,
+          "planningMs": 1.716,
+          "rootBuffers": {
+            "Shared Hit Blocks": 13,
+            "Shared Read Blocks": 0,
+            "Temp Read Blocks": 0,
+            "Temp Written Blocks": 0
+          },
+          "functionScans": [
+            {
+              "Node Type": "Function Scan",
+              "Alias": "op",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 1,
+              "Actual Rows": 1
+            },
+            {
+              "Node Type": "Function Scan",
+              "Alias": "f",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 1,
+              "Actual Rows": 1
+            }
+          ],
+          "memoize": [],
+          "joinFilters": [],
+          "sorts": [
+            {
+              "Actual Rows": 1,
+              "Sort Key": [
+                "sources.\"startTime\" DESC",
+                "sources.id DESC"
+              ],
+              "Sort Method": "quicksort",
+              "Sort Space Used": 25,
+              "Sort Space Type": "Memory"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "central-list-narrow-unrelated-json",
+      "input": {
+        "keyword": "READ-OBS-1",
+        "malformedColumn": "state_json",
+        "plansAreSeparateReplays": true
+      },
+      "requestElapsedMs": 8.010837,
+      "logicalSelects": 2,
+      "countSelects": 1,
+      "plans": [
+        {
+          "kind": "count",
+          "executionMs": 0.297,
+          "planningMs": 1.63,
+          "rootBuffers": {
+            "Shared Hit Blocks": 11,
+            "Shared Read Blocks": 0,
+            "Temp Read Blocks": 0,
+            "Temp Written Blocks": 0
+          },
+          "functionScans": [
+            {
+              "Node Type": "Function Scan",
+              "Alias": "op",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 0,
+              "Actual Rows": 0
+            },
+            {
+              "Node Type": "Function Scan",
+              "Alias": "f",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 0,
+              "Actual Rows": 0
+            }
+          ],
+          "memoize": [],
+          "joinFilters": [],
+          "sorts": []
+        },
+        {
+          "kind": "content",
+          "executionMs": 0.466,
+          "planningMs": 1.849,
+          "rootBuffers": {
+            "Shared Hit Blocks": 11,
+            "Shared Read Blocks": 0,
+            "Temp Read Blocks": 0,
+            "Temp Written Blocks": 0
+          },
+          "functionScans": [
+            {
+              "Node Type": "Function Scan",
+              "Alias": "op",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 0,
+              "Actual Rows": 0
+            },
+            {
+              "Node Type": "Function Scan",
+              "Alias": "f",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 0,
+              "Actual Rows": 0
+            }
+          ],
+          "memoize": [],
+          "joinFilters": [],
+          "sorts": [
+            {
+              "Actual Rows": 1,
+              "Sort Key": [
+                "sources.\"startTime\" DESC",
+                "sources.id DESC"
+              ],
+              "Sort Method": "quicksort",
+              "Sort Space Used": 25,
+              "Sort Space Type": "Memory"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "central-list-narrow-unrelated-json",
+      "input": {
+        "keyword": "no-matching-business",
+        "malformedColumn": "state_json",
+        "plansAreSeparateReplays": true
+      },
+      "requestElapsedMs": 8.847554,
+      "logicalSelects": 2,
+      "countSelects": 1,
+      "plans": [
+        {
+          "kind": "count",
+          "executionMs": 0.328,
+          "planningMs": 2.087,
+          "rootBuffers": {
+            "Shared Hit Blocks": 11,
+            "Shared Read Blocks": 0,
+            "Temp Read Blocks": 0,
+            "Temp Written Blocks": 0
+          },
+          "functionScans": [
+            {
+              "Node Type": "Function Scan",
+              "Alias": "op",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 0,
+              "Actual Rows": 0
+            },
+            {
+              "Node Type": "Function Scan",
+              "Alias": "f",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 0,
+              "Actual Rows": 0
+            }
+          ],
+          "memoize": [],
+          "joinFilters": [],
+          "sorts": []
+        },
+        {
+          "kind": "content",
+          "executionMs": 0.287,
+          "planningMs": 2.093,
+          "rootBuffers": {
+            "Shared Hit Blocks": 11,
+            "Shared Read Blocks": 0,
+            "Temp Read Blocks": 0,
+            "Temp Written Blocks": 0
+          },
+          "functionScans": [
+            {
+              "Node Type": "Function Scan",
+              "Alias": "op",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 0,
+              "Actual Rows": 0
+            },
+            {
+              "Node Type": "Function Scan",
+              "Alias": "f",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 0,
+              "Actual Rows": 0
+            }
+          ],
+          "memoize": [],
+          "joinFilters": [],
+          "sorts": [
+            {
+              "Actual Rows": 0,
+              "Sort Key": [
+                "sources.\"startTime\" DESC",
+                "sources.id DESC"
+              ],
+              "Sort Method": "quicksort",
+              "Sort Space Used": 25,
+              "Sort Space Type": "Memory"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "central-list-narrow-unrelated-json",
+      "input": {
+        "keyword": "form-2000000",
+        "malformedColumn": "snapshot_json",
+        "plansAreSeparateReplays": true
+      },
+      "requestElapsedMs": 10.683352,
+      "logicalSelects": 2,
+      "countSelects": 1,
+      "plans": [
+        {
+          "kind": "count",
+          "executionMs": 0.516,
+          "planningMs": 2.152,
+          "rootBuffers": {
+            "Shared Hit Blocks": 13,
+            "Shared Read Blocks": 0,
+            "Temp Read Blocks": 0,
+            "Temp Written Blocks": 0
+          },
+          "functionScans": [
+            {
+              "Node Type": "Function Scan",
+              "Alias": "op",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 1,
+              "Actual Rows": 1
+            },
+            {
+              "Node Type": "Function Scan",
+              "Alias": "f",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 1,
+              "Actual Rows": 1
+            }
+          ],
+          "memoize": [],
+          "joinFilters": [],
+          "sorts": []
+        },
+        {
+          "kind": "content",
+          "executionMs": 0.411,
+          "planningMs": 1.799,
+          "rootBuffers": {
+            "Shared Hit Blocks": 13,
+            "Shared Read Blocks": 0,
+            "Temp Read Blocks": 0,
+            "Temp Written Blocks": 0
+          },
+          "functionScans": [
+            {
+              "Node Type": "Function Scan",
+              "Alias": "op",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 1,
+              "Actual Rows": 1
+            },
+            {
+              "Node Type": "Function Scan",
+              "Alias": "f",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 1,
+              "Actual Rows": 1
+            }
+          ],
+          "memoize": [],
+          "joinFilters": [],
+          "sorts": [
+            {
+              "Actual Rows": 1,
+              "Sort Key": [
+                "sources.\"startTime\" DESC",
+                "sources.id DESC"
+              ],
+              "Sort Method": "quicksort",
+              "Sort Space Used": 25,
+              "Sort Space Type": "Memory"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "central-list-narrow-unrelated-json",
+      "input": {
+        "keyword": "READ-OBS-1",
+        "malformedColumn": "snapshot_json",
+        "plansAreSeparateReplays": true
+      },
+      "requestElapsedMs": 8.345521,
+      "logicalSelects": 2,
+      "countSelects": 1,
+      "plans": [
+        {
+          "kind": "count",
+          "executionMs": 0.294,
+          "planningMs": 1.749,
+          "rootBuffers": {
+            "Shared Hit Blocks": 11,
+            "Shared Read Blocks": 0,
+            "Temp Read Blocks": 0,
+            "Temp Written Blocks": 0
+          },
+          "functionScans": [
+            {
+              "Node Type": "Function Scan",
+              "Alias": "op",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 0,
+              "Actual Rows": 0
+            },
+            {
+              "Node Type": "Function Scan",
+              "Alias": "f",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 0,
+              "Actual Rows": 0
+            }
+          ],
+          "memoize": [],
+          "joinFilters": [],
+          "sorts": []
+        },
+        {
+          "kind": "content",
+          "executionMs": 0.322,
+          "planningMs": 1.66,
+          "rootBuffers": {
+            "Shared Hit Blocks": 11,
+            "Shared Read Blocks": 0,
+            "Temp Read Blocks": 0,
+            "Temp Written Blocks": 0
+          },
+          "functionScans": [
+            {
+              "Node Type": "Function Scan",
+              "Alias": "op",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 0,
+              "Actual Rows": 0
+            },
+            {
+              "Node Type": "Function Scan",
+              "Alias": "f",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 0,
+              "Actual Rows": 0
+            }
+          ],
+          "memoize": [],
+          "joinFilters": [],
+          "sorts": [
+            {
+              "Actual Rows": 1,
+              "Sort Key": [
+                "sources.\"startTime\" DESC",
+                "sources.id DESC"
+              ],
+              "Sort Method": "quicksort",
+              "Sort Space Used": 25,
+              "Sort Space Type": "Memory"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "central-list-narrow-unrelated-json",
+      "input": {
+        "keyword": "no-matching-business",
+        "malformedColumn": "snapshot_json",
+        "plansAreSeparateReplays": true
+      },
+      "requestElapsedMs": 6.615589,
+      "logicalSelects": 2,
+      "countSelects": 1,
+      "plans": [
+        {
+          "kind": "count",
+          "executionMs": 0.304,
+          "planningMs": 1.743,
+          "rootBuffers": {
+            "Shared Hit Blocks": 11,
+            "Shared Read Blocks": 0,
+            "Temp Read Blocks": 0,
+            "Temp Written Blocks": 0
+          },
+          "functionScans": [
+            {
+              "Node Type": "Function Scan",
+              "Alias": "op",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 0,
+              "Actual Rows": 0
+            },
+            {
+              "Node Type": "Function Scan",
+              "Alias": "f",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 0,
+              "Actual Rows": 0
+            }
+          ],
+          "memoize": [],
+          "joinFilters": [],
+          "sorts": []
+        },
+        {
+          "kind": "content",
+          "executionMs": 0.378,
+          "planningMs": 1.666,
+          "rootBuffers": {
+            "Shared Hit Blocks": 11,
+            "Shared Read Blocks": 0,
+            "Temp Read Blocks": 0,
+            "Temp Written Blocks": 0
+          },
+          "functionScans": [
+            {
+              "Node Type": "Function Scan",
+              "Alias": "op",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 0,
+              "Actual Rows": 0
+            },
+            {
+              "Node Type": "Function Scan",
+              "Alias": "f",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 0,
+              "Actual Rows": 0
+            }
+          ],
+          "memoize": [],
+          "joinFilters": [],
+          "sorts": [
+            {
+              "Actual Rows": 0,
+              "Sort Key": [
+                "sources.\"startTime\" DESC",
+                "sources.id DESC"
+              ],
+              "Sort Method": "quicksort",
+              "Sort Space Used": 25,
+              "Sort Space Type": "Memory"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "central-list-duplicate-frozen-row",
+      "input": {
+        "duplicateSnapshotEntries": 2,
+        "plansAreSeparateReplays": true
+      },
+      "requestElapsedMs": 11.581085,
+      "logicalSelects": 2,
+      "countSelects": 1,
+      "plans": [
+        {
+          "kind": "count",
+          "executionMs": 0.463,
+          "planningMs": 1.971,
+          "rootBuffers": {
+            "Shared Hit Blocks": 12,
+            "Shared Read Blocks": 0,
+            "Temp Read Blocks": 0,
+            "Temp Written Blocks": 0
+          },
+          "functionScans": [
+            {
+              "Node Type": "Function Scan",
+              "Alias": "op",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 1,
+              "Actual Rows": 1
+            },
+            {
+              "Node Type": "Function Scan",
+              "Alias": "f",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 1,
+              "Actual Rows": 2
+            }
+          ],
+          "memoize": [],
+          "joinFilters": [],
+          "sorts": []
+        },
+        {
+          "kind": "content",
+          "executionMs": 0.639,
+          "planningMs": 2.499,
+          "rootBuffers": {
+            "Shared Hit Blocks": 12,
+            "Shared Read Blocks": 0,
+            "Temp Read Blocks": 0,
+            "Temp Written Blocks": 0
+          },
+          "functionScans": [
+            {
+              "Node Type": "Function Scan",
+              "Alias": "op",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 1,
+              "Actual Rows": 1
+            },
+            {
+              "Node Type": "Function Scan",
+              "Alias": "f",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 1,
+              "Actual Rows": 2
+            }
+          ],
+          "memoize": [],
+          "joinFilters": [],
+          "sorts": [
+            {
+              "Actual Rows": 3,
+              "Sort Key": [
+                "((i.started_at)::character varying) DESC",
+                "((i.id)::character varying) DESC"
+              ],
+              "Sort Method": "quicksort",
+              "Sort Space Used": 25,
+              "Sort Space Type": "Memory"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "central-list-running-guards",
+      "input": {
+        "objectStatus": "IN_PROGRESS",
+        "orderStatus": "CREATED",
+        "expectedForms": 1,
+        "source": "ROUTE",
+        "plansAreSeparateReplays": true
+      },
+      "requestElapsedMs": 13.226059,
+      "logicalSelects": 2,
+      "countSelects": 1,
+      "plans": [
+        {
+          "kind": "count",
+          "executionMs": 0.631,
+          "planningMs": 1.902,
+          "rootBuffers": {
+            "Shared Hit Blocks": 14,
+            "Shared Read Blocks": 0,
+            "Temp Read Blocks": 0,
+            "Temp Written Blocks": 0
+          },
+          "functionScans": [
+            {
+              "Node Type": "Function Scan",
+              "Alias": "op",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 1,
+              "Actual Rows": 1
+            },
+            {
+              "Node Type": "Function Scan",
+              "Alias": "f",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 1,
+              "Actual Rows": 1
+            },
+            {
+              "Node Type": "Function Scan",
+              "Alias": "n",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 1,
+              "Actual Rows": 1,
+              "Rows Removed by Filter": 1
+            }
+          ],
+          "memoize": [],
+          "joinFilters": [],
+          "sorts": []
+        },
+        {
+          "kind": "content",
+          "executionMs": 0.534,
+          "planningMs": 2.046,
+          "rootBuffers": {
+            "Shared Hit Blocks": 14,
+            "Shared Read Blocks": 0,
+            "Temp Read Blocks": 0,
+            "Temp Written Blocks": 0
+          },
+          "functionScans": [
+            {
+              "Node Type": "Function Scan",
+              "Alias": "op",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 1,
+              "Actual Rows": 1
+            },
+            {
+              "Node Type": "Function Scan",
+              "Alias": "f",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 1,
+              "Actual Rows": 1
+            },
+            {
+              "Node Type": "Function Scan",
+              "Alias": "n",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 1,
+              "Actual Rows": 1,
+              "Rows Removed by Filter": 1
+            }
+          ],
+          "memoize": [],
+          "joinFilters": [],
+          "sorts": [
+            {
+              "Actual Rows": 2,
+              "Sort Key": [
+                "((i.started_at)::character varying) DESC",
+                "((i.id)::character varying) DESC"
+              ],
+              "Sort Method": "quicksort",
+              "Sort Space Used": 25,
+              "Sort Space Type": "Memory"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "central-list-running-guards",
+      "input": {
+        "objectStatus": "COMPLETED",
+        "orderStatus": "COMPLETED",
+        "expectedForms": 0,
+        "source": "ROUTE",
+        "plansAreSeparateReplays": true
+      },
+      "requestElapsedMs": 11.260377,
+      "logicalSelects": 2,
+      "countSelects": 1,
+      "plans": [
+        {
+          "kind": "count",
+          "executionMs": 0.548,
+          "planningMs": 2.032,
+          "rootBuffers": {
+            "Shared Hit Blocks": 14,
+            "Shared Read Blocks": 0,
+            "Temp Read Blocks": 0,
+            "Temp Written Blocks": 0
+          },
+          "functionScans": [
+            {
+              "Node Type": "Function Scan",
+              "Alias": "op",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 1,
+              "Actual Rows": 1
+            },
+            {
+              "Node Type": "Function Scan",
+              "Alias": "f",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 1,
+              "Actual Rows": 1
+            },
+            {
+              "Node Type": "Function Scan",
+              "Alias": "n",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 1,
+              "Actual Rows": 1,
+              "Rows Removed by Filter": 1
+            }
+          ],
+          "memoize": [],
+          "joinFilters": [
+            {
+              "Join Filter": "((((c.f ->> 'sourceType'::text) = 'CUSTOM'::text) AND ((e.state_json #>> (ARRAY['operations'::character varying, r_1.operation_id, 'status'::character varying])::text[]) = ANY ('{IN_PROGRESS,COMPLETED}'::text[]))) OR ((COALESCE((c.f ->> 'sourceType'::text), ''::text) <> 'CUSTOM'::text) AND ((r_1.object_status)::text = 'IN_PROGRESS'::text) AND ((r_1.work_order_status)::text = ANY ('{CREATED,IN_PROCESS}'::text[])) AND ((e.state_json #>> (ARRAY['operations'::character varying, r_1.operation_id, 'status'::character varying])::text[]) = 'IN_PROGRESS'::text)))",
+              "Rows Removed by Join Filter": 1,
+              "Actual Loops": 1,
+              "Actual Rows": 0
+            }
+          ],
+          "sorts": []
+        },
+        {
+          "kind": "content",
+          "executionMs": 0.495,
+          "planningMs": 2.266,
+          "rootBuffers": {
+            "Shared Hit Blocks": 14,
+            "Shared Read Blocks": 0,
+            "Temp Read Blocks": 0,
+            "Temp Written Blocks": 0
+          },
+          "functionScans": [
+            {
+              "Node Type": "Function Scan",
+              "Alias": "op",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 1,
+              "Actual Rows": 1
+            },
+            {
+              "Node Type": "Function Scan",
+              "Alias": "f",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 1,
+              "Actual Rows": 1
+            },
+            {
+              "Node Type": "Function Scan",
+              "Alias": "n",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 1,
+              "Actual Rows": 1,
+              "Rows Removed by Filter": 1
+            }
+          ],
+          "memoize": [],
+          "joinFilters": [
+            {
+              "Join Filter": "((((c.f ->> 'sourceType'::text) = 'CUSTOM'::text) AND ((e.state_json #>> (ARRAY['operations'::character varying, r_1.operation_id, 'status'::character varying])::text[]) = ANY ('{IN_PROGRESS,COMPLETED}'::text[]))) OR ((COALESCE((c.f ->> 'sourceType'::text), ''::text) <> 'CUSTOM'::text) AND ((r_1.object_status)::text = 'IN_PROGRESS'::text) AND ((r_1.work_order_status)::text = ANY ('{CREATED,IN_PROCESS}'::text[])) AND ((e.state_json #>> (ARRAY['operations'::character varying, r_1.operation_id, 'status'::character varying])::text[]) = 'IN_PROGRESS'::text)))",
+              "Rows Removed by Join Filter": 1,
+              "Actual Loops": 1,
+              "Actual Rows": 0
+            }
+          ],
+          "sorts": [
+            {
+              "Actual Rows": 1,
+              "Sort Key": [
+                "((i.started_at)::character varying) DESC",
+                "((i.id)::character varying) DESC"
+              ],
+              "Sort Method": "quicksort",
+              "Sort Space Used": 25,
+              "Sort Space Type": "Memory"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "central-list-running-guards",
+      "input": {
+        "objectStatus": "COMPLETED",
+        "orderStatus": "COMPLETED",
+        "expectedForms": 1,
+        "source": "CUSTOM",
+        "plansAreSeparateReplays": true
+      },
+      "requestElapsedMs": 12.303138,
+      "logicalSelects": 2,
+      "countSelects": 1,
+      "plans": [
+        {
+          "kind": "count",
+          "executionMs": 0.69,
+          "planningMs": 2.312,
+          "rootBuffers": {
+            "Shared Hit Blocks": 14,
+            "Shared Read Blocks": 0,
+            "Temp Read Blocks": 0,
+            "Temp Written Blocks": 0
+          },
+          "functionScans": [
+            {
+              "Node Type": "Function Scan",
+              "Alias": "op",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 1,
+              "Actual Rows": 1
+            },
+            {
+              "Node Type": "Function Scan",
+              "Alias": "f",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 1,
+              "Actual Rows": 1
+            },
+            {
+              "Node Type": "Function Scan",
+              "Alias": "n",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 1,
+              "Actual Rows": 1,
+              "Rows Removed by Filter": 1
+            }
+          ],
+          "memoize": [],
+          "joinFilters": [],
+          "sorts": []
+        },
+        {
+          "kind": "content",
+          "executionMs": 0.471,
+          "planningMs": 2.011,
+          "rootBuffers": {
+            "Shared Hit Blocks": 14,
+            "Shared Read Blocks": 0,
+            "Temp Read Blocks": 0,
+            "Temp Written Blocks": 0
+          },
+          "functionScans": [
+            {
+              "Node Type": "Function Scan",
+              "Alias": "op",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 1,
+              "Actual Rows": 1
+            },
+            {
+              "Node Type": "Function Scan",
+              "Alias": "f",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 1,
+              "Actual Rows": 1
+            },
+            {
+              "Node Type": "Function Scan",
+              "Alias": "n",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 1,
+              "Actual Rows": 1,
+              "Rows Removed by Filter": 1
+            }
+          ],
+          "memoize": [],
+          "joinFilters": [],
+          "sorts": [
+            {
+              "Actual Rows": 2,
+              "Sort Key": [
+                "((i.started_at)::character varying) DESC",
+                "((i.id)::character varying) DESC"
+              ],
+              "Sort Method": "quicksort",
+              "Sort Space Used": 25,
+              "Sort Space Type": "Memory"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "central-list-running-guards",
+      "input": {
+        "objectStatus": "CANCELLED",
+        "orderStatus": "CREATED",
+        "expectedForms": 0,
+        "source": "ROUTE",
+        "plansAreSeparateReplays": true
+      },
+      "requestElapsedMs": 11.729671,
+      "logicalSelects": 2,
+      "countSelects": 1,
+      "plans": [
+        {
+          "kind": "count",
+          "executionMs": 0.394,
+          "planningMs": 1.861,
+          "rootBuffers": {
+            "Shared Hit Blocks": 11,
+            "Shared Read Blocks": 0,
+            "Temp Read Blocks": 0,
+            "Temp Written Blocks": 0
+          },
+          "functionScans": [
+            {
+              "Node Type": "Function Scan",
+              "Alias": "op",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 0,
+              "Actual Rows": 0
+            },
+            {
+              "Node Type": "Function Scan",
+              "Alias": "f",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 0,
+              "Actual Rows": 0
+            },
+            {
+              "Node Type": "Function Scan",
+              "Alias": "n",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 0,
+              "Actual Rows": 0,
+              "Rows Removed by Filter": 0
+            }
+          ],
+          "memoize": [],
+          "joinFilters": [],
+          "sorts": []
+        },
+        {
+          "kind": "content",
+          "executionMs": 0.515,
+          "planningMs": 3.07,
+          "rootBuffers": {
+            "Shared Hit Blocks": 11,
+            "Shared Read Blocks": 0,
+            "Temp Read Blocks": 0,
+            "Temp Written Blocks": 0
+          },
+          "functionScans": [
+            {
+              "Node Type": "Function Scan",
+              "Alias": "op",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 0,
+              "Actual Rows": 0
+            },
+            {
+              "Node Type": "Function Scan",
+              "Alias": "f",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 0,
+              "Actual Rows": 0
+            },
+            {
+              "Node Type": "Function Scan",
+              "Alias": "n",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 0,
+              "Actual Rows": 0,
+              "Rows Removed by Filter": 0
+            }
+          ],
+          "memoize": [],
+          "joinFilters": [],
+          "sorts": [
+            {
+              "Actual Rows": 1,
+              "Sort Key": [
+                "((i.started_at)::character varying) DESC",
+                "((i.id)::character varying) DESC"
+              ],
+              "Sort Method": "quicksort",
+              "Sort Space Used": 25,
+              "Sort Space Type": "Memory"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "central-list-running-guards",
+      "input": {
+        "objectStatus": "IN_PROGRESS",
+        "orderStatus": "CANCELLED",
+        "expectedForms": 0,
+        "source": "ROUTE",
+        "plansAreSeparateReplays": true
+      },
+      "requestElapsedMs": 11.10537,
+      "logicalSelects": 2,
+      "countSelects": 1,
+      "plans": [
+        {
+          "kind": "count",
+          "executionMs": 0.303,
+          "planningMs": 2.061,
+          "rootBuffers": {
+            "Shared Hit Blocks": 12,
+            "Shared Read Blocks": 0,
+            "Temp Read Blocks": 0,
+            "Temp Written Blocks": 0
+          },
+          "functionScans": [
+            {
+              "Node Type": "Function Scan",
+              "Alias": "op",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 0,
+              "Actual Rows": 0
+            },
+            {
+              "Node Type": "Function Scan",
+              "Alias": "f",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 0,
+              "Actual Rows": 0
+            },
+            {
+              "Node Type": "Function Scan",
+              "Alias": "n",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 0,
+              "Actual Rows": 0,
+              "Rows Removed by Filter": 0
+            }
+          ],
+          "memoize": [],
+          "joinFilters": [],
+          "sorts": []
+        },
+        {
+          "kind": "content",
+          "executionMs": 0.642,
+          "planningMs": 1.858,
+          "rootBuffers": {
+            "Shared Hit Blocks": 12,
+            "Shared Read Blocks": 0,
+            "Temp Read Blocks": 0,
+            "Temp Written Blocks": 0
+          },
+          "functionScans": [
+            {
+              "Node Type": "Function Scan",
+              "Alias": "op",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 0,
+              "Actual Rows": 0
+            },
+            {
+              "Node Type": "Function Scan",
+              "Alias": "f",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 0,
+              "Actual Rows": 0
+            },
+            {
+              "Node Type": "Function Scan",
+              "Alias": "n",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 0,
+              "Actual Rows": 0,
+              "Rows Removed by Filter": 0
+            }
+          ],
+          "memoize": [],
+          "joinFilters": [],
+          "sorts": [
+            {
+              "Actual Rows": 1,
+              "Sort Key": [
+                "((i.started_at)::character varying) DESC",
+                "((i.id)::character varying) DESC"
+              ],
+              "Sort Method": "quicksort",
+              "Sort Space Used": 25,
+              "Sort Space Type": "Memory"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "central-list-no-progress-or-records",
+      "input": {
+        "unrelatedMalformedExecutions": 1,
+        "missingProgress": 1,
+        "plansAreSeparateReplays": true
+      },
+      "requestElapsedMs": 13.309142,
+      "logicalSelects": 2,
+      "countSelects": 1,
+      "plans": [
+        {
+          "kind": "count",
+          "executionMs": 0.326,
+          "planningMs": 2.183,
+          "rootBuffers": {
+            "Shared Hit Blocks": 13,
+            "Shared Read Blocks": 0,
+            "Temp Read Blocks": 0,
+            "Temp Written Blocks": 0
+          },
+          "functionScans": [
+            {
+              "Node Type": "Function Scan",
+              "Alias": "op",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 0,
+              "Actual Rows": 0
+            },
+            {
+              "Node Type": "Function Scan",
+              "Alias": "f",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 0,
+              "Actual Rows": 0
+            }
+          ],
+          "memoize": [],
+          "joinFilters": [],
+          "sorts": []
+        },
+        {
+          "kind": "content",
+          "executionMs": 0.518,
+          "planningMs": 1.863,
+          "rootBuffers": {
+            "Shared Hit Blocks": 13,
+            "Shared Read Blocks": 0,
+            "Temp Read Blocks": 0,
+            "Temp Written Blocks": 0
+          },
+          "functionScans": [
+            {
+              "Node Type": "Function Scan",
+              "Alias": "op",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 0,
+              "Actual Rows": 0
+            },
+            {
+              "Node Type": "Function Scan",
+              "Alias": "f",
+              "Function Name": "jsonb_array_elements",
+              "Actual Loops": 0,
+              "Actual Rows": 0
+            }
+          ],
+          "memoize": [],
+          "joinFilters": [],
+          "sorts": [
+            {
+              "Actual Rows": 1,
+              "Sort Key": [
+                "((i.started_at)::character varying) DESC",
+                "((i.id)::character varying) DESC"
+              ],
+              "Sort Method": "quicksort",
+              "Sort Space Used": 25,
+              "Sort Space Type": "Memory"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "central-list-invalid-input",
+      "input": {
+        "rejectedInputs": 4
+      },
+      "requestElapsedMs": 1.220637,
+      "logicalSelects": 0,
+      "countSelects": 0,
+      "plans": []
+    }
+  ],
+  "limits": [
+    "single disposable PG16 synthetic fixture, one measured request per scenario, no percentile/SLA claim",
+    "scale fixtures have ten text-field descriptors, one operation and two flow nodes; direct persistence does not test creation/START",
+    "EXPLAIN ANALYZE executes separate warm replays, not included in logical request counts",
+    "not all network SQL, no full multi-tenant or production concurrency matrix",
+    "only list-path query-local snapshot reuse; no index, API, knowledge or UI changes; OS memory samples reported separately"
+  ]
+}

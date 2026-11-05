@@ -492,6 +492,114 @@ class WorkflowReadObservationPostgresTest {
         record("central-list-invalid-input", Map.of("rejectedInputs", 4), read);
     }
 
+    @Test void centralListKeepsOperationCopyAndExecutionSnapshotIdentity() throws Exception {
+        seedCentralForms(1, 1);
+        jdbc.update("""
+                UPDATE production_execution SET
+                  snapshot_json=jsonb_set(snapshot_json::jsonb,'{operations}',(snapshot_json::jsonb->'operations')||
+                    '[{"id":"other-op","forms":[{"id":"f-0","sourceType":"CUSTOM","flow":{"nodes":[]}}]}]'::jsonb)::text,
+                  state_json=jsonb_set(jsonb_set(state_json::jsonb,'{operations,op,forms,second-copy}',
+                    '{"status":"COMPLETED","active":[]}'::jsonb),'{operations,other-op}',
+                    '{"status":"IN_PROGRESS","forms":{"f-0":{"status":"ACTIVE","active":["review"]}}}'::jsonb)::text
+                """);
+        jdbc.update("UPDATE form_instance_record SET status='APPROVED',source_type='CUSTOM',snapshot_json='{}' WHERE id=2000000");
+        jdbc.update("""
+                INSERT INTO form_instance_record(id,tenant_id,instance_no,object_id,operation_id,form_id,copy_id,template_id,version_id,
+                  snapshot_json,values_json,status,created_at,updated_at,template_name,created_by_id,source_type)
+                SELECT 2000001,'default','SECOND-COPY',object_id,'op','f-0','second-copy',template_id,version_id,
+                  '{}','{}','IN_REVIEW',created_at,updated_at,'第二份','41','ROUTE' FROM form_instance_record WHERE id=2000000
+                """);
+        jdbc.update("""
+                INSERT INTO form_instance_record(id,tenant_id,instance_no,object_id,operation_id,form_id,copy_id,template_id,version_id,
+                  snapshot_json,values_json,status,created_at,updated_at,template_name,created_by_id,source_type)
+                SELECT 2000002,'default','OTHER-OP',object_id,'other-op','f-0','f-0',template_id,version_id,
+                  '{}','{}','IN_REVIEW',created_at,updated_at,'另一作业','41','ROUTE' FROM form_instance_record WHERE id=2000000
+                """);
+        var logs = capture(() -> operations.list(1, 20, "", "", false));
+        assertThat(logs.value.getTotalElements()).isEqualTo(3);
+        assertThat(logs.value.getContent()).extracting(row -> row.get("id")).containsExactly("900100", "form-2000001", "form-2000000");
+        recordCentral("central-list-operation-copy", Map.of("runningOnly", false), logs, true);
+        var active = capture(() -> operations.list(1, 20, "", "", true));
+        assertThat(active.value.getContent()).extracting(row -> row.get("id")).containsExactly("900100", "form-2000000");
+        recordCentral("central-list-operation-copy", Map.of("runningOnly", true), active, true);
+        var completed = capture(() -> operations.list(1, 20, "", "COMPLETED", false));
+        assertThat(completed.value.getContent()).extracting(row -> row.get("id")).containsExactly("form-2000001");
+        recordCentral("central-list-operation-copy", Map.of("status", "COMPLETED"), completed, false);
+    }
+
+    @Test void centralListPreservesDuplicateFrozenFormRows() throws Exception {
+        seedCentralForms(1, 1);
+        jdbc.update("UPDATE production_execution SET snapshot_json=jsonb_set(snapshot_json::jsonb,'{operations,0,forms}',(snapshot_json::jsonb#>'{operations,0,forms}')||(snapshot_json::jsonb#>'{operations,0,forms}'))::text");
+        var read = capture(() -> operations.list(1, 20, "", "", false));
+        assertThat(read.value.getTotalElements()).isEqualTo(3);
+        assertThat(read.value.getContent()).extracting(row -> row.get("id")).containsExactly("900100", "form-2000000", "form-2000000");
+        recordCentral("central-list-duplicate-frozen-row", Map.of("duplicateSnapshotEntries", 2), read, true);
+    }
+
+    @ParameterizedTest @ValueSource(strings = {"state_json", "snapshot_json"})
+    void centralListNarrowSearchSkipsUnrelatedMalformedExecutions(String column) throws Exception {
+        seedCentralForms(2, 1);
+        String malformed = column.equals("state_json") ? "not-json" : "{\"operations\":\"not-an-array\"}";
+        jdbc.update("UPDATE production_execution SET " + column + "=? WHERE object_id=910110", malformed);
+        for (String keyword : List.of("form-2000000", "READ-OBS-1", "no-matching-business")) {
+            var read = capture(() -> operations.list(1, 20, keyword, "", false));
+            assertThat(read.value.getTotalElements()).isEqualTo(keyword.equals("no-matching-business") ? 0 : 1);
+            if (keyword.equals("form-2000000")) assertThat(read.value.getContent().getFirst()).containsEntry("id", "form-2000000");
+            recordCentral("central-list-narrow-unrelated-json", Map.of("malformedColumn", column, "keyword", keyword), read, true);
+        }
+    }
+
+    @Test void centralListDoesNotParseSnapshotWithoutProgressOrRecords() throws Exception {
+        seedCentralForms(2, 1);
+        jdbc.update("DELETE FROM form_instance_record WHERE object_id=910110");
+        jdbc.update("UPDATE production_execution SET state_json='not-json',snapshot_json='{\"operations\":\"not-an-array\"}' WHERE object_id=910110");
+        jdbc.update("UPDATE production_execution SET state_json='{\"operations\":{}}',snapshot_json='{\"operations\":\"not-an-array\"}' WHERE object_id=910109");
+        var read = capture(() -> operations.list(1, 20, "", "", false));
+        assertThat(read.value.getContent()).extracting(row -> row.get("id")).containsExactly("900100");
+        recordCentral("central-list-no-progress-or-records", Map.of("unrelatedMalformedExecutions", 1, "missingProgress", 1), read, true);
+    }
+
+    @ParameterizedTest @CsvSource({"ROUTE,IN_PROGRESS,CREATED,1", "ROUTE,COMPLETED,COMPLETED,0",
+            "CUSTOM,COMPLETED,COMPLETED,1", "ROUTE,CANCELLED,CREATED,0", "ROUTE,IN_PROGRESS,CANCELLED,0"})
+    void centralInterventionKeepsObjectOrderAndFrozenSourceGuards(String source, String objectStatus, String orderStatus, int forms) throws Exception {
+        seedCentralForms(1, 1);
+        jdbc.update("UPDATE production_object SET status=?", objectStatus);
+        jdbc.update("UPDATE work_order SET status=?", orderStatus);
+        jdbc.update("UPDATE production_execution SET snapshot_json=jsonb_set(snapshot_json::jsonb,'{operations,0,forms,0,sourceType}',to_jsonb(?::text))::text", source);
+        var read = capture(() -> operations.list(1, 20, "", "", true));
+        assertThat(read.value.getTotalElements()).isEqualTo(1 + forms);
+        recordCentral("central-list-running-guards", Map.of("source", source, "objectStatus", objectStatus,
+                "orderStatus", orderStatus, "expectedForms", forms), read, true);
+    }
+
+    @ParameterizedTest @CsvSource({"NOT_STARTED,1", "DRAFT,1", "PENDING_REVIEW,0", "FORMALIZED,0"})
+    void centralInterventionKeepsDhrSummaryLocks(String summary, int forms) throws Exception {
+        seedCentralForms(1, 1);
+        jdbc.update("""
+                INSERT INTO dhr_instance(id,tenant_id,dhr_no,production_object_id,object_no,object_type,work_order_id,work_order_no,
+                  product_id,process_version_id,route_version_id,dhr_template_id,dhr_template_version_id,context_snapshot,directory_snapshot,
+                  status,summary_status,created_at,updated_at)
+                VALUES(930000,'default','CENTRAL-DHR',910109,'READ-BATCH','BATCH',910108,'READ-WO',910101,910107,910103,910104,910105,
+                  '{}','{"directories":[]}','IN_PROGRESS',?,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP)
+                """, summary);
+        var read = capture(() -> operations.list(1, 20, "", "", true));
+        assertThat(read.value.getTotalElements()).isEqualTo(1 + forms);
+        recordCentral("central-list-dhr-summary-lock", Map.of("summaryStatus", summary, "expectedForms", forms), read, true);
+    }
+
+    @ParameterizedTest @ValueSource(strings = {"64kB", "4MB"})
+    @org.springframework.transaction.annotation.Transactional
+    void centralListKeepsResultsWithSmallAndDefaultWorkMemory(String memory) throws Exception {
+        seedCentralForms(30, 100);
+        jdbc.execute("SET LOCAL work_mem='" + memory + "'");
+        assertThat(jdbc.queryForObject("SHOW work_mem", String.class)).isEqualTo(memory);
+        var read = capture(() -> operations.list(1, 20, "", "", false));
+        assertThat(read.value.getTotalElements()).isEqualTo(3001);
+        assertThat(read.value.getContent()).extracting(row -> row.get("id").toString())
+                .containsExactlyElementsOf(centralIds(30, 100).subList(0, 20));
+        recordCentral("central-list-work-memory", Map.of("workMem", memory, "objects", 30, "formsPerObject", 100), read, true);
+    }
+
     private void seedCentralForms(int objects, int formsPerObject) throws Exception {
         seedForm(1, "blank");
         jdbc.update("DELETE FROM form_instance_record WHERE object_id=910109");
@@ -541,14 +649,29 @@ class WorkflowReadObservationPostgresTest {
         for (var query : read.boundJdbc) {
             var statement = new java.util.LinkedHashMap<String, Object>(); statement.put("sql", query.sql());
             statement.put("parameters", Arrays.asList(query.args()));
-            if (explain) statement.put("plan", mapper.readTree(jdbc.queryForObject(
-                    "EXPLAIN (ANALYZE,BUFFERS,FORMAT JSON) " + query.sql(), String.class, query.args())));
+            if (explain) {
+                var plan = mapper.readTree(jdbc.queryForObject(
+                        "EXPLAIN (ANALYZE,BUFFERS,FORMAT JSON) " + query.sql(), String.class, query.args()));
+                statement.put("plan", plan);
+                if (input.containsKey("formsPerObject")) {
+                    long budget = ((Number) input.get("objects")).longValue() * ((Number) input.get("formsPerObject")).longValue();
+                    assertThat(expandedFormCandidates(plan.path(0).path("Plan")))
+                            .as("form catalog expansion must grow with frozen entries, not their square").isLessThanOrEqualTo(budget);
+                }
+            }
             statements.add(statement);
         }
         data.put("statements", statements); data.put("plansAreSeparateReplays", explain);
         record(kind, data, read);
         assertThat(read.jdbcSql.stream().filter(sql -> sql.startsWith("SELECT count(*)"))).hasSize(1);
         assertThat(read.jdbcSql.size() + read.hibernateSql.size()).isLessThanOrEqualTo(2);
+    }
+
+    private long expandedFormCandidates(com.fasterxml.jackson.databind.JsonNode node) {
+        long count = "Function Scan".equals(node.path("Node Type").asText()) && "f".equals(node.path("Alias").asText())
+                ? node.path("Actual Rows").asLong() * node.path("Actual Loops").asLong() : 0;
+        for (var child : node.path("Plans")) count += expandedFormCandidates(child);
+        return count;
     }
 
     private void seedForm(int count, String kind) throws Exception {
