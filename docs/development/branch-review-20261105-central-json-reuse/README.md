@@ -1,5 +1,7 @@
 # 中央列表快照解析复用
 
+已更新同一[PR62](https://github.com/IvenYi/edhr-nexus-frontend/pull/62)为“按对象复用快照并收紧中央列表读取范围”，观察OPEN/MERGEABLE/CLEAN，建议人工合入当前修复。受测8a72398c、验收归档d482ba22后仅L0交付登记；原始观察见evidence/delivery-verification.json，登记后再次核对本地/真实远端/PR head。不自动merge或部署。
+
 最终受测候选`8a72398cbe3cf404fcddee9d1cef251f3ebc75dd`取得全新quality passed/FINAL，15/15必需检查，无发现/阻断；独立105/105（中央26含3稀疏/记录控制55/转办24）及知识89/89，0F/E/S。服务器98请求SELECT/49COUNT/16签名吻合，76EXPLAIN、25初始化SELECT、2SHOW分列；目录300/3000与稀疏上下文1及64kB/4MB均独立确认，不是0兜底。全部角色及子项FINAL，资源清理。
 
 本批两个已复现问题（重复目录展开、无记录对象空上下文）仅在声明测试范围verified-resolved；不认证生产并发/SLA、完整HTTP/多租户或全部历史容量。实际已做[PR前范围复核](scope-review.md)，无漂移；之后仅L0验收/归档/交付及NEXT，受测产品和测试保持。原900取证和d32首版质量各保留其历史范围，不能覆盖最终8a。全审未完成，所有原余项/暂停保持。

@@ -1,6 +1,8 @@
 # 持续推进台账
 
-## PR62仍OPEN：用户已授权中央列表快照复用优化
+## PR62已更新：中央列表快照复用及稀疏对象范围修复
+
+已更新[PR62](https://github.com/IvenYi/edhr-nexus-frontend/pull/62)标题正文为最终产品优化，正常推送原分支→edhr-dev，观察OPEN/MERGEABLE/CLEAN，建议人工合入。受测8a72398c、最终验收归档d482ba22后仅L0交付登记；实际观察见本批evidence/delivery-verification.json，登记后再次核对本地/真实远端/PR head一致。两个明确性能缺陷仅按本批范围关闭，下一批先fetch真实merge和新提交，再继续整体审计原队列；不自动merge/deploy/恢复或查询触发CI。
 
 最终clean受测`8a72398cbe3cf404fcddee9d1cef251f3ebc75dd`已取得全新quality passed/FINAL，15/15必需检查，无发现/阻断；独立105/105、知识89/89、主侧203/203均0F/E/S。服务器中央50事件98请求SELECT/49COUNT/16签名吻合，76EXPLAIN、25初始化SELECT、2SHOW分列；目录300/3000、稀疏context1及默认/64kB均独立确认。原13知识及3子集delta均NA/FINAL，350知识/版本阶段不变，全部角色和子项FINAL、资源清理。
 
