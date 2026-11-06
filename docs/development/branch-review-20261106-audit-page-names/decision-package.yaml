@@ -1,0 +1,63 @@
+decisionPackage:
+  id: DEC-PACKAGE-AUDIT-PAGE-NAMES-20261106
+  scope: User-approved current-page audit operator name batch reads, appended to open PR68
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: 3c8e46943dbc3d02673d342e501b0884cb0c76dd
+    targetBranch: edhr-dev
+    targetCommit: e69a8f3d97b34fea8737947c780b047bb0310c64
+    contractReadCommit: 3c8e46943dbc3d02673d342e501b0884cb0c76dd
+    uncommittedContractPaths: []
+  summary: 用户明确选择先做本页批量补名；PR68尚OPEN，当前目标无外部代码/知识/契约增量，在原PR小批追加并重写最终描述。不把同意此项当数据库分页/索引或新业务政策授权。
+  confirmed:
+    concepts: []
+    relationships: []
+    rules: []
+    executionContracts: []
+  engineeringAuthorization:
+    source: 当前用户对先做本页批量补名（推荐）的明确回复
+    scope: 先按既有条件筛选和分页，再仅为本页唯一账号分批读姓名，所有记录继续可翻页
+    retained: 当前displayName优先、历史姓名/账号回退、缺失与空白行为、原姓名筛选、对象/个人边界、action投影及原审计数据
+    notAuthorized: 数据库事件分页/COUNT设计、索引、姓名搜索政策替代、全局权限政策、多租户重设计
+  inferred: []
+  unresolved: []
+  replacementScopes: []
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - {area: audit-list, change: 派生过滤和切页在姓名读取之前，页内账号去重且有界批量读取，不截断结果, evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/controller/AuditController.java]}
+    transitiveImpacts:
+      - {area: shared-readers, change: 全局/个人/工单/批次共享读取受益，个人仍固定目标账户而非操作者, evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/controller/AuditController.java]}
+    potentialImpacts:
+      - {area: repeated-usernames, concern: 原findByUsername多结果异常不能被first-wins静默掩盖；仅查本页后，页外姓名不参与本次读取, evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/identity/repository/UserAccountRepository.java]}
+    unaffectedAreas:
+      - {area: policies-and-writes, change: 不动原事件/摘要/历史/生产签署、权限、前端、schema、索引或原姓名筛选, evidenceReferences: []}
+    compatibilityAndMigration:
+      - {area: read-only, change: 无迁移/历史回填；页大小与总结果无新上限，批次500仅SQL参数工程边界, evidenceReferences: []}
+    snapshotImpacts:
+      - {area: immutable-history, change: 不重新封存或改写任何快照/姓名原件, evidenceReferences: []}
+    auditImpacts:
+      - {area: list-projection, change: 原投影值保持，只对最终页组装DTO与补名；读取不写审计, evidenceReferences: []}
+    permissionImpacts:
+      - {area: existing-qualification, change: 当前登录与个人对象约束保持，不从菜单推新规则或新增姓名资格筛选, evidenceReferences: []}
+    testImpacts:
+      - {scope: native-and-regression, scenarios: [旧源同字节查询预算反证, 共享不同缺失空用户, 本页重复与页外用户, 超过500账号大页及全部续页, 原姓名筛选及派生筛选, 重复账号异常, 原action/hash与零写入, 全新独立复验], evidenceReferences: []}
+    evidenceGaps: [仍全量加载匹配事件/JSON，不能称数据库分页已解决, 当前姓名搜索与全局访问政策未确认，保持, 真实HTTP/UI/生产并发峰值与全审W2-W7/A23原余项仍保留]
+  extensionStrategy:
+    selectedPaths: [product-core]
+    rationale: 两个现有产品文件局部调整，复用现有派生方法；不为本切片建立通用查询/缓存框架或跨请求缓存
+    ownershipBoundaries:
+      - {owner: audit-controller, responsibility: 原筛选/分页和页内投影/姓名回退}
+      - {owner: identity-repository, responsibility: 原精确username语义的批量读取}
+  affectedFiles:
+    - {path: gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/controller/AuditController.java, changeType: update, reason: 当前页批量补名}
+    - {path: gmp-platform/backend/src/main/java/com/zencas/edhr/identity/repository/UserAccountRepository.java, changeType: update, reason: 批量精确账号读取}
+    - {path: gmp-platform/backend/src/test/java/com/zencas/edhr/compliance/controller/AuditPageNamesPostgresTest.java, changeType: create, reason: 原生负对照/预算和显示完整性}
+    - {path: gmp-platform/backend/src/test/java/com/zencas/edhr/compliance/controller/AuditControllerTest.java, changeType: update, reason: 既有显示回归使用实际新批量调用，保留断言}
+    - {path: gmp-platform/backend/src/test/java/com/zencas/edhr/compliance/controller/AuditPaginationBoundaryTest.java, changeType: update, reason: 移除本次不再调用的旧单人查询mock及孤立import，六项原分页断言保留}
+  acceptanceScenarios:
+    - id: scenario.audit-page-names
+      given: 当前合法审计筛选和page/size，匹配历史可能远多于本页
+      when: 读取全局或个人列表
+      then: 返回记录/顺序/总数与原显示保持，仅对本页账号有界批量查名，空页不查、不截断、重复账号不静默任选
+      evidenceRequirements: [同源旧预算失败与最终原生SQL, 既有回归和知识校验, 本体有限核对及全新独立质量, 全部FINAL后任务漂移与最新目标检查]

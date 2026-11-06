@@ -13,7 +13,6 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
 import java.util.concurrent.atomic.AtomicReference;
@@ -29,7 +28,6 @@ class AuditPaginationBoundaryTest {
     @BeforeEach void setup() {
         var events = LongStream.rangeClosed(1, 6).mapToObj(id -> AuditEvent.builder().id(id).entityType("AUDIT_LOG").entityId("42").action("UPDATE").build()).toList();
         when(audits.search(anyString(), anyString(), anyString(), anyString(), anyString(), anyString(), anyString(), anyString(), any(Pageable.class))).thenReturn(new PageImpl<>(events));
-        when(users.findByUsername(anyString())).thenReturn(Optional.empty());
     }
     static Stream<Arguments> pages() {
         return Stream.of(Arguments.of(1, 2, List.of(1L, 2L)), Arguments.of(2, 2, List.of(3L, 4L)), Arguments.of(4, 2, List.of()),
