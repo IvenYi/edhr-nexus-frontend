@@ -1,0 +1,83 @@
+ontologyResult:
+  result: not-applicable
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: e69a8f3d97b34fea8737947c780b047bb0310c64
+    targetBranch: edhr-dev
+    targetCommit: e69a8f3d97b34fea8737947c780b047bb0310c64
+    contractReadCommit: e69a8f3d97b34fea8737947c780b047bb0310c64
+    uncommittedContractPaths: []
+  reason: 本批只修分页中间算术及按既有DEC-0013-03生产动作投影筛选；不增加或替代业务政策。当前知识定义无需修改，350知识文件与基线逐字节相同；实际源码及主侧原生报告已核对。性能只取证，未执行分页/姓名批量/索引优化。
+  changedArtifacts: []
+  knowledgeSync:
+  - id: DEC-0013-03
+    disposition: retained
+    scope: 保留生产客户动作新增/修改两类；本批修复现有筛选实现差异，不新增政策或重写历史。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0013-production-work-order-lifecycle-and-audit-projection.yaml
+    - gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/repository/AuditEventRepository.java
+  - id: rule.production.audit-action-projection
+    disposition: retained
+    scope: 仅核本批列表筛选的生产投影一致性，Java显示原逻辑保留，非生产分类/原实体过滤不变；完整UI场景另保留证据缺口。
+    sourceReferences:
+    - docs/knowledge/rules/production.yaml
+    - gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/controller/AuditController.java
+    - gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/repository/AuditEventRepository.java
+    - finite-audit-records-final.jsonl
+  - id: relation.audit-event-projects-action-category
+    disposition: retained
+    scope: 原事件action与客户动作分类分层，读取筛选不更新审计原件或快照。
+    sourceReferences:
+    - docs/knowledge/ontology.yaml
+    - parent-generated-evidence/final/TEST-com.zencas.edhr.compliance.controller.AuditActionFilterPostgresTest.xml
+  conflicts: []
+  questions: []
+  validationEvidence:
+  - id: validation.knowledge89
+    checkType: schema
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f tools/knowledge-model/pom.xml
+      test
+    outcome: passed
+    evidence:
+    - knowledge-validation.log
+    - TEST-com.zencas.edhr.knowledge.BusinessKnowledgeModelTest.xml
+    - knowledge-test-summary.json
+    - 本角色实际运行89 tests /0 failures /0 errors /0 skipped；不等于产品或语义全审通过。
+  - id: validation.knowledge-reference-status-projection
+    checkType: reference
+    command: same formal knowledge test suite plus finite authority/source review
+    outcome: passed
+    evidence:
+    - knowledge-test-summary.json
+    - finite-audit-records-final.jsonl
+    - 350个知识文件与e69逐字节相同，原知识成熟度/知识0.3.25/schema1.2/P0均保留。
+  - id: validation.action-projection-subscope
+    checkType: projection
+    command: read final source diff and main-role native PostgreSQL XML/observations;
+      no product runtime executed by this role
+    outcome: passed
+    evidence:
+    - final-source-manifest.json
+    - parent-generated-evidence/provenance.json
+    - parent-generated-evidence/baseline/TEST-com.zencas.edhr.compliance.controller.AuditActionFilterPostgresTest.xml
+    - parent-generated-evidence/final/TEST-com.zencas.edhr.compliance.controller.AuditActionFilterPostgresTest.xml
+    - parent-generated-evidence/final/TEST-com.zencas.edhr.compliance.controller.AuditActionWhitespacePostgresTest.xml
+    - 仅动作筛选子范围；未宣称完整UI/HTTP权限或全审通过。
+  - id: validation.provenance-and-baseline
+    checkType: evidence-path
+    command: python /tmp/edhr-audit-read-ontology-20261106/finalize.py
+    outcome: passed
+    evidence:
+    - final-source-manifest.json
+    - knowledge-fingerprint-inventory-final.json
+    - parent-generated-evidence/provenance.json
+    - 主侧final run的20个产品/测试/契约输入指纹与本角色最后读取完全一致；另1个DP仅补已测空白测试清单条目，解析后其余字段相同。固定基线提交与未提交候选分别标记，不为工作树编造SHA。
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages:
+    - P1
+    - P2
+    - P3

@@ -61,8 +61,8 @@ public class AuditController {
                 .filter(item -> matchesAuditText(item.getMenuName(), menuName))
                 .filter(item -> matchesAuditText(item.getDataSummary(), dataKeyword))
                 .toList();
-        int fromIndex = Math.min((safePage - 1) * safeSize, filteredItems.size());
-        int toIndex = Math.min(fromIndex + safeSize, filteredItems.size());
+        int fromIndex = (int) Math.min((long) (safePage - 1) * safeSize, filteredItems.size());
+        int toIndex = (int) Math.min((long) fromIndex + safeSize, filteredItems.size());
         return ApiResponse.success(PageResult.of(
                 filteredItems.subList(fromIndex, toIndex), page, size, filteredItems.size()));
     }
