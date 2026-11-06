@@ -1,0 +1,34 @@
+{
+  "totals": {
+    "tests": 18,
+    "failures": 5,
+    "errors": 0,
+    "skipped": 0
+  },
+  "nativeTestSameBytes": true,
+  "nativeTestSha256": "0593c28d88f4d9c06b80ae52b3a2d5e5912dc611a94e1255a53e6e3bad98bf49",
+  "failures": [
+    {
+      "name": "successfulSubmitFreezesAllAttachmentsAndRealSource(int)[2]",
+      "message": "\nExpecting actual:\n  15L\nto be less than or equal to:\n  13L "
+    },
+    {
+      "name": "successfulSubmitFreezesAllAttachmentsAndRealSource(int)[3]",
+      "message": "\nExpecting actual:\n  33L\nto be less than or equal to:\n  13L "
+    },
+    {
+      "name": "successfulSubmitFreezesAllAttachmentsAndRealSource(int)[4]",
+      "message": "\nExpecting actual:\n  213L\nto be less than or equal to:\n  13L "
+    },
+    {
+      "name": "successfulSubmitFreezesAllAttachmentsAndRealSource(int)[5]",
+      "message": "\nExpecting actual:\n  613L\nto be less than or equal to:\n  13L "
+    },
+    {
+      "name": "fiftyMiBOriginalIsFullyReadWithoutWholeFileDigestBuffer",
+      "message": "\nExpecting actual:\n  15L\nto be less than or equal to:\n  13L "
+    }
+  ],
+  "scope": "old products actual canonical successful service, same 18 native tests; five query-budget reds, 13 controls, no error/skip",
+  "originals": "second main archive preserves budget source/XML/log/JFR"
+}

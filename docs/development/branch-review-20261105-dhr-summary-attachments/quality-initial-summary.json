@@ -1,0 +1,34 @@
+{
+  "result": "passed",
+  "stage": "7704 test-only historical candidate, not later approved product optimization",
+  "baseCommit": "a429f983a7a69553753034e9306d12598fcc15be",
+  "headCommit": "7704f11267a810b2bda82e99f049a0206a5e73c7",
+  "requiredChecks": 16,
+  "passedChecks": 16,
+  "nativeAndAdjacent": {
+    "tests": 69,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "knowledge": {
+    "tests": 89,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "businessSELECT": 998,
+  "taggedDriverMetadataSELECT": 1,
+  "businessWrites": 44,
+  "setCommands": 16,
+  "independentJfrRecords": 16,
+  "evidenceChild": {
+    "result": "passed",
+    "checks": 7,
+    "status": "FINAL"
+  },
+  "resourcesClean": true,
+  "findings": 0,
+  "blockingConditions": 0,
+  "generatedAt": "2026-11-05T15:38:53.148823+00:00"
+}

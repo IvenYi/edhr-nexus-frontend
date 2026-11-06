@@ -1,0 +1,90 @@
+{
+  "nativeAndAdjacent": {
+    "totals": {
+      "tests": 69,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "classes": [
+      {
+        "class": "com.zencas.edhr.production.service.DhrSummaryAttachmentObservationPostgresTest",
+        "tests": 15,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "com.zencas.edhr.production.service.DhrSummaryServiceTest",
+        "tests": 8,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "com.zencas.edhr.production.service.DhrSummaryPersistenceTest",
+        "tests": 24,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "com.zencas.edhr.production.service.DhrAttachmentWriteFailureTest",
+        "tests": 5,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "com.zencas.edhr.production.service.DhrAttachmentAndArchiveTest",
+        "tests": 13,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "com.zencas.edhr.production.service.DhrFormFilesTest",
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    ],
+    "missingFreshReports": []
+  },
+  "knowledge": [
+    {
+      "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "tests": 89,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  ],
+  "observations": 16,
+  "observedSELECT": 998,
+  "serverTypes": {
+    "set": 16,
+    "select": 998,
+    "insert": 22,
+    "delete": 7,
+    "update": 15
+  },
+  "initialFailures": [
+    {
+      "phase": "focused",
+      "status": "compile failed, missing DynamicProperty imports; no JUnit execution",
+      "productDefect": false
+    },
+    {
+      "phase": "full",
+      "tests": 69,
+      "failures": 6,
+      "errors": 0,
+      "skipped": 0,
+      "reason": "assert compared in-memory LongNode size to parsed JSON IntNode; exact serialized JSON strings identical, changed assertion to require exact serialized equality; full XML/source kept",
+      "productDefect": false
+    }
+  ],
+  "noProductEdits": true
+}

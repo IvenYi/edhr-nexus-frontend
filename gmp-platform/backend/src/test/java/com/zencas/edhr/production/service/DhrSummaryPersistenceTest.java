@@ -43,6 +43,8 @@ class DhrSummaryPersistenceTest {
     @BeforeEach void setup() throws Exception {
         reset(instances, audits, engine, attachments, formFiles);
         when(attachments.snapshot(anyLong())).thenAnswer(ignored -> mapper.createArrayNode());
+        when(attachments.forSubmission(anyLong())).thenAnswer(ignored ->
+                new DhrAttachmentService.SubmissionAttachments(mapper.createArrayNode(), java.util.List.of()));
         jdbc.execute("DROP ALL OBJECTS");
         jdbc.execute("CREATE TABLE dhr_instance(id BIGINT PRIMARY KEY,tenant_id VARCHAR(64),status VARCHAR(32),summary_status VARCHAR(32),dhr_review_mode VARCHAR(32),directory_snapshot TEXT,production_object_id BIGINT,dhr_review_workflow_definition_id BIGINT,dhr_review_workflow_version_id BIGINT,updated_by VARCHAR(128),updated_at TIMESTAMP)");
         jdbc.execute("CREATE TABLE dhr_summary_draft(id BIGINT PRIMARY KEY,tenant_id VARCHAR(64),dhr_instance_id BIGINT UNIQUE,overlay_directory_json TEXT,evidence_placement_json TEXT,source_scope_hash VARCHAR(64),revision INT,created_by VARCHAR(128),created_at TIMESTAMP,updated_by VARCHAR(128),updated_at TIMESTAMP)");

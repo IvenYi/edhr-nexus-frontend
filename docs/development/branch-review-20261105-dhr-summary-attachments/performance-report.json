@@ -1,0 +1,452 @@
+{
+  "baseCommit": "a429f983a7a69553753034e9306d12598fcc15be",
+  "events": [
+    {
+      "name": "lock_submit_false",
+      "applicationName": "audit_summary_lock_submit_false",
+      "measuredThreadId": 126,
+      "elapsedNanos": 34183308,
+      "threadAllocatedBytes": 271368,
+      "heapBefore": 174530816,
+      "heapAfter": 174530816,
+      "trackedLogicalReadBytes": 68,
+      "trackedReadEvents": 2,
+      "rejection": "请确认质量结论、异常处置、源签署和完整证据范围已人工核查",
+      "data": {
+        "successfulSubmit": false
+      },
+      "selectStatements": 13
+    },
+    {
+      "name": "lock_submit_true",
+      "applicationName": "audit_summary_lock_submit_true",
+      "measuredThreadId": 124,
+      "elapsedNanos": 35537730,
+      "threadAllocatedBytes": 438480,
+      "heapBefore": 164045056,
+      "heapAfter": 165093632,
+      "trackedLogicalReadBytes": 68,
+      "trackedReadEvents": 2,
+      "rejection": null,
+      "data": {
+        "successfulSubmit": true
+      },
+      "selectStatements": 15
+    },
+    {
+      "name": "lock_unlink_false",
+      "applicationName": "audit_summary_lock_unlink_false",
+      "measuredThreadId": 127,
+      "elapsedNanos": 32583415,
+      "threadAllocatedBytes": 125576,
+      "heapBefore": 174530816,
+      "heapAfter": 177676544,
+      "trackedLogicalReadBytes": 0,
+      "trackedReadEvents": 0,
+      "rejection": null,
+      "data": {
+        "successfulSubmit": false
+      },
+      "selectStatements": 3
+    },
+    {
+      "name": "lock_unlink_true",
+      "applicationName": "audit_summary_lock_unlink_true",
+      "measuredThreadId": 125,
+      "elapsedNanos": 30692969,
+      "threadAllocatedBytes": 109960,
+      "heapBefore": 165093632,
+      "heapAfter": 165093632,
+      "trackedLogicalReadBytes": 0,
+      "trackedReadEvents": 0,
+      "rejection": "当前 DHR 不能修改附件；请先退回或重新整理，历史版本保持不变",
+      "data": {
+        "successfulSubmit": true
+      },
+      "selectStatements": 1
+    },
+    {
+      "name": "reject_manual_review",
+      "applicationName": "audit_summary_reject_manual_review",
+      "measuredThreadId": 1,
+      "elapsedNanos": 8090400,
+      "threadAllocatedBytes": 297216,
+      "heapBefore": 164626432,
+      "heapAfter": 164626432,
+      "trackedLogicalReadBytes": 136,
+      "trackedReadEvents": 4,
+      "rejection": "请确认质量结论、异常处置、源签署和完整证据范围已人工核查",
+      "data": {
+        "failure": "manual_review"
+      },
+      "selectStatements": 15
+    },
+    {
+      "name": "reject_missing",
+      "applicationName": "audit_summary_reject_missing",
+      "measuredThreadId": 1,
+      "elapsedNanos": 16435420,
+      "threadAllocatedBytes": 596952,
+      "heapBefore": 141557760,
+      "heapAfter": 141557760,
+      "trackedLogicalReadBytes": 0,
+      "trackedReadEvents": 0,
+      "rejection": "附件丢失或摘要不一致",
+      "data": {
+        "failure": "missing"
+      },
+      "selectStatements": 12
+    },
+    {
+      "name": "reject_pending",
+      "applicationName": "audit_summary_reject_pending",
+      "measuredThreadId": 1,
+      "elapsedNanos": 6251574,
+      "threadAllocatedBytes": 212456,
+      "heapBefore": 154140672,
+      "heapAfter": 154140672,
+      "trackedLogicalReadBytes": 0,
+      "trackedReadEvents": 0,
+      "rejection": "附件“original-0.png”尚未核验，不能提交汇总",
+      "data": {
+        "failure": "pending"
+      },
+      "selectStatements": 10
+    },
+    {
+      "name": "reject_source_changed",
+      "applicationName": "audit_summary_reject_source_changed",
+      "measuredThreadId": 1,
+      "elapsedNanos": 4354491,
+      "threadAllocatedBytes": 209576,
+      "heapBefore": 159383552,
+      "heapAfter": 159383552,
+      "trackedLogicalReadBytes": 0,
+      "trackedReadEvents": 0,
+      "rejection": "来源记录或附件在核查后发生变化，请刷新并重新确认汇总草稿",
+      "data": {
+        "failure": "source_changed"
+      },
+      "selectStatements": 10
+    },
+    {
+      "name": "reject_stale_revision",
+      "applicationName": "audit_summary_reject_stale_revision",
+      "measuredThreadId": 1,
+      "elapsedNanos": 2804055,
+      "threadAllocatedBytes": 79008,
+      "heapBefore": 169869312,
+      "heapAfter": 169869312,
+      "trackedLogicalReadBytes": 0,
+      "trackedReadEvents": 0,
+      "rejection": "汇总草稿已被其他操作更新，请刷新后重试",
+      "data": {
+        "failure": "stale_revision"
+      },
+      "selectStatements": 5
+    },
+    {
+      "name": "reject_tampered",
+      "applicationName": "audit_summary_reject_tampered",
+      "measuredThreadId": 1,
+      "elapsedNanos": 7663743,
+      "threadAllocatedBytes": 270288,
+      "heapBefore": 148897792,
+      "heapAfter": 148897792,
+      "trackedLogicalReadBytes": 8,
+      "trackedReadEvents": 2,
+      "rejection": "附件丢失或摘要不一致",
+      "data": {
+        "failure": "tampered"
+      },
+      "selectStatements": 12
+    },
+    {
+      "name": "submit_0",
+      "applicationName": "audit_summary_submit_0",
+      "measuredThreadId": 1,
+      "elapsedNanos": 9191996,
+      "threadAllocatedBytes": 380000,
+      "heapBefore": 175112192,
+      "heapAfter": 175112192,
+      "trackedLogicalReadBytes": 0,
+      "trackedReadEvents": 0,
+      "rejection": null,
+      "data": {
+        "attachments": 0,
+        "fileBytes": 0
+      },
+      "selectStatements": 13
+    },
+    {
+      "name": "submit_1",
+      "applicationName": "audit_summary_submit_1",
+      "measuredThreadId": 1,
+      "elapsedNanos": 6893637,
+      "threadAllocatedBytes": 413392,
+      "heapBefore": 180355072,
+      "heapAfter": 180355072,
+      "trackedLogicalReadBytes": 68,
+      "trackedReadEvents": 2,
+      "rejection": null,
+      "data": {
+        "attachments": 1,
+        "fileBytes": 68
+      },
+      "selectStatements": 15
+    },
+    {
+      "name": "submit_10",
+      "applicationName": "audit_summary_submit_10",
+      "measuredThreadId": 1,
+      "elapsedNanos": 21553314,
+      "threadAllocatedBytes": 811016,
+      "heapBefore": 186646528,
+      "heapAfter": 187695104,
+      "trackedLogicalReadBytes": 680,
+      "trackedReadEvents": 20,
+      "rejection": null,
+      "data": {
+        "attachments": 10,
+        "fileBytes": 68
+      },
+      "selectStatements": 33
+    },
+    {
+      "name": "submit_100",
+      "applicationName": "audit_summary_submit_100",
+      "measuredThreadId": 1,
+      "elapsedNanos": 49540939,
+      "threadAllocatedBytes": 4969848,
+      "heapBefore": 202375168,
+      "heapAfter": 206569472,
+      "trackedLogicalReadBytes": 6800,
+      "trackedReadEvents": 200,
+      "rejection": null,
+      "data": {
+        "attachments": 100,
+        "fileBytes": 68
+      },
+      "selectStatements": 213
+    },
+    {
+      "name": "submit_300",
+      "applicationName": "audit_summary_submit_300",
+      "measuredThreadId": 1,
+      "elapsedNanos": 108072470,
+      "threadAllocatedBytes": 14666360,
+      "heapBefore": 131539200,
+      "heapAfter": 146219264,
+      "trackedLogicalReadBytes": 20400,
+      "trackedReadEvents": 600,
+      "rejection": null,
+      "data": {
+        "attachments": 300,
+        "fileBytes": 68
+      },
+      "selectStatements": 613
+    },
+    {
+      "name": "submit_50mib",
+      "applicationName": "audit_summary_submit_50mib",
+      "measuredThreadId": 1,
+      "elapsedNanos": 45916875,
+      "threadAllocatedBytes": 413072,
+      "heapBefore": 154607872,
+      "heapAfter": 155656448,
+      "trackedLogicalReadBytes": 52428800,
+      "trackedReadEvents": 6401,
+      "rejection": null,
+      "data": {
+        "attachments": 1,
+        "fileBytes": 52428800
+      },
+      "selectStatements": 15
+    }
+  ],
+  "measuredSELECT": 998,
+  "scaleFormulaScope": "13+2N only for declared one actual WORK record/NONE configuration, not a universal all-source/REQUIRED HTTP count",
+  "indexExperiment": {
+    "unrelatedOrInactive": 10000,
+    "limits": "Synthetic complete-schema distribution; not production SLA. Plans are not service request SQL.",
+    "activePlan": [
+      {
+        "Plan": {
+          "Node Type": "Sort",
+          "Parallel Aware": false,
+          "Async Capable": false,
+          "Startup Cost": 404.87,
+          "Total Cost": 408.48,
+          "Plan Rows": 1441,
+          "Plan Width": 1643,
+          "Actual Startup Time": 0.095,
+          "Actual Total Time": 0.103,
+          "Actual Rows": 300,
+          "Actual Loops": 1,
+          "Sort Key": [
+            "linked_at",
+            "id"
+          ],
+          "Sort Method": "quicksort",
+          "Sort Space Used": 106,
+          "Sort Space Type": "Memory",
+          "Shared Hit Blocks": 13,
+          "Shared Read Blocks": 0,
+          "Shared Dirtied Blocks": 0,
+          "Shared Written Blocks": 0,
+          "Local Hit Blocks": 0,
+          "Local Read Blocks": 0,
+          "Local Dirtied Blocks": 0,
+          "Local Written Blocks": 0,
+          "Temp Read Blocks": 0,
+          "Temp Written Blocks": 0,
+          "Plans": [
+            {
+              "Node Type": "Bitmap Heap Scan",
+              "Parent Relationship": "Outer",
+              "Parallel Aware": false,
+              "Async Capable": false,
+              "Relation Name": "dhr_attachment",
+              "Alias": "dhr_attachment",
+              "Startup Cost": 26.66,
+              "Total Cost": 329.27,
+              "Plan Rows": 1441,
+              "Plan Width": 1643,
+              "Actual Startup Time": 0.017,
+              "Actual Total Time": 0.039,
+              "Actual Rows": 300,
+              "Actual Loops": 1,
+              "Recheck Cond": "(((tenant_id)::text = 'default'::text) AND (dhr_instance_id = '1'::bigint) AND active)",
+              "Rows Removed by Index Recheck": 0,
+              "Exact Heap Blocks": 11,
+              "Lossy Heap Blocks": 0,
+              "Shared Hit Blocks": 13,
+              "Shared Read Blocks": 0,
+              "Shared Dirtied Blocks": 0,
+              "Shared Written Blocks": 0,
+              "Local Hit Blocks": 0,
+              "Local Read Blocks": 0,
+              "Local Dirtied Blocks": 0,
+              "Local Written Blocks": 0,
+              "Temp Read Blocks": 0,
+              "Temp Written Blocks": 0,
+              "Plans": [
+                {
+                  "Node Type": "Bitmap Index Scan",
+                  "Parent Relationship": "Outer",
+                  "Parallel Aware": false,
+                  "Async Capable": false,
+                  "Index Name": "idx_dhr_attachment_active",
+                  "Startup Cost": 0.0,
+                  "Total Cost": 26.3,
+                  "Plan Rows": 1441,
+                  "Plan Width": 0,
+                  "Actual Startup Time": 0.012,
+                  "Actual Total Time": 0.012,
+                  "Actual Rows": 300,
+                  "Actual Loops": 1,
+                  "Index Cond": "(((tenant_id)::text = 'default'::text) AND (dhr_instance_id = '1'::bigint) AND (active = true))",
+                  "Shared Hit Blocks": 2,
+                  "Shared Read Blocks": 0,
+                  "Shared Dirtied Blocks": 0,
+                  "Shared Written Blocks": 0,
+                  "Local Hit Blocks": 0,
+                  "Local Read Blocks": 0,
+                  "Local Dirtied Blocks": 0,
+                  "Local Written Blocks": 0,
+                  "Temp Read Blocks": 0,
+                  "Temp Written Blocks": 0
+                }
+              ]
+            }
+          ]
+        },
+        "Planning": {
+          "Shared Hit Blocks": 0,
+          "Shared Read Blocks": 0,
+          "Shared Dirtied Blocks": 0,
+          "Shared Written Blocks": 0,
+          "Local Hit Blocks": 0,
+          "Local Read Blocks": 0,
+          "Local Dirtied Blocks": 0,
+          "Local Written Blocks": 0,
+          "Temp Read Blocks": 0,
+          "Temp Written Blocks": 0
+        },
+        "Planning Time": 0.074,
+        "Triggers": [],
+        "Execution Time": 0.146
+      }
+    ],
+    "indexes": [
+      {
+        "indexname": "dhr_attachment_pkey",
+        "indexdef": "CREATE UNIQUE INDEX dhr_attachment_pkey ON public.dhr_attachment USING btree (id)"
+      },
+      {
+        "indexname": "idx_dhr_attachment_active",
+        "indexdef": "CREATE INDEX idx_dhr_attachment_active ON public.dhr_attachment USING btree (tenant_id, dhr_instance_id, active)"
+      }
+    ],
+    "identityPlan": [
+      {
+        "Plan": {
+          "Node Type": "Index Scan",
+          "Parallel Aware": false,
+          "Async Capable": false,
+          "Scan Direction": "Forward",
+          "Index Name": "dhr_attachment_pkey",
+          "Relation Name": "dhr_attachment",
+          "Alias": "dhr_attachment",
+          "Startup Cost": 0.29,
+          "Total Cost": 8.31,
+          "Plan Rows": 1,
+          "Plan Width": 87,
+          "Actual Startup Time": 0.014,
+          "Actual Total Time": 0.014,
+          "Actual Rows": 1,
+          "Actual Loops": 1,
+          "Index Cond": "(id = '1000'::bigint)",
+          "Rows Removed by Index Recheck": 0,
+          "Filter": "(((tenant_id)::text = 'default'::text) AND (dhr_instance_id = '1'::bigint))",
+          "Rows Removed by Filter": 0,
+          "Shared Hit Blocks": 3,
+          "Shared Read Blocks": 0,
+          "Shared Dirtied Blocks": 0,
+          "Shared Written Blocks": 0,
+          "Local Hit Blocks": 0,
+          "Local Read Blocks": 0,
+          "Local Dirtied Blocks": 0,
+          "Local Written Blocks": 0,
+          "Temp Read Blocks": 0,
+          "Temp Written Blocks": 0
+        },
+        "Planning": {
+          "Shared Hit Blocks": 0,
+          "Shared Read Blocks": 0,
+          "Shared Dirtied Blocks": 0,
+          "Shared Written Blocks": 0,
+          "Local Hit Blocks": 0,
+          "Local Read Blocks": 0,
+          "Local Dirtied Blocks": 0,
+          "Local Written Blocks": 0,
+          "Temp Read Blocks": 0,
+          "Temp Written Blocks": 0
+        },
+        "Planning Time": 0.074,
+        "Triggers": [],
+        "Execution Time": 0.029
+      }
+    ],
+    "activeInScope": 300
+  },
+  "decision": "metadata reuse proposal pending actual user reply, no product/index optimization implemented",
+  "limits": [
+    "warm-cache synthetic file bytes; JFR logical read bytes not physical IO",
+    "ThreadMXBean calling-thread cumulative allocation, not retained heap/peak/RSS or Chromium/concurrency capacity",
+    "heap snapshots global; concurrent lock cases include other threads, elapsed lock time intentionally blocked",
+    "50MiB submit fixture directly registered verified; not actual upload/verify/seven-format/50MiB acceptance",
+    "real successful saveDraft/submit plus separate frozen integrity; source and completed execution fixtures seeded via SQL, not START/generation/full production completion",
+    "NONE + one WORK source; not REQUIRED/full three-origin/signature/HTTP/RBAC matrix"
+  ]
+}
