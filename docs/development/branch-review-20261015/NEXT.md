@@ -2,6 +2,8 @@
 
 ## PR67已合入：W5审计读取正确性与W6规模取证
 
+已交付[PR68](https://github.com/IvenYi/edhr-nexus-frontend/pull/68)，audit/edhr-dev-audit-read-audit-20261106→edhr-dev，观察OPEN/MERGEABLE/CLEAN，建议人工合入。受测9d4416c3、验收cf220d59后仅L0交付记录；登记后核对本地/真实远端/PR head一致及受测保护路径字节保持。下一轮先fetch实际merge与新代码；性能未实施、旧队列继续，不自动merge/deploy/恢复。
+
 已fetch edhr-dev@e69a8f3d97b34fea8737947c780b047bb0310c64，PR67人工合入且整树同a40a86ff，无外部/知识/契约增量。[本批](../branch-review-20261106-audit-read/README.md)L2复用旧PERF-AUDIT-LIST-MATERIALIZATION-001，修分页算术子项，并按既有DEC-0013-03修生产动作筛选差异；不改原事件/历史/非生产分类、权限、UI或schema。
 
 主侧116/116、知识89/89；负对照分页6=3正3真红、原生动作9=3正6真红，0E/S。25观察27461业务SELECT逐形状/次数与服务器吻合，5000匹配仍5001查询，性能优化未实施/待用户选择。本体NA/FINAL有限13=12一致1UIgap，350知识不变；源码角色两次FINAL。clean候选9d4416c3取得全新独立质量passed/FINAL，实际116/116+89/89、15/15必需项，无发现/阻断，资源清理。全部FINAL后已实际PR前漂移/阶段复核，目标仍e69且无增量；此后仅L0验收/交付文档，两项正确性子项关闭。

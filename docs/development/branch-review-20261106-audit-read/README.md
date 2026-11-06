@@ -2,6 +2,8 @@
 
 L2，基线edhr-dev@e69a8f3d97b34fea8737947c780b047bb0310c64。已核PR67人工合入且整树同a40a86ff，无外部/知识/契约增量。本批继续既定整体审计，不重新收尾旧PR；只修改两处后端产品文件，未实施待讨论的性能优化。
 
+已交付[PR68](https://github.com/IvenYi/edhr-nexus-frontend/pull/68)，audit/edhr-dev-audit-read-audit-20261106→edhr-dev，观察OPEN/MERGEABLE/CLEAN，建议人工合入。受测9d4416c3、验收cf220d59后本条仅L0交付登记，实际观察见evidence/delivery-verification.json。登记提交推送后再次核对本地/真实远端/PR head一致及受测运行/测试/契约/知识字节不变；下一轮先fetch确认实际合入与新代码后继续原全审队列。
+
 两项确定性整改：
 
 - 正数page/size的int乘加可溢出，使超尾空页抛异常，或第二页大size无法正确截尾。仅两处中间运算改long，再按实际列表长度截断；不加页数、页大小或总条数上限。
