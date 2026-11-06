@@ -1,0 +1,26 @@
+{
+  "observedAtUTC": "2026-11-06T06:57:57.721036+00:00",
+  "allCurrentRolesAndChildrenFinal": true,
+  "roles": {
+    "ontology": "not-applicable / FINAL",
+    "independentQuality": "passed / FINAL; required16/16",
+    "qualitySourceChild": "passed / FINAL"
+  },
+  "target": "e69a8f3d97b34fea8737947c780b047bb0310c64",
+  "testedCandidate": "6fc13d2836629d6a6ae6d6a44e571f4220adb283",
+  "targetChanged": false,
+  "runtimeOrTestsChangedAfterCandidate": false,
+  "contractsKnowledgeFrontendSchemaChanged": false,
+  "taskDrift": false,
+  "wholeFileCompletions": 0,
+  "historicalUniqueCoverage": "unknown",
+  "performanceClosedScope": "current-page operator-name N+1 only",
+  "stillOpen": [
+    "event full materialization/JSON width/DB paging and indexes",
+    "global authorization and current-versus-historical name-search policy",
+    "whole W2-W7/A23/931 knowledge/86 UI/A12/high-risk/history/ZIP/capacity/UNKNOWN and paused work"
+  ],
+  "pr68StillOpen": true,
+  "qaManifestFilesVerified": 509,
+  "qaArchiveFileCount": 511
+}

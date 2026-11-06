@@ -1,5 +1,7 @@
 # W5审计读取正确性与W6规模取证
 
+后续增量：用户已明确选择先做本页批量补名，PR68尚OPEN，在同分支追加[本页姓名优化](../branch-review-20261106-audit-page-names/README.md)。下文“性能待讨论/未实施”为原正确性取证阶段的真实状态，不覆盖后续授权与实际候选；事件全载/数据库分页仍未实施。
+
 L2，基线edhr-dev@e69a8f3d97b34fea8737947c780b047bb0310c64。已核PR67人工合入且整树同a40a86ff，无外部/知识/契约增量。本批继续既定整体审计，不重新收尾旧PR；只修改两处后端产品文件，未实施待讨论的性能优化。
 
 已交付[PR68](https://github.com/IvenYi/edhr-nexus-frontend/pull/68)，audit/edhr-dev-audit-read-audit-20261106→edhr-dev，观察OPEN/MERGEABLE/CLEAN，建议人工合入。受测9d4416c3、验收cf220d59后本条仅L0交付登记，实际观察见evidence/delivery-verification.json。登记提交推送后再次核对本地/真实远端/PR head一致及受测运行/测试/契约/知识字节不变；下一轮先fetch确认实际合入与新代码后继续原全审队列。
