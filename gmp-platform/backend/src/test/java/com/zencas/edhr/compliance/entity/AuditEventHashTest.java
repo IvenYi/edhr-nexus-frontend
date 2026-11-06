@@ -78,6 +78,24 @@ class AuditEventHashTest {
         assertThat(hash("{ \"z\" : 1.00, \"a\" : \"原始变更\" }"))
                 .isEqualTo("ebfb3e7a6cda30e0d9c91cd58b7939c4e5cb2cefeba9597343dd1023b10a1e81");
     }
+    static Stream<Arguments> malformedText() {
+        return Stream.of(Arguments.of("\uD800", "?"), Arguments.of("\uDC00", "?"), Arguments.of("x\uD800y", "x?y"),
+                Arguments.of("\uD800\uD800\uDC00", "?𐀀"), Arguments.of("😀\uDC00", "😀?"));
+    }
+    @ParameterizedTest @MethodSource("malformedText")
+    void ordinaryTextUsesJdbcReplacementWithoutChangingTheOriginalField(String input, String stored) {
+        var first = event(1).operatorName(input).reason(input).build(); var second = event(1).operatorName(stored).reason(stored).build();
+        first.sealSnapshotHash(); second.sealSnapshotHash();
+        assertThat(first.getSnapshotHash()).isEqualTo(second.getSnapshotHash()); assertThat(first.getOperatorName()).isEqualTo(input); assertThat(first.getReason()).isEqualTo(input);
+    }
+    @ParameterizedTest @ValueSource(strings = {"ascii", "supplementary", "within_limit"})
+    void varcharHashDropsOnlyPaddingTheDatabaseActuallyDrops(String axis) {
+        String stored = axis.equals("supplementary") ? "😀".repeat(128) : axis.equals("within_limit") ? "x".repeat(127) + " " : "x".repeat(128);
+        var first = event(1).operatorName(stored + (axis.equals("within_limit") ? "" : " ")).build();
+        var second = event(1).operatorName(stored).build(); first.sealSnapshotHash(); second.sealSnapshotHash();
+        assertThat(first.getSnapshotHash()).isEqualTo(second.getSnapshotHash());
+        if (axis.equals("within_limit")) { var noSpace = event(1).operatorName(stored.stripTrailing()).build(); noSpace.sealSnapshotHash(); assertThat(first.getSnapshotHash()).isNotEqualTo(noSpace.getSnapshotHash()); }
+    }
 
     @ParameterizedTest @ValueSource(strings = {"number", "name", "string", "depth"})
     void localCodecDoesNotAddJacksonDefaultLimitsToExistingJsonbInputs(String axis) {

@@ -20,6 +20,11 @@ decisionPackage:
       scope: 新自动生成摘要事件标记audit-event-v2，追加nullable无default版本列且不回填；保留旧算法与显式已有hash路径。
       encoding: 固定18字段顺序的UTF8 JSON数组加版本域；普通文本保留/null独立，JSON字段用单元素数组区分SQLnull与JSONnull，对象键按Java字符串顺序递归排序，数组保序，任意精度十进制去尾零，重复键按JSONB最后值语义；摘要流式写入SHA不再构造完整canonical副本。新自动事件时间赋为同一LocalDateTime的微秒截断，固定六位小数，不改时区。
       compatibility: 未标版本事件按旧算法仅可诊断不认证可靠重算，未知版本明确拒绝计算、不猜算法；现有非空摘要保留且不自动盖v2。旧应用忽略nullable列可继续读写，应用回滚保留列及新旧hash，不做破坏性schema回退。
+    - id: engineering.actual-persisted-text
+      status: independent-finding-remediation
+      source: 初版独立质量QF-W5-UTF16-001/QF-W5-VARCHAR-002实际PG/JDBC反证；不是新业务限制
+      scope: 普通文本hash按PG JDBC实际未配对UTF16代理项到问号的替换值编码；13个varchar字段仅去除DB确会截断的超宽ASCII空格，宽度按Unicode代码点；不修改event业务字段、接收规则、全局parser或JSONB内容。
+      acceptance: 同源4例文本反证1正3真红；补8单元和19原生文本/全部varchar/补充字符/原非空格超限拒绝，最终201回归及全新独立质量，不复用初版failed为passed。
   impactAnalysis:
     level: L2
     directImpacts:

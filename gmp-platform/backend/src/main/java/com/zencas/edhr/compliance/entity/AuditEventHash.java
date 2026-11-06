@@ -42,11 +42,11 @@ final class AuditEventHash {
                 // Domain + the original eighteen fields, fixed order. JSON framing distinguishes text/null.
                 output.writeStartArray(); output.writeString(VERSION);
                 text(output, event.getId() == null ? null : event.getId().toString());
-                text(output, event.getTenantId()); text(output, event.getEntityType()); text(output, event.getEntityId()); text(output, event.getAction());
+                text(output, event.getTenantId(), 64); text(output, event.getEntityType(), 128); text(output, event.getEntityId(), 128); text(output, event.getAction(), 64);
                 json(output, event.getContentBefore()); json(output, event.getContentAfter());
-                text(output, event.getOperatorId()); text(output, event.getOperatorName()); text(output, event.getOperatorAccount());
-                text(output, event.getSource()); text(output, event.getModuleName()); text(output, event.getMenuName()); text(output, event.getFunctionName());
-                text(output, event.getDataSummary()); text(output, event.getReason()); text(output, event.getIpAddress());
+                text(output, event.getOperatorId(), 64); text(output, event.getOperatorName(), 128); text(output, event.getOperatorAccount(), 128);
+                text(output, event.getSource(), 32); text(output, event.getModuleName(), 128); text(output, event.getMenuName(), 128); text(output, event.getFunctionName(), 128);
+                text(output, event.getDataSummary(), 512); text(output, event.getReason()); text(output, event.getIpAddress(), 64);
                 text(output, event.getCreatedAt() == null ? null : TIME.format(event.getCreatedAt()));
                 output.writeEndArray();
             }
@@ -57,7 +57,29 @@ final class AuditEventHash {
     }
 
     private static void text(JsonGenerator output, String value) throws IOException {
-        if (value == null) output.writeNull(); else output.writeString(value);
+        text(output, value, Integer.MAX_VALUE);
+    }
+
+    private static void text(JsonGenerator output, String value, int varcharCharacters) throws IOException {
+        if (value == null) { output.writeNull(); return; }
+        // PG JDBC's UTF-8 encoder replaces unpaired UTF-16 surrogates with '?'. Do not mutate the event.
+        StringBuilder repaired = null;
+        for (int i = 0; i < value.length(); i++) {
+            char c = value.charAt(i);
+            if (Character.isHighSurrogate(c) && i + 1 < value.length() && Character.isLowSurrogate(value.charAt(i + 1))) { i++; continue; }
+            if (Character.isSurrogate(c)) {
+                if (repaired == null) repaired = new StringBuilder(value);
+                repaired.setCharAt(i, '?');
+            }
+        }
+        String persisted = repaired == null ? value : repaired.toString();
+        // VARCHAR(n) accepts excess ASCII spaces and removes only the part beyond n code points.
+        if (persisted.length() > varcharCharacters && persisted.codePointCount(0, persisted.length()) > varcharCharacters) {
+            int end = persisted.offsetByCodePoints(0, varcharCharacters), i = end;
+            while (i < persisted.length() && persisted.charAt(i) == ' ') i++;
+            if (i == persisted.length()) persisted = persisted.substring(0, end);
+        }
+        output.writeString(persisted);
     }
 
     private static void json(JsonGenerator output, String value) throws IOException {

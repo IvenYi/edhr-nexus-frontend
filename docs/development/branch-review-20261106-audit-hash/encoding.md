@@ -2,7 +2,11 @@
 
 本版本是AuditEvent新自动封存的工程编码，不是业务状态、电子签名算法、链式日志或带密钥认证。普通SHA-256不能抵抗可同时改内容和摘要的数据库写权限持有者；本批不增新的安全承诺。
 
-SHA-256消费UTF-8 JSON数组的确定输出。首项为字符串`audit-event-v2`，随后固定18项：id、tenantId、entityType、entityId、action、contentBefore、contentAfter、operatorId、operatorName、operatorAccount、source、moduleName、menuName、functionName、dataSummary、reason、ipAddress、createdAt。id为十进制字符串，其他普通字段为原字符串或JSON null；不trim、不做Unicode规范化。JSON结构分界使空值、空字符串与字段内容明确区分。
+SHA-256消费UTF-8 JSON数组的确定输出。首项为字符串`audit-event-v2`，随后固定18项：id、tenantId、entityType、entityId、action、contentBefore、contentAfter、operatorId、operatorName、operatorAccount、source、moduleName、menuName、functionName、dataSummary、reason、ipAddress、createdAt。id为十进制字符串，其他普通字段为实际持久字符串或JSON null；不做通用trim或Unicode规范化。JSON结构分界使空值、空字符串与字段内容明确区分。
+
+普通text的两项实际存储转换也纳入hash，event字段不改：PG JDBC UTF-8把未配对UTF-16代理项替换成`?`；VARCHAR(n)只会丢弃超出n代码点的ASCII空格。13个宽度对应正式DDL：tenantId64、entityType128、entityId128、action64、operatorId64、operatorName128、operatorAccount128、source32、moduleName128、menuName128、functionName128、dataSummary512、ipAddress64；reason无varchar截断。界内尾空格仍参与hash，正常补充字符按一个代码点计，不误删有效配对；超界非空格仍由原数据库约束拒绝。JSONB的字符串/键路径不替换未配对代理项或放宽其原拒绝。以后若改变这些持久语义，应评估新编码版本，不能静默改v2定义。
+
+字符串采用当前确定JSON generator的转义：引号/反斜杠/控制字符按JSON转义，补充平面字符写成大写代理转义对，例如😀为`\uD83D\uDE00`，普通非ASCII BMP字符以UTF-8输出；对象键按上述UTF-16自然顺序。该转义细节属于编码定义，不是Unicode内容规范化。
 
 contentBefore/After：SQL null写为null；存在的JSON值写为单元素数组`[value]`，故JSON null为`[null]`。JSON解析为精确整数/十进制，重复的解码键保留最后值，沿JSONB语义。对象键递归按Java字符串自然顺序（UTF-16代码单元）排序；数组保原顺序。数字转BigDecimal去尾零后按`toString()`输出，故1/1.0/1e0同值，负零与零同值，大于2^53仍精确。字符串保解码值，转义和原字节格式不参与JSONB值摘要；不得把它称为保存原JSON字符串字节。
 

@@ -18,9 +18,27 @@
     ],
     "missingFreshReports": []
   },
+  "textNegative": {
+    "totals": {
+      "tests": 4,
+      "failures": 3,
+      "errors": 0,
+      "skipped": 0
+    },
+    "classes": [
+      {
+        "class": "com.zencas.edhr.compliance.entity.AuditEventTextPersistencePostgresTest",
+        "tests": 4,
+        "failures": 3,
+        "errors": 0,
+        "skipped": 0
+      }
+    ],
+    "missingFreshReports": []
+  },
   "final": {
     "totals": {
-      "tests": 174,
+      "tests": 201,
       "failures": 0,
       "errors": 0,
       "skipped": 0
@@ -35,7 +53,7 @@
       },
       {
         "class": "com.zencas.edhr.compliance.entity.AuditEventHashTest",
-        "tests": 40,
+        "tests": 48,
         "failures": 0,
         "errors": 0,
         "skipped": 0
@@ -130,6 +148,20 @@
         "failures": 0,
         "errors": 0,
         "skipped": 0
+      },
+      {
+        "class": "com.zencas.edhr.compliance.entity.AuditEventTextPersistencePostgresTest",
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "com.zencas.edhr.compliance.entity.AuditEventVarcharPersistencePostgresTest",
+        "tests": 15,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
       }
     ],
     "missingFreshReports": []
@@ -143,6 +175,7 @@
     }
   ],
   "oldAndNewRoundtripTestByteIdentical": true,
+  "beforeAndAfterTextTestByteIdentical": true,
   "roundTrips": [
     {
       "name": "boundary_array",
@@ -265,10 +298,154 @@
       "storedTime": "2026-11-06T12:00:00.123456"
     },
     {
+      "name": "text_embedded",
+      "hashMatches": true,
+      "providedLegacyNotCertified": false,
+      "requestedTime": "2026-11-06T12:00:00.123456",
+      "sealedTime": "2026-11-06T12:00:00.123456",
+      "storedTime": "2026-11-06T12:00:00.123456"
+    },
+    {
+      "name": "text_high",
+      "hashMatches": true,
+      "providedLegacyNotCertified": false,
+      "requestedTime": "2026-11-06T12:00:00.123456",
+      "sealedTime": "2026-11-06T12:00:00.123456",
+      "storedTime": "2026-11-06T12:00:00.123456"
+    },
+    {
+      "name": "text_low",
+      "hashMatches": true,
+      "providedLegacyNotCertified": false,
+      "requestedTime": "2026-11-06T12:00:00.123456",
+      "sealedTime": "2026-11-06T12:00:00.123456",
+      "storedTime": "2026-11-06T12:00:00.123456"
+    },
+    {
+      "name": "text_paired",
+      "hashMatches": true,
+      "providedLegacyNotCertified": false,
+      "requestedTime": "2026-11-06T12:00:00.123456",
+      "sealedTime": "2026-11-06T12:00:00.123456",
+      "storedTime": "2026-11-06T12:00:00.123456"
+    },
+    {
       "name": "time",
       "hashMatches": true,
       "providedLegacyNotCertified": false,
       "requestedTime": "2026-11-06T12:00:00.123456789",
+      "sealedTime": "2026-11-06T12:00:00.123456",
+      "storedTime": "2026-11-06T12:00:00.123456"
+    },
+    {
+      "name": "varchar_action",
+      "hashMatches": true,
+      "providedLegacyNotCertified": false,
+      "requestedTime": "2026-11-06T12:00:00.123456",
+      "sealedTime": "2026-11-06T12:00:00.123456",
+      "storedTime": "2026-11-06T12:00:00.123456"
+    },
+    {
+      "name": "varchar_dataSummary",
+      "hashMatches": true,
+      "providedLegacyNotCertified": false,
+      "requestedTime": "2026-11-06T12:00:00.123456",
+      "sealedTime": "2026-11-06T12:00:00.123456",
+      "storedTime": "2026-11-06T12:00:00.123456"
+    },
+    {
+      "name": "varchar_entityId",
+      "hashMatches": true,
+      "providedLegacyNotCertified": false,
+      "requestedTime": "2026-11-06T12:00:00.123456",
+      "sealedTime": "2026-11-06T12:00:00.123456",
+      "storedTime": "2026-11-06T12:00:00.123456"
+    },
+    {
+      "name": "varchar_entityType",
+      "hashMatches": true,
+      "providedLegacyNotCertified": false,
+      "requestedTime": "2026-11-06T12:00:00.123456",
+      "sealedTime": "2026-11-06T12:00:00.123456",
+      "storedTime": "2026-11-06T12:00:00.123456"
+    },
+    {
+      "name": "varchar_functionName",
+      "hashMatches": true,
+      "providedLegacyNotCertified": false,
+      "requestedTime": "2026-11-06T12:00:00.123456",
+      "sealedTime": "2026-11-06T12:00:00.123456",
+      "storedTime": "2026-11-06T12:00:00.123456"
+    },
+    {
+      "name": "varchar_ipAddress",
+      "hashMatches": true,
+      "providedLegacyNotCertified": false,
+      "requestedTime": "2026-11-06T12:00:00.123456",
+      "sealedTime": "2026-11-06T12:00:00.123456",
+      "storedTime": "2026-11-06T12:00:00.123456"
+    },
+    {
+      "name": "varchar_menuName",
+      "hashMatches": true,
+      "providedLegacyNotCertified": false,
+      "requestedTime": "2026-11-06T12:00:00.123456",
+      "sealedTime": "2026-11-06T12:00:00.123456",
+      "storedTime": "2026-11-06T12:00:00.123456"
+    },
+    {
+      "name": "varchar_moduleName",
+      "hashMatches": true,
+      "providedLegacyNotCertified": false,
+      "requestedTime": "2026-11-06T12:00:00.123456",
+      "sealedTime": "2026-11-06T12:00:00.123456",
+      "storedTime": "2026-11-06T12:00:00.123456"
+    },
+    {
+      "name": "varchar_operatorAccount",
+      "hashMatches": true,
+      "providedLegacyNotCertified": false,
+      "requestedTime": "2026-11-06T12:00:00.123456",
+      "sealedTime": "2026-11-06T12:00:00.123456",
+      "storedTime": "2026-11-06T12:00:00.123456"
+    },
+    {
+      "name": "varchar_operatorId",
+      "hashMatches": true,
+      "providedLegacyNotCertified": false,
+      "requestedTime": "2026-11-06T12:00:00.123456",
+      "sealedTime": "2026-11-06T12:00:00.123456",
+      "storedTime": "2026-11-06T12:00:00.123456"
+    },
+    {
+      "name": "varchar_operatorName",
+      "hashMatches": true,
+      "providedLegacyNotCertified": false,
+      "requestedTime": "2026-11-06T12:00:00.123456",
+      "sealedTime": "2026-11-06T12:00:00.123456",
+      "storedTime": "2026-11-06T12:00:00.123456"
+    },
+    {
+      "name": "varchar_source",
+      "hashMatches": true,
+      "providedLegacyNotCertified": false,
+      "requestedTime": "2026-11-06T12:00:00.123456",
+      "sealedTime": "2026-11-06T12:00:00.123456",
+      "storedTime": "2026-11-06T12:00:00.123456"
+    },
+    {
+      "name": "varchar_tenantId",
+      "hashMatches": true,
+      "providedLegacyNotCertified": false,
+      "requestedTime": "2026-11-06T12:00:00.123456",
+      "sealedTime": "2026-11-06T12:00:00.123456",
+      "storedTime": "2026-11-06T12:00:00.123456"
+    },
+    {
+      "name": "varchar_unicode",
+      "hashMatches": true,
+      "providedLegacyNotCertified": false,
+      "requestedTime": "2026-11-06T12:00:00.123456",
       "sealedTime": "2026-11-06T12:00:00.123456",
       "storedTime": "2026-11-06T12:00:00.123456"
     }
@@ -303,6 +480,7 @@
       "driverMetadataStatements": {}
     }
   ],
+  "initialIndependent": "1c077d28 had174/89 passed but independent quality failed two medium text persistence boundaries; retained original failed report, main fixed both and fresh quality required.",
   "producerScope": "Configuration controller+real repositories; real aspect with synthetic joinpoint+real repository; actual signature audit producer invoked on target with synthetic user/signature/request+real JPA, not full certification; real attachment native27 now rehashes actual events; Signature native9 independent from AuditEvent.",
   "intermediateAttempts": [
     {
