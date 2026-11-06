@@ -1,0 +1,156 @@
+qualityResult:
+  result: passed
+  baseCommit: 2cb85492b2dbf47f5b837c565eecc5832b62b39a
+  headCommit: a4777e9f6ef7518d8684a48516c21cf5904cff01
+  contractBaseline:
+    sourceCommit: a4777e9f6ef7518d8684a48516c21cf5904cff01
+    targetBranch: edhr-dev
+    targetCommit: 2cb85492b2dbf47f5b837c565eecc5832b62b39a
+    contractReadCommit: a4777e9f6ef7518d8684a48516c21cf5904cff01
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: clean
+    includedPaths: []
+    excludedPaths: []
+    untrackedPaths: []
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+    - id: qa.fixed-candidate-and-independent-runtime
+      required: true
+      category: documentation
+      description: 全新未参与修复实例，固定detached候选、独立fetch/契约及自有PG/JVM临时根
+      method: command
+      command: git fetch origin edhr-dev; independent worktree and owned runner
+      outcome: passed
+      evidence: [baseline.json, context-manifest.json, final/run.json, final-state.json]
+    - id: qa.minimal-runtime-and-protected-scope
+      required: true
+      category: requirements
+      description: 仅两产品文件的helper与TWR变更；原schema/UI/权限/冻结/历史/hash/知识/契约保持
+      method: inspection
+      command: python3 inspect.py; source child byte-reconstruction proof
+      outcome: passed
+      evidence: [inspection.json, source-role/proof.json, source-role/REVIEW.md]
+    - id: qa.normative-boundary
+      required: true
+      category: ontology
+      description: 原冻结与失败阻断规则保持，临时ZIP导出不代受控归档生命周期，不改业务政策
+      method: inspection
+      command: compare DEC-0063, rule.dhr-summary-zip-source-trace, DEC-0090 and final ontology result
+      outcome: passed
+      evidence: [context/docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml, context/docs/knowledge/decisions/DEC-0090-dhr-archive-minimum-scope.yaml, ontology/ontologyResult.yaml, ontology/REVIEW.md]
+    - id: qa.service-primary-and-suppressed-errors
+      required: true
+      category: unit
+      description: 原BusinessException/IOException/审计Runtime身份、关闭错误与清理错误suppressed及正常删除保持
+      method: automated-test
+      command: EDHR_ARCHIVE_ROOT=/tmp/edhr-archive-cleanup-qa-worktree-20261106 EDHR_ARCHIVE_RAW=/tmp/edhr-archive-cleanup-qa-20261106 python3 run.py final
+      outcome: passed
+      evidence: [final/TEST-com.zencas.edhr.production.service.DhrArchiveCleanupFailureTest.xml, final/run.json, final/maven.log]
+    - id: qa.streaming-primary-bytes-and-headers
+      required: true
+      category: unit
+      description: 原成功/中断/身份拒绝断言保持；流IO或Runtime与删除双失败保留原错误及suppressed
+      method: automated-test
+      command: independent DhrArchiveControllerStreamingTest six cases
+      outcome: passed
+      evidence: [final/TEST-com.zencas.edhr.production.controller.DhrArchiveControllerStreamingTest.xml, source-role/proof.json]
+    - id: qa.cleanup-only-failure-and-owned-scope
+      required: true
+      category: regression
+      description: 输出已完整复制而仅删除失败仍向容器抛错，不静默吞清理；仅操作测试自有临时路径
+      method: automated-test
+      command: cleanupFailureAfterSuccessfulCopyStillFailsAndRetainsExactOutput and owned-path fault cases
+      outcome: passed
+      evidence: [final/TEST-com.zencas.edhr.production.controller.DhrArchiveControllerStreamingTest.xml, final/temporary-archives.json, source-role/REVIEW.md]
+    - id: qa.native-frozen-archive-originals-and-audit
+      required: true
+      category: integration
+      description: 完整canonical/0092真实PG冻结/原件/ZIP/PDF合并/导出审计12项通过，renderer为合成PDF mock
+      method: automated-test
+      command: independent DhrExportReadObservationPostgresTest twelve cases
+      outcome: passed
+      evidence: [final/TEST-com.zencas.edhr.production.service.DhrExportReadObservationPostgresTest.xml, final/observations/observations.jsonl, final/postgres.log]
+    - id: qa.file-layout-adjacent-regressions
+      required: true
+      category: regression
+      description: 原FormFiles四项和冻结布局读取三项回归通过
+      method: automated-test
+      command: independent DhrFormFilesTest and DhrArchiveLayoutReaderTest
+      outcome: passed
+      evidence: [final/TEST-com.zencas.edhr.production.service.DhrFormFilesTest.xml, final/TEST-com.zencas.edhr.production.service.DhrArchiveLayoutReaderTest.xml]
+    - id: qa.hash-event-aspect-adjacent
+      required: true
+      category: audit
+      description: 原hash48/event2/aspect3回归通过，相关摘要算法与审计字段源码保持
+      method: automated-test
+      command: independent AuditEventHashTest, AuditEventTest and AuditAspectTest
+      outcome: passed
+      evidence: [final/test-summary.json, final/TEST-com.zencas.edhr.compliance.entity.AuditEventHashTest.xml, inspection.json]
+    - id: qa.old-source-negative-controls
+      required: true
+      category: regression
+      description: 原13项为7正6真Assertion失败且0错误/跳过，测试同字节，旧产品匹配2cb Git
+      method: inspection
+      command: python3 inspect.py
+      outcome: passed
+      evidence: [inspection.json, parent-evidence/main/negative/test-summary.json, parent-evidence/main/negative/]
+    - id: qa.raw-evidence-and-input-integrity
+      required: true
+      category: documentation
+      description: 两包149原件路径/长度/SHA及外层checksum通过，19主侧运行输入与候选一致
+      method: command
+      command: python3 inspect.py
+      outcome: passed
+      evidence: [inspection.json, parent-evidence/, context-manifest.json]
+    - id: qa.native-observer-jfr-and-audit-bindings
+      required: true
+      category: database
+      description: 独立11观察/33 observer SELECT，11 JFR及3实际EXPORT/v2绑定核对；主侧同量原件独立重核
+      method: command
+      command: python3 reconcile.py
+      outcome: passed
+      evidence: [reconciliation.json, CheckJfr.java, final/observations/, final/postgres.log]
+    - id: qa.cleanup-provenance-and-resource-release
+      required: true
+      category: documentation
+      description: 保留主侧immediate --rm false与后续absence原件及编排器后改边界；独立bounded poll确认PG删除、临时ZIP无遗留
+      method: inspection
+      command: inspect original cleanup provenance and independent cleanup/final-state
+      outcome: passed
+      evidence: [inspection.json, parent-evidence/main/runner-post-run-change.json, final/cleanup.json, final/temporary-archives.json, final-state.json]
+    - id: qa.knowledge-eighty-nine
+      required: true
+      category: ontology
+      description: 独立fresh知识89通过，350知识文件同目标；本体有限10不计全盘语义通过
+      method: automated-test
+      command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f tools/knowledge-model/pom.xml test
+      outcome: passed
+      evidence: [knowledge/started.json, knowledge/maven.log, knowledge/test-summary.json, knowledge-file-manifest.json, ontology/ontologyResult.yaml]
+    - id: qa.source-a23-and-residual-scope
+      required: true
+      category: requirements
+      description: 必要suppressed/helper/TWR有实际反证，不扩Throwable或恢复框架；只读源码子项FINAL，未声称全HTTP/全故障/全审通过
+      method: inspection
+      command: independent source child and parent scope review
+      outcome: passed
+      evidence: [source-role/REVIEW.md, source-role/result.json, REVIEW.md, final-state.json]
+  findings: []
+  residualRisks:
+    - id: gap.http-async-and-handoff
+      description: 未运行完整servlet HTTP/异步调度；Files.size或响应构造失败、body未开始、拒绝/取消/超时及Error/OOM路径仍原缺口。
+      impact: 回调向容器抛错不能撤回已经发出的状态/字节；cleanup-only失败时客户端可能已收到完整ZIP。成功EXPORT审计发生流之前，流失败不保证回滚它。
+      mitigation: 后续单独验真实异步生命周期/清理交接，不把本轮异常传播修复称网络原子回滚或全故障回收。
+    - id: gap.fault-fixture-and-runtime-limits
+      description: 新fault用例显式启用、真实Linux自有路径置换非空目录，数据库/renderer为mock；原生12真实PG但renderer仍mock，成功空记录版本仅隔离打包夹具。
+      impact: 不认证其他OS/磁盘掉线/权限故障、Chromium布局或空DHR业务资格；删除Runtime分支部分为源码检查。
+      mitigation: 保持实际测试与源码范围分列，所需平台及完整渲染/HTTP验收在对应切片补证，不降低既有断言。
+    - id: gap.cleanup-persistence-and-capacity
+      description: UNKNOWN、持久对账、未知孤儿回收及PDF/上传/Office容量仍待审；本轮不新增自动重试/清扫/恢复或实施DB分页方案。
+      impact: 附属清理错误可定位不等于文件已经成功回收或崩溃后自动恢复，资源与性能风险未全关闭。
+      mitigation: 按台账和用户真实决策继续，不自动删除未知文件或从merge推断性能方案授权。
+    - id: gap.whole-audit-and-policy
+      description: W2-W7、931知识/86UI候选、高风险/A12/完整矩阵、历史ZIP/text-ID/共享ACL并发/A23及用户暂停队列保持；知识0.3.25/schema1.2/P0不提升。
+      impact: 85/89和有限本体/源码结果只裁定本批，不能代整文件、全分支或完整发布验收。
+      mitigation: 主侧在全部角色/子项FINAL后实际漂移/阶段复核，并按最新目标持续增量审查。
+  blockingConditions: []

@@ -1,5 +1,15 @@
 # 持续推进台账
 
+## PR69已合入：DHR导出双重失败错误传播整改
+
+已fetch edhr-dev@2cb85492b2dbf47f5b837c565eecc5832b62b39a，PR69人工合入且整树同5f1a0fa4，无外部/知识/契约增量；新分支audit/edhr-dev-dhr-archive-cleanup-20261106。有限数据库分页选择未答，继续原20261105导出审查第32行明确待测的删除失败/FS故障队列。[本批](../branch-review-20261106-dhr-archive-cleanup/README.md)L2确认Service两catch及流finally在双失败时覆盖原异常，一项medium W6-DHR-EXPORT-PRIMARY-ERROR-001；不是PR69引入，不重复记已修文件项或容量风险。
+
+两产品局部修：service保主异常+suppressed/自有路径日志，controller Closeable TWR；单独清理失败仍报错，不递归扫删/恢复/改业务。旧源同字节13=7正6真F、0E/S，最终85/85、知识89/89；19受测输入不变。真实Linux自有路径模拟IO失败，mock协作者与真实PG native12分开；原11观察33SELECT、server3成功EXPORT审计、11JFR重算保持。Docker--rm初始false与随后inspect删除分别保留，runner仅后改清理观察，不改产品测试。
+
+clean受测a4777e9f已获全新独立85/85+89/89、15必需项passed/FINAL，无发现/阻断；原149原件/19输入、双方11JFR和实际3EXPORT/v2绑定均核，资源清理。本体NA/FINAL有限10=8一致2gap、350知识不变，源码及历史/质量子项全部FINAL。全部FINAL后已实际漂移/阶段复核，目标仍2cb、无外部增量，无漂移，之后仅L0验收/交付文档。缺陷按本批范围关闭；修复不回滚已发送HTTP状态/字节，不将ZIP临时副本清理等同DEC0090受控归档生命周期。
+
+Files.size/未开始流/异步拒绝取消超时、Error/OOM、UNKNOWN/持久对账、共享ACL/原件并发及PDF/上传Office容量保持；整体W2余项/W3-W5交叉/W6健壮性性能具体抽取A23含已审/W7增量、931知识/86UI/A12/高风险/完整矩阵及用户暂停队列仍待审。整文件0、历史unique未知，不自动merge/deploy/恢复或查触发CI。
+
 ## PR68已合入：审计事件全载与有限分页方案取证
 
 已交付[PR69](https://github.com/IvenYi/edhr-nexus-frontend/pull/69)，audit/edhr-dev-audit-paging-probe-20261106→edhr-dev，观察OPEN/MERGEABLE/CLEAN，建议人工合入本轮测试与证据。受测6daaafe9、验收576525f1后仅L0交付记录；登记后再核本地/真实远端/PR head和受测保护路径字节。下一轮先fetch实际合入/新提交，按用户真实性能答复或无依赖原队列继续；未答不当批准，未实施DB分页或索引，不自动merge/deploy/恢复。
