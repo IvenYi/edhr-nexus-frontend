@@ -81,6 +81,7 @@ class DhrAttachmentTransactionPostgresTest {
             assertThat(ddl.find()).as("canonical %s table", table).isTrue();
             jdbc.execute(ddl.group()); jdbc.execute("ALTER TABLE " + table + " ADD PRIMARY KEY(id)");
         }
+        jdbc.execute(Files.readString(Path.of("src/main/resources/db/changelog/0092-audit-event-hash-version.sql")));
         jdbc.update("""
             INSERT INTO dhr_instance(id,tenant_id,dhr_no,production_object_id,object_no,object_type,work_order_id,
               work_order_no,product_id,process_version_id,route_version_id,dhr_template_id,dhr_template_version_id,

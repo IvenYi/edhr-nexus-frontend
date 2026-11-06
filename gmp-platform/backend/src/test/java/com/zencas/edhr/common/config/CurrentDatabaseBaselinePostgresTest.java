@@ -47,7 +47,9 @@ class CurrentDatabaseBaselinePostgresTest {
     @Test void freshInstallIsCurrentCompleteAndRepeatableWithoutBusinessBackfills() throws Exception {
         install();
         connection.setAutoCommit(true);
-        assertThat(scalar("SELECT count(*) FROM databasechangelog")).isEqualTo("11");
+        assertThat(scalar("SELECT count(*) FROM databasechangelog")).isEqualTo("12");
+        assertThat(scalar("SELECT is_nullable FROM information_schema.columns WHERE table_schema='public' AND table_name='audit_event' AND column_name='snapshot_hash_version'")).isEqualTo("YES");
+        assertThat(scalar("SELECT column_default FROM information_schema.columns WHERE table_schema='public' AND table_name='audit_event' AND column_name='snapshot_hash_version'")).isNull();
         assertThat(scalar("SELECT count(*) FROM pg_index i JOIN pg_class c ON c.oid=i.indexrelid WHERE c.relnamespace='public'::regnamespace AND c.relname IN ('idx_dhr_review_pending_workflow','idx_workflow_task_done_assignee_id') AND i.indisvalid")).isEqualTo("2");
         assertThat(scalar("SELECT name FROM permission WHERE code='workflow.instances'")).isEqualTo("流程日志");
         assertThat(scalar("SELECT name||':'||type FROM permission WHERE code='workflow.intervene'")).isEqualTo("流程干预:PAGE");
@@ -77,7 +79,7 @@ class CurrentDatabaseBaselinePostgresTest {
         String before = scalar("SELECT md5(string_agg(row_to_json(p)::text,',' ORDER BY id)) FROM permission p");
         install();
         connection.setAutoCommit(true);
-        assertThat(scalar("SELECT count(*) FROM databasechangelog")).isEqualTo("11");
+        assertThat(scalar("SELECT count(*) FROM databasechangelog")).isEqualTo("12");
         assertThat(scalar("SELECT md5(string_agg(row_to_json(p)::text,',' ORDER BY id)) FROM permission p")).isEqualTo(before);
 
         // First release stores the original bytes, not the normalized JSONB representation.

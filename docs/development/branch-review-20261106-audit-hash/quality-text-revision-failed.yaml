@@ -1,0 +1,316 @@
+qualityResult:
+  result: failed
+  baseCommit: 9dc5c0014643d99db299d27a80788cc777a0ccca
+  headCommit: f640dc75e5e588da9dd60579157092bfcd0e8148
+  contractBaseline:
+    sourceCommit: f640dc75e5e588da9dd60579157092bfcd0e8148
+    targetBranch: edhr-dev
+    targetCommit: 9dc5c0014643d99db299d27a80788cc777a0ccca
+    contractReadCommit: f640dc75e5e588da9dd60579157092bfcd0e8148
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: clean
+    includedPaths: []
+    excludedPaths: []
+    untrackedPaths: []
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+  - id: check.independent-candidate
+    required: true
+    category: documentation
+    description: Full fresh independent instance; fixed detached candidate, no implementation/test/config edits.
+    method: inspection
+    command: Read contracts and git candidate/worktree status
+    outcome: passed
+    evidence:
+    - worktree-state.json
+    - source-snapshot-manifest.json
+  - id: check.decision-scope
+    required: true
+    category: requirements
+    description: New auto event v2 and old history/UI/other-hash nonchanges match DP except separately reported
+      JSON transmission defect.
+    method: inspection
+    command: Read DP, encoding, actual diff and source
+    outcome: passed
+    evidence:
+    - REVIEW.md
+    - source-snapshot/
+  - id: check.fresh-201
+    required: true
+    category: regression
+    description: Actual independent201/201,0 failure/error/skip,17 classes and no missing fresh report.
+    method: automated-test
+    command: python3 run-independent.py corrected
+    outcome: passed
+    evidence:
+    - corrected/test-summary.json
+    - corrected/run.json
+    - corrected/maven.log
+  - id: check.knowledge-89
+    required: true
+    category: ontology
+    description: Actual independent89/89 and350 knowledge/contract files byte-identical; no maturity upgrade.
+    method: automated-test
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f tools/knowledge-model/pom.xml test
+    outcome: passed
+    evidence:
+    - knowledge/maven.log
+    - knowledge/TEST-com.zencas.edhr.knowledge.BusinessKnowledgeModelTest.xml
+    - knowledge-contract-scope.json
+  - id: check.archives-1181
+    required: true
+    category: documentation
+    description: Six archives and1181 listed file sizes/checksums match; original failed result retained.
+    method: command
+    command: python3 verify-evidence.py
+    outcome: passed
+    evidence:
+    - archive-check.json
+    - retained-role-originals/
+  - id: check.genuine-negative-controls
+    required: true
+    category: regression
+    description: Old JSON/time2 true failures and initial-v2 text1positive3 true failures retained,0E/S; tests same
+      bytes as final candidate.
+    method: command
+    command: python3 verify-evidence.py
+    outcome: passed
+    evidence:
+    - negative-controls.json
+  - id: check.fixed-vector-and-fields
+    required: true
+    category: unit
+    description: Independent fixed SHA vector matches; actual48 unit cases include all18 persisted field changes
+      and type/order boundaries.
+    method: automated-test
+    command: AuditEventHashTest within independent201 run; independent Python fixed vector
+    outcome: passed
+    evidence:
+    - fixed-vector.json
+    - corrected/TEST-com.zencas.edhr.compliance.entity.AuditEventHashTest.xml
+  - id: check.json-value-boundaries
+    required: true
+    category: integration
+    description: Actual PG handles exact numeric/long names/deep JSON and time precision cases; parser local constraints
+      and Frame stack do not create smaller default limits.
+    method: automated-test
+    command: AuditEventHashCompatibilityPostgresTest and RoundTripPostgresTest
+    outcome: passed
+    evidence:
+    - corrected/TEST-com.zencas.edhr.compliance.entity.AuditEventHashCompatibilityPostgresTest.xml
+    - corrected/observations/
+  - id: check.utf16-original-finding
+    required: true
+    category: database
+    description: Original ordinary text Unicode cases now preserve actual JDBC stored value; valid paired supplementary
+      text unchanged.
+    method: command
+    command: python3 run-text-probe.py plus native text4 in201
+    outcome: passed
+    evidence:
+    - text-unicode-probe.jsonl
+    - text-unicode-probe-runtime.json
+    - corrected/TEST-com.zencas.edhr.compliance.entity.AuditEventTextPersistencePostgresTest.xml
+  - id: check.varchar-original-finding
+    required: true
+    category: database
+    description: Original padding cases fixed, all13 canonical widths match, Unicode codepoint handling and within-limit
+      space/nonspace rejection remain.
+    method: command
+    command: python3 run-text-probe.py and actual native15/units
+    outcome: passed
+    evidence:
+    - text-unicode-probe.jsonl
+    - varchar-width-check.json
+    - corrected/TEST-com.zencas.edhr.compliance.entity.AuditEventVarcharPersistencePostgresTest.xml
+  - id: check.sql-and-parameter-rehash
+    required: true
+    category: audit
+    description: Independent exact Python rehash59 successful v2 INSERT executions matches; core1INSERT/1SELECT,SET/driver
+      separate, execute not commit.
+    method: command
+    command: python3 verify-native.py
+    outcome: passed
+    evidence:
+    - native-sql-and-independent-rehash.json
+    - corrected/postgres.log
+  - id: check.migration-compatibility
+    required: true
+    category: database
+    description: Actual old-master upgrade/repeat changes only nullable version for audit rows; old app column-set
+      protocol reads/writes remain.
+    method: automated-test
+    command: AuditHashMigrationPostgresTest and CurrentDatabaseBaselinePostgresTest
+    outcome: passed
+    evidence:
+    - corrected/TEST-com.zencas.edhr.compliance.entity.AuditHashMigrationPostgresTest.xml
+    - corrected/TEST-com.zencas.edhr.common.config.CurrentDatabaseBaselinePostgresTest.xml
+  - id: check.legacy-and-unknown
+    required: true
+    category: integration
+    description: Existing supplied hashes unmarked/unchanged,unknown refuses algorithm guessing,legacy diagnosis
+      retained without historical certification.
+    method: automated-test
+    command: AuditEventHashCompatibilityPostgresTest
+    outcome: passed
+    evidence:
+    - corrected/TEST-com.zencas.edhr.compliance.entity.AuditEventHashCompatibilityPostgresTest.xml
+  - id: check.actual-producer-boundaries
+    required: true
+    category: integration
+    description: Actual configuration/repos,aspect with synthetic joinpoint,private signature audit producer/JPA
+      and attachment service rehash tested; scope not fullHTTP/certification.
+    method: inspection
+    command: Read actual producer source and execute201 selected tests
+    outcome: passed
+    evidence:
+    - REVIEW.md
+    - corrected/test-summary.json
+    - native-sql-and-independent-rehash.json
+  - id: check.original-atomicity-and-hashes
+    required: true
+    category: regression
+    description: Attachment transaction11 and native27,independent Signature9,Auth24 and reader/aspect regressions
+      pass; original Aspect swallow behavior not changed.
+    method: automated-test
+    command: Selected adjacent tests within independent201 run
+    outcome: passed
+    evidence:
+    - corrected/test-summary.json
+    - corrected/postgres.log
+  - id: check.a23-resource-scope
+    required: true
+    category: requirements
+    description: No new SQL/framework/cache/global parser/UI; local helper protects observed persistence boundaries,still
+      JSON tree+key sort,not constant memory.
+    method: inspection
+    command: Inspect helper source and resource observations
+    outcome: passed
+    evidence:
+    - source-snapshot/gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/entity/AuditEventHash.java
+    - corrected/observations/allocation_10mib.json
+  - id: check.finite-and-whole-audit-boundaries
+    required: true
+    category: documentation
+    description: Initial finite16 and incremental6 not added as new unique;old history/ZIP/full-audit/capacity/A23/paused
+      queues remain.
+    method: inspection
+    command: Read finite ontology originals,scope inventory and README
+    outcome: passed
+    evidence:
+    - knowledge-contract-scope.json
+    - retained-role-originals/
+    - REVIEW.md
+  - id: check.own-cleanup
+    required: true
+    category: documentation
+    description: Own PG containers removed,dependency link removed,source clean then own detached worktree removed;
+      no other resources touched.
+    method: command
+    command: docker inspect own names; git status and git worktree remove own candidate
+    outcome: passed
+    evidence:
+    - worktree-state.json
+    - corrected/cleanup.json
+    - text-unicode-probe-cleanup.json
+    - json-text-persistence-cleanup.json
+  - id: check.raw-json-jdbc-utf16
+    required: true
+    category: audit
+    description: Successful JSONB persistence from raw Java surrogate value/key/default mapper must rehash,while
+      ASCII escaped invalid surrogate remains refused.
+    method: command
+    command: Compile and run JsonTextPersistenceProbe using exact CLI in json-text-persistence-runtime.json
+    outcome: failed
+    evidence:
+    - json-text-persistence-probe.jsonl
+    - json-text-persistence-runtime.json
+    - JsonTextPersistenceProbe.java
+    - REVIEW.md
+  findings:
+  - id: QF-W5-UTF16-001
+    severity: medium
+    scope: AuditEventHash.text
+    summary: Ordinary text JDBC UTF16 replacement boundary from initial candidate is resolved.
+    reproductionSteps:
+    - Replay original six-case JDBC probe and actual current native text/varchar tests.
+    expectedResult: New v2 hash matches the actual stored ordinary text value.
+    actualResult: Relevant original cases match and original constraint behavior remains.
+    evidence:
+    - text-unicode-probe.jsonl
+    - corrected/test-summary.json
+    resolutionStatus: resolved
+    resolutionEvidence:
+    - type: commit
+      reference: f640dc75e5e588da9dd60579157092bfcd0e8148
+    - type: command
+      reference: text-unicode-probe.jsonl; corrected/test-summary.json
+  - id: QF-W5-VARCHAR-002
+    severity: medium
+    scope: AuditEventHash.text
+    summary: VARCHAR excess ASCII padding projection boundary from initial candidate is resolved.
+    reproductionSteps:
+    - Replay original six-case JDBC probe and actual current native text/varchar tests.
+    expectedResult: New v2 hash matches the actual stored ordinary text value.
+    actualResult: Relevant original cases match and original constraint behavior remains.
+    evidence:
+    - text-unicode-probe.jsonl
+    - corrected/test-summary.json
+    resolutionStatus: resolved
+    resolutionEvidence:
+    - type: commit
+      reference: f640dc75e5e588da9dd60579157092bfcd0e8148
+    - type: command
+      reference: text-unicode-probe.jsonl; corrected/test-summary.json
+  - id: QF-W5-JSON-UTF16-003
+    severity: medium
+    scope: 'AuditEventHash.json: raw contentBefore/contentAfter JavaString to JDBC UTF8 and JSONB'
+    summary: Raw unpaired UTF16 in JSON source is accepted after JDBC replacement but v2 seals before this conversion,so
+      persisted new event cannot recompute.
+    reproductionSteps:
+    - Use actual f640dc75 compiled AuditEvent/Hash classes and own PG16 per JsonTextPersistenceProbe.java/runtime
+      commands.
+    - Seal event with contentAfter containing raw high surrogate as JSON value,raw low surrogate as key,or default
+      ObjectMapper-produced raw surrogate JSON.
+    - PreparedStatement setString to JSONB succeeds;reload normalized JSON into same event and compute v2.
+    - Keep normal paired supplementary text positive and ASCII literal\uD800 rejection control.
+    expectedResult: Every successfully persisted new v2 event rehashes from stored values;original invalid escaped
+      JSON rejection stays.
+    actualResult: Three successful-persistence cases rehash differently;normal positive matches;escaped-high control
+      is refused by PG as before.
+    evidence:
+    - json-text-persistence-probe.jsonl
+    - json-text-persistence-runtime.json
+    - JsonTextPersistenceProbe.java
+    - source-snapshot/gmp-platform/backend/src/main/java/com/zencas/edhr/system/controller/SystemSettingsController.java
+    - REVIEW.md
+    resolutionStatus: open
+    resolutionEvidence: []
+  residualRisks:
+  - id: risk.legacy-history
+    description: Unmarked historical JSON strings/nanoseconds remain unrecoverable;old algorithm is diagnosis only.
+    impact: This slice cannot certify or repair old hashes.
+    mitigation: Keep old rows/hashes and version distinctions;do not backfill.
+  - id: risk.zip-projection
+    description: Existing partial/cropped ZIP lacks all18 sealed fields.
+    impact: It cannot self-verify full original audit hash offline.
+    mitigation: Preserve projection/privacy rules;future complete evidence policy separate.
+  - id: risk.resource-sla
+    description: JSON tree/object sort and local measurements are not constant memory or peak/native/RSS/concurrency
+      SLA.
+    impact: Production capacity remains unverified.
+    mitigation: Retain raw measurements and whole-audit capacity queue.
+  - id: risk.method-and-mixed-version-scope
+    description: Producer probes include mocks/private invocation and old-app SQL column-set simulation.
+    impact: Not fullHTTP/JWT/password-image certification or actual production binary mixed deployment.
+    mitigation: Report exact execution scope and keep deferred end-to-end/production gates.
+  - id: risk.version-contract
+    description: V2 uses current JDBC UTF8 and canonical varchar widths.
+    impact: Future persistence semantic changes require algorithm/version assessment.
+    mitigation: Keep encoding contract and real PG boundary tests.
+  - id: risk.whole-audit
+    description: W2-W7/931/86/A12/high/full matrices/large uploadPDFOffice/UNKNOWN/A23 and paused queues remain.
+    impact: Local suite/finite review does not complete overall audit.
+    mitigation: Maintain incremental baseline and source evidence;whole-file0/unique unknown.
+  blockingConditions: []

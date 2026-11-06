@@ -3,6 +3,7 @@ package com.zencas.edhr.production.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.zencas.edhr.common.audit.AuditContext;
+import com.zencas.edhr.compliance.entity.AuditEvent;
 import jakarta.persistence.EntityManager;
 import jakarta.servlet.http.Part;
 import jdk.jfr.Recording;
@@ -199,9 +200,14 @@ class DhrAttachmentUploadVerifyObservationPostgresTest {
     private Map<String, Object> row(long id) { return jdbc.queryForMap("SELECT * FROM dhr_attachment WHERE id=?", id); }
     private List<Path> currentOriginals() throws IOException { if (!Files.isDirectory(store.resolve("dhr"))) return List.of(); try (var paths = Files.list(store.resolve("dhr"))) { return paths.toList(); } }
     private void assertAudits(long id, List<String> actions) {
-        var rows = jdbc.queryForList("SELECT action,snapshot_hash,operator_id,operator_account FROM audit_event WHERE entity_type='DHR_ATTACHMENT' AND entity_id=? ORDER BY created_at,id", Long.toString(id));
+        var rows = jdbc.queryForList("SELECT id,action,snapshot_hash,operator_id,operator_account FROM audit_event WHERE entity_type='DHR_ATTACHMENT' AND entity_id=? ORDER BY created_at,id", Long.toString(id));
         assertThat(rows.stream().map(r -> r.get("action")).toList()).containsExactlyElementsOf(actions);
         assertThat(rows).allSatisfy(r -> { assertThat(r.get("snapshot_hash").toString()).matches("[0-9a-f]{64}"); assertThat(r.get("operator_id")).isNotNull(); assertThat(r.get("operator_account")).isNotNull(); });
+        assertThat(rows).allSatisfy(r -> {
+            var stored = entityManager.find(AuditEvent.class, ((Number) r.get("id")).longValue());
+            assertThat(stored.getSnapshotHashVersion()).isEqualTo("audit-event-v2");
+            assertThat(stored.computeSnapshotHash()).isEqualTo(stored.getSnapshotHash());
+        });
     }
 
     private Path fixture(String extension) throws Exception {

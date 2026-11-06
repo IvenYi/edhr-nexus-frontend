@@ -1,0 +1,88 @@
+ontologyResult:
+  result: not-applicable
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: f640dc75e5e588da9dd60579157092bfcd0e8148
+    targetBranch: edhr-dev
+    targetCommit: 9dc5c0014643d99db299d27a80788cc777a0ccca
+    contractReadCommit: 9dc5c0014643d99db299d27a80788cc777a0ccca
+    uncommittedContractPaths: []
+  reason: 同一DP的engineering.json-carrier-jdbc-text增量只把原Java JSON载体字符串按现有JDBC UTF8转换后再解析，并与普通text路径共用jdbcUtf8；不改event原字段、不替换六字符Unicode转义或解析后的JSONB叶子，不改变数据库接受/拒绝和业务政策。普通文本13个varchar边界、版本/时间、旧行保留、其他摘要与读取规则不变。6条有限受影响记录在该增量范围一致，350知识不变，未新增业务模型或成熟度。前两份本体和两份failed质量原件保留，旧历史/完整ZIP缺口继续；本体结果不代替206全新质量验收。
+  changedArtifacts: []
+  knowledgeSync:
+  - id: term.audit-event
+    disposition: retained
+    scope: 仅把原Java JSON载体按既有JDBC UTF8传输值送入hash解析，共用普通text转换；不改event字段、Unicode转义字面串或解析后的叶子，不增接收/清洗/阻断政策，原事件与业务快照含义保持。
+    sourceReferences:
+    - docs/knowledge/glossary.yaml
+    - docs/knowledge/ontology.yaml
+    - docs/knowledge/rules/master-data-permission-audit.yaml
+    - gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/entity/AuditEventHash.java
+  - id: term.audit-change-snapshot
+    disposition: retained
+    scope: 仅把原Java JSON载体按既有JDBC UTF8传输值送入hash解析，共用普通text转换；不改event字段、Unicode转义字面串或解析后的叶子，不增接收/清洗/阻断政策，原事件与业务快照含义保持。
+    sourceReferences:
+    - docs/knowledge/glossary.yaml
+    - docs/knowledge/ontology.yaml
+    - docs/knowledge/rules/master-data-permission-audit.yaml
+    - gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/entity/AuditEventHash.java
+  - id: relation.audit-event-retains-change-snapshot
+    disposition: retained
+    scope: 仅把原Java JSON载体按既有JDBC UTF8传输值送入hash解析，共用普通text转换；不改event字段、Unicode转义字面串或解析后的叶子，不增接收/清洗/阻断政策，原事件与业务快照含义保持。
+    sourceReferences:
+    - docs/knowledge/glossary.yaml
+    - docs/knowledge/ontology.yaml
+    - docs/knowledge/rules/master-data-permission-audit.yaml
+    - gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/entity/AuditEventHash.java
+  - id: rule.master-data.write-audit-snapshot
+    disposition: retained
+    scope: 仅把原Java JSON载体按既有JDBC UTF8传输值送入hash解析，共用普通text转换；不改event字段、Unicode转义字面串或解析后的叶子，不增接收/清洗/阻断政策，原事件与业务快照含义保持。
+    sourceReferences:
+    - docs/knowledge/glossary.yaml
+    - docs/knowledge/ontology.yaml
+    - docs/knowledge/rules/master-data-permission-audit.yaml
+    - gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/entity/AuditEventHash.java
+  - id: scenario.dhr-summary-printable-archive-layout
+    disposition: deferred
+    scope: 与原有限结果相同，完整ZIP广域验收及脱库自足hash复核缺口保留；不以本次文本编码整改关闭。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml
+    - docs/development/branch-review-20261106-image-verification/W5-COMPATIBILITY-PLAN.md
+  conflicts: []
+  questions: []
+  validationEvidence:
+  - id: validation.w5-json-carrier-semantics
+    checkType: evidence-path
+    command: Read actual helper diff, current DP and5-native source; compare complete parsed JSON writer to fixed
+      f640 source
+    outcome: passed
+    evidence:
+    - increment-audit-records.jsonl:6 affected records, consistent only in declared transport increment
+    - transport-scope-check.json:raw carrier projection before readTree, ordinarytext shared, parsed leaf/container
+      writer byte-identical to f640
+    - final-source-manifest.json; source-snapshot/
+  - id: validation.w5-json-carrier-knowledge
+    checkType: schema
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f tools/knowledge-model/pom.xml clean test
+    outcome: passed
+    evidence:
+    - knowledge-validation.log; TEST-com.zencas.edhr.knowledge.BusinessKnowledgeModelTest.xml:89 tests0F/E/S
+    - knowledge-test-summary.json; knowledge-fingerprint-inventory.json:350 files unchanged, not full semantic coverage
+  - id: validation.w5-prior-text-and-quality-retention
+    checkType: evidence-path
+    command: Verify both prior ontology manifests and every listed original file; preserve second signed failed
+      quality as original
+    outcome: passed
+    evidence:
+    - prior-original-preservation.json:60 initial and25 text-revision originals unchanged; manifest hashes retained
+    - second-quality-context.json; second-quality-originals/qualityResult.yaml:failed for f640, no failed-to-passed
+      rewrite
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages:
+    - P1
+    - P2
+    - P3

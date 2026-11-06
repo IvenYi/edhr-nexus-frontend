@@ -9,6 +9,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.HexFormat;
 
 @Entity @Table(name = "audit_event")
@@ -31,6 +32,8 @@ public class AuditEvent {
     private String contentAfter;
     @Column(name = "snapshot_hash", length = 64)
     private String snapshotHash;
+    @Column(name = "snapshot_hash_version", length = 32)
+    private String snapshotHashVersion;
     @Column(name = "operator_id")
     private String operatorId;
     @Column(name = "operator_name")
@@ -57,6 +60,8 @@ public class AuditEvent {
     @PrePersist
     public void sealSnapshotHash() {
         if (!hasText(snapshotHash)) {
+            snapshotHashVersion = AuditEventHash.VERSION;
+            if (createdAt != null) createdAt = createdAt.truncatedTo(ChronoUnit.MICROS);
             snapshotHash = computeSnapshotHash();
         }
     }
@@ -67,6 +72,13 @@ public class AuditEvent {
     }
 
     public String computeSnapshotHash() {
+        if (AuditEventHash.VERSION.equals(snapshotHashVersion)) return AuditEventHash.compute(this);
+        if (snapshotHashVersion != null) throw new IllegalStateException("Unsupported audit hash version: " + snapshotHashVersion);
+        // Legacy diagnosis only: original JSON strings/nanoseconds may no longer be recoverable from PostgreSQL.
+        return computeLegacySnapshotHash();
+    }
+
+    private String computeLegacySnapshotHash() {
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
             digest.update(canonicalAuditPayload().getBytes(StandardCharsets.UTF_8));

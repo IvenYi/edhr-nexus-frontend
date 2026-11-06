@@ -1,0 +1,23 @@
+{
+  "observations": [
+    {
+      "measurement": "calling-thread cumulative heap, not retained/peak/native/RSS/concurrency",
+      "jsonCharacters": 1048587,
+      "elapsedNanos": 21549104,
+      "legacyThreadAllocatedBytes": 13634760,
+      "legacyElapsedNanos": 2689215,
+      "threadAllocatedBytes": 4199208
+    },
+    {
+      "measurement": "calling-thread cumulative heap, not retained/peak/native/RSS/concurrency",
+      "jsonCharacters": 10485771,
+      "elapsedNanos": 61896385,
+      "legacyThreadAllocatedBytes": 136317896,
+      "legacyElapsedNanos": 44919683,
+      "threadAllocatedBytes": 41820968
+    }
+  ],
+  "interpretation": "New v2 correctness fix streams canonical output but still parses JSON trees and sorts object keys; not constant memory. Measurements use same simple large text JSON and retained legacy method, allocation is calling-thread cumulative heap, not peak/RSS/native/concurrency; timing one local sample, not SLA.",
+  "sql": "Core automatic persist has1 INSERT, reload1 SELECT; metadata type SELECT separated. No hash-specific SQL or DB normalization roundtrip.",
+  "otherCapacity": "Wide-object sorting/production concurrency and upload/PDF/Office/export/UNKNOWN capacity queues remain; no new cap or policy introduced."
+}

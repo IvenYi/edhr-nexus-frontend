@@ -1,0 +1,151 @@
+{
+  "createdAt": "2026-11-06T04:47:55.374550+00:00",
+  "testedCommit": "1c2cbb86b119f593925e5a147505a7ed97dd7fa2",
+  "latestFetchedTarget": "9dc5c0014643d99db299d27a80788cc777a0ccca",
+  "afterAllApplicableSpecializedFormalFinal": true,
+  "currentQuality": "passed",
+  "mainRegression": 206,
+  "independentRegression": 206,
+  "knowledgeMainAndIndependent": 89,
+  "originalProbeReplay": "10 successfully persisted cases rehash equal; literal JSON unpaired escape remains rejected",
+  "actualV2InsertParameterRehashes": 63,
+  "priorFailuresRetained": [
+    {
+      "head": "1c077d2877f760156ab0072f557990c45c1df4b0",
+      "result": "failed",
+      "findings": [
+        "QF-W5-UTF16-001",
+        "QF-W5-VARCHAR-002"
+      ]
+    },
+    {
+      "head": "f640dc75e5e588da9dd60579157092bfcd0e8148",
+      "result": "failed",
+      "findings": [
+        "QF-W5-JSON-UTF16-003"
+      ]
+    }
+  ],
+  "allThreeFindingsCurrentDisposition": "reverified-resolved on latest fixed candidate by fresh instance",
+  "qualityManifestSha256": "d2ffee40e411ae2532b8bd8ac00ac1e21ab09875e826dae83cb2364b1aa32218",
+  "ontologyTransportManifestSha256": "96e3f0fe28787a657cf451b67de577c6798730ca8530bd65bbfe180c2d15c4bf",
+  "sourceFingerprints": [
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/entity/AuditEvent.java",
+      "bytes": 4697,
+      "sha256": "34a236e63d78eed77cfd67094b4ced89f99614fa09b206546189e7e2907480aa"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/entity/AuditEventHash.java",
+      "bytes": 7419,
+      "sha256": "9ed9137b4d216699fc9f3374edbab6cbe8ae8b4862e9b7b2bcf562511b293ce2"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/resources/db/changelog/db.changelog-master.yaml",
+      "bytes": 584,
+      "sha256": "c6aee09872f78a36a7207348519d203dd6e8c21bff2f893540ef214fc6d5f964"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/resources/db/changelog/0092-audit-event-hash-version.sql",
+      "bytes": 418,
+      "sha256": "f9c6fff1f4676deaf55781d7632087d61f7bdeecd5cfa0be46fde9606024601b"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/compliance/entity/AuditEventRoundTripPostgresTest.java",
+      "bytes": 5350,
+      "sha256": "c91e763578f20ad6786f6e1ab603a068e9bb799fb00aaa9a46247396cadd55fe"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/compliance/entity/AuditEventHashTest.java",
+      "bytes": 9525,
+      "sha256": "6621e06bd4eb190062e363dccbfac17092547844072dea12206b9242c748e731"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/compliance/entity/AuditEventTest.java",
+      "bytes": 1724,
+      "sha256": "a9dee9a5c3a7b0fa04a2cee5044b1ded733beb9b10755944d49bcf2862cbd1aa"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/compliance/entity/AuditEventHashCompatibilityPostgresTest.java",
+      "bytes": 8963,
+      "sha256": "4d6998e4439a241c1e90bf04c8aa68f182ebf10d2052257fdd7d031b99d65001"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/compliance/entity/AuditHashMigrationPostgresTest.java",
+      "bytes": 4491,
+      "sha256": "3ae36a51649d928efcc84675982e91ee3c6cb5ddedf2c996b1c086ea137e885f"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/common/config/CurrentDatabaseBaselinePostgresTest.java",
+      "bytes": 11139,
+      "sha256": "a025228a36b3a4cd0b465f4c36fd270f466d588c62764c12eae9b208745bd388"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/common/audit/AuditAspectTest.java",
+      "bytes": 4214,
+      "sha256": "dfad0cbf514f5c207543d4c598b5997d69c8dafe08ff375ba6e3133306313adb"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/compliance/controller/AuditControllerTest.java",
+      "bytes": 19535,
+      "sha256": "a59ba7015c4b597df682667dddf39817d7001e31619b5a02fdce2cae2c578d9c"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrAuditReadTest.java",
+      "bytes": 5264,
+      "sha256": "89d899ed54416d0132949859fd7f05e3f7678f4ef643086da54aebfdb00bc48b"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrAttachmentUploadVerifyObservationPostgresTest.java",
+      "bytes": 28532,
+      "sha256": "1018fc98af330d66d67cedf05162154d6add337789c575e7f0fe21b5378ed000"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrAttachmentImageVerificationTest.java",
+      "bytes": 8808,
+      "sha256": "5046484417cb772b54ece0867f387335dbcf6e3330e1716146d37d2d6ab2ac71"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrAttachmentAndArchiveTest.java",
+      "bytes": 29001,
+      "sha256": "d80c6879b0691e3ec20bada461d0b68daa879fa08e33dd1751fbea7d1bf55e30"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/identity/controller/AuthControllerTest.java",
+      "bytes": 57460,
+      "sha256": "a1c4d35ade3e9f54faa523ed1827b6e1c9a499e975f0bd9990337c334c6cfdb1"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/SignatureSnapshotPostgresTest.java",
+      "bytes": 11582,
+      "sha256": "fbd9fe432e8a237bbebebeab5efbc80dc6962904476bf06a3f00dcbfb1f0b656"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrAttachmentTransactionPostgresTest.java",
+      "bytes": 15690,
+      "sha256": "f0c028e3d882c239e7730f2f7014e9b4739cd71778b4035bf786211722a5ce2e"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/compliance/entity/AuditEventTextPersistencePostgresTest.java",
+      "bytes": 1271,
+      "sha256": "f80689dee7825c086119d275eda2a30b36220a612e054a8b96ec1214f94c78bc"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/compliance/entity/AuditEventVarcharPersistencePostgresTest.java",
+      "bytes": 2384,
+      "sha256": "7ac97bd6b6eadd468d8cc732629fa9957bafd86eb5c27006601c9a0f4d8257fd"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/compliance/entity/AuditEventJsonTextPersistencePostgresTest.java",
+      "bytes": 1776,
+      "sha256": "fa97646da95fd25462b02da45d2c5b2c3ad1dc0de24215bbf779e9b3bb9fb159"
+    }
+  ],
+  "nativeDocFixture": {
+    "path": "docs/regulation/医疗器械生产质量管理规范（2025）.doc",
+    "sha256": "87db119ab9c0cee8e705839fc3e84f240c648b9df7a0c9c5c15bc94ee00f64c4",
+    "equalsTargetAndCandidate": true
+  },
+  "postTestDisposition": "L0 docs/evidence/acceptance/ledger only; runtime/test/frontend/knowledge/contracts remain byte-identical to independently tested candidate",
+  "scope": "New automatic event roundtrip resolved; legacy histories and full/cropped ZIP self-contained evidence limits retained; no full-audit completion, merge, deployment or history rewrite."
+}

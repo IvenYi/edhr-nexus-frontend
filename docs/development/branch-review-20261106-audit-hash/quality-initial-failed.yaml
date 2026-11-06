@@ -1,0 +1,206 @@
+qualityResult:
+  result: failed
+  baseCommit: 9dc5c0014643d99db299d27a80788cc777a0ccca
+  headCommit: 1c077d2877f760156ab0072f557990c45c1df4b0
+  contractBaseline:
+    sourceCommit: 1c077d2877f760156ab0072f557990c45c1df4b0
+    targetBranch: edhr-dev
+    targetCommit: 9dc5c0014643d99db299d27a80788cc777a0ccca
+    contractReadCommit: 1c077d2877f760156ab0072f557990c45c1df4b0
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: clean
+    includedPaths: []
+    excludedPaths: []
+    untrackedPaths: []
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+    - id: check.fixed-independent-candidate
+      required: true
+      category: documentation
+      description: 新实例在自有detached候选工作树验证，未修改受测源码或测试，目标实际fetch仍9dc5c001。
+      method: command
+      command: git worktree add --detach /tmp/edhr-w5-hash-quality-worktree-20261106 1c077d2877f760156ab0072f557990c45c1df4b0; git fetch origin edhr-dev
+      outcome: passed
+      evidence: [final2/run.json, knowledge-contract-check.json, worktree-state.json]
+    - id: check.decision-and-implementation-boundaries
+      required: true
+      category: requirements
+      description: 实际四个运行文件差异限新AuditEvent/helper/0092/master；未改UI、权限、其他摘要或历史。
+      method: inspection
+      command: Inspect actual diff, DP, encoding and relevant original producers/readers
+      outcome: passed
+      evidence: [REVIEW.md, knowledge-contract-check.json, source-snapshot]
+    - id: check.genuine-negative-control
+      required: true
+      category: regression
+      description: 两条原生PG旧源JSON/时间探针均真断言失败0E/S，旧实体等于base且同一测试源码等于候选。
+      method: command
+      command: python3 verify-evidence.py
+      outcome: passed
+      evidence: [negative-control-check.json, archive-check.json]
+    - id: check.independent-regression-174
+      required: true
+      category: regression
+      description: 独立真实执行174/174，全部XML新鲜、0失败/错误/跳过，无受测源修复。
+      method: automated-test
+      command: EDHR_AUDIT_ROOT=/tmp/edhr-w5-hash-quality-worktree-20261106 EDHR_HASH_RAW=/tmp/edhr-w5-hash-quality-20261106 python3 run-independent.py final2
+      outcome: passed
+      evidence: [final2/test-summary.json, final2/run.json, final2/maven.log]
+    - id: check.formal-knowledge-89
+      required: true
+      category: ontology
+      description: 正式知识89/89，350文件及契约不变；有限16=14一致/2gap不累加unique或升级成熟度。
+      method: automated-test
+      command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f tools/knowledge-model/pom.xml test
+      outcome: passed
+      evidence: [knowledge/maven.log, knowledge/TEST-com.zencas.edhr.knowledge.BusinessKnowledgeModelTest.xml, knowledge-contract-check.json, ontology-finite-audit-records.jsonl]
+    - id: check.fixed-vector-and-covered-fields
+      required: true
+      category: unit
+      description: 独立Python固定向量与Java断言一致，40项编码/原18字段变化/JSON空值和类型顺序测试通过。
+      method: command
+      command: python3 verify-evidence.py; AuditEventHashTest in independent run
+      outcome: passed
+      evidence: [independent-fixed-vector.json, final2/TEST-com.zencas.edhr.compliance.entity.AuditEventHashTest.xml]
+    - id: check.native-parameters-and-sql
+      required: true
+      category: audit
+      description: 从实际PG执行参数独立重算41次v2审计INSERT均吻合；核心写1INSERT读1SELECT，SET/driver查询另列。
+      method: command
+      command: python3 verify-native.py
+      outcome: passed
+      evidence: [native-sql-and-independent-rehash.json, final2/postgres.log]
+    - id: check.jsonb-boundary-and-time
+      required: true
+      category: integration
+      description: 原生JSONB对象/重复键/精确数字/指数展开/Unicode/2500深度/长键与微秒时间往返通过；局部解析设置不改全局。
+      method: automated-test
+      command: AuditEventRoundTripPostgresTest and AuditEventHashCompatibilityPostgresTest in independent run
+      outcome: passed
+      evidence: [final2/observations, final2/TEST-com.zencas.edhr.compliance.entity.AuditEventHashCompatibilityPostgresTest.xml]
+    - id: check.ordinary-text-jdbc-encoding
+      required: true
+      category: audit
+      description: 普通文本未配对UTF16代理项被现有JDBC成功写成问号，但v2封存代理转义，读回不匹配。
+      method: command
+      command: python3 run-text-probe.py
+      outcome: failed
+      evidence: [text-unicode-probe.jsonl, text-unicode-probe-runtime.json, TextUnicodeProbe.java]
+    - id: check.varchar-accepted-trailing-space
+      required: true
+      category: audit
+      description: varchar仅超出长度的尾空格被PG接受并截断，但v2仍按截断前普通文本封存，读回不匹配。
+      method: command
+      command: python3 run-text-probe.py
+      outcome: failed
+      evidence: [text-unicode-probe.jsonl, text-unicode-probe-runtime.json, TextUnicodeProbe.java]
+    - id: check.migration-and-old-application-protocol
+      required: true
+      category: database
+      description: 正式旧master升级/重复执行不改旧行、nullable无default；旧列集合插入/读取和完整baseline通过。
+      method: automated-test
+      command: AuditHashMigrationPostgresTest and CurrentDatabaseBaselinePostgresTest in independent run
+      outcome: passed
+      evidence: [final2/TEST-com.zencas.edhr.compliance.entity.AuditHashMigrationPostgresTest.xml, final2/TEST-com.zencas.edhr.common.config.CurrentDatabaseBaselinePostgresTest.xml, final2/postgres.log]
+    - id: check.legacy-external-and-unknown-version
+      required: true
+      category: audit
+      description: 原非空外部hash不自动盖v2、未标历史仅诊断、未知版本不fallback，普通读取未新增阻断。
+      method: automated-test
+      command: AuditEventHashTest and native compatibility tests
+      outcome: passed
+      evidence: [final2/TEST-com.zencas.edhr.compliance.entity.AuditEventHashTest.xml, final2/TEST-com.zencas.edhr.compliance.entity.AuditEventHashCompatibilityPostgresTest.xml]
+    - id: check.producers-and-adjacent-hashes
+      required: true
+      category: integration
+      description: 实际配置/切面/签署审计producer及附件27重读复算通过，独立Signature9与Auth24保持；模拟与真实边界分开。
+      method: automated-test
+      command: Independent 174-test selection
+      outcome: passed
+      evidence: [validation-summary.json, native-sql-and-independent-rehash.json, REVIEW.md]
+    - id: check.immutable-and-transaction-failure
+      required: true
+      category: audit
+      description: 新JPA更新拒绝及flush外层回滚，原附件SQL/审计拒绝/11事务用例通过；不夸称原切面全域原子回滚。
+      method: automated-test
+      command: Native compatibility, DhrAttachmentTransactionPostgresTest and original attachment observation tests
+      outcome: passed
+      evidence: [final2/TEST-com.zencas.edhr.production.service.DhrAttachmentTransactionPostgresTest.xml, final2/attachments, final2/postgres.log]
+    - id: check.a23-and-resource-scope
+      required: true
+      category: requirements
+      description: 纯域内helper和显式Frame栈，无新增查询/N+1/缓存/通用插件或默认业务拒绝；树解析和排序成本未冒称常量内存。
+      method: inspection
+      command: Inspect helper, SQL evidence and actual allocation observations
+      outcome: passed
+      evidence: [REVIEW.md, final2/observations/allocation_1mib.json, final2/observations/allocation_10mib.json]
+    - id: check.original-archive-checksums
+      required: true
+      category: documentation
+      description: 三原始归档及699文件逐大小/sha核对，全部中间失败输出保留，没有旧报告代替新运行。
+      method: command
+      command: python3 verify-evidence.py
+      outcome: passed
+      evidence: [archive-check.json, negative-control-check.json]
+    - id: check.scope-and-remaining-audit
+      required: true
+      category: documentation
+      description: 保留旧历史/完整ZIP/原全审931和86及W2-W7/A12/容量/A23/暂停队列；未将局部测试通过当全审完成。
+      method: inspection
+      command: Read current batch, original knowledge, issue ledger and actual diff
+      outcome: passed
+      evidence: [REVIEW.md, knowledge-contract-check.json, source-snapshot]
+    - id: check.owned-resources-cleanup
+      required: true
+      category: documentation
+      description: 自有完整PG与外部探针PG已删除，自有依赖链接和detached工作树清理，未修改主仓库。
+      method: command
+      command: Owned runner cleanup and own worktree removal
+      outcome: passed
+      evidence: [final2/cleanup.json, text-unicode-probe-cleanup.json, worktree-state.json]
+  findings:
+    - id: QF-W5-UTF16-001
+      severity: medium
+      scope: AuditEventHash.text ordinary text fields
+      summary: JDBC成功替换未配对代理项后，普通文本v2摘要仍按替换前UTF16封存，产生新的往返不匹配。
+      reproductionSteps:
+        - 使用固定候选编译的真实AuditEvent构造普通operatorName为未配对高代理项、低代理项或x高代理项y，其他字段为合法固定值。
+        - 调用真实sealSnapshotHash，使用相同PostgreSQL JDBC驱动setString持久化普通文本及摘要/版本。
+        - 重新读取普通文本，其代理项已被JDBC持久化为U+003F，再调用真实computeSnapshotHash。
+      expectedResult: 对现有写入链成功接受的新自动事件，读回可复算同摘要，且不新增业务拒绝或修改原字段/历史。
+      actualResult: 中文和合法配对补充字符正例通过；三类未配对代理项均成功写入，但v2重算失败，旧算法在同固定时间场景均匹配。
+      evidence: [text-unicode-probe.jsonl, text-unicode-probe-runtime.json, TextUnicodeProbe.java, source-snapshot/gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/entity/AuditEventHash.java, REVIEW.md]
+      resolutionStatus: open
+      resolutionEvidence: []
+    - id: QF-W5-VARCHAR-002
+      severity: medium
+      scope: AuditEventHash ordinary varchar fields with persisted type limits
+      summary: PG接受并截断超出varchar长度的尾空格，新自动摘要没有按实际持久值封存。
+      reproductionSteps:
+        - 按当前DDL建立operator_name varchar(128)和data_summary varchar(512)。
+        - 分别构造128个N加1尾空格、512个S加1尾空格，调用实际sealSnapshotHash并经JDBC写入。
+        - PG成功写为128或512字符；读回实际字段后再次调用computeSnapshotHash。
+      expectedResult: 对数据库已接受的普通varchar值，按实际持久语义复算一致；不能对所有文本trim或用UTF16长度误计合法补充字符。
+      actualResult: 两例v2均不匹配；旧算法也不匹配，说明该既有归一化边界仍未被本批新行修复覆盖。
+      evidence: [text-unicode-probe.jsonl, text-unicode-probe-runtime.json, TextUnicodeProbe.java, source-snapshot/gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql, REVIEW.md]
+      resolutionStatus: open
+      resolutionEvidence: []
+  residualRisks:
+    - id: risk.existing-hash-and-zip-limits
+      description: 未标旧事件无法还原原JSON或纳秒，精简/裁剪ZIP缺全18字段。
+      impact: 本批不能关闭所有旧历史重算或完整离线验证限制。
+      mitigation: 保持旧hash原值，不回填，不宣称旧数据通过。
+    - id: risk.test-boundary
+      description: 174不是全HTTP或所有49生产者验收；私有签署审计与切面部分输入为合成，外部失败probe为实际实体方法+真实JDBC而非完整工作流。
+      impact: 不能推断实际客户全流程、JWT/RBAC或生产混部已验证。
+      mitigation: 本报告按真实层级记录；WorkflowEngine撤回/转办reason原始源码证明普通text用户输入路径存在。
+    - id: risk.resource-and-json-codec
+      description: 大JSON仍有树与对象键排序成本，局部数字/深度默认约束放开仅保持既有JSONB输入范围。
+      impact: 非峰值/RSS/native/生产并发SLA；实际转义依赖确定codec，补充字符采用大写surrogate转义。
+      mitigation: 保留资源观察与外部转义probe，修复后新候选需独立回归及编码文档核对。
+    - id: risk.whole-audit-remains
+      description: 原931知识/86UI、W2-W7/A12/高风险/矩阵/大上传PDFOffice/UNKNOWN/A23含已审代码与暂停项保持。
+      impact: 不能把当前174和知识通过或有限16记录视为全审完成。
+      mitigation: 继续台账和增量审计；本次failed候选不得宣告完成。
+  blockingConditions: []
