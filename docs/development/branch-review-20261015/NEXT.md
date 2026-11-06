@@ -2,6 +2,8 @@
 
 ## PR69已合入：DHR导出双重失败错误传播整改
 
+已交付[PR70](https://github.com/IvenYi/edhr-nexus-frontend/pull/70)，audit/edhr-dev-dhr-archive-cleanup-20261106→edhr-dev，观察OPEN/MERGEABLE/CLEAN，建议人工合入本轮局部修复。受测a4777e9f、验收82ac3e11后仅L0交付登记；登记后再次核本地/真实远端/PR head及受测保护路径字节。下一轮先fetch实际merge和新增提交，继续原无依赖审查/已确认方案，不自动merge/deploy/恢复。
+
 已fetch edhr-dev@2cb85492b2dbf47f5b837c565eecc5832b62b39a，PR69人工合入且整树同5f1a0fa4，无外部/知识/契约增量；新分支audit/edhr-dev-dhr-archive-cleanup-20261106。有限数据库分页选择未答，继续原20261105导出审查第32行明确待测的删除失败/FS故障队列。[本批](../branch-review-20261106-dhr-archive-cleanup/README.md)L2确认Service两catch及流finally在双失败时覆盖原异常，一项medium W6-DHR-EXPORT-PRIMARY-ERROR-001；不是PR69引入，不重复记已修文件项或容量风险。
 
 两产品局部修：service保主异常+suppressed/自有路径日志，controller Closeable TWR；单独清理失败仍报错，不递归扫删/恢复/改业务。旧源同字节13=7正6真F、0E/S，最终85/85、知识89/89；19受测输入不变。真实Linux自有路径模拟IO失败，mock协作者与真实PG native12分开；原11观察33SELECT、server3成功EXPORT审计、11JFR重算保持。Docker--rm初始false与随后inspect删除分别保留，runner仅后改清理观察，不改产品测试。

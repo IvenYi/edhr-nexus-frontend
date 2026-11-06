@@ -2,6 +2,8 @@
 
 L2，基线edhr-dev@2cb85492b2dbf47f5b837c565eecc5832b62b39a。PR69已人工合入且整树同5f1a0fa4，无额外代码/知识/契约增量。本轮推进原20261105-dhr-export/review-notes.md第32行明确未测的删除失败/文件系统故障队列；数据库分页方案仍待实际答复，未因merge视为授权。
 
+已交付[PR70](https://github.com/IvenYi/edhr-nexus-frontend/pull/70)，audit/edhr-dev-dhr-archive-cleanup-20261106→edhr-dev，观察OPEN/MERGEABLE/CLEAN，建议人工合入局部修复。受测a4777e9f、验收82ac3e11后仅L0交付记录，实际观察见evidence/delivery-verification.json；登记提交后再次核本地/真实远端/PR head和受测运行/测试/契约/知识字节。下一轮先fetch实际合入与新代码再继续原审查队列，不自动merge/deploy/恢复。
+
 确认一个medium健壮性缺陷W6-DHR-EXPORT-PRIMARY-ERROR-001：生成/审计保存失败后Service两处直接删除，以及Controller输出流finally删除，在删除也失败时会覆盖原异常。业务阻断原应携带原错误码/消息，覆盖后可能只剩通用I/O失败；审计不可用或传输中断也会丢失真实诊断。是原基线已存在的边界，非PR69引入；有限历史检索无已关闭同项ID，承接旧未测队列，不重复记PDF容量或已修文件问题。
 
 最小修复仅两产品文件：Service私有helper在删除失败时保留原异常、附加suppressed清理错误并记录自有临时路径；Controller用JDK Closeable try-with-resources保持原输出错误及附属关闭错误。Service生成/审计失败不交出ZIP路径，流body继续向容器传播原输出错误；单独删除失败也继续报错，未吞清理错误。已写响应的字节/HTTP状态不能由此回滚，未宣称客户端一定未收到文件。成功ZIP、HTTP头、原件/摘要、冻结范围、权限及审计写入次序保持。不新增递归清扫、自动重试、文件生命周期框架、恢复或持久对账。
