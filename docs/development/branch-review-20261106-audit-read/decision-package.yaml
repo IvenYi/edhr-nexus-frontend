@@ -1,0 +1,68 @@
+decisionPackage:
+  id: DEC-PACKAGE-AUDIT-READ-OBSERVATION-20261106
+  scope: AuditController read correctness and native scale observations, no unconfirmed performance rewrite
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: e69a8f3d97b34fea8737947c780b047bb0310c64
+    targetBranch: edhr-dev
+    targetCommit: e69a8f3d97b34fea8737947c780b047bb0310c64
+    contractReadCommit: e69a8f3d97b34fea8737947c780b047bb0310c64
+    uncommittedContractPaths: []
+  summary: PR67已人工合入且整树同a40a86ff，无外部增量；继续W5读取与W6性能/健壮性/A23。修复正数分页中间int溢出，以及按既有DEC-0013-03生产动作投影筛选的实现差异；不改既有显示投影、原事件、历史或未经讨论的性能方案。
+  confirmed:
+    concepts: []
+    relationships: []
+    rules: []
+    executionContracts: []
+  retainedNormativeReferences:
+    - id: rule.production.audit-action-projection
+      source: DEC-0013-03 and docs/knowledge/rules/production.yaml
+      scope: 现有工单/生产对象动作在所有客户页面与筛选类别只用CREATE/UPDATE；非CREATE含取消/生命周期归修改，原事件action不重写，非生产原分类保持。
+  inferred: []
+  unresolved: []
+  replacementScopes: []
+  engineeringScope:
+    observations: [真实controller/repository/PostgreSQL小页对匹配规模, 共享/不同/缺失人员逐行查询与参数, module/menu/summary派生筛选及排序/个人入口, 调用线程分配和查询计划与索引边界, A23和具体职责拆分]
+    deterministicFixCandidate: 分页中间int乘加溢出导致原本应为空或截至末尾的合法正数page/size请求报错，先负对照再仅宽化算术，无新页大小/人数上限或业务规则。
+    confirmedImplementationDefect: 本体核现行DEC-0013-03明确动作归类，实际全局UI UPDATE筛选先raw action搜索漏已显示为修改的生产事件；同源原生负对照后按现行投影筛选修复，不改原action/其他实体分类/实体筛选或schema。
+    pendingDesign: 性能风险先测并给出保留原筛选/显示/历史语义的具体方案，不把用户合并PR67当批准本批分页/批量实现。投影与筛选差异先回到原确认定位，不用当前代码替代规范。
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - {area: audit-read, change: 两处中间算术宽化及既有生产动作分类的SQL筛选一致性，附原生只读取证；不改变原事件或hash, evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/controller/AuditController.java, gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/repository/AuditEventRepository.java]}
+    transitiveImpacts:
+      - {area: profile-audit, change: 个人设置审计调用同list；保留USER_ACCOUNT/当前userId边界, evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/controller/AuditController.java]}
+    potentialImpacts:
+      - {area: projection-and-filtering, concern: 当前姓名显示和历史姓名筛选是否应统一缺业务依据，保持；全局/详情访问政策仍待证据，不能把性能试验或当前代码当新规则授权, evidenceReferences: [docs/knowledge/rules/production.yaml]}
+    unaffectedAreas:
+      - {area: writes-and-ui, change: 新v2/旧历史、生产/DHR/签名/文件/权限、数据库schema及前端保持，不自动merge/deploy/恢复, evidenceReferences: []}
+    compatibilityAndMigration:
+      - {area: no-migration, change: 本批无schema/索引/历史回填；生产动作筛选按原CREATE/UPDATE投影，非生产原分类及原实体筛选保留，不增请求或总条数上限, evidenceReferences: []}
+    snapshotImpacts:
+      - {area: immutable-evidence, change: 实验合成种子不修改生产或历史快照，不重封存旧hash, evidenceReferences: []}
+    auditImpacts:
+      - {area: read-only, change: 请求读取不得新增/修改/删除审计，现有动作/菜单/摘要/操作者显示保持, evidenceReferences: []}
+    permissionImpacts:
+      - {area: existing-security, change: 核对实际全局/个人入口授权，未明确的新业务授权不推断, evidenceReferences: []}
+    testImpacts:
+      - {scope: audit-read, scenarios: [整数溢出原始反证, 普通分页与末页/空页, 实际SQL/加载条数/内存/共享不同缺失姓名, 派生字段筛选/个人入口, 核对知识与全新最终质量], evidenceReferences: []}
+    evidenceGaps: [真实HTTP/全部生产权限/并发SLA与生产峰值不能由方法/合成PG替代, 原全审W2-W7/931知识/86UI/A12/高风险/历史与ZIP限制/容量/UNKNOWN/A23/暂停队列保持]
+  extensionStrategy:
+    selectedPaths: [product-core]
+    rationale: 算术仅两处中间值宽化；性能先取证、给明确投影/查询职责拆分，不提前建通用查询框架。
+    ownershipBoundaries:
+      - {owner: audit-controller, responsibility: 当前读取/派生投影及现有过滤语义与分页}
+      - {owner: audit-observation, responsibility: 合成隔离数据库种子、原始SQL/资源/结果及范围限定}
+  affectedFiles:
+    - {path: gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/controller/AuditController.java, changeType: update, reason: 仅确认后的分页算术修复}
+    - {path: gmp-platform/backend/src/test/java/com/zencas/edhr/compliance/controller/AuditReadObservationPostgresTest.java, changeType: create, reason: 实际服务/数据库/资源与读语义取证}
+    - {path: gmp-platform/backend/src/test/java/com/zencas/edhr/compliance/controller/AuditPaginationBoundaryTest.java, changeType: create, reason: 原输入边界负对照与回归}
+    - {path: gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/repository/AuditEventRepository.java, changeType: update, reason: 按现有生产动作投影筛选，保留非生产raw类别与原事件}
+    - {path: gmp-platform/backend/src/test/java/com/zencas/edhr/compliance/controller/AuditActionFilterPostgresTest.java, changeType: create, reason: 真实PG投影筛选负对照及非生产/原件/原实体筛选回归}
+    - {path: gmp-platform/backend/src/test/java/com/zencas/edhr/compliance/controller/AuditActionWhitespacePostgresTest.java, changeType: create, reason: 当前Java类型trim与动作Whitespace两种规则的17个实际SQL等价oracle}
+  acceptanceScenarios:
+    - id: scenario.audit-pagination-correctness-and-observation
+      given: 符合当前筛选/原授权范围的审计与共享/不同/缺失用户
+      when: 普通及边界正数分页，或规模观察
+      then: 读取不写审计，正常显示/筛选/排序保持；算术不溢出；风险只按实际证据提出，不虚称优化或全审完成
+      evidenceRequirements: [旧源反证/最终XML, 正式PG SQL与结果/来源/资源原件, 既有语义与历史去重, 有限本体与全新独立质量, 全部FINAL后实际PR前无漂移复核]

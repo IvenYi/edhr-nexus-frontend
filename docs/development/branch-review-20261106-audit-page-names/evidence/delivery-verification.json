@@ -1,0 +1,37 @@
+{
+  "observedAtUTC": "2026-11-06T06:59:56.183477+00:00",
+  "testedCandidate": "6fc13d2836629d6a6ae6d6a44e571f4220adb283",
+  "preDeliveryRecordHead": "56e3c6b3c596cbef90914bc24d43f833d393e31b",
+  "localRemotePrHeadEqual": true,
+  "target": "e69a8f3d97b34fea8737947c780b047bb0310c64",
+  "pr68": {
+    "state": "open",
+    "mergeable": true,
+    "mergeable_state": "clean",
+    "title": "fix(audit): 修复筛选与分页，并消除姓名 N+1",
+    "html_url": "https://github.com/IvenYi/edhr-nexus-frontend/pull/68"
+  },
+  "runtimeTestsContractsKnowledgeUnchangedSinceTested": true,
+  "onlyDocumentationSinceTested": [
+    "docs/development/branch-review-20261015/NEXT.md",
+    "docs/development/branch-review-20261106-audit-page-names/README.md",
+    "docs/development/branch-review-20261106-audit-page-names/evidence/SHA256SUMS",
+    "docs/development/branch-review-20261106-audit-page-names/evidence/ontology-manifest.json",
+    "docs/development/branch-review-20261106-audit-page-names/evidence/ontology-role-manifest.json",
+    "docs/development/branch-review-20261106-audit-page-names/evidence/ontology.tar.gz",
+    "docs/development/branch-review-20261106-audit-page-names/evidence/pre-pr-drift-review.json",
+    "docs/development/branch-review-20261106-audit-page-names/evidence/quality-manifest.json",
+    "docs/development/branch-review-20261106-audit-page-names/evidence/quality-role-manifest.json",
+    "docs/development/branch-review-20261106-audit-page-names/evidence/quality.tar.gz",
+    "docs/development/branch-review-20261106-audit-page-names/findings.md",
+    "docs/development/branch-review-20261106-audit-page-names/independent-review.md",
+    "docs/development/branch-review-20261106-audit-page-names/ontology-result.yaml",
+    "docs/development/branch-review-20261106-audit-page-names/ontology-review.md",
+    "docs/development/branch-review-20261106-audit-page-names/pre-pr-drift-review.md",
+    "docs/development/branch-review-20261106-audit-page-names/quality-result.yaml",
+    "docs/development/branch-review-20261106-audit-read/README.md",
+    "docs/development/branch-review-20261106-audit-read/findings.md"
+  ],
+  "workingTreeClean": true,
+  "next": "Delivery-only record commit, then repeat equality/protected-byte checks against actual latest remote and PR."
+}

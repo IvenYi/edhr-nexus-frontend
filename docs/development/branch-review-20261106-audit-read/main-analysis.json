@@ -1,0 +1,1295 @@
+{
+  "baseline": "e69a8f3d97b34fea8737947c780b047bb0310c64",
+  "runs": {
+    "unit_negative": {
+      "totals": {
+        "tests": 6,
+        "failures": 3,
+        "errors": 0,
+        "skipped": 0
+      },
+      "classes": [
+        {
+          "class": "com.zencas.edhr.compliance.controller.AuditPaginationBoundaryTest",
+          "tests": 6,
+          "failures": 3,
+          "errors": 0,
+          "skipped": 0
+        }
+      ],
+      "missingFreshReports": []
+    },
+    "baseline": {
+      "totals": {
+        "tests": 26,
+        "failures": 6,
+        "errors": 0,
+        "skipped": 0
+      },
+      "classes": [
+        {
+          "class": "com.zencas.edhr.compliance.controller.AuditReadObservationPostgresTest",
+          "tests": 17,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "class": "com.zencas.edhr.compliance.controller.AuditActionFilterPostgresTest",
+          "tests": 9,
+          "failures": 6,
+          "errors": 0,
+          "skipped": 0
+        }
+      ],
+      "missingFreshReports": []
+    },
+    "final": {
+      "totals": {
+        "tests": 116,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "classes": [
+        {
+          "class": "com.zencas.edhr.compliance.controller.AuditReadObservationPostgresTest",
+          "tests": 17,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "class": "com.zencas.edhr.compliance.controller.AuditActionFilterPostgresTest",
+          "tests": 9,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "class": "com.zencas.edhr.compliance.controller.AuditActionWhitespacePostgresTest",
+          "tests": 17,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "class": "com.zencas.edhr.compliance.controller.AuditPaginationBoundaryTest",
+          "tests": 6,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "class": "com.zencas.edhr.compliance.controller.AuditControllerTest",
+          "tests": 10,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "class": "com.zencas.edhr.compliance.entity.AuditEventHashTest",
+          "tests": 48,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "class": "com.zencas.edhr.compliance.entity.AuditEventTest",
+          "tests": 2,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "class": "com.zencas.edhr.common.audit.AuditAspectTest",
+          "tests": 3,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "class": "com.zencas.edhr.production.service.DhrAuditReadTest",
+          "tests": 4,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        }
+      ],
+      "missingFreshReports": []
+    }
+  },
+  "sqlReconciliation": {
+    "baseline": {
+      "events": 25,
+      "businessSelectExecutions": 27450,
+      "exactShapesAndCountsMatch": true,
+      "cases": [
+        {
+          "name": "action_all",
+          "prepareStatements": 11,
+          "entityLoads": 20,
+          "total": 10,
+          "ids": [
+            10,
+            9,
+            8,
+            7,
+            6,
+            5,
+            4,
+            3,
+            2,
+            1
+          ],
+          "threadAllocatedBytes": 13135776,
+          "elapsedNanos": 158942923
+        },
+        {
+          "name": "action_cancel",
+          "prepareStatements": 3,
+          "entityLoads": 4,
+          "total": 2,
+          "ids": [
+            6,
+            3
+          ],
+          "threadAllocatedBytes": 262088,
+          "elapsedNanos": 8097172
+        },
+        {
+          "name": "action_create",
+          "prepareStatements": 3,
+          "entityLoads": 4,
+          "total": 2,
+          "ids": [
+            7,
+            1
+          ],
+          "threadAllocatedBytes": 306224,
+          "elapsedNanos": 9371511
+        },
+        {
+          "name": "action_lower",
+          "prepareStatements": 3,
+          "entityLoads": 4,
+          "total": 2,
+          "ids": [
+            5,
+            2
+          ],
+          "threadAllocatedBytes": 261848,
+          "elapsedNanos": 8511811
+        },
+        {
+          "name": "action_object",
+          "prepareStatements": 2,
+          "entityLoads": 2,
+          "total": 1,
+          "ids": [
+            2
+          ],
+          "threadAllocatedBytes": 200768,
+          "elapsedNanos": 6871651
+        },
+        {
+          "name": "action_update",
+          "prepareStatements": 3,
+          "entityLoads": 4,
+          "total": 2,
+          "ids": [
+            5,
+            2
+          ],
+          "threadAllocatedBytes": 284144,
+          "elapsedNanos": 10128930
+        },
+        {
+          "name": "action_user_cancel",
+          "prepareStatements": 2,
+          "entityLoads": 2,
+          "total": 1,
+          "ids": [
+            6
+          ],
+          "threadAllocatedBytes": 200952,
+          "elapsedNanos": 5139552
+        },
+        {
+          "name": "action_user_update",
+          "prepareStatements": 2,
+          "entityLoads": 2,
+          "total": 1,
+          "ids": [
+            5
+          ],
+          "threadAllocatedBytes": 201016,
+          "elapsedNanos": 6792984
+        },
+        {
+          "name": "action_work",
+          "prepareStatements": 1,
+          "entityLoads": 0,
+          "total": 0,
+          "ids": [],
+          "threadAllocatedBytes": 139520,
+          "elapsedNanos": 3015294
+        },
+        {
+          "name": "blank_100",
+          "prepareStatements": 101,
+          "entityLoads": 100,
+          "total": 100,
+          "ids": [
+            100,
+            99,
+            98,
+            97,
+            96,
+            95,
+            94,
+            93,
+            92,
+            91,
+            90,
+            89,
+            88,
+            87,
+            86,
+            85,
+            84,
+            83,
+            82,
+            81
+          ],
+          "threadAllocatedBytes": 6347816,
+          "elapsedNanos": 53466281
+        },
+        {
+          "name": "blank_1000",
+          "prepareStatements": 1001,
+          "entityLoads": 1000,
+          "total": 1000,
+          "ids": [
+            1000,
+            999,
+            998,
+            997,
+            996,
+            995,
+            994,
+            993,
+            992,
+            991,
+            990,
+            989,
+            988,
+            987,
+            986,
+            985,
+            984,
+            983,
+            982,
+            981
+          ],
+          "threadAllocatedBytes": 62207576,
+          "elapsedNanos": 435753799
+        },
+        {
+          "name": "blank_5000",
+          "prepareStatements": 5001,
+          "entityLoads": 5000,
+          "total": 5000,
+          "ids": [
+            5000,
+            4999,
+            4998,
+            4997,
+            4996,
+            4995,
+            4994,
+            4993,
+            4992,
+            4991,
+            4990,
+            4989,
+            4988,
+            4987,
+            4986,
+            4985,
+            4984,
+            4983,
+            4982,
+            4981
+          ],
+          "threadAllocatedBytes": 309720688,
+          "elapsedNanos": 1641553765
+        },
+        {
+          "name": "distinct_100",
+          "prepareStatements": 101,
+          "entityLoads": 200,
+          "total": 100,
+          "ids": [
+            100,
+            99,
+            98,
+            97,
+            96,
+            95,
+            94,
+            93,
+            92,
+            91,
+            90,
+            89,
+            88,
+            87,
+            86,
+            85,
+            84,
+            83,
+            82,
+            81
+          ],
+          "threadAllocatedBytes": 5856104,
+          "elapsedNanos": 51218590
+        },
+        {
+          "name": "distinct_1000",
+          "prepareStatements": 1001,
+          "entityLoads": 2000,
+          "total": 1000,
+          "ids": [
+            1000,
+            999,
+            998,
+            997,
+            996,
+            995,
+            994,
+            993,
+            992,
+            991,
+            990,
+            989,
+            988,
+            987,
+            986,
+            985,
+            984,
+            983,
+            982,
+            981
+          ],
+          "threadAllocatedBytes": 57161736,
+          "elapsedNanos": 642945988
+        },
+        {
+          "name": "distinct_5000",
+          "prepareStatements": 5001,
+          "entityLoads": 10000,
+          "total": 5000,
+          "ids": [
+            5000,
+            4999,
+            4998,
+            4997,
+            4996,
+            4995,
+            4994,
+            4993,
+            4992,
+            4991,
+            4990,
+            4989,
+            4988,
+            4987,
+            4986,
+            4985,
+            4984,
+            4983,
+            4982,
+            4981
+          ],
+          "threadAllocatedBytes": 284074584,
+          "elapsedNanos": 4313602796
+        },
+        {
+          "name": "fallback_selective",
+          "prepareStatements": 1001,
+          "entityLoads": 2000,
+          "total": 1,
+          "ids": [
+            1000
+          ],
+          "threadAllocatedBytes": 58759400,
+          "elapsedNanos": 861307535
+        },
+        {
+          "name": "missing_100",
+          "prepareStatements": 101,
+          "entityLoads": 100,
+          "total": 100,
+          "ids": [
+            100,
+            99,
+            98,
+            97,
+            96,
+            95,
+            94,
+            93,
+            92,
+            91,
+            90,
+            89,
+            88,
+            87,
+            86,
+            85,
+            84,
+            83,
+            82,
+            81
+          ],
+          "threadAllocatedBytes": 6402008,
+          "elapsedNanos": 61509126
+        },
+        {
+          "name": "missing_1000",
+          "prepareStatements": 1001,
+          "entityLoads": 1000,
+          "total": 1000,
+          "ids": [
+            1000,
+            999,
+            998,
+            997,
+            996,
+            995,
+            994,
+            993,
+            992,
+            991,
+            990,
+            989,
+            988,
+            987,
+            986,
+            985,
+            984,
+            983,
+            982,
+            981
+          ],
+          "threadAllocatedBytes": 62728968,
+          "elapsedNanos": 480774080
+        },
+        {
+          "name": "missing_5000",
+          "prepareStatements": 5001,
+          "entityLoads": 5000,
+          "total": 5000,
+          "ids": [
+            5000,
+            4999,
+            4998,
+            4997,
+            4996,
+            4995,
+            4994,
+            4993,
+            4992,
+            4991,
+            4990,
+            4989,
+            4988,
+            4987,
+            4986,
+            4985,
+            4984,
+            4983,
+            4982,
+            4981
+          ],
+          "threadAllocatedBytes": 312254728,
+          "elapsedNanos": 1873555384
+        },
+        {
+          "name": "profile",
+          "prepareStatements": 5,
+          "entityLoads": 7,
+          "total": 3,
+          "ids": [
+            1
+          ],
+          "threadAllocatedBytes": 1165440,
+          "elapsedNanos": 25629837
+        },
+        {
+          "name": "shared_100",
+          "prepareStatements": 101,
+          "entityLoads": 200,
+          "total": 100,
+          "ids": [
+            100,
+            99,
+            98,
+            97,
+            96,
+            95,
+            94,
+            93,
+            92,
+            91,
+            90,
+            89,
+            88,
+            87,
+            86,
+            85,
+            84,
+            83,
+            82,
+            81
+          ],
+          "threadAllocatedBytes": 6001048,
+          "elapsedNanos": 93521839
+        },
+        {
+          "name": "shared_1000",
+          "prepareStatements": 1001,
+          "entityLoads": 2000,
+          "total": 1000,
+          "ids": [
+            1000,
+            999,
+            998,
+            997,
+            996,
+            995,
+            994,
+            993,
+            992,
+            991,
+            990,
+            989,
+            988,
+            987,
+            986,
+            985,
+            984,
+            983,
+            982,
+            981
+          ],
+          "threadAllocatedBytes": 58450320,
+          "elapsedNanos": 815959924
+        },
+        {
+          "name": "shared_5000",
+          "prepareStatements": 5001,
+          "entityLoads": 10000,
+          "total": 5000,
+          "ids": [
+            5000,
+            4999,
+            4998,
+            4997,
+            4996,
+            4995,
+            4994,
+            4993,
+            4992,
+            4991,
+            4990,
+            4989,
+            4988,
+            4987,
+            4986,
+            4985,
+            4984,
+            4983,
+            4982,
+            4981
+          ],
+          "threadAllocatedBytes": 288641808,
+          "elapsedNanos": 2799105121
+        },
+        {
+          "name": "wide_1024",
+          "prepareStatements": 1001,
+          "entityLoads": 2000,
+          "total": 1000,
+          "ids": [
+            1000,
+            999,
+            998,
+            997,
+            996,
+            995,
+            994,
+            993,
+            992,
+            991,
+            990,
+            989,
+            988,
+            987,
+            986,
+            985,
+            984,
+            983,
+            982,
+            981
+          ],
+          "threadAllocatedBytes": 61630408,
+          "elapsedNanos": 1480587265
+        },
+        {
+          "name": "wide_131072",
+          "prepareStatements": 1001,
+          "entityLoads": 2000,
+          "total": 1000,
+          "ids": [
+            1000,
+            999,
+            998,
+            997,
+            996,
+            995,
+            994,
+            993,
+            992,
+            991,
+            990,
+            989,
+            988,
+            987,
+            986,
+            985,
+            984,
+            983,
+            982,
+            981
+          ],
+          "threadAllocatedBytes": 321005432,
+          "elapsedNanos": 1731859248
+        }
+      ]
+    },
+    "final": {
+      "events": 25,
+      "businessSelectExecutions": 27461,
+      "exactShapesAndCountsMatch": true,
+      "cases": [
+        {
+          "name": "action_all",
+          "prepareStatements": 11,
+          "entityLoads": 20,
+          "total": 10,
+          "ids": [
+            10,
+            9,
+            8,
+            7,
+            6,
+            5,
+            4,
+            3,
+            2,
+            1
+          ],
+          "threadAllocatedBytes": 13236568,
+          "elapsedNanos": 147704356
+        },
+        {
+          "name": "action_cancel",
+          "prepareStatements": 2,
+          "entityLoads": 2,
+          "total": 1,
+          "ids": [
+            6
+          ],
+          "threadAllocatedBytes": 264088,
+          "elapsedNanos": 5391399
+        },
+        {
+          "name": "action_create",
+          "prepareStatements": 4,
+          "entityLoads": 6,
+          "total": 3,
+          "ids": [
+            8,
+            7,
+            1
+          ],
+          "threadAllocatedBytes": 408584,
+          "elapsedNanos": 13601237
+        },
+        {
+          "name": "action_lower",
+          "prepareStatements": 7,
+          "entityLoads": 12,
+          "total": 6,
+          "ids": [
+            10,
+            9,
+            5,
+            4,
+            3,
+            2
+          ],
+          "threadAllocatedBytes": 567288,
+          "elapsedNanos": 19434468
+        },
+        {
+          "name": "action_object",
+          "prepareStatements": 3,
+          "entityLoads": 4,
+          "total": 2,
+          "ids": [
+            4,
+            2
+          ],
+          "threadAllocatedBytes": 296056,
+          "elapsedNanos": 7982182
+        },
+        {
+          "name": "action_update",
+          "prepareStatements": 7,
+          "entityLoads": 12,
+          "total": 6,
+          "ids": [
+            10,
+            9,
+            5,
+            4,
+            3,
+            2
+          ],
+          "threadAllocatedBytes": 573624,
+          "elapsedNanos": 18037507
+        },
+        {
+          "name": "action_user_cancel",
+          "prepareStatements": 2,
+          "entityLoads": 2,
+          "total": 1,
+          "ids": [
+            6
+          ],
+          "threadAllocatedBytes": 235432,
+          "elapsedNanos": 6338802
+        },
+        {
+          "name": "action_user_update",
+          "prepareStatements": 2,
+          "entityLoads": 2,
+          "total": 1,
+          "ids": [
+            5
+          ],
+          "threadAllocatedBytes": 236968,
+          "elapsedNanos": 5566889
+        },
+        {
+          "name": "action_work",
+          "prepareStatements": 3,
+          "entityLoads": 4,
+          "total": 2,
+          "ids": [
+            9,
+            3
+          ],
+          "threadAllocatedBytes": 295936,
+          "elapsedNanos": 8377054
+        },
+        {
+          "name": "blank_100",
+          "prepareStatements": 101,
+          "entityLoads": 100,
+          "total": 100,
+          "ids": [
+            100,
+            99,
+            98,
+            97,
+            96,
+            95,
+            94,
+            93,
+            92,
+            91,
+            90,
+            89,
+            88,
+            87,
+            86,
+            85,
+            84,
+            83,
+            82,
+            81
+          ],
+          "threadAllocatedBytes": 6358776,
+          "elapsedNanos": 38801699
+        },
+        {
+          "name": "blank_1000",
+          "prepareStatements": 1001,
+          "entityLoads": 1000,
+          "total": 1000,
+          "ids": [
+            1000,
+            999,
+            998,
+            997,
+            996,
+            995,
+            994,
+            993,
+            992,
+            991,
+            990,
+            989,
+            988,
+            987,
+            986,
+            985,
+            984,
+            983,
+            982,
+            981
+          ],
+          "threadAllocatedBytes": 62035680,
+          "elapsedNanos": 324524480
+        },
+        {
+          "name": "blank_5000",
+          "prepareStatements": 5001,
+          "entityLoads": 5000,
+          "total": 5000,
+          "ids": [
+            5000,
+            4999,
+            4998,
+            4997,
+            4996,
+            4995,
+            4994,
+            4993,
+            4992,
+            4991,
+            4990,
+            4989,
+            4988,
+            4987,
+            4986,
+            4985,
+            4984,
+            4983,
+            4982,
+            4981
+          ],
+          "threadAllocatedBytes": 309122192,
+          "elapsedNanos": 1090785652
+        },
+        {
+          "name": "distinct_100",
+          "prepareStatements": 101,
+          "entityLoads": 200,
+          "total": 100,
+          "ids": [
+            100,
+            99,
+            98,
+            97,
+            96,
+            95,
+            94,
+            93,
+            92,
+            91,
+            90,
+            89,
+            88,
+            87,
+            86,
+            85,
+            84,
+            83,
+            82,
+            81
+          ],
+          "threadAllocatedBytes": 5870800,
+          "elapsedNanos": 59320521
+        },
+        {
+          "name": "distinct_1000",
+          "prepareStatements": 1001,
+          "entityLoads": 2000,
+          "total": 1000,
+          "ids": [
+            1000,
+            999,
+            998,
+            997,
+            996,
+            995,
+            994,
+            993,
+            992,
+            991,
+            990,
+            989,
+            988,
+            987,
+            986,
+            985,
+            984,
+            983,
+            982,
+            981
+          ],
+          "threadAllocatedBytes": 57153424,
+          "elapsedNanos": 610590861
+        },
+        {
+          "name": "distinct_5000",
+          "prepareStatements": 5001,
+          "entityLoads": 10000,
+          "total": 5000,
+          "ids": [
+            5000,
+            4999,
+            4998,
+            4997,
+            4996,
+            4995,
+            4994,
+            4993,
+            4992,
+            4991,
+            4990,
+            4989,
+            4988,
+            4987,
+            4986,
+            4985,
+            4984,
+            4983,
+            4982,
+            4981
+          ],
+          "threadAllocatedBytes": 284146088,
+          "elapsedNanos": 4285667096
+        },
+        {
+          "name": "fallback_selective",
+          "prepareStatements": 1001,
+          "entityLoads": 2000,
+          "total": 1,
+          "ids": [
+            1000
+          ],
+          "threadAllocatedBytes": 58337200,
+          "elapsedNanos": 688016795
+        },
+        {
+          "name": "missing_100",
+          "prepareStatements": 101,
+          "entityLoads": 100,
+          "total": 100,
+          "ids": [
+            100,
+            99,
+            98,
+            97,
+            96,
+            95,
+            94,
+            93,
+            92,
+            91,
+            90,
+            89,
+            88,
+            87,
+            86,
+            85,
+            84,
+            83,
+            82,
+            81
+          ],
+          "threadAllocatedBytes": 6417040,
+          "elapsedNanos": 50554886
+        },
+        {
+          "name": "missing_1000",
+          "prepareStatements": 1001,
+          "entityLoads": 1000,
+          "total": 1000,
+          "ids": [
+            1000,
+            999,
+            998,
+            997,
+            996,
+            995,
+            994,
+            993,
+            992,
+            991,
+            990,
+            989,
+            988,
+            987,
+            986,
+            985,
+            984,
+            983,
+            982,
+            981
+          ],
+          "threadAllocatedBytes": 62571144,
+          "elapsedNanos": 386139703
+        },
+        {
+          "name": "missing_5000",
+          "prepareStatements": 5001,
+          "entityLoads": 5000,
+          "total": 5000,
+          "ids": [
+            5000,
+            4999,
+            4998,
+            4997,
+            4996,
+            4995,
+            4994,
+            4993,
+            4992,
+            4991,
+            4990,
+            4989,
+            4988,
+            4987,
+            4986,
+            4985,
+            4984,
+            4983,
+            4982,
+            4981
+          ],
+          "threadAllocatedBytes": 311643656,
+          "elapsedNanos": 1451411602
+        },
+        {
+          "name": "profile",
+          "prepareStatements": 5,
+          "entityLoads": 7,
+          "total": 3,
+          "ids": [
+            1
+          ],
+          "threadAllocatedBytes": 1216928,
+          "elapsedNanos": 26712750
+        },
+        {
+          "name": "shared_100",
+          "prepareStatements": 101,
+          "entityLoads": 200,
+          "total": 100,
+          "ids": [
+            100,
+            99,
+            98,
+            97,
+            96,
+            95,
+            94,
+            93,
+            92,
+            91,
+            90,
+            89,
+            88,
+            87,
+            86,
+            85,
+            84,
+            83,
+            82,
+            81
+          ],
+          "threadAllocatedBytes": 5976624,
+          "elapsedNanos": 87908949
+        },
+        {
+          "name": "shared_1000",
+          "prepareStatements": 1001,
+          "entityLoads": 2000,
+          "total": 1000,
+          "ids": [
+            1000,
+            999,
+            998,
+            997,
+            996,
+            995,
+            994,
+            993,
+            992,
+            991,
+            990,
+            989,
+            988,
+            987,
+            986,
+            985,
+            984,
+            983,
+            982,
+            981
+          ],
+          "threadAllocatedBytes": 58088632,
+          "elapsedNanos": 690124813
+        },
+        {
+          "name": "shared_5000",
+          "prepareStatements": 5001,
+          "entityLoads": 10000,
+          "total": 5000,
+          "ids": [
+            5000,
+            4999,
+            4998,
+            4997,
+            4996,
+            4995,
+            4994,
+            4993,
+            4992,
+            4991,
+            4990,
+            4989,
+            4988,
+            4987,
+            4986,
+            4985,
+            4984,
+            4983,
+            4982,
+            4981
+          ],
+          "threadAllocatedBytes": 287521160,
+          "elapsedNanos": 3024765227
+        },
+        {
+          "name": "wide_1024",
+          "prepareStatements": 1001,
+          "entityLoads": 2000,
+          "total": 1000,
+          "ids": [
+            1000,
+            999,
+            998,
+            997,
+            996,
+            995,
+            994,
+            993,
+            992,
+            991,
+            990,
+            989,
+            988,
+            987,
+            986,
+            985,
+            984,
+            983,
+            982,
+            981
+          ],
+          "threadAllocatedBytes": 61423648,
+          "elapsedNanos": 1303018915
+        },
+        {
+          "name": "wide_131072",
+          "prepareStatements": 1001,
+          "entityLoads": 2000,
+          "total": 1000,
+          "ids": [
+            1000,
+            999,
+            998,
+            997,
+            996,
+            995,
+            994,
+            993,
+            992,
+            991,
+            990,
+            989,
+            988,
+            987,
+            986,
+            985,
+            984,
+            983,
+            982,
+            981
+          ],
+          "threadAllocatedBytes": 320652384,
+          "elapsedNanos": 1601345449
+        }
+      ]
+    }
+  },
+  "limits": [
+    "tagged business SELECT only, not all network roundtrips",
+    "calling-thread cumulative allocation includes statistics/observer/SessionMetrics logging; not peak/RSS/SLA",
+    "synthetic read fixtures, no HTTP/UI or production concurrency claim"
+  ],
+  "negativeTestSourceIdentical": {
+    "AuditPaginationBoundaryTest.java": "c5cd39fd4a074d666a4fe583ea1f46bedb090735208138be592f23c72969856d",
+    "AuditActionFilterPostgresTest.java": "391d147ad1e64a47ef7376d6984cdbcaaf6f96f75274b1d87da6ccf5315c7a71"
+  },
+  "testedSourceStillIdentical": [
+    "AGENTS.md",
+    "codeplzreadme.md",
+    "docs/agents/agent-handoff-contract.md",
+    "docs/agents/quality-verifier.md",
+    "gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/controller/AuditController.java",
+    "gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/repository/AuditEventRepository.java",
+    "gmp-platform/backend/src/main/java/com/zencas/edhr/identity/repository/UserAccountRepository.java",
+    "gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/entity/AuditEvent.java",
+    "gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/entity/AuditEventHash.java",
+    "gmp-platform/backend/src/main/java/com/zencas/edhr/common/config/SecurityConfig.java",
+    "gmp-platform/backend/src/main/java/com/zencas/edhr/common/dto/PageResult.java",
+    "gmp-platform/backend/src/test/java/com/zencas/edhr/compliance/controller/AuditReadObservationPostgresTest.java",
+    "gmp-platform/backend/src/test/java/com/zencas/edhr/compliance/controller/AuditActionFilterPostgresTest.java",
+    "gmp-platform/backend/src/test/java/com/zencas/edhr/compliance/controller/AuditActionWhitespacePostgresTest.java",
+    "gmp-platform/backend/src/test/java/com/zencas/edhr/compliance/controller/AuditPaginationBoundaryTest.java",
+    "gmp-platform/backend/src/test/java/com/zencas/edhr/compliance/controller/AuditControllerTest.java",
+    "gmp-platform/backend/src/test/java/com/zencas/edhr/compliance/entity/AuditEventHashTest.java",
+    "gmp-platform/backend/src/test/java/com/zencas/edhr/compliance/entity/AuditEventTest.java",
+    "gmp-platform/backend/src/test/java/com/zencas/edhr/common/audit/AuditAspectTest.java",
+    "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrAuditReadTest.java"
+  ],
+  "docOnlyPostRunDelta": [
+    "docs/development/branch-review-20261106-audit-read/decision-package.yaml"
+  ],
+  "knowledge": {
+    "tests": 89,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "ownedContainersRemoved": true
+}

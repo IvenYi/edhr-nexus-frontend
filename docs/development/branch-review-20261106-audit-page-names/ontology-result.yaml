@@ -1,0 +1,57 @@
+ontologyResult:
+  result: not-applicable
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: 6fc13d2836629d6a6ae6d6a44e571f4220adb283
+    targetBranch: edhr-dev
+    targetCommit: e69a8f3d97b34fea8737947c780b047bb0310c64
+    contractReadCommit: 3c8e46943dbc3d02673d342e501b0884cb0c76dd
+    uncommittedContractPaths: []
+  reason: 用户明确授权只对最终页批量补当前姓名，保留原显示/筛选/分页可达性及个人对象边界；属读取工程实现，不新增或替代业务概念、资格、状态或审计规则。知识350文件与来源和目标相同，当前知识无需修改；首次读取的未提交源码副本已与最终clean候选6fc13d2836629d6a6ae6d6a44e571f4220adb283逐字节核对一致，契约与实际读取3c提交相同。
+  changedArtifacts: []
+  knowledgeSync:
+    - id: DEC-0013-03
+      disposition: retained
+      scope: 生产客户动作类别继续CREATE/UPDATE，姓名批量不替换原动作政策或重写事件。
+      sourceReferences: [docs/knowledge/decisions/DEC-0013-production-work-order-lifecycle-and-audit-projection.yaml, final-source/gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/controller/AuditController.java]
+    - id: rule.production.audit-action-projection
+      disposition: retained
+      scope: 保留原Java投影与PR68先前SQL动作筛选修复；只核本批姓名工程变更不改变它，不据此宣称完整UI已验收。
+      sourceReferences: [docs/knowledge/rules/production.yaml, finite-audit-records.jsonl]
+    - id: DEC-0095-03
+      disposition: retained
+      scope: 单批与完整集合、各域名字/身份来源的区分保持；500是工程参数，不成为总结果上限，人员选择目录资格不扩展到审计补名。
+      sourceReferences: [docs/knowledge/decisions/DEC-0095-qualified-personnel-selection-completeness.yaml, docs/knowledge/evidence/qualified-personnel-selection-20261105.md, final-source/gmp-platform/backend/src/main/java/com/zencas/edhr/identity/repository/UserAccountRepository.java]
+    - id: question.multi-tenant-workflow-isolation
+      disposition: deferred
+      scope: 既有相邻完整租户未决仍保留，不阻塞当前默认MVP局部读取工程；精确username批量和同页重复失败不能宣称全域隔离已完成，也不新增审计租户政策。
+      sourceReferences: [docs/knowledge/open-questions.yaml, finite-audit-records.jsonl]
+  conflicts: []
+  questions: []
+  validationEvidence:
+    - id: validation.knowledge89
+      checkType: schema
+      command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f tools/knowledge-model/pom.xml test
+      outcome: passed
+      evidence: [knowledge-validation.log, knowledge-test-summary.json, TEST-com.zencas.edhr.knowledge.BusinessKnowledgeModelTest.xml]
+    - id: validation.knowledge-reference-status-boundary
+      checkType: reference
+      command: Formal knowledge validator plus finite affected-ID review
+      outcome: passed
+      evidence: [finite-audit-records.jsonl, finite-audit-summary.json, knowledge-fingerprint-inventory-final.json, 10 finite records contain 8 consistent and 2 explicit evidence gaps; 350 files unchanged; not whole-audit proof]
+    - id: validation.page-name-contract-preservation
+      checkType: projection
+      command: Read final source and parent-generated native134 XML/observations; no product runtime by this role
+      outcome: passed
+      evidence: [REVIEW.md, final-source-manifest.json, parent-generated-evidence/provenance.json, parent-generated-evidence/final/TEST-com.zencas.edhr.compliance.controller.AuditPageNamesPostgresTest.xml, parent-generated-evidence/final/observations/names_fallbacks.json, parent-generated-evidence/final/observations/names_large_first.json]
+    - id: validation.precise-provenance
+      checkType: evidence-path
+      command: python3 /tmp/edhr-audit-page-names-ontology-20261106/finalize.py
+      outcome: passed
+      evidence: [final-review-proof.json, parent-generated-evidence/provenance.json, baseline.json, final-source-manifest.json, Baseline Support recovered from fixed Git after run is explicitly not a pre-run snapshot; two post-run deltas recorded separately]
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages: [P1, P2, P3]

@@ -1,5 +1,25 @@
 # 持续推进台账
 
+## PR68追加：当前页批量补名已验收
+
+已更新[PR68](https://github.com/IvenYi/edhr-nexus-frontend/pull/68)标题正文为最终正确性两项+姓名N+1优化，正常推送原分支，观察OPEN/MERGEABLE/CLEAN，建议人工合入。受测6fc13d28、验收56e3c6b3后仅L0交付登记；登记后再次核本地/真实远端/PR head及受测运行/测试/知识/契约字节。下轮先fetch实际merge与新提交，再推进原全审余项；事件DB分页/索引未实施，不自动merge/deploy/恢复。
+
+用户明确选择“先做本页批量补名”；开始及提交前fetch目标仍e69，PR68仍OPEN且head3c8e4694，在原分支追加[本批](../branch-review-20261106-audit-page-names/README.md)。两个产品文件局部实现先派生过滤/切页再按本页唯一账号有界IN读取，500仅SQL批次、不截断所有记录及大页续页；原显示/历史姓名筛选、个人目标对象、同页重复账号异常、动作和原件保持。事件全载/DB分页/索引/权限政策不改。
+
+主侧同源新原生18旧为2正16真F/0E/S；最终134/134，清掉旧分页单人mock/import后原6再过，知识89/89。45完整观察90业务SELECT与服务器逐形状/次数吻合，5000匹配页20由5001→2；1100+105页4/2查询完整覆盖1205。旧source17完整26628 SELECT及失败部分51单列，不混成全网络往返或生产SLA。clean候选6fc13d28获全新独立134/134+89/89、16必需项passed/FINAL，无发现/阻断；实际页内参数500/500/100及105、原件校验和资源清理均过。本体NA/FINAL有限10=8一致2gap、350知识不变，源码子项FINAL。全部角色及子项FINAL后已实际漂移/阶段复核，目标仍e69且PR68 OPEN，之后仅L0验收/交付文档，受测运行/测试/契约/知识字节保持。
+
+原审计列表风险只关闭姓名N+1子项，事件全载仍open。W2余项/W3-W5跨链/权限、W6健壮性性能具体拆分/A23含旧已审、W7增量，931知识/86UI候选/A12/高风险/完整矩阵、历史ZIP/text-ID索引/上传PDFOffice导出容量/UNKNOWN及用户暂停队列保持。整文件0、历史unique未知，不自动merge/deploy/恢复或查询触发CI。
+
+## PR67已合入：W5审计读取正确性与W6规模取证
+
+已交付[PR68](https://github.com/IvenYi/edhr-nexus-frontend/pull/68)，audit/edhr-dev-audit-read-audit-20261106→edhr-dev，观察OPEN/MERGEABLE/CLEAN，建议人工合入。受测9d4416c3、验收cf220d59后仅L0交付记录；登记后核对本地/真实远端/PR head一致及受测保护路径字节保持。下一轮先fetch实际merge与新代码；性能未实施、旧队列继续，不自动merge/deploy/恢复。
+
+已fetch edhr-dev@e69a8f3d97b34fea8737947c780b047bb0310c64，PR67人工合入且整树同a40a86ff，无外部/知识/契约增量。[本批](../branch-review-20261106-audit-read/README.md)L2复用旧PERF-AUDIT-LIST-MATERIALIZATION-001，修分页算术子项，并按既有DEC-0013-03修生产动作筛选差异；不改原事件/历史/非生产分类、权限、UI或schema。
+
+主侧116/116、知识89/89；负对照分页6=3正3真红、原生动作9=3正6真红，0E/S。25观察27461业务SELECT逐形状/次数与服务器吻合，5000匹配仍5001查询，性能优化未实施/待用户选择。本体NA/FINAL有限13=12一致1UIgap，350知识不变；源码角色两次FINAL。clean候选9d4416c3取得全新独立质量passed/FINAL，实际116/116+89/89、15/15必需项，无发现/阻断，资源清理。全部FINAL后已实际PR前漂移/阶段复核，目标仍e69且无增量；此后仅L0验收/交付文档，两项正确性子项关闭。
+
+W3/W4/W5交叉及W2余项、W6健壮性/性能/具体拆分/A23含已审代码、W7增量保持。整文件0/历史unique未知；931知识/86UI候选、A12/高风险/完整矩阵、旧历史/ZIP、text-ID索引、大上传/PDF/Office/导出、UNKNOWN持久对账及暂停队列不关闭。下一步按实际性能答复推进有限切片，未答继续无依赖旧队列；不自动merge/deploy/恢复，不查询触发CI。
+
 ## PR67已交付：W5新事件摘要往返已验收
 
 已fetch edhr-dev@9dc5c0014643d99db299d27a80788cc777a0ccca，PR66人工合入且整树同dbc95776，无外部/知识/契约增量。[本批](../branch-review-20261106-audit-hash/README.md)L2复用旧W5-AUDIT-HASH-001，先取得最新旧源JSON/时间2真失败，再最小新行版本化封存。nullable无default0092/no历史DML、精确JSONB值编码/时间微秒/原18字段，不改旧日志、Signature/DHR/file摘要、UI或下载政策。
