@@ -4,6 +4,9 @@ import com.zencas.edhr.production.service.DhrArchiveService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.junit.jupiter.api.io.TempDir;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.web.context.request.ServletWebRequest;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -24,7 +27,7 @@ class DhrArchiveControllerStreamingTest {
         Path zip = archive(); byte[] expected = Files.readAllBytes(zip);
         var service = mock(DhrArchiveService.class);
         when(service.export(1L, 10L, "FULL", Set.of(), Set.of())).thenReturn(zip);
-        var response = new DhrArchiveController(service).export(1L, 10L, "FULL", "", "");
+        var response = new DhrArchiveController(service).export(1L, 10L, "FULL", "", "", request());
         assertThat(response.getHeaders().getContentType().toString()).isEqualTo("application/zip");
         assertThat(response.getHeaders().getContentDisposition().getFilename()).isEqualTo("DHR-1-V10-complete.zip");
         assertThat(response.getHeaders().getContentLength()).isEqualTo(expected.length);
@@ -36,7 +39,7 @@ class DhrArchiveControllerStreamingTest {
     @Test void interruptedOutputStillDeletesOwnedArchiveAndPropagatesTheFailure() throws Exception {
         Path zip = archive(); var service = mock(DhrArchiveService.class);
         when(service.export(1L, 10L, "SELECTED", Set.of("100"), Set.of())).thenReturn(zip);
-        var response = new DhrArchiveController(service).export(1L, 10L, "SELECTED", "100", "");
+        var response = new DhrArchiveController(service).export(1L, 10L, "SELECTED", "100", "", request());
         assertThat(response.getHeaders().getContentDisposition().getFilename()).isEqualTo("DHR-1-V10-selected.zip");
         var output = new OutputStream() {
             int written;
@@ -50,7 +53,7 @@ class DhrArchiveControllerStreamingTest {
 
     @Test void invalidSelectedIdentityIsRejectedBeforeGeneratingAnArchive() {
         var service = mock(DhrArchiveService.class);
-        assertThatThrownBy(() -> new DhrArchiveController(service).export(1L, 10L, "SELECTED", "../100", ""))
+        assertThatThrownBy(() -> new DhrArchiveController(service).export(1L, 10L, "SELECTED", "../100", "", request()))
                 .hasMessageContaining("导出证据标识无效");
         verifyNoInteractions(service);
     }
@@ -91,8 +94,10 @@ class DhrArchiveControllerStreamingTest {
 
     private org.springframework.http.ResponseEntity<org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody> response(Path zip)throws IOException{
         var service=mock(DhrArchiveService.class);when(service.export(1L,10L,"FULL",Set.of(),Set.of())).thenReturn(zip);
-        return new DhrArchiveController(service).export(1L,10L,"FULL","","");
+        return new DhrArchiveController(service).export(1L,10L,"FULL","","",request());
     }
+
+    private ServletWebRequest request(){return new ServletWebRequest(new MockHttpServletRequest(),new MockHttpServletResponse());}
 
     private void obstruct(Path zip)throws IOException{
         Files.delete(zip);Files.createDirectory(zip);Files.writeString(zip.resolve("fixture-blocker"),"owned test fixture");

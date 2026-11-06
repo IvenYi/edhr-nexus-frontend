@@ -1,0 +1,328 @@
+qualityResult:
+  result: passed
+  level: L2
+  finality: FINAL
+  baseCommit: 764258b869567c0f7840f16ff1358ed5c2491f53
+  headCommit: 7b68eabc6f9c8d7d00863285f9dd79e75a86a4a2
+  contractBaseline:
+    sourceCommit: 7b68eabc6f9c8d7d00863285f9dd79e75a86a4a2
+    targetBranch: edhr-dev
+    targetCommit: 764258b869567c0f7840f16ff1358ed5c2491f53
+    contractReadCommit: 7b68eabc6f9c8d7d00863285f9dd79e75a86a4a2
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: dirty
+    includedPaths: []
+    excludedPaths:
+    - gmp-platform/frontend/node_modules
+    untrackedPaths:
+    - gmp-platform/frontend/node_modules
+  workingTreeExplanation: Actual run only had a QA-owned dependency symlink untracked;
+    no tracked product/test/fixture/config/contract/knowledge modifications. Symlink
+    removed after tests; final working tree is clean (baseline-and-cleanup.json).
+  knowledgeBaselineVersion: 0.3.25
+  impactAnalysisReview:
+    level: L2
+    direct: One controller temporary-ZIP ownership fix; no service generation change.
+    transitive: Real isolated MVC lifecycle and direct callback ownership checks cover
+      confirmed subset.
+    potential: Active-body network and pre-listener setup failure remain explicit
+      gaps.
+    unaffected: Freeze/hash/source/permissions/audit order, UI/schema and pending
+      DB paging unchanged.
+    compatibility: No migration, new timeout/executor policy, restoration or orphan
+      sweep.
+    snapshots: Same explicit frozen version and original evidence preserved.
+    audit: EXPORT remains before streaming; no successful audit or already-sent response
+      rollback guarantee.
+    permissions: Original combined view+export method check retained; Basic fixture
+      is not product JWT.
+    extensionStrategy: product-core, standard Spring callback and one request-local
+      CAS; no generic framework.
+    evidenceGaps:
+    - Production lazy-header risk
+    - Real active-network abort
+    - Pre-listener failure
+    - Crash/UNKNOWN reconciliation
+    - PDF and concurrent production capacity
+  knowledgeSync:
+  - id: rule.dhr-summary-zip-source-trace
+    disposition: retained
+    scope: Cleanup owns only a temporary generated copy; frozen originals and trace
+      evidence unchanged.
+    sourceReferences:
+    - docs/knowledge/rules/dhr-summary.yaml
+  - id: DEC-0063-12
+    disposition: retained
+    scope: Same export authorization and audit ordering; generation audit is not network
+      receipt.
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml
+  - id: DEC-0090-01
+    disposition: retained
+    scope: Temporary export cleanup does not implement controlled archival, release
+      or restoration.
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0090-dhr-archive-minimum-scope.yaml
+  checks:
+  - id: check.fixed-candidate-and-contract
+    required: true
+    category: documentation
+    description: Independent fetch and detached candidate verification; target remains764,
+      all applicable contract bytes identical.
+    method: command
+    command: git fetch origin edhr-dev; git rev-parse HEAD origin/edhr-dev; git diff
+      baseline..candidate
+    outcome: passed
+    evidence:
+    - analysis.json
+    - baseline-and-cleanup.json
+    - final/run.json
+  - id: check.scope-and-knowledge
+    required: true
+    category: ontology
+    description: Only DhrArchiveController product source changes;350 knowledge files
+      and applicable contracts remain byte-identical.
+    method: inspection
+    command: Fixed Git diff and SHA-256 source inventory
+    outcome: passed
+    evidence:
+    - analysis.json
+    - source-role/REVIEW.md
+  - id: check.latest-same-byte-negative-control
+    required: true
+    category: regression
+    description: Latest old-controller five cases contain two positive controls and
+      three real file-leak assertion failures, zero errors/skips; same HTTP test bytes
+      as candidate.
+    method: inspection
+    command: python3 analyze.py
+    outcome: passed
+    evidence:
+    - analysis.json
+    - source-role/REVIEW.md
+  - id: check.retained-original-artifacts
+    required: true
+    category: documentation
+    description: All six retained archives and543 member SHA values verified, including
+      initial failed QA and revision setup failure.
+    method: command
+    command: python3 analyze.py
+    outcome: passed
+    evidence:
+    - analysis.json
+  - id: check.independent-selected-regression
+    required: true
+    category: regression
+    description: Actual independent95/95, zero failures/errors/skips, on the fixed7b68eabc
+      candidate.
+    method: automated-test
+    command: EDHR_ARCHIVE_ROOT=/workspace/edhr-archive-async-qa-v2-20261107 EDHR_ARCHIVE_RAW=/tmp/edhr-archive-async-final-qa-v2-20261107
+      python3 run.py final
+    outcome: passed
+    evidence:
+    - final/test-summary.json
+    - final/run.json
+    - final/maven.log
+  - id: check.normal-http-positive-control
+    required: true
+    category: api
+    description: Normal synthetic real HTTP200 returns exact164-byte ZIP, correct
+      headers, exactly one submitted/started task and owned ZIP removal; no MimeHeaders
+      ArrayIndexOutOfBoundsException in this run.
+    method: automated-test
+    command: DhrArchiveAsyncLifecycleTest.normalHttpStreamReturnsExactBytesAndDeletesOwnedArchive
+    outcome: passed
+    evidence:
+    - final/http/normal.json
+    - final/TEST-com.zencas.edhr.production.controller.DhrArchiveAsyncLifecycleTest.xml
+    - final/maven.log
+  - id: check.never-started-http-and-permission
+    required: true
+    category: api
+    description: 'Other four real embedded HTTP cases pass: reject/queued timeout/cancel-request
+      eventual completion delete owned files with body never started; viewer blocked
+      before generation.'
+    method: automated-test
+    command: DhrArchiveAsyncLifecycleTest
+    outcome: passed
+    evidence:
+    - final/http/rejected.json
+    - final/http/queued-timeout.json
+    - final/http/client-cancelled.json
+    - final/http/forbidden.json
+  - id: check.local-ownership
+    required: true
+    category: unit
+    description: All five direct callback/body ownership, late-body, replacement path,
+      cleanup-log and synchronous metadata-failure cases pass.
+    method: automated-test
+    command: DhrArchiveAsyncOwnershipTest
+    outcome: passed
+    evidence:
+    - final/TEST-com.zencas.edhr.production.controller.DhrArchiveAsyncOwnershipTest.xml
+  - id: check.original-stream-and-service
+    required: true
+    category: unit
+    description: Prior seven service and six stream cases pass; existing assertions
+      preserved and only framework request context added to direct calls.
+    method: automated-test
+    command: DhrArchiveCleanupFailureTest,DhrArchiveControllerStreamingTest
+    outcome: passed
+    evidence:
+    - final/test-summary.json
+    - source-role/REVIEW.md
+  - id: check.native-pg-and-frozen-export
+    required: true
+    category: database
+    description: Twelve native export cases pass using own full canonical+0092 PostgreSQL;
+      frozen integrity/original/ZIP/PDF merge/audit real, renderer mocked.
+    method: automated-test
+    command: DhrExportReadObservationPostgresTest
+    outcome: passed
+    evidence:
+    - final/TEST-com.zencas.edhr.production.service.DhrExportReadObservationPostgresTest.xml
+    - final/postgres.log
+  - id: check.observations-and-jfr
+    required: true
+    category: regression
+    description: Independently recomputed11 JFR files;11 calling-thread observer events
+      total33 SELECT, without all-network/per-server-window attribution.
+    method: command
+    command: python3 analyze.py
+    outcome: passed
+    evidence:
+    - analysis.json
+    - jfr-recalculation.tsv
+    - final/observations/observations.jsonl
+  - id: check.actual-audit-bindings
+    required: true
+    category: audit
+    description: Three actual server EXPORT/v2 inserts, all20 bound parameters parsed
+      and fixed-field payload SHA-256 independently recomputed.
+    method: command
+    command: python3 analyze.py
+    outcome: passed
+    evidence:
+    - analysis.json
+    - final/postgres.log
+  - id: check.knowledge-validator
+    required: true
+    category: ontology
+    description: Actual independent knowledge89/89, zero failures/errors/skips; does
+      not claim complete semantic audit.
+    method: automated-test
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f tools/knowledge-model/pom.xml
+      test
+    outcome: passed
+    evidence:
+    - knowledge/maven.log
+    - knowledge/TEST-com.zencas.edhr.knowledge.BusinessKnowledgeModelTest.xml
+    - baseline-and-cleanup.json
+  - id: check.a23-and-lifecycle-source
+    required: true
+    category: requirements
+    description: One request-local CAS corresponds to demonstrated lifecycle competition;
+      original TWR retained and small helper reused, no generic cleanup framework.
+      Independent source child is FINAL.
+    method: inspection
+    command: Fixed candidate source review and installed Spring6.1.8 javap
+    outcome: passed
+    evidence:
+    - source-role/REVIEW.md
+    - source-role/result.json
+    - analysis.json
+  - id: check.fixture-isolation-and-header-risk
+    required: true
+    category: security
+    description: Eager header setting is confined to synthetic Basic test chain; all
+      original assertions unchanged. Product SecurityConfig/FileController stay untouched
+      and lazy-header risk remains explicitly open.
+    method: inspection
+    command: git diff8fc765dd..7b68eabc; read actual SecurityConfig/FileController
+      and retained header-source evidence
+    outcome: passed
+    evidence:
+    - source-role/REVIEW.md
+    - source-role/result.json
+    - analysis.json
+    - final/http/normal.json
+  - id: check.owned-resources
+    required: true
+    category: integration
+    description: Own PG container removed, HTTP40765 closed, recursively no ZIPs in
+      own JVM temp; removed own dependency symlink and final worktree clean.
+    method: command
+    command: python3 analyze.py; owned-resource final inspection
+    outcome: passed
+    evidence:
+    - analysis.json
+    - baseline-and-cleanup.json
+    - final/cleanup.json
+    - final/temporary-archives.json
+  findings:
+  - id: QF-DHR-ASYNC-NORMAL-HTTP-001
+    severity: medium
+    scope: Previously failed normal positive control in isolated synthetic Basic HTTP
+      fixture only
+    summary: Earlier one-start assertion failure is resolved for the declared ZIP-ownership
+      fixture; product lazy-header race is not resolved.
+    reproductionSteps:
+    - Read retained initial QA8fc765dd normal200/164 but started2 and MimeHeaders
+      failure.
+    - Review exact fixture-only eager-header delta, preserving every existing assertion.
+    - Run independent95 on clean candidate7b68eabc with own PG/JVM/temp and inspect
+      exact normal response and counters.
+    expectedResult: Synthetic normal HTTP returns exact ZIP with exactly one submitted/started
+      task and owned-file cleanup.
+    actualResult: Independent candidate7b68eabc normal200/164, submitted1/started1,
+      all five lifecycle cases and full95 pass. Product JWT/security/cache-response
+      chain is outside this isolated fixture and its recorded lazy-header risk remains
+      open.
+    evidence:
+    - final/http/normal.json
+    - final/TEST-com.zencas.edhr.production.controller.DhrArchiveAsyncLifecycleTest.xml
+    - source-role/REVIEW.md
+    - analysis.json
+    resolutionStatus: resolved
+    resolutionEvidence:
+    - type: test
+      reference: final/TEST-com.zencas.edhr.production.controller.DhrArchiveAsyncLifecycleTest.xml
+    - type: source-review
+      reference: source-role/REVIEW.md
+  blockingConditions: []
+  residualRisks:
+  - id: residual.product-lazy-header-race
+    description: Production SecurityConfig retains default lazy HeaderWriterFilter.
+      The earlier Basic HTTP race and dependency microprobes identify a shared source
+      path, but this v2 did not reproduce it with the complete product JWT chain;
+      global eager has known preview-cache/304/reset differences.
+    impact: This batch does not fix or close the product header risk. Fixture isolation
+      only enables reliable ZIP-ownership evidence.
+    mitigation: Keep the product risk open; next focused product-JWT streaming reproduction
+      and cache-preserving design, without blindly enabling global eager.
+  - id: residual.http-scope
+    description: Actual embedded Tomcat/MVC uses synthetic Basic+eager headers and
+      mocked ZIP generator, excluding product JWT/GlobalExceptionHandler/PG/PDF HTTP
+      integration. cancel(true) is accepted but future.isCancelled remains false.
+    impact: 500/503 are experimental statuses, and eventual request completion cleanup
+      is not immediate server cancellation, response rollback or active-network abort
+      certification.
+    mitigation: Retain exact experimental scope; verify product wiring and real active-body
+      network interruption separately.
+  - id: residual.uncovered-lifecycle
+    description: Pre-listener/startAsync setup failures, real active-body timeout/cancel,
+      Error/OOM/crash/disk loss/UNKNOWN and persistent reconciliation remain outside
+      the verified slice.
+    impact: No universal file cleanup, response/audit rollback or capacity guarantee;
+      callback deletion failure remains diagnostic only.
+    mitigation: Retain original queue; no unknown orphan scans, restoration or automatic
+      retry policy.
+  - id: residual.full-audit
+    description: Whole W2-W7 audit,931 knowledge/86UI candidates/A12/high-risk/complete
+      matrices/A23 revisits and user-paused tasks remain unfinished; whole-file completion0
+      and historical unique unknown.
+    impact: Limited acceptance cannot close the whole audit, controlled DHR archival
+      or approve pending DB paging/index performance choices.
+    mitigation: Continue fixed-baseline incremental audit and explicit performance
+      discussions separately.

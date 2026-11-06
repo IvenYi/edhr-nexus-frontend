@@ -1,0 +1,292 @@
+{
+  "baseline": "764258b869567c0f7840f16ff1358ed5c2491f53",
+  "runs": {
+    "negative_context": {
+      "totals": {
+        "tests": 5,
+        "failures": 3,
+        "errors": 0,
+        "skipped": 0
+      },
+      "classes": [
+        {
+          "class": "com.zencas.edhr.production.controller.DhrArchiveAsyncLifecycleTest",
+          "tests": 5,
+          "failures": 3,
+          "errors": 0,
+          "skipped": 0
+        }
+      ],
+      "missingFreshReports": []
+    },
+    "final": {
+      "totals": {
+        "tests": 95,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "classes": [
+        {
+          "class": "com.zencas.edhr.production.controller.DhrArchiveAsyncLifecycleTest",
+          "tests": 5,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "class": "com.zencas.edhr.production.controller.DhrArchiveAsyncOwnershipTest",
+          "tests": 5,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "class": "com.zencas.edhr.production.service.DhrArchiveCleanupFailureTest",
+          "tests": 7,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "class": "com.zencas.edhr.production.controller.DhrArchiveControllerStreamingTest",
+          "tests": 6,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "class": "com.zencas.edhr.production.service.DhrExportReadObservationPostgresTest",
+          "tests": 12,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "class": "com.zencas.edhr.production.service.DhrFormFilesTest",
+          "tests": 4,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "class": "com.zencas.edhr.production.service.DhrArchiveLayoutReaderTest",
+          "tests": 3,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "class": "com.zencas.edhr.compliance.entity.AuditEventHashTest",
+          "tests": 48,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "class": "com.zencas.edhr.compliance.entity.AuditEventTest",
+          "tests": 2,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "class": "com.zencas.edhr.common.audit.AuditAspectTest",
+          "tests": 3,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        }
+      ],
+      "missingFreshReports": []
+    }
+  },
+  "http": {
+    "negative_context": {
+      "forbidden": {
+        "name": "forbidden",
+        "httpStatus": 403,
+        "responseBytes": 128,
+        "submitted": 0,
+        "started": 0,
+        "ownedPath": null,
+        "ownedExistsBeforeFixtureTeardown": false,
+        "scope": "real embedded Tomcat and MVC; independent synthetic Basic security and mock archive generator, not product JWT/database/PDF"
+      },
+      "queued-timeout": {
+        "name": "queued-timeout",
+        "httpStatus": 503,
+        "responseBytes": 138,
+        "submitted": 1,
+        "started": 0,
+        "ownedPath": "/tmp/edhr-archive-async-revision-20261107/negative_context/vm-tmp/junit11162840182343740207/owned-2327676795955687921.zip",
+        "ownedExistsBeforeFixtureTeardown": true,
+        "scope": "real embedded Tomcat and MVC; independent synthetic Basic security and mock archive generator, not product JWT/database/PDF"
+      },
+      "client-cancelled": {
+        "started": 0,
+        "scope": "real client cancellation while queued; eventual request completion may be error or timeout, not an immediate-cancel attribution",
+        "submitted": 1,
+        "ownedExistsBeforeFixtureTeardown": true,
+        "clientFutureCancelled": false
+      },
+      "rejected": {
+        "name": "rejected",
+        "httpStatus": 500,
+        "responseBytes": 140,
+        "submitted": 1,
+        "started": 0,
+        "ownedPath": "/tmp/edhr-archive-async-revision-20261107/negative_context/vm-tmp/junit11477627704004348324/owned-15390521174741590847.zip",
+        "ownedExistsBeforeFixtureTeardown": true,
+        "scope": "real embedded Tomcat and MVC; independent synthetic Basic security and mock archive generator, not product JWT/database/PDF"
+      },
+      "normal": {
+        "name": "normal",
+        "httpStatus": 200,
+        "responseBytes": 164,
+        "submitted": 1,
+        "started": 1,
+        "ownedPath": "/tmp/edhr-archive-async-revision-20261107/negative_context/vm-tmp/junit1401259799531437427/owned-6937466393435857475.zip",
+        "ownedExistsBeforeFixtureTeardown": false,
+        "scope": "real embedded Tomcat and MVC; independent synthetic Basic security and mock archive generator, not product JWT/database/PDF"
+      }
+    },
+    "final": {
+      "forbidden": {
+        "name": "forbidden",
+        "httpStatus": 403,
+        "responseBytes": 128,
+        "submitted": 0,
+        "started": 0,
+        "ownedPath": null,
+        "ownedExistsBeforeFixtureTeardown": false,
+        "scope": "real embedded Tomcat and MVC; independent synthetic Basic security and mock archive generator, not product JWT/database/PDF"
+      },
+      "queued-timeout": {
+        "name": "queued-timeout",
+        "httpStatus": 503,
+        "responseBytes": 138,
+        "submitted": 1,
+        "started": 0,
+        "ownedPath": "/tmp/edhr-archive-async-revision-20261107/final/vm-tmp/junit6319436483734748682/owned-18195112158263783238.zip",
+        "ownedExistsBeforeFixtureTeardown": false,
+        "scope": "real embedded Tomcat and MVC; independent synthetic Basic security and mock archive generator, not product JWT/database/PDF"
+      },
+      "client-cancelled": {
+        "started": 0,
+        "scope": "real client cancellation while queued; eventual request completion may be error or timeout, not an immediate-cancel attribution",
+        "submitted": 1,
+        "ownedExistsBeforeFixtureTeardown": false,
+        "clientFutureCancelled": false
+      },
+      "rejected": {
+        "name": "rejected",
+        "httpStatus": 500,
+        "responseBytes": 140,
+        "submitted": 1,
+        "started": 0,
+        "ownedPath": "/tmp/edhr-archive-async-revision-20261107/final/vm-tmp/junit712703496793120069/owned-8345322572856976538.zip",
+        "ownedExistsBeforeFixtureTeardown": false,
+        "scope": "real embedded Tomcat and MVC; independent synthetic Basic security and mock archive generator, not product JWT/database/PDF"
+      },
+      "normal": {
+        "name": "normal",
+        "httpStatus": 200,
+        "responseBytes": 164,
+        "submitted": 1,
+        "started": 1,
+        "ownedPath": "/tmp/edhr-archive-async-revision-20261107/final/vm-tmp/junit17978653376102438117/owned-16525072783040536701.zip",
+        "ownedExistsBeforeFixtureTeardown": false,
+        "scope": "real embedded Tomcat and MVC; independent synthetic Basic security and mock archive generator, not product JWT/database/PDF"
+      }
+    }
+  },
+  "sameSourceNegativeControlSha256": "0fc66262a7b0368826ada0ea34053771e956d69be7de1c27c0d090d7b9bcbb85",
+  "fixtureRevision": "Original main95 and first independent94/95 kept separately. First QA exposed default lazy header writer race in synthetic Basic chain; latest fixture explicitly uses eager headers ONLY in that isolated chain. Product SecurityConfig and every original assertion unchanged. Latest same-byte baseline negative_context still has exactly three file-leak assertion failures. Product shared lazy-header risk remains separately open, not fixed by fixture isolation.",
+  "finalInputsStillIdentical": 21,
+  "nativeObservations": {
+    "events": 11,
+    "instrumentedSelects": 33,
+    "scope": "original calling-thread observer, no per-event server tag; not all-network SQL attribution"
+  },
+  "serverExportAuditInsertExecutions": 3,
+  "jfrRecalculation": [
+    {
+      "name": "archive-1",
+      "bytes": 597178,
+      "events": 74,
+      "matches": true
+    },
+    {
+      "name": "archive-10",
+      "bytes": 4167979,
+      "events": 510,
+      "matches": true
+    },
+    {
+      "name": "archive-100",
+      "bytes": 39878151,
+      "events": 4869,
+      "matches": true
+    },
+    {
+      "name": "ordinary-0",
+      "bytes": 0,
+      "events": 0,
+      "matches": true
+    },
+    {
+      "name": "ordinary-1",
+      "bytes": 262144,
+      "events": 2,
+      "matches": true
+    },
+    {
+      "name": "ordinary-10",
+      "bytes": 262144,
+      "events": 2,
+      "matches": true
+    },
+    {
+      "name": "ordinary-100",
+      "bytes": 262144,
+      "events": 2,
+      "matches": true
+    },
+    {
+      "name": "signature-0",
+      "bytes": 0,
+      "events": 0,
+      "matches": true
+    },
+    {
+      "name": "signature-1",
+      "bytes": 262144,
+      "events": 2,
+      "matches": true
+    },
+    {
+      "name": "signature-10",
+      "bytes": 262144,
+      "events": 2,
+      "matches": true
+    },
+    {
+      "name": "signature-100",
+      "bytes": 262144,
+      "events": 2,
+      "matches": true
+    }
+  ],
+  "embeddedHttpPortsClosedAfterFork": [
+    46015
+  ],
+  "ownedResourcesClean": true,
+  "limits": [
+    "Real embedded Tomcat/MVC/controller with synthetic Basic security/mock archive generator; not product JWT/GlobalExceptionHandler/DB/PDF HTTP chain",
+    "500 rejection/503 timeout are isolated test wiring observations, not production status contracts",
+    "Cancellation call accepted (strict assertion before file check); recorded future.isCancelled may be false. Only eventual request completion cleanup claimed, not immediate server cancellation attribution or response rollback",
+    "Manual callback ownership tests are not active-body network timeout/cancellation verification",
+    "No hook guarantee before async listeners/startAsync if framework setup fails outside controller; no crash/UNKNOWN/persistent reconciliation/capacity closure"
+  ]
+}

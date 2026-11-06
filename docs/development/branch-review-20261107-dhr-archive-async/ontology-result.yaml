@@ -1,0 +1,110 @@
+ontologyResult:
+  result: not-applicable
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: 7b68eabc6f9c8d7d00863285f9dd79e75a86a4a2
+    targetBranch: edhr-dev
+    targetCommit: 764258b869567c0f7840f16ff1358ed5c2491f53
+    contractReadCommit: 764258b869567c0f7840f16ff1358ed5c2491f53
+    uncommittedContractPaths: []
+  reason: 对旧FINAL的只读增量：候选相对8fc765仅修改已隔离Basic HTTP测试链的eager响应头装配及审计文档，产品源码/知识/契约未变；五项原断言、真实Tomcat及normal一次启动标准保留。该装配修正不改变DHR业务或产品JWT/缓存政策，不构成产品响应头风险修复。故原工程临时ZIP归属结论仍为not-applicable，无需变更知识。
+  changedArtifacts: []
+  knowledgeSync:
+  - id: rule.dhr-summary-zip-source-trace
+    disposition: retained
+    scope: 完整/选定导出仍绑定同一显式冻结版本；来源原件、SHA、缺失阻断和权限保持，临时副本回收不更改证据。
+    sourceReferences:
+    - docs/knowledge/rules/dhr-summary.yaml
+    - docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml
+    - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrArchiveService.java
+  - id: DEC-0063-10
+    disposition: retained
+    scope: 仅回收本请求自有ZIP；历史原件和冻结引用保持。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml
+  - id: DEC-0063-12
+    disposition: retained
+    scope: 查看/导出分权与审计保持；生成成功的EXPORT仍先于流，不新增网络失败回滚审计或HTTP已发内容回滚承诺。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml
+  - id: DEC-0090-01
+    disposition: retained
+    scope: 汇总冻结、最终放行后的受控归档和指定版本下载副本继续区分；临时资源回收不实现受控归档。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0090-dhr-archive-minimum-scope.yaml
+  - id: DEC-0090-03
+    disposition: retained
+    scope: 不增加保存期限、自动销毁、备份恢复或跨租户政策。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0090-dhr-archive-minimum-scope.yaml
+  - id: term.dhr-archive
+    disposition: retained
+    scope: 保留specified/internal成熟度；请求临时ZIP清理不提升归档能力实现或验证状态。
+    sourceReferences:
+    - docs/knowledge/glossary.yaml
+    - docs/knowledge/decisions/DEC-0090-dhr-archive-minimum-scope.yaml
+  - id: question.multi-tenant-workflow-isolation
+    disposition: deferred
+    scope: 原未决保持；独立Basic装配只验证方法权限局部，不能代表产品JWT与完整租户隔离。本切片不引入隔离政策，不形成新的用户问题或业务阻断。
+    sourceReferences:
+    - docs/knowledge/open-questions.yaml
+  conflicts: []
+  questions: []
+  validationEvidence:
+  - id: validation.reused-own-knowledge89
+    checkType: schema
+    command: Reuse actual prior bash /workspace/.edhr-cloud-tools/mvn-edhr -f tools/knowledge-model/pom.xml
+      test after byte-for-byte knowledge/tool-source comparison
+    outcome: passed
+    evidence:
+    - 本角色前次实际89/89；此次没有重跑。350知识与validator源码均未变，fresh原始XML按原执行时间保留。
+    - prior-ontology-final/knowledge-run.json
+    - prior-ontology-final/TEST-com.zencas.edhr.knowledge.BusinessKnowledgeModelTest.xml
+    - knowledge-fingerprint-inventory.json
+  - id: validation.prior-finite10-retained
+    checkType: reference
+    command: Read delta against prior fixed affected-rule review
+    outcome: passed
+    evidence:
+    - 原有限10=8consistent/2gap保持；新增语义ID审查0、整文件完成0，不重复累计覆盖。
+    - finite-review-scope.json
+    - prior-ontology-final/finite-audit-records.jsonl
+  - id: validation.unchanged-status-and-policy
+    checkType: status-transition
+    command: Compare target, prior candidate, current candidate and current worktree
+      knowledge/contract bytes
+    outcome: passed
+    evidence:
+    - 350知识和原契约均未变，0.3.25/schema1.2.0/P0 in-progress及原成熟度保持。
+    - final-verification.json
+    - knowledge-fingerprint-inventory.json
+  - id: validation.fixture-business-projection
+    checkType: projection
+    command: Read test-only eager delta, preserved initial failed QA, header source
+      role and new parent raw evidence
+    outcome: passed
+    evidence:
+    - eager仅在独立Basic链；实际产品缓存/304/reset策略风险仍open，非JWT/产品头修复；不以主侧95覆盖初版94/95。
+    - REVIEW.md
+    - delta.patch
+    - header-source-role/REVIEW.md
+    - xml-recalculation.json
+  - id: validation.fixed-input-paths
+    checkType: evidence-path
+    command: fetch origin edhr-dev and compare candidate Git bytes to 21 actual run
+      snapshots
+    outcome: passed
+    evidence:
+    - 目标仍764258，固定候选7b68eab，21输入全同；实际共享工作树仅两项L0文档dirty，另存工作快照；最新旧源HTTP测试与final同字节，旧controller同目标。
+    - final-verification.json
+    - source-input-binding.json
+    - observed-working-document-manifest.json
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages:
+    - P1
+    - P2
+    - P3

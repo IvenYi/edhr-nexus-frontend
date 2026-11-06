@@ -1,0 +1,540 @@
+{
+  "sourceRoot": "/tmp/edhr-archive-async-20261107",
+  "files": [
+    {
+      "path": "ReadExportJfr.java",
+      "bytes": 1216,
+      "sha256": "35bac893e96f237a7d72831ac11cddf844c4a7ac45bf04eca127279ce3075964"
+    },
+    {
+      "path": "analysis.json",
+      "bytes": 12321,
+      "sha256": "8b4d99887dd7f04873173aa5c4df88cef41218106f17517eb3135ece8eb1d82d"
+    },
+    {
+      "path": "analyze.py",
+      "bytes": 5452,
+      "sha256": "e8bcfa7e27f3855acc082a7dae88cd574b7805570bc4cec98f24cb3cd93d441c"
+    },
+    {
+      "path": "archive.py",
+      "bytes": 1530,
+      "sha256": "387e1628c2d5baf835ae5e074a17a75d5df88b417093796d65281df71df62ed4"
+    },
+    {
+      "path": "final/TEST-com.zencas.edhr.common.audit.AuditAspectTest.xml",
+      "bytes": 33853,
+      "sha256": "c2ac69b49851e6bff5faa908bb4342fce3ad1ed4ebacffceaf0336a3d1b61a43"
+    },
+    {
+      "path": "final/TEST-com.zencas.edhr.compliance.entity.AuditEventHashTest.xml",
+      "bytes": 40201,
+      "sha256": "a14048e175cbfd4f56eeac3714ef3e906fc3c55024b0b19112ba4a08590e709e"
+    },
+    {
+      "path": "final/TEST-com.zencas.edhr.compliance.entity.AuditEventTest.xml",
+      "bytes": 33004,
+      "sha256": "f35c3b25d80839b5fed6651577be84d727fab12d81ac24ce72a630c87f51c690"
+    },
+    {
+      "path": "final/TEST-com.zencas.edhr.production.controller.DhrArchiveAsyncLifecycleTest.xml",
+      "bytes": 67389,
+      "sha256": "57f0917d22bebf16a95d6a1ef6d10cc9790a63202afed3e9313fe5fe9d7b757e"
+    },
+    {
+      "path": "final/TEST-com.zencas.edhr.production.controller.DhrArchiveAsyncOwnershipTest.xml",
+      "bytes": 46378,
+      "sha256": "0a31b32246a8af847884fb29a19817c2d5f45702615aac241605a78c636b6089"
+    },
+    {
+      "path": "final/TEST-com.zencas.edhr.production.controller.DhrArchiveControllerStreamingTest.xml",
+      "bytes": 33817,
+      "sha256": "fe8f04ab881fcc5515e58a91a5f087015b8133d82932e3f52605781a114fce14"
+    },
+    {
+      "path": "final/TEST-com.zencas.edhr.production.service.DhrArchiveCleanupFailureTest.xml",
+      "bytes": 81960,
+      "sha256": "08a44bcf3c7071e59bbb19f9d06ebdcbd658d7febd26b5384c5bdc4f8b5a24ce"
+    },
+    {
+      "path": "final/TEST-com.zencas.edhr.production.service.DhrArchiveLayoutReaderTest.xml",
+      "bytes": 33839,
+      "sha256": "f67daa1741817e5e8185cf78e5d4e1f08e50ede7d6fd9f1b6a80c42067b5ce4b"
+    },
+    {
+      "path": "final/TEST-com.zencas.edhr.production.service.DhrExportReadObservationPostgresTest.xml",
+      "bytes": 319602,
+      "sha256": "4ffc5020994226c4b605329afc7cc20d4b585037c96f9254a8b1cda630c942f9"
+    },
+    {
+      "path": "final/TEST-com.zencas.edhr.production.service.DhrFormFilesTest.xml",
+      "bytes": 34189,
+      "sha256": "52698dab74bdd1629e88408857be0912e30771ed1e0279f85467aef7e0c0c754"
+    },
+    {
+      "path": "final/cleanup.json",
+      "bytes": 84,
+      "sha256": "69fd18301c7a3d676593cb14315d8925f6b9adc8f24938319e765b5c933396d0"
+    },
+    {
+      "path": "final/http/client-cancelled.json",
+      "bytes": 262,
+      "sha256": "8dd65a5fef99653952ad33729d8fdb53e590cf3d8d25402fe6576a9761c9e706"
+    },
+    {
+      "path": "final/http/forbidden.json",
+      "bytes": 316,
+      "sha256": "486afb5b178248298d1c9dd29f32758308d91c7e0276ae15c7cd5574fbe6d3f4"
+    },
+    {
+      "path": "final/http/normal.json",
+      "bytes": 412,
+      "sha256": "a288459d7d0d6b21595be90796c4c366eb8f70ea24afb9ad05c9147b703ceeac"
+    },
+    {
+      "path": "final/http/queued-timeout.json",
+      "bytes": 420,
+      "sha256": "d4625f94a8f2f9ba47017309e9e952cd40ec9eefb20e4a3e8a6991c7e9f66f47"
+    },
+    {
+      "path": "final/http/rejected.json",
+      "bytes": 415,
+      "sha256": "c2f9bf11d1e19c62cc8a75be8185bb266ccd0cdc5896e239084253c944ba8e53"
+    },
+    {
+      "path": "final/maven.log",
+      "bytes": 381776,
+      "sha256": "1a6e3b27897ae2acbb18759783efd4e2cd9cc2a903953883f731539269f88f98"
+    },
+    {
+      "path": "final/observations/archive-1.jfr",
+      "bytes": 119178,
+      "sha256": "570b9ed8bb32407f9ffe10486f95f0d92715bce52e18c487cde5f29fcd958109"
+    },
+    {
+      "path": "final/observations/archive-10.jfr",
+      "bytes": 125630,
+      "sha256": "e1403c547e0afbcba15ca07644e213d21cb824fd10d84086826549edc4206bb6"
+    },
+    {
+      "path": "final/observations/archive-100.jfr",
+      "bytes": 217665,
+      "sha256": "ba1b2f970ecfeab756da808691f2f473a4051c68ec405677297d55bfd008170e"
+    },
+    {
+      "path": "final/observations/observations.jsonl",
+      "bytes": 13927,
+      "sha256": "655aeb450a10913a6795e646b8b5b93b60db8788ba6b642b467e1fa67139d134"
+    },
+    {
+      "path": "final/observations/ordinary-0.jfr",
+      "bytes": 114687,
+      "sha256": "1758da192d634a1670d80664f91f01153a8996a424bccaa466a5645ed328612e"
+    },
+    {
+      "path": "final/observations/ordinary-1.jfr",
+      "bytes": 114884,
+      "sha256": "e64effd9a1f8411801c570a285249cc1c04d6d1e0b9f1abb08085d50bd043a2d"
+    },
+    {
+      "path": "final/observations/ordinary-10.jfr",
+      "bytes": 114884,
+      "sha256": "14ec868088c1e0ddef56b7d0a9437404125e102419861afb2b72ecbbd17e1143"
+    },
+    {
+      "path": "final/observations/ordinary-100.jfr",
+      "bytes": 114882,
+      "sha256": "43d037fd32daffcd0b38acd722369abd19932d854c6a103e994f9eb54c02109a"
+    },
+    {
+      "path": "final/observations/signature-0.jfr",
+      "bytes": 114640,
+      "sha256": "53c637b71658154a544ad1ac1330500c83ecb8d1f1917e2ab4ebc1eee4502c78"
+    },
+    {
+      "path": "final/observations/signature-1.jfr",
+      "bytes": 114884,
+      "sha256": "b9735259b6eb075e9c5860ca84078888ba64f2ff5ea1f2c13b13cd38edf63e4e"
+    },
+    {
+      "path": "final/observations/signature-10.jfr",
+      "bytes": 114884,
+      "sha256": "4776e11f936e85c77ebd2f3216d209b14334293debe7ff3802c3091fbe67a884"
+    },
+    {
+      "path": "final/observations/signature-100.jfr",
+      "bytes": 114884,
+      "sha256": "2f834602042fa1dd1c2d34968ae2816f3649576850e7c9b38120e6f1c8c777fc"
+    },
+    {
+      "path": "final/postgres.log",
+      "bytes": 2218611,
+      "sha256": "1ee708cadebed8d4fc574c754796e236257bdad9ad253b376272ea963021e603"
+    },
+    {
+      "path": "final/run.json",
+      "bytes": 6064,
+      "sha256": "de751b27746eb86cfab4db78378264b155ec3992780e61c90b508fdca5d2ee4d"
+    },
+    {
+      "path": "final/source/AGENTS.md",
+      "bytes": 25065,
+      "sha256": "13dc7cdacea0b1bb0aef2abb268781f9c69584acd4879b204d2b7fd81a2927fc"
+    },
+    {
+      "path": "final/source/codeplzreadme.md",
+      "bytes": 3035,
+      "sha256": "7a1be8efffec596b034335058dca2860346d256622f899c8dac97c5172dd6df2"
+    },
+    {
+      "path": "final/source/docs/agents/agent-handoff-contract.md",
+      "bytes": 31233,
+      "sha256": "3439a35dd1baa77ac723f1b5afa237a338d56e31386f06b02b4aacfd754e3a12"
+    },
+    {
+      "path": "final/source/docs/agents/quality-verifier.md",
+      "bytes": 7519,
+      "sha256": "6b3de9323924fb4ba5ae87be76c5136d28e754810c46b22b8e3d1cdd6c2f826f"
+    },
+    {
+      "path": "final/source/docs/development/branch-review-20261107-dhr-archive-async/decision-package.yaml",
+      "bytes": 5756,
+      "sha256": "655c51b56b397fc87c5cc30a14e247ad5e5eb8be365d14516edcf831b25d4194"
+    },
+    {
+      "path": "final/source/gmp-platform/backend/src/main/java/com/zencas/edhr/common/exception/GlobalExceptionHandler.java",
+      "bytes": 6628,
+      "sha256": "722be56d9cb9fe25715c06e6215bfecce41495338d8a2833a0b12969a24f4e53"
+    },
+    {
+      "path": "final/source/gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/entity/AuditEvent.java",
+      "bytes": 4697,
+      "sha256": "34a236e63d78eed77cfd67094b4ced89f99614fa09b206546189e7e2907480aa"
+    },
+    {
+      "path": "final/source/gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/entity/AuditEventHash.java",
+      "bytes": 7419,
+      "sha256": "9ed9137b4d216699fc9f3374edbab6cbe8ae8b4862e9b7b2bcf562511b293ce2"
+    },
+    {
+      "path": "final/source/gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrArchiveController.java",
+      "bytes": 4056,
+      "sha256": "36ef802f93d890b1d845823b8aecbbb8f063c208a112390aaafac39bc08fd269"
+    },
+    {
+      "path": "final/source/gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrArchiveService.java",
+      "bytes": 24964,
+      "sha256": "8fe3110f8d9e7dc326a944184b938ac7ae40564892d13861e135974a3680c463"
+    },
+    {
+      "path": "final/source/gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrPdfRenderer.java",
+      "bytes": 6731,
+      "sha256": "a223113e0d0e1a025f51c5f9ca108dacf6e113af5edb784c2fc2ede1e00fef72"
+    },
+    {
+      "path": "final/source/gmp-platform/backend/src/test/java/com/zencas/edhr/common/audit/AuditAspectTest.java",
+      "bytes": 4214,
+      "sha256": "dfad0cbf514f5c207543d4c598b5997d69c8dafe08ff375ba6e3133306313adb"
+    },
+    {
+      "path": "final/source/gmp-platform/backend/src/test/java/com/zencas/edhr/compliance/entity/AuditEventHashTest.java",
+      "bytes": 9525,
+      "sha256": "6621e06bd4eb190062e363dccbfac17092547844072dea12206b9242c748e731"
+    },
+    {
+      "path": "final/source/gmp-platform/backend/src/test/java/com/zencas/edhr/compliance/entity/AuditEventTest.java",
+      "bytes": 1724,
+      "sha256": "a9dee9a5c3a7b0fa04a2cee5044b1ded733beb9b10755944d49bcf2862cbd1aa"
+    },
+    {
+      "path": "final/source/gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/DhrArchiveAsyncLifecycleTest.java",
+      "bytes": 10895,
+      "sha256": "22baf05de98aa0a7057ed2df91ebdc3b04336570d5c089d20773f647889f171e"
+    },
+    {
+      "path": "final/source/gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/DhrArchiveAsyncOwnershipTest.java",
+      "bytes": 5401,
+      "sha256": "cca996bc8bd216bafe5188838cff487efe8a500dd55333168d2b3dc9279309eb"
+    },
+    {
+      "path": "final/source/gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/DhrArchiveControllerStreamingTest.java",
+      "bytes": 6329,
+      "sha256": "41f73cc260a11fd76f2ae68ae52e195f638d0eb62a9c023a3a7f75b5b08a408a"
+    },
+    {
+      "path": "final/source/gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrArchiveCleanupFailureTest.java",
+      "bytes": 8231,
+      "sha256": "128054003e7f48118432143d566bfab6f1de052fee3089cc7d5df16ee22ad7d1"
+    },
+    {
+      "path": "final/source/gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrArchiveLayoutReaderTest.java",
+      "bytes": 3783,
+      "sha256": "776455608257d250dbc86920d92ac7fa660981383894070f4b10d89c0e9cf465"
+    },
+    {
+      "path": "final/source/gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrExportReadObservationPostgresTest.java",
+      "bytes": 20945,
+      "sha256": "940dffecc977aacc21acf10fb1422f782be5dde9f0c28f435c1d80e049b21de7"
+    },
+    {
+      "path": "final/source/gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrFormFilesTest.java",
+      "bytes": 7611,
+      "sha256": "708b8ea1ce47ae742fc3cdb538d585790b8b3eb3f6488e2c12977254a76e6ac2"
+    },
+    {
+      "path": "final/temporary-archives.json",
+      "bytes": 212,
+      "sha256": "01dfcff39176bff0ca9c6b1f60c001c9a6944598e1da50bcd7b49ce7eab380da"
+    },
+    {
+      "path": "final/test-summary.json",
+      "bytes": 1825,
+      "sha256": "20b4872640eeb7a91a6bd8363dd6457130c5460344203e6016d34cbc75af8e88"
+    },
+    {
+      "path": "jfr-recalculation.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "jfr-recalculation.tsv",
+      "bytes": 295,
+      "sha256": "373178e55ac75f7ae6a6d2a5977bd65c74d6a5299a443ed0c52064c6cc59cf37"
+    },
+    {
+      "path": "knowledge/TEST-com.zencas.edhr.knowledge.BusinessKnowledgeModelTest.xml",
+      "bytes": 20416,
+      "sha256": "2a53b858ab2197aa260389d245f6579ab550a4078fc185ef809c6310ffe1726e"
+    },
+    {
+      "path": "knowledge/maven.log",
+      "bytes": 2112,
+      "sha256": "e581fd770e3447ef8daad0f1addb3ff1fc1976ac463561d7640ccfb61006a0bc"
+    },
+    {
+      "path": "negative/TEST-com.zencas.edhr.production.controller.DhrArchiveAsyncLifecycleTest.xml",
+      "bytes": 143064,
+      "sha256": "018b8af3b9abd472f9150721ec0df29d3e49305a375f619740b45569a8fed948"
+    },
+    {
+      "path": "negative/http/client-cancelled.json",
+      "bytes": 261,
+      "sha256": "90e6a9742e37e577053aea657aa6807176f2700c47d91470a80c50728bcb3053"
+    },
+    {
+      "path": "negative/http/forbidden.json",
+      "bytes": 316,
+      "sha256": "486afb5b178248298d1c9dd29f32758308d91c7e0276ae15c7cd5574fbe6d3f4"
+    },
+    {
+      "path": "negative/http/normal.json",
+      "bytes": 416,
+      "sha256": "fb6a852b4cb61dd8c4f537d56e884da4e43169bce9efc6cff34d7485d7145fc2"
+    },
+    {
+      "path": "negative/http/queued-timeout.json",
+      "bytes": 422,
+      "sha256": "afc84327ce6122cb3981af92be8512c4451d36f7d3eb27d630784b278b4d51fd"
+    },
+    {
+      "path": "negative/http/rejected.json",
+      "bytes": 415,
+      "sha256": "4620a357a0d9395f7b517e8dcafb8d2b685f7566c329a9f7d95d0ec374c6affc"
+    },
+    {
+      "path": "negative/maven.log",
+      "bytes": 112298,
+      "sha256": "e407f855edc8bc0942a30920b6827c62655db784ace9267d35a04498b5441ff8"
+    },
+    {
+      "path": "negative/run.json",
+      "bytes": 3418,
+      "sha256": "0d1954a19131b6b5002800ad5b3c0ed7768ba3c36ed8283756d55b2c32e5c185"
+    },
+    {
+      "path": "negative/source/AGENTS.md",
+      "bytes": 25065,
+      "sha256": "13dc7cdacea0b1bb0aef2abb268781f9c69584acd4879b204d2b7fd81a2927fc"
+    },
+    {
+      "path": "negative/source/codeplzreadme.md",
+      "bytes": 3035,
+      "sha256": "7a1be8efffec596b034335058dca2860346d256622f899c8dac97c5172dd6df2"
+    },
+    {
+      "path": "negative/source/docs/agents/agent-handoff-contract.md",
+      "bytes": 31233,
+      "sha256": "3439a35dd1baa77ac723f1b5afa237a338d56e31386f06b02b4aacfd754e3a12"
+    },
+    {
+      "path": "negative/source/docs/agents/quality-verifier.md",
+      "bytes": 7519,
+      "sha256": "6b3de9323924fb4ba5ae87be76c5136d28e754810c46b22b8e3d1cdd6c2f826f"
+    },
+    {
+      "path": "negative/source/docs/development/branch-review-20261107-dhr-archive-async/decision-package.yaml",
+      "bytes": 5268,
+      "sha256": "cb1a5300e5dc6631460750bad07dfe80ff55292470a1501f79f4986bcfdcbd35"
+    },
+    {
+      "path": "negative/source/gmp-platform/backend/src/main/java/com/zencas/edhr/common/exception/GlobalExceptionHandler.java",
+      "bytes": 6628,
+      "sha256": "722be56d9cb9fe25715c06e6215bfecce41495338d8a2833a0b12969a24f4e53"
+    },
+    {
+      "path": "negative/source/gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/entity/AuditEvent.java",
+      "bytes": 4697,
+      "sha256": "34a236e63d78eed77cfd67094b4ced89f99614fa09b206546189e7e2907480aa"
+    },
+    {
+      "path": "negative/source/gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/entity/AuditEventHash.java",
+      "bytes": 7419,
+      "sha256": "9ed9137b4d216699fc9f3374edbab6cbe8ae8b4862e9b7b2bcf562511b293ce2"
+    },
+    {
+      "path": "negative/source/gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrArchiveController.java",
+      "bytes": 2458,
+      "sha256": "bba601c2e47778b3a25db68d4849e58c040733bd4edc1cc44d5085697a89b9bc"
+    },
+    {
+      "path": "negative/source/gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrArchiveService.java",
+      "bytes": 24964,
+      "sha256": "8fe3110f8d9e7dc326a944184b938ac7ae40564892d13861e135974a3680c463"
+    },
+    {
+      "path": "negative/source/gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrPdfRenderer.java",
+      "bytes": 6731,
+      "sha256": "a223113e0d0e1a025f51c5f9ca108dacf6e113af5edb784c2fc2ede1e00fef72"
+    },
+    {
+      "path": "negative/source/gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/DhrArchiveAsyncLifecycleTest.java",
+      "bytes": 10756,
+      "sha256": "962e96ad8aba4129b772038ab1571bf4899cbe6bfea5b8b8e004c0ce9b4e1652"
+    },
+    {
+      "path": "negative/temporary-archives.json",
+      "bytes": 215,
+      "sha256": "85890daad64e5500648a1256084b996ddd2ada9c84fef4d3053c20adec5e994a"
+    },
+    {
+      "path": "negative/test-summary.json",
+      "bytes": 314,
+      "sha256": "a5e2c857d694a79a3c37818f283ca3e1b49c690151cbac4bca6bb844309450d9"
+    },
+    {
+      "path": "negative_context/TEST-com.zencas.edhr.production.controller.DhrArchiveAsyncLifecycleTest.xml",
+      "bytes": 130149,
+      "sha256": "24d40645bf4646b8b8554bfe8d93c2b04ee0c2e5c7a63285d90a1e435276df54"
+    },
+    {
+      "path": "negative_context/http/client-cancelled.json",
+      "bytes": 261,
+      "sha256": "0fa3a3ab7e800914ebd428cd88039b0e32e60a6daddb380b5f804669362f1c83"
+    },
+    {
+      "path": "negative_context/http/forbidden.json",
+      "bytes": 316,
+      "sha256": "486afb5b178248298d1c9dd29f32758308d91c7e0276ae15c7cd5574fbe6d3f4"
+    },
+    {
+      "path": "negative_context/http/normal.json",
+      "bytes": 423,
+      "sha256": "0906eccf1d3853340e7010e8dfd76770683b50f793974d9f58597242297a9c01"
+    },
+    {
+      "path": "negative_context/http/queued-timeout.json",
+      "bytes": 430,
+      "sha256": "12ea86d79d3ffb5c03f29eeea2ada55b7f1a67ee7e6a3372f7c139bcc62432b4"
+    },
+    {
+      "path": "negative_context/http/rejected.json",
+      "bytes": 425,
+      "sha256": "b39b18e3c71eca4a12bbfe9486019153a22b596674835a1bec1152b8974583ce"
+    },
+    {
+      "path": "negative_context/maven.log",
+      "bytes": 99388,
+      "sha256": "0fd81a06298724383da9c1f87d47fda37e90f726358fed0572db72bab3965fdd"
+    },
+    {
+      "path": "negative_context/run.json",
+      "bytes": 3442,
+      "sha256": "0ba7fe2ff0ece1292258993cf5fdb18f43a25629c8c14e9b775a77e0e97218ec"
+    },
+    {
+      "path": "negative_context/source/AGENTS.md",
+      "bytes": 25065,
+      "sha256": "13dc7cdacea0b1bb0aef2abb268781f9c69584acd4879b204d2b7fd81a2927fc"
+    },
+    {
+      "path": "negative_context/source/codeplzreadme.md",
+      "bytes": 3035,
+      "sha256": "7a1be8efffec596b034335058dca2860346d256622f899c8dac97c5172dd6df2"
+    },
+    {
+      "path": "negative_context/source/docs/agents/agent-handoff-contract.md",
+      "bytes": 31233,
+      "sha256": "3439a35dd1baa77ac723f1b5afa237a338d56e31386f06b02b4aacfd754e3a12"
+    },
+    {
+      "path": "negative_context/source/docs/agents/quality-verifier.md",
+      "bytes": 7519,
+      "sha256": "6b3de9323924fb4ba5ae87be76c5136d28e754810c46b22b8e3d1cdd6c2f826f"
+    },
+    {
+      "path": "negative_context/source/docs/development/branch-review-20261107-dhr-archive-async/decision-package.yaml",
+      "bytes": 5268,
+      "sha256": "cb1a5300e5dc6631460750bad07dfe80ff55292470a1501f79f4986bcfdcbd35"
+    },
+    {
+      "path": "negative_context/source/gmp-platform/backend/src/main/java/com/zencas/edhr/common/exception/GlobalExceptionHandler.java",
+      "bytes": 6628,
+      "sha256": "722be56d9cb9fe25715c06e6215bfecce41495338d8a2833a0b12969a24f4e53"
+    },
+    {
+      "path": "negative_context/source/gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/entity/AuditEvent.java",
+      "bytes": 4697,
+      "sha256": "34a236e63d78eed77cfd67094b4ced89f99614fa09b206546189e7e2907480aa"
+    },
+    {
+      "path": "negative_context/source/gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/entity/AuditEventHash.java",
+      "bytes": 7419,
+      "sha256": "9ed9137b4d216699fc9f3374edbab6cbe8ae8b4862e9b7b2bcf562511b293ce2"
+    },
+    {
+      "path": "negative_context/source/gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrArchiveController.java",
+      "bytes": 2458,
+      "sha256": "bba601c2e47778b3a25db68d4849e58c040733bd4edc1cc44d5085697a89b9bc"
+    },
+    {
+      "path": "negative_context/source/gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrArchiveService.java",
+      "bytes": 24964,
+      "sha256": "8fe3110f8d9e7dc326a944184b938ac7ae40564892d13861e135974a3680c463"
+    },
+    {
+      "path": "negative_context/source/gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrPdfRenderer.java",
+      "bytes": 6731,
+      "sha256": "a223113e0d0e1a025f51c5f9ca108dacf6e113af5edb784c2fc2ede1e00fef72"
+    },
+    {
+      "path": "negative_context/source/gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/DhrArchiveAsyncLifecycleTest.java",
+      "bytes": 10895,
+      "sha256": "22baf05de98aa0a7057ed2df91ebdc3b04336570d5c089d20773f647889f171e"
+    },
+    {
+      "path": "negative_context/temporary-archives.json",
+      "bytes": 223,
+      "sha256": "df6023235095b3bf3bbd46b3b32c38051a662cad509b7a9c4b489cc68018af78"
+    },
+    {
+      "path": "negative_context/test-summary.json",
+      "bytes": 314,
+      "sha256": "a5e2c857d694a79a3c37818f283ca3e1b49c690151cbac4bca6bb844309450d9"
+    },
+    {
+      "path": "run.py",
+      "bytes": 5473,
+      "sha256": "a57f3da3b7b757a15fcf3d2d4c688c26bc83b2e86077b0898f4c38fe45ceb542"
+    }
+  ]
+}

@@ -1,0 +1,107 @@
+ontologyResult:
+  result: not-applicable
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: 8fc765ddf566517c22487564e1bbbc9a0e435e9a
+    targetBranch: edhr-dev
+    targetCommit: 764258b869567c0f7840f16ff1358ed5c2491f53
+    contractReadCommit: 764258b869567c0f7840f16ff1358ed5c2491f53
+    uncommittedContractPaths: []
+  reason: 已核最终候选与原件：仅为当前请求生成的临时ZIP补Spring完成回调和单次清理归属；活动body保持原TWR。指定冻结版本/范围、原件/摘要、按权导出和流前EXPORT审计不变，不引入新DHR状态、受控归档/放行、业务超时/重试或历史恢复政策；因此无需变更知识。
+  changedArtifacts: []
+  knowledgeSync:
+  - id: rule.dhr-summary-zip-source-trace
+    disposition: retained
+    scope: 完整/选定导出仍绑定同一显式冻结版本；来源原件、SHA、缺失阻断和权限保持，临时副本回收不更改证据。
+    sourceReferences:
+    - docs/knowledge/rules/dhr-summary.yaml
+    - docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml
+    - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrArchiveService.java
+  - id: DEC-0063-10
+    disposition: retained
+    scope: 仅回收本请求自有ZIP；历史原件和冻结引用保持。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml
+  - id: DEC-0063-12
+    disposition: retained
+    scope: 查看/导出分权与审计保持；生成成功的EXPORT仍先于流，不新增网络失败回滚审计或HTTP已发内容回滚承诺。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml
+  - id: DEC-0090-01
+    disposition: retained
+    scope: 汇总冻结、最终放行后的受控归档和指定版本下载副本继续区分；临时资源回收不实现受控归档。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0090-dhr-archive-minimum-scope.yaml
+  - id: DEC-0090-03
+    disposition: retained
+    scope: 不增加保存期限、自动销毁、备份恢复或跨租户政策。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0090-dhr-archive-minimum-scope.yaml
+  - id: term.dhr-archive
+    disposition: retained
+    scope: 保留specified/internal成熟度；请求临时ZIP清理不提升归档能力实现或验证状态。
+    sourceReferences:
+    - docs/knowledge/glossary.yaml
+    - docs/knowledge/decisions/DEC-0090-dhr-archive-minimum-scope.yaml
+  - id: question.multi-tenant-workflow-isolation
+    disposition: deferred
+    scope: 原未决保持；独立Basic装配只验证方法权限局部，不能代表产品JWT与完整租户隔离。本切片不引入隔离政策，不形成新的用户问题或业务阻断。
+    sourceReferences:
+    - docs/knowledge/open-questions.yaml
+  conflicts: []
+  questions: []
+  validationEvidence:
+  - id: validation.knowledge89
+    checkType: schema
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f tools/knowledge-model/pom.xml
+      test
+    outcome: passed
+    evidence:
+    - 本角色实际执行89/89，0失败/错误/跳过；fresh XML及UTC时间已存。
+    - knowledge-run.json
+    - TEST-com.zencas.edhr.knowledge.BusinessKnowledgeModelTest.xml
+  - id: validation.finite-reference10
+    checkType: reference
+    command: Read fixed authority IDs and final implementation within temporary-ZIP
+      lifecycle slice
+    outcome: passed
+    evidence:
+    - 有限10条：8 consistent、2保留evidence-gap；350是指纹盘点，非语义全审。
+    - finite-audit-records.jsonl
+    - finite-audit-summary.json
+  - id: validation.original-status-retained
+    checkType: status-transition
+    command: Compare 350 tracked knowledge files at initial knowledge run, target,
+      current worktree and candidate Git objects
+    outcome: passed
+    evidence:
+    - 350逐字节一致，原status/visibility未提升；知识0.3.25/schema1.2.0/P0 in-progress保持。
+    - knowledge-fingerprint-inventory-final.json
+  - id: validation.engineering-business-projection
+    checkType: projection
+    command: Read candidate controller/service/DP/test assembly and parent-generated
+      raw XML/HTTP records
+    outcome: passed
+    evidence:
+    - 只处理临时副本生命周期；Basic/mock测试与产品JWT、真实PDF及完整多租户能力分离。
+    - REVIEW.md
+    - parent-xml-recalculation.json
+    - parent-generated-evidence/final/http/queued-timeout.json
+  - id: validation.candidate-evidence-path
+    checkType: evidence-path
+    command: fetch origin edhr-dev; compare actual candidate Git bytes, final source
+      snapshots and referenced evidence
+    outcome: passed
+    evidence:
+    - 目标仍764258；候选8fc765 clean；父侧受测21输入与候选逐字节相同；最新旧源负对照HTTP测试与最终同字节。
+    - final-verification.json
+    - parent-final-source-binding.json
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages:
+    - P1
+    - P2
+    - P3
