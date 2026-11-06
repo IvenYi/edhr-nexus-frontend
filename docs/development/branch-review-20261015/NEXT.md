@@ -2,6 +2,8 @@
 
 ## PR68已合入：审计事件全载与有限分页方案取证
 
+已交付[PR69](https://github.com/IvenYi/edhr-nexus-frontend/pull/69)，audit/edhr-dev-audit-paging-probe-20261106→edhr-dev，观察OPEN/MERGEABLE/CLEAN，建议人工合入本轮测试与证据。受测6daaafe9、验收576525f1后仅L0交付记录；登记后再核本地/真实远端/PR head和受测保护路径字节。下一轮先fetch实际合入/新提交，按用户真实性能答复或无依赖原队列继续；未答不当批准，未实施DB分页或索引，不自动merge/deploy/恢复。
+
 已fetch edhr-dev@f2646c9a098291883434b7e6a7db628fe631ebd6，PR68人工合入且整树同0c04162f，无额外代码/知识/契约增量；新分支audit/edhr-dev-audit-paging-probe-20261106。[本批](../branch-review-20261106-audit-paging-probe/README.md)L2沿旧PERF-AUDIT-LIST-MATERIALIZATION-001剩余事件全载子项，先做test-only真实repository分页/COUNT与原DTO对照、宽JSON/排序/视图取证，不先改生产方案或索引。
 
 主侧新28+原134=162/162、知识89/89，0F/E/S；23输入当前同字节，98具名读观察210 SELECT逐形状/次数吻合，另代表性JDBC4 SELECT/2 fixture INSERT单列。宽1000行页20累计252.52→5.43MiB、加载1001→21、SQL2→3；非生产峰值/SLA。实测超JPA int偏移拒绝及回退、同时间直接LIMIT次序改变和ID稳定候选、RC41/RR40代表性两阶段视图；均非现有产品新bug或已上线策略。普通表单三个调用还按200/totalPages读全，准确总数与可达性保留。

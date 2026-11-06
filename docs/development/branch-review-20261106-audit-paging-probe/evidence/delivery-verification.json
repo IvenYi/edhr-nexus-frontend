@@ -1,0 +1,35 @@
+{
+  "observedAtAsiaShanghai": "2026-11-06T22:51:36.971551+08:00",
+  "testedCandidate": "6daaafe9b4207b8e44b61368ae2ad521d768022a",
+  "preDeliveryRecordHead": "576525f178a0a7ee6271bebf6b9fb0c1f18db400",
+  "localRealRemotePrHeadEqual": true,
+  "target": "f2646c9a098291883434b7e6a7db628fe631ebd6",
+  "onlyDocsAfterTested": true,
+  "workingTreeClean": true,
+  "pr69": {
+    "state": "open",
+    "mergeable": true,
+    "mergeable_state": "clean",
+    "title": "test(audit): 核验数据库分页的资源收益与一致性边界",
+    "html_url": "https://github.com/IvenYi/edhr-nexus-frontend/pull/69"
+  },
+  "postTestDocPaths": [
+    "docs/development/branch-review-20261015/NEXT.md",
+    "docs/development/branch-review-20261106-audit-paging-probe/README.md",
+    "docs/development/branch-review-20261106-audit-paging-probe/evidence/SHA256SUMS",
+    "docs/development/branch-review-20261106-audit-paging-probe/evidence/ontology-manifest.json",
+    "docs/development/branch-review-20261106-audit-paging-probe/evidence/ontology-role-manifest.json",
+    "docs/development/branch-review-20261106-audit-paging-probe/evidence/ontology.tar.gz",
+    "docs/development/branch-review-20261106-audit-paging-probe/evidence/pre-pr-drift-review.json",
+    "docs/development/branch-review-20261106-audit-paging-probe/evidence/quality-manifest.json",
+    "docs/development/branch-review-20261106-audit-paging-probe/evidence/quality-role-manifest.json",
+    "docs/development/branch-review-20261106-audit-paging-probe/evidence/quality.tar.gz",
+    "docs/development/branch-review-20261106-audit-paging-probe/findings.md",
+    "docs/development/branch-review-20261106-audit-paging-probe/independent-review.md",
+    "docs/development/branch-review-20261106-audit-paging-probe/ontology-result.yaml",
+    "docs/development/branch-review-20261106-audit-paging-probe/ontology-review.md",
+    "docs/development/branch-review-20261106-audit-paging-probe/pre-pr-drift-review.md",
+    "docs/development/branch-review-20261106-audit-paging-probe/quality-result.yaml"
+  ],
+  "followup": "After delivery-only record commit, push and repeat actual head equality and protected-source byte checks."
+}

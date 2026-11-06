@@ -2,6 +2,8 @@
 
 L2，edhr-dev@f2646c9a098291883434b7e6a7db628fe631ebd6。已核PR68人工合入、整树同0c04162f，无外部/知识/契约增量。本批复用PERF-AUDIT-LIST-MATERIALIZATION-001的事件全载子项，只增加一个opt-in原生测试及证据/方案；生产代码、前端、schema、索引、事务、排序、权限与历史全部不改。用户此前只批准本页批量姓名，不把merge当进一步数据库分页授权。
 
+已交付[PR69](https://github.com/IvenYi/edhr-nexus-frontend/pull/69)，audit/edhr-dev-audit-paging-probe-20261106→edhr-dev，观察OPEN/MERGEABLE/CLEAN，建议人工合入本轮测试与取证。受测6daaafe9、验收576525f1后仅L0交付登记，实际记录见evidence/delivery-verification.json；登记后再次核对本地/真实远端/PR head及受测运行/测试/契约/知识字节保持。下一轮先fetch实际合入与新代码，按用户实际方案答复或原无依赖队列继续，不自动merge/deploy。
+
 实际完成新28+原134=162/162，0失败/错误/跳过。新28包括12个全DTO/原筛选对照、6个页/排序边界、5个规模宽度、实际JPA offset拒绝、个人目标对象、同时间排序及2个代表性MVCC实验。原型复用真实repository.search、原loadOperatorNames和toAuditLogItem，只在测试调用私有方法，无新增运行入口。无派生关键词时直接数据库分页；有module/menu/dataKeyword文本或offset超过JPA实际int边界时，候选回到原controller，不新增页数/结果上限。原PageResult回显page/size及所有实体属性排序能力保持，未擅缩为只有createdAt。
 
 98个具名只读观察210条业务SELECT，与实际PG execute逐形状/次数吻合；Hibernate写数及具名DML为0。代表性快照另4 SELECT和2个独立连接fixture INSERT分列，非产品写入或所有网络SQL。23个运行输入指纹仍与当前相同，自有PG清理。具体报告见[分析](main-analysis.json)及evidence。
