@@ -1,0 +1,87 @@
+decisionPackage:
+  id: DEC-PACKAGE-IMAGE-VERIFICATION-SNAPSHOT-20261106
+  scope: edhr-dev PNG/JPEG verification bounded buffers and owned temporary snapshot; read-only W5 compatibility planning
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: cf5594947e96dcc56497997d7941da0f7a89be7e
+    targetBranch: edhr-dev
+    targetCommit: cf5594947e96dcc56497997d7941da0f7a89be7e
+    contractReadCommit: cf5594947e96dcc56497997d7941da0f7a89be7e
+    uncommittedContractPaths: []
+  summary: PR65已合入、整树同7b7cd576；用户在三项解释和推荐后回复“好的”，执行先优化PNG/JPEG核验，保留完整SHA与同一固定视图/格式规则，W5仅并行梳理兼容方案不改旧日志。
+  confirmed:
+    concepts: []
+    relationships: []
+    rules: []
+    executionContracts: []
+  inferred: []
+  unresolved: []
+  replacementScopes: []
+  engineeringDecisions:
+    - id: decision.image-verification-owned-snapshot
+      status: user-confirmed
+      source: 用户在“小缓冲＋临时快照，先PNG/JPEG，额外临时磁盘写入，其他格式/上传保持”的解释及建议后回复“好的”
+      scope: 仅图片核验，一次读取原件以固定缓冲同时计算SHA并写入自有临时快照，摘要匹配后对该快照执行原图像header/尺寸检查，清理成功后才更新核验/审计。
+      invariants: [父DHR与附件锁和资格保持, 完整SHA先于格式, 固定同一已读视图, 不修改原件, 不扩展全像素解码, 清理失败不得吞原错误或错误标为已核验, 上传/PDF/Office/下载/冻结/提交及历史保持]
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - area: image-verification
+        change: AttachmentService图片分支用临时快照代替整数组，抽取共用图片检查；核验资格/更新/审计顺序保持。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrAttachmentService.java]
+    transitiveImpacts:
+      - area: temporary-file-lifecycle
+        change: 自有随机临时文件的写入/关闭/清理，保留原件与主异常；失败不更新核验状态或审计。
+        evidenceReferences: []
+    potentialImpacts:
+      - area: resource-and-view
+        concern: 少量额外磁盘IO替换50MiB数组，临时快照需在失败/清理异常及原路径变化时保留同一视图，不外推生产峰值/并发。
+        evidenceReferences: []
+      - area: w5-compatibility-plan
+        concern: 并行只读整理W5-AUDIT-HASH-001生产者/自定义hash/读者/兼容方案；不在本批修改算法、schema或历史，真正政策歧义再集中沟通。
+        evidenceReferences: [docs/development/branch-review-20261026-capacity-audit/ledger/findings.json]
+    unaffectedAreas:
+      - area: other-formats-and-writes
+        change: 上传、PDF/Office字节数组及宏/加密/ZIP保护、下载/提交/冻结和前端不改，PR64/65已合入内容保持。
+        evidenceReferences: []
+    compatibilityAndMigration:
+      - area: no-data-migration
+        change: 无schema/索引或历史迁移，不改登记路径/摘要/原件；临时文件只属当前核验。
+        evidenceReferences: []
+    snapshotImpacts:
+      - area: stable-read-view
+        change: 摘要和格式验证消费同一次复制视图，不重新打开可变原路径作为格式内容；不变DHR冻结结构。
+        evidenceReferences: []
+    auditImpacts:
+      - area: verify-atomicity
+        change: 临时快照成功检查并清理后保留原VERIFIED更新和VERIFY同事务审计，原AuditEvent及旧hash不动。
+        evidenceReferences: []
+    permissionImpacts:
+      - area: existing-guards
+        change: 租户/DHR/active/可编辑/锁序不变，无新权限入口或业务放行条件。
+        evidenceReferences: []
+    testImpacts:
+      - scope: image-snapshot
+        scenarios: [旧源同字节50MiB分配预算反证, 原81回归, 临时写入失败与清理成功, 清理失败阻断核验, 摘要/格式主错误与清理抑制异常, 固定已读视图, 同一原件读写/JFR与临时清理, 原件/资格/状态/事务回滚]
+        evidenceReferences: []
+    evidenceGaps: [生产并发/峰值/native-RSS/磁盘满/崩溃持久对账和完整HTTP仍未认证, 图像仍header/尺寸检查而非全解码, PDF/Office/上传及旧W5仍open, 931知识86UI和所有原全审队列保持]
+  extensionStrategy:
+    selectedPaths: [product-core]
+    rationale: 原服务内小型自有临时快照与共用图像校验，固定缓冲且不加全局缓存/通用文件框架或配置分支。
+    ownershipBoundaries:
+      - owner: dhr-attachment
+        responsibility: 核验锁/资格、稳定原件视图/格式、临时文件所有权及状态审计。
+      - owner: audit-observation
+        responsibility: 分配/逻辑IO与失败回归，不能把累计分配称峰值。
+      - owner: w5-planning
+        responsibility: 只读兼容方案与未决点，不执行历史hash或schema变更。
+  affectedFiles:
+    - {path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrAttachmentService.java, changeType: update, reason: 图片核验固定缓冲/稳定临时快照}
+    - {path: gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrAttachmentUploadVerifyObservationPostgresTest.java, changeType: update, reason: 大图片分配预算及临时IO/清理原件}
+    - {path: gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrAttachmentImageVerificationTest.java, changeType: create, reason: 临时失败所有权和同一视图回归}
+  acceptanceScenarios:
+    - id: scenario.image-verification-snapshot
+      given: 已核资格的登记PNG/JPEG，或原件/临时IO/清理故障
+      when: 实际核验
+      then: 完整原字节SHA和原图片规则保持、同一视图、原件不改、失败不错误更新、临时资源清理且大PNG不再分配整文件数组
+      evidenceRequirements: [同字节旧源预算红与最终XML, 原生PG/JFR/分配及临时IO/清理证据, 主异常与抑制异常/日志及原件保护, 有限本体与全新独立质量, 全部FINAL后实际PR前漂移复核]
