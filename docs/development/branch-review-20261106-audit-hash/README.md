@@ -2,6 +2,8 @@
 
 L2，基线edhr-dev@9dc5c0014643d99db299d27a80788cc777a0ccca。PR66已人工合入，整树同dbc95776，无外部代码/知识/契约增量。用户授权继续全量审计，复用旧W5-AUDIT-HASH-001，不重复记新问题。本批只修复新自动AuditEvent数据库往返摘要，旧日志及旧摘要不回填、不重新封存；页面/下载政策、Signature/DHR/file摘要及业务流程不改。
 
+已交付 [PR67](https://github.com/IvenYi/edhr-nexus-frontend/pull/67)，当前观察OPEN/MERGEABLE/CLEAN，建议人工合入本批。受测代码1c2cbb86，验收/漂移71674959后仅L0交付记录；最终再次核对真实远端/PR head与本地一致、运行与测试/知识/契约字节与受测候选相同。
+
 旧源在最新固定基线上两项原生PG反证均真实失败（JSONB与时间分开，0错误/跳过）；完全同字节的原生测试最终2/2通过。新版本`audit-event-v2`覆盖原18字段，按JSONB值语义确定编码，新自动事件先赋同一LocalDateTime微秒精度，再封存。新增0092仅追加nullable无default版本列；原baseline不改，无UPDATE、索引或历史修复。未标旧事件仅保留旧算法诊断，不能认证可靠重算；未知版本不猜算法。显式已有摘要保持，不自动标记v2。格式与回滚见 [编码契约](encoding.md)。
 
 主侧最终206/206、知识89/89，0失败/错误/跳过，见 `main-validation.json`。覆盖48编码/18字段篡改/限制边界/资源单元用例、JSON与时间原生2、兼容与实际生产者18、文本4/全部13个varchar与Unicode宽度/原超限拒绝15、JSON载体传输5、升级/旧应用列集合2、完整当前baseline3，以及原附件/原件/审计回滚、签署、读者和切面回归。206并非全都原生PG或全HTTP端到端；配置真实controller+仓储，切面真实producer+合成joinpoint，签署关联审计直接调用真实私有producer+真实JPA（非密码/图片/HTTP全链），附件原27现在重读真实事件复算，Signature原生9验证独立摘要机制。Mock型Auth/读者/切面旧测试按其原边界报告。
