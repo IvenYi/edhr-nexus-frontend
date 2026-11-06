@@ -1,0 +1,35 @@
+{
+  "observedAtAsiaShanghai": "2026-11-07T00:06:55.483032+08:00",
+  "testedCandidate": "a4777e9f6ef7518d8684a48516c21cf5904cff01",
+  "preDeliveryRecordHead": "82ac3e11d63c805919f788c1574bec2e263afc80",
+  "localRealRemotePrHeadEqual": true,
+  "target": "2cb85492b2dbf47f5b837c565eecc5832b62b39a",
+  "onlyDocsAfterTested": true,
+  "workingTreeClean": true,
+  "pr70": {
+    "state": "open",
+    "mergeable": true,
+    "mergeable_state": "clean",
+    "title": "fix(dhr): 保留导出失败与临时文件清理错误",
+    "html_url": "https://github.com/IvenYi/edhr-nexus-frontend/pull/70"
+  },
+  "postTestDocPaths": [
+    "docs/development/branch-review-20261015/NEXT.md",
+    "docs/development/branch-review-20261106-dhr-archive-cleanup/README.md",
+    "docs/development/branch-review-20261106-dhr-archive-cleanup/evidence/SHA256SUMS",
+    "docs/development/branch-review-20261106-dhr-archive-cleanup/evidence/ontology-manifest.json",
+    "docs/development/branch-review-20261106-dhr-archive-cleanup/evidence/ontology-role-manifest.json",
+    "docs/development/branch-review-20261106-dhr-archive-cleanup/evidence/ontology.tar.gz",
+    "docs/development/branch-review-20261106-dhr-archive-cleanup/evidence/pre-pr-drift-review.json",
+    "docs/development/branch-review-20261106-dhr-archive-cleanup/evidence/quality-manifest.json",
+    "docs/development/branch-review-20261106-dhr-archive-cleanup/evidence/quality-role-manifest.json",
+    "docs/development/branch-review-20261106-dhr-archive-cleanup/evidence/quality.tar.gz",
+    "docs/development/branch-review-20261106-dhr-archive-cleanup/findings.md",
+    "docs/development/branch-review-20261106-dhr-archive-cleanup/independent-review.md",
+    "docs/development/branch-review-20261106-dhr-archive-cleanup/ontology-result.yaml",
+    "docs/development/branch-review-20261106-dhr-archive-cleanup/ontology-review.md",
+    "docs/development/branch-review-20261106-dhr-archive-cleanup/pre-pr-drift-review.md",
+    "docs/development/branch-review-20261106-dhr-archive-cleanup/quality-result.yaml"
+  ],
+  "followup": "After this delivery-only record commit, push and recheck latest local/real remote/PR head equality and unchanged tested protected paths."
+}

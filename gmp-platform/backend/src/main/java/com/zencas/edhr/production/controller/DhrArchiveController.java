@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
 import java.io.IOException;
+import java.io.Closeable;
 import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
@@ -31,8 +32,9 @@ public class DhrArchiveController {
             @RequestParam(defaultValue = "") String attachmentIds) throws IOException {
         var zip = service.export(dhrId, versionId, scope, ids(recordIds), ids(attachmentIds));
         StreamingResponseBody body = output -> {
-            try { Files.copy(zip, output); }
-            finally { Files.deleteIfExists(zip); }
+            try (Closeable cleanup = () -> Files.deleteIfExists(zip)) {
+                Files.copy(zip, output);
+            }
         };
         return ResponseEntity.ok().contentType(MediaType.parseMediaType("application/zip"))
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"DHR-" + dhrId + "-V" + versionId + ("FULL".equals(scope) ? "-complete" : "-selected") + ".zip\"")

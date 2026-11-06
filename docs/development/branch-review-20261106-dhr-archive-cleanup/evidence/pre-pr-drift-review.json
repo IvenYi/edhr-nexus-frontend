@@ -1,0 +1,29 @@
+{
+  "timeAsiaShanghai": "2026-11-07T00:05:09.573986+08:00",
+  "reviewAfterAllRolesAndChildrenFinal": true,
+  "roles": {
+    "ontology": "not-applicable / FINAL",
+    "sourceAndHistoryChild": "completed / FINAL",
+    "freshQAAndSourceChild": "passed / FINAL; required15/15"
+  },
+  "target": "2cb85492b2dbf47f5b837c565eecc5832b62b39a",
+  "testedCandidate": "a4777e9f6ef7518d8684a48516c21cf5904cff01",
+  "targetChanged": false,
+  "runtimeOrTestsChangedAfterTested": false,
+  "onlyTwoProductFiles": [
+    "gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrArchiveController.java",
+    "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrArchiveService.java"
+  ],
+  "protectedSchemaUiPermissionHistoryHashKnowledgeContractScopeUnchanged": true,
+  "taskDrift": false,
+  "wholeFileCompletions": 0,
+  "historicalUniqueCoverage": "unknown",
+  "qaOriginalFilesVerified": 261,
+  "closedScope": "W6-DHR-EXPORT-PRIMARY-ERROR-001 primary error masked by owned temporary ZIP cleanup error",
+  "remaining": [
+    "HTTP header/body already-sent data cannot be rolled back",
+    "Files.size/response-handoff/never-started body/async rejection cancellation timeout/Error OOM",
+    "UNKNOWN/persistent reconciliation/shared ACL originals concurrency/capacity",
+    "pending DB paging decision; W2-W7/931 knowledge/86 UI/A12/high-risk/matrices/historyZIP/textID/A23 and paused work"
+  ]
+}
