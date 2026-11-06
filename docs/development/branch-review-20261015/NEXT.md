@@ -1,5 +1,13 @@
 # 持续推进台账
 
+## PR64已合入：上传与核验资源/事务审查进行中
+
+实际fetch edhr-dev@c4e451c264c11978515b2ae0088e64011fe2fcef，PR64人工合入且整树同a89dbd36，无外部代码/知识/契约增量；新分支audit/edhr-dev-attachment-upload-verify-20261106。[本批](../branch-review-20261106-attachment-upload-verify/README.md)L2继续原上传/核验内存及事务失败队列，完整canonical真实服务和Spring包装磁盘Part核原字节/格式/摘要/审计、分配/读写及回滚，不预先改产品或政策。
+
+主侧81/81（新27+邻54）、知识89/89均0F/E/S；52观察128业务SELECT逐tag/形状吻合，52SET/48成功写执行（含4回滚）及3具名约束ERROR分列。50MiB上传Channel约50.10MiB、合成generic约100.61MiB、核验50.11MiB线程累计分配，非峰值/真实容器容量；完整字节/SHA、SQL/审计拒绝/已flush回滚及资格通过，未改产品。图片核验临时快照方案已向用户提出，尚未答复不当批准。
+
+源码/本体子项FINAL，16有限13一致/3gap（含既有W5-AUDIT-HASH-001去重open），350知识/版本保持；当前待全新独立质量及全部FINAL后实际任务漂移复核。7630仅盘点、整文件0/历史unique未知，提交metadata复用、931/86/其他全审/性能及全部暂停队列保持，不自动merge/deploy/恢复或查询触发CI。
+
 ## PR64已交付：提交附件元数据复用已验收
 
 已交付[PR64](https://github.com/IvenYi/edhr-nexus-frontend/pull/64)，audit/edhr-dev-dhr-summary-attachment-review-20261105→edhr-dev，观察OPEN/MERGEABLE/CLEAN，建议人工合入。受测48be11f4、验收归档1d2d631e后仅L0交付登记，登记后核对本地/真实远端/PR head一致。下一轮先fetch真实merge/新提交与相关契约增量，再继续整体审计原队列；不自动merge/deploy/恢复。

@@ -1,0 +1,861 @@
+{
+  "events": [
+    {
+      "name": "download_format_doc",
+      "selectStatements": 4,
+      "shapesMatch": true,
+      "selectShapes": [
+        {
+          "sql": "select status,summary_status from dhr_instance where tenant_id='default' and id=?",
+          "count": 2
+        },
+        {
+          "sql": "select active,sha256 from dhr_attachment where tenant_id='default' and dhr_instance_id=? and id=?",
+          "count": 1
+        },
+        {
+          "sql": "select stored_path,sha256,original_name from dhr_attachment where tenant_id='default' and dhr_instance_id=? and id=?",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "name": "download_format_docx",
+      "selectStatements": 4,
+      "shapesMatch": true,
+      "selectShapes": [
+        {
+          "sql": "select status,summary_status from dhr_instance where tenant_id='default' and id=?",
+          "count": 2
+        },
+        {
+          "sql": "select active,sha256 from dhr_attachment where tenant_id='default' and dhr_instance_id=? and id=?",
+          "count": 1
+        },
+        {
+          "sql": "select stored_path,sha256,original_name from dhr_attachment where tenant_id='default' and dhr_instance_id=? and id=?",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "name": "download_format_jpg",
+      "selectStatements": 4,
+      "shapesMatch": true,
+      "selectShapes": [
+        {
+          "sql": "select status,summary_status from dhr_instance where tenant_id='default' and id=?",
+          "count": 2
+        },
+        {
+          "sql": "select active,sha256 from dhr_attachment where tenant_id='default' and dhr_instance_id=? and id=?",
+          "count": 1
+        },
+        {
+          "sql": "select stored_path,sha256,original_name from dhr_attachment where tenant_id='default' and dhr_instance_id=? and id=?",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "name": "download_format_pdf",
+      "selectStatements": 4,
+      "shapesMatch": true,
+      "selectShapes": [
+        {
+          "sql": "select status,summary_status from dhr_instance where tenant_id='default' and id=?",
+          "count": 2
+        },
+        {
+          "sql": "select active,sha256 from dhr_attachment where tenant_id='default' and dhr_instance_id=? and id=?",
+          "count": 1
+        },
+        {
+          "sql": "select stored_path,sha256,original_name from dhr_attachment where tenant_id='default' and dhr_instance_id=? and id=?",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "name": "download_format_png",
+      "selectStatements": 4,
+      "shapesMatch": true,
+      "selectShapes": [
+        {
+          "sql": "select status,summary_status from dhr_instance where tenant_id='default' and id=?",
+          "count": 2
+        },
+        {
+          "sql": "select active,sha256 from dhr_attachment where tenant_id='default' and dhr_instance_id=? and id=?",
+          "count": 1
+        },
+        {
+          "sql": "select stored_path,sha256,original_name from dhr_attachment where tenant_id='default' and dhr_instance_id=? and id=?",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "name": "download_format_xls",
+      "selectStatements": 4,
+      "shapesMatch": true,
+      "selectShapes": [
+        {
+          "sql": "select status,summary_status from dhr_instance where tenant_id='default' and id=?",
+          "count": 2
+        },
+        {
+          "sql": "select active,sha256 from dhr_attachment where tenant_id='default' and dhr_instance_id=? and id=?",
+          "count": 1
+        },
+        {
+          "sql": "select stored_path,sha256,original_name from dhr_attachment where tenant_id='default' and dhr_instance_id=? and id=?",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "name": "download_format_xlsx",
+      "selectStatements": 4,
+      "shapesMatch": true,
+      "selectShapes": [
+        {
+          "sql": "select status,summary_status from dhr_instance where tenant_id='default' and id=?",
+          "count": 2
+        },
+        {
+          "sql": "select active,sha256 from dhr_attachment where tenant_id='default' and dhr_instance_id=? and id=?",
+          "count": 1
+        },
+        {
+          "sql": "select stored_path,sha256,original_name from dhr_attachment where tenant_id='default' and dhr_instance_id=? and id=?",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "name": "download_size_10mib_channel",
+      "selectStatements": 4,
+      "shapesMatch": true,
+      "selectShapes": [
+        {
+          "sql": "select status,summary_status from dhr_instance where tenant_id='default' and id=?",
+          "count": 2
+        },
+        {
+          "sql": "select active,sha256 from dhr_attachment where tenant_id='default' and dhr_instance_id=? and id=?",
+          "count": 1
+        },
+        {
+          "sql": "select stored_path,sha256,original_name from dhr_attachment where tenant_id='default' and dhr_instance_id=? and id=?",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "name": "download_size_1mib_channel",
+      "selectStatements": 4,
+      "shapesMatch": true,
+      "selectShapes": [
+        {
+          "sql": "select status,summary_status from dhr_instance where tenant_id='default' and id=?",
+          "count": 2
+        },
+        {
+          "sql": "select active,sha256 from dhr_attachment where tenant_id='default' and dhr_instance_id=? and id=?",
+          "count": 1
+        },
+        {
+          "sql": "select stored_path,sha256,original_name from dhr_attachment where tenant_id='default' and dhr_instance_id=? and id=?",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "name": "download_size_50mib_channel",
+      "selectStatements": 4,
+      "shapesMatch": true,
+      "selectShapes": [
+        {
+          "sql": "select status,summary_status from dhr_instance where tenant_id='default' and id=?",
+          "count": 2
+        },
+        {
+          "sql": "select active,sha256 from dhr_attachment where tenant_id='default' and dhr_instance_id=? and id=?",
+          "count": 1
+        },
+        {
+          "sql": "select stored_path,sha256,original_name from dhr_attachment where tenant_id='default' and dhr_instance_id=? and id=?",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "name": "download_size_50mib_generic",
+      "selectStatements": 4,
+      "shapesMatch": true,
+      "selectShapes": [
+        {
+          "sql": "select status,summary_status from dhr_instance where tenant_id='default' and id=?",
+          "count": 2
+        },
+        {
+          "sql": "select active,sha256 from dhr_attachment where tenant_id='default' and dhr_instance_id=? and id=?",
+          "count": 1
+        },
+        {
+          "sql": "select stored_path,sha256,original_name from dhr_attachment where tenant_id='default' and dhr_instance_id=? and id=?",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "name": "failure_outer_rollback",
+      "selectStatements": 2,
+      "shapesMatch": true,
+      "selectShapes": [
+        {
+          "sql": "select status,summary_status from dhr_instance where tenant_id='default' and id=? for update",
+          "count": 1
+        },
+        {
+          "sql": "select ae1_0.id,ae1_0.action,ae1_0.content_after,ae1_0.content_before,ae1_0.created_at,ae1_0.data_summary,ae1_0.entity_id,ae1_0.entity_type,ae1_0.function_name,ae1_0.ip_address,ae1_0.menu_name,ae1_0.module_name,ae1_0.operator_account,ae1_0.operator_id,ae1_0.operator_name,ae1_0.reason,ae1_0.snapshot_hash,ae1_0.source,ae1_0.tenant_id from audit_event ae1_0 where ae1_0.id=?",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "name": "failure_upload_audit",
+      "selectStatements": 2,
+      "shapesMatch": true,
+      "selectShapes": [
+        {
+          "sql": "select status,summary_status from dhr_instance where tenant_id='default' and id=? for update",
+          "count": 1
+        },
+        {
+          "sql": "select ae1_0.id,ae1_0.action,ae1_0.content_after,ae1_0.content_before,ae1_0.created_at,ae1_0.data_summary,ae1_0.entity_id,ae1_0.entity_type,ae1_0.function_name,ae1_0.ip_address,ae1_0.menu_name,ae1_0.module_name,ae1_0.operator_account,ae1_0.operator_id,ae1_0.operator_name,ae1_0.reason,ae1_0.snapshot_hash,ae1_0.source,ae1_0.tenant_id from audit_event ae1_0 where ae1_0.id=?",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "name": "failure_upload_sql",
+      "selectStatements": 1,
+      "shapesMatch": true,
+      "selectShapes": [
+        {
+          "sql": "select status,summary_status from dhr_instance where tenant_id='default' and id=? for update",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "name": "failure_verify_audit",
+      "selectStatements": 3,
+      "shapesMatch": true,
+      "selectShapes": [
+        {
+          "sql": "select status,summary_status from dhr_instance where tenant_id='default' and id=? for update",
+          "count": 1
+        },
+        {
+          "sql": "select * from dhr_attachment where tenant_id='default' and dhr_instance_id=? and id=? for update",
+          "count": 1
+        },
+        {
+          "sql": "select ae1_0.id,ae1_0.action,ae1_0.content_after,ae1_0.content_before,ae1_0.created_at,ae1_0.data_summary,ae1_0.entity_id,ae1_0.entity_type,ae1_0.function_name,ae1_0.ip_address,ae1_0.menu_name,ae1_0.module_name,ae1_0.operator_account,ae1_0.operator_id,ae1_0.operator_name,ae1_0.reason,ae1_0.snapshot_hash,ae1_0.source,ae1_0.tenant_id from audit_event ae1_0 where ae1_0.id=?",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "name": "reject_upload_FORMALIZED",
+      "selectStatements": 1,
+      "shapesMatch": true,
+      "selectShapes": [
+        {
+          "sql": "select status,summary_status from dhr_instance where tenant_id='default' and id=? for update",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "name": "reject_upload_IN_PROGRESS",
+      "selectStatements": 1,
+      "shapesMatch": true,
+      "selectShapes": [
+        {
+          "sql": "select status,summary_status from dhr_instance where tenant_id='default' and id=? for update",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "name": "reject_upload_PENDING_REVIEW",
+      "selectStatements": 1,
+      "shapesMatch": true,
+      "selectShapes": [
+        {
+          "sql": "select status,summary_status from dhr_instance where tenant_id='default' and id=? for update",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "name": "reject_upload_oversize",
+      "selectStatements": 1,
+      "shapesMatch": true,
+      "selectShapes": [
+        {
+          "sql": "select status,summary_status from dhr_instance where tenant_id='default' and id=? for update",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "name": "reject_upload_truncated",
+      "selectStatements": 1,
+      "shapesMatch": true,
+      "selectShapes": [
+        {
+          "sql": "select status,summary_status from dhr_instance where tenant_id='default' and id=? for update",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "name": "reject_verify_FORMALIZED",
+      "selectStatements": 1,
+      "shapesMatch": true,
+      "selectShapes": [
+        {
+          "sql": "select status,summary_status from dhr_instance where tenant_id='default' and id=? for update",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "name": "reject_verify_IN_PROGRESS",
+      "selectStatements": 1,
+      "shapesMatch": true,
+      "selectShapes": [
+        {
+          "sql": "select status,summary_status from dhr_instance where tenant_id='default' and id=? for update",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "name": "reject_verify_PENDING_REVIEW",
+      "selectStatements": 1,
+      "shapesMatch": true,
+      "selectShapes": [
+        {
+          "sql": "select status,summary_status from dhr_instance where tenant_id='default' and id=? for update",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "name": "reject_verify_formalized",
+      "selectStatements": 1,
+      "shapesMatch": true,
+      "selectShapes": [
+        {
+          "sql": "select status,summary_status from dhr_instance where tenant_id='default' and id=? for update",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "name": "reject_verify_inactive",
+      "selectStatements": 2,
+      "shapesMatch": true,
+      "selectShapes": [
+        {
+          "sql": "select status,summary_status from dhr_instance where tenant_id='default' and id=? for update",
+          "count": 1
+        },
+        {
+          "sql": "select * from dhr_attachment where tenant_id='default' and dhr_instance_id=? and id=? for update",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "name": "reject_verify_invalid_format",
+      "selectStatements": 2,
+      "shapesMatch": true,
+      "selectShapes": [
+        {
+          "sql": "select status,summary_status from dhr_instance where tenant_id='default' and id=? for update",
+          "count": 1
+        },
+        {
+          "sql": "select * from dhr_attachment where tenant_id='default' and dhr_instance_id=? and id=? for update",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "name": "reject_verify_missing",
+      "selectStatements": 2,
+      "shapesMatch": true,
+      "selectShapes": [
+        {
+          "sql": "select status,summary_status from dhr_instance where tenant_id='default' and id=? for update",
+          "count": 1
+        },
+        {
+          "sql": "select * from dhr_attachment where tenant_id='default' and dhr_instance_id=? and id=? for update",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "name": "reject_verify_other_dhr",
+      "selectStatements": 2,
+      "shapesMatch": true,
+      "selectShapes": [
+        {
+          "sql": "select status,summary_status from dhr_instance where tenant_id='default' and id=? for update",
+          "count": 1
+        },
+        {
+          "sql": "select * from dhr_attachment where tenant_id='default' and dhr_instance_id=? and id=? for update",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "name": "reject_verify_other_tenant",
+      "selectStatements": 2,
+      "shapesMatch": true,
+      "selectShapes": [
+        {
+          "sql": "select status,summary_status from dhr_instance where tenant_id='default' and id=? for update",
+          "count": 1
+        },
+        {
+          "sql": "select * from dhr_attachment where tenant_id='default' and dhr_instance_id=? and id=? for update",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "name": "reject_verify_tampered",
+      "selectStatements": 2,
+      "shapesMatch": true,
+      "selectShapes": [
+        {
+          "sql": "select status,summary_status from dhr_instance where tenant_id='default' and id=? for update",
+          "count": 1
+        },
+        {
+          "sql": "select * from dhr_attachment where tenant_id='default' and dhr_instance_id=? and id=? for update",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "name": "upload_format_doc",
+      "selectStatements": 2,
+      "shapesMatch": true,
+      "selectShapes": [
+        {
+          "sql": "select status,summary_status from dhr_instance where tenant_id='default' and id=? for update",
+          "count": 1
+        },
+        {
+          "sql": "select ae1_0.id,ae1_0.action,ae1_0.content_after,ae1_0.content_before,ae1_0.created_at,ae1_0.data_summary,ae1_0.entity_id,ae1_0.entity_type,ae1_0.function_name,ae1_0.ip_address,ae1_0.menu_name,ae1_0.module_name,ae1_0.operator_account,ae1_0.operator_id,ae1_0.operator_name,ae1_0.reason,ae1_0.snapshot_hash,ae1_0.source,ae1_0.tenant_id from audit_event ae1_0 where ae1_0.id=?",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "name": "upload_format_docx",
+      "selectStatements": 2,
+      "shapesMatch": true,
+      "selectShapes": [
+        {
+          "sql": "select status,summary_status from dhr_instance where tenant_id='default' and id=? for update",
+          "count": 1
+        },
+        {
+          "sql": "select ae1_0.id,ae1_0.action,ae1_0.content_after,ae1_0.content_before,ae1_0.created_at,ae1_0.data_summary,ae1_0.entity_id,ae1_0.entity_type,ae1_0.function_name,ae1_0.ip_address,ae1_0.menu_name,ae1_0.module_name,ae1_0.operator_account,ae1_0.operator_id,ae1_0.operator_name,ae1_0.reason,ae1_0.snapshot_hash,ae1_0.source,ae1_0.tenant_id from audit_event ae1_0 where ae1_0.id=?",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "name": "upload_format_jpg",
+      "selectStatements": 2,
+      "shapesMatch": true,
+      "selectShapes": [
+        {
+          "sql": "select status,summary_status from dhr_instance where tenant_id='default' and id=? for update",
+          "count": 1
+        },
+        {
+          "sql": "select ae1_0.id,ae1_0.action,ae1_0.content_after,ae1_0.content_before,ae1_0.created_at,ae1_0.data_summary,ae1_0.entity_id,ae1_0.entity_type,ae1_0.function_name,ae1_0.ip_address,ae1_0.menu_name,ae1_0.module_name,ae1_0.operator_account,ae1_0.operator_id,ae1_0.operator_name,ae1_0.reason,ae1_0.snapshot_hash,ae1_0.source,ae1_0.tenant_id from audit_event ae1_0 where ae1_0.id=?",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "name": "upload_format_pdf",
+      "selectStatements": 2,
+      "shapesMatch": true,
+      "selectShapes": [
+        {
+          "sql": "select status,summary_status from dhr_instance where tenant_id='default' and id=? for update",
+          "count": 1
+        },
+        {
+          "sql": "select ae1_0.id,ae1_0.action,ae1_0.content_after,ae1_0.content_before,ae1_0.created_at,ae1_0.data_summary,ae1_0.entity_id,ae1_0.entity_type,ae1_0.function_name,ae1_0.ip_address,ae1_0.menu_name,ae1_0.module_name,ae1_0.operator_account,ae1_0.operator_id,ae1_0.operator_name,ae1_0.reason,ae1_0.snapshot_hash,ae1_0.source,ae1_0.tenant_id from audit_event ae1_0 where ae1_0.id=?",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "name": "upload_format_png",
+      "selectStatements": 2,
+      "shapesMatch": true,
+      "selectShapes": [
+        {
+          "sql": "select status,summary_status from dhr_instance where tenant_id='default' and id=? for update",
+          "count": 1
+        },
+        {
+          "sql": "select ae1_0.id,ae1_0.action,ae1_0.content_after,ae1_0.content_before,ae1_0.created_at,ae1_0.data_summary,ae1_0.entity_id,ae1_0.entity_type,ae1_0.function_name,ae1_0.ip_address,ae1_0.menu_name,ae1_0.module_name,ae1_0.operator_account,ae1_0.operator_id,ae1_0.operator_name,ae1_0.reason,ae1_0.snapshot_hash,ae1_0.source,ae1_0.tenant_id from audit_event ae1_0 where ae1_0.id=?",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "name": "upload_format_xls",
+      "selectStatements": 2,
+      "shapesMatch": true,
+      "selectShapes": [
+        {
+          "sql": "select status,summary_status from dhr_instance where tenant_id='default' and id=? for update",
+          "count": 1
+        },
+        {
+          "sql": "select ae1_0.id,ae1_0.action,ae1_0.content_after,ae1_0.content_before,ae1_0.created_at,ae1_0.data_summary,ae1_0.entity_id,ae1_0.entity_type,ae1_0.function_name,ae1_0.ip_address,ae1_0.menu_name,ae1_0.module_name,ae1_0.operator_account,ae1_0.operator_id,ae1_0.operator_name,ae1_0.reason,ae1_0.snapshot_hash,ae1_0.source,ae1_0.tenant_id from audit_event ae1_0 where ae1_0.id=?",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "name": "upload_format_xlsx",
+      "selectStatements": 2,
+      "shapesMatch": true,
+      "selectShapes": [
+        {
+          "sql": "select status,summary_status from dhr_instance where tenant_id='default' and id=? for update",
+          "count": 1
+        },
+        {
+          "sql": "select ae1_0.id,ae1_0.action,ae1_0.content_after,ae1_0.content_before,ae1_0.created_at,ae1_0.data_summary,ae1_0.entity_id,ae1_0.entity_type,ae1_0.function_name,ae1_0.ip_address,ae1_0.menu_name,ae1_0.module_name,ae1_0.operator_account,ae1_0.operator_id,ae1_0.operator_name,ae1_0.reason,ae1_0.snapshot_hash,ae1_0.source,ae1_0.tenant_id from audit_event ae1_0 where ae1_0.id=?",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "name": "upload_size_10mib_channel",
+      "selectStatements": 2,
+      "shapesMatch": true,
+      "selectShapes": [
+        {
+          "sql": "select status,summary_status from dhr_instance where tenant_id='default' and id=? for update",
+          "count": 1
+        },
+        {
+          "sql": "select ae1_0.id,ae1_0.action,ae1_0.content_after,ae1_0.content_before,ae1_0.created_at,ae1_0.data_summary,ae1_0.entity_id,ae1_0.entity_type,ae1_0.function_name,ae1_0.ip_address,ae1_0.menu_name,ae1_0.module_name,ae1_0.operator_account,ae1_0.operator_id,ae1_0.operator_name,ae1_0.reason,ae1_0.snapshot_hash,ae1_0.source,ae1_0.tenant_id from audit_event ae1_0 where ae1_0.id=?",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "name": "upload_size_1mib_channel",
+      "selectStatements": 2,
+      "shapesMatch": true,
+      "selectShapes": [
+        {
+          "sql": "select status,summary_status from dhr_instance where tenant_id='default' and id=? for update",
+          "count": 1
+        },
+        {
+          "sql": "select ae1_0.id,ae1_0.action,ae1_0.content_after,ae1_0.content_before,ae1_0.created_at,ae1_0.data_summary,ae1_0.entity_id,ae1_0.entity_type,ae1_0.function_name,ae1_0.ip_address,ae1_0.menu_name,ae1_0.module_name,ae1_0.operator_account,ae1_0.operator_id,ae1_0.operator_name,ae1_0.reason,ae1_0.snapshot_hash,ae1_0.source,ae1_0.tenant_id from audit_event ae1_0 where ae1_0.id=?",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "name": "upload_size_50mib_channel",
+      "selectStatements": 2,
+      "shapesMatch": true,
+      "selectShapes": [
+        {
+          "sql": "select status,summary_status from dhr_instance where tenant_id='default' and id=? for update",
+          "count": 1
+        },
+        {
+          "sql": "select ae1_0.id,ae1_0.action,ae1_0.content_after,ae1_0.content_before,ae1_0.created_at,ae1_0.data_summary,ae1_0.entity_id,ae1_0.entity_type,ae1_0.function_name,ae1_0.ip_address,ae1_0.menu_name,ae1_0.module_name,ae1_0.operator_account,ae1_0.operator_id,ae1_0.operator_name,ae1_0.reason,ae1_0.snapshot_hash,ae1_0.source,ae1_0.tenant_id from audit_event ae1_0 where ae1_0.id=?",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "name": "upload_size_50mib_generic",
+      "selectStatements": 2,
+      "shapesMatch": true,
+      "selectShapes": [
+        {
+          "sql": "select status,summary_status from dhr_instance where tenant_id='default' and id=? for update",
+          "count": 1
+        },
+        {
+          "sql": "select ae1_0.id,ae1_0.action,ae1_0.content_after,ae1_0.content_before,ae1_0.created_at,ae1_0.data_summary,ae1_0.entity_id,ae1_0.entity_type,ae1_0.function_name,ae1_0.ip_address,ae1_0.menu_name,ae1_0.module_name,ae1_0.operator_account,ae1_0.operator_id,ae1_0.operator_name,ae1_0.reason,ae1_0.snapshot_hash,ae1_0.source,ae1_0.tenant_id from audit_event ae1_0 where ae1_0.id=?",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "name": "verify_format_doc",
+      "selectStatements": 3,
+      "shapesMatch": true,
+      "selectShapes": [
+        {
+          "sql": "select status,summary_status from dhr_instance where tenant_id='default' and id=? for update",
+          "count": 1
+        },
+        {
+          "sql": "select * from dhr_attachment where tenant_id='default' and dhr_instance_id=? and id=? for update",
+          "count": 1
+        },
+        {
+          "sql": "select ae1_0.id,ae1_0.action,ae1_0.content_after,ae1_0.content_before,ae1_0.created_at,ae1_0.data_summary,ae1_0.entity_id,ae1_0.entity_type,ae1_0.function_name,ae1_0.ip_address,ae1_0.menu_name,ae1_0.module_name,ae1_0.operator_account,ae1_0.operator_id,ae1_0.operator_name,ae1_0.reason,ae1_0.snapshot_hash,ae1_0.source,ae1_0.tenant_id from audit_event ae1_0 where ae1_0.id=?",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "name": "verify_format_docx",
+      "selectStatements": 3,
+      "shapesMatch": true,
+      "selectShapes": [
+        {
+          "sql": "select status,summary_status from dhr_instance where tenant_id='default' and id=? for update",
+          "count": 1
+        },
+        {
+          "sql": "select * from dhr_attachment where tenant_id='default' and dhr_instance_id=? and id=? for update",
+          "count": 1
+        },
+        {
+          "sql": "select ae1_0.id,ae1_0.action,ae1_0.content_after,ae1_0.content_before,ae1_0.created_at,ae1_0.data_summary,ae1_0.entity_id,ae1_0.entity_type,ae1_0.function_name,ae1_0.ip_address,ae1_0.menu_name,ae1_0.module_name,ae1_0.operator_account,ae1_0.operator_id,ae1_0.operator_name,ae1_0.reason,ae1_0.snapshot_hash,ae1_0.source,ae1_0.tenant_id from audit_event ae1_0 where ae1_0.id=?",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "name": "verify_format_jpg",
+      "selectStatements": 3,
+      "shapesMatch": true,
+      "selectShapes": [
+        {
+          "sql": "select status,summary_status from dhr_instance where tenant_id='default' and id=? for update",
+          "count": 1
+        },
+        {
+          "sql": "select * from dhr_attachment where tenant_id='default' and dhr_instance_id=? and id=? for update",
+          "count": 1
+        },
+        {
+          "sql": "select ae1_0.id,ae1_0.action,ae1_0.content_after,ae1_0.content_before,ae1_0.created_at,ae1_0.data_summary,ae1_0.entity_id,ae1_0.entity_type,ae1_0.function_name,ae1_0.ip_address,ae1_0.menu_name,ae1_0.module_name,ae1_0.operator_account,ae1_0.operator_id,ae1_0.operator_name,ae1_0.reason,ae1_0.snapshot_hash,ae1_0.source,ae1_0.tenant_id from audit_event ae1_0 where ae1_0.id=?",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "name": "verify_format_pdf",
+      "selectStatements": 3,
+      "shapesMatch": true,
+      "selectShapes": [
+        {
+          "sql": "select status,summary_status from dhr_instance where tenant_id='default' and id=? for update",
+          "count": 1
+        },
+        {
+          "sql": "select * from dhr_attachment where tenant_id='default' and dhr_instance_id=? and id=? for update",
+          "count": 1
+        },
+        {
+          "sql": "select ae1_0.id,ae1_0.action,ae1_0.content_after,ae1_0.content_before,ae1_0.created_at,ae1_0.data_summary,ae1_0.entity_id,ae1_0.entity_type,ae1_0.function_name,ae1_0.ip_address,ae1_0.menu_name,ae1_0.module_name,ae1_0.operator_account,ae1_0.operator_id,ae1_0.operator_name,ae1_0.reason,ae1_0.snapshot_hash,ae1_0.source,ae1_0.tenant_id from audit_event ae1_0 where ae1_0.id=?",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "name": "verify_format_png",
+      "selectStatements": 3,
+      "shapesMatch": true,
+      "selectShapes": [
+        {
+          "sql": "select status,summary_status from dhr_instance where tenant_id='default' and id=? for update",
+          "count": 1
+        },
+        {
+          "sql": "select * from dhr_attachment where tenant_id='default' and dhr_instance_id=? and id=? for update",
+          "count": 1
+        },
+        {
+          "sql": "select ae1_0.id,ae1_0.action,ae1_0.content_after,ae1_0.content_before,ae1_0.created_at,ae1_0.data_summary,ae1_0.entity_id,ae1_0.entity_type,ae1_0.function_name,ae1_0.ip_address,ae1_0.menu_name,ae1_0.module_name,ae1_0.operator_account,ae1_0.operator_id,ae1_0.operator_name,ae1_0.reason,ae1_0.snapshot_hash,ae1_0.source,ae1_0.tenant_id from audit_event ae1_0 where ae1_0.id=?",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "name": "verify_format_xls",
+      "selectStatements": 3,
+      "shapesMatch": true,
+      "selectShapes": [
+        {
+          "sql": "select status,summary_status from dhr_instance where tenant_id='default' and id=? for update",
+          "count": 1
+        },
+        {
+          "sql": "select * from dhr_attachment where tenant_id='default' and dhr_instance_id=? and id=? for update",
+          "count": 1
+        },
+        {
+          "sql": "select ae1_0.id,ae1_0.action,ae1_0.content_after,ae1_0.content_before,ae1_0.created_at,ae1_0.data_summary,ae1_0.entity_id,ae1_0.entity_type,ae1_0.function_name,ae1_0.ip_address,ae1_0.menu_name,ae1_0.module_name,ae1_0.operator_account,ae1_0.operator_id,ae1_0.operator_name,ae1_0.reason,ae1_0.snapshot_hash,ae1_0.source,ae1_0.tenant_id from audit_event ae1_0 where ae1_0.id=?",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "name": "verify_format_xlsx",
+      "selectStatements": 3,
+      "shapesMatch": true,
+      "selectShapes": [
+        {
+          "sql": "select status,summary_status from dhr_instance where tenant_id='default' and id=? for update",
+          "count": 1
+        },
+        {
+          "sql": "select * from dhr_attachment where tenant_id='default' and dhr_instance_id=? and id=? for update",
+          "count": 1
+        },
+        {
+          "sql": "select ae1_0.id,ae1_0.action,ae1_0.content_after,ae1_0.content_before,ae1_0.created_at,ae1_0.data_summary,ae1_0.entity_id,ae1_0.entity_type,ae1_0.function_name,ae1_0.ip_address,ae1_0.menu_name,ae1_0.module_name,ae1_0.operator_account,ae1_0.operator_id,ae1_0.operator_name,ae1_0.reason,ae1_0.snapshot_hash,ae1_0.source,ae1_0.tenant_id from audit_event ae1_0 where ae1_0.id=?",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "name": "verify_size_10mib_channel",
+      "selectStatements": 3,
+      "shapesMatch": true,
+      "selectShapes": [
+        {
+          "sql": "select status,summary_status from dhr_instance where tenant_id='default' and id=? for update",
+          "count": 1
+        },
+        {
+          "sql": "select * from dhr_attachment where tenant_id='default' and dhr_instance_id=? and id=? for update",
+          "count": 1
+        },
+        {
+          "sql": "select ae1_0.id,ae1_0.action,ae1_0.content_after,ae1_0.content_before,ae1_0.created_at,ae1_0.data_summary,ae1_0.entity_id,ae1_0.entity_type,ae1_0.function_name,ae1_0.ip_address,ae1_0.menu_name,ae1_0.module_name,ae1_0.operator_account,ae1_0.operator_id,ae1_0.operator_name,ae1_0.reason,ae1_0.snapshot_hash,ae1_0.source,ae1_0.tenant_id from audit_event ae1_0 where ae1_0.id=?",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "name": "verify_size_1mib_channel",
+      "selectStatements": 3,
+      "shapesMatch": true,
+      "selectShapes": [
+        {
+          "sql": "select status,summary_status from dhr_instance where tenant_id='default' and id=? for update",
+          "count": 1
+        },
+        {
+          "sql": "select * from dhr_attachment where tenant_id='default' and dhr_instance_id=? and id=? for update",
+          "count": 1
+        },
+        {
+          "sql": "select ae1_0.id,ae1_0.action,ae1_0.content_after,ae1_0.content_before,ae1_0.created_at,ae1_0.data_summary,ae1_0.entity_id,ae1_0.entity_type,ae1_0.function_name,ae1_0.ip_address,ae1_0.menu_name,ae1_0.module_name,ae1_0.operator_account,ae1_0.operator_id,ae1_0.operator_name,ae1_0.reason,ae1_0.snapshot_hash,ae1_0.source,ae1_0.tenant_id from audit_event ae1_0 where ae1_0.id=?",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "name": "verify_size_50mib_channel",
+      "selectStatements": 3,
+      "shapesMatch": true,
+      "selectShapes": [
+        {
+          "sql": "select status,summary_status from dhr_instance where tenant_id='default' and id=? for update",
+          "count": 1
+        },
+        {
+          "sql": "select * from dhr_attachment where tenant_id='default' and dhr_instance_id=? and id=? for update",
+          "count": 1
+        },
+        {
+          "sql": "select ae1_0.id,ae1_0.action,ae1_0.content_after,ae1_0.content_before,ae1_0.created_at,ae1_0.data_summary,ae1_0.entity_id,ae1_0.entity_type,ae1_0.function_name,ae1_0.ip_address,ae1_0.menu_name,ae1_0.module_name,ae1_0.operator_account,ae1_0.operator_id,ae1_0.operator_name,ae1_0.reason,ae1_0.snapshot_hash,ae1_0.source,ae1_0.tenant_id from audit_event ae1_0 where ae1_0.id=?",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "name": "verify_size_50mib_generic",
+      "selectStatements": 3,
+      "shapesMatch": true,
+      "selectShapes": [
+        {
+          "sql": "select status,summary_status from dhr_instance where tenant_id='default' and id=? for update",
+          "count": 1
+        },
+        {
+          "sql": "select * from dhr_attachment where tenant_id='default' and dhr_instance_id=? and id=? for update",
+          "count": 1
+        },
+        {
+          "sql": "select ae1_0.id,ae1_0.action,ae1_0.content_after,ae1_0.content_before,ae1_0.created_at,ae1_0.data_summary,ae1_0.entity_id,ae1_0.entity_type,ae1_0.function_name,ae1_0.ip_address,ae1_0.menu_name,ae1_0.module_name,ae1_0.operator_account,ae1_0.operator_id,ae1_0.operator_name,ae1_0.reason,ae1_0.snapshot_hash,ae1_0.source,ae1_0.tenant_id from audit_event ae1_0 where ae1_0.id=?",
+          "count": 1
+        }
+      ]
+    }
+  ],
+  "businessSELECT": 128,
+  "taggedSuccessfulStatementTypes": {
+    "set": 52,
+    "select": 128,
+    "insert": 36,
+    "update": 12
+  },
+  "driverMetadataSelect": [],
+  "expectedConstraintErrors": [
+    {
+      "applicationName": "audit_write_failure_upload_sql",
+      "error": "new row for relation \"dhr_attachment\" violates check constraint \"native_write_refusal\""
+    },
+    {
+      "applicationName": "audit_write_failure_upload_audit",
+      "error": "new row for relation \"audit_event\" violates check constraint \"native_audit_refusal\""
+    },
+    {
+      "applicationName": "audit_write_failure_verify_audit",
+      "error": "new row for relation \"audit_event\" violates check constraint \"native_audit_refusal\""
+    }
+  ],
+  "hibernateNonSelectAttempts": 25,
+  "scope": "successful execute inside per-action tags; parse/bind/SET/transaction and setup/assertions/control outside tags separate",
+  "writeSemantics": "48 successful write executions include 4 subsequently rolled back (upload audit refusal1,verify audit refusal1,outer rollback2); failed INSERT3 separate. Successful execute is not commit."
+}

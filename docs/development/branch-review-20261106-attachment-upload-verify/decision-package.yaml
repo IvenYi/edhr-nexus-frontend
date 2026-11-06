@@ -1,0 +1,80 @@
+decisionPackage:
+  id: DEC-PACKAGE-ATTACHMENT-UPLOAD-VERIFY-20261106
+  scope: edhr-dev DHR attachment upload/verification memory, actual transactions, format originals and failure ownership audit
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: c4e451c264c11978515b2ae0088e64011fe2fcef
+    targetBranch: edhr-dev
+    targetCommit: c4e451c264c11978515b2ae0088e64011fe2fcef
+    contractReadCommit: c4e451c264c11978515b2ae0088e64011fe2fcef
+    uncommittedContractPaths: []
+  summary: PR64已合入且整树同a89dbd36，继续原上传/核验内存及事务失败队列；以完整canonical迁移、实际Spring multipart包装/磁盘Part和真实服务取证，不预设流式解析重写或改变政策。
+  confirmed:
+    concepts: []
+    relationships: []
+    rules: []
+    executionContracts: []
+  inferred:
+    - id: inference.attachment-upload-verify-array-cost
+      statement: multipart.getBytes、核验readAllBytes及PDF/Office解析可能放大单附件内存；应区分操作线程累计分配、输入实现、解析器、持锁和失败回滚，不从源码直接推定生产峰值。
+      rationale: DhrAttachmentService.upload/verify与DhrOfficeAttachment.inspect当前原始源码，PR64提交消费者流式校验不覆盖这些入口。
+      relatedIds: [rule.dhr-summary-controlled-attachment-upload]
+  unresolved: []
+  replacementScopes: []
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - area: attachment-write-and-verify
+        change: 新增显式opt-in原生观察，实际上传/核验/下载原件及SQL、审计、文件生命周期，当前产品只读。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrAttachmentService.java]
+    transitiveImpacts:
+      - area: format-and-http-input-adapter
+        change: 使用真实StandardMultipartHttpServletRequest包装磁盘Part夹具，真实七格式小原件及大PNG，区分容器multipart解析/HTTP认证未覆盖；格式检查不降级。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrOfficeAttachment.java]
+    potentialImpacts:
+      - area: allocation-and-failure
+        concern: 上传/核验字节数组及解析器开销、当前父锁、SQL拒绝/审计失败/外层回滚的文件与登记一致性需实测；流式或文件解析需另讨论保持同一原件视图的方案。
+        evidenceReferences: []
+    unaffectedAreas:
+      - area: pr64-and-policy
+        change: PR64提交内元数据复用、原下载/冻结/SHA/资格/格式/50MiB边界和人员完整分页保持，不做UI/历史修复或数量规则变更。
+        evidenceReferences: []
+    compatibilityAndMigration:
+      - area: no-migration
+        change: 仅隔离库测试及研发记录，使用既有完整canonical迁移；故障用额外具名测试拒绝约束，不删除产品约束，不改正式schema/索引。
+        evidenceReferences: []
+    snapshotImpacts:
+      - area: immutable-original-and-history
+        change: 核实际上传后磁盘字节与SHA、PENDING→VERIFIED及失败保留、解除保留历史原件；不认证START/生成来源/完整冻结或放行归档。
+        evidenceReferences: []
+    auditImpacts:
+      - area: link-verify-atomicity
+        change: 实际JPA审计及摘要写入，核SQL/审计拒绝和已flush外层回滚的原件/行/审计一致性；unknown/crash/清理失败对账仍留原队列。
+        evidenceReferences: []
+    permissionImpacts:
+      - area: service-guards
+        change: 服务级父DHR/tenant/active/状态边界真实，测试种入状态不证明完整生命周期；HTTP登录/RBAC和多租户部署矩阵另保留。
+        evidenceReferences: []
+    testImpacts:
+      - scope: native-upload-verify
+        scenarios: [七格式小原件上传核验下载, 1/10/50MiB PNG读取写入/线程分配, 50MiB普通InputStream与ChannelInputStream输入实现分列, 超限/截断拒绝, SQL拒绝/审计拒绝/已flush外层回滚清理, 缺失/篡改/格式损坏/解除/跨DHR/tenant/定稿核验拒绝, 当前状态禁止写入, 原附件/汇总相关回归]
+        evidenceReferences: []
+    evidenceGaps: [实际容器multipart解析/完整HTTP/RBAC/部署并发和SLA未覆盖, 大Office/PDF解析峰值不由大PNG代表, 崩溃/UNKNOWN/清理失败持久对账/全运行矩阵及原931知识86UI/PDF累计等队列保留]
+  extensionStrategy:
+    selectedPaths: [product-core]
+    rationale: 复用原服务/格式检查器、真实Spring输入包装/事务/JPA与PG/JFR取证，不预设产品框架或为测量改业务。
+    ownershipBoundaries:
+      - owner: dhr-attachment
+        responsibility: 原件登记/资格/格式/摘要和事务资源生命周期。
+      - owner: audit-observation
+        responsibility: 自有磁盘Part及隔离库的可复现分配/读写/SQL与失败证据，不能外推容器/生产峰值。
+  affectedFiles:
+    - {path: gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrAttachmentUploadVerifyObservationPostgresTest.java, changeType: create, reason: 完整canonical原件/分配/失败原生取证}
+    - {path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrAttachmentService.java, changeType: read-only, reason: 上传/核验与事务/SHA/资格}
+    - {path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrOfficeAttachment.java, changeType: read-only, reason: 格式检查原件与解析器资源边界}
+  acceptanceScenarios:
+    - id: scenario.attachment-upload-verify-native-audit
+      given: 完整canonical隔离库与自有磁盘Part/真实小格式原件及受控大PNG
+      when: 真实上传核验下载、故障拒绝或外层回滚
+      then: 字节/SHA与登记/审计相符，失败无错误提交或误删他人原件，逻辑读写和累计分配有原件，不把它当全部HTTP/生产峰值认证
+      evidenceRequirements: [源码/命令/新鲜XML, 原始PG日志及JFR, 具名故障/文件生命周期证据, 有限本体核对及全新独立质量, 全部FINAL后实际PR前任务漂移复核]
