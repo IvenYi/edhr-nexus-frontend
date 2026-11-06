@@ -1,0 +1,58 @@
+decisionPackage:
+  id: DEC-PACKAGE-DHR-ARCHIVE-ASYNC-20261107
+  scope: Temporary frozen-ZIP ownership between controller return and async streaming completion
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: 764258b869567c0f7840f16ff1358ed5c2491f53
+    targetBranch: edhr-dev
+    targetCommit: 764258b869567c0f7840f16ff1358ed5c2491f53
+    contractReadCommit: 764258b869567c0f7840f16ff1358ed5c2491f53
+    uncommittedContractPaths: []
+  summary: PR70已人工合入、整树同d689c031，无外部/知识/契约增量；继续原ZIP流未开始/异步拒绝/超时队列。先用真实嵌入式servlet和可控执行器确认body未执行时临时ZIP是否遗留，再做必要局部生命周期修复；不改变失败传播/权限/业务政策或实施待选性能方案。
+  confirmed: {concepts: [], relationships: [], rules: [], executionContracts: []}
+  inferred: []
+  unresolved: []
+  replacementScopes: []
+  engineeringScope:
+    hypothesis: ZIP已生成但只有流body负责删除，执行器拒绝或排队超时使body未执行时可能遗留自有文件
+    investigation: 实际Spring6.1.8回调/完成/超时/拒绝路径及请求内清理所有权，测试真实Tomcat+SpringMVC、服务生成ZIP为mock协作者
+    minimalFix: 若确认缺陷，完成/失败路径清理未交给body的自有ZIP，已开始body继续其原TWR；避免生命周期回调提前删活动流，不递归扫未知文件
+    notIncluded: 业务审计/HTTP已发送内容回滚、持久对账/崩溃恢复/UNKNOWN/自动孤儿扫描、新超时或重试政策、PDF容量与DB分页/索引
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - {area: archive-response, change: 先确认返回与异步body启动之间的ZIP归属/完成清理缺口，再最小修复, evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrArchiveController.java]}
+    transitiveImpacts:
+      - {area: MVC-async, change: 实测实际执行器拒绝/接受后未运行超时与正常body，区分独立测试安全配置及产品JWT链, evidenceReferences: []}
+    potentialImpacts:
+      - {area: cleanup-race, concern: timeout/completion与body竞争需请求内单次归属，不能先删除仍在使用的ZIP或吞原异常, evidenceReferences: []}
+    unaffectedAreas:
+      - {area: business-and-content, change: 原冻结范围/原件/hash/导出审计顺序/权限/schema/UI保持，不等同受控归档生命周期, evidenceReferences: []}
+    compatibilityAndMigration:
+      - {area: temporary-only, change: 无数据迁移/历史恢复；只操作当前请求创建的路径，默认业务超时与执行器配置不改, evidenceReferences: []}
+    snapshotImpacts:
+      - {area: frozen-evidence, change: 不改变指定冻结版本/范围或源文件，ZIP临时副本清理不改业务快照, evidenceReferences: []}
+    auditImpacts:
+      - {area: generation-before-stream, change: EXPORT仍在流之前保存，流失败不承诺回滚成功审计，不新增伪成功/恢复审计, evidenceReferences: []}
+    permissionImpacts:
+      - {area: endpoint, change: 原view+export权限保持；真实容器测试使用独立合成Basic身份，不冒称实际JWT全链, evidenceReferences: []}
+    testImpacts:
+      - {scope: lifecycle-and-adjacent, scenarios: [真实嵌入式正常HTTP, 执行器拒绝, 接受未运行超时, body与完成清理竞争, 原13单元故障及12原生导出回归, 全新独立最终质量和知识89], evidenceReferences: []}
+    evidenceGaps: [首轮按已证实际行为收敛，不把模拟执行器当生产负载数据, 服务/真实PDF及数据库在独立servlet用例中为mock，原生PG回归另列, 进程崩溃/磁盘失效/UNKNOWN持久对账及原全审容量队列仍保留]
+  extensionStrategy:
+    selectedPaths: [product-core]
+    rationale: 优先原controller请求局部所有权与Spring标准生命周期扩展点，不建立跨模块清理服务或后台扫描框架
+    ownershipBoundaries:
+      - {owner: archive-controller, responsibility: Service交付ZIP后至body/请求结束的临时资源归属}
+      - {owner: archive-service, responsibility: 原ZIP生成/审计阶段及失败清理保持，不重开PR70已修根因传播}
+  affectedFiles:
+    - {path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrArchiveController.java, changeType: update, reason: 若证实则补未启动流的请求内生命周期清理}
+    - {path: gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/DhrArchiveAsyncLifecycleTest.java, changeType: create, reason: 真实servlet与可控执行器的文件生命周期取证/回归}
+    - {path: gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/DhrArchiveAsyncOwnershipTest.java, changeType: create, reason: 回调与body的单次归属、活动流保护、同步元信息失败及清理错误日志}
+    - {path: gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/DhrArchiveControllerStreamingTest.java, changeType: update, reason: 仅补真实框架请求参数的mock上下文，原六项业务/字节/异常断言保留}
+  acceptanceScenarios:
+    - id: scenario.archive-async-ownership
+      given: Service已生成自有临时ZIP而异步body可能尚未运行
+      when: 请求正常执行、执行器拒绝或排队超时结束
+      then: 已开始body保留原TWR/异常语义，未开始body的ZIP按请求归属清理，不提前破坏活动流或修改业务证据
+      evidenceRequirements: [固定依赖/源码与原始真实HTTP记录, 旧源负对照及最终回归, 自有文件/线程资源清理, 本体有限核对及全新独立质量, 所有FINAL后实际任务漂移复核]

@@ -4,23 +4,31 @@ import com.zencas.edhr.production.service.DhrArchiveService;
 import com.zencas.edhr.common.exception.BusinessException;
 import com.zencas.edhr.common.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
+import org.springframework.web.context.request.NativeWebRequest;
+import org.springframework.web.context.request.async.CallableProcessingInterceptor;
+import org.springframework.web.context.request.async.WebAsyncUtils;
 
 import java.io.IOException;
 import java.io.Closeable;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.Set;
+import java.util.concurrent.Callable;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 @RestController
 @RequestMapping("/api/v1/dhr-instances/{dhrId}/summary/versions/{versionId}/export")
 @RequiredArgsConstructor
+@Slf4j
 public class DhrArchiveController {
     private final DhrArchiveService service;
 
@@ -29,16 +37,37 @@ public class DhrArchiveController {
     public ResponseEntity<StreamingResponseBody> export(@PathVariable Long dhrId, @PathVariable Long versionId,
             @RequestParam(defaultValue = "FULL") String scope,
             @RequestParam(defaultValue = "") String recordIds,
-            @RequestParam(defaultValue = "") String attachmentIds) throws IOException {
+            @RequestParam(defaultValue = "") String attachmentIds, NativeWebRequest request) throws IOException {
         var zip = service.export(dhrId, versionId, scope, ids(recordIds), ids(attachmentIds));
-        StreamingResponseBody body = output -> {
-            try (Closeable cleanup = () -> Files.deleteIfExists(zip)) {
-                Files.copy(zip, output);
-            }
-        };
-        return ResponseEntity.ok().contentType(MediaType.parseMediaType("application/zip"))
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"DHR-" + dhrId + "-V" + versionId + ("FULL".equals(scope) ? "-complete" : "-selected") + ".zip\"")
-                .contentLength(Files.size(zip)).body(body);
+        AtomicBoolean claimed = new AtomicBoolean();
+        try {
+            WebAsyncUtils.getAsyncManager(request).registerCallableInterceptor(DhrArchiveController.class, new CallableProcessingInterceptor() {
+                @Override public <T> void afterCompletion(NativeWebRequest completedRequest, Callable<T> task) {
+                    discardUnclaimedArchive(zip, claimed, null);
+                }
+            });
+            StreamingResponseBody body = output -> {
+                if (!claimed.compareAndSet(false, true)) throw new IOException("DHR 导出请求已结束");
+                try (Closeable cleanup = () -> Files.deleteIfExists(zip)) {
+                    Files.copy(zip, output);
+                }
+            };
+            return ResponseEntity.ok().contentType(MediaType.parseMediaType("application/zip"))
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"DHR-" + dhrId + "-V" + versionId + ("FULL".equals(scope) ? "-complete" : "-selected") + ".zip\"")
+                    .contentLength(Files.size(zip)).body(body);
+        } catch (IOException | RuntimeException failure) {
+            discardUnclaimedArchive(zip, claimed, failure);
+            throw failure;
+        }
+    }
+
+    private static void discardUnclaimedArchive(Path zip, AtomicBoolean claimed, Exception primaryFailure) {
+        if (!claimed.compareAndSet(false, true)) return;
+        try { Files.deleteIfExists(zip); }
+        catch (IOException | RuntimeException cleanupFailure) {
+            if (primaryFailure != null) primaryFailure.addSuppressed(cleanupFailure);
+            log.error("Failed to remove unclaimed DHR export archive: path={}", zip, cleanupFailure);
+        }
     }
 
     private static Set<String> ids(String input) {
