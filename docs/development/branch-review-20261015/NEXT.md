@@ -2,6 +2,8 @@
 
 ## PR70已合入：未启动下载流临时ZIP清理
 
+已交付[PR71](https://github.com/IvenYi/edhr-nexus-frontend/pull/71)，audit/edhr-dev-dhr-archive-async-20261107→edhr-dev，观察OPEN/MERGEABLE/CLEAN，建议人工合入本批有限临时ZIP修复。受测7b68eabc、验收c11f76f6后仅L0交付登记，记录提交后再核本地/真实远端/PR head及21输入；不自动merge/deploy/恢复。下轮先fetch真实合入和新增，优先产品JWT响应头竞态及缓存保持方案，不能把Basic夹具隔离当产品风险修复或整体审计结束。
+
 最终clean受测7b68eabc已获另一全新quality passed/FINAL：独立95/95、知识89/89、16必需项全过，normal200/164且submitted/started各1；双方21输入、11JFR/server3EXPORT/v2参数和旧控/原件SHA核过，自有资源清理。初版failed保持；QF只按Basic隔离测试范围resolved，产品header风险仍open。最新本体NA/FINAL/350不变，全部源码/质量孩子FINAL后，已于01:18实际完成[PR前漂移复核](../branch-review-20261107-dhr-archive-async/pre-pr-drift-review.md)，目标仍764、无增量/无漂移。此后仅L0归档/验收/交付，不改受测运行/测试/知识/契约路径。
 
 下一切片先fetch真实merge/新增，优先[产品JWT响应头竞态专项](../branch-review-20261107-dhr-archive-async/header-risk-followup.md)，必须保留FileController私有缓存及原安全/冻结/审计策略；本批不全局eager、不因fixture修正关闭产品风险。原W2-W7/性能/容量/A23含已审及暂停队列保持，整体审计未完成。下文待验收为历史阶段。

@@ -1,0 +1,49 @@
+{
+  "observedAt": "2026-11-07T01:20:25.624399+08:00",
+  "phase": "before-delivery-record",
+  "head": "c11f76f6ea2e9610462ca2a0a57effa03a71212a",
+  "testedCommit": "7b68eabc6f9c8d7d00863285f9dd79e75a86a4a2",
+  "targetCommit": "764258b869567c0f7840f16ff1358ed5c2491f53",
+  "remoteHeads": {
+    "refs/heads/audit/edhr-dev-dhr-archive-async-20261107": "c11f76f6ea2e9610462ca2a0a57effa03a71212a",
+    "refs/heads/edhr-dev": "764258b869567c0f7840f16ff1358ed5c2491f53"
+  },
+  "pr": {
+    "baseRefName": "edhr-dev",
+    "headRefName": "audit/edhr-dev-dhr-archive-async-20261107",
+    "headRefOid": "c11f76f6ea2e9610462ca2a0a57effa03a71212a",
+    "mergeStateStatus": "CLEAN",
+    "mergeable": "MERGEABLE",
+    "number": 71,
+    "state": "OPEN",
+    "url": "https://github.com/IvenYi/edhr-nexus-frontend/pull/71"
+  },
+  "workingTreeStatus": "M docs/development/branch-review-20261015/NEXT.md\n M docs/development/branch-review-20261107-dhr-archive-async/README.md",
+  "protectedInputsIdentical": 21,
+  "changesSinceTested": [
+    "docs/development/branch-review-20261015/NEXT.md",
+    "docs/development/branch-review-20261107-dhr-archive-async/README.md",
+    "docs/development/branch-review-20261107-dhr-archive-async/evidence/SHA256SUMS",
+    "docs/development/branch-review-20261107-dhr-archive-async/evidence/ontology-delta-archive.json",
+    "docs/development/branch-review-20261107-dhr-archive-async/evidence/ontology-delta-manifest.json",
+    "docs/development/branch-review-20261107-dhr-archive-async/evidence/ontology-delta-role-manifest.json",
+    "docs/development/branch-review-20261107-dhr-archive-async/evidence/ontology-delta.zip",
+    "docs/development/branch-review-20261107-dhr-archive-async/evidence/pre-pr-drift-review.json",
+    "docs/development/branch-review-20261107-dhr-archive-async/evidence/quality-archive.json",
+    "docs/development/branch-review-20261107-dhr-archive-async/evidence/quality-manifest.json",
+    "docs/development/branch-review-20261107-dhr-archive-async/evidence/quality-role-manifest.json",
+    "docs/development/branch-review-20261107-dhr-archive-async/evidence/quality.zip",
+    "docs/development/branch-review-20261107-dhr-archive-async/findings.md",
+    "docs/development/branch-review-20261107-dhr-archive-async/header-risk-followup.md",
+    "docs/development/branch-review-20261107-dhr-archive-async/independent-review.md",
+    "docs/development/branch-review-20261107-dhr-archive-async/ontology-initial-result.yaml",
+    "docs/development/branch-review-20261107-dhr-archive-async/ontology-initial-review.md",
+    "docs/development/branch-review-20261107-dhr-archive-async/ontology-result.yaml",
+    "docs/development/branch-review-20261107-dhr-archive-async/ontology-review.md",
+    "docs/development/branch-review-20261107-dhr-archive-async/pre-pr-drift-review.md",
+    "docs/development/branch-review-20261107-dhr-archive-async/quality-result.yaml",
+    "docs/development/branch-review-20261107-dhr-archive-async/review-notes.md"
+  ],
+  "scope": "Only L0 audit evidence/report/delivery changes since tested candidate; no runtime/test/knowledge/contract changes",
+  "noMergeDeployRestoreOrCI": true
+}

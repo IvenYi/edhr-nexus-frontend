@@ -6,6 +6,8 @@ L2。固定目标 edhr-dev@764258b869567c0f7840f16ff1358ed5c2491f53；PR70 已�
 
 最终只关闭未启动body临时ZIP归属子项。原初版独立failed及全部原件保持；QF正常HTTP只按隔离Basic positive-control范围resolved，产品响应头竞态继续[open专项](header-risk-followup.md)。建议人工合入本批有限修复，不声称整体代码/本体审计结束。
 
+已交付[PR71](https://github.com/IvenYi/edhr-nexus-frontend/pull/71)，audit/edhr-dev-dhr-archive-async-20261107→edhr-dev，观察OPEN/MERGEABLE/CLEAN，建议人工合入。受测7b68eabc、验收归档c11f76f6后仅L0交付登记；观察见evidence/delivery-verification.json，登记提交后再次核对真实远端/PR head、本地和21受测输入。不自动合并/部署，下一轮先fetch实际merge与增量，优先产品JWT响应头专项及现有队列。
+
 确认 medium 缺陷 **W6-DHR-EXPORT-UNSTARTED-STREAM-001**：Service 已生成 ZIP，Controller 只在 StreamingResponseBody 中删除。执行器拒绝任务、接受任务后排队超时，或客户端在排队期间取消请求，body 没执行时会留下当前请求的临时文件。重复失败可能积累磁盘占用；不将合成实验外推为生产故障频率或容量结论。有限源码/历史去重未发现已关闭同项；PR70 修复的是双重失败覆盖原异常，本项是其明确留下的资源归属缺口。
 
 最小产品修改只有 DhrArchiveController：使用 Spring 既有 Callable 完成回调，并以请求内一个 AtomicBoolean 分配一次清理归属。body 先取得归属，继续 PR70 原 Closeable TWR；请求结束先取得归属则删除尚未交给 body 的 ZIP，晚到 body 被拒绝。完成回调不会提前删除活动 body 的文件；重复回调不会再次删除同路径后来出现的文件。响应元信息构建的同步失败也清理并保留原异常。清理本身失败时记录自有路径和异常，同步主异常附加 suppressed；不进行自动重试、递归扫删、未知孤儿扫描或持久对账。
