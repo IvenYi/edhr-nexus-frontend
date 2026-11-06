@@ -1,0 +1,156 @@
+qualityResult:
+  result: passed
+  baseCommit: f2646c9a098291883434b7e6a7db628fe631ebd6
+  headCommit: 6daaafe9b4207b8e44b61368ae2ad521d768022a
+  contractBaseline:
+    sourceCommit: 6daaafe9b4207b8e44b61368ae2ad521d768022a
+    targetBranch: edhr-dev
+    targetCommit: f2646c9a098291883434b7e6a7db628fe631ebd6
+    contractReadCommit: 6daaafe9b4207b8e44b61368ae2ad521d768022a
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: clean
+    includedPaths: []
+    excludedPaths: []
+    untrackedPaths: []
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+    - id: qa.fixed-candidate-and-independence
+      required: true
+      category: documentation
+      description: 全新未参与修复实例，独立fetch、detached候选及自有数据库实跑
+      method: command
+      command: git fetch origin edhr-dev; independent detached worktree and owned-container runner
+      outcome: passed
+      evidence: [baseline.json, context-manifest.json, final/run.json, final-state.json, final-fetch.log]
+    - id: qa.test-only-protected-scope
+      required: true
+      category: requirements
+      description: 仅新增一个opt-in原生测试及报告，全部产品/schema/UI/权限/历史/hash/知识/契约不改
+      method: inspection
+      command: git diff base head -- protected paths; python3 inspect.py
+      outcome: passed
+      evidence: [inspection.json, baseline.json, source-role/REVIEW.md]
+    - id: qa.normative-and-engineering-boundaries
+      required: true
+      category: ontology
+      description: 保留既有动作与证据规则，不将工程提案、merge或MVCC读取视图当业务授权或DHR冻结
+      method: inspection
+      command: compare fixed decisionPackage, DEC-0013 and DEC-0095 scope, ontology final result and source
+      outcome: passed
+      evidence: [context/docs/development/branch-review-20261106-audit-paging-probe/decision-package.yaml, ontology/ontologyResult.yaml, ontology/REVIEW.md, source-role/REVIEW.md]
+    - id: qa.full-dto-and-filter-equivalence
+      required: true
+      category: integration
+      description: 12固定数据全DTO/总数对照，原动作/旧姓名/账号筛选、派生条件回退及U+2000和NBSP保留
+      method: automated-test
+      command: EDHR_AUDIT_ROOT=/tmp/edhr-audit-paging-qa-worktree-20261106 EDHR_AUDIT_RAW=/tmp/edhr-audit-paging-qa-20261106 python3 run.py final
+      outcome: passed
+      evidence: [final/TEST-com.zencas.edhr.compliance.controller.AuditDatabasePagingProbePostgresTest.xml, final/observations/, source-role/REVIEW.md]
+    - id: qa.page-sort-and-offset-boundaries
+      required: true
+      category: integration
+      description: 六个正数页/排序边界和真实JPA超int offset拒绝，候选回原路径且无新增页数上限
+      method: automated-test
+      command: independent probe compareOrdinaryLastAndMaximumPositivePages and actualJpaOffsetLimitRequiresAnExplicitFallbackRatherThanANewPageCap
+      outcome: passed
+      evidence: [final/TEST-com.zencas.edhr.compliance.controller.AuditDatabasePagingProbePostgresTest.xml, final/observations/, source-role/REVIEW.md]
+    - id: qa.scale-width-and-count-tradeoff
+      required: true
+      category: integration
+      description: 五个规模宽度案例，实际完整DTO/总数相同，当前M加1实体与2查询、候选21实体与3查询
+      method: automated-test
+      command: independent compareSmallPageEntityLoadsAndWideJson five cases
+      outcome: passed
+      evidence: [final/TEST-com.zencas.edhr.compliance.controller.AuditDatabasePagingProbePostgresTest.xml, final/observations/paging_scale_current_1000_131072.json, final/observations/paging_scale_prototype_1000_131072.json, reconciliation.json]
+    - id: qa.profile-target-boundary
+      required: true
+      category: regression
+      description: 个人入口仍为USER_ACCOUNT当前目标对象且包含管理员修改，不变为当前操作者的全部历史
+      method: automated-test
+      command: independent compareCurrentProfileTargetAccountIncludingAdministratorChanges and original read regressions
+      outcome: passed
+      evidence: [final/TEST-com.zencas.edhr.compliance.controller.AuditDatabasePagingProbePostgresTest.xml, final/observations/paging_profile_current.json, final/observations/paging_profile_prototype.json]
+    - id: qa.tied-order-proposal
+      required: true
+      category: integration
+      description: 记录未保证同键次序的当前与LIMIT结果，显式ID次序候选两页稳定；不改或认证生产排序
+      method: automated-test
+      command: independent measureTiedOrderingAndExplicitIdTieBreakerWithoutChangingProductionSort
+      outcome: passed
+      evidence: [final/observations/tied_order.json, final/TEST-com.zencas.edhr.compliance.controller.AuditDatabasePagingProbePostgresTest.xml, source-role/REVIEW.md]
+    - id: qa.representative-snapshot-experiments
+      required: true
+      category: database
+      description: 两个代表性JDBC内容/COUNT实验及独立连接新增夹具，RC41/RR40，非实际repo内部计数拦截或跨页冻结
+      method: automated-test
+      command: independent representativeTwoStatementSnapshotExperiment plus raw-server binding verification
+      outcome: passed
+      evidence: [final/observations/snapshot_rc.json, final/observations/snapshot_rr.json, final/postgres.log, reconciliation.json]
+    - id: qa.original-one-hundred-thirty-four
+      required: true
+      category: regression
+      description: 原姓名批量/动作投影/空白/分页溢出/controller/hash/event/aspect/DHR读取134相邻回归实际通过
+      method: automated-test
+      command: same independent final runner with ten original focused test classes
+      outcome: passed
+      evidence: [final/test-summary.json, final/maven.log, final/run.json]
+    - id: qa.native-sql-shapes-and-bindings
+      required: true
+      category: database
+      description: 独立98观察210 SELECT逐形状/次数吻合，10规模案例实际limit与offset绑定及代表性4读2夹具写分列
+      method: command
+      command: python3 reconcile.py
+      outcome: passed
+      evidence: [reconcile.py, reconciliation.json, final/postgres.log, final/observations/]
+    - id: qa.read-immutability-index-and-cleanup
+      required: true
+      category: audit
+      description: 具名Hibernate读区零DML/写数，原action/hash保持；原隔离索引探针回滚，自有PG/依赖软链清理
+      method: automated-test
+      command: actual action fixture assertions, raw SQL reconciliation, index observation and owned-resource final checks
+      outcome: passed
+      evidence: [final/TEST-com.zencas.edhr.compliance.controller.AuditActionFilterPostgresTest.xml, final/observations/index_boundary.json, final/cleanup.json, final-state.json, reconciliation.json]
+    - id: qa.original-evidence-integrity
+      required: true
+      category: documentation
+      description: 两包227原件路径/长度/SHA及外层checksum、23主侧输入与候选一致；主侧SQL另独立重核
+      method: inspection
+      command: python3 inspect.py; python3 reconcile.py
+      outcome: passed
+      evidence: [inspection.json, parent-evidence/, reconciliation.json]
+    - id: qa.knowledge-eighty-nine
+      required: true
+      category: ontology
+      description: 独立89知识检查通过、350知识文件同目标；有限本体10记录不扩大为全盘语义完成
+      method: automated-test
+      command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f tools/knowledge-model/pom.xml test
+      outcome: passed
+      evidence: [knowledge/run.json, knowledge/maven.log, knowledge/test-summary.json, knowledge-file-manifest.json, ontology/ontologyResult.yaml]
+    - id: qa.source-a23-and-phase-scope
+      required: true
+      category: requirements
+      description: 只读子项确认28试验范围准确，真实hasText/offset回退非推测防御；Service代理/me、200续页和索引边界保留
+      method: inspection
+      command: independent source child and parent review of source, fixed reports and remaining scope
+      outcome: passed
+      evidence: [source-role/REVIEW.md, source-role/result.json, REVIEW.md, final-state.json]
+  findings: []
+  residualRisks:
+    - id: PERF-AUDIT-LIST-MATERIALIZATION-001
+      description: 生产仍全量读取事件和宽JSON后Java分页；本批只交付测试提案，没有实施数据库分页或索引。
+      impact: 不可把候选少读数据的合成结果作为当前产品已优化或生产峰值/SLA通过；派生和超大offset候选仍回退全载。
+      mitigation: 按用户实际后续选择实施并重新验证准确筛选/总数/排序/单请求视图及完整实际计划，不设结果总数截断。
+    - id: gap.future-runtime-paging
+      description: 正式产品方案仍需覆盖真实Service事务代理与/me调用、实际repository内容/COUNT并发、非正参数及完整合法排序/索引计划；本批没有浏览器或真实HTTP。
+      impact: 当前代表性JDBC隔离与有限正数/排序案例不代生产集成、全参数或跨请求冻结验收。
+      mitigation: 保留试验边界；实施时补对应真实调用、非正clamp与回显和实际计划，避免仅给self-invoked list加事务注解。
+    - id: gap.audit-access-and-name-policy
+      description: 全局/详情读取授权、当前显示名与历史姓名搜索统一、完整租户设计仍缺原政策或决策证据。
+      impact: 本批测试不能宣称全局权限或姓名政策已审完，不从人员选择规范扩张审计资格。
+      mitigation: 继续W3/W5原政策和角色矩阵审查，不擅加一刀切菜单权限或历史改写。
+    - id: gap.capacity-and-whole-audit
+      description: 未验证生产峰值/RSS/p95/并发SLA；W2-W7、931知识/86UI、高风险/A12/完整矩阵/历史ZIP/text-ID/上传PDFOffice/UNKNOWN/A23及用户暂停队列保持。
+      impact: 162与89和本体/源码有限结果不代表整文件、全分支或整体发布完成。
+      mitigation: 主侧在所有角色及子项FINAL后实际检查漂移，再按台账继续增量审新提交；不自动merge/deploy/恢复。
+  blockingConditions: []
