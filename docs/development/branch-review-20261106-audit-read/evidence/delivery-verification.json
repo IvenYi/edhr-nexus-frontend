@@ -1,0 +1,33 @@
+{
+  "observedAtUTC": "2026-11-06T06:26:34.683997+00:00",
+  "testedCandidate": "9d4416c3f74a3a0e79da53670c6cd13b132bff1b",
+  "preDeliveryRecordHead": "f0fb558c44c0b43899a21fee40170ac9a9719123",
+  "remoteHead": "f0fb558c44c0b43899a21fee40170ac9a9719123",
+  "pullRequest": {
+    "number": 68,
+    "state": "open",
+    "mergeable": true,
+    "mergeable_state": "clean",
+    "html_url": "https://github.com/IvenYi/edhr-nexus-frontend/pull/68",
+    "head": "f0fb558c44c0b43899a21fee40170ac9a9719123",
+    "base": "e69a8f3d97b34fea8737947c780b047bb0310c64",
+    "baseRef": "edhr-dev"
+  },
+  "headEquality": true,
+  "onlyDocumentationSinceTestedCandidate": true,
+  "postTestChangedPaths": [
+    "docs/development/branch-review-20261015/NEXT.md",
+    "docs/development/branch-review-20261106-audit-read/README.md",
+    "docs/development/branch-review-20261106-audit-read/evidence/SHA256SUMS",
+    "docs/development/branch-review-20261106-audit-read/evidence/pre-pr-drift-review.json",
+    "docs/development/branch-review-20261106-audit-read/evidence/quality-manifest.json",
+    "docs/development/branch-review-20261106-audit-read/evidence/quality-role-manifest.json",
+    "docs/development/branch-review-20261106-audit-read/evidence/quality.tar.gz",
+    "docs/development/branch-review-20261106-audit-read/findings.md",
+    "docs/development/branch-review-20261106-audit-read/independent-review.md",
+    "docs/development/branch-review-20261106-audit-read/pre-pr-drift-review.md",
+    "docs/development/branch-review-20261106-audit-read/quality-result.yaml"
+  ],
+  "workingTreeClean": true,
+  "followup": "After this evidence-only record commit, push and recheck local/real remote/PR head equality and protected runtime/test/contract/knowledge byte identity."
+}
