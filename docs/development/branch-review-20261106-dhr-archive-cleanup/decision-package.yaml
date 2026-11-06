@@ -1,0 +1,63 @@
+decisionPackage:
+  id: DEC-PACKAGE-DHR-ARCHIVE-CLEANUP-20261106
+  scope: Preserve primary DHR archive/export failures when owned temporary ZIP cleanup also fails
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: 2cb85492b2dbf47f5b837c565eecc5832b62b39a
+    targetBranch: edhr-dev
+    targetCommit: 2cb85492b2dbf47f5b837c565eecc5832b62b39a
+    contractReadCommit: 2cb85492b2dbf47f5b837c565eecc5832b62b39a
+    uncommittedContractPaths: []
+  summary: PR69已人工合入且整树同5f1a0fa4，无外部/知识/契约增量；继续原W5/W6导出删除失败/文件系统故障队列。先实测生成/审计失败及流中断同时临时ZIP删除失败时根因被覆盖，再最小修复并回归，不实施尚待选择的DB分页或性能方案。
+  confirmed:
+    concepts: []
+    relationships: []
+    rules: []
+    executionContracts: []
+  retainedNormativeReferences:
+    - {id: rule.dhr-summary-zip-source-trace, scope: 同一显式冻结版本与完整/选定范围、原件和摘要/资格、失败阻断保持, source: docs/knowledge/rules/dhr-summary.yaml}
+  inferred: []
+  unresolved: []
+  replacementScopes: []
+  engineeringScope:
+    hypothesis: Service两个catch和Controller流finally直接删除，双重失败会覆盖原异常，先负对照证明
+    minimalFix: 清理错误保留为原异常suppressed并报告自有临时路径；流采用标准Closeable try-with-resources，单独清理失败继续报错，不静默成功
+    notIncluded: 生产孤儿扫描/自动重试/历史恢复/持久对账/UNKNOWN策略、PDF内存或分页/索引优化、真实servlet未启动流的清理调度重设计
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - {area: archive-failure-path, change: 生成/审计错误和清理错误可同时定位，原失败仍向上抛出, evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrArchiveService.java]}
+    transitiveImpacts:
+      - {area: streaming, change: 输出中断保持原异常及附属清理错误，只有清理失败也必须报错；成功字节/头与删除行为保持, evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrArchiveController.java]}
+    potentialImpacts:
+      - {area: diagnostics, concern: 异常处理器可能用原错误码而非被覆盖的IO错误；这是恢复原错误传播，不改变导出资格或失败后交付ZIP, evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/common/exception/GlobalExceptionHandler.java]}
+    unaffectedAreas:
+      - {area: business-runtime, change: 冻结/范围/内容/校验/审计写入次序/权限/格式及原件保持，不改schema/UI/规则或索引, evidenceReferences: []}
+    compatibilityAndMigration:
+      - {area: no-migration, change: 无历史DML/回填或新配置；只对本次创建的临时ZIP尝试原有删除，不递归清理未知文件, evidenceReferences: []}
+    snapshotImpacts:
+      - {area: immutable-frozen-evidence, change: 不修改源文件/快照/hash或既有导出载荷, evidenceReferences: []}
+    auditImpacts:
+      - {area: export-audit, change: 真实审计失败仍失败并按原语义清理临时ZIP，不吞失败或新增成功审计；原生回归核成功SHA和一条EXPORT审计, evidenceReferences: []}
+    permissionImpacts:
+      - {area: existing-authorization, change: Controller原view+export权限保持，不扩大文件入口或后台清扫权限, evidenceReferences: []}
+    testImpacts:
+      - {scope: unit-and-native-regression, scenarios: [同源双失败负对照, 生成/审计/资源关闭/输出中断的原异常身份与suppressed, 仅删除失败继续失败, 正常成功字节/摘要/清理, 当前完整canonical真实冻结归档/签名原件及审计回归, 知识89和全新独立质量], evidenceReferences: []}
+    evidenceGaps: [文件系统故障用自有临时路径替换为非空目录可复现IO拒绝，不冒称真实磁盘掉线/权限或生产事故, 单元测试mock数据库/renderer；原生回归另核真实PG但renderer仍mock, 完整HTTP异步调度/取消/超时、UNKNOWN和持久对账/生产容量及原全审余项仍保持]
+  extensionStrategy:
+    selectedPaths: [product-core]
+    rationale: 两现有类局部错误处理，复用JDK资源抑制语义与本类私有清理helper，不建通用文件生命周期框架
+    ownershipBoundaries:
+      - {owner: archive-service, responsibility: 自有ZIP生成失败/审计失败后的删除及原错误传播}
+      - {owner: archive-controller, responsibility: 已交给流body后的临时ZIP释放及输出错误传播}
+  affectedFiles:
+    - {path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrArchiveService.java, changeType: update, reason: 双失败根因与清理证据保留}
+    - {path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrArchiveController.java, changeType: update, reason: 传输与删除双失败传播}
+    - {path: gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrArchiveCleanupFailureTest.java, changeType: create, reason: 真实临时FS与mock协作者失败测试}
+    - {path: gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/DhrArchiveControllerStreamingTest.java, changeType: update, reason: 原成功/中断断言保留，新增双失败与单独删除失败}
+  acceptanceScenarios:
+    - id: scenario.archive-primary-and-cleanup-failures
+      given: 导出已有原生成/审计/传输失败且自有临时ZIP删除也报错
+      when: 原清理路径执行
+      then: 保持原失败为主异常，保留附属清理错误；不返回成功ZIP、不删除无关原件，成功及仅清理失败语义保持
+      evidenceRequirements: [原源同字节测试真失败与最终XML, 自有真实FS错误与原件清理记录, 完整冻结/ZIP/审计相邻原生回归, 有限本体/全新质量及所有FINAL后的实际无漂移复核]

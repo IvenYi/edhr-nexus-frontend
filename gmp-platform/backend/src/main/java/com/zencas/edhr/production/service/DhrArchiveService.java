@@ -9,6 +9,7 @@ import com.zencas.edhr.common.util.SnowflakeIdGenerator;
 import com.zencas.edhr.compliance.entity.AuditEvent;
 import com.zencas.edhr.compliance.repository.AuditEventRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
@@ -36,6 +37,7 @@ import static com.zencas.edhr.production.service.ExecutionSnapshotBuilder.invali
 /** Builds a self-describing ZIP from one frozen version; never reads live form values. */
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class DhrArchiveService {
     private final JdbcTemplate jdbc;
     private final ObjectMapper mapper;
@@ -187,7 +189,7 @@ public class DhrArchiveService {
             archive.write(manifestBytes);
             archive.closeEntry();
         } catch (Exception ex) {
-            Files.deleteIfExists(zip);
+            removeFailedArchive(zip, ex);
             if (ex instanceof IOException io) throw io;
             throw ex;
         }
@@ -199,8 +201,16 @@ public class DhrArchiveService {
                 .moduleName("记录").menuName("DHR管理").functionName("DHR ZIP 导出")
                 .dataSummary(text(version, "dhr_no")).ipAddress(AuditContext.getIpAddress())
                 .createdAt(LocalDateTime.now()).build()); }
-        catch (Exception ex) { Files.deleteIfExists(zip); throw ex; }
+        catch (Exception ex) { removeFailedArchive(zip, ex); throw ex; }
         return zip;
+    }
+
+    private static void removeFailedArchive(Path zip, Exception failure) {
+        try { Files.deleteIfExists(zip); }
+        catch (IOException | RuntimeException cleanupFailure) {
+            failure.addSuppressed(cleanupFailure);
+            log.error("Failed to remove unsuccessful DHR export archive: path={}", zip, cleanupFailure);
+        }
     }
 
     private ArrayNode selectedAttachmentMetadata(ArrayNode frozen, Set<String> selected) {
