@@ -1,0 +1,316 @@
+qualityResult:
+  result: passed
+  baseCommit: c4e451c264c11978515b2ae0088e64011fe2fcef
+  headCommit: 7e9defaaf8f5f557c4b2debb38417f33b764783b
+  contractBaseline:
+    sourceCommit: 7e9defaaf8f5f557c4b2debb38417f33b764783b
+    targetBranch: edhr-dev
+    targetCommit: c4e451c264c11978515b2ae0088e64011fe2fcef
+    contractReadCommit: 7e9defaaf8f5f557c4b2debb38417f33b764783b
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: clean
+    includedPaths: []
+    excludedPaths: []
+    untrackedPaths: []
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+  - id: check.fixed-range-contract
+    required: true
+    category: documentation
+    description: Read actual contracts and fixed scope; end fetch target unchanged;
+      fixed candidate contains target.
+    method: command
+    command: git fetch origin edhr-dev; git merge-base --is-ancestor c4e451c264c11978515b2ae0088e64011fe2fcef
+      7e9defaaf8f5f557c4b2debb38417f33b764783b
+    outcome: passed
+    evidence:
+    - source-review/final-baseline.json
+    - source-review/scope-independent.json
+    - native-full/source/AGENTS.md
+    - native-full/source/docs/agents/quality-verifier.md
+    - native-full/source/docs/agents/agent-handoff-contract.md
+  - id: check.requirements-and-drift
+    required: true
+    category: requirements
+    description: Batch adds one native observation test and development evidence,
+      no product/UI/config/index/policy changes; performance proposal remains pending.
+    method: inspection
+    command: Inspect pinned decision-package, diff, review notes, source and current
+      confirmed rule.
+    outcome: passed
+    evidence:
+    - source-review/candidate-diff-name-status.txt
+    - source-review/independent-review.md
+    - source-review/snapshots/docs/development/branch-review-20261106-attachment-upload-verify/decision-package.yaml
+  - id: check.protected-bytes
+    required: true
+    category: regression
+    description: All 1,122 protected files byte-identical to target; 350 knowledge
+      files unchanged.
+    method: command
+    command: python identity-and-scope.py
+    outcome: passed
+    evidence:
+    - identity-and-scope.py
+    - source-review/scope-independent.json
+    - evidence-review/baseline-check.json
+  - id: check.new-native-27
+    required: true
+    category: integration
+    description: Fresh native 27 real canonical PostgreSQL/JPA/transaction/service
+      tests pass with 0 failures/errors/skips. Not complete HTTP/container/lifecycle.
+    method: automated-test
+    command: EDHR_AUDIT_ROOT=/tmp/edhr-upload-verify-quality-wt-20261106 python run-native.py
+      full
+    outcome: passed
+    evidence:
+    - native-full/run.json
+    - native-full/maven.log
+    - native-full/TEST-com.zencas.edhr.production.service.DhrAttachmentUploadVerifyObservationPostgresTest.xml
+    - native-full/test-summary.json
+  - id: check.adjacent-regression-54
+    required: true
+    category: regression
+    description: 'Fresh adjacent 54 pass: 8+24+5+13+4; new plus adjacent 81, 0 failures/errors/skips.
+      Not all 81 are native PG.'
+    method: automated-test
+    command: Selected DhrSummaryServiceTest,DhrSummaryPersistenceTest,DhrAttachmentWriteFailureTest,DhrAttachmentAndArchiveTest,DhrFormFilesTest
+      with full runner.
+    outcome: passed
+    evidence:
+    - native-full/test-summary.json
+    - native-full/TEST-com.zencas.edhr.production.service.DhrSummaryServiceTest.xml
+    - native-full/TEST-com.zencas.edhr.production.service.DhrSummaryPersistenceTest.xml
+    - native-full/TEST-com.zencas.edhr.production.service.DhrAttachmentWriteFailureTest.xml
+    - native-full/TEST-com.zencas.edhr.production.service.DhrAttachmentAndArchiveTest.xml
+    - native-full/TEST-com.zencas.edhr.production.service.DhrFormFilesTest.xml
+  - id: check.knowledge-89
+    required: true
+    category: ontology
+    description: Fresh 89 knowledge checks pass; 0.3.25/schema1.2.0/P0 status and
+      unresolved boundaries unchanged.
+    method: automated-test
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f tools/knowledge-model/pom.xml
+      test
+    outcome: passed
+    evidence:
+    - knowledge/maven.log
+    - knowledge/TEST-com.zencas.edhr.knowledge.BusinessKnowledgeModelTest.xml
+    - knowledge/test-summary.json
+  - id: check.canonical-migration
+    required: true
+    category: database
+    description: Disposable PostgreSQL16.15 applies full current canonical 11 changesets,
+      JPA ddl none; test CHECK faults are isolated and do not weaken product schema.
+    method: inspection
+    command: Inspect fresh Maven Liquibase output and exact new test DB guard/constraints.
+    outcome: passed
+    evidence:
+    - native-full/maven.log
+    - native-full/run.json
+    - native-full/source/gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrAttachmentUploadVerifyObservationPostgresTest.java
+  - id: check.original-bytes-state-and-refusals
+    required: true
+    category: audit
+    description: Seven small formats exact bytes/SHA and pending-to-verified assertions,
+      guarded upload/verify, refusal preservation and row/audit/file rollback pass.
+    method: automated-test
+    command: Fresh new native27 plus adjacent5 write-fault tests; inspect assertions
+      and raw observations.
+    outcome: passed
+    evidence:
+    - native-full/observations
+    - native-full/test-summary.json
+    - source-review/independent-review.md
+  - id: check.server-sql-full-shapes
+    required: true
+    category: database
+    description: 52 tagged actions match 128 business SELECT full shapes; 52 SET separate;
+      driver metadata SELECT0;48 successful writes36INSERT12UPDATE include4 later
+      rollback;3 expected CHECK INSERT refusals separate.
+    method: query
+    command: python independent-analysis.py (server execute completions, normalize
+      only placeholders and whitespace).
+    outcome: passed
+    evidence:
+    - independent-analysis.py
+    - independent-recalculation/postgres-independent.json
+    - native-full/postgres.log
+  - id: check.audit-actor-server-parameters
+    required: true
+    category: audit
+    description: 22 successful roundtrip audit INSERT server parameters match exact
+      LINK41 and VERIFY42 identities;64hex presence is not hash recomputation.
+    method: query
+    command: python identity-and-scope.py (server execute plus adjacent parameter
+      DETAIL).
+    outcome: passed
+    evidence:
+    - source-review/audit-identity-server-parameters.json
+    - native-full/postgres.log
+    - identity-and-scope.py
+  - id: check.external-jfr-52
+    required: true
+    category: regression
+    description: External jfr independently recomputes52 files by exact JavaThreadId
+      and owned fixture/store paths; all read/write/event counts match.
+    method: command
+    command: python independent-analysis.py; /workspace/.edhr-cloud-tools/jdk-21/bin/jfr
+      print --json --events jdk.FileRead,jdk.FileWrite <each52>.jfr
+    outcome: passed
+    evidence:
+    - independent-recalculation/jfr-independent.json
+    - independent-recalculation/jfr-json
+    - native-full/observations
+    - independent-analysis.py
+  - id: check.allocation-claim-boundaries
+    required: true
+    category: documentation
+    description: Channel/generic50MiB axes and verify/download allocations reproduced;
+      only cumulative calling-thread heap allocation, not total/peak/direct/native/RSS/SLA.
+    method: inspection
+    command: Read source input overrides and fresh ThreadMXBean/JFR observations,
+      compare with stated evidence scope.
+    outcome: passed
+    evidence:
+    - independent-recalculation/jfr-independent.json
+    - source-review/independent-review.md
+    - evidence-review/observations-check.json
+  - id: check.evidence-archives-and-role-final
+    required: true
+    category: documentation
+    description: Independent read-only child verifies3 archives372 original members,
+      outer/member hashes and archived XML/source identity; source/ontology roles
+      are FINAL.
+    method: command
+    command: Read-only archive verification and external recount by independent evidence
+      subcheck.
+    outcome: passed
+    evidence:
+    - evidence-review/result.json
+    - evidence-review/archive-verification.json
+    - evidence-review/archived-tests-check.json
+    - evidence-review/manifest.json
+    - evidence-review/archived-jfr-external-recount.json
+  - id: check.finite-ontology-scope
+    required: true
+    category: ontology
+    description: Finite16 records13consistent3gaps,350 knowledge unchanged; no whole-file/unique/maturity
+      completion inferred.
+    method: inspection
+    command: Read related confirmed decision/rule, ontology-result, finite records
+      and actual source.
+    outcome: passed
+    evidence:
+    - evidence-review/finite-ontology-check.json
+    - source-review/independent-review.md
+    - source-review/snapshots/docs/knowledge/rules/dhr-summary.yaml
+    - source-review/snapshots/docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml
+  - id: check.old-W5-dedup
+    required: true
+    category: audit
+    description: Existing medium/open W5-AUDIT-HASH-001 retained once with original
+      evidence; no algorithm/history change or roundtrip-rehash claim.
+    method: inspection
+    command: Compare actual ledger and declaration historical references; inspect
+      AuditEvent seal and current assertion scope.
+    outcome: passed
+    evidence:
+    - evidence-review/old-hash-issue-check.json
+    - source-review/independent-review.md
+    - source-review/snapshots/docs/development/branch-review-20261106-attachment-upload-verify/existing-issue-dedup.json
+    - native-full/source/gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/entity/AuditEvent.java
+  - id: check.A23-extraction-and-overdefense
+    required: true
+    category: regression
+    description: Read product upload/verify and parser boundaries; distinct guards
+      retained and concrete read/store/rollback/validate extraction candidates recorded
+      without refactor.
+    method: inspection
+    command: Inspect DhrAttachmentService and DhrOfficeAttachment; map ownership/transaction/failure
+      boundaries and potential extraction.
+    outcome: passed
+    evidence:
+    - source-review/independent-review.md
+    - evidence-review/source-scope-and-A23-check.json
+    - native-full/source/gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrAttachmentService.java
+    - native-full/source/gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrOfficeAttachment.java
+  - id: check.resources-cleanup-and-independence
+    required: true
+    category: documentation
+    description: Only own detached worktree/dependency link/disposable PG; no repo
+      repair, no CI query/trigger, all delegated subchecks FINAL and owned resources
+      cleaned.
+    method: command
+    command: Verify own PG removed; unlink owned dependency symlink; git worktree
+      remove own detached checkout; final root status.
+    outcome: passed
+    evidence:
+    - cleanup.json
+    - native-full/cleanup.json
+    - evidence-review/result.json
+    - source-review/final-baseline.json
+  findings: []
+  residualRisks:
+  - id: R-HTTP-CONTAINER
+    description: Actual Spring multipart adapter wraps disk Part fixture, not production
+      servlet/network/JWT/RBAC.
+    impact: No claim of full HTTP, auth, parser, client upload or browser acceptance.
+    mitigation: Keep full HTTP/RBAC/container matrix in original audit queue.
+  - id: R-SEEDED-LIFECYCLE
+    description: DHR completed/blocked states seeded in SQL.
+    impact: Does not certify START/freezing/complete lifecycle or business completion.
+    mitigation: Retain full lifecycle matrices and original high/A12 scope.
+  - id: R-LARGE-FORMATS
+    description: Seven small formats plus padded PNG do not cover large real PDF/Office
+      or every malformed input.
+    impact: Parser memory/CPU and concurrency remain capacity risks.
+    mitigation: Discuss measured follow-up; retain macro/encryption/index/CRC/expansion
+      protections.
+  - id: R-ALLOC-BOUNDARY
+    description: ThreadMXBean measures cumulative calling-thread heap allocation only;
+      NIO direct/native buffers and RSS excluded.
+    impact: Channel/generic axis is not a fixed production2x ratio, peak, total process
+      memory or SLA.
+    mitigation: Further deployment/concurrent/cold-warm/RSS/direct-buffer capacity
+      work remains, no JDK tuning in this batch.
+  - id: R-IMAGE-INSPECTION
+    description: PNG/JPEG ImageReader header/dimension inspection is not full pixel
+      decoding; complete SHA reading is not full format decode.
+    impact: Does not certify complete image decoding validity.
+    mitigation: Preserve existing rules and explicit scope; no new decode policy inferred.
+  - id: R-CRASH-UNKNOWN
+    description: Known rollback is covered; UNKNOWN/crash/cleanup failures need persistent
+      reconciliation design.
+    impact: Orphan/pending resources can require operator reconciliation beyond tested
+      known rollback.
+    mitigation: Retain original UNKNOWN/crash/durable reconciliation queue; no historical
+      cleanup executed.
+  - id: R-PREEXISTING-W5
+    description: W5-AUDIT-HASH-001 remains preexisting medium/open; AuditEvent PG
+      jsonb/time roundtrip hash mismatch not repaired.
+    impact: Stored64hex hash and transaction identity checks do not certify recomputation/tamper
+      proofing.
+    mitigation: Reuse existing finding/evidence; separate stable canonicalization/history
+      decision, no new count or algorithm changes.
+  - id: R-WHOLE-AUDIT
+    description: 7630 path inventory,whole-file0,history unique unknown;931knowledge86UI
+      and W2-W7/fullhigh/A12/PDF queues remain.
+    impact: This local passed observation batch does not complete whole branch audit.
+    mitigation: Continue ledger and incremental audit; include previously reviewed
+      code in later W6 overdefense/performance/extraction work.
+  - id: R-PAUSED-ITEMS
+    description: Friend task signature/password and production modal style work remain
+      paused.
+    impact: No closure or UI certification implied.
+    mitigation: Await corresponding independent changes and later scoped incremental
+      verification.
+  - id: R-PENDING-PERFORMANCE-PROPOSAL
+    description: PNG/JPEG small-buffer plus temporary snapshot proposal has no user
+      answer and is unimplemented.
+    impact: Current result certifies only pinned test/observation candidate, no optimization
+      benefit or behavior.
+    mitigation: Root must discuss before product implementation; subsequent L2 candidate
+      gets a fresh independent instance.
+  blockingConditions: []

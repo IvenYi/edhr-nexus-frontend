@@ -38,4 +38,4 @@ SQL/审计失败用隔离库额外具名CHECK注入，不删除产品约束，�
 
 AuditEvent持久化后回读重算已是W5-AUDIT-HASH-001，medium/open；原ledger含a828两条原生PG红证据。本批实际源码仍按原JSON/LocalDateTime字符串PrePersist封存，PG jsonb/timestamp会规范化；当前生产读取只输出hash，未见读时computeSnapshotHash校验。64字符存在不能证明可重算或全防篡改；去重记录原字节保留，不新增问题计数，不改格式/算法或修历史hash，不将附件SHA/DHR冻结/签署摘要混为同一对象。
 
-知识350、0.3.25/schema1.2/P0 in-progress不变。16有限记录13明确子范围一致/3gap（两广域场景及W5既有摘要），不叠加旧批unique。7630路径仅固定盘点，整文件0/历史unique未知；931知识/86 UI、W2余项/W3-W5交叉/W6健壮性性能抽取A23含旧已审/W7增量、原high/A12/完整矩阵、PDF/大解析器/UNKNOWN崩溃/持久对账及全部暂停保持。当前待全新独立质量，全部角色FINAL后实际PR前任务漂移复核，不自动merge/deploy/恢复或查询触发CI。
+知识350、0.3.25/schema1.2/P0 in-progress不变。16有限记录13明确子范围一致/3gap（两广域场景及W5既有摘要），不叠加旧批unique。7630路径仅固定盘点，整文件0/历史unique未知；931知识/86 UI、W2余项/W3-W5交叉/W6健壮性性能抽取A23含旧已审/W7增量、原high/A12/完整矩阵、PDF/大解析器/UNKNOWN崩溃/持久对账及全部暂停保持。最终新质量17/17、81/89已通过且所有角色FINAL，已实际完成scope-review.md所记PR前无漂移复核，不自动merge/deploy/恢复或查询触发CI。
