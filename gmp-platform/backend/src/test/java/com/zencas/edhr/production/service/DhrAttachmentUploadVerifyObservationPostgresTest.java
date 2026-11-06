@@ -116,6 +116,11 @@ class DhrAttachmentUploadVerifyObservationPostgresTest {
         assertThat(observation("upload_" + name).path("storedWriteBytes").asLong()).isEqualTo(size);
         assertThat(observation("verify_" + name).path("storedReadBytes").asLong()).isEqualTo(size);
         assertThat(observation("download_" + name).path("storedReadBytes").asLong()).isEqualTo(size);
+        if (size >= 50L * 1024 * 1024 && row.get("mime_type").toString().startsWith("image/")) {
+            assertThat(observation("verify_" + name).path("threadAllocatedBytes").asLong())
+                    .as("large image verification must not allocate a whole-file byte array")
+                    .isLessThan(25L * 1024 * 1024);
+        }
         write("original_" + name + ".json", Map.of("attachmentId", id, "size", size, "sha256", digest, "exactBytesAfterVerify", true, "partInput", generic ? "generic synthetic" : "channel"));
     }
 
@@ -252,20 +257,30 @@ class DhrAttachmentUploadVerifyObservationPostgresTest {
             finally { CURRENT.remove(); }
             elapsed = System.nanoTime() - start; allocated = allocation.getThreadAllocatedBytes(thread) - startBytes; afterHeap = ManagementFactory.getMemoryMXBean().getHeapMemoryUsage().getUsed(); jfr.stop(); jfr.dump(recording);
         }
-        long fixtureRead = 0, storedRead = 0, storedWrite = 0; int ioEvents = 0;
+        long fixtureRead = 0, storedRead = 0, storedWrite = 0, snapshotRead = 0, snapshotWrite = 0; int ioEvents = 0;
+        Set<String> snapshotPaths = new TreeSet<>();
         for (var event : RecordingFile.readAllEvents(recording)) {
             String type = event.getEventType().getName(); if (!(type.equals("jdk.FileRead") || type.equals("jdk.FileWrite")) || event.getThread().getJavaThreadId() != thread) continue;
-            String path = event.getString("path"); if (path == null || !Path.of(path).startsWith(directory)) continue;
+            String path = event.getString("path"); if (path == null) continue;
+            if (Path.of(path).getFileName().toString().startsWith("edhr-dhr-image-")) {
+                snapshotPaths.add(path);
+                if (type.equals("jdk.FileRead")) snapshotRead += event.getLong("bytesRead"); else snapshotWrite += event.getLong("bytesWritten");
+                continue;
+            }
+            if (!Path.of(path).startsWith(directory)) continue;
             ioEvents++; boolean original = Path.of(path).startsWith(store);
             if (type.equals("jdk.FileRead")) { if (original) storedRead += event.getLong("bytesRead"); else fixtureRead += event.getLong("bytesRead"); }
             else if (original) storedWrite += event.getLong("bytesWritten");
         }
         var event = mapper.createObjectNode().put("name", name).put("applicationName", "audit_write_" + name).put("measuredThreadId", thread).put("elapsedNanos", elapsed).put("threadAllocatedBytes", allocated).put("heapBefore", beforeHeap).put("heapAfter", afterHeap)
-                .put("fixtureReadBytes", fixtureRead).put("storedReadBytes", storedRead).put("storedWriteBytes", storedWrite).put("trackedIoEvents", ioEvents).put("requestedRollback", rollback).put("failureClass", failure == null ? null : failure.getClass().getName());
+                .put("fixtureReadBytes", fixtureRead).put("storedReadBytes", storedRead).put("storedWriteBytes", storedWrite).put("snapshotReadBytes", snapshotRead).put("snapshotWriteBytes", snapshotWrite).put("trackedIoEvents", ioEvents).put("requestedRollback", rollback).put("failureClass", failure == null ? null : failure.getClass().getName());
+        event.set("snapshotPaths", mapper.valueToTree(snapshotPaths));
+        event.put("snapshotsRemoved", snapshotPaths.stream().noneMatch(path -> Files.exists(Path.of(path))));
         if (failure != null) { var text = new StringWriter(); failure.printStackTrace(new PrintWriter(text)); event.put("failureStack", text.toString()); }
         event.set("data", mapper.valueToTree(data)); event.set("jdbcQuerySql", mapper.valueToTree(reads.jdbc)); event.set("hibernateAttemptSql", mapper.valueToTree(reads.hibernate));
         event.put("selectStatements", java.util.stream.Stream.concat(reads.jdbc.stream(), reads.hibernate.stream()).filter(sql -> sql.stripLeading().toLowerCase(Locale.ROOT).startsWith("select")).count());
         write(name + ".json", event);
+        assertThat(event.path("snapshotsRemoved").asBoolean()).isTrue();
         if (expectedFailure == null) assertThat(failure).isNull(); else assertThat(failure).isInstanceOf(RuntimeException.class).hasStackTraceContaining(expectedFailure);
         return result;
     }

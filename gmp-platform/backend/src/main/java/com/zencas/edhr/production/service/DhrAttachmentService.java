@@ -178,9 +178,14 @@ public class DhrAttachmentService {
         Path file = Path.of(String.valueOf(row.get("stored_path")));
         try {
             if (!Files.isRegularFile(file)) throw invalid("附件文件丢失或摘要不一致");
-            byte[] bytes = Files.readAllBytes(file);
-            if (!sha256(bytes).equals(row.get("sha256"))) throw invalid("附件文件丢失或摘要不一致");
-            inspectReadable(bytes, String.valueOf(row.get("mime_type")));
+            String mime = String.valueOf(row.get("mime_type"));
+            if ("image/png".equals(mime) || "image/jpeg".equals(mime)) {
+                verifyImage(file, row.get("sha256"));
+            } else {
+                byte[] bytes = Files.readAllBytes(file);
+                if (!sha256(bytes).equals(row.get("sha256"))) throw invalid("附件文件丢失或摘要不一致");
+                inspectReadable(bytes, mime);
+            }
         } catch (IOException ex) { throw invalid("附件无法读取"); }
         jdbc.update("UPDATE dhr_attachment SET verification_status='VERIFIED',verified_by=?,verified_at=? WHERE id=?",
                 actor(), LocalDateTime.now(), attachmentId);
@@ -278,19 +283,57 @@ public class DhrAttachmentService {
                 DhrOfficeAttachment.inspect(bytes, mime);
             } else {
                 try (var input = javax.imageio.ImageIO.createImageInputStream(new java.io.ByteArrayInputStream(bytes))) {
-                    var readers = javax.imageio.ImageIO.getImageReaders(input);
-                    if (!readers.hasNext()) throw invalid("图片无法读取");
-                    var reader = readers.next();
-                    try {
-                        reader.setInput(input, true, true);
-                        long width = reader.getWidth(0), height = reader.getHeight(0);
-                        if (width < 1 || height < 1 || width * height > 100_000_000L) throw invalid("图片尺寸无效或超限");
-                    } finally { reader.dispose(); }
+                    inspectImage(input);
                 }
             }
         } catch (Exception ex) {
             if (ex instanceof com.zencas.edhr.common.exception.BusinessException business) throw business;
             throw invalid("附件内容无法完整读取");
+        }
+    }
+
+    private static void inspectImage(javax.imageio.stream.ImageInputStream input) throws IOException {
+        var readers = javax.imageio.ImageIO.getImageReaders(input);
+        if (!readers.hasNext()) throw invalid("图片无法读取");
+        var reader = readers.next();
+        try {
+            reader.setInput(input, true, true);
+            long width = reader.getWidth(0), height = reader.getHeight(0);
+            if (width < 1 || height < 1 || width * height > 100_000_000L) throw invalid("图片尺寸无效或超限");
+        } finally { reader.dispose(); }
+    }
+
+    private static void verifyImage(Path file, Object expectedSha) throws IOException {
+        // Hash and format checks consume the same copied bytes, even if the original path changes later.
+        try (var snapshot = new TemporaryImage(Files.createTempFile("edhr-dhr-image-", ".tmp"))) {
+            var digest = MessageDigest.getInstance("SHA-256");
+            try (var input = Files.newInputStream(file); var output = Files.newOutputStream(snapshot.path())) {
+                byte[] buffer = new byte[8192];
+                int count;
+                while ((count = input.read(buffer)) != -1) {
+                    digest.update(buffer, 0, count);
+                    output.write(buffer, 0, count);
+                }
+            }
+            if (!HexFormat.of().formatHex(digest.digest()).equals(expectedSha)) throw invalid("附件文件丢失或摘要不一致");
+            try (var input = javax.imageio.ImageIO.createImageInputStream(snapshot.path().toFile())) {
+                inspectImage(input);
+            } catch (Exception ex) {
+                if (ex instanceof com.zencas.edhr.common.exception.BusinessException business) throw business;
+                throw invalid("附件内容无法完整读取");
+            }
+        } catch (NoSuchAlgorithmException failure) {
+            throw new IllegalStateException("无法计算附件摘要", failure);
+        }
+    }
+
+    private record TemporaryImage(Path path) implements AutoCloseable {
+        @Override public void close() throws IOException {
+            try { Files.deleteIfExists(path); }
+            catch (IOException failure) {
+                log.error("无法清理 DHR 图片核验临时快照: {}", path, failure);
+                throw failure;
+            }
         }
     }
 

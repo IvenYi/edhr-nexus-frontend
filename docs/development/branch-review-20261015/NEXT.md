@@ -1,5 +1,11 @@
 # 持续推进台账
 
+## PR65已合入：图片核验优化进行中
+
+已fetch edhr-dev@cf5594947e96dcc56497997d7941da0f7a89be7e，PR65人工合入、整树同7b7cd576，无外部/契约/知识增量。用户在解释和建议后确认“好的”；[本批](../branch-review-20261106-image-verification/README.md)L2先按已确认小缓冲/自有临时快照优化PNG/JPEG核验，保持同一视图/全SHA/原格式规则/资格/审计，上传/PDF/Office不改。
+
+主侧旧源预算反证/清理失败与同视图测试进行中，本体并行，W5仅只读兼容方案不动旧hash。主侧回归后全新独立最终质量及全部FINAL后实际PR前漂移复核，原931/86/W2-W7/高风险/矩阵/容量与暂停队列保持，不自动merge/deploy/恢复。
+
 ## PR65已交付：上传与核验取证已验收
 
 已交付[PR65](https://github.com/IvenYi/edhr-nexus-frontend/pull/65)，audit/edhr-dev-attachment-upload-verify-20261106→edhr-dev，观察OPEN/MERGEABLE/CLEAN，建议人工合入测试/证据。受测7e9defaa、验收归档32fe3dea后仅L0交付登记；登记后核对本地/真实远端/PR head一致。图片优化提案仍未答未实施，merge不当该方案批准；下一轮先fetch真实merge/新提交再继续原全审队列，不自动merge/deploy/恢复。

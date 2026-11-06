@@ -1,0 +1,2267 @@
+{
+  "createdAt": "2026-11-06T03:04:49.536759+00:00",
+  "archives": [
+    {
+      "archive": "main-originals.tar.gz",
+      "bytes": 4526516,
+      "sha256": "771e06d8cbdc9e9d7ef4063f9f54351041cb301c58454ef6993549e9db06eac2",
+      "originalRoot": "/tmp/edhr-image-verification-20261106",
+      "fileCount": 310,
+      "files": [
+        {
+          "path": "analyze.py",
+          "bytes": 8149,
+          "sha256": "82477bc3485d66f0cfb07fcbadb5fde5edb72cf95784f7cbe5f69c87f0f85e83"
+        },
+        {
+          "path": "archive.py",
+          "bytes": 1242,
+          "sha256": "09c7f7e4c6c0145d8524f3e714c8392a11242c3515ab4f5cd6f2f48724c09e4f"
+        },
+        {
+          "path": "knowledge/TEST-com.zencas.edhr.knowledge.BusinessKnowledgeModelTest.xml",
+          "bytes": 20416,
+          "sha256": "9f260289140ac15eadecf60ed97f9336fc7f42798e9ac9612de8543b94cae41d"
+        },
+        {
+          "path": "knowledge/maven.log",
+          "bytes": 2111,
+          "sha256": "c5f8968a3a4569f65c0bc7ef61d602645a543ab5dd5bd9ee46e977de8a75993f"
+        },
+        {
+          "path": "native-budget/TEST-com.zencas.edhr.production.service.DhrAttachmentUploadVerifyObservationPostgresTest.xml",
+          "bytes": 489435,
+          "sha256": "460658cc58ddbe1a07bef48a94357090c0391cdce5b9d3634e2fa029a30104b9"
+        },
+        {
+          "path": "native-budget/cleanup.json",
+          "bytes": 90,
+          "sha256": "3a2819c9e013b2480102bd1d411ced8af0e0c81628d0911fea14365d272cb760"
+        },
+        {
+          "path": "native-budget/maven.log",
+          "bytes": 454443,
+          "sha256": "9b599fb9288680358aa3f7869a18c01430781149f06694f0563a21a128af9819"
+        },
+        {
+          "path": "native-budget/observations/download_format_doc.jfr",
+          "bytes": 114075,
+          "sha256": "3a27d52c9f6d1537c4963c630c63ce3d319b9cdd1b546c370a484745bc352d04"
+        },
+        {
+          "path": "native-budget/observations/download_format_doc.json",
+          "bytes": 1017,
+          "sha256": "e3417ebeedc037eb04b33bc2fb6a8e2a29d75085b7e1ee54868f769276835f2e"
+        },
+        {
+          "path": "native-budget/observations/download_format_docx.jfr",
+          "bytes": 113804,
+          "sha256": "4f5d56bfbffc3d1ba1ed2ca7034806a531003ac05ac69179244933a83d243614"
+        },
+        {
+          "path": "native-budget/observations/download_format_docx.json",
+          "bytes": 1016,
+          "sha256": "a3fa5563f43b974da0551eec37c58a6b05a15f05b554ff28d57d062aa0d5a68d"
+        },
+        {
+          "path": "native-budget/observations/download_format_jpg.jfr",
+          "bytes": 113806,
+          "sha256": "2bdc65b3cafec2701a30f5d06d7f1e3de9546ec21639d0f80403f498b92d0bca"
+        },
+        {
+          "path": "native-budget/observations/download_format_jpg.json",
+          "bytes": 1012,
+          "sha256": "c0c3e78b7e124b443ec60cb141df913fa4c068eefa798f74d5f9a75e98de8628"
+        },
+        {
+          "path": "native-budget/observations/download_format_pdf.jfr",
+          "bytes": 113758,
+          "sha256": "5770022ebe897aa23a420c7fac83e84f2c35527eea2f1297568fccb1719bddb1"
+        },
+        {
+          "path": "native-budget/observations/download_format_pdf.json",
+          "bytes": 1012,
+          "sha256": "3f9e9cb7cfe1c1a72987936e39946414164a53749c54711f48974951425ee6f1"
+        },
+        {
+          "path": "native-budget/observations/download_format_png.jfr",
+          "bytes": 113775,
+          "sha256": "f324dbd3e3e202f6629d66a0a05816efb5290d542e8aea76860852af5e921e2d"
+        },
+        {
+          "path": "native-budget/observations/download_format_png.json",
+          "bytes": 1010,
+          "sha256": "992f8cad620d6555c8ed726cbced0f834506868c9d7fa73c1a564d35e504ca2b"
+        },
+        {
+          "path": "native-budget/observations/download_format_xls.jfr",
+          "bytes": 113806,
+          "sha256": "6414f204028a942fcab938631fc658ebae2a944768c2688b72a05d95c69124d4"
+        },
+        {
+          "path": "native-budget/observations/download_format_xls.json",
+          "bytes": 1014,
+          "sha256": "fa83bf06cd5ec6abf6466dc814d269f3f2a42ec07af4eea15b1579079886cbcf"
+        },
+        {
+          "path": "native-budget/observations/download_format_xlsx.jfr",
+          "bytes": 113806,
+          "sha256": "ad3768b123c16d91dc9acdbff55abd87c7f1cd830ad4d8b3b930ee7cc50294b8"
+        },
+        {
+          "path": "native-budget/observations/download_format_xlsx.json",
+          "bytes": 1016,
+          "sha256": "1386151efcabe5b4d1bdcfcdf7012fba61092a83b2f1ec9b1b1603019261b49f"
+        },
+        {
+          "path": "native-budget/observations/download_size_10mib_channel.jfr",
+          "bytes": 140666,
+          "sha256": "591e1becb54502acf643a37a39e3f4493393ffb7a56d761b388c827e499e6aa4"
+        },
+        {
+          "path": "native-budget/observations/download_size_10mib_channel.json",
+          "bytes": 1042,
+          "sha256": "6bfbc8bdd883b9c455d67e66b4dd4abb8d2f6260ea90eb85f7205be96926b591"
+        },
+        {
+          "path": "native-budget/observations/download_size_1mib_channel.jfr",
+          "bytes": 116425,
+          "sha256": "a58e3e9bdcfe98623e800a5974fd46c2a18601a61a39a214965e88581da5a2e3"
+        },
+        {
+          "path": "native-budget/observations/download_size_1mib_channel.json",
+          "bytes": 1036,
+          "sha256": "ec1e04dfec49a418f5d2c3aa410b7b8e4fe68d7a5762ced4d9aba1711aba8e19"
+        },
+        {
+          "path": "native-budget/observations/download_size_50mib_channel.jfr",
+          "bytes": 248188,
+          "sha256": "16c72dd17d84290cc6923d7b9bf137a8d418ef906a235fe79b910100f74b9372"
+        },
+        {
+          "path": "native-budget/observations/download_size_50mib_channel.json",
+          "bytes": 1042,
+          "sha256": "5e383d354016403879b4eb26bdd35890251fc47fb671dc038b7aca71b11ff6f3"
+        },
+        {
+          "path": "native-budget/observations/download_size_50mib_generic.jfr",
+          "bytes": 248165,
+          "sha256": "59fa3ebdc2f69370850814a86ec5c4fac3e408304cbda9258946117aa563f429"
+        },
+        {
+          "path": "native-budget/observations/download_size_50mib_generic.json",
+          "bytes": 1042,
+          "sha256": "58c19ab85448296bae9fcb6d5571206b2d90f5dac7de4b2a66630352187a1472"
+        },
+        {
+          "path": "native-budget/observations/failure_outer_rollback.jfr",
+          "bytes": 114268,
+          "sha256": "291120d31e73e171afee39b63108d5f93e177131e2c0835c868a41f768585194"
+        },
+        {
+          "path": "native-budget/observations/failure_outer_rollback.json",
+          "bytes": 1401,
+          "sha256": "b65ce2c66bc44af8dfddbc56b345ccaf43660f12f6b0f78f761bd7a409a2878f"
+        },
+        {
+          "path": "native-budget/observations/failure_upload_audit.jfr",
+          "bytes": 115237,
+          "sha256": "3b167fa732eacb68d93e7c23ddb45af93c36e2ed81ba6f6beb9d19d1b7ebff01"
+        },
+        {
+          "path": "native-budget/observations/failure_upload_audit.json",
+          "bytes": 24152,
+          "sha256": "4ec40cb2033665c87bd604e3d174e05194fd4c1d1d6b5cd2089c42285998e9b6"
+        },
+        {
+          "path": "native-budget/observations/failure_upload_sql.jfr",
+          "bytes": 114680,
+          "sha256": "18d06bf6a0ef904d3049fefa8d6bd7118926ada06121beb736a9a71ba14c0391"
+        },
+        {
+          "path": "native-budget/observations/failure_upload_sql.json",
+          "bytes": 18900,
+          "sha256": "c31e130e57a054eb17184078f1e991bd494cd6f419efef61c2f293872efa58db"
+        },
+        {
+          "path": "native-budget/observations/failure_verify_audit.jfr",
+          "bytes": 114278,
+          "sha256": "96476b66c49bbad5624a0f347ad499cfce3deb26586cd174cdafe605ea25b3a7"
+        },
+        {
+          "path": "native-budget/observations/failure_verify_audit.json",
+          "bytes": 23826,
+          "sha256": "1b9f05be339cbb7fcc07a1c6e15a92d5ce4c2726857ba681e7d0f88d3ea65541"
+        },
+        {
+          "path": "native-budget/observations/original_format_doc.json",
+          "bytes": 201,
+          "sha256": "77e37edd268ea8cef456205ec489a75e6fcd8bfb6292e8c06fff6dcba440ca47"
+        },
+        {
+          "path": "native-budget/observations/original_format_docx.json",
+          "bytes": 200,
+          "sha256": "9ec81d653bde74a77aefccb2e3b29fd9765904f4f90050fba6763cfd4060e6b6"
+        },
+        {
+          "path": "native-budget/observations/original_format_jpg.json",
+          "bytes": 199,
+          "sha256": "31379b25e43b108c579b3f4607958f13115cc6e22bb51148b757dda8e2fcb79a"
+        },
+        {
+          "path": "native-budget/observations/original_format_pdf.json",
+          "bytes": 199,
+          "sha256": "dd3925b7dc993b43f8093923792272e9078b98bee8a6de2f8237d47034ca9a09"
+        },
+        {
+          "path": "native-budget/observations/original_format_png.json",
+          "bytes": 198,
+          "sha256": "8d4fafdd99aec4b77e12fc75dd1259a229c33c37c71d1ebcd6194400c2ac117b"
+        },
+        {
+          "path": "native-budget/observations/original_format_xls.json",
+          "bytes": 200,
+          "sha256": "8002f02cf5cf450fa84683d85c92a2d15878091dcc1633a6b8fb752f9e508775"
+        },
+        {
+          "path": "native-budget/observations/original_format_xlsx.json",
+          "bytes": 200,
+          "sha256": "ad318666df9c0df0dbddcc758d16310ecc5300ff6ae24eb44f7376d8c068cf20"
+        },
+        {
+          "path": "native-budget/observations/original_size_10mib_channel.json",
+          "bytes": 204,
+          "sha256": "1b9fbbce920f00044bcac9ed86510002cc41d78b7d043afea8c04ceec14211ba"
+        },
+        {
+          "path": "native-budget/observations/original_size_1mib_channel.json",
+          "bytes": 203,
+          "sha256": "55d46c3fa262f0cfab26a865ec8059434551e9576833737cb09c113ac70b84e9"
+        },
+        {
+          "path": "native-budget/observations/reject_upload_FORMALIZED.jfr",
+          "bytes": 113620,
+          "sha256": "e50dac4cb651224a40fc337895ab81e3c8243bdbbcd7ceb3b0710ad7cf124100"
+        },
+        {
+          "path": "native-budget/observations/reject_upload_FORMALIZED.json",
+          "bytes": 15998,
+          "sha256": "ecfba93e042b85671a9ed82389402bf3520c990fd33cea43ef1dbf46ffb7b1ab"
+        },
+        {
+          "path": "native-budget/observations/reject_upload_IN_PROGRESS.jfr",
+          "bytes": 113620,
+          "sha256": "3c55ac25459f863337983a14948229628cf3b5a8faed39a06842526d3b4802d5"
+        },
+        {
+          "path": "native-budget/observations/reject_upload_IN_PROGRESS.json",
+          "bytes": 16001,
+          "sha256": "39f2ff73080e4f9e297bdec526e323f963cbe18b742cbaff8043eb6e969d5a06"
+        },
+        {
+          "path": "native-budget/observations/reject_upload_PENDING_REVIEW.jfr",
+          "bytes": 113620,
+          "sha256": "3cfb9617f31c5e57e9a12b8e67c49b0b29c5de3fbac8e1a6fe52f4de923fb176"
+        },
+        {
+          "path": "native-budget/observations/reject_upload_PENDING_REVIEW.json",
+          "bytes": 16010,
+          "sha256": "63f1f4fb9a449c2e743ba889f9c1f89d3039c35b5b4a7965bd6632501acd8c90"
+        },
+        {
+          "path": "native-budget/observations/reject_upload_oversize.jfr",
+          "bytes": 115238,
+          "sha256": "89b9eee9ef348cb1a420d54706fbcbb654b70dfd5bbbd955806dfe4b2a911133"
+        },
+        {
+          "path": "native-budget/observations/reject_upload_oversize.json",
+          "bytes": 15817,
+          "sha256": "256bd6c893f11c20eba8846a7062f9d89c1e7e131696615e4878cb5c8e292e07"
+        },
+        {
+          "path": "native-budget/observations/reject_upload_truncated.jfr",
+          "bytes": 115749,
+          "sha256": "6f8ba2d95dcabe513765865e288e927aff3bc63cfa39e3b99801a81139a826fa"
+        },
+        {
+          "path": "native-budget/observations/reject_upload_truncated.json",
+          "bytes": 15916,
+          "sha256": "57c928015c5f25596ad06d1c88af3999a9940105a24e8d2d41e8ae5ca2fdb3c0"
+        },
+        {
+          "path": "native-budget/observations/reject_verify_FORMALIZED.jfr",
+          "bytes": 113690,
+          "sha256": "f18af26a24ca41f1cf8dbf0a1884245e7008453855265d1e8f5cda0fc26935ea"
+        },
+        {
+          "path": "native-budget/observations/reject_verify_FORMALIZED.json",
+          "bytes": 15999,
+          "sha256": "9522c1287e47dcdc95bba0e5c0b5c58d30cb0eb239c15a00efd186dc1f3cfeb2"
+        },
+        {
+          "path": "native-budget/observations/reject_verify_IN_PROGRESS.jfr",
+          "bytes": 113620,
+          "sha256": "77b6b0ccda7b80e50c7d7327b2e7672d75d29b2e893f135405e53c9716c374ff"
+        },
+        {
+          "path": "native-budget/observations/reject_verify_IN_PROGRESS.json",
+          "bytes": 16002,
+          "sha256": "28d67e0b429f721d747bc4bdbb890992afc4b17a5e9ae88e2e3060af43dca586"
+        },
+        {
+          "path": "native-budget/observations/reject_verify_PENDING_REVIEW.jfr",
+          "bytes": 113620,
+          "sha256": "a60d87bdf490eacea211eb44b9f2e79655d67410be47a7e9d9652a0216bdda72"
+        },
+        {
+          "path": "native-budget/observations/reject_verify_PENDING_REVIEW.json",
+          "bytes": 16011,
+          "sha256": "2fe16ca8ace0e8d6d93b33b504d5405b3b654e6bedb9ecb6bd70ef8fe3782949"
+        },
+        {
+          "path": "native-budget/observations/reject_verify_formalized.jfr",
+          "bytes": 113548,
+          "sha256": "02189aea6e4e0ece8cab16c97e5d65f3dee7dc5a4c9c360325cacd312d964f2c"
+        },
+        {
+          "path": "native-budget/observations/reject_verify_formalized.json",
+          "bytes": 16006,
+          "sha256": "0c14a430e746d3a3118431b25b9f0454f7a868f5b5295773cd7ac34f3ed822b5"
+        },
+        {
+          "path": "native-budget/observations/reject_verify_inactive.jfr",
+          "bytes": 113595,
+          "sha256": "686d95e86b3e419ba808f147b68358c2e1b26a2449d107fad364276ed895bbaa"
+        },
+        {
+          "path": "native-budget/observations/reject_verify_inactive.json",
+          "bytes": 15932,
+          "sha256": "b3dea2609f28f403f365af94df6a7afbf75f6dc571283c6dd7b277c6ce95bb2e"
+        },
+        {
+          "path": "native-budget/observations/reject_verify_invalid_format.jfr",
+          "bytes": 114075,
+          "sha256": "88cc485f30c878796f85b7c217f9985bfc713f77c17286adc2fcd5b10fbb8e35"
+        },
+        {
+          "path": "native-budget/observations/reject_verify_invalid_format.json",
+          "bytes": 16057,
+          "sha256": "d248166cdde2169dc0a469745f9d6a90bdde3015280c8935063ba84db1be01fa"
+        },
+        {
+          "path": "native-budget/observations/reject_verify_missing.jfr",
+          "bytes": 113595,
+          "sha256": "bc26875a9a68e39caef88f8caf75c9ebb372e37e5f2e5fd5aed7f7f2944bb538"
+        },
+        {
+          "path": "native-budget/observations/reject_verify_missing.json",
+          "bytes": 15944,
+          "sha256": "8c2ca3ace6d40f63ad778b6165b9e784284d378f2c401a6313b3626cb43037b1"
+        },
+        {
+          "path": "native-budget/observations/reject_verify_other_dhr.jfr",
+          "bytes": 113595,
+          "sha256": "a66d1ee75d6ffc942c9084af9c7671085a969346ac9cd970a1a95a8f83a0671b"
+        },
+        {
+          "path": "native-budget/observations/reject_verify_other_dhr.json",
+          "bytes": 16039,
+          "sha256": "5592d1ed71f40d55754bc501a08a42deee0b1e931c3c2c7156ae35b2655570ff"
+        },
+        {
+          "path": "native-budget/observations/reject_verify_other_tenant.jfr",
+          "bytes": 113595,
+          "sha256": "afae35c14666af7a6cf90716f8864b236dbba59929bb7d286c1afa6cb63127fe"
+        },
+        {
+          "path": "native-budget/observations/reject_verify_other_tenant.json",
+          "bytes": 16048,
+          "sha256": "43575a2529c09089f8e847a9e10f2d35d07388686aadaa3268ae33b1157234df"
+        },
+        {
+          "path": "native-budget/observations/reject_verify_tampered.jfr",
+          "bytes": 113796,
+          "sha256": "d3c26c66f28cc83e8348e351eb3b97c9db1bb72c695b71dc640e0619d78165b2"
+        },
+        {
+          "path": "native-budget/observations/reject_verify_tampered.json",
+          "bytes": 15947,
+          "sha256": "16efb43d68d4273d3430eb82623a3842c7327f3fb14590d601ac271630bb81d2"
+        },
+        {
+          "path": "native-budget/observations/upload_format_doc.jfr",
+          "bytes": 128820,
+          "sha256": "0872009352e38fe7fece2168dec200b86624dd9b264a52b58d4de82ca4929608"
+        },
+        {
+          "path": "native-budget/observations/upload_format_doc.json",
+          "bytes": 1558,
+          "sha256": "d04c1e167d69afa76196f12c1c38be63c95b8044a7d719e75d799533a093e020"
+        },
+        {
+          "path": "native-budget/observations/upload_format_docx.jfr",
+          "bytes": 118208,
+          "sha256": "2e9dc62c87724aca74a83c9c09514e89a6ba0a358e5f818c1979dac09af7de6f"
+        },
+        {
+          "path": "native-budget/observations/upload_format_docx.json",
+          "bytes": 1554,
+          "sha256": "b480d80a0c46d91ad45743a34ac16bf8099d99780908a745088e7668bbdc3329"
+        },
+        {
+          "path": "native-budget/observations/upload_format_jpg.jfr",
+          "bytes": 114249,
+          "sha256": "d990f722e33f81b4a6602c868a09f5ace51482fe8f765dcf7bcadff09b61ae07"
+        },
+        {
+          "path": "native-budget/observations/upload_format_jpg.json",
+          "bytes": 1547,
+          "sha256": "3d60c4eee5a4fdf8796e59d0f7660336f8e0ac7320ef92d5b05fcd914e814bdb"
+        },
+        {
+          "path": "native-budget/observations/upload_format_pdf.jfr",
+          "bytes": 114389,
+          "sha256": "59f21de2a42117ca1c1218f46fb389089750120f928ed3dbb436d7839b1a87f5"
+        },
+        {
+          "path": "native-budget/observations/upload_format_pdf.json",
+          "bytes": 1548,
+          "sha256": "74d45ca9855ee3babf3a11063dd33c575bc94b18477278ce312c3f344bb4bc15"
+        },
+        {
+          "path": "native-budget/observations/upload_format_png.jfr",
+          "bytes": 114338,
+          "sha256": "95959fe4244093891add9037c6eb01fb1111d4ebb36e8acac08eab9d07897d07"
+        },
+        {
+          "path": "native-budget/observations/upload_format_png.json",
+          "bytes": 1545,
+          "sha256": "67f7393fde362dad9eb6694f8ac6d2e7f24c700ed95f6d43782e56579bf96873"
+        },
+        {
+          "path": "native-budget/observations/upload_format_xls.jfr",
+          "bytes": 118440,
+          "sha256": "a577b247f021111edbe418c9ef84b86f6ca975f227dabe96f42d6ca7284f978e"
+        },
+        {
+          "path": "native-budget/observations/upload_format_xls.json",
+          "bytes": 1552,
+          "sha256": "bc935420811e39f21414d7e21fd0a99e2706171a16547ab71965586fb12b7602"
+        },
+        {
+          "path": "native-budget/observations/upload_format_xlsx.jfr",
+          "bytes": 114690,
+          "sha256": "acc090e887acb5831b02af29edd738286d3aa96e911bbae12cea26a745511db4"
+        },
+        {
+          "path": "native-budget/observations/upload_format_xlsx.json",
+          "bytes": 1554,
+          "sha256": "d7fb8b73a25a132b0efc4d2c4c5611790f4c6338c6c517b8fd50320da1c9403d"
+        },
+        {
+          "path": "native-budget/observations/upload_size_10mib_channel.jfr",
+          "bytes": 136600,
+          "sha256": "f00bdae8849819488ce7943712c1781590b350dcbb35689d5930507eda29b118"
+        },
+        {
+          "path": "native-budget/observations/upload_size_10mib_channel.json",
+          "bytes": 1584,
+          "sha256": "7b651af8f90ea7fdca2f81e8876cdeee042108e3e80eaf0c3b7f7bf6b756d816"
+        },
+        {
+          "path": "native-budget/observations/upload_size_1mib_channel.jfr",
+          "bytes": 116500,
+          "sha256": "0041bd3a05760ad77f6545e1db3390749162bdd01ad660d2b9219b189b5ae336"
+        },
+        {
+          "path": "native-budget/observations/upload_size_1mib_channel.json",
+          "bytes": 1577,
+          "sha256": "e9c7f569a63922458b3fe56934d7fec3ee4f4fbb1276edb222eef9ab4ae96a59"
+        },
+        {
+          "path": "native-budget/observations/upload_size_50mib_channel.jfr",
+          "bytes": 225652,
+          "sha256": "c7831b7d86747c83f24dc200962bc8f2f915303f81b494c47a62c57e13f400a2"
+        },
+        {
+          "path": "native-budget/observations/upload_size_50mib_channel.json",
+          "bytes": 1585,
+          "sha256": "7176007cc6a98312407d9d822a1573bdd1cc60d5e0813127dc7994bf90dede45"
+        },
+        {
+          "path": "native-budget/observations/upload_size_50mib_generic.jfr",
+          "bytes": 293632,
+          "sha256": "c25a2e717bac61f56f1ba275bfd66b6c78776567957b345b935a8ef81cbf1597"
+        },
+        {
+          "path": "native-budget/observations/upload_size_50mib_generic.json",
+          "bytes": 1596,
+          "sha256": "58710e2f152d23f7e4b292dcdf6db62f6160507fbccc19ef78de323ca76d7187"
+        },
+        {
+          "path": "native-budget/observations/verify_format_doc.jfr",
+          "bytes": 113808,
+          "sha256": "e824ad0bbee3c5e42fe88c1ce9f4bb6f96a2cf7bc167ddac6c3590328f1a2722"
+        },
+        {
+          "path": "native-budget/observations/verify_format_doc.json",
+          "bytes": 1485,
+          "sha256": "eda5ef6bbf7d73aebb04c1aa1ec058dc0130efef24776c9b70a802e47d5e316d"
+        },
+        {
+          "path": "native-budget/observations/verify_format_docx.jfr",
+          "bytes": 113805,
+          "sha256": "680ea228c6bd513cd4223dfd6c9df41128a50543b61e3bc905ec458d49c0a7f8"
+        },
+        {
+          "path": "native-budget/observations/verify_format_docx.json",
+          "bytes": 1484,
+          "sha256": "a81dee8c5aaea1091a02b90a394adba4d4bf7eb9d8c584aa0b279b6ff6176712"
+        },
+        {
+          "path": "native-budget/observations/verify_format_jpg.jfr",
+          "bytes": 114146,
+          "sha256": "00fc2b730babdb82b6db6b70e26de3cacbb3e57a66b411178649c4d0a43e5a6f"
+        },
+        {
+          "path": "native-budget/observations/verify_format_jpg.json",
+          "bytes": 1479,
+          "sha256": "af351d031336ad9597762b2bee955673703b02748b0187686c89e4b6d4c697be"
+        },
+        {
+          "path": "native-budget/observations/verify_format_pdf.jfr",
+          "bytes": 113758,
+          "sha256": "eab2873a09c4c89201649f94cb704f97efaed8010636c605700ca0a618880e68"
+        },
+        {
+          "path": "native-budget/observations/verify_format_pdf.json",
+          "bytes": 1479,
+          "sha256": "b53d83cce7a38964966fecbbc8e0e2ea77116998e555da6b233e6e4c2a92ab32"
+        },
+        {
+          "path": "native-budget/observations/verify_format_png.jfr",
+          "bytes": 114240,
+          "sha256": "06c0d318e45d6a8087b95517ca8bf913ec81a82d2a689f96d277f660a6710d3d"
+        },
+        {
+          "path": "native-budget/observations/verify_format_png.json",
+          "bytes": 1477,
+          "sha256": "7928ae5dfc3f7b179528e8fff8a39f357f31dff1795fb0544f8f35db25e54ee8"
+        },
+        {
+          "path": "native-budget/observations/verify_format_xls.jfr",
+          "bytes": 113806,
+          "sha256": "33c792c5e88c2ac45aa1e81bb22b7655c7ba5ac0625dc1bd2de7217e6b36d16e"
+        },
+        {
+          "path": "native-budget/observations/verify_format_xls.json",
+          "bytes": 1481,
+          "sha256": "1a9be170f2d04d6cb56139fd5794e7d55ec303eefc34cbb66b9072f10e438867"
+        },
+        {
+          "path": "native-budget/observations/verify_format_xlsx.jfr",
+          "bytes": 113806,
+          "sha256": "fdebce5baeae15707388355e9d734b3f43e4c05da4fe59121f3de77d60ac8dc8"
+        },
+        {
+          "path": "native-budget/observations/verify_format_xlsx.json",
+          "bytes": 1485,
+          "sha256": "5819159c5c2f66c8416c6ac07c858982a9016a4c2516cb9d783f431167640773"
+        },
+        {
+          "path": "native-budget/observations/verify_size_10mib_channel.jfr",
+          "bytes": 114326,
+          "sha256": "2dc73e6efb0f11c553463057f529ec75f5d3333162c2bddf4012de41ff8deb05"
+        },
+        {
+          "path": "native-budget/observations/verify_size_10mib_channel.json",
+          "bytes": 1508,
+          "sha256": "6c0ca2a9ac6a80aa397609a21cb020a110ed9f30ea9103ba44ba69bb5dba106b"
+        },
+        {
+          "path": "native-budget/observations/verify_size_1mib_channel.jfr",
+          "bytes": 114169,
+          "sha256": "0dada6a78e2ab9c41d5cfdcddfdfcba6b5370851c0b4f87290b88107dd7bebeb"
+        },
+        {
+          "path": "native-budget/observations/verify_size_1mib_channel.json",
+          "bytes": 1502,
+          "sha256": "3d270e7a82d2bd5a26b0b614330df7d884b8e353e2d2007fdd0e69d678b8a1c5"
+        },
+        {
+          "path": "native-budget/observations/verify_size_50mib_channel.jfr",
+          "bytes": 114323,
+          "sha256": "c96bd9568a201ab78a469c3eef6029b863b8b5b575e35640cc394dd50a21bf84"
+        },
+        {
+          "path": "native-budget/observations/verify_size_50mib_channel.json",
+          "bytes": 1508,
+          "sha256": "3a914d3377c3ffdd63a8deb27e3188f6f05244793331351b08d3dbd96ef8d108"
+        },
+        {
+          "path": "native-budget/observations/verify_size_50mib_generic.jfr",
+          "bytes": 114294,
+          "sha256": "ce9b96d8b2292d6894391ca8ff04bedfe31220c6694892f593c34b5980dc2d58"
+        },
+        {
+          "path": "native-budget/observations/verify_size_50mib_generic.json",
+          "bytes": 1508,
+          "sha256": "f9d031addf5456d04cceb332167abd2bb6e5ab84ce4da77814c4a0d3900633eb"
+        },
+        {
+          "path": "native-budget/postgres.log",
+          "bytes": 1709570,
+          "sha256": "a26eff7e951b594145c4948fbc92ce50e55aee3668353de285d5f1cf814275fa"
+        },
+        {
+          "path": "native-budget/run.json",
+          "bytes": 3868,
+          "sha256": "a9da93662b43020dcdd1f400faa481297e79bb8eef70ae1b06e3241eac98fa6d"
+        },
+        {
+          "path": "native-budget/source/AGENTS.md",
+          "bytes": 25065,
+          "sha256": "13dc7cdacea0b1bb0aef2abb268781f9c69584acd4879b204d2b7fd81a2927fc"
+        },
+        {
+          "path": "native-budget/source/codeplzreadme.md",
+          "bytes": 3035,
+          "sha256": "7a1be8efffec596b034335058dca2860346d256622f899c8dac97c5172dd6df2"
+        },
+        {
+          "path": "native-budget/source/docs/agents/agent-handoff-contract.md",
+          "bytes": 31233,
+          "sha256": "3439a35dd1baa77ac723f1b5afa237a338d56e31386f06b02b4aacfd754e3a12"
+        },
+        {
+          "path": "native-budget/source/docs/agents/quality-verifier.md",
+          "bytes": 7519,
+          "sha256": "6b3de9323924fb4ba5ae87be76c5136d28e754810c46b22b8e3d1cdd6c2f826f"
+        },
+        {
+          "path": "native-budget/source/docs/development/branch-review-20261106-image-verification/decision-package.yaml",
+          "bytes": 6219,
+          "sha256": "8340b67d7ce702157914d94b61ae9079208d7b769f1727d03cc0e746ab60b788"
+        },
+        {
+          "path": "native-budget/source/docs/regulation/医疗器械生产质量管理规范（2025）.doc",
+          "bytes": 99840,
+          "sha256": "87db119ab9c0cee8e705839fc3e84f240c648b9df7a0c9c5c15bc94ee00f64c4"
+        },
+        {
+          "path": "native-budget/source/gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/entity/AuditEvent.java",
+          "bytes": 3968,
+          "sha256": "61932bd33d0c0cb8d1886335c5aab0229753e3d5f4022fdeead5f0e075a0ad6e"
+        },
+        {
+          "path": "native-budget/source/gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrAttachmentController.java",
+          "bytes": 3456,
+          "sha256": "0120f55096608de86fe2c0080b90a8f1e666f7415ec2a63402a6ac0c85be7d62"
+        },
+        {
+          "path": "native-budget/source/gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrAttachmentService.java",
+          "bytes": 19493,
+          "sha256": "7c7f03f83b0f493a77b9a1657f4965eb27d1f847f02d14b0c5641633502799ed"
+        },
+        {
+          "path": "native-budget/source/gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrFormFiles.java",
+          "bytes": 6902,
+          "sha256": "fa805f8f9c2d9aaf67886e4cd925b1f0efe43cf1acba949cdc62fe6bdedb564c"
+        },
+        {
+          "path": "native-budget/source/gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrOfficeAttachment.java",
+          "bytes": 7224,
+          "sha256": "3257e8313d3e30ec686b78a80c8f5e1a6b2136445b3f655c40179bbcc62fb49d"
+        },
+        {
+          "path": "native-budget/source/gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrSummaryService.java",
+          "bytes": 44278,
+          "sha256": "118c76a32b34b639a22d8ce74fa55b506629db6e6923bb9aa70636abd7acea6d"
+        },
+        {
+          "path": "native-budget/source/gmp-platform/backend/src/main/resources/application.yml",
+          "bytes": 1469,
+          "sha256": "20ca1e1de3053bcac20cf31a85763016b86201ead5ca4f9f4283f86942c407e5"
+        },
+        {
+          "path": "native-budget/source/gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrAttachmentUploadVerifyObservationPostgresTest.java",
+          "bytes": 28147,
+          "sha256": "e1da714bb9ca7dd1557a5520a467f5284f61315a0f1dd76036fbfa5814cb29c9"
+        },
+        {
+          "path": "native-budget/test-summary.json",
+          "bytes": 333,
+          "sha256": "c063ac74a441c066a2dca3fcc9b06344616bc7e3ac4df3c6a78a54690f739026"
+        },
+        {
+          "path": "native-optimized/cleanup.json",
+          "bytes": 93,
+          "sha256": "94fcb1af8bde17cc95d164fc013e2e27d3cc91ae3deb4f1ac7d55f4d60e86887"
+        },
+        {
+          "path": "native-optimized/maven.log",
+          "bytes": 4362,
+          "sha256": "cef153e080fda20eeca340e5d174fe3827cc01cf48557e37fc95ec56a745a2ea"
+        },
+        {
+          "path": "native-optimized/postgres.log",
+          "bytes": 4516,
+          "sha256": "0145198e36f106a0e4dac3cdef42972ecdcf118909b71d43dc41a741c88ff0c9"
+        },
+        {
+          "path": "native-optimized/run.json",
+          "bytes": 5658,
+          "sha256": "46a18f976b6dee16a4d64606ba7ba52aebe9940198cbf91ca651b5b2cb3ebdbe"
+        },
+        {
+          "path": "native-optimized/source/AGENTS.md",
+          "bytes": 25065,
+          "sha256": "13dc7cdacea0b1bb0aef2abb268781f9c69584acd4879b204d2b7fd81a2927fc"
+        },
+        {
+          "path": "native-optimized/source/codeplzreadme.md",
+          "bytes": 3035,
+          "sha256": "7a1be8efffec596b034335058dca2860346d256622f899c8dac97c5172dd6df2"
+        },
+        {
+          "path": "native-optimized/source/docs/agents/agent-handoff-contract.md",
+          "bytes": 31233,
+          "sha256": "3439a35dd1baa77ac723f1b5afa237a338d56e31386f06b02b4aacfd754e3a12"
+        },
+        {
+          "path": "native-optimized/source/docs/agents/quality-verifier.md",
+          "bytes": 7519,
+          "sha256": "6b3de9323924fb4ba5ae87be76c5136d28e754810c46b22b8e3d1cdd6c2f826f"
+        },
+        {
+          "path": "native-optimized/source/docs/development/branch-review-20261106-image-verification/decision-package.yaml",
+          "bytes": 6219,
+          "sha256": "8340b67d7ce702157914d94b61ae9079208d7b769f1727d03cc0e746ab60b788"
+        },
+        {
+          "path": "native-optimized/source/docs/regulation/医疗器械生产质量管理规范（2025）.doc",
+          "bytes": 99840,
+          "sha256": "87db119ab9c0cee8e705839fc3e84f240c648b9df7a0c9c5c15bc94ee00f64c4"
+        },
+        {
+          "path": "native-optimized/source/gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/entity/AuditEvent.java",
+          "bytes": 3968,
+          "sha256": "61932bd33d0c0cb8d1886335c5aab0229753e3d5f4022fdeead5f0e075a0ad6e"
+        },
+        {
+          "path": "native-optimized/source/gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrAttachmentController.java",
+          "bytes": 3456,
+          "sha256": "0120f55096608de86fe2c0080b90a8f1e666f7415ec2a63402a6ac0c85be7d62"
+        },
+        {
+          "path": "native-optimized/source/gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrAttachmentService.java",
+          "bytes": 21523,
+          "sha256": "444c6d75c2c19770e726ed4b62babf852aef1977136925015eb8f929415db497"
+        },
+        {
+          "path": "native-optimized/source/gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrFormFiles.java",
+          "bytes": 6902,
+          "sha256": "fa805f8f9c2d9aaf67886e4cd925b1f0efe43cf1acba949cdc62fe6bdedb564c"
+        },
+        {
+          "path": "native-optimized/source/gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrOfficeAttachment.java",
+          "bytes": 7224,
+          "sha256": "3257e8313d3e30ec686b78a80c8f5e1a6b2136445b3f655c40179bbcc62fb49d"
+        },
+        {
+          "path": "native-optimized/source/gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrSummaryService.java",
+          "bytes": 44278,
+          "sha256": "118c76a32b34b639a22d8ce74fa55b506629db6e6923bb9aa70636abd7acea6d"
+        },
+        {
+          "path": "native-optimized/source/gmp-platform/backend/src/main/resources/application.yml",
+          "bytes": 1469,
+          "sha256": "20ca1e1de3053bcac20cf31a85763016b86201ead5ca4f9f4283f86942c407e5"
+        },
+        {
+          "path": "native-optimized/source/gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrAttachmentAndArchiveTest.java",
+          "bytes": 29001,
+          "sha256": "d80c6879b0691e3ec20bada461d0b68daa879fa08e33dd1751fbea7d1bf55e30"
+        },
+        {
+          "path": "native-optimized/source/gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrAttachmentImageVerificationTest.java",
+          "bytes": 8744,
+          "sha256": "6f77ed4fa91e3972e77b723c128b06fc73a10bec75ce52bd0cdf0c21720d8e82"
+        },
+        {
+          "path": "native-optimized/source/gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrAttachmentUploadVerifyObservationPostgresTest.java",
+          "bytes": 28147,
+          "sha256": "e1da714bb9ca7dd1557a5520a467f5284f61315a0f1dd76036fbfa5814cb29c9"
+        },
+        {
+          "path": "native-optimized/source/gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrAttachmentWriteFailureTest.java",
+          "bytes": 7002,
+          "sha256": "6088d5bb120f1800da70d8542a16278a625f6efd5ea233c8b5e753013b81c69f"
+        },
+        {
+          "path": "native-optimized/source/gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrFormFilesTest.java",
+          "bytes": 7611,
+          "sha256": "708b8ea1ce47ae742fc3cdb538d585790b8b3eb3f6488e2c12977254a76e6ac2"
+        },
+        {
+          "path": "native-optimized/source/gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrSummaryPersistenceTest.java",
+          "bytes": 38931,
+          "sha256": "4aae7816b80fdccd296cfb445a54445e176e3139744825111b91bb285c377d36"
+        },
+        {
+          "path": "native-optimized/source/gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrSummaryServiceTest.java",
+          "bytes": 12574,
+          "sha256": "96e09e61637ed826ee2edebc1593ff589330f6b8b8cb9e00f82a93b11d3d8a6c"
+        },
+        {
+          "path": "native-optimized/test-summary.json",
+          "bytes": 395,
+          "sha256": "b4deb7e8e4371e76ad25983dddf523dddc0387e0a4432094f2ff5864b0bf6009"
+        },
+        {
+          "path": "native-retry/TEST-com.zencas.edhr.production.service.DhrAttachmentAndArchiveTest.xml",
+          "bytes": 36651,
+          "sha256": "d683179a325d6fddab6aa052a253c52f6cf7ff7a6b99196ddb92749606a719ca"
+        },
+        {
+          "path": "native-retry/TEST-com.zencas.edhr.production.service.DhrAttachmentImageVerificationTest.xml",
+          "bytes": 61446,
+          "sha256": "e8f2300a6342c44eb6f751b34c5f66bf5885be278ef69530c4474291ad881078"
+        },
+        {
+          "path": "native-retry/TEST-com.zencas.edhr.production.service.DhrAttachmentUploadVerifyObservationPostgresTest.xml",
+          "bytes": 483912,
+          "sha256": "8240e30d3c78d733c33b235566814af9ad82d0e21cd9dd0ad3ca18c326b24570"
+        },
+        {
+          "path": "native-retry/TEST-com.zencas.edhr.production.service.DhrAttachmentWriteFailureTest.xml",
+          "bytes": 41978,
+          "sha256": "d9a12887f135a515878ba7ee630b172b2d45fb4dd227c4dc12ad5d764d16af94"
+        },
+        {
+          "path": "native-retry/TEST-com.zencas.edhr.production.service.DhrFormFilesTest.xml",
+          "bytes": 33016,
+          "sha256": "6f89807b1973f8fb88a5c1c93fbeddb3037148b91b80ae0cfbd37bb8144828a1"
+        },
+        {
+          "path": "native-retry/TEST-com.zencas.edhr.production.service.DhrSummaryPersistenceTest.xml",
+          "bytes": 36379,
+          "sha256": "d758260ef52dd9ebc39731512bafffad5bfbb61138a63dae6a250684198aa2d0"
+        },
+        {
+          "path": "native-retry/TEST-com.zencas.edhr.production.service.DhrSummaryServiceTest.xml",
+          "bytes": 33641,
+          "sha256": "830bb3e374f16ff2ba0eedbddf65a326db5dfacabcc23e96179dbdfa74a00f54"
+        },
+        {
+          "path": "native-retry/cleanup.json",
+          "bytes": 89,
+          "sha256": "c3bcebd43c40ec812fbee68e8d3b207f97bea595fa4157e6e1470b75ac90984d"
+        },
+        {
+          "path": "native-retry/maven.log",
+          "bytes": 488856,
+          "sha256": "c811dbed1a277a4b25c8d0af1d5d997df5b6e8c54fe2e6f61890d0513fc36eaa"
+        },
+        {
+          "path": "native-retry/observations/download_format_doc.jfr",
+          "bytes": 114045,
+          "sha256": "7cc6449bf4a12f3a044619a583f39ba2f806651e75b8affbe0cad4766e79e598"
+        },
+        {
+          "path": "native-retry/observations/download_format_doc.json",
+          "bytes": 1017,
+          "sha256": "3f6684514fe9bc75a6bbd91b352abd2c1510efd95870d6497d2246de18084ee6"
+        },
+        {
+          "path": "native-retry/observations/download_format_docx.jfr",
+          "bytes": 113818,
+          "sha256": "17c2bb8c80ff7b252fd60d15f35f5d5af6200932c32c3d595a6557ddd777ee80"
+        },
+        {
+          "path": "native-retry/observations/download_format_docx.json",
+          "bytes": 1016,
+          "sha256": "3a5a625daa801a2896a4663935ed6df5347e82325e2aa1e36293acff37824099"
+        },
+        {
+          "path": "native-retry/observations/download_format_jpg.jfr",
+          "bytes": 113815,
+          "sha256": "3c899b899b79d47484e6cd29f807f68e84850c82675bd14702f035ef28188c7b"
+        },
+        {
+          "path": "native-retry/observations/download_format_jpg.json",
+          "bytes": 1012,
+          "sha256": "fd4ffae06fefb20f15415cbd3f40c0506f046c83d54ae4220e449fff6a5de043"
+        },
+        {
+          "path": "native-retry/observations/download_format_pdf.jfr",
+          "bytes": 113818,
+          "sha256": "d138080ed935a1f8529f09db5d441cd0d765b69af9d5d27d67ee97e7d82f3c52"
+        },
+        {
+          "path": "native-retry/observations/download_format_pdf.json",
+          "bytes": 1012,
+          "sha256": "1055344bce7cc985a0d12ad1882b6789647286d6f83cf10a6fa691e32434280b"
+        },
+        {
+          "path": "native-retry/observations/download_format_png.jfr",
+          "bytes": 113817,
+          "sha256": "49d24f57c57346f994195a7751bcfe45076221d765425e58120d7ee869ae45e4"
+        },
+        {
+          "path": "native-retry/observations/download_format_png.json",
+          "bytes": 1010,
+          "sha256": "fe9c99e8e1379a509ef7ca6dc64e310cbec5552237b51a5661f3e487ec5a3ef2"
+        },
+        {
+          "path": "native-retry/observations/download_format_xls.jfr",
+          "bytes": 113867,
+          "sha256": "8a0fae3fc8386fc0ab4f3dd46f2ae43a49003a613c94b7c83b23326219c0bbfc"
+        },
+        {
+          "path": "native-retry/observations/download_format_xls.json",
+          "bytes": 1014,
+          "sha256": "6a6bf2eda38cf95b1f464207ca00bb9034868ccba45935e309358e35d1b56b34"
+        },
+        {
+          "path": "native-retry/observations/download_format_xlsx.jfr",
+          "bytes": 113819,
+          "sha256": "fe48e9fca38f456a80a1d20ed00befce92abbc9bdfa9177560a7d042c85cf815"
+        },
+        {
+          "path": "native-retry/observations/download_format_xlsx.json",
+          "bytes": 1016,
+          "sha256": "529753bb2f02c1bec693de0a490e626d873b24ba903032c067c2d2cc58576f94"
+        },
+        {
+          "path": "native-retry/observations/download_size_10mib_channel.jfr",
+          "bytes": 138121,
+          "sha256": "d360d25dae1943be54a0daf98a9227f6654d2680e85eccea209f5ae8dba2250a"
+        },
+        {
+          "path": "native-retry/observations/download_size_10mib_channel.json",
+          "bytes": 1042,
+          "sha256": "5cf569d6325a0b1f5b2f1bcfffdaff58fdf9191957b57394aec774cdf424e562"
+        },
+        {
+          "path": "native-retry/observations/download_size_1mib_channel.jfr",
+          "bytes": 116231,
+          "sha256": "bb2881248daf58c78392e471f88253fc438c14115eb6ec23a3d942db91b2d982"
+        },
+        {
+          "path": "native-retry/observations/download_size_1mib_channel.json",
+          "bytes": 1036,
+          "sha256": "1750663713afda09c4b6e9fb5babe7553e79d9c6743e98b713f2009c7f8bc56a"
+        },
+        {
+          "path": "native-retry/observations/download_size_50mib_channel.jfr",
+          "bytes": 235420,
+          "sha256": "baabcd0a1663eb17e15c836e496f3c41133678c6f013db88b67b403501372451"
+        },
+        {
+          "path": "native-retry/observations/download_size_50mib_channel.json",
+          "bytes": 1042,
+          "sha256": "e97e5a69a63c8d231810c08adfb4a26d873b4946633c9ffcc9121c319b4f8664"
+        },
+        {
+          "path": "native-retry/observations/download_size_50mib_generic.jfr",
+          "bytes": 235361,
+          "sha256": "ef4288065d024706725f84ab4383f369577512b624b62c9d6604e5a1a7d203b8"
+        },
+        {
+          "path": "native-retry/observations/download_size_50mib_generic.json",
+          "bytes": 1042,
+          "sha256": "05731bdf80d3c40cbdefd8db5b595111e8119c67173eb82d87fd4d0ae32ef9e9"
+        },
+        {
+          "path": "native-retry/observations/failure_outer_rollback.jfr",
+          "bytes": 114263,
+          "sha256": "b46626b8774ff922fd3a505f7334cb5e4aceda8b29cf8e7753568fdcf1dbd861"
+        },
+        {
+          "path": "native-retry/observations/failure_outer_rollback.json",
+          "bytes": 1401,
+          "sha256": "3235f2035675f50aeb31c1b8a5080d36baa7554519535e52e4a4493978a3a468"
+        },
+        {
+          "path": "native-retry/observations/failure_upload_audit.jfr",
+          "bytes": 115219,
+          "sha256": "47cd1ed0e3e3532b13fb05fc93d4e25ddcf04195f9d1c9319a50003fe649d3aa"
+        },
+        {
+          "path": "native-retry/observations/failure_upload_audit.json",
+          "bytes": 24152,
+          "sha256": "598aaaa79504e6e44f110dc34f7ca4f306a371e34617e3f14d5977c64325609b"
+        },
+        {
+          "path": "native-retry/observations/failure_upload_sql.jfr",
+          "bytes": 114754,
+          "sha256": "cee0e0a21d44ad7675db0a668d68b8c9c7869d9e7d08579ba3b591504cc29ac4"
+        },
+        {
+          "path": "native-retry/observations/failure_upload_sql.json",
+          "bytes": 18902,
+          "sha256": "f4d0c703d890be4bdeab9a651e1c88b9d27467daeadd28783c4e2643cadd5b57"
+        },
+        {
+          "path": "native-retry/observations/failure_verify_audit.jfr",
+          "bytes": 114119,
+          "sha256": "c96a1f1db11337ab6229dc4aea6d8ad6242949397e85c55e300622b15a7a83ba"
+        },
+        {
+          "path": "native-retry/observations/failure_verify_audit.json",
+          "bytes": 23874,
+          "sha256": "7a8095374d7005a7037c789be89f2f584f07c93952d8ec5e66132d5c396d7203"
+        },
+        {
+          "path": "native-retry/observations/original_format_doc.json",
+          "bytes": 201,
+          "sha256": "6fad9bb0cad855d0f198c95a8570bdf811dc5a34ec45a3c59a04939fae23fefd"
+        },
+        {
+          "path": "native-retry/observations/original_format_docx.json",
+          "bytes": 200,
+          "sha256": "f622a5645a21cab1dd7e8380bdea9bc65a590a199221fa8c1ffe23b367e8c20b"
+        },
+        {
+          "path": "native-retry/observations/original_format_jpg.json",
+          "bytes": 199,
+          "sha256": "28d4b7ab1099111bd3058e2a80ce02f3455a35aeef997946e1600147dd6fe66c"
+        },
+        {
+          "path": "native-retry/observations/original_format_pdf.json",
+          "bytes": 199,
+          "sha256": "eaa78b00e5e62022286ea21c3c4f92d98b2714f69bb8bb9c77dddd4f1d23b156"
+        },
+        {
+          "path": "native-retry/observations/original_format_png.json",
+          "bytes": 198,
+          "sha256": "18be7b0ad0df9081985b41e1f96249cfcbb0a99888eecb86b3202649e8ad57d1"
+        },
+        {
+          "path": "native-retry/observations/original_format_xls.json",
+          "bytes": 200,
+          "sha256": "1d50023938203a7aef0461a79ed5ed0e1d120525017c54984f6c39cb7c461f26"
+        },
+        {
+          "path": "native-retry/observations/original_format_xlsx.json",
+          "bytes": 200,
+          "sha256": "dcc19ec13d3ade4357972ac8cae75398de34aa360b63e57c2e9544fa52637612"
+        },
+        {
+          "path": "native-retry/observations/original_size_10mib_channel.json",
+          "bytes": 204,
+          "sha256": "1ab69b8798ad603a4ee7c4ed40f34ce048b71c59cef9bd0cfcd8875a575dfbcd"
+        },
+        {
+          "path": "native-retry/observations/original_size_1mib_channel.json",
+          "bytes": 203,
+          "sha256": "9a0aebb4b214057b508d3d9b49ab0947ae6d7609f8a7e0bb4356d04b19d0aaca"
+        },
+        {
+          "path": "native-retry/observations/original_size_50mib_channel.json",
+          "bytes": 204,
+          "sha256": "65543614f38ff72564bf67f8dc8ad0d914438bd8a90af949a36743ab61bdc75b"
+        },
+        {
+          "path": "native-retry/observations/original_size_50mib_generic.json",
+          "bytes": 214,
+          "sha256": "08221d28cf0f2dcd0ea7f3cedf121d00c2054d6fd8fe468b4682ef8ab61f823d"
+        },
+        {
+          "path": "native-retry/observations/reject_upload_FORMALIZED.jfr",
+          "bytes": 113635,
+          "sha256": "98ab35a101a5ede53beeeb358746153b25cdf25f9e6b0135487b5d02c6728432"
+        },
+        {
+          "path": "native-retry/observations/reject_upload_FORMALIZED.json",
+          "bytes": 15999,
+          "sha256": "639c74730c51960bb4e21d694f07c57cdbb66f21d2c78858b07fe740ed19496c"
+        },
+        {
+          "path": "native-retry/observations/reject_upload_IN_PROGRESS.jfr",
+          "bytes": 113682,
+          "sha256": "8c6ef584a13c9dbb90f18f85de4dbc19c6c68100d6cd023ce6e361bdb4b79385"
+        },
+        {
+          "path": "native-retry/observations/reject_upload_IN_PROGRESS.json",
+          "bytes": 16002,
+          "sha256": "fc78f78b8bf0fea77648c5397196182474b72fc756a591815214e0e57c66d914"
+        },
+        {
+          "path": "native-retry/observations/reject_upload_PENDING_REVIEW.jfr",
+          "bytes": 113635,
+          "sha256": "5c3edfdb09bc1b96346e17246689138fdeb81db4577fb14fee92b331269adb3e"
+        },
+        {
+          "path": "native-retry/observations/reject_upload_PENDING_REVIEW.json",
+          "bytes": 16011,
+          "sha256": "baefe6563dc2b2170f99477656422ce3617dc8b93494b37562b62cdcf166d291"
+        },
+        {
+          "path": "native-retry/observations/reject_upload_oversize.jfr",
+          "bytes": 114475,
+          "sha256": "57aa81c2afe9bb792730c10a8ae34036e3ce7a7f0a9b5d0542ca26d76da968fb"
+        },
+        {
+          "path": "native-retry/observations/reject_upload_oversize.json",
+          "bytes": 15817,
+          "sha256": "85a9ff0828165682a4822ae634a02a588d74753c674fb36b3023481e1be5971b"
+        },
+        {
+          "path": "native-retry/observations/reject_upload_truncated.jfr",
+          "bytes": 113919,
+          "sha256": "2a383c9764e9967250cfa79b6778b9b8f45ea40e3ee99684f22b449c6b297acd"
+        },
+        {
+          "path": "native-retry/observations/reject_upload_truncated.json",
+          "bytes": 15913,
+          "sha256": "bb7a52143c1fd9f7d797017af9996c8e1f9b02b75c7ef3154a7374af6def8f2c"
+        },
+        {
+          "path": "native-retry/observations/reject_verify_FORMALIZED.jfr",
+          "bytes": 113634,
+          "sha256": "a6105b692c5d0df47fb24d3377980764bc5482ff0e484809ca70014664668399"
+        },
+        {
+          "path": "native-retry/observations/reject_verify_FORMALIZED.json",
+          "bytes": 16000,
+          "sha256": "0e160027b087497f029dca7832a41ee332bdcc398c9626145ee4fb802411b30e"
+        },
+        {
+          "path": "native-retry/observations/reject_verify_IN_PROGRESS.jfr",
+          "bytes": 113634,
+          "sha256": "bee11a68dafdd8b5de274942f3b06c223a9e0356d272a9b83c15e271818e02e5"
+        },
+        {
+          "path": "native-retry/observations/reject_verify_IN_PROGRESS.json",
+          "bytes": 16003,
+          "sha256": "e28dc0f74b26b6fab18eb53c3eb8db74e59eeb7a7928f4e0e5d3cce1c4edffbe"
+        },
+        {
+          "path": "native-retry/observations/reject_verify_PENDING_REVIEW.jfr",
+          "bytes": 113634,
+          "sha256": "80a4483f8e97f7fd71d5248e0f97da46fe16742aafb5b51ea3937d97b89bf79e"
+        },
+        {
+          "path": "native-retry/observations/reject_verify_PENDING_REVIEW.json",
+          "bytes": 16011,
+          "sha256": "7b003b025f3ff12fdd80fdb6f2dd53778423da3932028308c2ad555b6e82b89e"
+        },
+        {
+          "path": "native-retry/observations/reject_verify_formalized.jfr",
+          "bytes": 113563,
+          "sha256": "8d55271dcf6807ad1c8c404566bf2df634c53e7805ae0f46b91ee1212ae4922f"
+        },
+        {
+          "path": "native-retry/observations/reject_verify_formalized.json",
+          "bytes": 16006,
+          "sha256": "6af9f285025f42ff628ec5fd299233cf14419abf7f41cd20aa79d3bcbfdf059e"
+        },
+        {
+          "path": "native-retry/observations/reject_verify_inactive.jfr",
+          "bytes": 113563,
+          "sha256": "846b14fa14c63d9b4b8502e54b34823372a5b737d85438bf89cd93941a68de3e"
+        },
+        {
+          "path": "native-retry/observations/reject_verify_inactive.json",
+          "bytes": 15932,
+          "sha256": "91d062836b17472454579513952fc4267c4d89a41cd24dfd1dc3e787ab84629c"
+        },
+        {
+          "path": "native-retry/observations/reject_verify_invalid_format.jfr",
+          "bytes": 114011,
+          "sha256": "db1997392dbed53003b215f604fcc667de5b7042db85e9d729b440fe96709140"
+        },
+        {
+          "path": "native-retry/observations/reject_verify_invalid_format.json",
+          "bytes": 16208,
+          "sha256": "20d978aed4ffe475c52770b611ce96fcc476fa3efead930344e45d6d82586ff2"
+        },
+        {
+          "path": "native-retry/observations/reject_verify_missing.jfr",
+          "bytes": 113610,
+          "sha256": "7da31b8fa29d7b4def45e09f0d0fbf5f663deca2b0be41e417e652180d928f1a"
+        },
+        {
+          "path": "native-retry/observations/reject_verify_missing.json",
+          "bytes": 15944,
+          "sha256": "ddc1dadfb92ff80948fa4d9f79195e6b6ef0178c2df4cd6b068853710969e3f8"
+        },
+        {
+          "path": "native-retry/observations/reject_verify_other_dhr.jfr",
+          "bytes": 113563,
+          "sha256": "acb47f1145ea2daef174f336d8c548198ab8a319d567988664cc613803635df9"
+        },
+        {
+          "path": "native-retry/observations/reject_verify_other_dhr.json",
+          "bytes": 16039,
+          "sha256": "ad64cfb4dbc8fdcedb89954c42fe6bb4d5a9be407b4827f348e8acd93a2a1bdd"
+        },
+        {
+          "path": "native-retry/observations/reject_verify_other_tenant.jfr",
+          "bytes": 113563,
+          "sha256": "d2f1afbb63483b8ca214abbaa78f39ddafa4afa3449189c6ae97c0596ad1812b"
+        },
+        {
+          "path": "native-retry/observations/reject_verify_other_tenant.json",
+          "bytes": 16048,
+          "sha256": "17517fe80fd0b9c759d4b998248eda8a1d1438c5183ad134c1d9379b0db2f178"
+        },
+        {
+          "path": "native-retry/observations/reject_verify_tampered.jfr",
+          "bytes": 113867,
+          "sha256": "8665f39df6c47b4d4180101f580aaa74d426ede398fa122070f5afdf66413a24"
+        },
+        {
+          "path": "native-retry/observations/reject_verify_tampered.json",
+          "bytes": 16097,
+          "sha256": "b2055acca74b9de07614953a1361a94d739e401613a60226b30a2947b2d15728"
+        },
+        {
+          "path": "native-retry/observations/upload_format_doc.jfr",
+          "bytes": 114273,
+          "sha256": "bcd4f954d465c97e09027fc66a63a0ea6f669c175b7011ede219e675daea40a3"
+        },
+        {
+          "path": "native-retry/observations/upload_format_doc.json",
+          "bytes": 1556,
+          "sha256": "b004c7020e404e1f83178a66f6bb527e53663c7433015b72df2e61daf6682872"
+        },
+        {
+          "path": "native-retry/observations/upload_format_docx.jfr",
+          "bytes": 113922,
+          "sha256": "aac699dd4d1ed54913950148d6bee8a26fb7b3be8d8727e5e8e194bf8cbc739c"
+        },
+        {
+          "path": "native-retry/observations/upload_format_docx.json",
+          "bytes": 1553,
+          "sha256": "91d946e11251207c8964d53b47fa3c5c1bae593eb6233790077127bdc5622570"
+        },
+        {
+          "path": "native-retry/observations/upload_format_jpg.jfr",
+          "bytes": 114242,
+          "sha256": "d3c58004ef8f5a906f561d52da8e33c779463c5b796068a6d90aa9a147bca1ea"
+        },
+        {
+          "path": "native-retry/observations/upload_format_jpg.json",
+          "bytes": 1547,
+          "sha256": "14b64ac87544a1da43c710a280472bd4b9a29adb3be9de33f5478006a6a97b8a"
+        },
+        {
+          "path": "native-retry/observations/upload_format_pdf.jfr",
+          "bytes": 113922,
+          "sha256": "6f0681dfa4976c46594b327723c83fa81c27ec102d07d1848ff846b9b643d4f4"
+        },
+        {
+          "path": "native-retry/observations/upload_format_pdf.json",
+          "bytes": 1547,
+          "sha256": "7c1156f930e854f32c79389dc6f3178a553febd0cf86ce22f3fcb3033b6b97c2"
+        },
+        {
+          "path": "native-retry/observations/upload_format_png.jfr",
+          "bytes": 114399,
+          "sha256": "0a0413a21ea7013ce3f25a81eb6e1895d8f0460bdb126c481c8ffb8effa2b486"
+        },
+        {
+          "path": "native-retry/observations/upload_format_png.json",
+          "bytes": 1544,
+          "sha256": "4e0f55b3888c32b4168813f20239d5e89e3201b72a562ebe311be16b648ff94c"
+        },
+        {
+          "path": "native-retry/observations/upload_format_xls.jfr",
+          "bytes": 113875,
+          "sha256": "e6262e7dafc59602428762134f56cfef2c12ae26c12f54bde1c1af08c5d71bd1"
+        },
+        {
+          "path": "native-retry/observations/upload_format_xls.json",
+          "bytes": 1550,
+          "sha256": "55c2cba426d2228ade96d157e51dd3ab6aa8414a8c8e6c503bb8ac23a5a00695"
+        },
+        {
+          "path": "native-retry/observations/upload_format_xlsx.jfr",
+          "bytes": 113943,
+          "sha256": "1d073b9103662db279458fa44e2f7f0f1d84144a4d00b3c9d51598d38704c199"
+        },
+        {
+          "path": "native-retry/observations/upload_format_xlsx.json",
+          "bytes": 1554,
+          "sha256": "1359b11efe4c9e5cc0a7e2a27f314ab4c5523d25fe8a2c2066c07577ca8c3074"
+        },
+        {
+          "path": "native-retry/observations/upload_size_10mib_channel.jfr",
+          "bytes": 137478,
+          "sha256": "f61e1d98d48219acc7e950bed8ef24bbe681a1439213a210abcc9ae19193b9af"
+        },
+        {
+          "path": "native-retry/observations/upload_size_10mib_channel.json",
+          "bytes": 1584,
+          "sha256": "ebfd9671c302ed9bc35a157d318a1b3043ea03bd1552b3c8debed83f6cc2af51"
+        },
+        {
+          "path": "native-retry/observations/upload_size_1mib_channel.jfr",
+          "bytes": 116621,
+          "sha256": "35d3b8211f5abbb4308201afba1d5c5885e8a66365ac1c47305101259b730b42"
+        },
+        {
+          "path": "native-retry/observations/upload_size_1mib_channel.json",
+          "bytes": 1577,
+          "sha256": "0527d65278f50baa9847a295109c9dfb24dfd85d3917f5019c5bf2345dac7e9a"
+        },
+        {
+          "path": "native-retry/observations/upload_size_50mib_channel.jfr",
+          "bytes": 229688,
+          "sha256": "405646be3e9e6d1d3300c42efe36ae58b8505a2fa4caa41d7f333aed54e5d444"
+        },
+        {
+          "path": "native-retry/observations/upload_size_50mib_channel.json",
+          "bytes": 1584,
+          "sha256": "fe5b742e19eb6e99eda487fb6b60e772aec39ffb39a96c4716411dc7bc04b5fe"
+        },
+        {
+          "path": "native-retry/observations/upload_size_50mib_generic.jfr",
+          "bytes": 293604,
+          "sha256": "66d324bbabaf9d508dd48db8434f66efd4871514bdb4e2430a26556ef5d31cd1"
+        },
+        {
+          "path": "native-retry/observations/upload_size_50mib_generic.json",
+          "bytes": 1596,
+          "sha256": "13a2e1409911898cfce3be4fd50371574384c4c67df0d8f633085e18439c7a7b"
+        },
+        {
+          "path": "native-retry/observations/verify_format_doc.jfr",
+          "bytes": 113838,
+          "sha256": "48152719ec6659094158afa328235f59ef60d15f01bc6a998e8195b82ec9da33"
+        },
+        {
+          "path": "native-retry/observations/verify_format_doc.json",
+          "bytes": 1485,
+          "sha256": "b9a98f4675713706e0676f40b94ec308bee34b4ed3d51cf717e237c4d093a25e"
+        },
+        {
+          "path": "native-retry/observations/verify_format_docx.jfr",
+          "bytes": 113818,
+          "sha256": "295de594d6715a8b1c0bb98d7947ca1ae1866b36a918ecf38387c21c6afa8763"
+        },
+        {
+          "path": "native-retry/observations/verify_format_docx.json",
+          "bytes": 1484,
+          "sha256": "5be4398d016da0930aecfe99c8bb4591f2df8447ce1192f182ca96dcc0ff072f"
+        },
+        {
+          "path": "native-retry/observations/verify_format_jpg.jfr",
+          "bytes": 114105,
+          "sha256": "40546b4359059990be8cdd7b500acf7418613a135086ce314d132b6f3af7bb08"
+        },
+        {
+          "path": "native-retry/observations/verify_format_jpg.json",
+          "bytes": 1530,
+          "sha256": "da919078fdd73185c5bcbc9ce2e72ca99eada9e15b64c26c737ace52a69769e3"
+        },
+        {
+          "path": "native-retry/observations/verify_format_pdf.jfr",
+          "bytes": 113818,
+          "sha256": "4b3b59b1fe93866f487dc7788a81133438d606f370390d6a76067782603c18ce"
+        },
+        {
+          "path": "native-retry/observations/verify_format_pdf.json",
+          "bytes": 1479,
+          "sha256": "f635c28edaa15e66b4e7bca78e09531da38f77b9283900358086a39b3ef036a1"
+        },
+        {
+          "path": "native-retry/observations/verify_format_png.jfr",
+          "bytes": 114177,
+          "sha256": "3a708bea25649c6f699914b12017a72089924dff380a95ac153a5ed024fdeb6c"
+        },
+        {
+          "path": "native-retry/observations/verify_format_png.json",
+          "bytes": 1527,
+          "sha256": "f61f883f39296a7984e6519eaec1b04454e1c54fd5e9d8ad9a367922321109af"
+        },
+        {
+          "path": "native-retry/observations/verify_format_xls.jfr",
+          "bytes": 113771,
+          "sha256": "c2cec8cab610bf3bd9071707699108cf2e9a435205309dbdb4a81c0cf135318c"
+        },
+        {
+          "path": "native-retry/observations/verify_format_xls.json",
+          "bytes": 1481,
+          "sha256": "dbd3d4531753138572b50a74c7a6c83cb9fbeac8aa1d40bb25b5b27a4e466ec7"
+        },
+        {
+          "path": "native-retry/observations/verify_format_xlsx.jfr",
+          "bytes": 113819,
+          "sha256": "62d028cec43608559ecc07b9da0304223204c28dc6f70baf6b206eb734d39a97"
+        },
+        {
+          "path": "native-retry/observations/verify_format_xlsx.json",
+          "bytes": 1485,
+          "sha256": "5d7504fbe2b1505be98c5190d548118294ab56a5f32df213afe671dcbd338a2c"
+        },
+        {
+          "path": "native-retry/observations/verify_size_10mib_channel.jfr",
+          "bytes": 161501,
+          "sha256": "28cd2aec201c5935200b979a80033374d68dc7ba03af186ca108f94a863937e5"
+        },
+        {
+          "path": "native-retry/observations/verify_size_10mib_channel.json",
+          "bytes": 1563,
+          "sha256": "65bf7ff445a91a2ddc31d2cd9df7005122445d3c24ae51ff40ab5e943aec9d62"
+        },
+        {
+          "path": "native-retry/observations/verify_size_1mib_channel.jfr",
+          "bytes": 118832,
+          "sha256": "326373d752413cf0158a47c7c8c088e30630eb28408f4246ea01e4ebba60f2e1"
+        },
+        {
+          "path": "native-retry/observations/verify_size_1mib_channel.json",
+          "bytes": 1558,
+          "sha256": "13dc1edac2949c71ef04dbf64d134212dbe9582ab6e9ae57263700d207593b0a"
+        },
+        {
+          "path": "native-retry/observations/verify_size_50mib_channel.jfr",
+          "bytes": 351012,
+          "sha256": "a369404392764ff27aab7857c94d7b72b9e080d315ade84f6f1d320ad8faafe2"
+        },
+        {
+          "path": "native-retry/observations/verify_size_50mib_channel.json",
+          "bytes": 1563,
+          "sha256": "ca71fff349dbe3b5534eb4867f038cb32c4dcf2e40395281d5cec34f830c2357"
+        },
+        {
+          "path": "native-retry/observations/verify_size_50mib_generic.jfr",
+          "bytes": 350956,
+          "sha256": "1b0200a5ae617712c971a529204f94263ac3f8085fa977688ae1e2d5faee93af"
+        },
+        {
+          "path": "native-retry/observations/verify_size_50mib_generic.json",
+          "bytes": 1562,
+          "sha256": "f51181d476d14bbe8597aacf251eee4b4c3a3b13dc4583deb84325a97111fb66"
+        },
+        {
+          "path": "native-retry/postgres.log",
+          "bytes": 1704144,
+          "sha256": "928ba6b99f51db4ddebefa63630128222cafb1bcff195ba3b488ed7210edd35f"
+        },
+        {
+          "path": "native-retry/run.json",
+          "bytes": 5654,
+          "sha256": "777f0428819a156cb648fe92961b1a1c882791fb47aa6380999b355dfffd11d9"
+        },
+        {
+          "path": "native-retry/source/AGENTS.md",
+          "bytes": 25065,
+          "sha256": "13dc7cdacea0b1bb0aef2abb268781f9c69584acd4879b204d2b7fd81a2927fc"
+        },
+        {
+          "path": "native-retry/source/codeplzreadme.md",
+          "bytes": 3035,
+          "sha256": "7a1be8efffec596b034335058dca2860346d256622f899c8dac97c5172dd6df2"
+        },
+        {
+          "path": "native-retry/source/docs/agents/agent-handoff-contract.md",
+          "bytes": 31233,
+          "sha256": "3439a35dd1baa77ac723f1b5afa237a338d56e31386f06b02b4aacfd754e3a12"
+        },
+        {
+          "path": "native-retry/source/docs/agents/quality-verifier.md",
+          "bytes": 7519,
+          "sha256": "6b3de9323924fb4ba5ae87be76c5136d28e754810c46b22b8e3d1cdd6c2f826f"
+        },
+        {
+          "path": "native-retry/source/docs/development/branch-review-20261106-image-verification/decision-package.yaml",
+          "bytes": 6219,
+          "sha256": "8340b67d7ce702157914d94b61ae9079208d7b769f1727d03cc0e746ab60b788"
+        },
+        {
+          "path": "native-retry/source/docs/regulation/医疗器械生产质量管理规范（2025）.doc",
+          "bytes": 99840,
+          "sha256": "87db119ab9c0cee8e705839fc3e84f240c648b9df7a0c9c5c15bc94ee00f64c4"
+        },
+        {
+          "path": "native-retry/source/gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/entity/AuditEvent.java",
+          "bytes": 3968,
+          "sha256": "61932bd33d0c0cb8d1886335c5aab0229753e3d5f4022fdeead5f0e075a0ad6e"
+        },
+        {
+          "path": "native-retry/source/gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrAttachmentController.java",
+          "bytes": 3456,
+          "sha256": "0120f55096608de86fe2c0080b90a8f1e666f7415ec2a63402a6ac0c85be7d62"
+        },
+        {
+          "path": "native-retry/source/gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrAttachmentService.java",
+          "bytes": 21523,
+          "sha256": "444c6d75c2c19770e726ed4b62babf852aef1977136925015eb8f929415db497"
+        },
+        {
+          "path": "native-retry/source/gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrFormFiles.java",
+          "bytes": 6902,
+          "sha256": "fa805f8f9c2d9aaf67886e4cd925b1f0efe43cf1acba949cdc62fe6bdedb564c"
+        },
+        {
+          "path": "native-retry/source/gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrOfficeAttachment.java",
+          "bytes": 7224,
+          "sha256": "3257e8313d3e30ec686b78a80c8f5e1a6b2136445b3f655c40179bbcc62fb49d"
+        },
+        {
+          "path": "native-retry/source/gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrSummaryService.java",
+          "bytes": 44278,
+          "sha256": "118c76a32b34b639a22d8ce74fa55b506629db6e6923bb9aa70636abd7acea6d"
+        },
+        {
+          "path": "native-retry/source/gmp-platform/backend/src/main/resources/application.yml",
+          "bytes": 1469,
+          "sha256": "20ca1e1de3053bcac20cf31a85763016b86201ead5ca4f9f4283f86942c407e5"
+        },
+        {
+          "path": "native-retry/source/gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrAttachmentAndArchiveTest.java",
+          "bytes": 29001,
+          "sha256": "d80c6879b0691e3ec20bada461d0b68daa879fa08e33dd1751fbea7d1bf55e30"
+        },
+        {
+          "path": "native-retry/source/gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrAttachmentImageVerificationTest.java",
+          "bytes": 8808,
+          "sha256": "5046484417cb772b54ece0867f387335dbcf6e3330e1716146d37d2d6ab2ac71"
+        },
+        {
+          "path": "native-retry/source/gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrAttachmentUploadVerifyObservationPostgresTest.java",
+          "bytes": 28147,
+          "sha256": "e1da714bb9ca7dd1557a5520a467f5284f61315a0f1dd76036fbfa5814cb29c9"
+        },
+        {
+          "path": "native-retry/source/gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrAttachmentWriteFailureTest.java",
+          "bytes": 7002,
+          "sha256": "6088d5bb120f1800da70d8542a16278a625f6efd5ea233c8b5e753013b81c69f"
+        },
+        {
+          "path": "native-retry/source/gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrFormFilesTest.java",
+          "bytes": 7611,
+          "sha256": "708b8ea1ce47ae742fc3cdb538d585790b8b3eb3f6488e2c12977254a76e6ac2"
+        },
+        {
+          "path": "native-retry/source/gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrSummaryPersistenceTest.java",
+          "bytes": 38931,
+          "sha256": "4aae7816b80fdccd296cfb445a54445e176e3139744825111b91bb285c377d36"
+        },
+        {
+          "path": "native-retry/source/gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrSummaryServiceTest.java",
+          "bytes": 12574,
+          "sha256": "96e09e61637ed826ee2edebc1593ff589330f6b8b8cb9e00f82a93b11d3d8a6c"
+        },
+        {
+          "path": "native-retry/test-summary.json",
+          "bytes": 1351,
+          "sha256": "739bcc60c5db9b9c6cb25b897c7cb4c597d9841193b792b6edf6e06fda7a5f72"
+        },
+        {
+          "path": "run-native.py",
+          "bytes": 4840,
+          "sha256": "6610b96058843bbc2700d8984a81947d6f9efd1c8647ba9d1a7dc070ca8d53ca"
+        }
+      ]
+    },
+    {
+      "archive": "ontology-originals.tar.gz",
+      "bytes": 574096,
+      "sha256": "198ad16ab3aa087fc97fac1525e6c97121636714021891eafe56989f9f3caf3a",
+      "originalRoot": "/tmp/edhr-image-verification-ontology-20261106",
+      "fileCount": 72,
+      "files": [
+        {
+          "path": "REVIEW.md",
+          "bytes": 1714,
+          "sha256": "20e55616ad5a6db5b6d310a07ee3bc47cdb583a1e8072f59570d2f49cecada95"
+        },
+        {
+          "path": "TEST-com.zencas.edhr.knowledge.BusinessKnowledgeModelTest.xml",
+          "bytes": 20416,
+          "sha256": "9f260289140ac15eadecf60ed97f9336fc7f42798e9ac9612de8543b94cae41d"
+        },
+        {
+          "path": "baseline-snapshot/AGENTS.md",
+          "bytes": 25065,
+          "sha256": "13dc7cdacea0b1bb0aef2abb268781f9c69584acd4879b204d2b7fd81a2927fc"
+        },
+        {
+          "path": "baseline-snapshot/codeplzreadme.md",
+          "bytes": 3035,
+          "sha256": "7a1be8efffec596b034335058dca2860346d256622f899c8dac97c5172dd6df2"
+        },
+        {
+          "path": "baseline-snapshot/docs/agents/agent-handoff-contract.md",
+          "bytes": 31233,
+          "sha256": "3439a35dd1baa77ac723f1b5afa237a338d56e31386f06b02b4aacfd754e3a12"
+        },
+        {
+          "path": "baseline-snapshot/docs/agents/business-knowledge-modeler.md",
+          "bytes": 15881,
+          "sha256": "9806c900f98e1cbcf4f8d68a998a07a5449369df037183c75ec08cd666bf56ae"
+        },
+        {
+          "path": "baseline-snapshot/docs/architecture/business-knowledge-model.md",
+          "bytes": 72976,
+          "sha256": "5fc7640ffecbf5ea8191c7242f86dd0a700ae50db307adecb2bacacf7ffeb095"
+        },
+        {
+          "path": "baseline-snapshot/docs/development/branch-review-20261026-capacity-audit/ledger/findings.json",
+          "bytes": 193708,
+          "sha256": "1a4ac05b5456cd69e5fe83c934d1a9f0b13743cde6e68ba7c7ac4d062b0f27fb"
+        },
+        {
+          "path": "baseline-snapshot/docs/development/branch-review-20261106-image-verification/decision-package.yaml",
+          "bytes": 6219,
+          "sha256": "8340b67d7ce702157914d94b61ae9079208d7b769f1727d03cc0e746ab60b788"
+        },
+        {
+          "path": "baseline-snapshot/docs/knowledge/README.md",
+          "bytes": 114117,
+          "sha256": "709c3d40dbd39e6e1cfc6a09bdcd1766775e04e153bff26871f5a6f1bdfa4f42"
+        },
+        {
+          "path": "baseline-snapshot/docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml",
+          "bytes": 23213,
+          "sha256": "11e70ec27862eb971a2ad01cd928e8c2ecba36be4df70e170bd1f5296c4e0253"
+        },
+        {
+          "path": "baseline-snapshot/docs/knowledge/decisions/DEC-0090-dhr-archive-minimum-scope.yaml",
+          "bytes": 4730,
+          "sha256": "72c1491280ff65e95197cbb7c7cff4d177251e4a9d0a9a8458e9f02cb6a4cc5b"
+        },
+        {
+          "path": "baseline-snapshot/docs/knowledge/evidence/dhr-summary-user-confirmed.md",
+          "bytes": 36542,
+          "sha256": "51dc528c6fe38671023cec25cfbe6bf1f0a8dcf2fc088f7894524a2d5f035642"
+        },
+        {
+          "path": "baseline-snapshot/docs/knowledge/evidence/dhr-summary.yaml",
+          "bytes": 19543,
+          "sha256": "b121656c1c69b13066dbb34e2fed6f080140663c668c55ba5faf61a993b1b389"
+        },
+        {
+          "path": "baseline-snapshot/docs/knowledge/evidence/tenant-task-delegation-2026-10-20.md",
+          "bytes": 7941,
+          "sha256": "0610323c3fad5a8c4052eeb68fdd77aea9f231d1b4119d8442022fdc574f1509"
+        },
+        {
+          "path": "baseline-snapshot/docs/knowledge/facts/dhr-summary.yaml",
+          "bytes": 11160,
+          "sha256": "cef00d62cf06832395bf1249c2802dce8d731776f3ea3c33022bd9d6e7c1a5ed"
+        },
+        {
+          "path": "baseline-snapshot/docs/knowledge/glossary.yaml",
+          "bytes": 72304,
+          "sha256": "a4a9568a25b6698cb1a09c92ae0e9811edf90f0f849cb422c64c0a4b508f1302"
+        },
+        {
+          "path": "baseline-snapshot/docs/knowledge/ontology.yaml",
+          "bytes": 96091,
+          "sha256": "2d26c6941665829990fcf48c04e3b7954620e1091896bba38c1e712a21815362"
+        },
+        {
+          "path": "baseline-snapshot/docs/knowledge/open-questions.yaml",
+          "bytes": 22420,
+          "sha256": "c7b3bdecd1a6ac164d95ff515b5412998a556a07e9b5fcb64b3643473aa6e2bf"
+        },
+        {
+          "path": "baseline-snapshot/docs/knowledge/rules/dhr-summary.yaml",
+          "bytes": 18575,
+          "sha256": "2a9240f5ecac5da9e1277e1f750d46695ab93097aa3229ab976f19c38934d601"
+        },
+        {
+          "path": "baseline-snapshot/gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/entity/AuditEvent.java",
+          "bytes": 3968,
+          "sha256": "61932bd33d0c0cb8d1886335c5aab0229753e3d5f4022fdeead5f0e075a0ad6e"
+        },
+        {
+          "path": "baseline-snapshot/gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrAttachmentController.java",
+          "bytes": 3456,
+          "sha256": "0120f55096608de86fe2c0080b90a8f1e666f7415ec2a63402a6ac0c85be7d62"
+        },
+        {
+          "path": "baseline-snapshot/gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrReviewController.java",
+          "bytes": 3290,
+          "sha256": "62a5bbdf40de4cb457c69b644fa4f2120bb9bd429ecd492579d5ec1ea3487e6c"
+        },
+        {
+          "path": "baseline-snapshot/gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrArchiveService.java",
+          "bytes": 24562,
+          "sha256": "bf1d938746ebd3d4c4df7f94b54c0892647639cedefcc85633d6fa28cf402e08"
+        },
+        {
+          "path": "baseline-snapshot/gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrAttachmentService.java",
+          "bytes": 21523,
+          "sha256": "444c6d75c2c19770e726ed4b62babf852aef1977136925015eb8f929415db497"
+        },
+        {
+          "path": "baseline-snapshot/gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrOfficeAttachment.java",
+          "bytes": 7224,
+          "sha256": "3257e8313d3e30ec686b78a80c8f5e1a6b2136445b3f655c40179bbcc62fb49d"
+        },
+        {
+          "path": "baseline-snapshot/gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrSummaryService.java",
+          "bytes": 44278,
+          "sha256": "118c76a32b34b639a22d8ce74fa55b506629db6e6923bb9aa70636abd7acea6d"
+        },
+        {
+          "path": "baseline-snapshot/gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrAttachmentAndArchiveTest.java",
+          "bytes": 29001,
+          "sha256": "d80c6879b0691e3ec20bada461d0b68daa879fa08e33dd1751fbea7d1bf55e30"
+        },
+        {
+          "path": "baseline-snapshot/gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrAttachmentImageVerificationTest.java",
+          "bytes": 8744,
+          "sha256": "6f77ed4fa91e3972e77b723c128b06fc73a10bec75ce52bd0cdf0c21720d8e82"
+        },
+        {
+          "path": "baseline-snapshot/gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrAttachmentUploadVerifyObservationPostgresTest.java",
+          "bytes": 28147,
+          "sha256": "e1da714bb9ca7dd1557a5520a467f5284f61315a0f1dd76036fbfa5814cb29c9"
+        },
+        {
+          "path": "baseline-source-manifest.json",
+          "bytes": 6842,
+          "sha256": "92555d719167d473d00777d93016e3a1730d67f2726739ef3465f4e8b98f6b40"
+        },
+        {
+          "path": "build_result.py",
+          "bytes": 12991,
+          "sha256": "4e43e704f3bf5967d37a2ef0350a0d85fd67e50e3b93963ca80563d8f5877b88"
+        },
+        {
+          "path": "capture.py",
+          "bytes": 4289,
+          "sha256": "8cb504e927c4972fd9fc184e0d74b2b75f7ae53d01318b4bcc8b4d95f292e8b8"
+        },
+        {
+          "path": "final-snapshot/AGENTS.md",
+          "bytes": 25065,
+          "sha256": "13dc7cdacea0b1bb0aef2abb268781f9c69584acd4879b204d2b7fd81a2927fc"
+        },
+        {
+          "path": "final-snapshot/codeplzreadme.md",
+          "bytes": 3035,
+          "sha256": "7a1be8efffec596b034335058dca2860346d256622f899c8dac97c5172dd6df2"
+        },
+        {
+          "path": "final-snapshot/docs/agents/agent-handoff-contract.md",
+          "bytes": 31233,
+          "sha256": "3439a35dd1baa77ac723f1b5afa237a338d56e31386f06b02b4aacfd754e3a12"
+        },
+        {
+          "path": "final-snapshot/docs/agents/business-knowledge-modeler.md",
+          "bytes": 15881,
+          "sha256": "9806c900f98e1cbcf4f8d68a998a07a5449369df037183c75ec08cd666bf56ae"
+        },
+        {
+          "path": "final-snapshot/docs/architecture/business-knowledge-model.md",
+          "bytes": 72976,
+          "sha256": "5fc7640ffecbf5ea8191c7242f86dd0a700ae50db307adecb2bacacf7ffeb095"
+        },
+        {
+          "path": "final-snapshot/docs/development/branch-review-20261026-capacity-audit/ledger/findings.json",
+          "bytes": 193708,
+          "sha256": "1a4ac05b5456cd69e5fe83c934d1a9f0b13743cde6e68ba7c7ac4d062b0f27fb"
+        },
+        {
+          "path": "final-snapshot/docs/development/branch-review-20261106-image-verification/decision-package.yaml",
+          "bytes": 6219,
+          "sha256": "8340b67d7ce702157914d94b61ae9079208d7b769f1727d03cc0e746ab60b788"
+        },
+        {
+          "path": "final-snapshot/docs/knowledge/README.md",
+          "bytes": 114117,
+          "sha256": "709c3d40dbd39e6e1cfc6a09bdcd1766775e04e153bff26871f5a6f1bdfa4f42"
+        },
+        {
+          "path": "final-snapshot/docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml",
+          "bytes": 23213,
+          "sha256": "11e70ec27862eb971a2ad01cd928e8c2ecba36be4df70e170bd1f5296c4e0253"
+        },
+        {
+          "path": "final-snapshot/docs/knowledge/decisions/DEC-0090-dhr-archive-minimum-scope.yaml",
+          "bytes": 4730,
+          "sha256": "72c1491280ff65e95197cbb7c7cff4d177251e4a9d0a9a8458e9f02cb6a4cc5b"
+        },
+        {
+          "path": "final-snapshot/docs/knowledge/evidence/dhr-summary-user-confirmed.md",
+          "bytes": 36542,
+          "sha256": "51dc528c6fe38671023cec25cfbe6bf1f0a8dcf2fc088f7894524a2d5f035642"
+        },
+        {
+          "path": "final-snapshot/docs/knowledge/evidence/dhr-summary.yaml",
+          "bytes": 19543,
+          "sha256": "b121656c1c69b13066dbb34e2fed6f080140663c668c55ba5faf61a993b1b389"
+        },
+        {
+          "path": "final-snapshot/docs/knowledge/evidence/tenant-task-delegation-2026-10-20.md",
+          "bytes": 7941,
+          "sha256": "0610323c3fad5a8c4052eeb68fdd77aea9f231d1b4119d8442022fdc574f1509"
+        },
+        {
+          "path": "final-snapshot/docs/knowledge/facts/dhr-summary.yaml",
+          "bytes": 11160,
+          "sha256": "cef00d62cf06832395bf1249c2802dce8d731776f3ea3c33022bd9d6e7c1a5ed"
+        },
+        {
+          "path": "final-snapshot/docs/knowledge/glossary.yaml",
+          "bytes": 72304,
+          "sha256": "a4a9568a25b6698cb1a09c92ae0e9811edf90f0f849cb422c64c0a4b508f1302"
+        },
+        {
+          "path": "final-snapshot/docs/knowledge/ontology.yaml",
+          "bytes": 96091,
+          "sha256": "2d26c6941665829990fcf48c04e3b7954620e1091896bba38c1e712a21815362"
+        },
+        {
+          "path": "final-snapshot/docs/knowledge/open-questions.yaml",
+          "bytes": 22420,
+          "sha256": "c7b3bdecd1a6ac164d95ff515b5412998a556a07e9b5fcb64b3643473aa6e2bf"
+        },
+        {
+          "path": "final-snapshot/docs/knowledge/rules/dhr-summary.yaml",
+          "bytes": 18575,
+          "sha256": "2a9240f5ecac5da9e1277e1f750d46695ab93097aa3229ab976f19c38934d601"
+        },
+        {
+          "path": "final-snapshot/gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/entity/AuditEvent.java",
+          "bytes": 3968,
+          "sha256": "61932bd33d0c0cb8d1886335c5aab0229753e3d5f4022fdeead5f0e075a0ad6e"
+        },
+        {
+          "path": "final-snapshot/gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrAttachmentController.java",
+          "bytes": 3456,
+          "sha256": "0120f55096608de86fe2c0080b90a8f1e666f7415ec2a63402a6ac0c85be7d62"
+        },
+        {
+          "path": "final-snapshot/gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrReviewController.java",
+          "bytes": 3290,
+          "sha256": "62a5bbdf40de4cb457c69b644fa4f2120bb9bd429ecd492579d5ec1ea3487e6c"
+        },
+        {
+          "path": "final-snapshot/gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrArchiveService.java",
+          "bytes": 24562,
+          "sha256": "bf1d938746ebd3d4c4df7f94b54c0892647639cedefcc85633d6fa28cf402e08"
+        },
+        {
+          "path": "final-snapshot/gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrAttachmentService.java",
+          "bytes": 21523,
+          "sha256": "444c6d75c2c19770e726ed4b62babf852aef1977136925015eb8f929415db497"
+        },
+        {
+          "path": "final-snapshot/gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrOfficeAttachment.java",
+          "bytes": 7224,
+          "sha256": "3257e8313d3e30ec686b78a80c8f5e1a6b2136445b3f655c40179bbcc62fb49d"
+        },
+        {
+          "path": "final-snapshot/gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrSummaryService.java",
+          "bytes": 44278,
+          "sha256": "118c76a32b34b639a22d8ce74fa55b506629db6e6923bb9aa70636abd7acea6d"
+        },
+        {
+          "path": "final-snapshot/gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql",
+          "bytes": 106718,
+          "sha256": "61560f972ef9eeeb8f69620c947b54b2326ad9341d929b19385653bec81cf99b"
+        },
+        {
+          "path": "final-snapshot/gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrAttachmentAndArchiveTest.java",
+          "bytes": 29001,
+          "sha256": "d80c6879b0691e3ec20bada461d0b68daa879fa08e33dd1751fbea7d1bf55e30"
+        },
+        {
+          "path": "final-snapshot/gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrAttachmentImageVerificationTest.java",
+          "bytes": 8808,
+          "sha256": "5046484417cb772b54ece0867f387335dbcf6e3330e1716146d37d2d6ab2ac71"
+        },
+        {
+          "path": "final-snapshot/gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrAttachmentUploadVerifyObservationPostgresTest.java",
+          "bytes": 28147,
+          "sha256": "e1da714bb9ca7dd1557a5520a467f5284f61315a0f1dd76036fbfa5814cb29c9"
+        },
+        {
+          "path": "final-snapshot/gmp-platform/backend/src/test/resources/db/changelog/0103-dhr-controlled-attachments.sql",
+          "bytes": 1921,
+          "sha256": "7a6052f394f19b3763b4b20d2ae03e47f14c6d8adb057055898b4aca03b849ec"
+        },
+        {
+          "path": "final-source-manifest.json",
+          "bytes": 7331,
+          "sha256": "1c35513f37f4a955aef9ccd27443659f86d42d76efa0065ee2c99ece9118e868"
+        },
+        {
+          "path": "finite-audit-records.jsonl",
+          "bytes": 77050,
+          "sha256": "27fb26dfa34122adeb1cb337d15f8400867a0a09a5bee6620db27496fad2f19a"
+        },
+        {
+          "path": "finite-audit-summary.json",
+          "bytes": 943,
+          "sha256": "f13ea12ce7dd24137c4bc28606da8c3df71b6fbd592b46c87913d469325642fa"
+        },
+        {
+          "path": "knowledge-fingerprint-inventory.json",
+          "bytes": 81244,
+          "sha256": "201a4718fb8279a048a2d38b75e18932702f1a1ef301200ec636494009a8458d"
+        },
+        {
+          "path": "knowledge-test-summary.json",
+          "bytes": 306,
+          "sha256": "5d84aa29f9967c974ca8fff8bfd2947a96f770dcd7e08b79d14e4cdfc504012e"
+        },
+        {
+          "path": "knowledge-validation.log",
+          "bytes": 2380,
+          "sha256": "2fae6ae3bb215d6afc73c5d0cf8eed64e65b5afe858b8530ed940e02db8afd35"
+        },
+        {
+          "path": "manifest.json",
+          "bytes": 14545,
+          "sha256": "3ff73b7738642958660cadb42aa13bcdab2f9ab96256c12824323422d2e5a34d"
+        },
+        {
+          "path": "manifest.sha256",
+          "bytes": 80,
+          "sha256": "e312efa960709c95e1bf7d953b03acbc9d51b90ffaf390af55c94db47286a612"
+        },
+        {
+          "path": "ontologyResult.yaml",
+          "bytes": 4546,
+          "sha256": "84afeaa573d0b32c6ec765a1828a01d613efd8685e60f081f3f7de0dd66cc0fa"
+        }
+      ]
+    },
+    {
+      "archive": "w5-plan-originals.tar.gz",
+      "bytes": 400852,
+      "sha256": "ad059e9c346c94d8c5b6c6612da5fd1c2ea41f6a5b6cf3452b220131fc136048",
+      "originalRoot": "/tmp/edhr-w5-hash-plan-20261106",
+      "fileCount": 65,
+      "files": [
+        {
+          "path": "W5-COMPATIBILITY-PLAN.md",
+          "bytes": 13944,
+          "sha256": "9d09c54ec9b49a418bfb8e0ae1f947d6021dd81b77cbda9e59807d7673935b90"
+        },
+        {
+          "path": "artifact-manifest.json",
+          "bytes": 13705,
+          "sha256": "6a3d8d435add779a34335db1e30a580f251466c224888754404bfd6f9781574e"
+        },
+        {
+          "path": "collect.py",
+          "bytes": 6216,
+          "sha256": "69ad38f8fe1f33c7c653f1aca0062d5da33e49e0cb1b86e80f3ec7c23f9cb21b"
+        },
+        {
+          "path": "hash-call-inventory.json",
+          "bytes": 1232,
+          "sha256": "eedbf42987f36eb0c148d9e328907c40c4ed3f739dc8fa2bbb0f40c1cc8d3439"
+        },
+        {
+          "path": "producer-inventory.json",
+          "bytes": 60600,
+          "sha256": "1a2aedec0b23ce8a5c5199fa880d3dc796096d86c957e7031d4b57099395a239"
+        },
+        {
+          "path": "source/AGENTS.md",
+          "bytes": 25065,
+          "sha256": "13dc7cdacea0b1bb0aef2abb268781f9c69584acd4879b204d2b7fd81a2927fc"
+        },
+        {
+          "path": "source/codeplzreadme.md",
+          "bytes": 3035,
+          "sha256": "7a1be8efffec596b034335058dca2860346d256622f899c8dac97c5172dd6df2"
+        },
+        {
+          "path": "source/docs/agents/agent-handoff-contract.md",
+          "bytes": 31233,
+          "sha256": "3439a35dd1baa77ac723f1b5afa237a338d56e31386f06b02b4aacfd754e3a12"
+        },
+        {
+          "path": "source/docs/architecture/business-knowledge-model.md",
+          "bytes": 72976,
+          "sha256": "5fc7640ffecbf5ea8191c7242f86dd0a700ae50db307adecb2bacacf7ffeb095"
+        },
+        {
+          "path": "source/docs/development/branch-review-20261020-w3-write-boundaries/evidence/helpers/edhr-w3-audit-hash-source-map.json",
+          "bytes": 10282,
+          "sha256": "4853027c08457fe0d5e329c15a203f10a2ab14b48444bcd34564513cada10a17"
+        },
+        {
+          "path": "source/docs/development/branch-review-20261020-w3-write-boundaries/evidence/primary/edhr-w3-audit-hash-baseline-probe-summary.json",
+          "bytes": 932,
+          "sha256": "cafa3d3b08f0f209bbe0112cc2c32b51276bb62cb31f539c9f7486e94c9da04f"
+        },
+        {
+          "path": "source/docs/development/branch-review-20261026-capacity-audit/ledger/findings.json",
+          "bytes": 193708,
+          "sha256": "1a4ac05b5456cd69e5fe83c934d1a9f0b13743cde6e68ba7c7ac4d062b0f27fb"
+        },
+        {
+          "path": "source/docs/development/branch-review-20261106-image-verification/decision-package.yaml",
+          "bytes": 6219,
+          "sha256": "8340b67d7ce702157914d94b61ae9079208d7b769f1727d03cc0e746ab60b788"
+        },
+        {
+          "path": "source/docs/knowledge/README.md",
+          "bytes": 114117,
+          "sha256": "709c3d40dbd39e6e1cfc6a09bdcd1766775e04e153bff26871f5a6f1bdfa4f42"
+        },
+        {
+          "path": "source/docs/knowledge/open-questions.yaml",
+          "bytes": 22420,
+          "sha256": "c7b3bdecd1a6ac164d95ff515b5412998a556a07e9b5fcb64b3643473aa6e2bf"
+        },
+        {
+          "path": "source/gmp-platform/backend/src/main/java/com/zencas/edhr/common/audit/AuditAspect.java",
+          "bytes": 3798,
+          "sha256": "77c4093f5880823d3f052b188e3729a979a3f7c01020765298c12b00615fb83d"
+        },
+        {
+          "path": "source/gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/controller/AuditController.java",
+          "bytes": 14918,
+          "sha256": "8a1f7b0c24515ef93b7c817512574be3470b312c947579d9c9f3cc44bca70b5e"
+        },
+        {
+          "path": "source/gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/dto/AuditLogItem.java",
+          "bytes": 670,
+          "sha256": "b178b0a33c14e93889230d7aab411adcdf4e2dfffb7e5b9094d9837e7f005021"
+        },
+        {
+          "path": "source/gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/entity/AuditEvent.java",
+          "bytes": 3968,
+          "sha256": "61932bd33d0c0cb8d1886335c5aab0229753e3d5f4022fdeead5f0e075a0ad6e"
+        },
+        {
+          "path": "source/gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/entity/Signature.java",
+          "bytes": 1817,
+          "sha256": "d0e3e5050949c990656e2e1df915d42885ab2cfeda63aa9612dd3ef44ae48608"
+        },
+        {
+          "path": "source/gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/repository/AuditEventRepository.java",
+          "bytes": 2175,
+          "sha256": "1e0006a97a4bb745de780902b689407307d1eab7f9aabf168762dc9f806625bf"
+        },
+        {
+          "path": "source/gmp-platform/backend/src/main/java/com/zencas/edhr/identity/controller/AuthController.java",
+          "bytes": 70540,
+          "sha256": "6747614444dd8bb46416ae58f9e84ccc4a2d43a73c4f948b1a76a14689d564b3"
+        },
+        {
+          "path": "source/gmp-platform/backend/src/main/java/com/zencas/edhr/identity/controller/DepartmentController.java",
+          "bytes": 17539,
+          "sha256": "3c97d9c0a41cd165c028f43962fc5d97190353bfd918d1d9e16105709f9c2dbe"
+        },
+        {
+          "path": "source/gmp-platform/backend/src/main/java/com/zencas/edhr/identity/controller/RoleController.java",
+          "bytes": 22629,
+          "sha256": "79a27f7b48892bc60a1b67cc36a7e3d1aa3c617f3f79cf554ef4afeabe53bfca"
+        },
+        {
+          "path": "source/gmp-platform/backend/src/main/java/com/zencas/edhr/identity/controller/UserController.java",
+          "bytes": 31255,
+          "sha256": "1cb0e2570d12193b522c49cbe373603293002a50c4a6a4741c95422afb8c62b9"
+        },
+        {
+          "path": "source/gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/DocumentManagementController.java",
+          "bytes": 33349,
+          "sha256": "60b3179e256db34d9c4b272fedad9ac833ebf7e4c98d8af735ac903e24ea44c0"
+        },
+        {
+          "path": "source/gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/EquipmentController.java",
+          "bytes": 21842,
+          "sha256": "a0d2a2eb70044b362413fb321a4bc5cd1dd010c29ad663f92627ac2cb64d45b3"
+        },
+        {
+          "path": "source/gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java",
+          "bytes": 95507,
+          "sha256": "87e717d595fdbd03139b5fb62b65b266ebfdfe1cc4178a80dd30b517e6675dab"
+        },
+        {
+          "path": "source/gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProductController.java",
+          "bytes": 6489,
+          "sha256": "88737b83609190855363af6591bbdc4400f3e138e2242d952b22b9021c94671f"
+        },
+        {
+          "path": "source/gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProductProcessController.java",
+          "bytes": 64475,
+          "sha256": "5a606ead1dead7a10d57514dbe4663f4a1a3054ea022fe86180bb7ca3a020925"
+        },
+        {
+          "path": "source/gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/QualityReasonController.java",
+          "bytes": 10130,
+          "sha256": "f5f70d0a1b799b175161bda83f2960d56d07907c2fd4443238fd6d123cc748e3"
+        },
+        {
+          "path": "source/gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/WorkshopController.java",
+          "bytes": 13073,
+          "sha256": "7e74266cae3cf081ab3d5720f8c9bab5b2df777d15ca76fb8890bc0040687493"
+        },
+        {
+          "path": "source/gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductFamilyMembershipService.java",
+          "bytes": 13712,
+          "sha256": "7022cfe3002b51705452a1d63890693f999d1e94c1ef1487923753db51e6e41e"
+        },
+        {
+          "path": "source/gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductProcessOwnerService.java",
+          "bytes": 40821,
+          "sha256": "0e631a766955c4ffceb1a82f1bda93f556e92126562bc6a923f479eadc583b4f"
+        },
+        {
+          "path": "source/gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/FormProjectionController.java",
+          "bytes": 18786,
+          "sha256": "ec04ea53c452baf93848917e7c667ff4d427c63d5df579278690046b9e3bf570"
+        },
+        {
+          "path": "source/gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/ProductionObjectController.java",
+          "bytes": 15805,
+          "sha256": "11d8369971c6455e9a079932e518221fc78f0f3bf2bf730ceedd5a16b20b6ef4"
+        },
+        {
+          "path": "source/gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/WorkOrderController.java",
+          "bytes": 14153,
+          "sha256": "c45c099a309fcaa2c8a8399a6d7170131103a77779132767eaeae62e34e5c007"
+        },
+        {
+          "path": "source/gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrArchiveService.java",
+          "bytes": 24562,
+          "sha256": "bf1d938746ebd3d4c4df7f94b54c0892647639cedefcc85633d6fa28cf402e08"
+        },
+        {
+          "path": "source/gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrAttachmentService.java",
+          "bytes": 19493,
+          "sha256": "7c7f03f83b0f493a77b9a1657f4965eb27d1f847f02d14b0c5641633502799ed"
+        },
+        {
+          "path": "source/gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrEvidenceImpactService.java",
+          "bytes": 11774,
+          "sha256": "09ae4603a600df3a8cafb00e9e304e7cffbc840a2fab6b8b511f745822649c80"
+        },
+        {
+          "path": "source/gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrFillingService.java",
+          "bytes": 8690,
+          "sha256": "edab29a6e3ac0be59b45e5f1d0c3a19dbcfa072093905d08ee1b8bca83ae051a"
+        },
+        {
+          "path": "source/gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrInstanceService.java",
+          "bytes": 33924,
+          "sha256": "e05d21e05bc1f41dd52c4e54454524cad924f122b715ac342da6e55f2d8c534d"
+        },
+        {
+          "path": "source/gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrReviewService.java",
+          "bytes": 18564,
+          "sha256": "b49a1a9bdf6bdbb253565ec6e828166005094e8866412d50e6fab7bb9bfb8c42"
+        },
+        {
+          "path": "source/gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrSummaryService.java",
+          "bytes": 44278,
+          "sha256": "118c76a32b34b639a22d8ce74fa55b506629db6e6923bb9aa70636abd7acea6d"
+        },
+        {
+          "path": "source/gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionAccess.java",
+          "bytes": 19964,
+          "sha256": "8666e955a875b72118da9a8a10bcf9e13d47f18d2b135a9817570ace3ef2c5ef"
+        },
+        {
+          "path": "source/gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormWorkflowOperations.java",
+          "bytes": 23576,
+          "sha256": "005bbdeaf96fb4ed489f5d4bce4a663f7bd1a4695dda6f6a55fa83320c94ae9d"
+        },
+        {
+          "path": "source/gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java",
+          "bytes": 35944,
+          "sha256": "b804dc2cdb34a18a6077ae2bfd1a6b2d783a316722493f97dbabf0b6d0002814"
+        },
+        {
+          "path": "source/gmp-platform/backend/src/main/java/com/zencas/edhr/recordcontrol/service/RecordControlService.java",
+          "bytes": 38791,
+          "sha256": "93507a91197f9a58dacfdb9b853d71c2cc0e4883babb5ad378ce7b153a672d44"
+        },
+        {
+          "path": "source/gmp-platform/backend/src/main/java/com/zencas/edhr/system/controller/BusinessDictionaryController.java",
+          "bytes": 30406,
+          "sha256": "a06f27f47810476dc0dacb91f137b5f676c39e32b7482135b96d47030d6e3e2e"
+        },
+        {
+          "path": "source/gmp-platform/backend/src/main/java/com/zencas/edhr/system/controller/IconManagementController.java",
+          "bytes": 31906,
+          "sha256": "817572f9bc94d6e028ce1f264fe677d1c8017a823cff74bfb8d4839e6ffae54c"
+        },
+        {
+          "path": "source/gmp-platform/backend/src/main/java/com/zencas/edhr/system/controller/SystemMenuConfigurationController.java",
+          "bytes": 8764,
+          "sha256": "7ae80e556fd71af8af47a1b9581eb721ace62b067b64535d91121bb0848c93ec"
+        },
+        {
+          "path": "source/gmp-platform/backend/src/main/java/com/zencas/edhr/system/controller/SystemSettingsController.java",
+          "bytes": 36662,
+          "sha256": "7ce03d4aea46fb9a80445a44ce30aff7d2ca8001ecd70b4a46faecd689a095c0"
+        },
+        {
+          "path": "source/gmp-platform/backend/src/main/java/com/zencas/edhr/template/controller/DhrTemplateWorkspaceController.java",
+          "bytes": 56281,
+          "sha256": "1a4cd1891cd6c297a89f29ca06ddb01b55b6b5d3dd51f3b2a638b5feefd2c64d"
+        },
+        {
+          "path": "source/gmp-platform/backend/src/main/java/com/zencas/edhr/template/controller/TemplateModelingController.java",
+          "bytes": 67631,
+          "sha256": "0533382eaf92b25035d0913966567ccb0894926441cceedac2fb9fbfde19b318"
+        },
+        {
+          "path": "source/gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/FormLookupCatalogService.java",
+          "bytes": 18996,
+          "sha256": "dc13fd196fed0a49f97ac8c58c313a62c52c562e159ff1120e1e9f51e7d5d065"
+        },
+        {
+          "path": "source/gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/FormProcessController.java",
+          "bytes": 26642,
+          "sha256": "7f0220581c15180faad3642ce053e8d0629a9385a5e4f6f50edf43b4a4fa0438"
+        },
+        {
+          "path": "source/gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java",
+          "bytes": 82534,
+          "sha256": "8fa8fc0c69e815d70c5f3f01e285f1489e151bc97d2d5c2be7ea797376467a67"
+        },
+        {
+          "path": "source/gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowTemplateController.java",
+          "bytes": 41030,
+          "sha256": "b82fc36360eee886d8b4ba72504c4c91875236f1738d1fb00d56cc223482e7cf"
+        },
+        {
+          "path": "source/gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java",
+          "bytes": 53905,
+          "sha256": "902a253d84347caf165a5988933061132d72abda29ed94f84114d3eb2b9f497e"
+        },
+        {
+          "path": "source/gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/WorkflowResponsibilityService.java",
+          "bytes": 18865,
+          "sha256": "6882e97ac8e68fec78ad71e456bc04d81cf64268f55af9bbb799f19ce34e246f"
+        },
+        {
+          "path": "source/gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql",
+          "bytes": 106718,
+          "sha256": "61560f972ef9eeeb8f69620c947b54b2326ad9341d929b19385653bec81cf99b"
+        },
+        {
+          "path": "source/gmp-platform/backend/src/main/resources/db/changelog/db.changelog-master.yaml",
+          "bytes": 512,
+          "sha256": "cb04b3aad4f84b09b1be7e63b0272187d73efac25735cf3ea95f80d60b4f6328"
+        },
+        {
+          "path": "source/gmp-platform/backend/src/test/java/com/zencas/edhr/compliance/entity/AuditEventTest.java",
+          "bytes": 1724,
+          "sha256": "a9dee9a5c3a7b0fa04a2cee5044b1ded733beb9b10755944d49bcf2862cbd1aa"
+        },
+        {
+          "path": "source-manifest.json",
+          "bytes": 19023,
+          "sha256": "7ae95b2c4893b2e7cf118af2cda3ffb026a2a8a8b36fef7ee562d46ff0fc89e3"
+        },
+        {
+          "path": "summary.json",
+          "bytes": 1370,
+          "sha256": "7eb567b02f3525d0b483061c87343836baa3e34661c8c40f6d7be80554c28487"
+        }
+      ]
+    }
+  ]
+}
