@@ -4,7 +4,9 @@
 
 已fetch edhr-dev@764258b869567c0f7840f16ff1358ed5c2491f53，PR70人工合入且整树同d689c031，无外部/知识/契约增量；新分支audit/edhr-dev-dhr-archive-async-20261107。[本批](../branch-review-20261107-dhr-archive-async/README.md)L2承接原未启动流/拒绝/超时队列，确认medium W6-DHR-EXPORT-UNSTARTED-STREAM-001：ZIP生成后body不执行会遗留文件。单controller以Spring完成回调和请求内单次归属清理，活动body保留原TWR，元信息同步失败保原异常；无扫删/重试/新超时政策。
 
-主侧旧产品两阶段均5=2正3真实文件遗留F/0E/S，最新negative_context测试与最终同字节；主侧最终95/95、知识89/89，21输入保持。HTTP真实Tomcat/MVC配独立Basic/mock Service，500/503非产品JWT状态契约；真实取消调用被接受但future.isCancelled记录false，仅证明最终request完成清理。手动回调5项不充活动流网络取消证明；原PG12/11观察33SELECT/3serverEXPORT/11JFR保持，自有资源已清。当前待本体最终增量及全新独立最终质量，不提前宣称通过。
+初版主侧95/95、知识89/89后，第一全新独立质量正式failed/FINAL（94/95）：normal200/164但started2，响应头HeaderWriterFilter servlet/worker并写触发MimeHeaders异常及二次GET，不能归因ZIP CAS或timeout。主侧未改产品全局头策略（会影响FileController私有缓存），仅隔离Basic夹具eager写头，原五项断言/真实容器/启动一次要求不变；最新同字节旧源5=2正3真实文件遗留F/0E/S、主侧新95/95及21输入保持，初版failed和构建依赖缺失0JUnit原件全部保留。产品响应头竞态单列open，下一切片优先产品JWT专项复现/保留缓存设计，不能算夹具修正已修产品。
+
+HTTP真实Tomcat/MVC配独立Basic/mock Service，500/503非产品JWT状态契约；真实取消调用被接受但future.isCancelled记录false，仅证明最终request完成清理。手动回调5项不充活动流网络取消证明；原PG12/11观察33SELECT/3serverEXPORT/11JFR保持，自有资源已清。本体初版NA/FINAL，最新装配增量及另一个全新独立最终质量待回执，不提前宣称通过。
 
 数据库分页仍未获答复/未实施。W3-W5交叉/W6及W2余项/W7增量、931知识/86UI/A12/高风险/完整矩阵、A23含已审代码和暂停队列继续；整文件0/历史unique未知。真实活动流超时、pre-async外部失败、Error/OOM/崩溃/UNKNOWN持久对账及原容量队列保留；所有角色FINAL后实际PR前漂移复核，不自动merge/deploy/恢复或查触发CI。
 

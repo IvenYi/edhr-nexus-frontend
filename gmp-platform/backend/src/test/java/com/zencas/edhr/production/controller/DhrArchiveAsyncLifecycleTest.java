@@ -18,11 +18,13 @@ import org.springframework.context.annotation.*;
 import org.springframework.core.task.AsyncTaskExecutor;
 import org.springframework.core.task.TaskRejectedException;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.ObjectPostProcessor;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.userdetails.*;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.header.HeaderWriterFilter;
 import org.springframework.web.servlet.config.annotation.*;
 import org.springframework.test.context.ActiveProfiles;
 
@@ -170,6 +172,13 @@ class DhrArchiveAsyncLifecycleTest {
                 User.withUsername("viewer").password("{noop}synthetic-only").authorities("dhr.instances.view").build());}
         @Bean SecurityFilterChain security(HttpSecurity http)throws Exception{
             return http.authorizeHttpRequests(auth->auth.dispatcherTypeMatchers(DispatcherType.ERROR,DispatcherType.ASYNC).permitAll().anyRequest().authenticated())
+                    // Isolate ZIP ownership from the default lazy-header writer's servlet/worker race.
+                    // This synthetic Basic chain is not the product JWT/cache-response policy.
+                    .headers(headers->headers.withObjectPostProcessor(new ObjectPostProcessor<HeaderWriterFilter>(){
+                        @Override public <O extends HeaderWriterFilter> O postProcess(O filter){
+                            filter.setShouldWriteHeadersEagerly(true);return filter;
+                        }
+                    }))
                     .httpBasic(Customizer.withDefaults()).build();
         }
     }

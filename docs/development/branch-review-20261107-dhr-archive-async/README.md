@@ -10,9 +10,15 @@ L2。固定目标 edhr-dev@764258b869567c0f7840f16ff1358ed5c2491f53；PR70 已�
 
 ## 实际验证与原始证据
 
-主侧最终 **95/95**、知识 **89/89**，均 0 failures/errors/skipped。95 包含真实 HTTP 5、归属单元 5、原 Service 故障 7、原流 6、原生 PG 导出 12、FormFiles 4、layout 3、hash 48、event 2、aspect 3。原流六项断言保持，仅补框架请求上下文。21 个运行输入的 SHA-256 与最终工作文件一致，见 [main-analysis.json](main-analysis.json)。
+初版主侧 **95/95**、知识 **89/89**，均 0 failures/errors/skipped。95 包含真实 HTTP 5、归属单元 5、原 Service 故障 7、原流 6、原生 PG 导出 12、FormFiles 4、layout 3、hash 48、event 2、aspect 3。原流六项断言保持，仅补框架请求上下文。原21个运行输入见 initial-main-analysis.json；隔离装配修正后主侧重新运行同 **95/95** 全过，21输入与当前一致，最新同字节旧源仍 **5=2正3文件遗留F/0E/S**；见 main-analysis.json。仍待另一全新独立质量，不能以主侧绿覆盖初版failed。
 
-旧产品两次 HTTP 负对照均为 **5=2 正控/3 真实文件遗留失败，0 errors/skipped**。初次负对照之后仅增加测试 profile，隔离嵌套配置避免污染另行运行的完整 PG 应用；随后 negative_context 的 HTTP 测试源码与最终版本逐字节一致，3 项仍在夹具 teardown 前确认自有 ZIP 存在。两个阶段及配置差异原件均保留，未降低断言或把编排错误计为产品红。
+初版 clean 8fc765dd 的全新独立质量正式 **failed/FINAL：94/95，知识89/89**，原件和报告完整保留。normal实际返回200/164字节且文件已删，但executor started=2，严格的一次执行断言失败；首次请求Tomcat MimeHeaders发生ArrayIndexOutOfBoundsException，HeaderWriterFilter的servlet finally与worker commit同时写头，随后存在第二次GET。客户端自动重试只是符合时序的推断，未做客户端协议跟踪；没有超时证据，不归因250ms或ZIP CAS。
+
+主侧核实际security6.3.0和当前产品SecurityConfig，共享默认lazy header writer；确定性依赖微例lazy有2线程/2次writer、eager仅1线程/1次。全局eager会改变304、自定义Cache-Control及reset边界，当前FileController两处private,max-age=300预览也会残留先加的Pragma/Expires，故本轮不直接修改产品全局策略。只在已声明独立的Basic测试链显式eager，隔离其非ZIP归属干扰；所有五项原断言、真实Tomcat及可控执行器保持，未增加重跑/容错或放宽一次执行要求。原产品响应头竞态另列open，不能把夹具修正说成产品响应头已修。修正后的同字节旧源5负对照与新95必须重新通过，并换另一全新实例最终复验，初版failed不能覆盖。
+
+初版旧产品两次 HTTP 负对照均为 **5=2 正控/3 真实文件遗留失败，0 errors/skipped**。初次负对照之后仅增加测试 profile，隔离嵌套配置避免污染另行运行的完整 PG 应用；随后初版 negative_context 与初版最终同字节。修正eager装配后再做最新同源负对照，不拿旧配置结果代替。所有阶段及配置差异原件保留，未降低断言或把编排错误计为产品红。
+
+最新旧源工作树首轮因未提供frontend依赖软链，在renderer构建步骤退出127，JUnit执行0项；原件保留negative_context_setup-failure。主侧补独立工作树依赖软链后原测试/产品字节不变，重新运行才得到5=2正3真实失败，不混计构建失败与断言失败。
 
 HTTP 用例运行真实随机回环端口 Tomcat、Spring MVC、Controller 和方法权限。安全使用独立合成 Basic 身份、生成 ZIP 的 Service 为 mock；不是产品 JWT、GlobalExceptionHandler、数据库和 PDF 的完整 HTTP 链。正常响应精确字节/头通过；拒绝和排队超时均 body started=0、结束后自有 ZIP 已删除；无权请求在 Service/执行器之前拒绝。实验中的 500/503 是隔离测试配置的观察，不是生产错误状态契约。取消用例真实调用 HttpClient.cancel(true)，严格断言调用被接受；记录的 future.isCancelled() 为 false，因此只证明取消请求后最终结束的请求会清理，不声称即时服务器取消归因、网络中断时间或响应回滚。
 
@@ -24,7 +30,7 @@ HTTP 用例运行真实随机回环端口 Tomcat、Spring MVC、Controller 和�
 
 ## 业务依据、健壮性与剩余边界
 
-依据现有 rule.dhr-summary-zip-source-trace、DEC-0063 和 DEC-0090，未引入新业务政策。知识 0.3.25/schema 1.2.0/P0、350 知识资产保持；本体有限核对与最终独立质量仍在收尾，以正式回执为准。
+依据现有 rule.dhr-summary-zip-source-trace、DEC-0063 和 DEC-0090，未引入新业务政策。知识 0.3.25/schema 1.2.0/P0、350 知识资产保持；初版本体NA/FINAL，有限10=8一致/2gap，不冒充实际HTTP/PG运行。最新测试装配增量和全新最终质量另取正式回执。
 
 A23：CAS 针对实际并发归属竞争，不为假设添加通用生命周期框架。私有清理方法复用同步失败/完成回调两处；已有活动 body 的 TWR 保持。不扩大拆分 Service，也不因行数统计声称大模块已审完。后续仍可按原方案拆分 ZIP 计划/源验证、渲染合并和响应交付边界；需要对应资格/冻结/审计/输出回归，不在本修复无关抽取。
 

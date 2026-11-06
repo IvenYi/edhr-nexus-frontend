@@ -1,24 +1,6 @@
 {
   "baseline": "764258b869567c0f7840f16ff1358ed5c2491f53",
   "runs": {
-    "negative": {
-      "totals": {
-        "tests": 5,
-        "failures": 3,
-        "errors": 0,
-        "skipped": 0
-      },
-      "classes": [
-        {
-          "class": "com.zencas.edhr.production.controller.DhrArchiveAsyncLifecycleTest",
-          "tests": 5,
-          "failures": 3,
-          "errors": 0,
-          "skipped": 0
-        }
-      ],
-      "missingFreshReports": []
-    },
     "negative_context": {
       "totals": {
         "tests": 5,
@@ -120,55 +102,6 @@
     }
   },
   "http": {
-    "negative": {
-      "forbidden": {
-        "name": "forbidden",
-        "httpStatus": 403,
-        "responseBytes": 128,
-        "submitted": 0,
-        "started": 0,
-        "ownedPath": null,
-        "ownedExistsBeforeFixtureTeardown": false,
-        "scope": "real embedded Tomcat and MVC; independent synthetic Basic security and mock archive generator, not product JWT/database/PDF"
-      },
-      "queued-timeout": {
-        "name": "queued-timeout",
-        "httpStatus": 503,
-        "responseBytes": 138,
-        "submitted": 1,
-        "started": 0,
-        "ownedPath": "/tmp/edhr-archive-async-20261107/negative/vm-tmp/junit3671049402077541673/owned-14347913089624835635.zip",
-        "ownedExistsBeforeFixtureTeardown": true,
-        "scope": "real embedded Tomcat and MVC; independent synthetic Basic security and mock archive generator, not product JWT/database/PDF"
-      },
-      "client-cancelled": {
-        "clientFutureCancelled": false,
-        "ownedExistsBeforeFixtureTeardown": true,
-        "submitted": 1,
-        "scope": "real client cancellation while queued; eventual request completion may be error or timeout, not an immediate-cancel attribution",
-        "started": 0
-      },
-      "rejected": {
-        "name": "rejected",
-        "httpStatus": 500,
-        "responseBytes": 140,
-        "submitted": 1,
-        "started": 0,
-        "ownedPath": "/tmp/edhr-archive-async-20261107/negative/vm-tmp/junit8042148929521563641/owned-1899754371634200221.zip",
-        "ownedExistsBeforeFixtureTeardown": true,
-        "scope": "real embedded Tomcat and MVC; independent synthetic Basic security and mock archive generator, not product JWT/database/PDF"
-      },
-      "normal": {
-        "name": "normal",
-        "httpStatus": 200,
-        "responseBytes": 164,
-        "submitted": 1,
-        "started": 1,
-        "ownedPath": "/tmp/edhr-archive-async-20261107/negative/vm-tmp/junit18074772455564585163/owned-11880003422872553931.zip",
-        "ownedExistsBeforeFixtureTeardown": false,
-        "scope": "real embedded Tomcat and MVC; independent synthetic Basic security and mock archive generator, not product JWT/database/PDF"
-      }
-    },
     "negative_context": {
       "forbidden": {
         "name": "forbidden",
@@ -186,15 +119,15 @@
         "responseBytes": 138,
         "submitted": 1,
         "started": 0,
-        "ownedPath": "/tmp/edhr-archive-async-20261107/negative_context/vm-tmp/junit16892542329858781419/owned-2215260816409507677.zip",
+        "ownedPath": "/tmp/edhr-archive-async-revision-20261107/negative_context/vm-tmp/junit11162840182343740207/owned-2327676795955687921.zip",
         "ownedExistsBeforeFixtureTeardown": true,
         "scope": "real embedded Tomcat and MVC; independent synthetic Basic security and mock archive generator, not product JWT/database/PDF"
       },
       "client-cancelled": {
-        "ownedExistsBeforeFixtureTeardown": true,
-        "submitted": 1,
-        "scope": "real client cancellation while queued; eventual request completion may be error or timeout, not an immediate-cancel attribution",
         "started": 0,
+        "scope": "real client cancellation while queued; eventual request completion may be error or timeout, not an immediate-cancel attribution",
+        "submitted": 1,
+        "ownedExistsBeforeFixtureTeardown": true,
         "clientFutureCancelled": false
       },
       "rejected": {
@@ -203,7 +136,7 @@
         "responseBytes": 140,
         "submitted": 1,
         "started": 0,
-        "ownedPath": "/tmp/edhr-archive-async-20261107/negative_context/vm-tmp/junit14649159281681169054/owned-10729832015958494620.zip",
+        "ownedPath": "/tmp/edhr-archive-async-revision-20261107/negative_context/vm-tmp/junit11477627704004348324/owned-15390521174741590847.zip",
         "ownedExistsBeforeFixtureTeardown": true,
         "scope": "real embedded Tomcat and MVC; independent synthetic Basic security and mock archive generator, not product JWT/database/PDF"
       },
@@ -213,7 +146,7 @@
         "responseBytes": 164,
         "submitted": 1,
         "started": 1,
-        "ownedPath": "/tmp/edhr-archive-async-20261107/negative_context/vm-tmp/junit3064520416306019450/owned-14142055480047555257.zip",
+        "ownedPath": "/tmp/edhr-archive-async-revision-20261107/negative_context/vm-tmp/junit1401259799531437427/owned-6937466393435857475.zip",
         "ownedExistsBeforeFixtureTeardown": false,
         "scope": "real embedded Tomcat and MVC; independent synthetic Basic security and mock archive generator, not product JWT/database/PDF"
       }
@@ -235,16 +168,16 @@
         "responseBytes": 138,
         "submitted": 1,
         "started": 0,
-        "ownedPath": "/tmp/edhr-archive-async-20261107/final/vm-tmp/junit1084749002508304702/owned-12988018696198612562.zip",
+        "ownedPath": "/tmp/edhr-archive-async-revision-20261107/final/vm-tmp/junit6319436483734748682/owned-18195112158263783238.zip",
         "ownedExistsBeforeFixtureTeardown": false,
         "scope": "real embedded Tomcat and MVC; independent synthetic Basic security and mock archive generator, not product JWT/database/PDF"
       },
       "client-cancelled": {
+        "started": 0,
         "scope": "real client cancellation while queued; eventual request completion may be error or timeout, not an immediate-cancel attribution",
         "submitted": 1,
         "ownedExistsBeforeFixtureTeardown": false,
-        "clientFutureCancelled": false,
-        "started": 0
+        "clientFutureCancelled": false
       },
       "rejected": {
         "name": "rejected",
@@ -252,7 +185,7 @@
         "responseBytes": 140,
         "submitted": 1,
         "started": 0,
-        "ownedPath": "/tmp/edhr-archive-async-20261107/final/vm-tmp/junit12651340265348648054/owned-15521690716831054535.zip",
+        "ownedPath": "/tmp/edhr-archive-async-revision-20261107/final/vm-tmp/junit712703496793120069/owned-8345322572856976538.zip",
         "ownedExistsBeforeFixtureTeardown": false,
         "scope": "real embedded Tomcat and MVC; independent synthetic Basic security and mock archive generator, not product JWT/database/PDF"
       },
@@ -262,14 +195,14 @@
         "responseBytes": 164,
         "submitted": 1,
         "started": 1,
-        "ownedPath": "/tmp/edhr-archive-async-20261107/final/vm-tmp/junit8806851420780543598/owned-11635849480447564494.zip",
+        "ownedPath": "/tmp/edhr-archive-async-revision-20261107/final/vm-tmp/junit17978653376102438117/owned-16525072783040536701.zip",
         "ownedExistsBeforeFixtureTeardown": false,
         "scope": "real embedded Tomcat and MVC; independent synthetic Basic security and mock archive generator, not product JWT/database/PDF"
       }
     }
   },
-  "sameSourceNegativeControlSha256": "22baf05de98aa0a7057ed2df91ebdc3b04336570d5c089d20773f647889f171e",
-  "initialNegativeContextNote": "Initial five cases ran before adding a test-only profile to isolate nested config from later full-app PG context. Both old runs retained (2 positive/3 file-leak assertion failures each); latest negative_context is byte-identical to final.",
+  "sameSourceNegativeControlSha256": "0fc66262a7b0368826ada0ea34053771e956d69be7de1c27c0d090d7b9bcbb85",
+  "fixtureRevision": "Original main95 and first independent94/95 kept separately. First QA exposed default lazy header writer race in synthetic Basic chain; latest fixture explicitly uses eager headers ONLY in that isolated chain. Product SecurityConfig and every original assertion unchanged. Latest same-byte baseline negative_context still has exactly three file-leak assertion failures. Product shared lazy-header risk remains separately open, not fixed by fixture isolation.",
   "finalInputsStillIdentical": 21,
   "nativeObservations": {
     "events": 11,
@@ -292,7 +225,7 @@
     },
     {
       "name": "archive-100",
-      "bytes": 39878141,
+      "bytes": 39878151,
       "events": 4869,
       "matches": true
     },
@@ -346,7 +279,7 @@
     }
   ],
   "embeddedHttpPortsClosedAfterFork": [
-    44859
+    46015
   ],
   "ownedResourcesClean": true,
   "limits": [
