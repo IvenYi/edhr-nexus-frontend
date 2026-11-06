@@ -36,9 +36,27 @@
     ],
     "missingFreshReports": []
   },
+  "jsonCarrierNegative": {
+    "totals": {
+      "tests": 5,
+      "failures": 3,
+      "errors": 0,
+      "skipped": 0
+    },
+    "classes": [
+      {
+        "class": "com.zencas.edhr.compliance.entity.AuditEventJsonTextPersistencePostgresTest",
+        "tests": 5,
+        "failures": 3,
+        "errors": 0,
+        "skipped": 0
+      }
+    ],
+    "missingFreshReports": []
+  },
   "final": {
     "totals": {
-      "tests": 201,
+      "tests": 206,
       "failures": 0,
       "errors": 0,
       "skipped": 0
@@ -162,6 +180,13 @@
         "failures": 0,
         "errors": 0,
         "skipped": 0
+      },
+      {
+        "class": "com.zencas.edhr.compliance.entity.AuditEventJsonTextPersistencePostgresTest",
+        "tests": 5,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
       }
     ],
     "missingFreshReports": []
@@ -176,6 +201,7 @@
   ],
   "oldAndNewRoundtripTestByteIdentical": true,
   "beforeAndAfterTextTestByteIdentical": true,
+  "beforeAndAfterJsonCarrierTestByteIdentical": true,
   "roundTrips": [
     {
       "name": "boundary_array",
@@ -275,6 +301,38 @@
     },
     {
       "name": "json",
+      "hashMatches": true,
+      "providedLegacyNotCertified": false,
+      "requestedTime": "2026-11-06T12:00:00.123456",
+      "sealedTime": "2026-11-06T12:00:00.123456",
+      "storedTime": "2026-11-06T12:00:00.123456"
+    },
+    {
+      "name": "jsontext_mapper_high",
+      "hashMatches": true,
+      "providedLegacyNotCertified": false,
+      "requestedTime": "2026-11-06T12:00:00.123456",
+      "sealedTime": "2026-11-06T12:00:00.123456",
+      "storedTime": "2026-11-06T12:00:00.123456"
+    },
+    {
+      "name": "jsontext_paired",
+      "hashMatches": true,
+      "providedLegacyNotCertified": false,
+      "requestedTime": "2026-11-06T12:00:00.123456",
+      "sealedTime": "2026-11-06T12:00:00.123456",
+      "storedTime": "2026-11-06T12:00:00.123456"
+    },
+    {
+      "name": "jsontext_raw_high_value",
+      "hashMatches": true,
+      "providedLegacyNotCertified": false,
+      "requestedTime": "2026-11-06T12:00:00.123456",
+      "sealedTime": "2026-11-06T12:00:00.123456",
+      "storedTime": "2026-11-06T12:00:00.123456"
+    },
+    {
+      "name": "jsontext_raw_low_key",
       "hashMatches": true,
       "providedLegacyNotCertified": false,
       "requestedTime": "2026-11-06T12:00:00.123456",
@@ -480,7 +538,7 @@
       "driverMetadataStatements": {}
     }
   ],
-  "initialIndependent": "1c077d28 had174/89 passed but independent quality failed two medium text persistence boundaries; retained original failed report, main fixed both and fresh quality required.",
+  "initialIndependent": "1c077d28 had174/89 passed but independent quality failed two medium text persistence boundaries; f640 had201/89 and original6 probes/59 bound parameter hashes passed but fresh independent failed raw JSON carrier UTF16. All failed originals retained; main fixed and another fresh final QA required.",
   "producerScope": "Configuration controller+real repositories; real aspect with synthetic joinpoint+real repository; actual signature audit producer invoked on target with synthetic user/signature/request+real JPA, not full certification; real attachment native27 now rehashes actual events; Signature native9 independent from AuditEvent.",
   "intermediateAttempts": [
     {

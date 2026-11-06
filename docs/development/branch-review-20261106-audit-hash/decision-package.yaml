@@ -25,6 +25,11 @@ decisionPackage:
       source: 初版独立质量QF-W5-UTF16-001/QF-W5-VARCHAR-002实际PG/JDBC反证；不是新业务限制
       scope: 普通文本hash按PG JDBC实际未配对UTF16代理项到问号的替换值编码；13个varchar字段仅去除DB确会截断的超宽ASCII空格，宽度按Unicode代码点；不修改event业务字段、接收规则、全局parser或JSONB内容。
       acceptance: 同源4例文本反证1正3真红；补8单元和19原生文本/全部varchar/补充字符/原非空格超限拒绝，最终201回归及全新独立质量，不复用初版failed为passed。
+    - id: engineering.json-carrier-jdbc-text
+      status: independent-finding-remediation
+      source: f640独立质量QF-W5-JSON-UTF16-003实际源码/PG/JDBC/默认ObjectMapper反证
+      scope: JSON载体Java String在解析前复用同一JDBC UTF8原始文本转换；只替换原始未配对UTF16代理项，不替换六字符字面Unicode转义或解析后JSONB叶子，保持原数据库拒绝与event原字段。
+      acceptance: 同源5例原生反证2正3真红0E/S，修复后完整206及全新最终QA；原201/89/六例/59参数只是f640历史通过范围。
   impactAnalysis:
     level: L2
     directImpacts:

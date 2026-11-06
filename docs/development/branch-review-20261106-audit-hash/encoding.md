@@ -4,7 +4,9 @@
 
 SHA-256消费UTF-8 JSON数组的确定输出。首项为字符串`audit-event-v2`，随后固定18项：id、tenantId、entityType、entityId、action、contentBefore、contentAfter、operatorId、operatorName、operatorAccount、source、moduleName、menuName、functionName、dataSummary、reason、ipAddress、createdAt。id为十进制字符串，其他普通字段为实际持久字符串或JSON null；不做通用trim或Unicode规范化。JSON结构分界使空值、空字符串与字段内容明确区分。
 
-普通text的两项实际存储转换也纳入hash，event字段不改：PG JDBC UTF-8把未配对UTF-16代理项替换成`?`；VARCHAR(n)只会丢弃超出n代码点的ASCII空格。13个宽度对应正式DDL：tenantId64、entityType128、entityId128、action64、operatorId64、operatorName128、operatorAccount128、source32、moduleName128、menuName128、functionName128、dataSummary512、ipAddress64；reason无varchar截断。界内尾空格仍参与hash，正常补充字符按一个代码点计，不误删有效配对；超界非空格仍由原数据库约束拒绝。JSONB的字符串/键路径不替换未配对代理项或放宽其原拒绝。以后若改变这些持久语义，应评估新编码版本，不能静默改v2定义。
+实际存储转换也纳入hash，event字段不改：PG JDBC UTF-8把Java String中原始未配对UTF-16代理项替换成`?`，这对普通text和JSON载体字符串都适用，故JSON先对原始载体做同一转换再解析。六字符字面Unicode转义（例如源串中的`\uD800`）不替换，也不在解析后替换JSONB叶子或放宽其原拒绝；原始代理字符、正常配对字符、字面转义严格区分。
+
+VARCHAR(n)只会丢弃超出n代码点的ASCII空格。13个宽度对应正式DDL：tenantId64、entityType128、entityId128、action64、operatorId64、operatorName128、operatorAccount128、source32、moduleName128、menuName128、functionName128、dataSummary512、ipAddress64；reason无varchar截断。界内尾空格仍参与hash，正常补充字符按一个代码点计，不误删有效配对；超界非空格仍由原数据库约束拒绝。以后若改变这些持久语义，应评估新编码版本，不能静默改v2定义。
 
 字符串采用当前确定JSON generator的转义：引号/反斜杠/控制字符按JSON转义，补充平面字符写成大写代理转义对，例如😀为`\uD83D\uDE00`，普通非ASCII BMP字符以UTF-8输出；对象键按上述UTF-16自然顺序。该转义细节属于编码定义，不是Unicode内容规范化。
 

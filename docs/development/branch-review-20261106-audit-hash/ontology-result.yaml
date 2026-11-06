@@ -3,17 +3,17 @@ ontologyResult:
   baselineBefore: 0.3.25
   baselineAfter: 0.3.25
   contractBaseline:
-    sourceCommit: 1c077d2877f760156ab0072f557990c45c1df4b0
+    sourceCommit: f640dc75e5e588da9dd60579157092bfcd0e8148
     targetBranch: edhr-dev
     targetCommit: 9dc5c0014643d99db299d27a80788cc777a0ccca
     contractReadCommit: 9dc5c0014643d99db299d27a80788cc777a0ccca
     uncommittedContractPaths: []
-  reason: 对同一DP的engineering.actual-persisted-text增量已有限核对。普通文本hash映射原JDBC未配对UTF16代理项替换值，并只去除13真实varchar宽度外PG原本会截断的ASCII空格；保留event字段、原数据库接收/拒绝、JSONB叶子、合法补充字符和范围内空格。此为新行持久化可重算的工程补全，没有新业务政策或知识含义；350知识与目标逐字节不变，0.3.25/schema1.2.0/P0保持。旧not-applicable及初版failed质量原件均保留，不当当前产品质量通过；旧历史/完整ZIP缺口仍保留。
+  reason: 同一DP的engineering.json-carrier-jdbc-text增量只把原Java JSON载体字符串按现有JDBC UTF8转换后再解析，并与普通text路径共用jdbcUtf8；不改event原字段、不替换六字符Unicode转义或解析后的JSONB叶子，不改变数据库接受/拒绝和业务政策。普通文本13个varchar边界、版本/时间、旧行保留、其他摘要与读取规则不变。6条有限受影响记录在该增量范围一致，350知识不变，未新增业务模型或成熟度。前两份本体和两份failed质量原件保留，旧历史/完整ZIP缺口继续；本体结果不代替206全新质量验收。
   changedArtifacts: []
   knowledgeSync:
   - id: term.audit-event
     disposition: retained
-    scope: 仅按原JDBC/PG实际持久值封存普通文本hash，不改字段/接收规则/JSONB内容/操作者与事件含义或旧历史；未增加trim政策或Unicode拒绝规则。
+    scope: 仅把原Java JSON载体按既有JDBC UTF8传输值送入hash解析，共用普通text转换；不改event字段、Unicode转义字面串或解析后的叶子，不增接收/清洗/阻断政策，原事件与业务快照含义保持。
     sourceReferences:
     - docs/knowledge/glossary.yaml
     - docs/knowledge/ontology.yaml
@@ -21,7 +21,7 @@ ontologyResult:
     - gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/entity/AuditEventHash.java
   - id: term.audit-change-snapshot
     disposition: retained
-    scope: 仅按原JDBC/PG实际持久值封存普通文本hash，不改字段/接收规则/JSONB内容/操作者与事件含义或旧历史；未增加trim政策或Unicode拒绝规则。
+    scope: 仅把原Java JSON载体按既有JDBC UTF8传输值送入hash解析，共用普通text转换；不改event字段、Unicode转义字面串或解析后的叶子，不增接收/清洗/阻断政策，原事件与业务快照含义保持。
     sourceReferences:
     - docs/knowledge/glossary.yaml
     - docs/knowledge/ontology.yaml
@@ -29,7 +29,7 @@ ontologyResult:
     - gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/entity/AuditEventHash.java
   - id: relation.audit-event-retains-change-snapshot
     disposition: retained
-    scope: 仅按原JDBC/PG实际持久值封存普通文本hash，不改字段/接收规则/JSONB内容/操作者与事件含义或旧历史；未增加trim政策或Unicode拒绝规则。
+    scope: 仅把原Java JSON载体按既有JDBC UTF8传输值送入hash解析，共用普通text转换；不改event字段、Unicode转义字面串或解析后的叶子，不增接收/清洗/阻断政策，原事件与业务快照含义保持。
     sourceReferences:
     - docs/knowledge/glossary.yaml
     - docs/knowledge/ontology.yaml
@@ -37,7 +37,7 @@ ontologyResult:
     - gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/entity/AuditEventHash.java
   - id: rule.master-data.write-audit-snapshot
     disposition: retained
-    scope: 仅按原JDBC/PG实际持久值封存普通文本hash，不改字段/接收规则/JSONB内容/操作者与事件含义或旧历史；未增加trim政策或Unicode拒绝规则。
+    scope: 仅把原Java JSON载体按既有JDBC UTF8传输值送入hash解析，共用普通text转换；不改event字段、Unicode转义字面串或解析后的叶子，不增接收/清洗/阻断政策，原事件与业务快照含义保持。
     sourceReferences:
     - docs/knowledge/glossary.yaml
     - docs/knowledge/ontology.yaml
@@ -52,32 +52,32 @@ ontologyResult:
   conflicts: []
   questions: []
   validationEvidence:
-  - id: validation.w5-persisted-text-finite-semantics
+  - id: validation.w5-json-carrier-semantics
     checkType: evidence-path
-    command: Read current DP engineering.actual-persisted-text, helper delta, canonical DDL and added native/unit
-      test source; compare exact widths and source fingerprints
+    command: Read actual helper diff, current DP and5-native source; compare complete parsed JSON writer to fixed
+      f640 source
     outcome: passed
     evidence:
-    - 'increment-audit-records.jsonl: 6 affected records reviewed only in incremental declared scope; no unique
-      overall coverage claimed'
-    - 'varchar-width-check.json: all13 widths match actual DDL, code-point width not UTF16 length'
+    - increment-audit-records.jsonl:6 affected records, consistent only in declared transport increment
+    - transport-scope-check.json:raw carrier projection before readTree, ordinarytext shared, parsed leaf/container
+      writer byte-identical to f640
     - final-source-manifest.json; source-snapshot/
-  - id: validation.w5-persisted-text-knowledge
+  - id: validation.w5-json-carrier-knowledge
     checkType: schema
     command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f tools/knowledge-model/pom.xml clean test
     outcome: passed
     evidence:
-    - 'knowledge-validation.log; TEST-com.zencas.edhr.knowledge.BusinessKnowledgeModelTest.xml: 89 tests, zero failures/errors/skips'
-    - 'knowledge-test-summary.json; knowledge-fingerprint-inventory.json: 350 unchanged, not full semantic coverage'
-  - id: validation.w5-prior-results-retained
+    - knowledge-validation.log; TEST-com.zencas.edhr.knowledge.BusinessKnowledgeModelTest.xml:89 tests0F/E/S
+    - knowledge-test-summary.json; knowledge-fingerprint-inventory.json:350 files unchanged, not full semantic coverage
+  - id: validation.w5-prior-text-and-quality-retention
     checkType: evidence-path
-    command: Verify original ontology manifest and every original file checksum; preserve initial quality failed
-      result as dated evidence
+    command: Verify both prior ontology manifests and every listed original file; preserve second signed failed
+      quality as original
     outcome: passed
     evidence:
-    - 'prior-original-preservation.json: prior manifest e7737b05c9ef84eccb1eaa70e37c588b08b3933b1a6a23abed7b9dde0393aff3
-      and all60 originals unchanged'
-    - 'initial-quality-context.json; initial-quality-originals/qualityResult.yaml: failed for initial 1c077d28'
+    - prior-original-preservation.json:60 initial and25 text-revision originals unchanged; manifest hashes retained
+    - second-quality-context.json; second-quality-originals/qualityResult.yaml:failed for f640, no failed-to-passed
+      rewrite
   roadmapProgress:
     stage: P0
     status: in-progress

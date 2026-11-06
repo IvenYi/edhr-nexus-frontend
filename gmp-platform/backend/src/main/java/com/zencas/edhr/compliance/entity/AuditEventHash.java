@@ -62,6 +62,17 @@ final class AuditEventHash {
 
     private static void text(JsonGenerator output, String value, int varcharCharacters) throws IOException {
         if (value == null) { output.writeNull(); return; }
+        String persisted = jdbcUtf8(value);
+        // VARCHAR(n) accepts excess ASCII spaces and removes only the part beyond n code points.
+        if (persisted.length() > varcharCharacters && persisted.codePointCount(0, persisted.length()) > varcharCharacters) {
+            int end = persisted.offsetByCodePoints(0, varcharCharacters), i = end;
+            while (i < persisted.length() && persisted.charAt(i) == ' ') i++;
+            if (i == persisted.length()) persisted = persisted.substring(0, end);
+        }
+        output.writeString(persisted);
+    }
+
+    private static String jdbcUtf8(String value) {
         // PG JDBC's UTF-8 encoder replaces unpaired UTF-16 surrogates with '?'. Do not mutate the event.
         StringBuilder repaired = null;
         for (int i = 0; i < value.length(); i++) {
@@ -72,20 +83,14 @@ final class AuditEventHash {
                 repaired.setCharAt(i, '?');
             }
         }
-        String persisted = repaired == null ? value : repaired.toString();
-        // VARCHAR(n) accepts excess ASCII spaces and removes only the part beyond n code points.
-        if (persisted.length() > varcharCharacters && persisted.codePointCount(0, persisted.length()) > varcharCharacters) {
-            int end = persisted.offsetByCodePoints(0, varcharCharacters), i = end;
-            while (i < persisted.length() && persisted.charAt(i) == ' ') i++;
-            if (i == persisted.length()) persisted = persisted.substring(0, end);
-        }
-        output.writeString(persisted);
+        return repaired == null ? value : repaired.toString();
     }
 
     private static void json(JsonGenerator output, String value) throws IOException {
         if (value == null) { output.writeNull(); return; }
         // SQL null is null; a present JSON value is [value], including [null] for JSON null.
-        output.writeStartArray(); writeJson(output, MAPPER.readTree(value)); output.writeEndArray();
+        // Normalize raw carrier text before parsing; a literal JSON \\uD800 escape stays unchanged and PG still rejects it.
+        output.writeStartArray(); writeJson(output, MAPPER.readTree(jdbcUtf8(value))); output.writeEndArray();
     }
 
     private static void writeJson(JsonGenerator output, JsonNode current) throws IOException {
