@@ -2,6 +2,8 @@
 
 L2。用户明确选择“先做本页批量补名”；开始时PR68尚OPEN，来源3c8e46943dbc3d02673d342e501b0884cb0c76dd，目标edhr-dev@e69a8f3d97b34fea8737947c780b047bb0310c64。fetch后无外部代码/知识/契约增量，在原PR追加小批优化，最终标题/正文须覆盖两项原正确性修复和本次姓名N+1子项。
 
+已更新[PR68](https://github.com/IvenYi/edhr-nexus-frontend/pull/68)标题正文为最终三项范围，正常推送原分支，观察OPEN/MERGEABLE/CLEAN，建议人工合入。受测6fc13d28、验收56e3c6b3后仅L0交付记录，见evidence/delivery-verification.json；登记后再次核对本地/真实远端/PR head一致及受测保护路径字节不变。下一轮先fetch确认实际merge及新增代码，再继续原全审队列。
+
 只改两个现有产品文件：AuditController复用原派生方法完成过滤及切页，然后对本页唯一账号分批查询姓名、组装原DTO；UserAccountRepository增加原精确username的IN读取。每批500为SQL参数工程边界，页大小、总记录与所有续页没有新上限。空页循环不执行，故不查姓名；无跨请求缓存、事务/权限改写或通用查询框架。仍加载全部匹配AuditEvent及JSON，未做DB分页/索引。
 
 既有当前displayName优先、历史operatorName及账号回退保持；空操作者仍按“-”账号解析，真实存在该账号时也读当前姓名，不新套ACTIVE/锁定资格。SQL姓名筛选仍查历史operatorName。个人入口仍是当前USER_ACCOUNT目标对象，包含管理员修改，不改成operator=self。页内跨租户同username多结果仍抛IncorrectResultSizeDataAccessException，不能first-wins掩盖；页外姓名不再读取，属于本次明确授权。完整多租户与全局读取政策矩阵仍非已解决。
