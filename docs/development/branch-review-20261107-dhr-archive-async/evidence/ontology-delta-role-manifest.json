@@ -1,0 +1,622 @@
+{
+  "role": "finite business ontology read-only delta",
+  "status": "FINAL",
+  "result": "not-applicable",
+  "sourceCommit": "7b68eabc6f9c8d7d00863285f9dd79e75a86a4a2",
+  "previousSourceCommit": "8fc765ddf566517c22487564e1bbbc9a0e435e9a",
+  "targetCommit": "764258b869567c0f7840f16ff1358ed5c2491f53",
+  "workingTreeScope": "Two actual L0 dirty documents separately captured; no product/test/knowledge/contract dirty paths",
+  "runtimeScope": "No new execution by ontology role. Reused own actual unchanged knowledge89; parent main95 and initial QA94/95 raw XML read/summed with provenance. Product JWT header race remains open.",
+  "files": [
+    {
+      "path": "REVIEW.md",
+      "bytes": 4649,
+      "sha256": "2d6e19c9d064e8097c87caba4eb33f53799a7cd52dce6e5dd0ede8eb6097e640"
+    },
+    {
+      "path": "changed-paths.json",
+      "bytes": 2496,
+      "sha256": "f1077f7acc3fbaaba5ace86009da7acfaf5726820df4668581bd9c1e6ff4d002"
+    },
+    {
+      "path": "delta.patch",
+      "bytes": 11178,
+      "sha256": "7cdf1688d7704a12e6ef4d6ab3574118073c9fafe282a7c0d071bae54b3816c2"
+    },
+    {
+      "path": "fetch.log",
+      "bytes": 99,
+      "sha256": "c3e64018d200015797ce51afe7f1c0e9e94838768b7c15c36485d1e2ad883251"
+    },
+    {
+      "path": "final-source/AGENTS.md",
+      "bytes": 25065,
+      "sha256": "13dc7cdacea0b1bb0aef2abb268781f9c69584acd4879b204d2b7fd81a2927fc"
+    },
+    {
+      "path": "final-source/codeplzreadme.md",
+      "bytes": 3035,
+      "sha256": "7a1be8efffec596b034335058dca2860346d256622f899c8dac97c5172dd6df2"
+    },
+    {
+      "path": "final-source/docs/agents/agent-handoff-contract.md",
+      "bytes": 31233,
+      "sha256": "3439a35dd1baa77ac723f1b5afa237a338d56e31386f06b02b4aacfd754e3a12"
+    },
+    {
+      "path": "final-source/docs/agents/business-knowledge-modeler.md",
+      "bytes": 15881,
+      "sha256": "9806c900f98e1cbcf4f8d68a998a07a5449369df037183c75ec08cd666bf56ae"
+    },
+    {
+      "path": "final-source/docs/agents/quality-verifier.md",
+      "bytes": 7519,
+      "sha256": "6b3de9323924fb4ba5ae87be76c5136d28e754810c46b22b8e3d1cdd6c2f826f"
+    },
+    {
+      "path": "final-source/docs/architecture/business-knowledge-model.md",
+      "bytes": 72976,
+      "sha256": "5fc7640ffecbf5ea8191c7242f86dd0a700ae50db307adecb2bacacf7ffeb095"
+    },
+    {
+      "path": "final-source/docs/development/branch-review-20261015/NEXT.md",
+      "bytes": 166586,
+      "sha256": "700eaffabc18da5c088af79d255715c2362096864ccf937bc030365f94dd6656"
+    },
+    {
+      "path": "final-source/docs/development/branch-review-20261107-dhr-archive-async/README.md",
+      "bytes": 8320,
+      "sha256": "ee443dad3cd9081040e8a5903c009a3f21211cdaf6764a5b3f29ee5a7c41103f"
+    },
+    {
+      "path": "final-source/docs/development/branch-review-20261107-dhr-archive-async/decision-package.yaml",
+      "bytes": 5756,
+      "sha256": "655c51b56b397fc87c5cc30a14e247ad5e5eb8be365d14516edcf831b25d4194"
+    },
+    {
+      "path": "final-source/docs/knowledge/README.md",
+      "bytes": 114117,
+      "sha256": "709c3d40dbd39e6e1cfc6a09bdcd1766775e04e153bff26871f5a6f1bdfa4f42"
+    },
+    {
+      "path": "final-source/docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml",
+      "bytes": 23213,
+      "sha256": "11e70ec27862eb971a2ad01cd928e8c2ecba36be4df70e170bd1f5296c4e0253"
+    },
+    {
+      "path": "final-source/docs/knowledge/decisions/DEC-0090-dhr-archive-minimum-scope.yaml",
+      "bytes": 4730,
+      "sha256": "72c1491280ff65e95197cbb7c7cff4d177251e4a9d0a9a8458e9f02cb6a4cc5b"
+    },
+    {
+      "path": "final-source/docs/knowledge/evidence/dhr-archive-minimum-20261029.md",
+      "bytes": 3668,
+      "sha256": "c219ebec030c58dd44d00a7ffc47a9d3735c79146832a55789b59642e04a19f8"
+    },
+    {
+      "path": "final-source/docs/knowledge/evidence/dhr-summary-user-confirmed.md",
+      "bytes": 36542,
+      "sha256": "51dc528c6fe38671023cec25cfbe6bf1f0a8dcf2fc088f7894524a2d5f035642"
+    },
+    {
+      "path": "final-source/docs/knowledge/glossary.yaml",
+      "bytes": 72304,
+      "sha256": "a4a9568a25b6698cb1a09c92ae0e9811edf90f0f849cb422c64c0a4b508f1302"
+    },
+    {
+      "path": "final-source/docs/knowledge/ontology.yaml",
+      "bytes": 96091,
+      "sha256": "2d26c6941665829990fcf48c04e3b7954620e1091896bba38c1e712a21815362"
+    },
+    {
+      "path": "final-source/docs/knowledge/open-questions.yaml",
+      "bytes": 22420,
+      "sha256": "c7b3bdecd1a6ac164d95ff515b5412998a556a07e9b5fcb64b3643473aa6e2bf"
+    },
+    {
+      "path": "final-source/docs/knowledge/rules/dhr-summary.yaml",
+      "bytes": 18575,
+      "sha256": "2a9240f5ecac5da9e1277e1f750d46695ab93097aa3229ab976f19c38934d601"
+    },
+    {
+      "path": "final-source/docs/knowledge/schema.yaml",
+      "bytes": 13171,
+      "sha256": "e21dcf0b3cf15b540dc528b574e53202fe26b092017e00451afa326b59cfba84"
+    },
+    {
+      "path": "final-source/gmp-platform/backend/src/main/java/com/zencas/edhr/common/config/SecurityConfig.java",
+      "bytes": 3527,
+      "sha256": "a8f3c83746619d893e5f1a1e41ae6d3430917a2da8eca97201d646fcd437124c"
+    },
+    {
+      "path": "final-source/gmp-platform/backend/src/main/java/com/zencas/edhr/common/exception/GlobalExceptionHandler.java",
+      "bytes": 6628,
+      "sha256": "722be56d9cb9fe25715c06e6215bfecce41495338d8a2833a0b12969a24f4e53"
+    },
+    {
+      "path": "final-source/gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/controller/FileController.java",
+      "bytes": 20066,
+      "sha256": "45b7f380ea681e47551e37da8cd01325d0a29b375c40d1f47f0bce032be82f10"
+    },
+    {
+      "path": "final-source/gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/entity/AuditEvent.java",
+      "bytes": 4697,
+      "sha256": "34a236e63d78eed77cfd67094b4ced89f99614fa09b206546189e7e2907480aa"
+    },
+    {
+      "path": "final-source/gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/entity/AuditEventHash.java",
+      "bytes": 7419,
+      "sha256": "9ed9137b4d216699fc9f3374edbab6cbe8ae8b4862e9b7b2bcf562511b293ce2"
+    },
+    {
+      "path": "final-source/gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrArchiveController.java",
+      "bytes": 4056,
+      "sha256": "36ef802f93d890b1d845823b8aecbbb8f063c208a112390aaafac39bc08fd269"
+    },
+    {
+      "path": "final-source/gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrArchiveService.java",
+      "bytes": 24964,
+      "sha256": "8fe3110f8d9e7dc326a944184b938ac7ae40564892d13861e135974a3680c463"
+    },
+    {
+      "path": "final-source/gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrPdfRenderer.java",
+      "bytes": 6731,
+      "sha256": "a223113e0d0e1a025f51c5f9ca108dacf6e113af5edb784c2fc2ede1e00fef72"
+    },
+    {
+      "path": "final-source/gmp-platform/backend/src/test/java/com/zencas/edhr/common/audit/AuditAspectTest.java",
+      "bytes": 4214,
+      "sha256": "dfad0cbf514f5c207543d4c598b5997d69c8dafe08ff375ba6e3133306313adb"
+    },
+    {
+      "path": "final-source/gmp-platform/backend/src/test/java/com/zencas/edhr/compliance/entity/AuditEventHashTest.java",
+      "bytes": 9525,
+      "sha256": "6621e06bd4eb190062e363dccbfac17092547844072dea12206b9242c748e731"
+    },
+    {
+      "path": "final-source/gmp-platform/backend/src/test/java/com/zencas/edhr/compliance/entity/AuditEventTest.java",
+      "bytes": 1724,
+      "sha256": "a9dee9a5c3a7b0fa04a2cee5044b1ded733beb9b10755944d49bcf2862cbd1aa"
+    },
+    {
+      "path": "final-source/gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/DhrArchiveAsyncLifecycleTest.java",
+      "bytes": 11586,
+      "sha256": "0fc66262a7b0368826ada0ea34053771e956d69be7de1c27c0d090d7b9bcbb85"
+    },
+    {
+      "path": "final-source/gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/DhrArchiveAsyncOwnershipTest.java",
+      "bytes": 5401,
+      "sha256": "cca996bc8bd216bafe5188838cff487efe8a500dd55333168d2b3dc9279309eb"
+    },
+    {
+      "path": "final-source/gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/DhrArchiveControllerStreamingTest.java",
+      "bytes": 6329,
+      "sha256": "41f73cc260a11fd76f2ae68ae52e195f638d0eb62a9c023a3a7f75b5b08a408a"
+    },
+    {
+      "path": "final-source/gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrArchiveCleanupFailureTest.java",
+      "bytes": 8231,
+      "sha256": "128054003e7f48118432143d566bfab6f1de052fee3089cc7d5df16ee22ad7d1"
+    },
+    {
+      "path": "final-source/gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrArchiveLayoutReaderTest.java",
+      "bytes": 3783,
+      "sha256": "776455608257d250dbc86920d92ac7fa660981383894070f4b10d89c0e9cf465"
+    },
+    {
+      "path": "final-source/gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrExportReadObservationPostgresTest.java",
+      "bytes": 20945,
+      "sha256": "940dffecc977aacc21acf10fb1422f782be5dde9f0c28f435c1d80e049b21de7"
+    },
+    {
+      "path": "final-source/gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrFormFilesTest.java",
+      "bytes": 7611,
+      "sha256": "708b8ea1ce47ae742fc3cdb538d585790b8b3eb3f6488e2c12977254a76e6ac2"
+    },
+    {
+      "path": "final-source-manifest.json",
+      "bytes": 9526,
+      "sha256": "8a5b5de5421729adf4d0a92d933d32913008a4b4e513c62aaa8b1387684c444e"
+    },
+    {
+      "path": "final-verification.json",
+      "bytes": 1335,
+      "sha256": "c8d07a18ca69fee81cbac30ff6d80bd7331d82ff754228d545661cc4fe74cb0c"
+    },
+    {
+      "path": "final-working-tree-observation.json",
+      "bytes": 423,
+      "sha256": "cac08670be576c0dbf39a99cd7bbd8e4c8c6e84a0cd3b7a5bfeb484177d8f03b"
+    },
+    {
+      "path": "finite-review-scope.json",
+      "bytes": 432,
+      "sha256": "d988da92b666bed202f15f016106808f97101f7070db5392ecd868be2dc3a902"
+    },
+    {
+      "path": "fixed-documentation/header-source-review.md",
+      "bytes": 8230,
+      "sha256": "9cd2307c393f35f3f6ac14799f65300971f44e43eaeffd5be5fc4c5508700a68"
+    },
+    {
+      "path": "fixed-documentation/independent-initial-failed.md",
+      "bytes": 3896,
+      "sha256": "3b21bfa2054d3ea8df62b77c4a4448892811acac4684532a49f3a7ed3efb498f"
+    },
+    {
+      "path": "fixed-documentation/quality-initial-failed.yaml",
+      "bytes": 13096,
+      "sha256": "92f9b46a6686034c01a3d74ee55f47080356ef1152a613710777c04d69f2d9e6"
+    },
+    {
+      "path": "header-source-role/REVIEW.md",
+      "bytes": 8230,
+      "sha256": "9cd2307c393f35f3f6ac14799f65300971f44e43eaeffd5be5fc4c5508700a68"
+    },
+    {
+      "path": "header-source-role/manifest.json",
+      "bytes": 8926,
+      "sha256": "0f4e5595dd3e616939b4433b2523824ea60a9ab1fdd4b160cb8239baab79efca"
+    },
+    {
+      "path": "header-source-role/manifest.sha256",
+      "bytes": 80,
+      "sha256": "ef82a3c940f530f58b2ff26aed8d58d1e6edea1fd80741b52978a00a6835a694"
+    },
+    {
+      "path": "header-source-role/probe-execution.json",
+      "bytes": 13302,
+      "sha256": "fc9d6ccc26531aac3f8809bd9479cf4182e71c50776f9082fdd50e5e93ed69bb"
+    },
+    {
+      "path": "header-source-role/probe-result.jsonl",
+      "bytes": 3787,
+      "sha256": "89ea55f15536571a86d9ff8a2586cc586ee69c853a4083d3ae83c65d3c9d112d"
+    },
+    {
+      "path": "header-source-role/result.json",
+      "bytes": 3678,
+      "sha256": "f2a09c03d7b8fe35719719292f1ff6a9e7e556811149fed3beefc8dc7acdb294"
+    },
+    {
+      "path": "knowledge-fingerprint-inventory.json",
+      "bytes": 112530,
+      "sha256": "fa6e4a1d8b9d9bc1974b6d5d4f6b595da56b0291cba4ee9b14e7521755fa7973"
+    },
+    {
+      "path": "observed-working-document-manifest.json",
+      "bytes": 627,
+      "sha256": "abaae64ab5771f2ebabd57120adcf99f75dee143627621989da38c1ae50d0ca9"
+    },
+    {
+      "path": "observed-working-documents/docs/development/branch-review-20261107-dhr-archive-async/header-risk-followup.md",
+      "bytes": 3611,
+      "sha256": "724418ae0a1c3b9bf5364074e45a89009137b592ea9fc9db618105b1c5876425"
+    },
+    {
+      "path": "observed-working-documents/docs/development/branch-review-20261107-dhr-archive-async/review-notes.md",
+      "bytes": 4703,
+      "sha256": "663d20591ca3f49c4e550c94b2cb9218514a5e2d364656bb428e59a1cc73d8f8"
+    },
+    {
+      "path": "ontology-result.yaml",
+      "bytes": 5453,
+      "sha256": "efcc9f1373caf68e9dedf4b78c2885ed73d4a4571ef25473cf5279d1b43d76ab"
+    },
+    {
+      "path": "parent-generated-evidence/analysis.json",
+      "bytes": 9999,
+      "sha256": "3015255e5de5a9a82bc39a8d5b0974ca10bacc9d84ec015a66e59b0ae92391d9"
+    },
+    {
+      "path": "parent-generated-evidence/initial-independent-failed/TEST-com.zencas.edhr.common.audit.AuditAspectTest.xml",
+      "bytes": 33988,
+      "sha256": "16759a6f1db8c8a126c752a5504e776ca8f4a378a5b2375d73ea709e52e5198d"
+    },
+    {
+      "path": "parent-generated-evidence/initial-independent-failed/TEST-com.zencas.edhr.compliance.entity.AuditEventHashTest.xml",
+      "bytes": 40341,
+      "sha256": "871bc454d89eb4c80e9bf48c37e42db66a237674eb5d5e427a755682ae1c552f"
+    },
+    {
+      "path": "parent-generated-evidence/initial-independent-failed/TEST-com.zencas.edhr.compliance.entity.AuditEventTest.xml",
+      "bytes": 33139,
+      "sha256": "aee103f56b221ff8dbed4af16a14adbf1befe9c1807ef12f42d7a2d6b987f8ff"
+    },
+    {
+      "path": "parent-generated-evidence/initial-independent-failed/TEST-com.zencas.edhr.production.controller.DhrArchiveAsyncLifecycleTest.xml",
+      "bytes": 146244,
+      "sha256": "bdd5d7bff5e95cdd7231946cbd1d889e1d0e72267e4a12d0a8516e2889b52ba4"
+    },
+    {
+      "path": "parent-generated-evidence/initial-independent-failed/TEST-com.zencas.edhr.production.controller.DhrArchiveAsyncOwnershipTest.xml",
+      "bytes": 46743,
+      "sha256": "083420eb20aeaa6d271cd16dc60a4e25a320158dc29b23845b3d55efd2db7403"
+    },
+    {
+      "path": "parent-generated-evidence/initial-independent-failed/TEST-com.zencas.edhr.production.controller.DhrArchiveControllerStreamingTest.xml",
+      "bytes": 34477,
+      "sha256": "0a1fc711dc3f461a77ad0cb1b29dba9f544ba5cf172e7b94c4c72096ac314738"
+    },
+    {
+      "path": "parent-generated-evidence/initial-independent-failed/TEST-com.zencas.edhr.production.service.DhrArchiveCleanupFailureTest.xml",
+      "bytes": 82064,
+      "sha256": "c542143556f2fc21c4b33d115e3e027c8ca35e983aa4b4941a8befb91ea23339"
+    },
+    {
+      "path": "parent-generated-evidence/initial-independent-failed/TEST-com.zencas.edhr.production.service.DhrArchiveLayoutReaderTest.xml",
+      "bytes": 33344,
+      "sha256": "30c2e4b00cfd2ddc3857ea30c611f07a4dcc3e350b3201c09aa99a8ab45ba79b"
+    },
+    {
+      "path": "parent-generated-evidence/initial-independent-failed/TEST-com.zencas.edhr.production.service.DhrExportReadObservationPostgresTest.xml",
+      "bytes": 319452,
+      "sha256": "63c0f3ab50f6aec77c887ce0796650b2f60fa829aee49f8447e35614bf5b1ea6"
+    },
+    {
+      "path": "parent-generated-evidence/initial-independent-failed/TEST-com.zencas.edhr.production.service.DhrFormFilesTest.xml",
+      "bytes": 34036,
+      "sha256": "4b7c4e11333e1bd1a9d9e3f9f4c9eaa508a868f6b6c1a29c03ed0dcd81239770"
+    },
+    {
+      "path": "parent-generated-evidence/initial-independent-failed/http/client-cancelled.json",
+      "bytes": 262,
+      "sha256": "b9feb63591b059feec388693611a6784abec022317a2dd32d24686c1a76151e4"
+    },
+    {
+      "path": "parent-generated-evidence/initial-independent-failed/http/forbidden.json",
+      "bytes": 316,
+      "sha256": "486afb5b178248298d1c9dd29f32758308d91c7e0276ae15c7cd5574fbe6d3f4"
+    },
+    {
+      "path": "parent-generated-evidence/initial-independent-failed/http/normal.json",
+      "bytes": 420,
+      "sha256": "cca86c2206edf81ae650b51d594ea9caf67e5d042083bf4e5278c8b6fe51c372"
+    },
+    {
+      "path": "parent-generated-evidence/initial-independent-failed/http/queued-timeout.json",
+      "bytes": 426,
+      "sha256": "c30e0a5340ce9cf6accb11f629eeba6c0577fa87136ac83ddb4330467a32d205"
+    },
+    {
+      "path": "parent-generated-evidence/initial-independent-failed/http/rejected.json",
+      "bytes": 423,
+      "sha256": "84d7f6614e48b128c76ba2b228c972908f5cfbd29914e7949ec3294e079d4341"
+    },
+    {
+      "path": "parent-generated-evidence/initial-independent-failed/normal-http-failure-extract.txt",
+      "bytes": 75967,
+      "sha256": "c2d515937fc9b2b56f22c7e21559765477d99db4a4f207a8627ab4e230e216c2"
+    },
+    {
+      "path": "parent-generated-evidence/initial-independent-failed/run.json",
+      "bytes": 5627,
+      "sha256": "84eeaeeabb5ea479b2b62fdc5d51b0b9233abea042e078ac82a16acea733f5d2"
+    },
+    {
+      "path": "parent-generated-evidence/initial-independent-failed/test-summary.json",
+      "bytes": 1825,
+      "sha256": "9d06e6d53ff42c56b844c75078f01fd61fa68d2f58e80f910bb7ee1a2b5f95c7"
+    },
+    {
+      "path": "parent-generated-evidence/latest-main/TEST-com.zencas.edhr.common.audit.AuditAspectTest.xml",
+      "bytes": 33889,
+      "sha256": "0168c93bb664effd4f95796fc137f49986da01be4f05d9d77abdf137cdab322f"
+    },
+    {
+      "path": "parent-generated-evidence/latest-main/TEST-com.zencas.edhr.compliance.entity.AuditEventHashTest.xml",
+      "bytes": 40234,
+      "sha256": "a29a6676f9fe19f91b854f0d62073163903bc84cebc213ee12e69a258a6e8468"
+    },
+    {
+      "path": "parent-generated-evidence/latest-main/TEST-com.zencas.edhr.compliance.entity.AuditEventTest.xml",
+      "bytes": 33040,
+      "sha256": "22c5b3b6cfe19aa5102945f788ecba14ef5df5a4934312687725555860b38f1a"
+    },
+    {
+      "path": "parent-generated-evidence/latest-main/TEST-com.zencas.edhr.production.controller.DhrArchiveAsyncLifecycleTest.xml",
+      "bytes": 67467,
+      "sha256": "95bb2dc35b33318be1ccfb514023cab9cdb1adab1cb41e7ef3391a39ff83fdf5"
+    },
+    {
+      "path": "parent-generated-evidence/latest-main/TEST-com.zencas.edhr.production.controller.DhrArchiveAsyncOwnershipTest.xml",
+      "bytes": 46451,
+      "sha256": "8676a563a58698ac9d1135497fadff292fc96da1a6830f5fb3370d1d49d63b54"
+    },
+    {
+      "path": "parent-generated-evidence/latest-main/TEST-com.zencas.edhr.production.controller.DhrArchiveControllerStreamingTest.xml",
+      "bytes": 33852,
+      "sha256": "88256f352eb52d4fb06820288f3c642fa3643ef21cbaca7169b4cb884d120a92"
+    },
+    {
+      "path": "parent-generated-evidence/latest-main/TEST-com.zencas.edhr.production.service.DhrArchiveCleanupFailureTest.xml",
+      "bytes": 82092,
+      "sha256": "80f13d9784b23ec68dfe5c5e963a21cd3878c3f61ae670d4d55c73e018877605"
+    },
+    {
+      "path": "parent-generated-evidence/latest-main/TEST-com.zencas.edhr.production.service.DhrArchiveLayoutReaderTest.xml",
+      "bytes": 33894,
+      "sha256": "59809233811198d0a159ec621241efbe476a539af03c599c4923b0b815d4215d"
+    },
+    {
+      "path": "parent-generated-evidence/latest-main/TEST-com.zencas.edhr.production.service.DhrExportReadObservationPostgresTest.xml",
+      "bytes": 320779,
+      "sha256": "08b7db746921b545efa3f772a1d0c8fe971957130a7955b9ad7fc20c2193254b"
+    },
+    {
+      "path": "parent-generated-evidence/latest-main/TEST-com.zencas.edhr.production.service.DhrFormFilesTest.xml",
+      "bytes": 34252,
+      "sha256": "2fb02ca92e3143fec6dd2155edcb996e0adbddfd0af2a10464ccd57b58bd84bd"
+    },
+    {
+      "path": "parent-generated-evidence/latest-main/http/client-cancelled.json",
+      "bytes": 262,
+      "sha256": "1498af56d3ecf424cd4865ac318d8b152a9419b8ccac50ed414a66bcecf55b5a"
+    },
+    {
+      "path": "parent-generated-evidence/latest-main/http/forbidden.json",
+      "bytes": 316,
+      "sha256": "486afb5b178248298d1c9dd29f32758308d91c7e0276ae15c7cd5574fbe6d3f4"
+    },
+    {
+      "path": "parent-generated-evidence/latest-main/http/normal.json",
+      "bytes": 422,
+      "sha256": "967909e5089f2800d0af6aec0db355441504f632358899bc17978b84f8983557"
+    },
+    {
+      "path": "parent-generated-evidence/latest-main/http/queued-timeout.json",
+      "bytes": 429,
+      "sha256": "c275fa83edfb51fb4a0a56d586bb526c61b701e0982af432b94c39401dc89377"
+    },
+    {
+      "path": "parent-generated-evidence/latest-main/http/rejected.json",
+      "bytes": 421,
+      "sha256": "344a602acfc9bacf71e2b0f550ccec4d52421523ff633a34f73cf4fac1665ca0"
+    },
+    {
+      "path": "parent-generated-evidence/latest-main/run.json",
+      "bytes": 6991,
+      "sha256": "8f304aba8de64dfdbc96630c5f7a26358da5a0ee81b17c6224f17e213b7f0dd7"
+    },
+    {
+      "path": "parent-generated-evidence/latest-main/test-summary.json",
+      "bytes": 1825,
+      "sha256": "20b4872640eeb7a91a6bd8363dd6457130c5460344203e6016d34cbc75af8e88"
+    },
+    {
+      "path": "parent-generated-evidence/latest-negative/TEST-com.zencas.edhr.production.controller.DhrArchiveAsyncLifecycleTest.xml",
+      "bytes": 130502,
+      "sha256": "084da7a55a622e5a443deb69201199988e8ab0a094d6725e68556081fa40297f"
+    },
+    {
+      "path": "parent-generated-evidence/latest-negative/http/client-cancelled.json",
+      "bytes": 261,
+      "sha256": "85aa9a4205a23d7177a561272e9fd7b33d132777f6b473982cbff9c4d7ba5435"
+    },
+    {
+      "path": "parent-generated-evidence/latest-negative/http/forbidden.json",
+      "bytes": 316,
+      "sha256": "486afb5b178248298d1c9dd29f32758308d91c7e0276ae15c7cd5574fbe6d3f4"
+    },
+    {
+      "path": "parent-generated-evidence/latest-negative/http/normal.json",
+      "bytes": 431,
+      "sha256": "8ccfea899494e0f0f9c9f907bea399f17b129138a60988caaaefe41279e93920"
+    },
+    {
+      "path": "parent-generated-evidence/latest-negative/http/queued-timeout.json",
+      "bytes": 439,
+      "sha256": "973f52ba0be15acc2e02b0c834aca5e58fd658fe48d9ee095589a25c3eef1193"
+    },
+    {
+      "path": "parent-generated-evidence/latest-negative/http/rejected.json",
+      "bytes": 434,
+      "sha256": "77a9c1c9738dbf4e6ac18cc4d0570ed0f543bfd4c636294134b9344e63f9ffcb"
+    },
+    {
+      "path": "parent-generated-evidence/latest-negative/run.json",
+      "bytes": 3508,
+      "sha256": "e6be59ffb0a21f173922bf795652153943d843166e20acbdeb8fcbafda7ae56e"
+    },
+    {
+      "path": "parent-generated-evidence/latest-negative/test-summary.json",
+      "bytes": 314,
+      "sha256": "a5e2c857d694a79a3c37818f283ca3e1b49c690151cbac4bca6bb844309450d9"
+    },
+    {
+      "path": "parent-generated-evidence/negative_context/source/gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrArchiveController.java",
+      "bytes": 2458,
+      "sha256": "bba601c2e47778b3a25db68d4849e58c040733bd4edc1cc44d5085697a89b9bc"
+    },
+    {
+      "path": "parent-generated-evidence/negative_context/source/gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/DhrArchiveAsyncLifecycleTest.java",
+      "bytes": 11586,
+      "sha256": "0fc66262a7b0368826ada0ea34053771e956d69be7de1c27c0d090d7b9bcbb85"
+    },
+    {
+      "path": "parent-generated-evidence/setup-failure/maven.log",
+      "bytes": 4056,
+      "sha256": "70141a9cdccee440daa3f281f3fb919586a561ec83bfbefd6dd65355f87780c5"
+    },
+    {
+      "path": "parent-generated-evidence/setup-failure/run.json",
+      "bytes": 3469,
+      "sha256": "2c8cce7fc86caeedfa1cbdc353b7e40d23674cb8083fb7ace4d9b1e3dd7c30e1"
+    },
+    {
+      "path": "parent-generated-evidence/setup-failure/test-summary.json",
+      "bytes": 175,
+      "sha256": "2fc5c20ee5df43089d1a79fdbb323ef885d55ceaee053063ae6735fc93e60c35"
+    },
+    {
+      "path": "parent-generated-evidence/setup-failure-note.md",
+      "bytes": 649,
+      "sha256": "046a6501bb5b2ea8f7da7f6abb8af63f791a22ac5f1e50de4c4509440c5f5f6e"
+    },
+    {
+      "path": "prior-final-preservation.json",
+      "bytes": 215,
+      "sha256": "10eb0e97242be63f4d03f22a223250d3ac5ef11e375dfc2ea165c3e9f13b64f1"
+    },
+    {
+      "path": "prior-ontology-final/REVIEW.md",
+      "bytes": 4742,
+      "sha256": "92e1540642c4de2811b0184364608b20b06cb4708db8883ef5e53ad83e2c18e8"
+    },
+    {
+      "path": "prior-ontology-final/TEST-com.zencas.edhr.knowledge.BusinessKnowledgeModelTest.xml",
+      "bytes": 20421,
+      "sha256": "9def4728b5e31350aac0b0f3205cc5b5249aa15feb3c40731d76ffa2f2f0f38b"
+    },
+    {
+      "path": "prior-ontology-final/finite-audit-records.jsonl",
+      "bytes": 20430,
+      "sha256": "ccf89aad07194e21ae7c20aa93da875d11c00c9d108c6dd5dca7ecdfd2f4ec33"
+    },
+    {
+      "path": "prior-ontology-final/finite-audit-summary.json",
+      "bytes": 533,
+      "sha256": "23fcd03561093df216a2135aa665083441bc9fe2dbda918629d33ca3e52304d0"
+    },
+    {
+      "path": "prior-ontology-final/knowledge-run.json",
+      "bytes": 446,
+      "sha256": "38956f919c6d340a829d82b71b0e2a8d7e723558cdd719f68e7a4c7dcaa210c1"
+    },
+    {
+      "path": "prior-ontology-final/knowledge-test-summary.json",
+      "bytes": 66,
+      "sha256": "0357e2f0eddc2c11e6d014540c0ff131715c903d922f2e96b8c18626f776dc09"
+    },
+    {
+      "path": "prior-ontology-final/manifest.json",
+      "bytes": 22708,
+      "sha256": "d6ba64abda0540abe2f6bfd9cc347b75de00d24131c75cf43aa98d77e2ef408d"
+    },
+    {
+      "path": "prior-ontology-final/manifest.sha256",
+      "bytes": 80,
+      "sha256": "716115ac346ab46510c18b165b72cc6ede4197150fe89cd6dc296ab72c296e72"
+    },
+    {
+      "path": "prior-ontology-final/ontology-result.yaml",
+      "bytes": 5096,
+      "sha256": "15b197a4d8569ef713fba0a911426761600941cd1426f9ad37806b14c9b39e03"
+    },
+    {
+      "path": "review_delta.py",
+      "bytes": 18257,
+      "sha256": "0d86e4b8d637a9a0d33db8db0cb101c1213c96cde89ab14d7ec71516d8b9a06f"
+    },
+    {
+      "path": "source-input-binding.json",
+      "bytes": 7599,
+      "sha256": "da422affbf952fa5f58bf9a5a41dbbb1e1b59d907c4301db6b24b1bb9bbaf862"
+    },
+    {
+      "path": "xml-recalculation.json",
+      "bytes": 4646,
+      "sha256": "a16dbd5b0a21f65643dd4eac3675b6dd26b7845a1e30e17fb6ad0b6bab5a4983"
+    }
+  ]
+}

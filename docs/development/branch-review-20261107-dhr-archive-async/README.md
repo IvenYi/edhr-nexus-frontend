@@ -2,6 +2,10 @@
 
 L2。固定目标 edhr-dev@764258b869567c0f7840f16ff1358ed5c2491f53；PR70 已人工合入，整树同 d689c031d478e96b098591d320981a7b7cc9ba54，无外部代码、知识或契约增量。本轮承接上一批明确保留的未启动流/异步拒绝/排队超时队列，不重新收尾 PR70。数据库分页方案仍未取得实际答复，未实施。
 
+最终受测 **7b68eabc6f9c8d7d00863285f9dd79e75a86a4a2** 已获另一个全新独立实例 **passed/FINAL：95/95、知识89/89、16/16必需检查**，源码子项也FINAL；本体最新增量NA/FINAL、350知识及21受测输入保持。全部角色及孩子FINAL后已实际完成[PR前漂移/阶段复核](pre-pr-drift-review.md)，目标仍764、无任务漂移，之后仅L0验收/交付文档。见[独立复验](independent-review.md)、[qualityResult](quality-result.yaml)。下文“待复验”是完整保留的历史阶段，不覆盖最终回执。
+
+最终只关闭未启动body临时ZIP归属子项。原初版独立failed及全部原件保持；QF正常HTTP只按隔离Basic positive-control范围resolved，产品响应头竞态继续[open专项](header-risk-followup.md)。建议人工合入本批有限修复，不声称整体代码/本体审计结束。
+
 确认 medium 缺陷 **W6-DHR-EXPORT-UNSTARTED-STREAM-001**：Service 已生成 ZIP，Controller 只在 StreamingResponseBody 中删除。执行器拒绝任务、接受任务后排队超时，或客户端在排队期间取消请求，body 没执行时会留下当前请求的临时文件。重复失败可能积累磁盘占用；不将合成实验外推为生产故障频率或容量结论。有限源码/历史去重未发现已关闭同项；PR70 修复的是双重失败覆盖原异常，本项是其明确留下的资源归属缺口。
 
 最小产品修改只有 DhrArchiveController：使用 Spring 既有 Callable 完成回调，并以请求内一个 AtomicBoolean 分配一次清理归属。body 先取得归属，继续 PR70 原 Closeable TWR；请求结束先取得归属则删除尚未交给 body 的 ZIP，晚到 body 被拒绝。完成回调不会提前删除活动 body 的文件；重复回调不会再次删除同路径后来出现的文件。响应元信息构建的同步失败也清理并保留原异常。清理本身失败时记录自有路径和异常，同步主异常附加 suppressed；不进行自动重试、递归扫删、未知孤儿扫描或持久对账。

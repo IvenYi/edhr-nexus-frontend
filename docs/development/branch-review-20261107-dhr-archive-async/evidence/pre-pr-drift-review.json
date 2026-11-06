@@ -1,0 +1,78 @@
+{
+  "reviewedAt": "2026-11-07T01:18:05.157304+08:00",
+  "base": "764258b869567c0f7840f16ff1358ed5c2491f53",
+  "testedCommit": "7b68eabc6f9c8d7d00863285f9dd79e75a86a4a2",
+  "headBeforeClosure": "7b68eabc6f9c8d7d00863285f9dd79e75a86a4a2",
+  "targetCommit": "764258b869567c0f7840f16ff1358ed5c2491f53",
+  "fetchOutput": "From https://github.com/IvenYi/edhr-nexus-frontend\n * branch              edhr-dev   -> FETCH_HEAD\n",
+  "contractDelta": "",
+  "trackedChangesSinceTested": [
+    "docs/development/branch-review-20261107-dhr-archive-async/ontology-result.yaml",
+    "docs/development/branch-review-20261107-dhr-archive-async/ontology-review.md",
+    "docs/development/branch-review-20261107-dhr-archive-async/review-notes.md"
+  ],
+  "workingTreeStatus": "M docs/development/branch-review-20261107-dhr-archive-async/ontology-result.yaml\n M docs/development/branch-review-20261107-dhr-archive-async/ontology-review.md\n M docs/development/branch-review-20261107-dhr-archive-async/review-notes.md\n?? docs/development/branch-review-20261107-dhr-archive-async/evidence/ontology-delta-archive.json\n?? docs/development/branch-review-20261107-dhr-archive-async/evidence/ontology-delta-manifest.json\n?? docs/development/branch-review-20261107-dhr-archive-async/evidence/ontology-delta-role-manifest.json\n?? docs/development/branch-review-20261107-dhr-archive-async/evidence/ontology-delta.zip\n?? docs/development/branch-review-20261107-dhr-archive-async/evidence/quality-archive.json\n?? docs/development/branch-review-20261107-dhr-archive-async/evidence/quality-manifest.json\n?? docs/development/branch-review-20261107-dhr-archive-async/evidence/quality-role-manifest.json\n?? docs/development/branch-review-20261107-dhr-archive-async/evidence/quality.zip\n?? docs/development/branch-review-20261107-dhr-archive-async/header-risk-followup.md\n?? docs/development/branch-review-20261107-dhr-archive-async/independent-review.md\n?? docs/development/branch-review-20261107-dhr-archive-async/ontology-initial-result.yaml\n?? docs/development/branch-review-20261107-dhr-archive-async/ontology-initial-review.md\n?? docs/development/branch-review-20261107-dhr-archive-async/quality-result.yaml",
+  "protectedInputsIdentical": 21,
+  "changedProductPaths": [
+    "gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrArchiveController.java"
+  ],
+  "qualityRequiredChecksPassed": 16,
+  "archives": [
+    {
+      "label": "header-source",
+      "members": 54,
+      "sha256": "901b613fd130d341faa77fd34175d067e93c077869fb9faa6427d74386ffd6a0",
+      "manifestSHA256": "23142486a5a130d8714984380af2fd35197e75e0bd98f30ceeb123984ea719ac"
+    },
+    {
+      "label": "main",
+      "members": 107,
+      "sha256": "11144a3c8ef89a50dc70689e78ac71cccfd308253e042795d9afe21f7322adcd",
+      "manifestSHA256": "29a7155fbf57a2f7d44aacf513e7e9cbba5bc1e1d6ab17a8f5c63df3d17ea068"
+    },
+    {
+      "label": "main-revision",
+      "members": 100,
+      "sha256": "2c75fd082666bf259cf59a235231b504ff791d7029e8b321e92cf53f75a3e5f0",
+      "manifestSHA256": "3ceb30f07dafac4b7611bf5d0a97bef0d5a502a09d50733f612c0a2dd8da2caa"
+    },
+    {
+      "label": "ontology",
+      "members": 115,
+      "sha256": "d94d83c57c6e099401ac4258ff95804bcdc7489d2dd393c3b9d8809da5fcbee0",
+      "manifestSHA256": "09e6044c64b1e7ea08ca4bb04531f088fd3f3754d19e7cce6c0b1e5dbf8e7098"
+    },
+    {
+      "label": "ontology-delta",
+      "members": 125,
+      "sha256": "c5cff150fc56e3d21a708f021013c3521ac42c0da6886acdd9f301ae38b715ab",
+      "manifestSHA256": "43fe3fa014d808469329f8ff0f8f56d2dded8bd04c4306794d4b931d895aad77"
+    },
+    {
+      "label": "quality",
+      "members": 95,
+      "sha256": "068257cf01cc2623fb5bfcd6106c6d0cdc693bfa6644183004aaf7fc7974ca88",
+      "manifestSHA256": "af362a54c523505551329d0f66e2d68a50ad806ab42f6c61f9aabb22900b17df"
+    },
+    {
+      "label": "quality-initial-failed",
+      "members": 96,
+      "sha256": "908f41055822878fdb1b94939a1d92b869cb4ec8aceb6b10eecb1eebfa27e606",
+      "manifestSHA256": "fcc11d3765ab24f6522e6a7956a46a8d99008d9752d8b3df1954969398d3c3f8"
+    },
+    {
+      "label": "source-role",
+      "members": 71,
+      "sha256": "c20da33d28c783b708783efb3db9451e777425237808dad1579ba2a04a1d0c8e",
+      "manifestSHA256": "c67c9a251abdefd7749b6e78a2f174ff1463151d808aa2fe156b1bcc4eb8539b"
+    }
+  ],
+  "scopeConclusion": "No drift: original unstarted ZIP ownership slice only; Basic fixture eager isolation is explicit and product header risk remains open; no business/global-header/cache or pending paging policy implemented",
+  "stage": "W3/W4/W5 cross-chain plus W6, W2 remainder/W7 increments; whole-file completed 0, historical unique unknown",
+  "roleFinality": "Invoked by main after actual final messages for ontology delta, both source scopes and children, initial failed QA+child, fresh final QA v2+child",
+  "remaining": [
+    "product JWT/default lazy header risk and preview cache preserving design",
+    "pre-async external failures, active-body actual network timeout/cancel, Error/OOM/crash/UNKNOWN persistent reconciliation",
+    "original W2-W7/931 knowledge/86 UI/A12/high-risk/full matrices/performance/capacity/A23 incl previously reviewed and user-paused queues"
+  ]
+}

@@ -1,17 +1,17 @@
-# 临时 ZIP 异步生命周期本体有限核对 — FINAL
+# 临时 ZIP 异步生命周期本体只读增量 — FINAL
 
-正式结果为 `not-applicable`。当前请求临时副本的清理归属属于工程修复，最终候选未改变业务知识、授权、冻结、原件、摘要、业务超时或审计规则。本角色仅写本临时目录，产品、测试、配置及知识均只读。
+结果仍为 **not-applicable**：本次相对旧候选仅修改独立Basic HTTP测试安全链的eager响应头装配及审计材料，没有产品源码、知识或业务政策变化。此次不重做旧本体审查或累计覆盖，不把测试装配修正当产品响应头修复。
 
-最终源码为 `8fc765ddf566517c22487564e1bbbc9a0e435e9a`；本角色实际 fetch 后目标 edhr-dev 仍为 `764258b869567c0f7840f16ff1358ed5c2491f53`，工作树 clean。原契约按 `764258b869567c0f7840f16ff1358ed5c2491f53` 实际读取，5份相关契约/架构文件在候选中逐字节未变。350份知识资产在初始知识验证、目标、候选Git及当前工作树间逐字节一致；原知识0.3.25/schema1.2.0/P0 in-progress保持。父侧测试运行时HEAD是目标且包含未提交修复，未虚构运行commit；本角色已逐字节核父侧最终21个实际运行输入，全部与clean候选相同。详见final-verification.json及parent-final-source-binding.json。
+最终固定候选 `7b68eabc6f9c8d7d00863285f9dd79e75a86a4a2`，旧候选 `8fc765ddf566517c22487564e1bbbc9a0e435e9a`。实际fetch后edhr-dev仍为`764258b869567c0f7840f16ff1358ed5c2491f53`，原契约实际读取commit仍为目标；共享工作树实际有review-notes.md修改及header-risk-followup.md未跟踪两项L0文档，并非clean，已另存实际工作快照和来源，产品/测试/知识/契约无未提交变更。这两项仅移除易漂移行号、登记受测来源及保留响应头风险/下一专项，不引入政策。350知识逐字节同目标、旧/新候选、工作树及前次知识执行时资产，知识validator源码未变。保留知识0.3.25/schema1.2.0/P0 in-progress及原status/visibility。自身旧FINAL的112个manifest成员已全部重新核验，原目录不改；本增量另存此目录。21个父侧实际运行输入与新候选Git字节完全一致，运行时HEAD/dirty记录保持原件，不虚构运行commit。
 
-DEC-0063-05/10/11/12、rule.dhr-summary-zip-source-trace要求的同一显式冻结版本、完整/选定范围、原件/摘要、缺失或损坏阻断、查看/导出分权保持。Service生成及流前EXPORT审计未改。Controller仅新增Spring Callable完成回调与请求内一次CAS归属：body先领取则保留原TWR，完成先领取则清理未开始body的自有ZIP；活动body不能被回调提前删文件，重复回调不再领取路径。同步响应元信息失败清理保留原异常，清理失败记录自有路径/异常。请求局部归属不是新DHR业务状态。
+首个独立质量是实质 **failed/FINAL：95=94通过/1失败，0errors/skips**，不是全绿；normal虽200/164字节且ZIP已删，实际submitted2/started2，违背started1断言。已核原始XML、normal.json、选定异常摘录并保留独立报告。HeaderWriterFilter的servlet finally与worker commit写头竞争和MimeHeaders AIOOBE有实际来源；第二次GET可见，但“客户端自动重试”没有客户端协议trace，保留推断，不归因250ms超时或ZIP CAS。本增量不反写旧报告，不以新绿覆盖旧失败。
 
-DEC-0090-01继续区分汇总冻结、最终放行后的受控归档、指定版本下载副本。DEC-0090-03和term.dhr-archive未提升为已实现/已验证；不新增保存年限、自动销毁、备份恢复、未知孤儿扫描或持久对账。既有EXPORT生成成功审计不会因传输失败自动回滚，HTTP已经发送的状态/字节也无回滚承诺。本体无新冲突或待用户决定问题，无需新增业务政策。
+只读源码角色及其子角色另已正式FINAL；本角色读其报告和结果，未执行其10个依赖微例或重现产品JWT。其证据明确global eager提前执行同一writer列表，并不保证终态头策略完全等价：304、自定义Cache-Control、reset存在差异。当前产品FileController有private,max-age=300预览，产品默认lazy头与异步流的共享风险仍 **open**，待产品JWT专项复现、方案与缓存边界验证；本次没有修改SecurityConfig/FileController或授权新缓存策略。
 
-本角色实际仅运行知识校验 **89/89，0 failures/errors/skipped**，fresh XML、命令和UTC时间在knowledge-run.json。不冒称执行过产品、HTTP、PostgreSQL、PDF或故障试验。父侧实际原件已另标来源复制到parent-generated-evidence：本角色读取并独立汇总XML得到最终 **95/95**；旧产品两次HTTP负对照各 **5=2通过/3真实文件遗留断言失败，0 errors/skipped**。初次之后仅增加测试profile隔离嵌套配置，原件未反写；最新negative_context的HTTP源码与最终逐字节一致，父侧旧Controller也与目标Git逐字节一致。最终原件HTTP记录显示正常200且精确字节、无权403且Service未调用、拒绝/排队超时body started=0且teardown前自有文件已消失。
+测试修改只位于已有@Profile隔离的TestApplication.security合成Basic链，显式设HeaderWriterFilter.eager。真实Tomcat/MVC/Controller/方法权限和可控执行器保持，五项测试方法/原断言及normal启动一次要求均未变，无新增重跑/容错。已核新parent原件并独立汇总XML：最新旧源5=2正控/3真实文件遗留断言失败、0errors/skips，最新主侧95/95全过；两者HTTP测试源码完全相同，旧controller与目标Git相同。最新normal为200/164且submitted1/started1。旧源首轮依赖软链缺失导致renderer构建127且JUnit0，原件单列setup-failure，未计为产品红；补依赖后才取得有效5项负对照。
 
-这些HTTP用例使用真实嵌入式Tomcat/MVC、真实Controller和方法权限表达式，但采用独立合成Basic身份、mock ZIP生成服务和测试专属250ms超时。固定产品SecurityConfig禁用Basic并使用JWT，GlobalExceptionHandler有Exception→500映射；因此实验500拒绝/503超时不是生产状态契约，不授权改产品安全或错误码。客户端cancel(true)严格断言调用被接受，但实际记录future.isCancelled=false，只证明取消请求后最终请求结束清理，不声称服务器即时取消归因。5项归属单元直接调用回调，不能冒充真实网络活动流超时或断开。父侧原生PG、11个观察区间/33调用线程SELECT、3次serverEXPORT及JFR数字仅归属其原始运行/分析，本角色未另行执行或重新测量；真实Chromium版式、产品JWT全链、多租户和生产负载均未由本角色证明。
+本角色本次 **没有运行产品/HTTP/PG/知识测试**。知识89/89仅复用自身前次实际执行的原命令、时间和XML，因知识及工具字节未变；新主侧95、初版独立94/95、依赖微例及SQL/JFR等均分别归属原执行角色。另一全新最终QA由父侧安排，本角色不提前声明通过。Basic/mock生成服务/测试专属超时与产品JWT、GlobalExceptionHandler、真实PDF/DB全HTTP仍分离；500/503非产品状态契约。cancel(true)接受但future.isCancelled=false仍只证明最终请求完成清理；直接归属回调检查不冒充活动body真实网络断开。
 
-有限10条逐ID记录为 **8 consistent、2 evidence-gap**，见finite-audit-records.jsonl；两个保留缺口是完整可打印档案运行/视觉场景、原完整多租户问题，不作为本切片新增阻断。350是指纹盘点，10不是新增全量unique，整文件完成0、历史unique未知，未提升任何原成熟度。
+旧有限10条中的8consistent、2evidence-gap保持，新增语义ID审查0、整文件完成0、历史unique未知。DEC0063的显式冻结版本/范围、原件/SHA/缺失阻断、权限及流前EXPORT审计不变；DEC0090受控归档/放行、保存期限、恢复/自动销毁未实现或提升。HTTP已发状态/字节及成功生成审计无传输失败回滚承诺。临时ZIP请求归属不是业务状态；本体无新冲突/用户问题。
 
-未覆盖async listener/startAsync建立前的框架外异常、真实活动body网络超时/取消、Error/OOM、进程崩溃、磁盘失效、UNKNOWN/持久对账、容量及所有生命周期故障；清理失败可见不等于保证必删。原W2-W7/931知识/86 UI候选/A12/高风险/完整矩阵、历史ZIP/text-ID/容量及性能队列、A23含已审代码和用户暂停项全部保持。数据库分页仍待用户实际选择，本轮不产生新授权。全新独立质量由其他未修复实例完成；本体知识校验不代替质量门禁，整体审计不因本FINAL而完成。未查/触发CI、合并、部署或恢复数据。
+原完整可打印视觉、完整多租户、pre-async框架外异常、活动body网络timeout/cancel、Error/OOM/crash/磁盘失效、UNKNOWN/持久对账、容量和历史性能队列保持；产品头竞态新增明确open，不被ZIP局部验收关闭。W2-W7/931知识/86UI/A12/高风险/完整矩阵、A23含已审代码及用户暂停项保持，数据库分页仍待实际选择。没有修改仓库、查/触发CI、merge/deploy或恢复数据。

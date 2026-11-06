@@ -3,12 +3,12 @@ ontologyResult:
   baselineBefore: 0.3.25
   baselineAfter: 0.3.25
   contractBaseline:
-    sourceCommit: 8fc765ddf566517c22487564e1bbbc9a0e435e9a
+    sourceCommit: 7b68eabc6f9c8d7d00863285f9dd79e75a86a4a2
     targetBranch: edhr-dev
     targetCommit: 764258b869567c0f7840f16ff1358ed5c2491f53
     contractReadCommit: 764258b869567c0f7840f16ff1358ed5c2491f53
     uncommittedContractPaths: []
-  reason: 已核最终候选与原件：仅为当前请求生成的临时ZIP补Spring完成回调和单次清理归属；活动body保持原TWR。指定冻结版本/范围、原件/摘要、按权导出和流前EXPORT审计不变，不引入新DHR状态、受控归档/放行、业务超时/重试或历史恢复政策；因此无需变更知识。
+  reason: 对旧FINAL的只读增量：候选相对8fc765仅修改已隔离Basic HTTP测试链的eager响应头装配及审计文档，产品源码/知识/契约未变；五项原断言、真实Tomcat及normal一次启动标准保留。该装配修正不改变DHR业务或产品JWT/缓存政策，不构成产品响应头风险修复。故原工程临时ZIP归属结论仍为not-applicable，无需变更知识。
   changedArtifacts: []
   knowledgeSync:
   - id: rule.dhr-summary-zip-source-trace
@@ -52,51 +52,54 @@ ontologyResult:
   conflicts: []
   questions: []
   validationEvidence:
-  - id: validation.knowledge89
+  - id: validation.reused-own-knowledge89
     checkType: schema
-    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f tools/knowledge-model/pom.xml
-      test
+    command: Reuse actual prior bash /workspace/.edhr-cloud-tools/mvn-edhr -f tools/knowledge-model/pom.xml
+      test after byte-for-byte knowledge/tool-source comparison
     outcome: passed
     evidence:
-    - 本角色实际执行89/89，0失败/错误/跳过；fresh XML及UTC时间已存。
-    - knowledge-run.json
-    - TEST-com.zencas.edhr.knowledge.BusinessKnowledgeModelTest.xml
-  - id: validation.finite-reference10
+    - 本角色前次实际89/89；此次没有重跑。350知识与validator源码均未变，fresh原始XML按原执行时间保留。
+    - prior-ontology-final/knowledge-run.json
+    - prior-ontology-final/TEST-com.zencas.edhr.knowledge.BusinessKnowledgeModelTest.xml
+    - knowledge-fingerprint-inventory.json
+  - id: validation.prior-finite10-retained
     checkType: reference
-    command: Read fixed authority IDs and final implementation within temporary-ZIP
-      lifecycle slice
+    command: Read delta against prior fixed affected-rule review
     outcome: passed
     evidence:
-    - 有限10条：8 consistent、2保留evidence-gap；350是指纹盘点，非语义全审。
-    - finite-audit-records.jsonl
-    - finite-audit-summary.json
-  - id: validation.original-status-retained
+    - 原有限10=8consistent/2gap保持；新增语义ID审查0、整文件完成0，不重复累计覆盖。
+    - finite-review-scope.json
+    - prior-ontology-final/finite-audit-records.jsonl
+  - id: validation.unchanged-status-and-policy
     checkType: status-transition
-    command: Compare 350 tracked knowledge files at initial knowledge run, target,
-      current worktree and candidate Git objects
+    command: Compare target, prior candidate, current candidate and current worktree
+      knowledge/contract bytes
     outcome: passed
     evidence:
-    - 350逐字节一致，原status/visibility未提升；知识0.3.25/schema1.2.0/P0 in-progress保持。
-    - knowledge-fingerprint-inventory-final.json
-  - id: validation.engineering-business-projection
-    checkType: projection
-    command: Read candidate controller/service/DP/test assembly and parent-generated
-      raw XML/HTTP records
-    outcome: passed
-    evidence:
-    - 只处理临时副本生命周期；Basic/mock测试与产品JWT、真实PDF及完整多租户能力分离。
-    - REVIEW.md
-    - parent-xml-recalculation.json
-    - parent-generated-evidence/final/http/queued-timeout.json
-  - id: validation.candidate-evidence-path
-    checkType: evidence-path
-    command: fetch origin edhr-dev; compare actual candidate Git bytes, final source
-      snapshots and referenced evidence
-    outcome: passed
-    evidence:
-    - 目标仍764258；候选8fc765 clean；父侧受测21输入与候选逐字节相同；最新旧源负对照HTTP测试与最终同字节。
+    - 350知识和原契约均未变，0.3.25/schema1.2.0/P0 in-progress及原成熟度保持。
     - final-verification.json
-    - parent-final-source-binding.json
+    - knowledge-fingerprint-inventory.json
+  - id: validation.fixture-business-projection
+    checkType: projection
+    command: Read test-only eager delta, preserved initial failed QA, header source
+      role and new parent raw evidence
+    outcome: passed
+    evidence:
+    - eager仅在独立Basic链；实际产品缓存/304/reset策略风险仍open，非JWT/产品头修复；不以主侧95覆盖初版94/95。
+    - REVIEW.md
+    - delta.patch
+    - header-source-role/REVIEW.md
+    - xml-recalculation.json
+  - id: validation.fixed-input-paths
+    checkType: evidence-path
+    command: fetch origin edhr-dev and compare candidate Git bytes to 21 actual run
+      snapshots
+    outcome: passed
+    evidence:
+    - 目标仍764258，固定候选7b68eab，21输入全同；实际共享工作树仅两项L0文档dirty，另存工作快照；最新旧源HTTP测试与final同字节，旧controller同目标。
+    - final-verification.json
+    - source-input-binding.json
+    - observed-working-document-manifest.json
   roadmapProgress:
     stage: P0
     status: in-progress

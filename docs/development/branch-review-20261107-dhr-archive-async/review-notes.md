@@ -4,11 +4,11 @@
 
 | 真实源码边界 | 本轮核对 | 结论/证据范围 |
 |---|---|---|
-| DhrArchiveService.export:51及临时ZIP:98 | 同一冻结版本、源资格、摘要、ZIP生成及EXPORT保存后才返回Path | 本批逐字节保持；12原生PG回归，不冒称完整START/submit链 |
-| DhrArchiveController.export:36 | Service返回后到body开始前只有路径，旧body不执行就不删除 | 旧同源真实HTTP5项2正3文件遗留失败，非fixture错误 |
-| registerCallableInterceptor:44 | Spring6.1.8完成链覆盖全部注册项；reject已async启动，preProcess不是前提 | 安装依赖源码/字节码+3依赖微例，真实HTTP另跑 |
-| body入口:50与原TWR | 一次CAS竞争，body领取后回调不得删除；latebody不得再读路径 | 5直接归属检查+原6stream+真实正常HTTP |
-| discardUnclaimedArchive:68 | 同步异常与请求结束复用；只删自有路径，失败路径ERROR可见 | 不自动扫删/重试；同步保主异常，完成回调不能修改已结束响应 |
+| DhrArchiveService.export及createTempFile | 同一冻结版本、源资格、摘要、ZIP生成及EXPORT保存后才返回Path | 本批逐字节保持；12原生PG回归，不冒称完整START/submit链 |
+| DhrArchiveController.export | Service返回后到body开始前只有路径，旧body不执行就不删除 | 旧同源真实HTTP5项2正3文件遗留失败，非fixture错误 |
+| registerCallableInterceptor | Spring6.1.8完成链覆盖全部注册项；reject已async启动，preProcess不是前提 | 安装依赖源码/字节码+3依赖微例，真实HTTP另跑 |
+| body入口与原TWR | 一次CAS竞争，body领取后回调不得删除；latebody不得再读路径 | 5直接归属检查+原6stream+真实正常HTTP |
+| discardUnclaimedArchive | 同步异常与请求结束复用；只删自有路径，失败路径ERROR可见 | 不自动扫删/重试；同步保主异常，完成回调不能修改已结束响应 |
 
 N+1/SQL循环/分页：本次产品Controller无SQL，也未把任何数据库读取移入新循环。相邻Service的原native12沿用11观察33调用线程SELECT，服务器另3实际EXPORT/v2写入，读取量未变化；这不是全Service或全系统消除N+1的证明。Service目录/表单证据、逐份PDF/原件载荷、审计/签名清单和重复上下文读取仍按原性能队列处理，不借本次清理修复优化。
 
@@ -23,4 +23,4 @@ A23与错误语义：单次CAS有确定的完成/活动流竞争依据，既有�
 3. `auditsFor`、`sourceAuditEvents`、`sourceSignatures`、`signaturesFor`及追溯JSON打包可由 `appendTraceManifest`编排；保持AS_OF_EXPORT/提交截止、字段及排序，SQL批量化要先量化并讨论，不机械合并不同语义窗口。
 4. 当前Controller同步交接/异步body职责已经分界，清理两处共用一个私有方法足够。若将来响应交接出现更多已证生命周期需求，再评估专用OwnedArchive组件；当前不添加只包装一次CAS的公共抽象。
 
-这是具体可实施的抽取方案而非已完成重构，不用行数或方法清单充当全量覆盖。下一轮先fetch真实合入/新增提交并按影响做增量审查；无新增时继续上述Service容量与源复用、共享ACL/原件并发及原W2-W7队列。性能方案需要讨论，确定性缺陷按实际证据修复。朋友负责的通用任务签名密码页、生产管理弹窗样式保持暂停。
+这是具体可实施的抽取方案而非已完成重构，不用行数或方法清单充当全量覆盖。下一轮先fetch真实合入/新增提交并按影响做增量审查，优先header-risk-followup.md记录的实际产品JWT链风险，随后继续上述Service容量与源复用、共享ACL/原件并发及原W2-W7队列。性能方案需要讨论，确定性缺陷按实际证据修复。朋友负责的通用任务签名密码页、生产管理弹窗样式保持暂停。初版8fc765dd与后续7b68eabc运行产品字节一致，差异只含Basic测试装配隔离及证据/报告；当前以最终质量受测提交为准，不拿旧95覆盖第一独立94/95。

@@ -2,6 +2,10 @@
 
 ## PR70已合入：未启动下载流临时ZIP清理
 
+最终clean受测7b68eabc已获另一全新quality passed/FINAL：独立95/95、知识89/89、16必需项全过，normal200/164且submitted/started各1；双方21输入、11JFR/server3EXPORT/v2参数和旧控/原件SHA核过，自有资源清理。初版failed保持；QF只按Basic隔离测试范围resolved，产品header风险仍open。最新本体NA/FINAL/350不变，全部源码/质量孩子FINAL后，已于01:18实际完成[PR前漂移复核](../branch-review-20261107-dhr-archive-async/pre-pr-drift-review.md)，目标仍764、无增量/无漂移。此后仅L0归档/验收/交付，不改受测运行/测试/知识/契约路径。
+
+下一切片先fetch真实merge/新增，优先[产品JWT响应头竞态专项](../branch-review-20261107-dhr-archive-async/header-risk-followup.md)，必须保留FileController私有缓存及原安全/冻结/审计策略；本批不全局eager、不因fixture修正关闭产品风险。原W2-W7/性能/容量/A23含已审及暂停队列保持，整体审计未完成。下文待验收为历史阶段。
+
 已fetch edhr-dev@764258b869567c0f7840f16ff1358ed5c2491f53，PR70人工合入且整树同d689c031，无外部/知识/契约增量；新分支audit/edhr-dev-dhr-archive-async-20261107。[本批](../branch-review-20261107-dhr-archive-async/README.md)L2承接原未启动流/拒绝/超时队列，确认medium W6-DHR-EXPORT-UNSTARTED-STREAM-001：ZIP生成后body不执行会遗留文件。单controller以Spring完成回调和请求内单次归属清理，活动body保留原TWR，元信息同步失败保原异常；无扫删/重试/新超时政策。
 
 初版主侧95/95、知识89/89后，第一全新独立质量正式failed/FINAL（94/95）：normal200/164但started2，响应头HeaderWriterFilter servlet/worker并写触发MimeHeaders异常及二次GET，不能归因ZIP CAS或timeout。主侧未改产品全局头策略（会影响FileController私有缓存），仅隔离Basic夹具eager写头，原五项断言/真实容器/启动一次要求不变；最新同字节旧源5=2正3真实文件遗留F/0E/S、主侧新95/95及21输入保持，初版failed和构建依赖缺失0JUnit原件全部保留。产品响应头竞态单列open，下一切片优先产品JWT专项复现/保留缓存设计，不能算夹具修正已修产品。
