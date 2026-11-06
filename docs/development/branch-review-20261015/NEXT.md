@@ -1,10 +1,12 @@
 # 持续推进台账
 
-## PR65已合入：图片核验优化已验收，准备交付
+## PR66已交付：图片核验内存优化已验收
 
 已fetch edhr-dev@cf5594947e96dcc56497997d7941da0f7a89be7e，PR65人工合入、整树同7b7cd576，无外部/契约/知识增量。用户在解释和建议后确认“好的”；[本批](../branch-review-20261106-image-verification/README.md)L2先按已确认小缓冲/自有临时快照优化PNG/JPEG核验，保持同一视图/全SHA/原格式规则/资格/审计，上传/PDF/Office不改。
 
 主侧旧源27=25pass+2真实预算fail、0E/S；主侧和全新独立87/87、知识89/89，独立质量18/18 passed。本体not-applicable、350知识不变，16有限记录13一致/3gap。50MiB PNG核验累计堆分配约50.11→0.12MiB，新增一次临时写入，原件/SHA/格式/资格/锁/审计原子性保持。全部本批角色正式FINAL后已实际复核无任务漂移、目标仍cf559494；仅L0验收/交付文档随后登记。W5只读兼容建议仍open、未改旧hash，上传/PDF/Office等容量未关闭；原931/86/W2-W7/高风险/矩阵/A23/暂停队列保持，不自动merge/deploy/恢复。
+
+已创建[PR66](https://github.com/IvenYi/edhr-nexus-frontend/pull/66)，audit/edhr-dev-image-verification-snapshot-20261106→edhr-dev，当前观察OPEN/MERGEABLE/CLEAN，建议人工合并。受测b7f576e9，验收文档60b1e40b后仅登记本条交付信息；登记提交后核对真实远端/PR head与本地一致，运行产品/测试/知识/契约字节与受测候选不变。下一轮先fetch确认实际merge与新提交再继续W2-W7；本轮通过仅关闭图片核验数组子项。
 
 ## PR65已交付：上传与核验取证已验收
 

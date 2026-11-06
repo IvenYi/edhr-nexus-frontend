@@ -2,6 +2,8 @@
 
 L2，edhr-dev@cf5594947e96dcc56497997d7941da0f7a89be7e。PR65已合入，整树同7b7cd576，无外部代码/知识/契约增量。用户已确认建议，先做图片核验；上传/PDF/Office不改，W5仅只读兼容规划、不改旧hash。
 
+已交付 [PR66](https://github.com/IvenYi/edhr-nexus-frontend/pull/66)，当前GitHub观察OPEN/MERGEABLE/CLEAN，建议人工合并本批。受测b7f576e9，验收/漂移登记60b1e40b，此后仅L0交付状态，不改受测实现。运行日志/原始结果中相对路径分别位于 `evidence/` 对应角色原始归档，校验清单可逐文件核验。
+
 本批仅改 `DhrAttachmentService` 图片核验分支，以8192字节缓冲一次读取原件、同时计算完整SHA并写入随机自有临时文件；摘要匹配后对同一快照执行原header/尺寸检查，清理成功后保留原VERIFIED更新与VERIFY审计。图片检查抽成共用方法供原上传和新核验调用。未改资格、锁序、50MiB/格式规则、原件、DHR冻结结构、schema、接口、UI或历史摘要。
 
 主侧旧源27项为25通过、2项50MiB分配预算失败、0错误/跳过；相同原生测试最终27/27，加原相邻54项与新临时生命周期6项共87/87，知识89/89。一次中间尝试因新增测试AssertJ断言类型编译失败，没有运行测试，主侧已修复断言类型，原始输出保留。来源、XML、PG、JFR和失败输出均归档，见 `main-validation.json` 和 `evidence/`。
