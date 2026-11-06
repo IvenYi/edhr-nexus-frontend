@@ -1,0 +1,188 @@
+qualityResult:
+  result: passed
+  baseCommit: cf5594947e96dcc56497997d7941da0f7a89be7e
+  headCommit: b7f576e9a5b519ceac97b372341612c3a217c12a
+  contractBaseline:
+    sourceCommit: b7f576e9a5b519ceac97b372341612c3a217c12a
+    targetBranch: edhr-dev
+    targetCommit: cf5594947e96dcc56497997d7941da0f7a89be7e
+    contractReadCommit: b7f576e9a5b519ceac97b372341612c3a217c12a
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: clean
+    includedPaths: []
+    excludedPaths: []
+    untrackedPaths: []
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+    - id: check.independent-fixed-candidate
+      required: true
+      category: documentation
+      description: 全新未参与修复质量实例在独立detached工作树核对实际候选及目标/契约，未修改受测源。
+      method: command
+      command: git worktree add --detach /tmp/edhr-image-verification-quality-worktree-20261106 b7f576e9a5b519ceac97b372341612c3a217c12a; git fetch origin edhr-dev; git status --porcelain
+      outcome: passed
+      evidence: [worktree-state.json, native-retry/run.json, knowledge-contract-check.json]
+    - id: check.decision-impact-scope
+      required: true
+      category: requirements
+      description: 实际差异符合用户确认的小缓冲/自有快照工程范围，L2影响分析与业务不变边界匹配。
+      method: inspection
+      command: Read decisionPackage/README and actual cf559494..b7f576e9 diff
+      outcome: passed
+      evidence: [REVIEW.md, native-retry/source/docs/development/branch-review-20261106-image-verification/decision-package.yaml]
+    - id: check.original-budget-counterexample
+      required: true
+      category: regression
+      description: 原始旧源27项只有2项50MiB预算真实失败，最终native测试指纹相同，原产品快照等于base。
+      method: command
+      command: python3 verify-evidence.py
+      outcome: passed
+      evidence: [negative-control-check.json, archive-check.json]
+    - id: check.native-and-adjacent-87
+      required: true
+      category: regression
+      description: 独立真实PG27项、相邻54项和临时生命周期6项共87/87，零失败/错误/跳过。
+      method: automated-test
+      command: python3 run-independent.py retry
+      outcome: passed
+      evidence: [native-retry/test-summary.json, native-retry/maven.log, native-retry/run.json]
+    - id: check.knowledge-89
+      required: true
+      category: ontology
+      description: 独立正式知识测试89/89；350知识文件及协作契约与base逐字节一致，有限核对13一致/3缺口不扩张成熟度。
+      method: automated-test
+      command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f tools/knowledge-model/pom.xml test
+      outcome: passed
+      evidence: [knowledge/maven.log, knowledge/TEST-com.zencas.edhr.knowledge.BusinessKnowledgeModelTest.xml, knowledge-contract-check.json, ontology-finite-raw.jsonl]
+    - id: check.image-same-view-and-digest
+      required: true
+      category: security
+      description: 完整原件SHA先于格式，格式读取同次复制快照，原路径在复制后被外部更改的模拟仍读取固定视图。
+      method: inspection
+      command: Inspect verify/verifyImage/inspectImage and run DhrAttachmentImageVerificationTest
+      outcome: passed
+      evidence: [native-retry/TEST-com.zencas.edhr.production.service.DhrAttachmentImageVerificationTest.xml, REVIEW.md]
+    - id: check.temporary-resource-failures
+      required: true
+      category: unit
+      description: 部分写失败/清理失败不更新；主摘要或格式BusinessException保留并带清理suppressed，日志定位仅自有临时资源。
+      method: automated-test
+      command: DhrAttachmentImageVerificationTest within independent 87-test run
+      outcome: passed
+      evidence: [native-retry/TEST-com.zencas.edhr.production.service.DhrAttachmentImageVerificationTest.xml, native-retry/maven.log]
+    - id: check.original-and-format-regressions
+      required: true
+      category: integration
+      description: 七小格式、50MiB含边界、超一字节拒绝、完整字节与SHA保持；上传/PDF/Office解析及下载算法未改变。
+      method: automated-test
+      command: DhrAttachmentUploadVerifyObservationPostgresTest and adjacent attachment/archive tests
+      outcome: passed
+      evidence: [native-retry/TEST-com.zencas.edhr.production.service.DhrAttachmentUploadVerifyObservationPostgresTest.xml, native-retry/observations]
+    - id: check.guards-and-lock-order
+      required: true
+      category: security
+      description: 原父DHR/附件锁序、tenant/DHR/active/可编辑资格和控制器授权未改，拒绝保留原登记状态及文件。
+      method: inspection
+      command: Inspect controller/service locks and run native negative cases
+      outcome: passed
+      evidence: [native-retry/source/gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrAttachmentController.java, native-retry/observations, server-sql-check.json]
+    - id: check.audit-and-transaction-atomicity
+      required: true
+      category: audit
+      description: 真实SQL或审计CHECK拒绝及flush后外层回滚保持核验/登记/原件所有权；写执行成功不冒充提交成功。
+      method: automated-test
+      command: Run native failure_upload_sql/failure_upload_audit/failure_verify_audit/failure_outer_rollback cases
+      outcome: passed
+      evidence: [native-retry/observations, native-retry/postgres.log, server-sql-check.json]
+    - id: check.native-sql-shapes
+      required: true
+      category: database
+      description: 自有PG日志逐动作与调用侧形状匹配52动作128业务SELECT，52 SET/36成功INSERT/12成功UPDATE；4成功写随后回滚、3失败INSERT另列。
+      method: command
+      command: python3 verify-evidence.py
+      outcome: passed
+      evidence: [server-sql-check.json, native-retry/postgres.log]
+    - id: check.audit-identity-parameters
+      required: true
+      category: audit
+      description: 核实23成功audit INSERT的动作/主体/租户/来源/关联载荷及摘要形状，22正常往返与1外层回滚执行分开。
+      method: command
+      command: python3 verify-evidence.py
+      outcome: passed
+      evidence: [audit-parameter-check.json, native-retry/postgres.log]
+    - id: check.external-jfr-and-budget
+      required: true
+      category: integration
+      description: CLI独立解析52份JFR，按动作线程/路径重算原件和临时读写，与观察JSON一致；50MiB核验分配约0.12MiB，临时文件均已删除。
+      method: command
+      command: JDK21 jfr print --json --events jdk.FileRead,jdk.FileWrite for all 52 recordings through verify-evidence.py
+      outcome: passed
+      evidence: [external-jfr-check.json, native-retry/observations]
+    - id: check.original-evidence-archives
+      required: true
+      category: documentation
+      description: 主/本体/W5三个归档本体摘要及447个原文件大小与checksum全部一致，未只相信摘要文档。
+      method: command
+      command: python3 verify-evidence.py
+      outcome: passed
+      evidence: [archive-check.json, negative-control-check.json]
+    - id: check.a23-and-local-extraction
+      required: true
+      category: requirements
+      description: 原图像检查单点复用，临时Closeable保留错误；未加通用框架、全局缓存、重复业务守卫、兜底放行、SQL循环或内存分页。
+      method: inspection
+      command: Inspect source diff and SQL/JFR evidence
+      outcome: passed
+      evidence: [REVIEW.md, server-sql-check.json, external-jfr-check.json]
+    - id: check.w5-and-whole-audit-boundaries
+      required: true
+      category: documentation
+      description: W5只读建议与旧medium/open问题分开；没有schema/旧hash/历史数据改写或将16有限核对/87测试当全审完成。
+      method: inspection
+      command: Inspect W5 plan/existing-issue-dedup/inventory/source diff and finite ontology originals
+      outcome: passed
+      evidence: [REVIEW.md, source-snapshot/docs/development/branch-review-20261106-image-verification/W5-COMPATIBILITY-PLAN.md, ontology-finite-raw.jsonl]
+    - id: check.no-frontend-or-schema-delta
+      required: true
+      category: documentation
+      description: 仅一个运行服务及两测试有产品差异；无前端/schema/config变动，因此本批不需要新UI视觉/HTTP浏览器流程验收，不伪造其通过。
+      method: command
+      command: git diff --name-status cf5594947e96dcc56497997d7941da0f7a89be7e..b7f576e9a5b519ceac97b372341612c3a217c12a
+      outcome: passed
+      evidence: [REVIEW.md, worktree-state.json]
+    - id: check.own-resources-cleanup
+      required: true
+      category: documentation
+      description: 仅自有PG容器和外部依赖链接清理，受测源码无改动、最终工作树clean；不清理共享文件或他人资源。
+      method: command
+      command: Own runner finally cleanup plus independent worktree status
+      outcome: passed
+      evidence: [native-retry/cleanup.json, worktree-state.json]
+  findings: []
+  residualRisks:
+    - id: risk.resource-measurement-scope
+      description: 大例为填充PNG、JPEG仅小格式回归；ThreadMXBean为调用线程累计分配，JFR为逻辑IO。
+      impact: 不能外推全像素解码、峰值/RSS/native内存、并发、物理磁盘或生产SLA。
+      mitigation: 保留原始数值/字节/来源和限定范围，生产容量另行测量。
+    - id: risk.temporary-disk-and-crash
+      description: 临时快照新增同原件大小磁盘写入；清理异常可留有日志定位的临时文件，进程崩溃与真实磁盘满未认证。
+      impact: 当前核验会在IO/清理失败时阻断，不提供持久对账或全目录扫除保证。
+      mitigation: 自有资源作用域及原件保护已验证，崩溃/UNKNOWN/持久对账仍在原队列；不自动删历史。
+    - id: risk.http-and-full-lifecycle
+      description: 真实Spring multipart适配器上使用磁盘Part夹具；业务状态由真实PG种子提供，单位故障为显式模拟。
+      impact: 不等于真实servlet multipart解析/网络/JWT/RBAC浏览器全流程、开工或完整多租户认证。
+      mitigation: 本批没有接口或UI改动，保持方法级资格/事务与相邻回归边界，不宣称全系统验收。
+    - id: risk.original-external-mutation
+      description: 固定快照使摘要和格式消费同一次读取视图，不锁住文件系统外部进程。
+      impact: 复制后原件仍可被外部改变，不能承诺跨进程不可变。
+      mitigation: 原有后续消费者完整SHA复核保留；固定视图测试明确为外部改写模拟。
+    - id: risk.preexisting-capacity-and-w5
+      description: 上传/PDF/Office数组、大PDF导出容量和W5-AUDIT-HASH-001旧jsonb/时间摘要不可可靠重算仍open。
+      impact: 本批仅关闭已确认图片核验整数组开销，不修历史hash或其他容量链。
+      mitigation: 保留既有台账；W5兼容建议仅下一批方案，真实PG/历史/版本与产品解释另验。
+    - id: risk.whole-audit-remaining
+      description: 原931知识/86UI候选、高风险/A12/完整矩阵/历史/text-ID索引/大解析器及W2余项-W7队列仍保留。
+      impact: 本批whole-file completion为0，历史唯一覆盖未知；不能把局部passed当全审完成。
+      mitigation: 下一轮拉取远端并增量审计；朋友签名页和生产管理样式暂停项不在本批修改。
+  blockingConditions: []

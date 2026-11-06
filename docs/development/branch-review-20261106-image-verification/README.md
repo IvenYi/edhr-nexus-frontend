@@ -12,6 +12,10 @@ L2，edhr-dev@cf5594947e96dcc56497997d7941da0f7a89be7e。PR65已合入，整树�
 
 新增6项检查：成功清理、临时部分写失败、有效图片清理失败不更新、摘要错误和格式错误遇清理失败保留主错误并附抑制异常、外部改原路径后格式仍消费同一已复制视图。清理失败记录自有路径且阻断核验；进程崩溃或真实磁盘满不是本轮认证，残片对账继续既有队列，不新增自动全目录清扫。
 
-本体有限核对和全新独立质量结果另存，收尾前不可把主侧通过当独立验收。只读 [W5兼容建议](W5-COMPATIBILITY-PLAN.md) 已核当前49位点/37文件均自动生成AuditEvent摘要；该旧问题仍open，不计新缺陷、不动旧hash或Signature/DHR/file摘要，也未启动建议的schema变更。
+本体结果 `not-applicable`，16项有限记录为13子范围一致/3gap，350知识不变。全新未参与修复的质量实例已正式 `passed`：18项检查、独立87/87与知识89/89、52份JFR/128业务SELECT吻合，23成功audit INSERT参数全部正确（22正常往返+1外层随后回滚），447原件逐checksum通过。受测候选b7f576e9a5b519ceac97b372341612c3a217c12a，见 [质量原件](quality-result.yaml) 和 [独立报告](independent-review.md)；收尾仅登记L0验收/漂移文档，不改受测产品或测试。
+
+只读 [W5兼容建议](W5-COMPATIBILITY-PLAN.md) 已核当前49位点/37文件均自动生成AuditEvent摘要；该旧问题仍open，不计新缺陷、不动旧hash或Signature/DHR/file摘要，也未启动建议的schema变更。方案中未加目录的来源文件位于 `evidence/w5-plan-originals.tar.gz`，生产者清单另有便于浏览的 `w5-producer-inventory.json` 副本。
+
+全部本批角色正式FINAL后，已完成 [实际PR前漂移复核](pre-pr-drift-review.md)，再次fetch目标仍cf559494，无待重放外部/知识/契约增量。建议合并本批，不自动merge/deploy/恢复。
 
 全审仍在W3/W4/W5交叉链路，W2余项、W6健壮性/性能/具体拆分/A23过度防御（含已审代码复查）及W7增量持续；本批整文件完成计数0、历史唯一覆盖未知。原931知识候选/86UI候选、高风险/A12/完整矩阵、历史/text-ID索引/PDF及大Office/上传容量/UNKNOWN持久对账均不抹除。朋友负责的通用任务签名页和生产管理弹窗样式仍暂停。每轮及集成前fetch并增量审计，不自动merge/deploy/恢复。
