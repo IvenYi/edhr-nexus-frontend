@@ -1,0 +1,93 @@
+ontologyResult:
+  result: not-applicable
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: 9dc5c0014643d99db299d27a80788cc777a0ccca
+    targetBranch: edhr-dev
+    targetCommit: 9dc5c0014643d99db299d27a80788cc777a0ccca
+    contractReadCommit: 9dc5c0014643d99db299d27a80788cc777a0ccca
+    uncommittedContractPaths: []
+  reason: 经有限现行定义、历史依据和稳定工作树实现核对，本批仅修复新自动AuditEvent摘要的持久化往返确定性：新增nullable版本元数据、JSONB业务值确定编码和同一LocalDateTime的微秒精度，不改变独立事件/真实前后值/操作者/动作投影/发生时点含义、不可变规则或现有读取权限及下载政策；旧日志、旧hash、Signature/DHR/file摘要不改。没有新的业务概念、关系、政策或执行契约需同步，350知识文件逐字节不变，知识0.3.25/schema1.2.0/P0
+    in-progress保持。本结果不认证旧历史都可复算或完整ZIP自足校验。
+  changedArtifacts: []
+  knowledgeSync:
+  - id: term.audit-event
+    disposition: retained
+    scope: 独立不可变审计事件仍保留对象、原动作、操作者和发生时间；v2是内部摘要编码版本，不是新业务事件或流程状态。
+    sourceReferences:
+    - docs/knowledge/glossary.yaml
+    - gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/entity/AuditEvent.java
+  - id: term.audit-change-snapshot
+    disposition: retained
+    scope: 真实前后业务值与历史原件所有权保持；新hash对JSONB业务值编码，不宣称原JSON字符字节无损，不从当前主数据补造旧原件。
+    sourceReferences:
+    - docs/knowledge/glossary.yaml
+    - docs/knowledge/ontology.yaml
+    - gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/entity/AuditEventHash.java
+  - id: relation.audit-event-retains-change-snapshot
+    disposition: retained
+    scope: 原事件到可选变化快照关系和首次START冻结边界保持；新自动封存不更新旧行或覆盖DHR/生产快照。
+    sourceReferences:
+    - docs/knowledge/ontology.yaml
+    - gmp-platform/backend/src/main/resources/db/changelog/0092-audit-event-hash-version.sql
+  - id: rule.production.audit-action-projection
+    disposition: retained
+    scope: 内部hash版本不增加页面动作类别、筛选或验证状态，不更改原action及客户新增/修改投影。
+    sourceReferences:
+    - docs/knowledge/rules/production.yaml
+    - gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/controller/AuditController.java
+  - id: execution.production-object-audit-snapshot
+    disposition: retained
+    scope: 原verified/runtime登记仅承接原控制器契约；本批不提升其成熟度，也不把49共享PrePersist等同49条业务链均已认证审计失败回滚。
+    sourceReferences:
+    - docs/knowledge/execution-contracts.yaml
+    - gmp-platform/backend/src/main/java/com/zencas/edhr/common/audit/AuditAspect.java
+  - id: evidence.ontology-audit-event-entity
+    disposition: historical
+    scope: 保留ea5d1a65和2026-10-12证据原文，不把新v2工程实现反填为历史已验证；独立身份、操作者、时间、前后值及拒绝更新描述仍适用。
+    sourceReferences:
+    - docs/knowledge/evidence/ontology-foundation-repair.yaml
+  - id: scenario.dhr-summary-printable-archive-layout
+    disposition: deferred
+    scope: 仅本批摘要修复不能认证完整PDF/ZIP/来源签名/附件/视觉矩阵；当前部分字段或裁剪审计清单不能自足复算原事件，未来完整证据或阻断UI政策本批未决定。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml
+    - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrArchiveService.java
+  conflicts: []
+  questions: []
+  validationEvidence:
+  - id: validation.w5-finite-definition-source
+    checkType: evidence-path
+    command: Read current records, original controller/entity/readers and stable helper/migration/test source; compare
+      exact source fingerprints
+    outcome: passed
+    evidence:
+    - 'finite-audit-records.jsonl: 16 reviewed (15 ID records plus 1 historical Markdown); 14 consistent only in
+      declared subscopes, 2 evidence-gap retained'
+    - final-source-manifest.json; baseline-source-manifest.json
+    - 'current-producer-count.json: 49 current builder sites / 37 files / zero explicit hashes; not runtime verification
+      of all sites'
+  - id: validation.w5-formal-knowledge
+    checkType: schema
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f tools/knowledge-model/pom.xml clean test
+    outcome: passed
+    evidence:
+    - 'knowledge-validation.log: exit 0 BUILD SUCCESS'
+    - 'TEST-com.zencas.edhr.knowledge.BusinessKnowledgeModelTest.xml: 89 tests, zero failure/error/skip'
+    - knowledge-test-summary.json; schema/reference/status/projection only, not product/PG/UI/production acceptance
+  - id: validation.w5-baseline-retention
+    checkType: reference
+    command: Compare all tracked knowledge files and applicable contracts against 9dc5c0014643d99db299d27a80788cc777a0ccca
+    outcome: passed
+    evidence:
+    - 'knowledge-fingerprint-inventory.json: 350 files byte-identical to target; inventory is not semantic coverage'
+    - baseline.json; final-source-manifest.json; no knowledge or contract edits by ontology role
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages:
+    - P1
+    - P2
+    - P3

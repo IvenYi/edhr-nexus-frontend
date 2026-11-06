@@ -13,3 +13,5 @@ databaseChangeLog:
       file: db/changelog/0090-workflow-operations.sql
   - include:
       file: db/changelog/0091-dhr-review-query-indexes.sql
+  - include:
+      file: db/changelog/0092-audit-event-hash-version.sql

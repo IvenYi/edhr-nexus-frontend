@@ -1,0 +1,64 @@
+decisionPackage:
+  id: DEC-PACKAGE-AUDIT-HASH-ROUNDTRIP-20261106
+  scope: W5-AUDIT-HASH-001 new AuditEvent stable persisted hash; legacy rows preserved
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: 9dc5c0014643d99db299d27a80788cc777a0ccca
+    targetBranch: edhr-dev
+    targetCommit: 9dc5c0014643d99db299d27a80788cc777a0ccca
+    contractReadCommit: 9dc5c0014643d99db299d27a80788cc777a0ccca
+    uncommittedContractPaths: []
+  summary: PR66已合入且整树同dbc95776，用户授权继续全审确定性整改；本批落实已有W5只读方案的最小新行往返修复，旧摘要/记录不改，不增加UI或下载阻断。
+  confirmed: {concepts: [], relationships: [], rules: [], executionContracts: []}
+  inferred: []
+  unresolved: []
+  replacementScopes: []
+  engineeringDecisions:
+    - id: engineering.audit-event-v2
+      status: implementation-choice-within-authorized-defect-fix
+      source: W5原始PG双失败、当前AuditEvent源码及PR66只读兼容方案；不是用户新业务政策
+      scope: 新自动生成摘要事件标记audit-event-v2，追加nullable无default版本列且不回填；保留旧算法与显式已有hash路径。
+      encoding: 固定18字段顺序的UTF8 JSON数组加版本域；普通文本保留/null独立，JSON字段用单元素数组区分SQLnull与JSONnull，对象键按Java字符串顺序递归排序，数组保序，任意精度十进制去尾零，重复键按JSONB最后值语义；摘要流式写入SHA不再构造完整canonical副本。新自动事件时间赋为同一LocalDateTime的微秒截断，固定六位小数，不改时区。
+      compatibility: 未标版本事件按旧算法仅可诊断不认证可靠重算，未知版本明确拒绝计算、不猜算法；现有非空摘要保留且不自动盖v2。旧应用忽略nullable列可继续读写，应用回滚保留列及新旧hash，不做破坏性schema回退。
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - {area: audit-entity, change: 自动封存新事件的版本化确定编码及时间精度，原18字段/不可变约束保持, evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/entity/AuditEvent.java]}
+    transitiveImpacts:
+      - {area: audit-producers, change: 当前49位点37文件仍由同一PrePersist封存；复验配置/生产附件/签署关联审计/切面，防止新增SQL或业务失败, evidenceReferences: [docs/development/branch-review-20261106-image-verification/w5-producer-inventory.json]}
+    potentialImpacts:
+      - {area: capacity, concern: JSON解析和排序有资源成本，实测代表性大before/after分配与耗时，不宣称峰值或吞吐, evidenceReferences: []}
+    unaffectedAreas:
+      - {area: ui-and-other-hashes, change: UI/DTO/归档投影与下载规则不改；Signature/DHR/file摘要不改，ZIP裁剪视图不冒称自足重算, evidenceReferences: [docs/development/branch-review-20261106-image-verification/W5-COMPATIBILITY-PLAN.md]}
+    compatibilityAndMigration:
+      - {area: schema, change: 新0092仅追加nullable snapshot_hash_version，无default/UPDATE或历史修复；正式Liquibase升级/重复与旧应用列集合插入读取实测，原baseline不改, evidenceReferences: [gmp-platform/backend/src/main/resources/db/changelog/db.changelog-master.yaml]}
+    snapshotImpacts:
+      - {area: evidence, change: 仅AuditEvent新自动封存计算，原JSON原文入JSONB和已有业务快照所有权保持，不修改原件/签名/冻结内容, evidenceReferences: []}
+    auditImpacts:
+      - {area: atomicity, change: 自动封存保留原审计写入事务关系/拒绝更新；不校验历史后报坏、不增加读下载阻断/自愈/重封存, evidenceReferences: []}
+    permissionImpacts:
+      - {area: existing-authority, change: 无新入口与权限分支；原操作者/来源/原因/审计字段覆盖保持, evidenceReferences: []}
+    testImpacts:
+      - {scope: new-hash, scenarios: [旧源JSON与时间分离真实PG反证, 同源最终往返, 编码固定向量及18字段篡改, null/数字/Unicode/重复键/顺序边界, 未标/未知/外部hash兼容, 新旧混部与无历史DML迁移, 原子性/不可变/实际生产者, 大JSON成本, 全新独立质量与有限本体], evidenceReferences: []}
+    evidenceGaps: [旧行无法可靠还原原始JSON/时间因此历史限制保留, 无新增离线完整证据/UI校验产品政策, 非生产部署/并发SLA/全审完成，原W2-W7与931/86/A12/高风险/容量/UNKNOWN/A23及暂停队列保持]
+  extensionStrategy:
+    selectedPaths: [product-core]
+    rationale: 纯确定编码helper加现有AuditEvent自动入口，不为49生产者逐一散落逻辑，不加DB查询/全局缓存/通用算法插件。
+    ownershipBoundaries:
+      - {owner: compliance-audit, responsibility: 新事件自动hash版本与编码/旧算法诊断/持久化精度}
+      - {owner: migration, responsibility: 增量nullable列，不修改旧行，旧应用兼容与应用回滚}
+  affectedFiles:
+    - {path: gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/entity/AuditEvent.java, changeType: update, reason: 版本分派和新行封存}
+    - {path: gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/entity/AuditEventHash.java, changeType: create, reason: 小型确定编码helper}
+    - {path: gmp-platform/backend/src/main/resources/db/changelog/0092-audit-event-hash-version.sql, changeType: create, reason: nullable版本列}
+    - {path: gmp-platform/backend/src/main/resources/db/changelog/db.changelog-master.yaml, changeType: update, reason: 追加迁移}
+    - {path: gmp-platform/backend/src/test/java/com/zencas/edhr/compliance/entity, changeType: update, reason: 编码/PG/兼容测试}
+    - {path: gmp-platform/backend/src/test/java/com/zencas/edhr/common/config/CurrentDatabaseBaselinePostgresTest.java, changeType: update, reason: 正式新增changeset计数与列检查}
+    - {path: gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrAttachmentTransactionPostgresTest.java, changeType: update, reason: 该测试每次仅重建原baseline三表，需实际执行0092维持当前实体夹具；原提交/回滚断言不变}
+    - {path: gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrAttachmentUploadVerifyObservationPostgresTest.java, changeType: update, reason: 原27实际服务测试重读真实AuditEvent并复算v2，而非仅断言hash形状；附加验证查询在动作取证外}
+  acceptanceScenarios:
+    - id: scenario.audit-event-persisted-roundtrip
+      given: 新自动事件与未标/外部提供的旧摘要混合
+      when: 正式PG持久化/清空JPA缓存/重新读取及旧应用列集合读写
+      then: 新事件可重复重算且变更内容失败；旧记录/摘要保留，不新增读写业务规则；纯编码不增查询
+      evidenceRequirements: [原始负对照XML和PG, 正式升级/兼容与最终XML, 主侧源指纹与资源测量, 有限本体/全新独立质量正式FINAL, 全部FINAL后实际PR前漂移复核]

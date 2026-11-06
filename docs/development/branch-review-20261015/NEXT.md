@@ -1,5 +1,11 @@
 # 持续推进台账
 
+## PR66已合入：W5新事件摘要整改进入独立验收
+
+已fetch edhr-dev@9dc5c0014643d99db299d27a80788cc777a0ccca，PR66人工合入且整树同dbc95776，无外部/知识/契约增量。[本批](../branch-review-20261106-audit-hash/README.md)L2复用旧W5-AUDIT-HASH-001，先取得最新旧源JSON/时间2真失败，再最小新行版本化封存。nullable无default0092/no历史DML、精确JSONB值编码/时间微秒/原18字段，不改旧日志、Signature/DHR/file摘要、UI或下载政策。
+
+主侧最终174/174、知识89/89，本体not-applicable/FINAL、350知识不变，16有限记录14一致/2gap。旧源相同PG测试2F0E/S，新源通过；实际配置/附件/切面/签署审计producer及旧应用列集合/升级/回滚边界有对应运行证据。当前待全新独立质量，不提前关闭整条历史限制；全部专业FINAL后实际再做PR前无漂移复核。原931/86/W2-W7/A12/高风险/容量/UNKNOWN/A23及暂停队列保持，不自动merge/deploy/恢复。
+
 ## PR66已交付：图片核验内存优化已验收
 
 已fetch edhr-dev@cf5594947e96dcc56497997d7941da0f7a89be7e，PR65人工合入、整树同7b7cd576，无外部/契约/知识增量。用户在解释和建议后确认“好的”；[本批](../branch-review-20261106-image-verification/README.md)L2先按已确认小缓冲/自有临时快照优化PNG/JPEG核验，保持同一视图/全SHA/原格式规则/资格/审计，上传/PDF/Office不改。
