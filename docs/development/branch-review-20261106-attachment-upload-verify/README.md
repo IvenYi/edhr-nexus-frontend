@@ -1,5 +1,7 @@
 # DHR附件上传与核验资源审查
 
+已交付[PR65](https://github.com/IvenYi/edhr-nexus-frontend/pull/65)，本分支→edhr-dev，观察OPEN/MERGEABLE/CLEAN，建议人工合入测试/证据。受测7e9defaa、验收归档32fe3dea后仅L0交付登记；登记后再次核对本地/真实远端/PR head一致，原观察见evidence/delivery-verification.json。图片优化仍待答、未实施，不据本PR关闭数组容量或旧W5问题，不自动merge/deploy。
+
 L2，edhr-dev@c4e451c264c11978515b2ae0088e64011fe2fcef，PR64已合入、整树同a89dbd36，无外部代码/知识/契约增量。新分支audit/edhr-dev-attachment-upload-verify-20261106。
 
 继续原上传/核验内存和事务失败队列。计划以完整canonical迁移、真实Spring multipart包装/磁盘Part及实际服务，核七格式小原件、1/10/50MiB PNG、完整字节/SHA/审计及SQL/审计拒绝/外层回滚与资格边界；测量分配和逻辑读写，不预设产品优化，不把它冒称容器解析/HTTP/生产峰值。

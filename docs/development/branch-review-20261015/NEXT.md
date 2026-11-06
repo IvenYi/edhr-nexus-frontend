@@ -1,6 +1,8 @@
 # 持续推进台账
 
-## PR64已合入：上传与核验取证已验收
+## PR65已交付：上传与核验取证已验收
+
+已交付[PR65](https://github.com/IvenYi/edhr-nexus-frontend/pull/65)，audit/edhr-dev-attachment-upload-verify-20261106→edhr-dev，观察OPEN/MERGEABLE/CLEAN，建议人工合入测试/证据。受测7e9defaa、验收归档32fe3dea后仅L0交付登记；登记后核对本地/真实远端/PR head一致。图片优化提案仍未答未实施，merge不当该方案批准；下一轮先fetch真实merge/新提交再继续原全审队列，不自动merge/deploy/恢复。
 
 实际fetch edhr-dev@c4e451c264c11978515b2ae0088e64011fe2fcef，PR64人工合入且整树同a89dbd36，无外部代码/知识/契约增量；新分支audit/edhr-dev-attachment-upload-verify-20261106。[本批](../branch-review-20261106-attachment-upload-verify/README.md)L2继续原上传/核验内存及事务失败队列，完整canonical真实服务和Spring包装磁盘Part核原字节/格式/摘要/审计、分配/读写及回滚，不预先改产品或政策。
 
