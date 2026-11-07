@@ -1,0 +1,24 @@
+{
+  "observedAt": "2026-11-07T21:00:00.627078+08:00",
+  "sourceCommit": "b6691e2c6289ab414a7a3fed1f128562cbba4166",
+  "evidenceType": "original-evidence/source; no browser/UI/visual execution",
+  "files": [
+    {
+      "path": "gmp-platform/frontend/src/pages/dhr-management/DhrSummaryPage.tsx",
+      "sha256": "4d796160a4c90b9834ecf6e207c09f0b132269c77411b7325610bee46a92d183"
+    },
+    {
+      "path": "gmp-platform/frontend/src/api/dhr-instances.ts",
+      "sha256": "97cd727ef8d3e29a955df6ae935a274a57aa29a334ae62d2c549c105edee6ffa"
+    },
+    {
+      "path": "gmp-platform/frontend/src/api/client.ts",
+      "sha256": "cb6292e987edcd52470166c71b8460c9da5695f2877ff50771ad5839db93b83a"
+    }
+  ],
+  "conclusions": [
+    "Frozen-version export in DhrSummaryPage calls downloadDhrArchive with responseType blob and current selected version",
+    "Same current auth session/generation HTTP401 triggers clearAuthStorage and returnToLogin",
+    "Backend restores original async JWT validation; frontend unchanged; actual browser false-logout not executed"
+  ]
+}

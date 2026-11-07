@@ -1,0 +1,59 @@
+{
+  "reviewedAt": "2026-11-07T21:09:27.693292+08:00",
+  "base": "b6691e2c6289ab414a7a3fed1f128562cbba4166",
+  "testedCommit": "703f2ee90417e778cf745fbbcd24f908a345d3bd",
+  "headBeforeClosure": "703f2ee90417e778cf745fbbcd24f908a345d3bd",
+  "targetCommit": "b6691e2c6289ab414a7a3fed1f128562cbba4166",
+  "fetchOutput": "From https://github.com/IvenYi/edhr-nexus-frontend\n * branch              edhr-dev   -> FETCH_HEAD\n",
+  "contractDelta": "",
+  "workingTreeStatus": "?? docs/development/branch-review-20261107-dhr-header-jwt/auth-source-review.md\n?? docs/development/branch-review-20261107-dhr-header-jwt/evidence/client-source-mapping.json\n?? docs/development/branch-review-20261107-dhr-header-jwt/evidence/ontology-archive.json\n?? docs/development/branch-review-20261107-dhr-header-jwt/evidence/ontology-manifest.json\n?? docs/development/branch-review-20261107-dhr-header-jwt/evidence/ontology-role-manifest.json\n?? docs/development/branch-review-20261107-dhr-header-jwt/evidence/ontology.zip\n?? docs/development/branch-review-20261107-dhr-header-jwt/evidence/quality-archive.json\n?? docs/development/branch-review-20261107-dhr-header-jwt/evidence/quality-manifest.json\n?? docs/development/branch-review-20261107-dhr-header-jwt/evidence/quality-role-manifest.json\n?? docs/development/branch-review-20261107-dhr-header-jwt/evidence/quality.zip\n?? docs/development/branch-review-20261107-dhr-header-jwt/independent-review.md\n?? docs/development/branch-review-20261107-dhr-header-jwt/ontology-result.yaml\n?? docs/development/branch-review-20261107-dhr-header-jwt/ontology-review.md\n?? docs/development/branch-review-20261107-dhr-header-jwt/quality-result.yaml\n?? docs/development/branch-review-20261107-dhr-header-jwt/review-notes.md\n?? docs/development/branch-review-20261107-dhr-header-jwt/source-review.md",
+  "trackedChangesSinceTested": [],
+  "protectedInputsIdentical": 32,
+  "changedProductPaths": [
+    "gmp-platform/backend/src/main/java/com/zencas/edhr/common/config/SecurityConfig.java",
+    "gmp-platform/backend/src/main/java/com/zencas/edhr/identity/security/JwtAuthenticationFilter.java",
+    "gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrArchiveController.java",
+    "gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrArchiveResponseFilter.java"
+  ],
+  "qualityRequiredChecksPassed": 12,
+  "archives": [
+    {
+      "label": "auth-source",
+      "members": 34,
+      "sha256": "0a9278a532f873e39d55d91c10084524134a5b8e1f73163ee7e2cc253fa2c291"
+    },
+    {
+      "label": "main",
+      "members": 395,
+      "sha256": "94f47b173fd13917e7214c77ac6090f60f972917ae46f3965d8081a4829c1018"
+    },
+    {
+      "label": "negative",
+      "members": 68,
+      "sha256": "9cb36c9e8231e6353c622afaaca7b4641119f8b62df27fd28b2259deb89309e0"
+    },
+    {
+      "label": "ontology",
+      "members": 298,
+      "sha256": "379fb02cf41f8d8ab095f59f91df5e3cd46ad690ce3a72be24bf72d6dba4a451"
+    },
+    {
+      "label": "quality",
+      "members": 132,
+      "sha256": "6993ae8cf8af4bc3244c582ac25c1546986539bdfc2ef1d6580d398db28e7b04"
+    },
+    {
+      "label": "source",
+      "members": 107,
+      "sha256": "d07ae45e26a26ade679a2f7a086a6ca8487be7892a53ce30210397ea59078d7d"
+    }
+  ],
+  "roleFinality": "Executed only after actual FINAL from ontology and finite child, source and upstream child/auth delta, fresh QA and readonly source child",
+  "scopeConclusion": "No drift: initial DHR security-header/body handoff plus actual adjacent ASYNC identity and unstarted-error entity framing; no business/cache/default-writer/permission/expiry/ERROR policy changes, no pending performance scheme",
+  "stage": "W3-W5 cross-chain/W6 plus W2 remainder/W7 increments; whole-file completed0/historical unique unknown",
+  "remaining": [
+    "active-body real network timeout/cancellation and already-sent response",
+    "non-interruptible monitor/hanging initial downstream/crash/Error/OOM/UNKNOWN persistent reconciliation",
+    "original whole-audit/knowledge/UI/A12/high-risk/full matrices/performance/capacity/A23 incl previously reviewed and user-paused queues"
+  ]
+}

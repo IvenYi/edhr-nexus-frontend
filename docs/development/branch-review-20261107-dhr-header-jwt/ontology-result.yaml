@@ -1,0 +1,101 @@
+ontologyResult:
+  result: not-applicable
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: 703f2ee90417e778cf745fbbcd24f908a345d3bd
+    targetBranch: edhr-dev
+    targetCommit: b6691e2c6289ab414a7a3fed1f128562cbba4166
+    contractReadCommit: b6691e2c6289ab414a7a3fed1f128562cbba4166
+    uncommittedContractPaths: []
+  reason: 最终候选只协调DHR导出请求响应归属、ASYNC按原Bearer验签恢复权限，以及未开始body/未commit的异常响应清ZIP长度/类型并置inline供原500/JSON输出；WAITING/BODY/FAILED/CLEANED是临时资源工程状态，不是DHR业务状态。默认lazy/预览缓存、冻结/原件/hash、原分权及流前EXPORT保持，无新权限/超时/归档/保留政策，因此无需修改知识。
+  changedArtifacts: []
+  knowledgeSync:
+  - id: rule.dhr-summary-zip-source-trace
+    disposition: retained
+    scope: 同一显式冻结版本、FULL/SELECTED、原件/摘要与缺失阻断保持；响应串行只交接临时副本。
+    sourceReferences:
+    - docs/knowledge/rules/dhr-summary.yaml
+  - id: DEC-0063-12
+    disposition: retained
+    scope: 原view+export分权及流前EXPORT顺序保持；ASYNC按原Bearer执行原验签/权限恢复，不permitAll/session/放宽过期，不保证已发HTTP或生成审计回滚。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml
+    - gmp-platform/backend/src/main/java/com/zencas/edhr/identity/security/JwtAuthenticationFilter.java
+  - id: DEC-0090-01
+    disposition: retained
+    scope: 汇总冻结、指定版本下载副本和放行后受控归档继续区分；本修复不创建归档状态。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0090-dhr-archive-minimum-scope.yaml
+  - id: DEC-0090-03
+    disposition: retained
+    scope: 保存期限、自动销毁、跨租户访问、备份恢复及归档签署政策未由请求协调推导。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0090-dhr-archive-minimum-scope.yaml
+  - id: term.dhr-archive
+    disposition: retained
+    scope: specified/internal成熟度保持，不因JWT下载可靠性修复认定受控归档执行已交付。
+    sourceReferences:
+    - docs/knowledge/glossary.yaml
+  - id: question.multi-tenant-workflow-isolation
+    disposition: deferred
+    scope: 原非MVP开放问题保持；合成JWT claims/key和mock协作者不认证实际登录目录/数据库全链或完整多租户隔离。本工程切片未新增政策问题。
+    sourceReferences:
+    - docs/knowledge/open-questions.yaml
+  conflicts: []
+  questions: []
+  validationEvidence:
+  - id: validation.knowledge89
+    checkType: schema
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f tools/knowledge-model/pom.xml
+      test
+    outcome: passed
+    evidence:
+    - 本角色实际89/89、0F/E/S；fresh XML及UTC时间原件保留。
+    - knowledge-run.json
+    - TEST-com.zencas.edhr.knowledge.BusinessKnowledgeModelTest.xml
+  - id: validation.finite-authority
+    checkType: reference
+    command: Read fixed authority IDs and ASYNC identity scope supplement
+    outcome: passed
+    evidence:
+    - 有限10=8 consistent/2 evidence-gap；ASYNC补充仅原受影响子集，不增unique。
+    - finite-audit-records.jsonl
+    - finite-authority-delta-role/REVIEW.md
+  - id: validation.unchanged-maturity
+    checkType: status-transition
+    command: Compare 350 tracked knowledge files and validator/contract source with
+      baseline and candidate
+    outcome: passed
+    evidence:
+    - 350逐字节不变、原status/visibility/P0保持；知识0.3.25/schema1.2.0。
+    - knowledge-fingerprints-final.json
+    - final-verification.json
+  - id: validation.engineering-projection
+    checkType: projection
+    command: Read candidate filter/controller/security/JWT and unchanged source/audit/cache
+      paths
+    outcome: passed
+    evidence:
+    - 只核业务边界及父侧原件，不冒称本角色运行HTTP/PG/浏览器。
+    - candidate-runtime.patch
+    - parent-xml-recalculation.json
+    - REVIEW.md
+  - id: validation.candidate-source-binding
+    checkType: evidence-path
+    command: fetch origin edhr-dev; compare fixed Git, runtime input snapshots and
+      worktree
+    outcome: passed
+    evidence:
+    - 目标仍b6691e2c6289ab414a7a3fed1f128562cbba4166；32受测输入与候选Git/工作文件同字节。
+    - parent-final-source-binding.json
+    - final-verification.json
+    - latest-negative-source-binding.json
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages:
+    - P1
+    - P2
+    - P3

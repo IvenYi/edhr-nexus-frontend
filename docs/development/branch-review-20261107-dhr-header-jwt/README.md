@@ -2,6 +2,8 @@
 
 L2，固定目标 edhr-dev@b6691e2c6289ab414a7a3fed1f128562cbba4166。PR71已人工合入，整树同45858291，无外部代码/知识/契约增量。继续原W6-SECURITY-STREAM-HEADER-RACE-001，未重新收尾旧PR。本批主侧实际 **125/125**，0失败/错误/跳过，32受测输入匹配当前文件；待全新独立最终质量与本体最终源绑定，不提前宣称全部门禁通过。
 
+最终受测 **703f2ee90417e778cf745fbbcd24f908a345d3bd** 已获全新独立 **passed/FINAL：125/125、知识89/89、12/12必需检查**，三medium均复核关闭，无新开放发现/阻塞；源码孩子也FINAL。本体NA/FINAL、350知识及32受测输入保持。全部角色及孩子FINAL后已实际[PR前漂移/阶段复核](pre-pr-drift-review.md)，目标仍b669，无漂移；此后只L0验收/台账/交付。见[完整质量结果](quality-result.yaml)、[独立复验](independent-review.md)、[发现关闭范围](findings.md)。前文待验收为历史阶段，最终以本段为准；整体审计未结束。
+
 ## 根因与最小修复
 
 既有响应头风险已在实际SecurityConfig、JwtTokenProvider签发/验签、JwtAuthenticationFilter、DhrArchiveController、GlobalExceptionHandler及真实Tomcat装配证实。受控调度下，同一响应的servlet线程与worker进入默认安全头writer，maxConcurrent=2且nosniff重复。它是已知框架6.3.0的lazy并写入口；不把受控调度延迟或出现频率外推为生产事故/SLA。源码角色核官方7.x已修，但当前Boot3.3/Security6.3不是可单换web jar的组合，因此未升级依赖。
