@@ -2,6 +2,8 @@
 
 ## PR71已合入：实际JWT下载响应交接
 
+已交付[PR72](https://github.com/IvenYi/edhr-nexus-frontend/pull/72)，audit/edhr-dev-dhr-header-jwt-20261107→edhr-dev，观察OPEN/MERGEABLE/CLEAN，建议人工合入确定性修复。受测703f2ee9、验收06d8caca后仅L0交付登记，登记后核真实远端/PR head/本地及32输入；下轮先fetch实际合入和增量，再继续原跨链/健壮性/性能及A23队列，不自动merge/deploy/恢复或手动查询触发CI。
+
 最终clean受测703f2ee9已获全新quality passed/FINAL：独立125/125、知识89/89、12必需项、源码孩子8检查通过；三medium按initial并写/有效JWT ASYNC/未启动错误实体范围resolved。双方32输入、原件604成员、22JFR及server各3EXPORT/20参数核过，自有资源与依赖软链清理；报告工具短v2预期校准日志保留非产品红。最新本体NA/FINAL/350不变，有限10=8/2、所有孩子FINAL后，已于21:09实际[PR前漂移复核](../branch-review-20261107-dhr-header-jwt/pre-pr-drift-review.md)，目标仍b669、无外部增量/无漂移。后续仅L0验收/交付，不改受测运行/测试/知识/契约。
 
 下一轮先fetch真实合入与新增，回原跨链正确性/权限/事务及健壮性审查队列；真实活动网络故障、非可中断等待/初始挂起、自然过期长队/崩溃/UNKNOWN、容量及原性能方案保留，JWT每派发重复claims解析仅列源码候选，先量化讨论不预先优化。全审未结束；下文待验收为历史阶段。

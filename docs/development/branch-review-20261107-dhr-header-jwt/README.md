@@ -4,6 +4,8 @@ L2，固定目标 edhr-dev@b6691e2c6289ab414a7a3fed1f128562cbba4166。PR71已人
 
 最终受测 **703f2ee90417e778cf745fbbcd24f908a345d3bd** 已获全新独立 **passed/FINAL：125/125、知识89/89、12/12必需检查**，三medium均复核关闭，无新开放发现/阻塞；源码孩子也FINAL。本体NA/FINAL、350知识及32受测输入保持。全部角色及孩子FINAL后已实际[PR前漂移/阶段复核](pre-pr-drift-review.md)，目标仍b669，无漂移；此后只L0验收/台账/交付。见[完整质量结果](quality-result.yaml)、[独立复验](independent-review.md)、[发现关闭范围](findings.md)。前文待验收为历史阶段，最终以本段为准；整体审计未结束。
 
+已交付[PR72](https://github.com/IvenYi/edhr-nexus-frontend/pull/72)，audit/edhr-dev-dhr-header-jwt-20261107→edhr-dev，观察OPEN/MERGEABLE/CLEAN，建议人工合入。受测703f2ee9、验收06d8caca后仅L0交付登记，实际观察见evidence/delivery-verification.json；登记后再次核本地/真实远端/PR head及32输入。不自动合并部署或恢复，下轮先fetch真实合入和新增再继续原全审队列。
+
 ## 根因与最小修复
 
 既有响应头风险已在实际SecurityConfig、JwtTokenProvider签发/验签、JwtAuthenticationFilter、DhrArchiveController、GlobalExceptionHandler及真实Tomcat装配证实。受控调度下，同一响应的servlet线程与worker进入默认安全头writer，maxConcurrent=2且nosniff重复。它是已知框架6.3.0的lazy并写入口；不把受控调度延迟或出现频率外推为生产事故/SLA。源码角色核官方7.x已修，但当前Boot3.3/Security6.3不是可单换web jar的组合，因此未升级依赖。
