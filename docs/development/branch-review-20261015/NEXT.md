@@ -1,5 +1,19 @@
 # 持续推进台账
 
+## PR71已合入：实际JWT下载响应交接
+
+已交付[PR72](https://github.com/IvenYi/edhr-nexus-frontend/pull/72)，audit/edhr-dev-dhr-header-jwt-20261107→edhr-dev，观察OPEN/MERGEABLE/CLEAN，建议人工合入确定性修复。受测703f2ee9、验收06d8caca后仅L0交付登记，登记后核真实远端/PR head/本地及32输入；下轮先fetch实际合入和增量，再继续原跨链/健壮性/性能及A23队列，不自动merge/deploy/恢复或手动查询触发CI。
+
+最终clean受测703f2ee9已获全新quality passed/FINAL：独立125/125、知识89/89、12必需项、源码孩子8检查通过；三medium按initial并写/有效JWT ASYNC/未启动错误实体范围resolved。双方32输入、原件604成员、22JFR及server各3EXPORT/20参数核过，自有资源与依赖软链清理；报告工具短v2预期校准日志保留非产品红。最新本体NA/FINAL/350不变，有限10=8/2、所有孩子FINAL后，已于21:09实际[PR前漂移复核](../branch-review-20261107-dhr-header-jwt/pre-pr-drift-review.md)，目标仍b669、无外部增量/无漂移。后续仅L0验收/交付，不改受测运行/测试/知识/契约。
+
+下一轮先fetch真实合入与新增，回原跨链正确性/权限/事务及健壮性审查队列；真实活动网络故障、非可中断等待/初始挂起、自然过期长队/崩溃/UNKNOWN、容量及原性能方案保留，JWT每派发重复claims解析仅列源码候选，先量化讨论不预先优化。全审未结束；下文待验收为历史阶段。
+
+已fetch edhr-dev@b6691e2c6289ab414a7a3fed1f128562cbba4166，PR71人工合入且整树同45858291，无外部/知识/契约增量；新分支audit/edhr-dev-dhr-header-jwt-20261107。[本批](../branch-review-20261107-dhr-header-jwt/README.md)L2优先落实旧W6-SECURITY-STREAM-HEADER-RACE-001，实际JWT签发/验签/安全链/Controller/异常处理+Tomcat确认两线程并写。局部filter在HeaderWriterFilter外协调body，不全局eager，原预览private,max-age300保持。
+
+相邻确认JWT默认跳过ASYNC误报401，以及真实错误body沿用ZIP长度导致EOF；仅恢复ASYNC原验签（不permitAll/ERROR放行/放宽过期），未开始且未commit错误采用单一WAITING/BODY/FAILED/CLEANED归属并正确输出JSON/inline，completion继续清理，活动流不回滚。4产品文件、3测试文件，Service/冻结/hash/权限/审计/schema/UI保持。最新同源旧13=10正3真F/0E/S，主侧125/125全过，32输入/13HTTP/11JFR/observer33/3serverEXPORT核过，自有资源清理；所有中间编译/probe/EOF/头残留失败保留。当前待最终本体源绑定及全新独立质量，不提前宣称门禁通过。
+
+仍W3-W5交叉/W6，W2余项/W7增量、931知识/86UI/A12/高风险/完整矩阵、性能容量/A23含已审及暂停队列保持，整文件0/historicalunique未知。DB分页未答未实施；全部专业及孩子FINAL后实际PR前漂移/阶段复核，不自动merge/deploy/恢复或查询触发CI。
+
 ## PR70已合入：未启动下载流临时ZIP清理
 
 已交付[PR71](https://github.com/IvenYi/edhr-nexus-frontend/pull/71)，audit/edhr-dev-dhr-archive-async-20261107→edhr-dev，观察OPEN/MERGEABLE/CLEAN，建议人工合入本批有限临时ZIP修复。受测7b68eabc、验收c11f76f6后仅L0交付登记，记录提交后再核本地/真实远端/PR head及21输入；不自动merge/deploy/恢复。下轮先fetch真实合入和新增，优先产品JWT响应头竞态及缓存保持方案，不能把Basic夹具隔离当产品风险修复或整体审计结束。

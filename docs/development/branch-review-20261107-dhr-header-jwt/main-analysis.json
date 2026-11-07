@@ -1,0 +1,1432 @@
+{
+  "base": "b6691e2c6289ab414a7a3fed1f128562cbba4166",
+  "negative": {
+    "totals": {
+      "tests": 13,
+      "failures": 3,
+      "errors": 0,
+      "skipped": 0
+    },
+    "classes": [
+      {
+        "class": "com.zencas.edhr.production.controller.DhrArchiveJwtHeadersTest",
+        "tests": 13,
+        "failures": 3,
+        "errors": 0,
+        "skipped": 0
+      }
+    ],
+    "missingFreshReports": []
+  },
+  "final": {
+    "totals": {
+      "tests": 125,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "classes": [
+      {
+        "class": "com.zencas.edhr.production.controller.DhrArchiveJwtHeadersTest",
+        "tests": 13,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "com.zencas.edhr.production.controller.DhrArchiveResponseFilterTest",
+        "tests": 5,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "com.zencas.edhr.identity.security.JwtTokenProviderTest",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "com.zencas.edhr.identity.security.JwtAuthenticationFilterTest",
+        "tests": 3,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "com.zencas.edhr.common.config.SecurityConfigTest",
+        "tests": 6,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "com.zencas.edhr.common.config.SecurityJwtExpirationTest",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "com.zencas.edhr.production.controller.DhrArchiveAsyncLifecycleTest",
+        "tests": 5,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "com.zencas.edhr.production.controller.DhrArchiveAsyncOwnershipTest",
+        "tests": 5,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "com.zencas.edhr.production.service.DhrArchiveCleanupFailureTest",
+        "tests": 7,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "com.zencas.edhr.production.controller.DhrArchiveControllerStreamingTest",
+        "tests": 6,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "com.zencas.edhr.production.service.DhrExportReadObservationPostgresTest",
+        "tests": 12,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "com.zencas.edhr.production.service.DhrFormFilesTest",
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "com.zencas.edhr.production.service.DhrArchiveLayoutReaderTest",
+        "tests": 3,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "com.zencas.edhr.compliance.entity.AuditEventHashTest",
+        "tests": 48,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "com.zencas.edhr.compliance.entity.AuditEventTest",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "com.zencas.edhr.common.audit.AuditAspectTest",
+        "tests": 3,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    ],
+    "missingFreshReports": []
+  },
+  "sameByteNegativeHttpSha256": "ce1ead3930ab60a8d18c91cafd4208783a748750b39e4a6e335cfdf0d898bb18",
+  "jwtHttp": {
+    "inline": {
+      "name": "inline",
+      "httpStatus": 200,
+      "responseBytes": 162,
+      "headers": {
+        "cache-control": [
+          "no-cache, no-store, max-age=0, must-revalidate"
+        ],
+        "content-disposition": [
+          "attachment; filename=\"DHR-1-V10-complete.zip\""
+        ],
+        "content-length": [
+          "162"
+        ],
+        "content-type": [
+          "application/zip"
+        ],
+        "date": [
+          "Sat, 07 Nov 2026 12:53:38 GMT"
+        ],
+        "expires": [
+          "0"
+        ],
+        "pragma": [
+          "no-cache"
+        ],
+        "vary": [
+          "Origin",
+          "Access-Control-Request-Method",
+          "Access-Control-Request-Headers"
+        ],
+        "x-content-type-options": [
+          "nosniff"
+        ],
+        "x-frame-options": [
+          "DENY"
+        ],
+        "x-xss-protection": [
+          "0"
+        ]
+      },
+      "submitted": 1,
+      "started": 1,
+      "maxConcurrentHeaderWriters": 0,
+      "headerWriterThreads": [],
+      "initialRequests": 1,
+      "ownedExistsBeforeFixtureTeardown": false,
+      "exchangeFailure": null,
+      "scope": "actual SecurityConfig/JWT signing+filter/Controller/GlobalExceptionHandler+Tomcat; synthetic claims/key, mocked archive generator/repos; overlap probe only forces timing, not production latency"
+    },
+    "pdf-page-preview": {
+      "name": "pdf-page-preview",
+      "httpStatus": 200,
+      "responseBytes": 5981,
+      "headers": {
+        "cache-control": [
+          "private, max-age=300"
+        ],
+        "content-length": [
+          "5981"
+        ],
+        "content-type": [
+          "image/png"
+        ],
+        "date": [
+          "Sat, 07 Nov 2026 12:53:38 GMT"
+        ],
+        "vary": [
+          "Origin",
+          "Access-Control-Request-Method",
+          "Access-Control-Request-Headers"
+        ],
+        "x-content-type-options": [
+          "nosniff"
+        ],
+        "x-frame-options": [
+          "DENY"
+        ],
+        "x-page-count": [
+          "1"
+        ],
+        "x-xss-protection": [
+          "0"
+        ]
+      },
+      "submitted": 0,
+      "started": 0,
+      "maxConcurrentHeaderWriters": 0,
+      "headerWriterThreads": [],
+      "initialRequests": 0,
+      "ownedExistsBeforeFixtureTeardown": false,
+      "exchangeFailure": null,
+      "scope": "actual SecurityConfig/JWT signing+filter/Controller/GlobalExceptionHandler+Tomcat; synthetic claims/key, mocked archive generator/repos; overlap probe only forces timing, not production latency"
+    },
+    "anonymous": {
+      "name": "anonymous",
+      "httpStatus": 401,
+      "responseBytes": 146,
+      "headers": {
+        "cache-control": [
+          "no-cache, no-store, max-age=0, must-revalidate"
+        ],
+        "content-length": [
+          "146"
+        ],
+        "content-type": [
+          "application/json;charset=UTF-8"
+        ],
+        "date": [
+          "Sat, 07 Nov 2026 12:53:38 GMT"
+        ],
+        "expires": [
+          "0"
+        ],
+        "pragma": [
+          "no-cache"
+        ],
+        "vary": [
+          "Origin",
+          "Access-Control-Request-Method",
+          "Access-Control-Request-Headers"
+        ],
+        "x-content-type-options": [
+          "nosniff"
+        ],
+        "x-frame-options": [
+          "DENY"
+        ],
+        "x-xss-protection": [
+          "0"
+        ]
+      },
+      "submitted": 0,
+      "started": 0,
+      "maxConcurrentHeaderWriters": 0,
+      "headerWriterThreads": [],
+      "initialRequests": 1,
+      "ownedExistsBeforeFixtureTeardown": false,
+      "exchangeFailure": null,
+      "scope": "actual SecurityConfig/JWT signing+filter/Controller/GlobalExceptionHandler+Tomcat; synthetic claims/key, mocked archive generator/repos; overlap probe only forces timing, not production latency"
+    },
+    "forced-header-overlap": {
+      "name": "forced-header-overlap",
+      "httpStatus": 200,
+      "responseBytes": 162,
+      "headers": {
+        "cache-control": [
+          "no-cache, no-store, max-age=0, must-revalidate"
+        ],
+        "content-disposition": [
+          "attachment; filename=\"DHR-1-V10-complete.zip\""
+        ],
+        "content-length": [
+          "162"
+        ],
+        "content-type": [
+          "application/zip"
+        ],
+        "date": [
+          "Sat, 07 Nov 2026 12:53:38 GMT"
+        ],
+        "expires": [
+          "0"
+        ],
+        "pragma": [
+          "no-cache"
+        ],
+        "vary": [
+          "Origin",
+          "Access-Control-Request-Method",
+          "Access-Control-Request-Headers"
+        ],
+        "x-content-type-options": [
+          "nosniff"
+        ],
+        "x-frame-options": [
+          "DENY"
+        ],
+        "x-xss-protection": [
+          "0"
+        ]
+      },
+      "submitted": 1,
+      "started": 1,
+      "maxConcurrentHeaderWriters": 1,
+      "headerWriterThreads": [
+        "http-nio-auto-2-exec-10"
+      ],
+      "initialRequests": 1,
+      "ownedExistsBeforeFixtureTeardown": false,
+      "exchangeFailure": null,
+      "scope": "actual SecurityConfig/JWT signing+filter/Controller/GlobalExceptionHandler+Tomcat; synthetic claims/key, mocked archive generator/repos; overlap probe only forces timing, not production latency"
+    },
+    "client-cancelled": {
+      "name": "client-cancelled",
+      "httpStatus": null,
+      "responseBytes": null,
+      "headers": null,
+      "submitted": 1,
+      "started": 0,
+      "maxConcurrentHeaderWriters": 0,
+      "headerWriterThreads": [],
+      "initialRequests": 1,
+      "ownedExistsBeforeFixtureTeardown": false,
+      "exchangeFailure": null,
+      "scope": "actual SecurityConfig/JWT signing+filter/Controller/GlobalExceptionHandler+Tomcat; synthetic claims/key, mocked archive generator/repos; overlap probe only forces timing, not production latency"
+    },
+    "queued-timeout": {
+      "name": "queued-timeout",
+      "httpStatus": 500,
+      "responseBytes": 137,
+      "headers": {
+        "cache-control": [
+          "no-cache, no-store, max-age=0, must-revalidate"
+        ],
+        "connection": [
+          "close"
+        ],
+        "content-disposition": [
+          "inline"
+        ],
+        "content-type": [
+          "application/json"
+        ],
+        "date": [
+          "Sat, 07 Nov 2026 12:53:32 GMT"
+        ],
+        "expires": [
+          "0"
+        ],
+        "pragma": [
+          "no-cache"
+        ],
+        "transfer-encoding": [
+          "chunked"
+        ],
+        "vary": [
+          "Origin",
+          "Access-Control-Request-Method",
+          "Access-Control-Request-Headers"
+        ],
+        "x-content-type-options": [
+          "nosniff"
+        ],
+        "x-frame-options": [
+          "DENY"
+        ],
+        "x-xss-protection": [
+          "0"
+        ]
+      },
+      "submitted": 1,
+      "started": 0,
+      "maxConcurrentHeaderWriters": 0,
+      "headerWriterThreads": [],
+      "initialRequests": 1,
+      "ownedExistsBeforeFixtureTeardown": false,
+      "exchangeFailure": null,
+      "scope": "actual SecurityConfig/JWT signing+filter/Controller/GlobalExceptionHandler+Tomcat; synthetic claims/key, mocked archive generator/repos; overlap probe only forces timing, not production latency"
+    },
+    "normal": {
+      "name": "normal",
+      "httpStatus": 200,
+      "responseBytes": 162,
+      "headers": {
+        "cache-control": [
+          "no-cache, no-store, max-age=0, must-revalidate"
+        ],
+        "content-disposition": [
+          "attachment; filename=\"DHR-1-V10-complete.zip\""
+        ],
+        "content-length": [
+          "162"
+        ],
+        "content-type": [
+          "application/zip"
+        ],
+        "date": [
+          "Sat, 07 Nov 2026 12:53:28 GMT"
+        ],
+        "expires": [
+          "0"
+        ],
+        "pragma": [
+          "no-cache"
+        ],
+        "vary": [
+          "Origin",
+          "Access-Control-Request-Method",
+          "Access-Control-Request-Headers"
+        ],
+        "x-content-type-options": [
+          "nosniff"
+        ],
+        "x-frame-options": [
+          "DENY"
+        ],
+        "x-xss-protection": [
+          "0"
+        ]
+      },
+      "submitted": 1,
+      "started": 1,
+      "maxConcurrentHeaderWriters": 0,
+      "headerWriterThreads": [],
+      "initialRequests": 1,
+      "ownedExistsBeforeFixtureTeardown": false,
+      "exchangeFailure": null,
+      "scope": "actual SecurityConfig/JWT signing+filter/Controller/GlobalExceptionHandler+Tomcat; synthetic claims/key, mocked archive generator/repos; overlap probe only forces timing, not production latency"
+    },
+    "view-only": {
+      "name": "view-only",
+      "httpStatus": 403,
+      "responseBytes": 134,
+      "headers": {
+        "cache-control": [
+          "no-cache, no-store, max-age=0, must-revalidate"
+        ],
+        "content-type": [
+          "application/json"
+        ],
+        "date": [
+          "Sat, 07 Nov 2026 12:53:28 GMT"
+        ],
+        "expires": [
+          "0"
+        ],
+        "pragma": [
+          "no-cache"
+        ],
+        "transfer-encoding": [
+          "chunked"
+        ],
+        "vary": [
+          "Origin",
+          "Access-Control-Request-Method",
+          "Access-Control-Request-Headers"
+        ],
+        "x-content-type-options": [
+          "nosniff"
+        ],
+        "x-frame-options": [
+          "DENY"
+        ],
+        "x-xss-protection": [
+          "0"
+        ]
+      },
+      "submitted": 0,
+      "started": 0,
+      "maxConcurrentHeaderWriters": 0,
+      "headerWriterThreads": [],
+      "initialRequests": 1,
+      "ownedExistsBeforeFixtureTeardown": false,
+      "exchangeFailure": null,
+      "scope": "actual SecurityConfig/JWT signing+filter/Controller/GlobalExceptionHandler+Tomcat; synthetic claims/key, mocked archive generator/repos; overlap probe only forces timing, not production latency"
+    },
+    "invalid-jwt": {
+      "name": "invalid-jwt",
+      "httpStatus": 401,
+      "responseBytes": 146,
+      "headers": {
+        "cache-control": [
+          "no-cache, no-store, max-age=0, must-revalidate"
+        ],
+        "content-length": [
+          "146"
+        ],
+        "content-type": [
+          "application/json;charset=UTF-8"
+        ],
+        "date": [
+          "Sat, 07 Nov 2026 12:53:27 GMT"
+        ],
+        "expires": [
+          "0"
+        ],
+        "pragma": [
+          "no-cache"
+        ],
+        "vary": [
+          "Origin",
+          "Access-Control-Request-Method",
+          "Access-Control-Request-Headers"
+        ],
+        "x-content-type-options": [
+          "nosniff"
+        ],
+        "x-frame-options": [
+          "DENY"
+        ],
+        "x-xss-protection": [
+          "0"
+        ]
+      },
+      "submitted": 0,
+      "started": 0,
+      "maxConcurrentHeaderWriters": 0,
+      "headerWriterThreads": [],
+      "initialRequests": 1,
+      "ownedExistsBeforeFixtureTeardown": false,
+      "exchangeFailure": null,
+      "scope": "actual SecurityConfig/JWT signing+filter/Controller/GlobalExceptionHandler+Tomcat; synthetic claims/key, mocked archive generator/repos; overlap probe only forces timing, not production latency"
+    },
+    "private-preview": {
+      "name": "private-preview",
+      "httpStatus": 200,
+      "responseBytes": 68,
+      "headers": {
+        "accept-ranges": [
+          "bytes"
+        ],
+        "cache-control": [
+          "private, max-age=300"
+        ],
+        "content-disposition": [
+          "inline; filename=\"preview.png\""
+        ],
+        "content-length": [
+          "68"
+        ],
+        "content-security-policy": [
+          "default-src 'none'; img-src 'self' data:; style-src 'unsafe-inline'; script-src 'none'; sandbox"
+        ],
+        "content-type": [
+          "image/png"
+        ],
+        "date": [
+          "Sat, 07 Nov 2026 12:53:27 GMT"
+        ],
+        "vary": [
+          "Origin",
+          "Access-Control-Request-Method",
+          "Access-Control-Request-Headers"
+        ],
+        "x-content-type-options": [
+          "nosniff"
+        ],
+        "x-frame-options": [
+          "DENY"
+        ],
+        "x-xss-protection": [
+          "0"
+        ]
+      },
+      "submitted": 0,
+      "started": 0,
+      "maxConcurrentHeaderWriters": 0,
+      "headerWriterThreads": [],
+      "initialRequests": 0,
+      "ownedExistsBeforeFixtureTeardown": false,
+      "exchangeFailure": null,
+      "scope": "actual SecurityConfig/JWT signing+filter/Controller/GlobalExceptionHandler+Tomcat; synthetic claims/key, mocked archive generator/repos; overlap probe only forces timing, not production latency"
+    },
+    "public-preview": {
+      "name": "public-preview",
+      "httpStatus": 200,
+      "responseBytes": 68,
+      "headers": {
+        "accept-ranges": [
+          "bytes"
+        ],
+        "cache-control": [
+          "private, max-age=300"
+        ],
+        "content-disposition": [
+          "inline; filename=\"preview.png\""
+        ],
+        "content-length": [
+          "68"
+        ],
+        "content-security-policy": [
+          "default-src 'none'; img-src 'self' data:; style-src 'unsafe-inline'; script-src 'none'; sandbox"
+        ],
+        "content-type": [
+          "image/png"
+        ],
+        "date": [
+          "Sat, 07 Nov 2026 12:53:27 GMT"
+        ],
+        "vary": [
+          "Origin",
+          "Access-Control-Request-Method",
+          "Access-Control-Request-Headers"
+        ],
+        "x-content-type-options": [
+          "nosniff"
+        ],
+        "x-frame-options": [
+          "DENY"
+        ],
+        "x-xss-protection": [
+          "0"
+        ]
+      },
+      "submitted": 0,
+      "started": 0,
+      "maxConcurrentHeaderWriters": 0,
+      "headerWriterThreads": [],
+      "initialRequests": 0,
+      "ownedExistsBeforeFixtureTeardown": false,
+      "exchangeFailure": null,
+      "scope": "actual SecurityConfig/JWT signing+filter/Controller/GlobalExceptionHandler+Tomcat; synthetic claims/key, mocked archive generator/repos; overlap probe only forces timing, not production latency"
+    },
+    "rejected": {
+      "name": "rejected",
+      "httpStatus": 500,
+      "responseBytes": 137,
+      "headers": {
+        "cache-control": [
+          "no-cache, no-store, max-age=0, must-revalidate"
+        ],
+        "connection": [
+          "close"
+        ],
+        "content-disposition": [
+          "inline"
+        ],
+        "content-type": [
+          "application/json"
+        ],
+        "date": [
+          "Sat, 07 Nov 2026 12:53:27 GMT"
+        ],
+        "expires": [
+          "0"
+        ],
+        "pragma": [
+          "no-cache"
+        ],
+        "transfer-encoding": [
+          "chunked"
+        ],
+        "vary": [
+          "Origin",
+          "Access-Control-Request-Method",
+          "Access-Control-Request-Headers"
+        ],
+        "x-content-type-options": [
+          "nosniff"
+        ],
+        "x-frame-options": [
+          "DENY"
+        ],
+        "x-xss-protection": [
+          "0"
+        ]
+      },
+      "submitted": 1,
+      "started": 0,
+      "maxConcurrentHeaderWriters": 0,
+      "headerWriterThreads": [],
+      "initialRequests": 1,
+      "ownedExistsBeforeFixtureTeardown": false,
+      "exchangeFailure": null,
+      "scope": "actual SecurityConfig/JWT signing+filter/Controller/GlobalExceptionHandler+Tomcat; synthetic claims/key, mocked archive generator/repos; overlap probe only forces timing, not production latency"
+    },
+    "head": {
+      "name": "head",
+      "httpStatus": 200,
+      "responseBytes": 0,
+      "headers": {
+        "cache-control": [
+          "no-cache, no-store, max-age=0, must-revalidate"
+        ],
+        "content-disposition": [
+          "attachment; filename=\"DHR-1-V10-complete.zip\""
+        ],
+        "content-length": [
+          "162"
+        ],
+        "content-type": [
+          "application/zip"
+        ],
+        "date": [
+          "Sat, 07 Nov 2026 12:53:27 GMT"
+        ],
+        "expires": [
+          "0"
+        ],
+        "pragma": [
+          "no-cache"
+        ],
+        "vary": [
+          "Origin",
+          "Access-Control-Request-Method",
+          "Access-Control-Request-Headers"
+        ],
+        "x-content-type-options": [
+          "nosniff"
+        ],
+        "x-frame-options": [
+          "DENY"
+        ],
+        "x-xss-protection": [
+          "0"
+        ]
+      },
+      "submitted": 1,
+      "started": 1,
+      "maxConcurrentHeaderWriters": 0,
+      "headerWriterThreads": [],
+      "initialRequests": 1,
+      "ownedExistsBeforeFixtureTeardown": false,
+      "exchangeFailure": null,
+      "scope": "actual SecurityConfig/JWT signing+filter/Controller/GlobalExceptionHandler+Tomcat; synthetic claims/key, mocked archive generator/repos; overlap probe only forces timing, not production latency"
+    }
+  },
+  "oldJwtHttp": {
+    "inline": {
+      "name": "inline",
+      "httpStatus": 200,
+      "responseBytes": 162,
+      "headers": {
+        "cache-control": [
+          "no-cache, no-store, max-age=0, must-revalidate"
+        ],
+        "content-disposition": [
+          "attachment; filename=\"DHR-1-V10-complete.zip\""
+        ],
+        "content-length": [
+          "162"
+        ],
+        "content-type": [
+          "application/zip"
+        ],
+        "date": [
+          "Sat, 07 Nov 2026 12:53:22 GMT"
+        ],
+        "expires": [
+          "0"
+        ],
+        "pragma": [
+          "no-cache"
+        ],
+        "vary": [
+          "Origin",
+          "Access-Control-Request-Method",
+          "Access-Control-Request-Headers"
+        ],
+        "x-content-type-options": [
+          "nosniff"
+        ],
+        "x-frame-options": [
+          "DENY"
+        ],
+        "x-xss-protection": [
+          "0"
+        ]
+      },
+      "submitted": 1,
+      "started": 1,
+      "maxConcurrentHeaderWriters": 0,
+      "headerWriterThreads": [],
+      "initialRequests": 1,
+      "ownedExistsBeforeFixtureTeardown": false,
+      "exchangeFailure": null,
+      "scope": "actual SecurityConfig/JWT signing+filter/Controller/GlobalExceptionHandler+Tomcat; synthetic claims/key, mocked archive generator/repos; overlap probe only forces timing, not production latency"
+    },
+    "pdf-page-preview": {
+      "name": "pdf-page-preview",
+      "httpStatus": 200,
+      "responseBytes": 5981,
+      "headers": {
+        "cache-control": [
+          "private, max-age=300"
+        ],
+        "content-length": [
+          "5981"
+        ],
+        "content-type": [
+          "image/png"
+        ],
+        "date": [
+          "Sat, 07 Nov 2026 12:53:22 GMT"
+        ],
+        "vary": [
+          "Origin",
+          "Access-Control-Request-Method",
+          "Access-Control-Request-Headers"
+        ],
+        "x-content-type-options": [
+          "nosniff"
+        ],
+        "x-frame-options": [
+          "DENY"
+        ],
+        "x-page-count": [
+          "1"
+        ],
+        "x-xss-protection": [
+          "0"
+        ]
+      },
+      "submitted": 0,
+      "started": 0,
+      "maxConcurrentHeaderWriters": 0,
+      "headerWriterThreads": [],
+      "initialRequests": 0,
+      "ownedExistsBeforeFixtureTeardown": false,
+      "exchangeFailure": null,
+      "scope": "actual SecurityConfig/JWT signing+filter/Controller/GlobalExceptionHandler+Tomcat; synthetic claims/key, mocked archive generator/repos; overlap probe only forces timing, not production latency"
+    },
+    "anonymous": {
+      "name": "anonymous",
+      "httpStatus": 401,
+      "responseBytes": 146,
+      "headers": {
+        "cache-control": [
+          "no-cache, no-store, max-age=0, must-revalidate"
+        ],
+        "content-length": [
+          "146"
+        ],
+        "content-type": [
+          "application/json;charset=UTF-8"
+        ],
+        "date": [
+          "Sat, 07 Nov 2026 12:53:22 GMT"
+        ],
+        "expires": [
+          "0"
+        ],
+        "pragma": [
+          "no-cache"
+        ],
+        "vary": [
+          "Origin",
+          "Access-Control-Request-Method",
+          "Access-Control-Request-Headers"
+        ],
+        "x-content-type-options": [
+          "nosniff"
+        ],
+        "x-frame-options": [
+          "DENY"
+        ],
+        "x-xss-protection": [
+          "0"
+        ]
+      },
+      "submitted": 0,
+      "started": 0,
+      "maxConcurrentHeaderWriters": 0,
+      "headerWriterThreads": [],
+      "initialRequests": 1,
+      "ownedExistsBeforeFixtureTeardown": false,
+      "exchangeFailure": null,
+      "scope": "actual SecurityConfig/JWT signing+filter/Controller/GlobalExceptionHandler+Tomcat; synthetic claims/key, mocked archive generator/repos; overlap probe only forces timing, not production latency"
+    },
+    "forced-header-overlap": {
+      "name": "forced-header-overlap",
+      "httpStatus": 200,
+      "responseBytes": 162,
+      "headers": {
+        "cache-control": [
+          "no-cache, no-store, max-age=0, must-revalidate"
+        ],
+        "content-disposition": [
+          "attachment; filename=\"DHR-1-V10-complete.zip\""
+        ],
+        "content-length": [
+          "162"
+        ],
+        "content-type": [
+          "application/zip"
+        ],
+        "date": [
+          "Sat, 07 Nov 2026 12:53:22 GMT"
+        ],
+        "expires": [
+          "0"
+        ],
+        "pragma": [
+          "no-cache"
+        ],
+        "vary": [
+          "Origin",
+          "Access-Control-Request-Method",
+          "Access-Control-Request-Headers"
+        ],
+        "x-content-type-options": [
+          "nosniff",
+          "nosniff"
+        ],
+        "x-frame-options": [
+          "DENY"
+        ],
+        "x-xss-protection": [
+          "0"
+        ]
+      },
+      "submitted": 1,
+      "started": 1,
+      "maxConcurrentHeaderWriters": 2,
+      "headerWriterThreads": [
+        "http-nio-auto-1-exec-10",
+        "archive-jwt-worker"
+      ],
+      "initialRequests": 1,
+      "ownedExistsBeforeFixtureTeardown": false,
+      "exchangeFailure": null,
+      "scope": "actual SecurityConfig/JWT signing+filter/Controller/GlobalExceptionHandler+Tomcat; synthetic claims/key, mocked archive generator/repos; overlap probe only forces timing, not production latency"
+    },
+    "client-cancelled": {
+      "name": "client-cancelled",
+      "httpStatus": null,
+      "responseBytes": null,
+      "headers": null,
+      "submitted": 1,
+      "started": 0,
+      "maxConcurrentHeaderWriters": 0,
+      "headerWriterThreads": [],
+      "initialRequests": 1,
+      "ownedExistsBeforeFixtureTeardown": false,
+      "exchangeFailure": null,
+      "scope": "actual SecurityConfig/JWT signing+filter/Controller/GlobalExceptionHandler+Tomcat; synthetic claims/key, mocked archive generator/repos; overlap probe only forces timing, not production latency"
+    },
+    "queued-timeout": {
+      "name": "queued-timeout",
+      "httpStatus": 401,
+      "responseBytes": 146,
+      "headers": {
+        "cache-control": [
+          "no-cache, no-store, max-age=0, must-revalidate"
+        ],
+        "content-disposition": [
+          "attachment; filename=\"DHR-1-V10-complete.zip\""
+        ],
+        "content-length": [
+          "146"
+        ],
+        "content-type": [
+          "application/json;charset=UTF-8"
+        ],
+        "date": [
+          "Sat, 07 Nov 2026 12:53:18 GMT"
+        ],
+        "expires": [
+          "0"
+        ],
+        "pragma": [
+          "no-cache"
+        ],
+        "vary": [
+          "Origin",
+          "Access-Control-Request-Method",
+          "Access-Control-Request-Headers"
+        ],
+        "x-content-type-options": [
+          "nosniff"
+        ],
+        "x-frame-options": [
+          "DENY"
+        ],
+        "x-xss-protection": [
+          "0"
+        ]
+      },
+      "submitted": 1,
+      "started": 0,
+      "maxConcurrentHeaderWriters": 0,
+      "headerWriterThreads": [],
+      "initialRequests": 1,
+      "ownedExistsBeforeFixtureTeardown": false,
+      "exchangeFailure": null,
+      "scope": "actual SecurityConfig/JWT signing+filter/Controller/GlobalExceptionHandler+Tomcat; synthetic claims/key, mocked archive generator/repos; overlap probe only forces timing, not production latency"
+    },
+    "normal": {
+      "name": "normal",
+      "httpStatus": 200,
+      "responseBytes": 162,
+      "headers": {
+        "cache-control": [
+          "no-cache, no-store, max-age=0, must-revalidate"
+        ],
+        "content-disposition": [
+          "attachment; filename=\"DHR-1-V10-complete.zip\""
+        ],
+        "content-length": [
+          "162"
+        ],
+        "content-type": [
+          "application/zip"
+        ],
+        "date": [
+          "Sat, 07 Nov 2026 12:53:14 GMT"
+        ],
+        "expires": [
+          "0"
+        ],
+        "pragma": [
+          "no-cache"
+        ],
+        "vary": [
+          "Origin",
+          "Access-Control-Request-Method",
+          "Access-Control-Request-Headers"
+        ],
+        "x-content-type-options": [
+          "nosniff"
+        ],
+        "x-frame-options": [
+          "DENY"
+        ],
+        "x-xss-protection": [
+          "0"
+        ]
+      },
+      "submitted": 1,
+      "started": 1,
+      "maxConcurrentHeaderWriters": 0,
+      "headerWriterThreads": [],
+      "initialRequests": 1,
+      "ownedExistsBeforeFixtureTeardown": false,
+      "exchangeFailure": null,
+      "scope": "actual SecurityConfig/JWT signing+filter/Controller/GlobalExceptionHandler+Tomcat; synthetic claims/key, mocked archive generator/repos; overlap probe only forces timing, not production latency"
+    },
+    "view-only": {
+      "name": "view-only",
+      "httpStatus": 403,
+      "responseBytes": 134,
+      "headers": {
+        "cache-control": [
+          "no-cache, no-store, max-age=0, must-revalidate"
+        ],
+        "content-type": [
+          "application/json"
+        ],
+        "date": [
+          "Sat, 07 Nov 2026 12:53:14 GMT"
+        ],
+        "expires": [
+          "0"
+        ],
+        "pragma": [
+          "no-cache"
+        ],
+        "transfer-encoding": [
+          "chunked"
+        ],
+        "vary": [
+          "Origin",
+          "Access-Control-Request-Method",
+          "Access-Control-Request-Headers"
+        ],
+        "x-content-type-options": [
+          "nosniff"
+        ],
+        "x-frame-options": [
+          "DENY"
+        ],
+        "x-xss-protection": [
+          "0"
+        ]
+      },
+      "submitted": 0,
+      "started": 0,
+      "maxConcurrentHeaderWriters": 0,
+      "headerWriterThreads": [],
+      "initialRequests": 1,
+      "ownedExistsBeforeFixtureTeardown": false,
+      "exchangeFailure": null,
+      "scope": "actual SecurityConfig/JWT signing+filter/Controller/GlobalExceptionHandler+Tomcat; synthetic claims/key, mocked archive generator/repos; overlap probe only forces timing, not production latency"
+    },
+    "invalid-jwt": {
+      "name": "invalid-jwt",
+      "httpStatus": 401,
+      "responseBytes": 146,
+      "headers": {
+        "cache-control": [
+          "no-cache, no-store, max-age=0, must-revalidate"
+        ],
+        "content-length": [
+          "146"
+        ],
+        "content-type": [
+          "application/json;charset=UTF-8"
+        ],
+        "date": [
+          "Sat, 07 Nov 2026 12:53:14 GMT"
+        ],
+        "expires": [
+          "0"
+        ],
+        "pragma": [
+          "no-cache"
+        ],
+        "vary": [
+          "Origin",
+          "Access-Control-Request-Method",
+          "Access-Control-Request-Headers"
+        ],
+        "x-content-type-options": [
+          "nosniff"
+        ],
+        "x-frame-options": [
+          "DENY"
+        ],
+        "x-xss-protection": [
+          "0"
+        ]
+      },
+      "submitted": 0,
+      "started": 0,
+      "maxConcurrentHeaderWriters": 0,
+      "headerWriterThreads": [],
+      "initialRequests": 1,
+      "ownedExistsBeforeFixtureTeardown": false,
+      "exchangeFailure": null,
+      "scope": "actual SecurityConfig/JWT signing+filter/Controller/GlobalExceptionHandler+Tomcat; synthetic claims/key, mocked archive generator/repos; overlap probe only forces timing, not production latency"
+    },
+    "private-preview": {
+      "name": "private-preview",
+      "httpStatus": 200,
+      "responseBytes": 68,
+      "headers": {
+        "accept-ranges": [
+          "bytes"
+        ],
+        "cache-control": [
+          "private, max-age=300"
+        ],
+        "content-disposition": [
+          "inline; filename=\"preview.png\""
+        ],
+        "content-length": [
+          "68"
+        ],
+        "content-security-policy": [
+          "default-src 'none'; img-src 'self' data:; style-src 'unsafe-inline'; script-src 'none'; sandbox"
+        ],
+        "content-type": [
+          "image/png"
+        ],
+        "date": [
+          "Sat, 07 Nov 2026 12:53:14 GMT"
+        ],
+        "vary": [
+          "Origin",
+          "Access-Control-Request-Method",
+          "Access-Control-Request-Headers"
+        ],
+        "x-content-type-options": [
+          "nosniff"
+        ],
+        "x-frame-options": [
+          "DENY"
+        ],
+        "x-xss-protection": [
+          "0"
+        ]
+      },
+      "submitted": 0,
+      "started": 0,
+      "maxConcurrentHeaderWriters": 0,
+      "headerWriterThreads": [],
+      "initialRequests": 0,
+      "ownedExistsBeforeFixtureTeardown": false,
+      "exchangeFailure": null,
+      "scope": "actual SecurityConfig/JWT signing+filter/Controller/GlobalExceptionHandler+Tomcat; synthetic claims/key, mocked archive generator/repos; overlap probe only forces timing, not production latency"
+    },
+    "public-preview": {
+      "name": "public-preview",
+      "httpStatus": 200,
+      "responseBytes": 68,
+      "headers": {
+        "accept-ranges": [
+          "bytes"
+        ],
+        "cache-control": [
+          "private, max-age=300"
+        ],
+        "content-disposition": [
+          "inline; filename=\"preview.png\""
+        ],
+        "content-length": [
+          "68"
+        ],
+        "content-security-policy": [
+          "default-src 'none'; img-src 'self' data:; style-src 'unsafe-inline'; script-src 'none'; sandbox"
+        ],
+        "content-type": [
+          "image/png"
+        ],
+        "date": [
+          "Sat, 07 Nov 2026 12:53:14 GMT"
+        ],
+        "vary": [
+          "Origin",
+          "Access-Control-Request-Method",
+          "Access-Control-Request-Headers"
+        ],
+        "x-content-type-options": [
+          "nosniff"
+        ],
+        "x-frame-options": [
+          "DENY"
+        ],
+        "x-xss-protection": [
+          "0"
+        ]
+      },
+      "submitted": 0,
+      "started": 0,
+      "maxConcurrentHeaderWriters": 0,
+      "headerWriterThreads": [],
+      "initialRequests": 0,
+      "ownedExistsBeforeFixtureTeardown": false,
+      "exchangeFailure": null,
+      "scope": "actual SecurityConfig/JWT signing+filter/Controller/GlobalExceptionHandler+Tomcat; synthetic claims/key, mocked archive generator/repos; overlap probe only forces timing, not production latency"
+    },
+    "rejected": {
+      "name": "rejected",
+      "httpStatus": 401,
+      "responseBytes": 146,
+      "headers": {
+        "cache-control": [
+          "no-cache, no-store, max-age=0, must-revalidate"
+        ],
+        "content-disposition": [
+          "attachment; filename=\"DHR-1-V10-complete.zip\""
+        ],
+        "content-length": [
+          "146"
+        ],
+        "content-type": [
+          "application/json;charset=UTF-8"
+        ],
+        "date": [
+          "Sat, 07 Nov 2026 12:53:14 GMT"
+        ],
+        "expires": [
+          "0"
+        ],
+        "pragma": [
+          "no-cache"
+        ],
+        "vary": [
+          "Origin",
+          "Access-Control-Request-Method",
+          "Access-Control-Request-Headers"
+        ],
+        "x-content-type-options": [
+          "nosniff"
+        ],
+        "x-frame-options": [
+          "DENY"
+        ],
+        "x-xss-protection": [
+          "0"
+        ]
+      },
+      "submitted": 1,
+      "started": 0,
+      "maxConcurrentHeaderWriters": 0,
+      "headerWriterThreads": [],
+      "initialRequests": 1,
+      "ownedExistsBeforeFixtureTeardown": false,
+      "exchangeFailure": null,
+      "scope": "actual SecurityConfig/JWT signing+filter/Controller/GlobalExceptionHandler+Tomcat; synthetic claims/key, mocked archive generator/repos; overlap probe only forces timing, not production latency"
+    },
+    "head": {
+      "name": "head",
+      "httpStatus": 200,
+      "responseBytes": 0,
+      "headers": {
+        "cache-control": [
+          "no-cache, no-store, max-age=0, must-revalidate"
+        ],
+        "content-disposition": [
+          "attachment; filename=\"DHR-1-V10-complete.zip\""
+        ],
+        "content-length": [
+          "162"
+        ],
+        "content-type": [
+          "application/zip"
+        ],
+        "date": [
+          "Sat, 07 Nov 2026 12:53:14 GMT"
+        ],
+        "expires": [
+          "0"
+        ],
+        "pragma": [
+          "no-cache"
+        ],
+        "vary": [
+          "Origin",
+          "Access-Control-Request-Method",
+          "Access-Control-Request-Headers"
+        ],
+        "x-content-type-options": [
+          "nosniff"
+        ],
+        "x-frame-options": [
+          "DENY"
+        ],
+        "x-xss-protection": [
+          "0"
+        ]
+      },
+      "submitted": 1,
+      "started": 1,
+      "maxConcurrentHeaderWriters": 0,
+      "headerWriterThreads": [],
+      "initialRequests": 1,
+      "ownedExistsBeforeFixtureTeardown": false,
+      "exchangeFailure": null,
+      "scope": "actual SecurityConfig/JWT signing+filter/Controller/GlobalExceptionHandler+Tomcat; synthetic claims/key, mocked archive generator/repos; overlap probe only forces timing, not production latency"
+    }
+  },
+  "inputsIdentical": 32,
+  "nativeObserverSelects": 33,
+  "serverExportInserts": 3,
+  "jfrRecalculation": [
+    {
+      "name": "archive-1",
+      "bytes": 597172,
+      "events": 74
+    },
+    {
+      "name": "archive-10",
+      "bytes": 4167984,
+      "events": 510
+    },
+    {
+      "name": "archive-100",
+      "bytes": 39878146,
+      "events": 4869
+    },
+    {
+      "name": "ordinary-0",
+      "bytes": 0,
+      "events": 0
+    },
+    {
+      "name": "ordinary-1",
+      "bytes": 262144,
+      "events": 2
+    },
+    {
+      "name": "ordinary-10",
+      "bytes": 262144,
+      "events": 2
+    },
+    {
+      "name": "ordinary-100",
+      "bytes": 262144,
+      "events": 2
+    },
+    {
+      "name": "signature-0",
+      "bytes": 0,
+      "events": 0
+    },
+    {
+      "name": "signature-1",
+      "bytes": 262144,
+      "events": 2
+    },
+    {
+      "name": "signature-10",
+      "bytes": 262144,
+      "events": 2
+    },
+    {
+      "name": "signature-100",
+      "bytes": 262144,
+      "events": 2
+    }
+  ],
+  "ownedHttpPortsClosed": [
+    36943,
+    44639
+  ],
+  "ownedResourcesClean": true,
+  "history": "Pilot compile0; first setHeader-only probe max0 calibration failure, not product race; corrected old13 10P3F; intermediate124/125 EOF2E preserved; null disposition unsupported, explicit inline contract and strict assertion preserved; latest same-byte old13 10P3F is canonical.",
+  "limits": [
+    "Synthetic signed JWT and mocked ZIP generator/repos, not full login/identity DB HTTP chain",
+    "Probe forces timing; not production latency/frequency or SLA",
+    "Native PG12 renderer mocked; observer33 lacks per-event server tags, not all-network SQL attribution",
+    "Direct gate tests not active-body real network cancellation; monitor wait non-interruptible, no hanging-filter/crash/UNKNOWN guarantee",
+    "Security7.x official fix is not current6.x drop-in; no dependency/cache policy changes"
+  ]
+}

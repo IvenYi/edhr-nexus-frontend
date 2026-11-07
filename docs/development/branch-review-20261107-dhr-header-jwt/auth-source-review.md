@@ -1,0 +1,41 @@
+# JWT ASYNC 重新派发身份：只读增量
+
+正式 **completed / FINAL**。固定 source/target/contractRead `b6691e2c6289ab414a7a3fed1f128562cbba4166`，知识0.3.25/schema1.2.0/P0 in-progress。本角色没有修改仓库产品、测试、配置或知识，没有运行产品HTTP/JWT/PG；只读取主侧两份真实HTTP原件、固定源码和安装依赖，并执行5项框架依赖微例。上一源码包和上游子项的FINAL原件保持，不覆盖。
+
+## 已证入口与框架时序
+
+主侧最初negative_context的rejected及queued-timeout实际HTTP均401，submitted=1/started=0，自有ZIP在teardown前已删除。它们装配真实SecurityConfig、JWT签发/过滤器、Controller和GlobalExceptionHandler；这些HTTP由主侧执行，本角色只是读取原件。该轮header计数只覆盖setHeader而漏addHeader的max0是主侧夹具校准错误，不在本报告计为产品并写缺陷；两项401的身份时序独立于该计数。
+
+当前JwtAuthenticationFilter继承OncePerRequestFilter，没有覆盖shouldNotFilterAsyncDispatch；安装的Spring6.1.8默认返回true。初始REQUEST验签后只把Authentication放入SecurityContextHolder，没有调用SecurityContextRepository.saveContext。
+
+安装Security6.3.0的SessionManagementConfigurer在STATELESS配置下，把RequestAttributeSecurityContextRepository作为共享SecurityContextRepository交给SecurityContextHolderFilter，另以NullSecurityContextRepository用于session管理策略。两者不可混为“所有上下文都用Null库”。SecurityContextHolderFilter每轮从请求库loadDeferredContext，chain finally清线程上下文并移除自己的applied属性，不自动保存JWT新放入的上下文。
+
+WebAsyncManagerIntegrationFilter注册SecurityContextCallableProcessingInterceptor：beforeConcurrentHandling捕获初始上下文；worker preProcess设置、postProcess清除。它保障Callable线程的上下文，不向请求库save，也不替代后续ASYNC servlet重新派发的认证。执行器拒绝或任务尚未运行即超时时，这个worker preProcess更不会成为重新派发的身份来源。
+
+因此后续ASYNC进入SecurityContextHolderFilter会加载空请求上下文，JWT又被默认跳过，AnonymousAuthenticationFilter/AuthorizationFilter随后执行，而SecurityConfig仍要求anyRequest().authenticated，真实错误结果还未交给MVC异常处理就被401截断。AuthorizationFilter默认检查ASYNC；不能把“Callable可见身份”当“重新派发一定保留身份”。正常200下载也可能在body之后的重新派发阶段遇到认证失败并尝试写已提交响应；主侧宜一并验证实际ASYNC身份及相关错误日志，不能仅看客户端拿到ZIP。
+
+## 最小方案评估
+
+仅在JwtAuthenticationFilter覆盖 `shouldNotFilterAsyncDispatch()` 返回false，可使ASYNC重新派发重新执行同一份Bearer解析、签名/过期验证、身份/权限与AuditContext设置/清理逻辑。无需对ASYNC permitAll、不创建session、不复制认证政策或缓存旧身份，符合本轮恢复现有已认证请求错误处理的范围。
+
+重新验签仍按该次派发时点执行原token验证：若排队期间token已过期/无效，继续401是保留的安全边界，不能把最初REQUEST有效解释为永久授权。未提供或无效token不因ASYNC获得身份。不要一并覆盖shouldNotFilterErrorDispatch或新增ERROR permitAll；ERROR保留默认跳过，泛化ERROR认证问题不在本次最小修复里偷偷改变。
+
+另一种工程路径是显式save到请求上下文库，但会影响更多dispatcher的身份可见性，且需协调shared repo；本轮没有依据要求扩大到该方案。上述false覆盖仍须实际产品JWT/Tomcat验证正常、拒绝、超时、无效/过期token、无权、内容/审计身份与ZIP清理；本报告不认证尚未提交的候选。
+
+## 实际执行5项依赖微例
+
+`AsyncAuthenticationDependencyProbe.java`使用真实SecurityContextHolderFilter、RequestAttributeSecurityContextRepository、OncePerRequestFilter和SecurityContextCallableProcessingInterceptor，认证本身是合成内存对象，**不是**实际JWT签名或应用HTTP。
+
+- 默认ASYNC跳过：初始/重新派发可见身份为[true,false]，验证1次。
+- ASYNC重查且有效：[true,true]，验证2次。
+- ASYNC重查但无效：[true,false]，验证2次。
+- 只重查ASYNC、ERROR仍默认跳过：[true,false]，验证1次。
+- 实际Callable拦截器使worker可见身份并在postProcess清除，但请求repository仍无已保存上下文。
+
+5/5通过，原命令、12个安装依赖SHA和输出均存包中；无应用测试/断言修改。源码结论与依赖模拟保持范围分离，不把这5项充作主侧HTTP失败修复或最终质量通过。
+
+## 业务及剩余范围
+
+原view+export权限、签名算法/有效期、同一冻结版本/原件/摘要、Service导出及EXPORT审计次序不由这个工程派发修正改变。未新增业务政策、归档能力、历史恢复或权限豁免。原响应头并写门禁与本身份问题按两个根因取证；主侧可在同一真实下载切片做相邻最小整改，但不得把header夹具校准失败当身份bug证据，也不能靠降低500预期为401使校验通过。
+
+本轮未复验具体产品修复、浏览器、数据库、真实PDF、JWT全租户或任意ERROR dispatch；无CI/合并/部署/仓库变更。全部已派子项此前FINAL，本增量没有新孩子或在途工作。W2-W7/性能/容量/A23/暂停队列保持，整文件完成0、历史unique未知。

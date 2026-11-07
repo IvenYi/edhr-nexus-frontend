@@ -1,0 +1,295 @@
+qualityResult:
+  result: passed
+  level: L2
+  baseCommit: b6691e2c6289ab414a7a3fed1f128562cbba4166
+  headCommit: 703f2ee90417e778cf745fbbcd24f908a345d3bd
+  contractBaseline:
+    sourceCommit: 703f2ee90417e778cf745fbbcd24f908a345d3bd
+    targetBranch: edhr-dev
+    targetCommit: b6691e2c6289ab414a7a3fed1f128562cbba4166
+    contractReadCommit: 703f2ee90417e778cf745fbbcd24f908a345d3bd
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: clean
+    includedPaths: []
+    excludedPaths: []
+    untrackedPaths: []
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+  - id: check.fixed-candidate-and-contract
+    required: true
+    category: documentation
+    description: 独立核对base、target、candidate、实际读取契约及工作树
+    method: command
+    command: git rev-parse HEAD; git rev-parse refs/remotes/origin/edhr-dev; git diff --name-only b6691e2c6289ab414a7a3fed1f128562cbba4166
+      HEAD -- AGENTS.md codeplzreadme.md docs/agents docs/knowledge docs/architecture/business-knowledge-model.md
+    outcome: passed
+    evidence:
+    - 实际base/target=b6691e2c6289ab414a7a3fed1f128562cbba4166；功能head及本次tested candidate=703f2ee90417e778cf745fbbcd24f908a345d3bd；contractReadCommit=703f2ee90417e778cf745fbbcd24f908a345d3bd。
+    - 'analysis.json: target tree c624b0edaa64701f810e77947f97c0705236bcab 与45858291c24c0b89598be15f004979c486a61a59树一致；无契约/知识增量。'
+    - final_verified/run.json记录测试时真实dirty，唯一untracked/excluded为gmp-platform/frontend/node_modules依赖软链，目标主树已安装目录；测试/源码未修改。软链已移除，final-worktree.json最终clean。
+    - 本角色只核本地origin/edhr-dev固定ref；未查/触发CI/Actions，未merge/deploy/恢复/扫描删除。全部角色FINAL之后主侧的实际PR前漂移复核仍未由本角色执行。
+  - id: check.independent-main-125
+    required: true
+    category: regression
+    description: 全新实例在独立detached worktree实际复跑完整125
+    method: automated-test
+    command: EDHR_ARCHIVE_ROOT=/workspace/edhr-header-jwt-qa-20261107 EDHR_ARCHIVE_RAW=/tmp/edhr-header-jwt-final-qa-20261107
+      python3 /tmp/edhr-header-jwt-final-qa-20261107/run.py final_verified
+    outcome: passed
+    evidence:
+    - final_verified/run.json、test-summary.json及16份fresh XML：125测试，0F/0E/0S，Maven退出0。
+    - 125=真实JWT HTTP13+局部gate5+原95+原JWT相关10/新增ASYNC2；不累计历史通过。
+    - JVM -Xmx1536m及自有java.io.tmpdir；自身编排只修改独立容器名前缀，受测测试来源逐字节保持。
+  - id: check.real-jwt-http-and-error-framing
+    required: true
+    category: api
+    description: 真实JWT安全链/Tomcat的头交接、权限、GET/HEAD、inline、拒绝及排队timeout
+    method: automated-test
+    command: final_verified/run.json内原Maven命令，DhrArchiveJwtHeadersTest；python3 /tmp/edhr-header-jwt-final-qa-20261107/audit_evidence.py
+    outcome: passed
+    evidence:
+    - final_verified/TEST-com.zencas.edhr.production.controller.DhrArchiveJwtHeadersTest.xml：13/13。实际context-path=/header-audit。
+    - jwt-http/forced-header-overlap.json：maxConcurrentHeaderWriters=1且仅一个nosniff；正常/受控/inline各submitted=started=initialRequests=1，ZIP162字节完整。
+    - jwt-http/rejected.json及queued-timeout.json：500、完整137字节JSON、Content-Disposition精确inline，无旧ZIP Content-Length，started=0，ownedExistsBeforeFixtureTeardown=false，无exchangeFailure。
+    - anonymous/invalid-jwt=401、view-only=403且未生成/提交；HEAD=200/0body且原长度162、started=1；queued cancel仅验证未启动body清理。
+    - 真实SecurityConfig、JwtTokenProvider签发/验签、JwtAuthenticationFilter、Controller、GlobalExceptionHandler和Tomcat；合成签名密钥/claims及mock
+      ZIP生成、file repos，不等于真实登录目录/业务DB全HTTP链。
+  - id: check.async-authentication-and-expiration
+    required: true
+    category: security
+    description: ASYNC按原Bearer重验及原认证/过期/权限边界
+    method: automated-test
+    command: final_verified/run.json内原Maven命令，JwtTokenProviderTest,JwtAuthenticationFilterTest,SecurityConfigTest,SecurityJwtExpirationTest
+    outcome: passed
+    evidence:
+    - 上述4类12/12，0F/E/S；新ASYNC有效及无效Bearer用例恢复精确subject/permissions并清AuditContext。
+    - SecurityJwtExpirationTest用正确签名但已过期fixture实际parser/filter/entry point断言401；未改变生产时钟/期限。该2项不冒称真实自然到期长队实验。
+    - 源码只覆盖shouldNotFilterAsyncDispatch=false；原Bearer解析、验签、subject/permissions、AuditContext保持，无session/permitAll/ERROR默认变化或过期放宽。
+  - id: check.request-lock-and-owned-cleanup
+    required: true
+    category: unit
+    description: 请求局部monitor、单一资源状态、TWR及异常抑制
+    method: automated-test
+    command: final_verified/run.json内原Maven命令及source-audit/quality-result.yaml源码检查
+    outcome: passed
+    evidence:
+    - DhrArchiveResponseFilterTest5/5：context-path GET/HEAD、无关preview、completion不等monitor先清理及拒绝latebody、FAILED仍可清理。
+    - 原DhrArchiveAsyncLifecycleTest5、OwnershipTest5、CleanupFailureTest7、ControllerStreamingTest6全部通过，含单次归属/cleanup失败/主异常suppressed边界。
+    - initial链与body使用同一个请求局部monitor，inline同线程可重入；CAS WAITING→BODY领取TWR，WAITING→FAILED只限未开始错误，WAITING/FAILED→CLEANED最多一次；completion不触碰BODY，不使用全局锁/后台扫描/删除重试。
+    - ASYNC错误只在Throwable且未commit且body WAITING才改framing，不等monitor；活动BODY与已commit保持原响应事实。非可中断等待、下游filter永久挂起、实际活动网络取消仍未测。
+  - id: check.lazy-security-headers-and-previews
+    required: true
+    category: integration
+    description: 局部filter唯一实例及lazy与三个预览缓存保持
+    method: automated-test
+    command: DhrArchiveJwtHeadersTest实际HTTP、SecurityConfigTest及source-audit/product.diff
+    outcome: passed
+    evidence:
+    - SecurityConfig仅new DhrArchiveResponseFilter并addFilterBefore(HeaderWriterFilter.class)，无Filter bean容器双注册；不复制默认writer、不全局eager。
+    - 实际private-preview/public-preview/pdf-page-preview均200 image/png，Cache-Control精确private, max-age=300且无Pragma/Expires；PNG原字节和真实PDF页渲染断言通过。
+    - FileController及JWT签发/过期规则相对base无差异；本批未改reset/304缓存政策，未升级框架依赖。
+  - id: check.canonical-postgres-and-frozen-export
+    required: true
+    category: database
+    description: 隔离PG16完整canonical+0092与既有冻结导出12项
+    method: automated-test
+    command: final_verified/run.json内原Maven命令，DhrExportReadObservationPostgresTest
+    outcome: passed
+    evidence:
+    - 独立postgres:16-alpine random loopback，数据库edhr_dhr_export_read_test_header_final_verified符合专用URL正则；ddl-auto=none，Liquibase=true，没有关闭约束。
+    - final_verified/maven.log：完整current-schema/current-seed及0087–0092共12个change sets全成功，fresh数据库Previously run=0。
+    - 原12/12含实际PG冻结/ZIP/PDF合并/附件与审计断言；renderer和FormProjectionWorker为mock协作者，不能声称完整真实打印引擎或全业务HTTP链。
+  - id: check.audit-export-v2-and-read-observation
+    required: true
+    category: audit
+    description: 独立重算JFR及核服务器EXPORT/v2参数与审计顺序
+    method: command
+    command: python3 /tmp/edhr-header-jwt-final-qa-20261107/audit_evidence.py
+    outcome: passed
+    evidence:
+    - QA与主侧原件各11JFR，共22文件独立按拥有路径重算，bytes/events均精确等于各自observations；qa-jfr-recalculation.tsv及mainArchivedOriginal-jfr-recalculation.tsv。
+    - 两组各11观察、33调用线程SELECT；各server postgres.log有3次真实EXPORT执行，逐条核20参数、entity DHR_SUMMARY_EXPORT/10、snapshot_hash_version精确audit-event-v2及64hex摘要。
+    - source-audit核Service原流前EXPORT顺序不变；48 AuditEventHashTest、2 AuditEventTest及3 AuditAspectTest全过。
+    - SQL observer无服务器逐事件tag，不能声称全网络或精确逐观察区间归因；JFR逻辑读取不等于OS/设备物理IO，合成调度700ms不外推生产耗时、频率或SLA。
+  - id: check.archive-sha-and-same-byte-negative
+    required: true
+    category: documentation
+    description: 独立核四归档SHA、全部成员及latest负控的测试/产品来源
+    method: command
+    command: python3 /tmp/edhr-header-jwt-final-qa-20261107/audit_evidence.py
+    outcome: passed
+    evidence:
+    - analysis.json：main395+negative68+source107+auth-source34=604成员的ZIP/manifest/member SHA、字节数及现存原raw字节逐一匹配。源码角色正式FINAL标记已核。
+    - latest negative_verified XML13=10正/3真AssertionF、0E/S；旧SecurityConfig/JwtAuthenticationFilter/Controller字节匹配Git base，新filter旧源不存在。
+    - 负控HTTP测试与当前候选/主latest完全同字节；旧max2及重复nosniff、拒绝和queuedtimeout均401。此负控由本QA独立核原件，未冒称本QA重新执行负控。
+    - 本QA运行及主latest的32受测输入全部匹配当前候选，Git区间只有4产品文件及3测试文件变化。
+    - 历史编译0JUnit、probe校准错误、124/125中间EOF2E及attachment2F全由已验归档保留；不用历史通过累计当前125。
+  - id: check.independent-knowledge-89
+    required: true
+    category: ontology
+    description: 实际独立运行知识89并核有限相关权威含义
+    method: automated-test
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f tools/knowledge-model/pom.xml test
+    outcome: passed
+    evidence:
+    - knowledge/maven.log、TEST-com.zencas.edhr.knowledge.BusinessKnowledgeModelTest.xml及test-summary.json：fresh89/89，0F/E/S。
+    - 基线0.3.25/schema1.2.0/P0 in-progress，Git知识350文件无增量。
+    - DEC0063-05/11/15与rule.dhr-summary-zip-source-trace的同版冻结、原件/哈希/范围/来源追溯保持；DEC0090的真正归档与下载副本仍区分。请求handoff状态不是DHR生命周期，无新业务政策/知识成熟度提升。
+    - 只对本批受影响定义作有限核对；89 schema/reference等自动检查不等于350文件全语义一致、931知识/86UI或全运行矩阵完成。
+  - id: check.impact-a23-extension-boundary
+    required: true
+    category: requirements
+    description: L2影响分析、A23及product-core所有权与实际最小改动一致
+    method: inspection
+    command: git diff b6691e2c6289ab414a7a3fed1f128562cbba4166 HEAD -- gmp-platform/backend/src/main; inspected decision-package.yaml,
+      README.md, main-analysis.json and source-audit/REVIEW.md
+    outcome: passed
+    evidence:
+    - 直接头交接/JWT ASYNC/未启动错误framing，传递安全链，兼容迁移/冻结/审计/权限及潜在monitor风险均有明确边界；extensionStrategy=product-core，filter协调、controller保留资源TWR，非客户分支。
+    - A23：请求局部封装69行filter，无全局锁/跨请求cache、SQL分页或全量数组读取；Service未无关抽取，原件/hash/冻结/导出范围/权限/签署/流前审计/UI/schema/依赖均不变。
+    - 长模块拆分建议/容量/性能上下文复用仍先量化讨论；数据库分页用户未答未实施，不引入新feature/政策/大重构；已审、暂停和未审队列均继续保留。
+  - id: check.resources-and-final-readonly-state
+    required: true
+    category: documentation
+    description: 资源清理、只读子项FINAL及最终clean
+    method: command
+    command: python3 /tmp/edhr-header-jwt-final-qa-20261107/audit_evidence.py; git status --porcelain --untracked-files=all
+    outcome: passed
+    evidence:
+    - analysis.json：自有HTTP端口[36085, 43215]均已关闭，自有PG容器inspect不存在，自有tmp递归无dhr-archive-*.zip；无清理其他人的资源。
+    - source-audit/quality-result.yaml result=passed、finalStatus=FINAL，子项未写业务代码/测试/配置且未执行测试；本QA同样未参与任何产品修复。
+    - final-worktree.json：固定候选head不变，自有依赖软链已移除，工作树clean。此核对不代主侧所有角色FINAL后的实际PR前漂移复核。
+  findings:
+  - id: W6-SECURITY-STREAM-HEADER-RACE-001
+    severity: medium
+    scope: DHR导出initial安全链与worker
+    summary: 既有lazy安全头并写入口已由本批局部交接关闭
+    reproductionSteps:
+    - 对base产品源执行当前同字节HTTP13的受控并发场景
+    - 在候选实际执行相同测试并核raw HTTP
+    expectedResult: 同一响应安全头writer不得跨线程同时执行；ZIP与任务单次执行保持
+    actualResult: 旧max2/重复nosniff；本QA候选max1、单nosniff、162字节ZIP完整、任务启动1次
+    evidence:
+    - analysis.json
+    - final_verified/TEST-com.zencas.edhr.production.controller.DhrArchiveJwtHeadersTest.xml
+    - final_verified/jwt-http
+    - source-audit/REVIEW.md
+    resolutionStatus: resolved
+    resolutionEvidence:
+    - type: commit
+      reference: 703f2ee90417e778cf745fbbcd24f908a345d3bd
+    - type: command
+      reference: final_verified/run.json and fresh XML; audit-evidence-verified.log
+  - id: W6-JWT-ASYNC-IDENTITY-001
+    severity: medium
+    scope: JWT ASYNC重新派发
+    summary: 既有有效Bearer异步拒绝和timeout误401已关闭
+    reproductionSteps:
+    - 核latest旧源同字节HTTP rejected和queuedtimeout
+    - 在候选实际执行新13及JWT相关12
+    expectedResult: 重新派发按原Bearer重验恢复身份，真实业务错误不误转匿名401
+    actualResult: 旧两场景均401；本QA候选均500，新增ASYNC有效/无效及原过期401边界通过
+    evidence:
+    - analysis.json
+    - final_verified/TEST-com.zencas.edhr.production.controller.DhrArchiveJwtHeadersTest.xml
+    - final_verified/jwt-http
+    - source-audit/REVIEW.md
+    resolutionStatus: resolved
+    resolutionEvidence:
+    - type: commit
+      reference: 703f2ee90417e778cf745fbbcd24f908a345d3bd
+    - type: command
+      reference: final_verified/run.json and fresh XML; audit-evidence-verified.log
+  - id: W6-DHR-ASYNC-ERROR-FRAMING-001
+    severity: medium
+    scope: 未开始DHR导出ASYNC错误响应
+    summary: 身份恢复后沿用ZIP长度/attachment的问题已关闭
+    reproductionSteps:
+    - 核已验归档的中间EOF及attachment残留阶段
+    - 在候选实际读取拒绝/queuedtimeout完整错误实体
+    expectedResult: 未开始/未commit错误保持真实状态、完整JSON和明确inline；完成仍清理文件
+    actualResult: 本QA两场景500/137字节JSON/inline，无ZIP162旧长度，无EOF，body未启动且自有ZIP已删
+    evidence:
+    - analysis.json
+    - final_verified/TEST-com.zencas.edhr.production.controller.DhrArchiveJwtHeadersTest.xml
+    - final_verified/jwt-http
+    - source-audit/REVIEW.md
+    resolutionStatus: resolved
+    resolutionEvidence:
+    - type: commit
+      reference: 703f2ee90417e778cf745fbbcd24f908a345d3bd
+    - type: command
+      reference: final_verified/run.json and fresh XML; audit-evidence-verified.log
+  residualRisks:
+  - id: risk.monitor-and-active-network
+    description: monitor等待不可中断；downstream挂起与真实活动网络取消未实测，queued cancel只证明未启动路径。
+    impact: 不能保证永久挂起链或活动流网络故障的时限/资源归还。
+    mitigation: 保留专项；不称passed、不加未经授权的扫描重试或同步Resource重构。
+  - id: risk.natural-expiry-and-identity-chain
+    description: 过期fixture、原parser与ASYNC有效/无效验证已测；真实自然到期长排队和真实登录目录/DB全HTTP链未测。
+    impact: 不外推全部token排队时长、真实目录或全租户矩阵。
+    mitigation: 维持现过期规则，后续按真实场景补验，不放宽token期限或ERROR策略。
+  - id: risk.crash-error-and-unknown
+    description: Error/OOM/进程崩溃、UNKNOWN持久对账及恢复保障未覆盖。
+    impact: 不能保证这些状态下文件清理或回滚已发HTTP/已记EXPORT。
+    mitigation: 保留受控专项；不得把下载副本测试等同DEC0090归档/备份恢复。
+  - id: risk.observation-and-capacity
+    description: renderer仍mock；读取/JFR为合成负载观察，SQL缺逐事件服务器tag。
+    impact: 不是全网络逐区间SQL归因或容量/生产性能/SLA验收。
+    mitigation: PDF缓冲/原件容量/上下文复用先量化讨论；数据库分页未答不实施。
+  - id: risk.framework-version
+    description: 官方已修7.x不是当前Boot3.3/Security6.3的单jar替换。
+    impact: 本批局部修复不等于已升级整个框架安全基线。
+    mitigation: 依赖升级另行兼容验证；本批保留lazy/私有预览缓存。
+  - id: risk.whole-audit-remains
+    description: 旧W2–W7、931知识/86UI候选、A12/高风险/完整矩阵及A23已审/暂停/待审队列仍继续；whole-file=0，historical unique未知。
+    impact: 本批通过仅关闭所列3项与邻接回归，不能宣称全量审计已完成。
+    mitigation: 保留原清单分母、阶段和历史证据，按已授权顺序继续。
+  - id: risk.root-pr-drift
+    description: 主侧所有角色FINAL后的实际PR前漂移复核未由本QA执行。
+    impact: 后续来源/目标变化可能要求重新评估适用检查。
+    mitigation: 交付主侧在所有角色FINAL后核实际来源/目标/契约/知识并按影响重跑；不自动merge/deploy/CI。
+  blockingConditions: []
+  impactReview:
+    result: passed
+    level: L2
+    selectedPaths:
+    - product-core
+    scope: 4产品/3测试；原语义、冻结/原件/hash/范围/权限/签署/流前审计及lazy/cache保持。
+    unresolved: []
+    evidence:
+    - source-audit/REVIEW.md
+    - analysis.json
+    - docs/development/branch-review-20261107-dhr-header-jwt/decision-package.yaml
+  knowledgeSync:
+  - id: DEC-0063-05
+    disposition: retained
+    scope: 同一显式冻结版本、旧证据不可由当前值替换；本批只响应交接，不改变归集/冻结。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml
+    - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrArchiveService.java
+  - id: DEC-0063-11
+    disposition: retained
+    scope: 原件/SHA、完整与选定范围、PDF与附件及同版来源保持；renderer真实引擎边界继续保留。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml
+    - final_verified/TEST-com.zencas.edhr.production.service.DhrExportReadObservationPostgresTest.xml
+  - id: DEC-0063-15
+    disposition: retained
+    scope: 来源审计/签名及导出范围不改变审批对象；流前EXPORT无回滚已发HTTP承诺。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml
+    - source-audit/REVIEW.md
+  - id: rule.dhr-summary-zip-source-trace
+    disposition: retained
+    scope: 维持specified/internal，验证局部实现不提升知识成熟度或全量验收。
+    sourceReferences:
+    - docs/knowledge/rules/dhr-summary.yaml
+    - knowledge/test-summary.json
+  - id: DEC-0090
+    disposition: retained
+    scope: 本批不是最终放行后DHR归档执行、备份恢复或解封；既有归档TODO和P0阶段不变。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0090-dhr-archive-minimum-scope.yaml
+    - docs/architecture/business-knowledge-model.md
