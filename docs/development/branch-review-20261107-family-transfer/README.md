@@ -2,6 +2,8 @@
 
 L2；目标 `edhr-dev@04db7e838ec5e194355ff954ff173a02205e0fd6`。PR72已人工合入，整树与上批交付42bd62cc一致，无外部代码、知识或契约增量。实际156项运行受测提交 `1709dbc4d3d28d8721ff001b69ad934a6de54d18`；后续 `b2b0df85572f634925d9e3b1ac4a91c0988bb86c` 仅删除新测试一个未使用导入。双方重新test-compile成功，三个新测试及嵌套类javap指令输出相同，24项输入原字节不变、测试只有该导入删除，未冒称新SHA实际重跑156。全新独立质量已核增量及复用依据，正式passed/FINAL、10项必需检查通过、medium及low均resolved；实际独立156/156和89/89均0F/E/S。所有角色及孩子FINAL后，23:13实际[PR前复核](pre-pr-drift-review.md)通过，此后仅L0文档/原件/交付。
 
+已交付[PR73](https://github.com/IvenYi/edhr-nexus-frontend/pull/73)，audit/edhr-dev-family-membership-transfer-20261107→edhr-dev，观察OPEN/MERGEABLE/CLEAN，建议人工合入本批有限修复。验收fb18a959后仅L0交付登记，登记前真实远端/PR head/本地一致且25输入同，见evidence/delivery-verification.json；登记提交推送后再核一次。下一批先fetch真实合入及新增，执行已授权的预校验批读；不自动merge、部署或恢复。
+
 成员转移已有二次确认、单一产品簇归属、同事务及三方审计规则。旧实现调用delete后以新ID保存，但Hibernate会在同次flush先INSERT后DELETE，原tenant/product唯一索引因此拒绝合法转移。完整canonical PostgreSQL、真实Spring事务代理和JPA已复现，不是根据mock推断。
 
 产品仅增加一行：删除旧成员后调用仓储flush，仍在原事务内，再按原逻辑新建关系和产品/旧簇/新簇三方审计。flush不是commit；不改变新ID、创建元数据、唯一约束、原资格、权限、二次确认、不收原因或开工/制程/作业政策。

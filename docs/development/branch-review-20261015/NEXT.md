@@ -2,6 +2,8 @@
 
 ## PR72已合入：W4成员转移JPA顺序及下一批预校验授权
 
+已交付[PR73](https://github.com/IvenYi/edhr-nexus-frontend/pull/73)，audit/edhr-dev-family-membership-transfer-20261107→edhr-dev，观察OPEN/MERGEABLE/CLEAN，建议人工合入本轮有限修复。实际运行1709、无用导入候选b2b0及验收fb18后仅L0交付登记，登记前本地/真实远端/PR head和25输入核过；登记推送后再次核对。下一批先fetch真实合入及新增，再做已确认批量预校验读取，不自动合并部署或恢复。
+
 已fetch edhr-dev@04db7e838ec5e194355ff954ff173a02205e0fd6，PR72人工合入、整树同42bd62cc，无外部/知识/契约增量。[本批](../branch-review-20261107-family-transfer/README.md)L2回W4真实成员转移：合法delete+新ID save因JPA先INSERT触发原唯一索引。仅delete后显式flush，原事务/新ID及元数据/三方审计/权限确认/唯一约束/开工及作业政策保持。
 
 clean受测1709dbc4主侧156/156，0F/E/S；旧源同字节13=9P3F1真实产品E，编排类名拼错0JUnit及旧growth开关未启用两skip均原样保留。服务器逐tag成功SQL顺序/失败STATEMENT/回滚状态及普通夹具摘要核过，自有PG已清；JWT+MockMvc不是socket或浏览器，完整并发写与START矩阵仍待审。本体updated/FINAL，有限28ID、349/350知识不变，仅两fact来源metadata纠错，纠正后89/89；定义/type/成熟度保持。全新独立实际156/89、最终passed/FINAL，10项必需检查通过；low未用导入由主侧b2b0df85只删一行，双方test-compile和三个javap指令相同，24输入同/1仅导入，按影响评估复用1709运行，不称新SHA实际跑156。知识350与1709同，本体来源纠错结果不受导入清理影响。
