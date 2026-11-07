@@ -2,6 +2,7 @@ package com.zencas.edhr.identity.security;
 
 import com.zencas.edhr.common.audit.AuditContext;
 import jakarta.servlet.FilterChain;
+import jakarta.servlet.DispatcherType;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,6 +16,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class JwtAuthenticationFilterTest {
@@ -48,5 +50,37 @@ class JwtAuthenticationFilterTest {
         assertThat(SecurityContextHolder.getContext().getAuthentication().getAuthorities())
                 .extracting(authority -> authority.getAuthority())
                 .containsExactly("master-data.batch-record-templates");
+    }
+
+    @Test
+    void asyncRedispatchRechecksTheBearerAndRestoresExactIdentity() throws Exception {
+        when(jwtTokenProvider.validateToken("async-token")).thenReturn(true);
+        when(jwtTokenProvider.getUserId("async-token")).thenReturn("7");
+        when(jwtTokenProvider.getUsername("async-token")).thenReturn("operator");
+        when(jwtTokenProvider.getDisplayName("async-token")).thenReturn("Synthetic operator");
+        when(jwtTokenProvider.getPermissions("async-token")).thenReturn(List.of("dhr.instances.view"));
+        var request = new MockHttpServletRequest("GET", "/api/v1/dhr-instances/1/summary/versions/10/export");
+        request.setDispatcherType(DispatcherType.ASYNC);
+        request.addHeader("Authorization", "Bearer async-token");
+        new JwtAuthenticationFilter(jwtTokenProvider).doFilter(request, new MockHttpServletResponse(), (r, s) -> {
+            assertThat(SecurityContextHolder.getContext().getAuthentication().getName()).isEqualTo("7");
+            assertThat(SecurityContextHolder.getContext().getAuthentication().getAuthorities())
+                    .extracting(a -> a.getAuthority()).containsExactly("dhr.instances.view");
+            assertThat(AuditContext.getOperatorAccount()).isEqualTo("operator");
+        });
+        verify(jwtTokenProvider).validateToken("async-token");
+        assertThat(AuditContext.getOperatorAccount()).isNull();
+    }
+
+    @Test
+    void invalidAsyncBearerStillHasToPassCurrentValidation() throws Exception {
+        when(jwtTokenProvider.validateToken("invalid-async-token")).thenReturn(false);
+        var request = new MockHttpServletRequest("GET", "/api/v1/dhr-instances/1/summary/versions/10/export");
+        request.setDispatcherType(DispatcherType.ASYNC);
+        request.addHeader("Authorization", "Bearer invalid-async-token");
+        new JwtAuthenticationFilter(jwtTokenProvider).doFilter(request, new MockHttpServletResponse(), (r, s) ->
+                assertThat(SecurityContextHolder.getContext().getAuthentication()).isNull());
+        verify(jwtTokenProvider).validateToken("invalid-async-token");
+        assertThat(AuditContext.getOperatorAccount()).isNull();
     }
 }

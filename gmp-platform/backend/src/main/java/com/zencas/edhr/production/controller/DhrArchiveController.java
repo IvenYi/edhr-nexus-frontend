@@ -23,7 +23,6 @@ import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.concurrent.Callable;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 @RestController
 @RequestMapping("/api/v1/dhr-instances/{dhrId}/summary/versions/{versionId}/export")
@@ -39,30 +38,32 @@ public class DhrArchiveController {
             @RequestParam(defaultValue = "") String recordIds,
             @RequestParam(defaultValue = "") String attachmentIds, NativeWebRequest request) throws IOException {
         var zip = service.export(dhrId, versionId, scope, ids(recordIds), ids(attachmentIds));
-        AtomicBoolean claimed = new AtomicBoolean();
+        var responseMonitor = DhrArchiveResponseFilter.responseMonitor(request);
         try {
             WebAsyncUtils.getAsyncManager(request).registerCallableInterceptor(DhrArchiveController.class, new CallableProcessingInterceptor() {
                 @Override public <T> void afterCompletion(NativeWebRequest completedRequest, Callable<T> task) {
-                    discardUnclaimedArchive(zip, claimed, null);
+                    discardUnclaimedArchive(zip, responseMonitor, null);
                 }
             });
             StreamingResponseBody body = output -> {
-                if (!claimed.compareAndSet(false, true)) throw new IOException("DHR 导出请求已结束");
-                try (Closeable cleanup = () -> Files.deleteIfExists(zip)) {
-                    Files.copy(zip, output);
+                synchronized (responseMonitor) {
+                    if (!responseMonitor.claimBody()) throw new IOException("DHR 导出请求已结束");
+                    try (Closeable cleanup = () -> Files.deleteIfExists(zip)) {
+                        Files.copy(zip, output);
+                    }
                 }
             };
             return ResponseEntity.ok().contentType(MediaType.parseMediaType("application/zip"))
                     .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"DHR-" + dhrId + "-V" + versionId + ("FULL".equals(scope) ? "-complete" : "-selected") + ".zip\"")
                     .contentLength(Files.size(zip)).body(body);
         } catch (IOException | RuntimeException failure) {
-            discardUnclaimedArchive(zip, claimed, failure);
+            discardUnclaimedArchive(zip, responseMonitor, failure);
             throw failure;
         }
     }
 
-    private static void discardUnclaimedArchive(Path zip, AtomicBoolean claimed, Exception primaryFailure) {
-        if (!claimed.compareAndSet(false, true)) return;
+    private static void discardUnclaimedArchive(Path zip, DhrArchiveResponseFilter.ResponseHandoff handoff, Exception primaryFailure) {
+        if (!handoff.claimCleanup()) return;
         try { Files.deleteIfExists(zip); }
         catch (IOException | RuntimeException cleanupFailure) {
             if (primaryFailure != null) primaryFailure.addSuppressed(cleanupFailure);
