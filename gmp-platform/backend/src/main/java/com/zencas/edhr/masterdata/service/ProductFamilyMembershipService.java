@@ -29,6 +29,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 @Service
 @RequiredArgsConstructor
@@ -37,6 +38,7 @@ public class ProductFamilyMembershipService {
     private static final String TENANT_ID = "default";
     private static final String PRODUCT_TYPE_FINISHED = "产成品";
     private static final String PRODUCT_TYPE_SEMI_FINISHED = "半成品";
+    private static final int PREVALIDATION_BATCH_SIZE = 512;
     private static final ObjectMapper AUDIT_OBJECT_MAPPER = new ObjectMapper();
 
     private final ProductFamilyRepository productFamilyRepository;
@@ -50,12 +52,14 @@ public class ProductFamilyMembershipService {
     public List<ProductFamilyMember> addMembers(Long productFamilyId, List<Long> productIds) {
         ProductFamily family = requireFamily(productFamilyId);
         List<Material> products = resolveEligibleProducts(productIds);
+        List<Long> selectedIds = products.stream().map(Material::getId).toList();
+        Map<Long, ProductFamilyMember> existingByProductId = new HashMap<>();
+        readPrevalidationBatches(selectedIds, ids -> productFamilyMemberRepository.findByTenantIdAndProductIdIn(TENANT_ID, ids))
+                .forEach(member -> existingByProductId.put(member.getProductId(), member));
         List<ProductFamilyMember> added = new ArrayList<>();
 
         for (Material product : products) {
-            ProductFamilyMember existing = productFamilyMemberRepository
-                    .findByTenantIdAndProductId(TENANT_ID, product.getId())
-                    .orElse(null);
+            ProductFamilyMember existing = existingByProductId.get(product.getId());
             if (existing == null) continue;
             if (existing.getProductFamilyId().equals(family.getId())) continue;
             ProductFamily existingFamily = requireFamily(existing.getProductFamilyId());
@@ -175,7 +179,36 @@ public class ProductFamilyMembershipService {
         if (distinctIds.contains(null)) {
             throw new BusinessException(ErrorCode.GENERAL_001, "产品标识不能为空");
         }
-        return distinctIds.stream().map(this::requireEligibleProduct).toList();
+        List<Long> ids = new ArrayList<>(distinctIds);
+        Map<Long, Material> productsById = new HashMap<>();
+        readPrevalidationBatches(ids, materialRepository::findAllById)
+                .forEach(product -> productsById.put(product.getId(), product));
+        List<Long> typeIds = productsById.values().stream().map(Material::getMaterialTypeId)
+                .filter(id -> id != null).distinct().toList();
+        Map<Long, MaterialType> typesById = new HashMap<>();
+        readPrevalidationBatches(typeIds, materialTypeRepository::findAllById)
+                .forEach(type -> typesById.put(type.getId(), type));
+        List<Material> products = new ArrayList<>();
+        for (Long id : ids) {
+            Material product = productsById.get(id);
+            if (product == null) throw new BusinessException(ErrorCode.MD_002);
+            MaterialType type = typesById.get(product.getMaterialTypeId());
+            if (!isEligibleMaterialType(type == null ? null : type.getName())) {
+                throw new BusinessException(ErrorCode.GENERAL_001, "产品簇成员只能添加半成品或产成品物料");
+            }
+            products.add(product);
+        }
+        return products;
+    }
+
+    private <T> List<T> readPrevalidationBatches(List<Long> ids, Function<List<Long>, List<T>> read) {
+        List<T> rows = new ArrayList<>();
+        for (int start = 0; start < ids.size();) {
+            int end = start + Math.min(PREVALIDATION_BATCH_SIZE, ids.size() - start);
+            rows.addAll(read.apply(ids.subList(start, end)));
+            start = end;
+        }
+        return rows;
     }
 
     private Material requireEligibleProduct(Long productId) {

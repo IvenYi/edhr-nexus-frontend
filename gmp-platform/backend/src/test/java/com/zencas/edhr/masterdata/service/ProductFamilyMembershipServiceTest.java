@@ -45,8 +45,8 @@ class ProductFamilyMembershipServiceTest {
     @Test
     void rejectsAddingAMaterialThatIsNotFinishedOrSemiFinishedProduct() {
         when(productFamilyRepository.findById(11L)).thenReturn(Optional.of(family(11L, "目标产品簇")));
-        when(materialRepository.findById(101L)).thenReturn(Optional.of(material(101L, 1L)));
-        when(materialTypeRepository.findById(1L)).thenReturn(Optional.of(MaterialType.builder().id(1L).name("原材料").build()));
+        when(materialRepository.findAllById(List.of(101L))).thenReturn(List.of(material(101L, 1L)));
+        when(materialTypeRepository.findAllById(List.of(1L))).thenReturn(List.of(MaterialType.builder().id(1L).name("原材料").build()));
 
         assertThatThrownBy(() -> service.addMembers(11L, List.of(101L)))
                 .isInstanceOf(BusinessException.class)
@@ -59,10 +59,10 @@ class ProductFamilyMembershipServiceTest {
     @Test
     void rejectsOrdinaryAddWhenProductAlreadyBelongsToAnotherFamily() {
         when(productFamilyRepository.findById(11L)).thenReturn(Optional.of(family(11L, "目标产品簇")));
-        when(materialRepository.findById(101L)).thenReturn(Optional.of(material(101L, 1L)));
-        when(materialTypeRepository.findById(1L)).thenReturn(Optional.of(MaterialType.builder().id(1L).name("产成品").build()));
-        when(productFamilyMemberRepository.findByTenantIdAndProductId("default", 101L))
-                .thenReturn(Optional.of(member(201L, 9L, 101L)));
+        when(materialRepository.findAllById(List.of(101L))).thenReturn(List.of(material(101L, 1L)));
+        when(materialTypeRepository.findAllById(List.of(1L))).thenReturn(List.of(MaterialType.builder().id(1L).name("产成品").build()));
+        when(productFamilyMemberRepository.findByTenantIdAndProductIdIn("default", List.of(101L)))
+                .thenReturn(List.of(member(201L, 9L, 101L)));
         when(productFamilyRepository.findById(9L)).thenReturn(Optional.of(family(9L, "原产品簇")));
 
         assertThatThrownBy(() -> service.addMembers(11L, List.of(101L)))

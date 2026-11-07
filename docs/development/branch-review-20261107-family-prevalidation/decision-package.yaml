@@ -1,0 +1,52 @@
+decisionPackage:
+  id: DEC-PACKAGE-FAMILY-PREVALIDATION-20261107
+  scope: Product-family add-members bounded prevalidation reads
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: 5e8edb47ae91af83555f4b67a87598c3c2a9a664
+    targetBranch: edhr-dev
+    targetCommit: 5e8edb47ae91af83555f4b67a87598c3c2a9a664
+    contractReadCommit: 5e8edb47ae91af83555f4b67a87598c3c2a9a664
+    uncommittedContractPaths: []
+  summary: PR73已人工合入且整树同ffc8e443，无额外代码/知识/契约增量。落实用户对call_dad21472bffe4d2d8d878fa7adb7c04e明确批准的下一批预校验批读，仅在原成员Service内按有界512ID读取选中物料/类型/当前tenant成员，保留输入去重顺序、首个资格和冲突错误、第二轮即时成员复核、原写入/审计/事务及唯一索引。512是每次SQL参数边界，非总选择上限。原事件日志数据库分页未获答复、不实施；不改候选选项页全载或其他性能子项。
+  confirmed: {concepts: [], relationships: [], rules: [], executionContracts: []}
+  inferred: []
+  unresolved: []
+  replacementScopes: []
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - {area: add-members-prevalidation, change: 按选中ID批量读取物料/类型/tenant成员并按原顺序判定；不findAll租户或截断输入, evidenceReferences: [docs/development/branch-review-20261107-family-transfer/performance-next.md, gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductFamilyMembershipService.java]}
+    transitiveImpacts:
+      - {area: write-and-audit, change: 第二轮即时查询、每项新关系及两方审计、最终同事务成功或回滚保持, evidenceReferences: [docs/knowledge/decisions/DEC-0002-product-family-process-modeling.yaml]}
+    potentialImpacts:
+      - {area: batching-timing, concern: 预校验采样时点由逐行变为分批；不新增事务隔离或锁策略，真实双连接证明第二轮仍观察已提交新增, evidenceReferences: []}
+      - {area: memory, concern: 请求局部按选择量保存ID映射，记录线程累计分配而非生产峰值；不跨请求缓存或全租户读取, evidenceReferences: []}
+    unaffectedAreas:
+      - {area: transfer-start-and-options, change: PR73转移flush/新ID、首次START复核冻结、作业动态匹配/既有实例及候选选项页保持, evidenceReferences: [docs/knowledge/decisions/DEC-0007-production-work-applicability-and-runtime-snapshot.yaml]}
+    compatibilityAndMigration:
+      - {area: schema-and-errors, change: 无schema/迁移/索引/约束调整；原错误码、提示及输入去重顺序保持, evidenceReferences: []}
+    snapshotImpacts:
+      - {area: frozen-history, change: 无实例/历史/旧快照恢复或改写, evidenceReferences: []}
+    auditImpacts:
+      - {area: add-audits, change: 原actor/content/两方UPDATE及v2摘要保留，失败无部分新成员或审计, evidenceReferences: []}
+    permissionImpacts:
+      - {area: endpoint, change: 批量添加原master-data.product-families及领域资格保持，原批量入口无confirmed不新增；transfer原确认保持，无新租户政策, evidenceReferences: []}
+    testImpacts:
+      - {scope: canonical-PG-and-adjacent, scenarios: [同字节旧新SQL量对照, 1/10/100/513/1025不截断, 各读取IN参数边界及混合类型, 空/重复/不存在/资格与冲突首错, 同簇幂等及跨tenant筛选, 双连接第二轮复核, 新增第三审计失败整体回滚, PR73转移及原成员/制程/批次/审计回归], evidenceReferences: []}
+    evidenceGaps: [本批不完成全部并发写/多租户/START/浏览器矩阵或生产容量SLA, 第二轮和merge仍线性读取不可谎报整体常量, W2-W7/931知识86UI/A12/高风险/完整矩阵/A23含已审及暂停队列继续]
+  extensionStrategy:
+    selectedPaths: [transaction-orchestration]
+    rationale: 在现有Service的resolveEligibleProducts及预校验环节用既有仓储批读；不新建通用框架或改变写入事务
+    ownershipBoundaries:
+      - {owner: ProductFamilyMembershipService, responsibility: 请求局部预校验上下文及原成员写入/审计事务}
+  affectedFiles:
+    - {path: gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductFamilyMembershipService.java, changeType: update, reason: 选中物料/类型/成员有界批读及按输入顺序复核}
+    - {path: gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/service/ProductFamilyTransferPostgresTest.java, changeType: update, reason: 复用真实canonical PG装配增加批读规模/语义/并发/失败及SQL/分配观察}
+    - {path: gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/service/ProductFamilyMembershipServiceTest.java, changeType: update, reason: 原两项新增资格mock接收批读调用，原拒绝/审计断言保持}
+  acceptanceScenarios:
+    - id: scenario.family-prevalidation-bulk
+      given: 一组按原权限选择的产品包含重复/缺失/不合格/已有归属或超过内部批量数量
+      when: 调用原添加入口
+      then: 资格/首错/顺序/完整可达性及实时复核、关系与两方审计同事务保持；减少预校验SQL且参数有界
+      evidenceRequirements: [同测试字节旧新真实PG对照, 每类IN参数及server execute对应, 状态与审计hash/身份, 实际双连接并发及回滚, 全新最终独立质量, 全部FINAL后PR前漂移/阶段复核]
