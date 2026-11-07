@@ -2,6 +2,8 @@
 
 L2，目标`edhr-dev@5e8edb47ae91af83555f4b67a87598c3c2a9a664`。PR73已人工合入且整树同ffc8e443，无额外代码、知识或契约增量。本轮落实用户明确批准的预校验批读，实际受测提交`4ee3efba39c5ff44972561ae25956c33a0c14357`。主侧及全新独立实际166/166、知识89/89均0失败/错误/跳过；正式质量passed/FINAL、11必需检查通过、预校验子项resolved，无阻断。本体NA/FINAL，全部专业角色结束且无孩子后，已实际[PR前漂移复核](pre-pr-drift-review.md)，目标仍5e8、无增量/无漂移，此后仅L0报告/交付。
 
+已交付[PR74](https://github.com/IvenYi/edhr-nexus-frontend/pull/74)，audit/edhr-dev-family-prevalidation-20261107→edhr-dev，观察OPEN/MERGEABLE/CLEAN，建议人工合入本批有限优化。受测4ee3efba、验收cbd075c3后仅L0交付登记；登记前本地/真实远端/PR head一致且29输入同，见evidence/delivery-verification.json，登记推送后再次核对。下一轮先fetch实际merge与新增，继续原全审余项，不自动合并部署或恢复。
+
 只修改成员Service及两个测试。选中物料、所需类型和当前tenant已有归属按512个ID分批读取，再按原输入去重顺序判断资格及首个冲突。512是单次SQL的ID数，不是总选择上限。批量入口`/api/v1/master-data/process-modeling/product-families/{id}/members/batch-add`没有confirmed，不新增确认；相邻transfer仍保留原确认及PR73 flush。
 
 写入前第二轮即时成员查询、每项新关系与产品/目标簇两方审计、原事务/唯一约束/错误码及提示、权限和生产START/作业规则保持。没有全租户findAll、跨请求缓存、总数截断、新索引或大模块重构。原事件日志数据库分页仍未获答复，不关联实施。

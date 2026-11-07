@@ -2,6 +2,8 @@
 
 ## PR73已合入：已授权的产品簇预校验批读
 
+已交付[PR74](https://github.com/IvenYi/edhr-nexus-frontend/pull/74)，audit/edhr-dev-family-prevalidation-20261107→edhr-dev，观察OPEN/MERGEABLE/CLEAN，建议人工合入。受测4ee3efba、验收cbd075c3后仅L0交付登记，登记前核本地/真实远端/PR head和29输入一致，登记提交推送后再次核对；下一轮先fetch实际合入/新增，再继续原无依赖审查与性能取证，不将预校验批准扩大为后续merge读取、选项全载、事件分页或索引自动优化。
+
 已fetch edhr-dev@5e8edb47ae91af83555f4b67a87598c3c2a9a664，PR73人工合入且整树同ffc8e443，无外部/知识/契约增量。[本批](../branch-review-20261107-family-prevalidation/README.md)L2沿用PERF-FAMILY-BULK-READS-001，仅落实用户已批准的物料/类型/归属预校验有界批读；内部512非总量上限，原首错/顺序、第二轮即时查询、写入与两方审计/事务、PR73转移flush和生产规则保持。
 
 clean受测4ee3efba，主侧166/166；同字节旧native23=19P4真实性能预算F/0E/S，不伪造功能bug。1/10/100/513/1025 SELECT由8/62/602/3080/6152降8/44/404/2058/4108，type513由3592降2059；每类IN最多512ID、成员额外tenant，共33观察旧新业务载荷一致。每版4343 audit观察行=4339 unique（重复观察4），独立重编码摘要及身份已核；不是生产延迟/峰值。29受测输入同字节、自有PG已清。本体NA/FINAL，350知识全同，实际89/89，有限28中27范围一致、1既有P1粗locator/provider gap；不算全一致或新增产品bug。全新独立实际166/89，正式passed/FINAL，11必需项通过，预校验子项resolved；工具生成时间校准及初稿保留，双方PG/worker/依赖软链清理。无孩子，全部角色FINAL后于2026-11-08 00:26 Asia/Shanghai已实际[PR前漂移/阶段复核](../branch-review-20261107-family-prevalidation/pre-pr-drift-review.md)，目标仍5e8、无外部增量/无漂移，三包367成员及QA manifest111文件SHA核过，此后仅L0验收/交付。
