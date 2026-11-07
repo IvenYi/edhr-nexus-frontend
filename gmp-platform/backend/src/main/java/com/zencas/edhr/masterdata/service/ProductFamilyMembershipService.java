@@ -90,6 +90,7 @@ public class ProductFamilyMembershipService {
 
         ProductFamily sourceFamily = requireFamily(existing.getProductFamilyId());
         productFamilyMemberRepository.delete(existing);
+        productFamilyMemberRepository.flush();
         ProductFamilyMember transferred = productFamilyMemberRepository.save(ProductFamilyMember.builder()
                 .id(idGenerator.nextId())
                 .tenantId(TENANT_ID)
