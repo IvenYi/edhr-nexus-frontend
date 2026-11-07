@@ -1,5 +1,15 @@
 # 持续推进台账
 
+## PR72已合入：W4成员转移JPA顺序及下一批预校验授权
+
+已fetch edhr-dev@04db7e838ec5e194355ff954ff173a02205e0fd6，PR72人工合入、整树同42bd62cc，无外部/知识/契约增量。[本批](../branch-review-20261107-family-transfer/README.md)L2回W4真实成员转移：合法delete+新ID save因JPA先INSERT触发原唯一索引。仅delete后显式flush，原事务/新ID及元数据/三方审计/权限确认/唯一约束/开工及作业政策保持。
+
+clean受测1709dbc4主侧156/156，0F/E/S；旧源同字节13=9P3F1真实产品E，编排类名拼错0JUnit及旧growth开关未启用两skip均原样保留。服务器逐tag成功SQL顺序/失败STATEMENT/回滚状态及普通夹具摘要核过，自有PG已清；JWT+MockMvc不是socket或浏览器，完整并发写与START矩阵仍待审。本体updated/FINAL，有限28ID、349/350知识不变，仅两fact来源metadata纠错，纠正后89/89；定义/type/成熟度保持。全新独立实际156/89、最终passed/FINAL，10项必需检查通过；low未用导入由主侧b2b0df85只删一行，双方test-compile和三个javap指令相同，24输入同/1仅导入，按影响评估复用1709运行，不称新SHA实际跑156。知识350与1709同，本体来源纠错结果不受导入清理影响。
+
+用户已明确同意**下一批批量化预校验读取**。当前bulk1/10/100=8/62/602 SELECT，100不是返回上限。下一批保留原实时复核、写入、审计与全部产品可达性，先fetch最新代码、量化批次参数/结果及内存，不扩成任意总数限制、全量租户加载、索引或锁政策改造，详见[授权与验收](../branch-review-20261107-family-transfer/performance-next.md)。原审计事件DB分页仍未答未实施，本轮不自动优化。
+
+所有专业及孩子FINAL后已于23:13实际[PR前漂移/阶段复核](../branch-review-20261107-family-transfer/pre-pr-drift-review.md)，目标仍04db、无增量/无漂移；25最终输入、五包311成员及独立manifest110文件SHA核过。整体W3-W5交叉/W6及W2余项/W7增量、931知识/86UI/A12/高风险/完整矩阵、性能容量/A23含已审及用户暂停队列保持，整文件0/historicalunique未知。此后仅L0验收/交付，不动受测产品/测试/知识/契约字节，不自动merge/deploy/恢复或查触发CI。下文各批“待验收”为对应历史时点。
+
 ## PR71已合入：实际JWT下载响应交接
 
 已交付[PR72](https://github.com/IvenYi/edhr-nexus-frontend/pull/72)，audit/edhr-dev-dhr-header-jwt-20261107→edhr-dev，观察OPEN/MERGEABLE/CLEAN，建议人工合入确定性修复。受测703f2ee9、验收06d8caca后仅L0交付登记，登记后核真实远端/PR head/本地及32输入；下轮先fetch实际合入和增量，再继续原跨链/健壮性/性能及A23队列，不自动merge/deploy/恢复或手动查询触发CI。
