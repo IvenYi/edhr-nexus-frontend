@@ -1,0 +1,116 @@
+ontologyResult:
+  result: updated
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: 1709dbc4d3d28d8721ff001b69ad934a6de54d18
+    targetBranch: edhr-dev
+    targetCommit: 04db7e838ec5e194355ff954ff173a02205e0fd6
+    contractReadCommit: 04db7e838ec5e194355ff954ff173a02205e0fd6
+    uncommittedContractPaths: []
+  reason: 产品单行flush落实既有事务转移政策；有限核对中两条transfer fact存在确定来源定位错误，已同批最小纠正。业务语义、类型、成熟度、schema及P0阶段保持。
+  changedArtifacts:
+  - path: docs/knowledge/facts/core-business.yaml
+    changeType: update
+    ids:
+    - fact.catalog.productfamilytransfer-confirmation
+    - fact.catalog.productfamilytransfer-reason
+  knowledgeSync:
+  - id: fact.catalog.productfamilytransfer-confirmation
+    disposition: updated
+    scope: 仅纠正来源路径/证据/定位及实际核对provenance，保留规范、类型、操作符、别名和implemented/internal；不注册通用事实求值。
+    sourceReferences:
+    - docs/knowledge/facts/core-business.yaml
+    - gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java
+    - /tmp/edhr-family-transfer-ontology-20261107/fact-source-correction.json
+  - id: fact.catalog.productfamilytransfer-reason
+    disposition: updated
+    scope: 仅纠正来源路径/证据/定位及实际核对provenance，保留规范、类型、操作符、别名和implemented/internal；不注册通用事实求值。
+    sourceReferences:
+    - docs/knowledge/facts/core-business.yaml
+    - gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java
+    - /tmp/edhr-family-transfer-ontology-20261107/fact-source-correction.json
+  - id: DEC-0002-01
+    disposition: retained
+    scope: 保留半成品/产成品成员资格。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0002-product-family-process-modeling.yaml
+    - /tmp/edhr-family-transfer-ontology-20261107/finite-review-records.json
+  - id: DEC-0002-02
+    disposition: retained
+    scope: 保留每产品最多一个簇；不放宽tenant/product唯一约束。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0002-product-family-process-modeling.yaml
+    - /tmp/edhr-family-transfer-ontology-20261107/finite-review-records.json
+  - id: DEC-0002-11
+    disposition: retained
+    scope: 保留同事务、二次确认、不收原因、产品旧簇新簇三方审计；flush不是commit。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0002-product-family-process-modeling.yaml
+    - /tmp/edhr-family-transfer-ontology-20261107/finite-review-records.json
+  - id: DEC-0002-10
+    disposition: retained
+    scope: 保留未开工首次START当前归属/有效期/形态重核冻结与已开工不改；不重验完整START矩阵。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0002-product-family-process-modeling.yaml
+    - /tmp/edhr-family-transfer-ontology-20261107/finite-review-records.json
+  - id: DEC-0007-03
+    disposition: retained
+    scope: 保留后续工序按当前上下文/簇匹配，已过站不补做。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0007-production-work-applicability-and-runtime-snapshot.yaml
+    - /tmp/edhr-family-transfer-ontology-20261107/finite-review-records.json
+  - id: DEC-0007-04
+    disposition: retained
+    scope: 保留已创建实例原快照及归属，含零业务节点执行的实例。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0007-production-work-applicability-and-runtime-snapshot.yaml
+    - /tmp/edhr-family-transfer-ontology-20261107/finite-review-records.json
+  conflicts: []
+  questions: []
+  validationEvidence:
+  - id: validation.family-transfer.knowledge89
+    checkType: schema
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr --batch-mode --no-transfer-progress --file tools/knowledge-model/pom.xml
+      clean test
+    outcome: passed
+    evidence:
+    - /tmp/edhr-family-transfer-ontology-20261107/knowledge89.log
+    - /tmp/edhr-family-transfer-ontology-20261107/TEST-com.zencas.edhr.knowledge.BusinessKnowledgeModelTest.xml
+    - /tmp/edhr-family-transfer-ontology-20261107/knowledge-result.json
+    - 纠正后89项、0 failure、0 error、0 skipped；纠正前precheck单独保留。
+  - id: validation.family-transfer.source-reference
+    checkType: reference
+    command: python3 /tmp/edhr-family-transfer-ontology-20261107/build-evidence.py
+    outcome: passed
+    evidence:
+    - /tmp/edhr-family-transfer-ontology-20261107/fact-source-correction.json
+    - /tmp/edhr-family-transfer-ontology-20261107/knowledge-source-correction.diff
+    - /tmp/edhr-family-transfer-ontology-20261107/authority-review.md
+    - 仅2个ID的sourcePath/evidenceIds/sourceRevision/sourceLocator/capturedAt改变，其余字段保持。
+  - id: validation.family-transfer.maturity-preserved
+    checkType: status-transition
+    command: 比较两fact前后全部字段与28项有限记录；检查schema/status及投影边界
+    outcome: passed
+    evidence:
+    - /tmp/edhr-family-transfer-ontology-20261107/fact-source-correction.json
+    - /tmp/edhr-family-transfer-ontology-20261107/finite-review-records.json
+    - 知识0.3.25/schema1.2.0/P0 in-progress保持，无verified或customer/runtime提升。
+  - id: validation.family-transfer.final-source-binding
+    checkType: evidence-path
+    command: python3 /tmp/edhr-family-transfer-ontology-20261107/finalize-evidence.py --source-commit 1709dbc4d3d28d8721ff001b69ad934a6de54d18
+      --product-evidence /tmp/edhr-family-transfer-20261107/verified
+    outcome: passed
+    evidence:
+    - /tmp/edhr-family-transfer-ontology-20261107/source-binding.json
+    - /tmp/edhr-family-transfer-ontology-20261107/knowledge-before.json
+    - /tmp/edhr-family-transfer-ontology-20261107/knowledge-after.json
+    - 最终clean源1709dbc4d3d28d8721ff001b69ad934a6de54d18，350知识文件逐字节绑定；产品绿原件为主侧执行，本体未代跑。
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages:
+    - P1
+    - P2
+    - P3

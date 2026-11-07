@@ -1,0 +1,182 @@
+qualityResult:
+  result: passed
+  baseCommit: 04db7e838ec5e194355ff954ff173a02205e0fd6
+  headCommit: b2b0df85572f634925d9e3b1ac4a91c0988bb86c
+  contractBaseline:
+    sourceCommit: b2b0df85572f634925d9e3b1ac4a91c0988bb86c
+    targetBranch: edhr-dev
+    targetCommit: 04db7e838ec5e194355ff954ff173a02205e0fd6
+    contractReadCommit: b2b0df85572f634925d9e3b1ac4a91c0988bb86c
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: clean
+    includedPaths: []
+    excludedPaths: []
+    untrackedPaths: []
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+    - id: check.fixed-candidate-contract
+      required: true
+      category: documentation
+      description: Independent target fetch, detached candidate, contract/source byte binding and risk-matched scope.
+      method: command
+      command: git fetch origin edhr-dev; git diff 04db7e838ec5e194355ff954ff173a02205e0fd6..b2b0df85572f634925d9e3b1ac4a91c0988bb86c; python3 analyze.py; inspect import-only-b2b0/verification.json
+      outcome: passed
+      evidence:
+        - source-binding.json; target fetched still04db; actual runtime candidate1709 contains target. Finalb2b0 differs only by removing one unused test import.
+        - verified/run.json source25 match actual1709 Git bytes;24 unchanged atb2b0,one test differs only unused import. Independent b2b0 test-compile and allthree new class instruction comparisons pass; no new156/89 runtime claimed.
+        - Only temporary node_modules dependency symlink was excluded during both executions and removed before final clean verification. initial-1709 retains first result/source binding/manifest.
+        - Product implementation is one flush line; no contract, migration, constraint, rule, lock, START, history or UI changes.
+    - id: check.real-jpa-canonical-postgres
+      required: true
+      category: database
+      description: Actual canonical Liquibase PostgreSQL, Spring service/transaction proxy and unique constraint; new transfer integration13.
+      method: automated-test
+      command: python3 run.py verified
+      outcome: passed
+      evidence:
+        - verified/TEST-com.zencas.edhr.masterdata.service.ProductFamilyTransferPostgresTest.xml;13/13,0 failures/errors/skips.
+        - verified/maven.log and postgres.log; canonical schema/seed through0092, ddl-auto none, unique tenant/product unchanged; only FormProjectionWorker mocked in this integration context.
+        - analysis.json sqlSuccessfulWriteOrder; native/MVC/uncommitted transfer each successful DELETE,member INSERT,three audit INSERT in same nonzero transaction ID.
+    - id: check.mvc-confirmation-and-authorization
+      required: true
+      category: security
+      description: Signed JWT and actual filter/controller/advice/service chain through MockMvc, plus confirmation/noop/qualification boundaries.
+      method: automated-test
+      command: ProductFamilyTransferPostgresTest via verified/run.json
+      outcome: passed
+      evidence:
+        - Actual permitted confirmed transfer200, missing confirmation400, anonymous401, missing authority403; no reason field required.
+        - Same-family identity201/no audit; ineligible material, unassigned product, missing family/product leave exact prior member snapshot and zero audits.
+        - MockMvc is in-process; no claim of browser, socket, live login or complete multi-tenant testing.
+    - id: check.audit-atomicity-and-read-isolation
+      required: true
+      category: audit
+      description: Third audit insert rejection and new-member rejection rollback; external reader sees old state until outer commit; persisted audit evidence.
+      method: automated-test
+      command: ProductFamilyTransferPostgresTest and python3 analyze.py
+      outcome: passed
+      evidence:
+        - Test-only native PG third-audit trigger and nontransactional sequence prove third attempt reached; old member exact snapshot restored and no earlier audit persists.
+        - Member INSERT trigger rejection after successful DELETE also restores old member and zero audits.
+        - analysis.json failureWriteExecutions and sql-execution-extract.log distinguish successful execute from failed ERROR/STATEMENT; audit failure has DELETE/member INSERT/first two audit INSERT, third fails; member failure has successful DELETE only.
+        - Dedicated outer transaction/latch test sees old family11 and zero audit before release, then family12/new identity and allthree audit after commit; worker executor termination assertion passed.
+        - independent-audit-hashes.json;231 persisted audit rows independently re-encoded and SHA-256 recomputed, each matches audit-event-v2; operator901/name/account/UI/IP plus three-side snapshots verified.
+    - id: check.neighbor-regression156
+      required: true
+      category: regression
+      description: Independent current nine-class product regression156 with all original optional growth observations enabled.
+      method: automated-test
+      command: Full command in verified/run.json
+      outcome: passed
+      evidence:
+        - verified/test-summary.json;156 tests,0 failures,0 errors,0 skipped; all nine fresh XML files retained.
+        - Transfer13, membership service5, repository6, process resolution3, controller55, Batch integration21, audit hash48/event2/aspect3.
+        - Repository6 uses isolated H2 create-drop; native transfer13 and Batch21 use owned PostgreSQL databases. Service/controller unit tests are not falsely labeled native integration.
+        - PG preload pg_stat_statements and production.growth.observe=true enabled existing two optional Batch observation cases; no assertions weakened or tests changed.
+    - id: check.negative-evidence-integrity
+      required: true
+      category: integration
+      description: Independently inspect original negative raw evidence and bind old source/new test bytes without claiming a fresh negative rerun.
+      method: inspection
+      command: python3 analyze.py
+      outcome: passed
+      evidence:
+        - analysis.json oldNegativeEvidenceInspectedNotRerun; original13=9 pass/3 assertion failures/1 real DataIntegrityViolation error/0 skipped.
+        - The error is direct valid-transfer unique tenant/product failure, not a fixture error. HTTP400, audit-marker mismatch and precommit gate failure share the same unique cause.
+        - Original negative test bytes equal actual156-run1709 test; finalb2b0 test only removes unused import. Old negative product bytes equal04db baseline; no successful DELETE/member INSERT executes for native transfer, failed INSERT appears in ERROR/STATEMENT.
+        - Parent original final phase0JUnit setup typo, retry154pass/2skip, and verified156pass retained separately; final green does not rewrite historical failures/skips.
+    - id: check.knowledge89-and-exact-source-correction
+      required: true
+      category: ontology
+      description: Actual independent knowledge89 and finite exact350-file provenance delta review.
+      method: automated-test
+      command: bash /workspace/.edhr-cloud-tools/mvn-edhr --batch-mode --no-transfer-progress --file tools/knowledge-model/pom.xml clean test
+      outcome: passed
+      evidence:
+        - knowledge/run.json and BusinessKnowledgeModelTest XML;89/89,0 failures/errors/skips actual1709; all350 knowledge bytes identical atb2b0,so no changed knowledge check to rerun.
+        - knowledge-source-child/knowledge-inventory.json and fact-field-changes.json;350 tracked files,349 byte unchanged; one file changes two fact records, exactly five provenance fields each.
+        - Controller at04db has actual confirmed/requireConfirmed guard and no reason input; new locator is precise. Definitions,type,operators,status,availability,aliases and maturity unchanged; no generic runtime provider proof inferred.
+        - Knowledge0.3.25/schema1.2.0/P0 remain; child finite reviewFINAL is source-only, not substituted for this actual runtime regression.
+    - id: check.robustness-performance-a23
+      required: true
+      category: integration
+      description: Verify minimal transaction fix, avoid speculative defense and quantify unchanged adjacent SQL growth.
+      method: inspection
+      command: python3 analyze.py; inspect ProductFamilyMembershipService and ProcessModelingController
+      outcome: passed
+      evidence:
+        - Explicit flush is necessary for immediate unique constraint and actual ORM ordering, stays in same transaction and preserves new identity/created metadata; no generic guard framework/retry/cache/lock or exception swallowing added.
+        - Bulk1/10/100 SELECT8/62/602 reproduced from server tagged execute and calling-thread inspector independently;100 is a sample, not a total selection cap.
+        - Bulk100 inspector prepares100 audit INSERT statements while server executes200; counted separately. Timing is synthetic observation, not a production SLA.
+        - Existing second membership read is not removed merely as apparent duplication; it can observe intervening changes. User approves next batch prevalidation reads only, preserving real-time recheck/write/audit.
+        - independent-review.md provides concrete possible Controller split boundary, with no out-of-scope refactor in this patch.
+    - id: check.resource-cleanup-and-byte-integrity
+      required: true
+      category: documentation
+      description: Owned resources removed, worker completed, detached worktree restored clean and artifact bytes fingerprinted.
+      method: command
+      command: docker inspect owned-container; unlink owned-node-modules-symlink; git status --porcelain; git diff --check
+      outcome: passed
+      evidence:
+        - verified/cleanup.json and source-binding.json; owned PG container removed, inspect confirms absent; Maven/JVM command exited0; latch worker termination asserted.
+        - Only own temporary dependency symlink removed; no arbitrary orphan sweep, source reset, merge, deploy, historical restore or CI/Actions calls.
+        - manifest.json fingerprints retained files; final clean sourceb2b0, actual156/89 runtime1709, import-only independent compile/delta separately bound.
+    - id: check.import-only-candidate-delta
+      required: true
+      category: regression
+      description: Independently compile final candidate after main removes unused import; compare all new test class instructions and unchanged runtime inputs.
+      method: command
+      command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f gmp-platform/backend/pom.xml -DskipTests test-compile; javap -c -p -s -constants; inspect exact Git delta
+      outcome: passed
+      evidence:
+        - import-only-b2b0/compile-run.json and test-compile.log; actual independent compile atb2b0 exit0,not a156-test execution.
+        - import-only-b2b0/verification.json; Git only removes AtomicInteger import from new test; allthree new class names,instructions,signatures/constants match saved1709 output; debug line bytes may differ and are not claimed identical.
+        - 24/25 source inputs and all350 knowledge files byte unchanged; changed test exactly old text minus unused import; product code/fixtures/assertions/annotations/transaction/SQL observation behavior unchanged.
+        - Contract permits impact assessment after candidate changes; actual applicable new check is compilation/instruction/delta comparison. Reuse original156/89 based on unchanged executable behavior,without assigning those runs to newSHA.
+  findings:
+    - id: W4-FAMILY-TRANSFER-FLUSH-001
+      severity: medium
+      scope: product-family member transfer
+      summary: Hibernate INSERT-before-DELETE caused legal member transfer to violate existing tenant/product unique constraint.
+      reproductionSteps:
+        - On04db with canonical PG, seed a qualified member in sourcefamily11 and transfer via real service transaction to targetfamily12.
+        - Observe failed new member INSERT against old row before queued DELETE; direct call errors and confirmed MVC returns400.
+      expectedResult: New membership identity and three audits commit together under unchanged unique constraint; failures restore old state.
+      actualResult: Candidate flushes pending DELETE before new INSERT, and all independent native/rollback/read/audit regressions pass.
+      evidence: [analysis.json, verified/postgres.log, verified/test-summary.json]
+      resolutionStatus: resolved
+      resolutionEvidence:
+        - type: commit
+          reference: 1709dbc4d3d28d8721ff001b69ad934a6de54d18
+        - type: command
+          reference: verified/run.json; ProductFamilyTransferPostgresTest13 and full156 independent pass
+    - id: QF-FAMILY-TRANSFER-UNUSED-IMPORT-001
+      severity: low
+      scope: new integration test source hygiene
+      summary: New test imports AtomicInteger without using it.
+      reproductionSteps:
+        - Inspect ProductFamilyTransferPostgresTest.java line36 and search AtomicInteger references; only the import exists.
+      expectedResult: Remove newly introduced unused imports under codeplzreadme code hygiene guidance.
+      actualResult: Main removed only this unused import inb2b0; independent test compilation and allthree class instruction comparisons pass.
+      evidence: [verified/source/gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/service/ProductFamilyTransferPostgresTest.java, import-only-b2b0/verification.json]
+      resolutionStatus: resolved
+      resolutionEvidence:
+        - type: commit
+          reference: b2b0df85572f634925d9e3b1ac4a91c0988bb86c
+        - type: command
+          reference: import-only-b2b0/compile-run.json;import-only-b2b0/verification.json
+  residualRisks:
+    - id: PERF-FAMILY-BULK-READS-001
+      description: Adjacent bulk add still has6N+2 SELECT growth;100 synthetic selected products produces602 SELECT. This patch intentionally preserves algorithm; user authorized prevalidation batching in next slice.
+      impact: Increasing selection count increases database round trips; this is not a limit of100 selectable products.
+      mitigation: Next batch quantify bounded bulk prevalidation while preserving original realtime second read, qualification/error semantics, writes and per-object audit; separate integration and regression before closure.
+    - id: gap.full-start-and-concurrent-writer-matrix
+      description: Actual transfer transaction/read isolation is covered, but all simultaneous transfer/START writers, complete multi-tenant policies and browser confirmation are outside this finite slice.
+      impact: Do not claim complete production startup or concurrency acceptance from this local repair.
+      mitigation: Preserve existing rules/snapshots and continue risk-ranked whole-branch audit and full matrices separately.
+    - id: gap.full-audit-and-capacity
+      description: W2-W7 remainder,931 knowledge/86UI candidates,A12/high-risk/complete matrices,A23 including already-reviewed code, historical text-ID/capacity/UNKNOWN and user-paused tasks continue. Whole-file completed0; historical unique coverage unknown.
+      impact: This passed batch is not completion of whole-branch audit, full semantic audit or capacity certification.
+      mitigation: Main maintains actual ledger and incremental fetch/source review; pending unrelated performance decisions remain pending.
+  blockingConditions: []
