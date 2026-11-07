@@ -1,0 +1,263 @@
+qualityResult:
+  result: passed
+  baseCommit: 5e8edb47ae91af83555f4b67a87598c3c2a9a664
+  headCommit: 4ee3efba39c5ff44972561ae25956c33a0c14357
+  contractBaseline:
+    sourceCommit: 4ee3efba39c5ff44972561ae25956c33a0c14357
+    targetBranch: edhr-dev
+    targetCommit: 5e8edb47ae91af83555f4b67a87598c3c2a9a664
+    contractReadCommit: 4ee3efba39c5ff44972561ae25956c33a0c14357
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: clean
+    includedPaths: []
+    excludedPaths: []
+    untrackedPaths: []
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+  - id: check.fixed-candidate-contract
+    required: true
+    category: documentation
+    description: Independent fetch, detached candidate and unchanged contracts/knowledge
+      baseline.
+    method: command
+    command: git fetch origin edhr-dev; git diff base..head; python3 analyze.py
+    outcome: passed
+    evidence:
+    - source-binding.json; target independently fetched still5e8edb47, actual candidate/tested
+      commit4ee3efba contains target.
+    - verified/run.json source29 matches candidate Git/current bytes; final working
+      tree clean. Contract read at candidate, no AGENTS/codeplz/role/handoff increment.
+    - DP authorizes bounded prevalidation only; no new business policy, schema, locks,
+      UI, START, history or total-selection cap.
+  - id: check.native-canonical-postgres23
+    required: true
+    category: database
+    description: Real canonical Liquibase/JPA/Spring proxies with all native23 cases
+      enabled.
+    method: automated-test
+    command: python3 run.py verified
+    outcome: passed
+    evidence:
+    - verified/TEST-com.zencas.edhr.masterdata.service.ProductFamilyTransferPostgresTest.xml;23/23,0
+      failures/errors/skips.
+    - verified/maven.log/postgres.log; ddl-auto none, Liquibase through0092, original
+      unique constraints and transaction behavior intact. Only FormProjectionWorker
+      mocked in native context.
+    - Actual JWT/MockMvc transfer security/confirmation remains; MockMvc is in-process,
+      not browser/socket/live login. Batch business cases call real service directly,
+      batch route permission/body contract source-inspected unchanged.
+  - id: check.qualification-order-and-completeness
+    required: true
+    category: integration
+    description: Maintain input validation, first error, order, deduplication, qualification
+      and all selected products.
+    method: automated-test
+    command: ProductFamilyTransferPostgresTest; python3 analyze.py; python3 compare-semantics.py
+    outcome: passed
+    evidence:
+    - NULL/empty/NULL-ID messages; missing/ineligible first order; whole qualification
+      before membership conflicts; first conflicting product/family name retained.
+    - Finished and semi-finished accepted; raw/NULL type rejected; reverse-order dedup
+      output and old same-family identity/createdBy preserved; other-tenant membership
+      filtering matches prior behavior.
+    - Samples1/10/100/513/1025 persist all selected products and2N audits. 100 is
+      a sample,512 an internal read batch, not a total choice cap.
+    - semantic-comparison.json;33 original old/current committed member and audit
+      business payload comparisons match after excluding only generated values. Fixture201
+      complete metadata retained.
+  - id: check.realtime-read-and-rollback
+    required: true
+    category: audit
+    description: Preserve real second-read window and all-or-nothing new member/audit
+      rollback.
+    method: automated-test
+    command: ProductFamilyTransferPostgresTest; python3 analyze.py
+    outcome: passed
+    evidence:
+    - 'analysis.json concurrent PG line order: prevalidation IN, other JDBC connection
+      commits member202, same worker second single SELECT; original skip behavior
+      returns no new member/audit.'
+    - This is actual double-connection JDBC mutation, not full production API writer/START
+      concurrent matrix.
+    - Native test third-add-audit sequence assertion proves3 attempts. PG successful
+      executes include2member+2audit; third audit exists only inERROR/STATEMENT. Final
+      exact old201 row and zero additions/audits.
+    - Original transfer third-audit/new-member rejection and precommit outside-reader
+      scenarios pass; worker executor termination assertions pass.
+  - id: check.independent-persisted-audit-hashes
+    required: true
+    category: audit
+    description: Independently re-encode persisted audit content, identity and digest.
+    method: command
+    command: python3 analyze.py
+    outcome: passed
+    evidence:
+    - independent-audit-hashes.json;4343 observed rows,4339 unique events, all independent
+      SHA-256 match audit-event-v2. Four repeated observations belong to no-op reread,
+      not new events.
+    - Actor901/name/account/UI/IP and before/after payload verified; independent tool
+      does not call product codec. Scope is current ordinary UTF-8/integer/microsecond
+      fixtures, not all possible encoding inputs.
+  - id: check.bounded-sql-and-growth
+    required: true
+    category: database
+    description: Actual tagged SELECT shape/count and bound parameters independently
+      verified.
+    method: command
+    command: python3 analyze.py
+    outcome: passed
+    evidence:
+    - analysis.json and sql-execution-extract.log; all33 observations match every
+      inspector SELECT shape/count to successful server execute, excluding JDBC fixtures/asserts/index
+      probe.
+    - New1/10/100/513/1025 SELECT8/44/404/2058/4108, old inspected8/62/602/3080/6152.
+      Material/member chunks cover exact selected ID sets,512/512/1 for1025.
+    - Actual IN binds at most512 IDs; membership adds tenant default for513 total
+      parameters. Many-type513 type IN512+1, total2059 SELECT.
+    - bulk100 prepared audit INSERT100 versus server execute200 recorded separately.
+      Remaining realtime/merge reads stay linear; no all-network/production-SLA claim.
+    - 'Thread cumulative allocation: single-item overhead slightly higher; larger
+      samples lower. It is not live or peak heap.'
+  - id: check.original-negative-integrity
+    required: true
+    category: integration
+    description: Independently inspect original old-code negative and bind source/test
+      bytes without false rerun claim.
+    method: inspection
+    command: python3 analyze.py
+    outcome: passed
+    evidence:
+    - Original parent negative XML:23 cases,19pass/4 query-budget assertion failures/0error/skip.
+      These are performance budget failures, not changed business correctness or fixture
+      errors.
+    - Old service bytes equal5e8edb47; native tests byte-identical to current candidate.
+      Independent instance inspected old evidence, did not rerun it.
+    - Original Mockito two cases update mock API to batch reads while preserving qualification/conflict/zero-write/audit
+      assertions.
+  - id: check.regression166
+    required: true
+    category: regression
+    description: Run all current nine-class neighbor regressions with old optional
+      observations actually enabled.
+    method: automated-test
+    command: Full actual command in verified/run.json
+    outcome: passed
+    evidence:
+    - verified/test-summary.json;166/166,0failures/errors/skips with nine fresh XML
+      reports.
+    - Native23, membership5, repository6 H2, resolution3, controller55, Batch PG21,
+      hash48/event2/aspect3.
+    - PG preload pg_stat_statements and production.growth.observe=true execute original
+      optional Batch observers without weakening tests.
+  - id: check.knowledge89-and-boundaries
+    required: true
+    category: ontology
+    description: Actual independent knowledge89 and byte-identical350-file inventory.
+    method: automated-test
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr --batch-mode --no-transfer-progress
+      --file tools/knowledge-model/pom.xml clean test
+    outcome: passed
+    evidence:
+    - knowledge/run.json and XML; actual independent89/89,0failures/errors/skips at4ee3efba.
+    - knowledge-inventory.json;350 files byte-identical to5e8edb47, knowledge0.3.25/schema1.2.0/P0
+      remain; no statuses or definitions changed.
+    - DEC0002 qualification/unique/audit and DEC0007 future work/frozen instance boundaries
+      preserved. Known P1 coarse locator/provider gap remains, not new product bug
+      or runtime registration proof.
+  - id: check.index-a23-maintainability
+    required: true
+    category: database
+    description: Verify index-plan boundary and necessary versus excessive checks,
+      without speculative refactor/index changes.
+    method: inspection
+    command: Inspect patch and verified/index-analysis.json; actual prepared SELECT
+      probes
+    outcome: passed
+    evidence:
+    - Probe appends50k fixture material/member rows only after tests in own disposable
+      DB. material100/512 PK; member100 old tenant/product unique; member512 SeqScan14.761ms/417hits/49489filtered
+      in this run; tiny type512 SeqScan0.163ms.
+    - Warm synthetic plans do not establish production latency or universal index
+      choice. Existing predicate is covered; no automatic new index, forced plan or
+      batch-size policy introduced.
+    - Second read retained and real interleaving proves it is meaningful; three actual
+      batch helper consumers, no full-tenant loads/cross-request cache/retry/locks/default
+      fallbacks added.
+    - independent-review.md provides concrete Service/helper/Controller split boundary
+      as deferred proposal, not a large refactor or full-file completion claim.
+  - id: check.exit-and-raw-integrity
+    required: true
+    category: documentation
+    description: Owned resources removed and source/raw evidence fingerprinted.
+    method: command
+    command: docker inspect own-container; unlink own-dependency-symlink; git status
+      --porcelain; git diff --check
+    outcome: passed
+    evidence:
+    - verified/cleanup.json and exit-verification.json; own PG absent, backend/knowledge
+      processes exit0, worker termination assertions passed.
+    - Only own temporary node_modules link removed; detached tree clean and29 source
+      hashes match candidate Git.
+    - manifest.json hashes retained actual artifacts; semantic comparator initial202
+      timestamp calibration preserved, with no product/test changes or hidden rerun.
+      No CI/merge/deploy/history restore/orphan sweep.
+  findings:
+  - id: PERF-FAMILY-BULK-READS-001
+    severity: medium
+    scope: selected-product prevalidation sub-scope only
+    summary: Old bulk-add prevalidation repeated material/type/membership reads per
+      selected product, creating avoidable query growth.
+    reproductionSteps:
+    - At5e8 with canonical PG, select100 eligible unassigned products and call addMembers.
+    - Observe602 tagged SELECT; native budget assertion fails after successful correct
+      member/audit writes.
+    expectedResult: Reduce prevalidation reads with bounded selected-ID queries while
+      retaining realtime recheck, writes, audit and complete selection.
+    actualResult: Candidate produces404SELECT for100 with all100members/200audits;
+      cross512 cases and preserved semantics pass independently.
+    evidence:
+    - analysis.json
+    - verified/postgres.log
+    - verified/test-summary.json
+    - semantic-comparison.json
+    resolutionStatus: resolved
+    resolutionEvidence:
+    - type: commit
+      reference: 4ee3efba39c5ff44972561ae25956c33a0c14357
+    - type: command
+      reference: verified/run.json; native23/full166 pass and independent SQL/parameter
+        checks
+  residualRisks:
+  - id: PERF-FAMILY-BULK-READS-001-REMAINING
+    description: Realtime per-item membership checks and member/audit merge lookups
+      remain about4N; selector full-load path is unchanged. Single-item batch allocation
+      has small fixed overhead.
+    impact: Current improvement closes prevalidation sub-scope, not all bulk-write
+      cost or capacity risk.
+    mitigation: Keep realtime correctness; quantify separate follow-up before further
+      optimization, no blanket removal of duplicate-shaped queries.
+  - id: gap.member512-plan-and-capacity
+    description: Warm50k synthetic member512 probe choseSeqScan with417hits/49489filtered;
+      larger distributions, cold storage and plan caching are not certified.
+    impact: An existing index does not guarantee every batch uses it; production throughput/peak
+      heap remain unmeasured.
+    mitigation: Observe actual data/statistics/plans and measured latency before discussing
+      added indexes or other parameters; this patch adds none.
+  - id: gap.p1-coarse-fact-provider
+    description: Existing productFamilyCount precise locator/provider source gap remains
+      under P1 coarse-fact-locators;350 knowledge unchanged.
+    impact: Knowledge schema and current service/unique constraint do not prove a
+      generic runtime fact provider.
+    mitigation: Retain original P1 gap and maturity; do not introduce provider work
+      or label a new functional defect in this slice.
+  - id: gap.full-audit-and-matrices
+    description: Full START/concurrent production writers/multi-tenant/browser/capacity
+      and W2-W7/931knowledge86UI/A12/high-risk/fullmatrices/A23 including old and
+      user-paused items remain. Whole-file completed0; historical unique unknown.
+    impact: Passed finite slice is not completion of whole-branch audit or complete
+      production acceptance.
+    mitigation: Main continues real incremental fetch, coverage/decision ledger and
+      risk-ranked remaining work; user-paused signature page and production dialog
+      stay paused.
+  blockingConditions: []

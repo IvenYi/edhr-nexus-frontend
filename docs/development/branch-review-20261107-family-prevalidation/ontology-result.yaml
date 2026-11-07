@@ -1,0 +1,76 @@
+ontologyResult:
+  result: not-applicable
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: 4ee3efba39c5ff44972561ae25956c33a0c14357
+    targetBranch: edhr-dev
+    targetCommit: 5e8edb47ae91af83555f4b67a87598c3c2a9a664
+    contractReadCommit: 5e8edb47ae91af83555f4b67a87598c3c2a9a664
+    uncommittedContractPaths: []
+  reason: 仅工程有界预校验读取，保留业务资格/基数/顺序/即时复核/事务审计/快照及成熟度；无新业务语义或来源纠错，350知识文件与基线全同。用户授权不构成新的业务政策或自动merge许可。
+  changedArtifacts: []
+  knowledgeSync:
+  - id: DEC-0002-01
+    disposition: retained
+    scope: 保持半成品/产成品资格；仅批读形状变化，不新增状态资格。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0002-product-family-process-modeling.yaml
+    - finite-review-records.json
+  - id: DEC-0002-02
+    disposition: retained
+    scope: 保持一个产品最多一簇与原即时唯一约束/写前复核。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0002-product-family-process-modeling.yaml
+    - finite-review-records.json
+  - id: rule.product-family.membership-cardinality
+    disposition: retained
+    scope: 原单一归属规范不变，不新增或假定通用规则求值。
+    sourceReferences:
+    - docs/knowledge/rules/product-process.yaml
+    - finite-review-records.json
+  - id: fact.catalog.product-productfamilycount
+    disposition: deferred
+    scope: integer与规范保持；精确provider/sourceLocator作为已有P1粗定位evidence-gap保留，本批不造count
+      API或抬成熟度。
+    sourceReferences:
+    - docs/knowledge/facts/core-business.yaml
+    - finite-review-records.json
+  conflicts: []
+  questions: []
+  validationEvidence:
+  - id: validation.family-prevalidation.knowledge89
+    checkType: schema
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr --batch-mode --no-transfer-progress
+      --file tools/knowledge-model/pom.xml clean test
+    outcome: passed
+    evidence:
+    - knowledge-result.json
+    - knowledge89.log
+    - TEST-com.zencas.edhr.knowledge.BusinessKnowledgeModelTest.xml
+    - 实际89项0failure/error/skipped；不是产品运行验收。
+  - id: validation.family-prevalidation.finite-meaning
+    checkType: reference
+    command: python3 build-evidence.py
+    outcome: passed
+    evidence:
+    - finite-review-records.json
+    - 28项有限重核=27范围一致+1已有P1精确来源evidence-gap；该gap不计完整一致，不改原成熟度。
+  - id: validation.family-prevalidation.final-source
+    checkType: evidence-path
+    command: python3 finalize-evidence.py --source-commit 4ee3efba39c5ff44972561ae25956c33a0c14357
+      --product-evidence /tmp/edhr-family-prevalidation-20261107/verified
+    outcome: passed
+    evidence:
+    - source-binding.json
+    - knowledge-before.json
+    - knowledge-after.json
+    - 350文件逐字相同，产品源与主侧绿run输入逐指纹绑定；本体角色只读取，不代跑产品。
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages:
+    - P1
+    - P2
+    - P3

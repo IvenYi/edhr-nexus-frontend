@@ -1,0 +1,1562 @@
+{
+  "baseCommit": "5e8edb47ae91af83555f4b67a87598c3c2a9a664",
+  "testedCommit": "4ee3efba39c5ff44972561ae25956c33a0c14357",
+  "sourceFingerprints": [
+    {
+      "path": "AGENTS.md",
+      "bytes": 25065,
+      "sha256": "13dc7cdacea0b1bb0aef2abb268781f9c69584acd4879b204d2b7fd81a2927fc"
+    },
+    {
+      "path": "codeplzreadme.md",
+      "bytes": 3035,
+      "sha256": "7a1be8efffec596b034335058dca2860346d256622f899c8dac97c5172dd6df2"
+    },
+    {
+      "path": "docs/agents/agent-handoff-contract.md",
+      "bytes": 31233,
+      "sha256": "3439a35dd1baa77ac723f1b5afa237a338d56e31386f06b02b4aacfd754e3a12"
+    },
+    {
+      "path": "docs/agents/quality-verifier.md",
+      "bytes": 7519,
+      "sha256": "6b3de9323924fb4ba5ae87be76c5136d28e754810c46b22b8e3d1cdd6c2f826f"
+    },
+    {
+      "path": "docs/development/branch-review-20261107-family-prevalidation/decision-package.yaml",
+      "bytes": 5465,
+      "sha256": "573ec38387dad003d42195bd502275812c3190986c1fdfbd327311e153f426c6"
+    },
+    {
+      "path": "gmp-platform/backend/pom.xml",
+      "bytes": 8805,
+      "sha256": "b98fcc84b57f57f1a8a7fd01ed2e7ab66a0c32c15c62980646a13d378a5669e5"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductFamilyMembershipService.java",
+      "bytes": 15680,
+      "sha256": "e5a776831dd4959155bde501c655fe66dd07f08554558d7e76260c05f9ab1f11"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/entity/ProductFamilyMember.java",
+      "bytes": 2143,
+      "sha256": "f356a91fc0d88d6d543544bfa2bef9a3c6e33b1ef0f14aa1fb70b494b958bfa0"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/repository/ProductFamilyMemberRepository.java",
+      "bytes": 1014,
+      "sha256": "bd3ae2444a82fd2cd1c67b9985fb11d4f30be9bc2d32dee798403e74a172c137"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java",
+      "bytes": 95507,
+      "sha256": "87e717d595fdbd03139b5fb62b65b266ebfdfe1cc4178a80dd30b517e6675dab"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/entity/AuditEvent.java",
+      "bytes": 4697,
+      "sha256": "34a236e63d78eed77cfd67094b4ced89f99614fa09b206546189e7e2907480aa"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/entity/AuditEventHash.java",
+      "bytes": 7419,
+      "sha256": "9ed9137b4d216699fc9f3374edbab6cbe8ae8b4862e9b7b2bcf562511b293ce2"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/resources/db/changelog/db.changelog-master.yaml",
+      "bytes": 584,
+      "sha256": "c6aee09872f78a36a7207348519d203dd6e8c21bff2f893540ef214fc6d5f964"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql",
+      "bytes": 106718,
+      "sha256": "61560f972ef9eeeb8f69620c947b54b2326ad9341d929b19385653bec81cf99b"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/resources/db/changelog/baseline/0002-current-seed.sql",
+      "bytes": 58311,
+      "sha256": "7007b3d4d47fd9d9eca097d1c23125afad64c4cce272dea3bf62323d25911eeb"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/service/ProductFamilyTransferPostgresTest.java",
+      "bytes": 26048,
+      "sha256": "fb0ff6f022470a1b1a6a1dd21d97a09180eb3ac075497721dafc9ea6f5d5f94a"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/service/ProductFamilyMembershipServiceTest.java",
+      "bytes": 8860,
+      "sha256": "08c2bdf94036ebfde15594c1ce958e7dcfc581dcf63d0e8511845212c2aac8ab"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/repository/ProductFamilyMemberRepositoryTest.java",
+      "bytes": 8348,
+      "sha256": "da02c9e6dab612da3ee97958632e4227f18b1e70ce698392115aedf6fa6fc57d"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/service/ProductProcessResolutionServiceTest.java",
+      "bytes": 5548,
+      "sha256": "7cff9b79fe20dc58c54342cf957599e780cb63eb9fbf5f234d01563bcfa84ae6"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/ProcessModelingControllerTest.java",
+      "bytes": 84914,
+      "sha256": "3d66178ff6a832fcdc6d6c52cdadf3f0680dbf00bde282cb38c1bd3f416118d6"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/BatchProcessIntegrationTest.java",
+      "bytes": 28046,
+      "sha256": "e3b874297ba362318a558d24bdfc9909de7f6d25e47774c88976ff10fd955b03"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/compliance/entity/AuditEventHashTest.java",
+      "bytes": 9525,
+      "sha256": "6621e06bd4eb190062e363dccbfac17092547844072dea12206b9242c748e731"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/compliance/entity/AuditEventTest.java",
+      "bytes": 1724,
+      "sha256": "a9dee9a5c3a7b0fa04a2cee5044b1ded733beb9b10755944d49bcf2862cbd1aa"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/common/audit/AuditAspectTest.java",
+      "bytes": 4214,
+      "sha256": "dfad0cbf514f5c207543d4c598b5997d69c8dafe08ff375ba6e3133306313adb"
+    },
+    {
+      "path": "docs/knowledge/facts/core-business.yaml",
+      "bytes": 142094,
+      "sha256": "168e4a16c1880fd6044816e09693ad9e5f98e246eb7a8ec97d08f877d00523d0"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/entity/Material.java",
+      "bytes": 2480,
+      "sha256": "102a685f8978419c300bbfd45bcea07ba66cb1e92dcd4e9446aab25ef2574eb0"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/entity/MaterialType.java",
+      "bytes": 1582,
+      "sha256": "6d0d2b190b61d6e8ddbe29bf7eb5a6c95673df72c974e3b6744379e48171b5fe"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/repository/MaterialRepository.java",
+      "bytes": 614,
+      "sha256": "605934a096b07174d7088df4be4293ee31a7c73e562da03dc2fa052e2f40b2a7"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/repository/MaterialTypeRepository.java",
+      "bytes": 427,
+      "sha256": "103bc7e2479ee7d0bd13d1998f38107cedc1343de4c5660f93fa627cc7521c36"
+    }
+  ],
+  "oldServiceMatchesBaseline": true,
+  "nativeTestBytesIdentical": true,
+  "negativeSummary": "23=19pass/4 real query-budget failures/0errors/skips; no new functional bug claimed",
+  "finalSummary": "166/166,0failures/errors/skips",
+  "negativeFailures": [
+    "bulkAddPreservesAllSelectedProductsWithReducedPrevalidationReads(int)[2]",
+    "bulkAddPreservesAllSelectedProductsWithReducedPrevalidationReads(int)[3]",
+    "bulkAddPreservesAllSelectedProductsWithReducedPrevalidationReads(int)[4]",
+    "bulkAddPreservesAllSelectedProductsWithReducedPrevalidationReads(int)[5]"
+  ],
+  "observations": {
+    "negative": {
+      "observationFiles": 33,
+      "taggedSelectExecutions": 13638,
+      "uniqueAuditEventsReencoded": 4339,
+      "auditObservationRowsReencoded": 4343,
+      "bulkObservations": {
+        "bulk-conflict-order": {
+          "selectCalls": 6,
+          "threadAllocatedBytes": 179184,
+          "elapsedNanos": 12508760,
+          "members": 2,
+          "auditRows": 0,
+          "selectShapes": [
+            {
+              "sql": "select pf1_0.id,pf1_0.code,pf1_0.created_at,pf1_0.created_by,pf1_0.description,pf1_0.name,pf1_0.status,pf1_0.tenant_id,pf1_0.updated_at,pf1_0.updated_by from product_family pf1_0 where pf1_0.id=?",
+              "calls": 2,
+              "parameters": 1
+            },
+            {
+              "sql": "select m1_0.id,m1_0.brand_name,m1_0.code,m1_0.created_at,m1_0.created_by,m1_0.description,m1_0.effective_date,m1_0.expiry_date,m1_0.material_purpose,m1_0.material_type_id,m1_0.name,m1_0.specification,m1_0.status,m1_0.tenant_id,m1_0.unit,m1_0.updated_at,m1_0.updated_by,m1_0.version from material m1_0 where m1_0.id=?",
+              "calls": 2,
+              "parameters": 1
+            },
+            {
+              "sql": "select mt1_0.id,mt1_0.code,mt1_0.created_at,mt1_0.created_by,mt1_0.description,mt1_0.name,mt1_0.status,mt1_0.tenant_id,mt1_0.updated_at,mt1_0.updated_by from material_type mt1_0 where mt1_0.id=?",
+              "calls": 1,
+              "parameters": 1
+            },
+            {
+              "sql": "select pfm1_0.id,pfm1_0.created_at,pfm1_0.created_by,pfm1_0.product_family_id,pfm1_0.product_id,pfm1_0.tenant_id,pfm1_0.updated_at,pfm1_0.updated_by from product_family_member pfm1_0 where pfm1_0.tenant_id=? and pfm1_0.product_id=?",
+              "calls": 1,
+              "parameters": 2
+            }
+          ]
+        },
+        "bulk-1025": {
+          "selectCalls": 6152,
+          "threadAllocatedBytes": 655099432,
+          "elapsedNanos": 7995962666,
+          "members": 1026,
+          "auditRows": 2050,
+          "selectShapes": [
+            {
+              "sql": "select pf1_0.id,pf1_0.code,pf1_0.created_at,pf1_0.created_by,pf1_0.description,pf1_0.name,pf1_0.status,pf1_0.tenant_id,pf1_0.updated_at,pf1_0.updated_by from product_family pf1_0 where pf1_0.id=?",
+              "calls": 1,
+              "parameters": 1
+            },
+            {
+              "sql": "select m1_0.id,m1_0.brand_name,m1_0.code,m1_0.created_at,m1_0.created_by,m1_0.description,m1_0.effective_date,m1_0.expiry_date,m1_0.material_purpose,m1_0.material_type_id,m1_0.name,m1_0.specification,m1_0.status,m1_0.tenant_id,m1_0.unit,m1_0.updated_at,m1_0.updated_by,m1_0.version from material m1_0 where m1_0.id=?",
+              "calls": 1025,
+              "parameters": 1
+            },
+            {
+              "sql": "select mt1_0.id,mt1_0.code,mt1_0.created_at,mt1_0.created_by,mt1_0.description,mt1_0.name,mt1_0.status,mt1_0.tenant_id,mt1_0.updated_at,mt1_0.updated_by from material_type mt1_0 where mt1_0.id=?",
+              "calls": 1,
+              "parameters": 1
+            },
+            {
+              "sql": "select pfm1_0.id,pfm1_0.created_at,pfm1_0.created_by,pfm1_0.product_family_id,pfm1_0.product_id,pfm1_0.tenant_id,pfm1_0.updated_at,pfm1_0.updated_by from product_family_member pfm1_0 where pfm1_0.tenant_id=? and pfm1_0.product_id=?",
+              "calls": 2050,
+              "parameters": 2
+            },
+            {
+              "sql": "select pfm1_0.id,pfm1_0.created_at,pfm1_0.created_by,pfm1_0.product_family_id,pfm1_0.product_id,pfm1_0.tenant_id,pfm1_0.updated_at,pfm1_0.updated_by from product_family_member pfm1_0 where pfm1_0.id=?",
+              "calls": 1025,
+              "parameters": 1
+            },
+            {
+              "sql": "select ae1_0.id,ae1_0.action,ae1_0.content_after,ae1_0.content_before,ae1_0.created_at,ae1_0.data_summary,ae1_0.entity_id,ae1_0.entity_type,ae1_0.function_name,ae1_0.ip_address,ae1_0.menu_name,ae1_0.module_name,ae1_0.operator_account,ae1_0.operator_id,ae1_0.operator_name,ae1_0.reason,ae1_0.snapshot_hash,ae1_0.snapshot_hash_version,ae1_0.source,ae1_0.tenant_id from audit_event ae1_0 where ae1_0.id=?",
+              "calls": 2050,
+              "parameters": 1
+            }
+          ]
+        },
+        "bulk-513": {
+          "selectCalls": 3080,
+          "threadAllocatedBytes": 233415048,
+          "elapsedNanos": 4481064258,
+          "members": 514,
+          "auditRows": 1026,
+          "selectShapes": [
+            {
+              "sql": "select pf1_0.id,pf1_0.code,pf1_0.created_at,pf1_0.created_by,pf1_0.description,pf1_0.name,pf1_0.status,pf1_0.tenant_id,pf1_0.updated_at,pf1_0.updated_by from product_family pf1_0 where pf1_0.id=?",
+              "calls": 1,
+              "parameters": 1
+            },
+            {
+              "sql": "select m1_0.id,m1_0.brand_name,m1_0.code,m1_0.created_at,m1_0.created_by,m1_0.description,m1_0.effective_date,m1_0.expiry_date,m1_0.material_purpose,m1_0.material_type_id,m1_0.name,m1_0.specification,m1_0.status,m1_0.tenant_id,m1_0.unit,m1_0.updated_at,m1_0.updated_by,m1_0.version from material m1_0 where m1_0.id=?",
+              "calls": 513,
+              "parameters": 1
+            },
+            {
+              "sql": "select mt1_0.id,mt1_0.code,mt1_0.created_at,mt1_0.created_by,mt1_0.description,mt1_0.name,mt1_0.status,mt1_0.tenant_id,mt1_0.updated_at,mt1_0.updated_by from material_type mt1_0 where mt1_0.id=?",
+              "calls": 1,
+              "parameters": 1
+            },
+            {
+              "sql": "select pfm1_0.id,pfm1_0.created_at,pfm1_0.created_by,pfm1_0.product_family_id,pfm1_0.product_id,pfm1_0.tenant_id,pfm1_0.updated_at,pfm1_0.updated_by from product_family_member pfm1_0 where pfm1_0.tenant_id=? and pfm1_0.product_id=?",
+              "calls": 1026,
+              "parameters": 2
+            },
+            {
+              "sql": "select pfm1_0.id,pfm1_0.created_at,pfm1_0.created_by,pfm1_0.product_family_id,pfm1_0.product_id,pfm1_0.tenant_id,pfm1_0.updated_at,pfm1_0.updated_by from product_family_member pfm1_0 where pfm1_0.id=?",
+              "calls": 513,
+              "parameters": 1
+            },
+            {
+              "sql": "select ae1_0.id,ae1_0.action,ae1_0.content_after,ae1_0.content_before,ae1_0.created_at,ae1_0.data_summary,ae1_0.entity_id,ae1_0.entity_type,ae1_0.function_name,ae1_0.ip_address,ae1_0.menu_name,ae1_0.module_name,ae1_0.operator_account,ae1_0.operator_id,ae1_0.operator_name,ae1_0.reason,ae1_0.snapshot_hash,ae1_0.snapshot_hash_version,ae1_0.source,ae1_0.tenant_id from audit_event ae1_0 where ae1_0.id=?",
+              "calls": 1026,
+              "parameters": 1
+            }
+          ]
+        },
+        "bulk-100": {
+          "selectCalls": 602,
+          "threadAllocatedBytes": 30694976,
+          "elapsedNanos": 1603468398,
+          "members": 101,
+          "auditRows": 200,
+          "selectShapes": [
+            {
+              "sql": "select pf1_0.id,pf1_0.code,pf1_0.created_at,pf1_0.created_by,pf1_0.description,pf1_0.name,pf1_0.status,pf1_0.tenant_id,pf1_0.updated_at,pf1_0.updated_by from product_family pf1_0 where pf1_0.id=?",
+              "calls": 1,
+              "parameters": 1
+            },
+            {
+              "sql": "select m1_0.id,m1_0.brand_name,m1_0.code,m1_0.created_at,m1_0.created_by,m1_0.description,m1_0.effective_date,m1_0.expiry_date,m1_0.material_purpose,m1_0.material_type_id,m1_0.name,m1_0.specification,m1_0.status,m1_0.tenant_id,m1_0.unit,m1_0.updated_at,m1_0.updated_by,m1_0.version from material m1_0 where m1_0.id=?",
+              "calls": 100,
+              "parameters": 1
+            },
+            {
+              "sql": "select mt1_0.id,mt1_0.code,mt1_0.created_at,mt1_0.created_by,mt1_0.description,mt1_0.name,mt1_0.status,mt1_0.tenant_id,mt1_0.updated_at,mt1_0.updated_by from material_type mt1_0 where mt1_0.id=?",
+              "calls": 1,
+              "parameters": 1
+            },
+            {
+              "sql": "select pfm1_0.id,pfm1_0.created_at,pfm1_0.created_by,pfm1_0.product_family_id,pfm1_0.product_id,pfm1_0.tenant_id,pfm1_0.updated_at,pfm1_0.updated_by from product_family_member pfm1_0 where pfm1_0.tenant_id=? and pfm1_0.product_id=?",
+              "calls": 200,
+              "parameters": 2
+            },
+            {
+              "sql": "select pfm1_0.id,pfm1_0.created_at,pfm1_0.created_by,pfm1_0.product_family_id,pfm1_0.product_id,pfm1_0.tenant_id,pfm1_0.updated_at,pfm1_0.updated_by from product_family_member pfm1_0 where pfm1_0.id=?",
+              "calls": 100,
+              "parameters": 1
+            },
+            {
+              "sql": "select ae1_0.id,ae1_0.action,ae1_0.content_after,ae1_0.content_before,ae1_0.created_at,ae1_0.data_summary,ae1_0.entity_id,ae1_0.entity_type,ae1_0.function_name,ae1_0.ip_address,ae1_0.menu_name,ae1_0.module_name,ae1_0.operator_account,ae1_0.operator_id,ae1_0.operator_name,ae1_0.reason,ae1_0.snapshot_hash,ae1_0.snapshot_hash_version,ae1_0.source,ae1_0.tenant_id from audit_event ae1_0 where ae1_0.id=?",
+              "calls": 200,
+              "parameters": 1
+            }
+          ]
+        },
+        "bulk-10": {
+          "selectCalls": 62,
+          "threadAllocatedBytes": 2839184,
+          "elapsedNanos": 107643088,
+          "members": 11,
+          "auditRows": 20,
+          "selectShapes": [
+            {
+              "sql": "select pf1_0.id,pf1_0.code,pf1_0.created_at,pf1_0.created_by,pf1_0.description,pf1_0.name,pf1_0.status,pf1_0.tenant_id,pf1_0.updated_at,pf1_0.updated_by from product_family pf1_0 where pf1_0.id=?",
+              "calls": 1,
+              "parameters": 1
+            },
+            {
+              "sql": "select m1_0.id,m1_0.brand_name,m1_0.code,m1_0.created_at,m1_0.created_by,m1_0.description,m1_0.effective_date,m1_0.expiry_date,m1_0.material_purpose,m1_0.material_type_id,m1_0.name,m1_0.specification,m1_0.status,m1_0.tenant_id,m1_0.unit,m1_0.updated_at,m1_0.updated_by,m1_0.version from material m1_0 where m1_0.id=?",
+              "calls": 10,
+              "parameters": 1
+            },
+            {
+              "sql": "select mt1_0.id,mt1_0.code,mt1_0.created_at,mt1_0.created_by,mt1_0.description,mt1_0.name,mt1_0.status,mt1_0.tenant_id,mt1_0.updated_at,mt1_0.updated_by from material_type mt1_0 where mt1_0.id=?",
+              "calls": 1,
+              "parameters": 1
+            },
+            {
+              "sql": "select pfm1_0.id,pfm1_0.created_at,pfm1_0.created_by,pfm1_0.product_family_id,pfm1_0.product_id,pfm1_0.tenant_id,pfm1_0.updated_at,pfm1_0.updated_by from product_family_member pfm1_0 where pfm1_0.tenant_id=? and pfm1_0.product_id=?",
+              "calls": 20,
+              "parameters": 2
+            },
+            {
+              "sql": "select pfm1_0.id,pfm1_0.created_at,pfm1_0.created_by,pfm1_0.product_family_id,pfm1_0.product_id,pfm1_0.tenant_id,pfm1_0.updated_at,pfm1_0.updated_by from product_family_member pfm1_0 where pfm1_0.id=?",
+              "calls": 10,
+              "parameters": 1
+            },
+            {
+              "sql": "select ae1_0.id,ae1_0.action,ae1_0.content_after,ae1_0.content_before,ae1_0.created_at,ae1_0.data_summary,ae1_0.entity_id,ae1_0.entity_type,ae1_0.function_name,ae1_0.ip_address,ae1_0.menu_name,ae1_0.module_name,ae1_0.operator_account,ae1_0.operator_id,ae1_0.operator_name,ae1_0.reason,ae1_0.snapshot_hash,ae1_0.snapshot_hash_version,ae1_0.source,ae1_0.tenant_id from audit_event ae1_0 where ae1_0.id=?",
+              "calls": 20,
+              "parameters": 1
+            }
+          ]
+        },
+        "bulk-1": {
+          "selectCalls": 8,
+          "threadAllocatedBytes": 352184,
+          "elapsedNanos": 22377419,
+          "members": 2,
+          "auditRows": 2,
+          "selectShapes": [
+            {
+              "sql": "select pf1_0.id,pf1_0.code,pf1_0.created_at,pf1_0.created_by,pf1_0.description,pf1_0.name,pf1_0.status,pf1_0.tenant_id,pf1_0.updated_at,pf1_0.updated_by from product_family pf1_0 where pf1_0.id=?",
+              "calls": 1,
+              "parameters": 1
+            },
+            {
+              "sql": "select m1_0.id,m1_0.brand_name,m1_0.code,m1_0.created_at,m1_0.created_by,m1_0.description,m1_0.effective_date,m1_0.expiry_date,m1_0.material_purpose,m1_0.material_type_id,m1_0.name,m1_0.specification,m1_0.status,m1_0.tenant_id,m1_0.unit,m1_0.updated_at,m1_0.updated_by,m1_0.version from material m1_0 where m1_0.id=?",
+              "calls": 1,
+              "parameters": 1
+            },
+            {
+              "sql": "select mt1_0.id,mt1_0.code,mt1_0.created_at,mt1_0.created_by,mt1_0.description,mt1_0.name,mt1_0.status,mt1_0.tenant_id,mt1_0.updated_at,mt1_0.updated_by from material_type mt1_0 where mt1_0.id=?",
+              "calls": 1,
+              "parameters": 1
+            },
+            {
+              "sql": "select pfm1_0.id,pfm1_0.created_at,pfm1_0.created_by,pfm1_0.product_family_id,pfm1_0.product_id,pfm1_0.tenant_id,pfm1_0.updated_at,pfm1_0.updated_by from product_family_member pfm1_0 where pfm1_0.tenant_id=? and pfm1_0.product_id=?",
+              "calls": 2,
+              "parameters": 2
+            },
+            {
+              "sql": "select pfm1_0.id,pfm1_0.created_at,pfm1_0.created_by,pfm1_0.product_family_id,pfm1_0.product_id,pfm1_0.tenant_id,pfm1_0.updated_at,pfm1_0.updated_by from product_family_member pfm1_0 where pfm1_0.id=?",
+              "calls": 1,
+              "parameters": 1
+            },
+            {
+              "sql": "select ae1_0.id,ae1_0.action,ae1_0.content_after,ae1_0.content_before,ae1_0.created_at,ae1_0.data_summary,ae1_0.entity_id,ae1_0.entity_type,ae1_0.function_name,ae1_0.ip_address,ae1_0.menu_name,ae1_0.module_name,ae1_0.operator_account,ae1_0.operator_id,ae1_0.operator_name,ae1_0.reason,ae1_0.snapshot_hash,ae1_0.snapshot_hash_version,ae1_0.source,ae1_0.tenant_id from audit_event ae1_0 where ae1_0.id=?",
+              "calls": 2,
+              "parameters": 1
+            }
+          ]
+        },
+        "bulk-many-types": {
+          "selectCalls": 3592,
+          "threadAllocatedBytes": 283954400,
+          "elapsedNanos": 6991363502,
+          "members": 514,
+          "auditRows": 1026,
+          "selectShapes": [
+            {
+              "sql": "select pf1_0.id,pf1_0.code,pf1_0.created_at,pf1_0.created_by,pf1_0.description,pf1_0.name,pf1_0.status,pf1_0.tenant_id,pf1_0.updated_at,pf1_0.updated_by from product_family pf1_0 where pf1_0.id=?",
+              "calls": 1,
+              "parameters": 1
+            },
+            {
+              "sql": "select m1_0.id,m1_0.brand_name,m1_0.code,m1_0.created_at,m1_0.created_by,m1_0.description,m1_0.effective_date,m1_0.expiry_date,m1_0.material_purpose,m1_0.material_type_id,m1_0.name,m1_0.specification,m1_0.status,m1_0.tenant_id,m1_0.unit,m1_0.updated_at,m1_0.updated_by,m1_0.version from material m1_0 where m1_0.id=?",
+              "calls": 513,
+              "parameters": 1
+            },
+            {
+              "sql": "select mt1_0.id,mt1_0.code,mt1_0.created_at,mt1_0.created_by,mt1_0.description,mt1_0.name,mt1_0.status,mt1_0.tenant_id,mt1_0.updated_at,mt1_0.updated_by from material_type mt1_0 where mt1_0.id=?",
+              "calls": 513,
+              "parameters": 1
+            },
+            {
+              "sql": "select pfm1_0.id,pfm1_0.created_at,pfm1_0.created_by,pfm1_0.product_family_id,pfm1_0.product_id,pfm1_0.tenant_id,pfm1_0.updated_at,pfm1_0.updated_by from product_family_member pfm1_0 where pfm1_0.tenant_id=? and pfm1_0.product_id=?",
+              "calls": 1026,
+              "parameters": 2
+            },
+            {
+              "sql": "select pfm1_0.id,pfm1_0.created_at,pfm1_0.created_by,pfm1_0.product_family_id,pfm1_0.product_id,pfm1_0.tenant_id,pfm1_0.updated_at,pfm1_0.updated_by from product_family_member pfm1_0 where pfm1_0.id=?",
+              "calls": 513,
+              "parameters": 1
+            },
+            {
+              "sql": "select ae1_0.id,ae1_0.action,ae1_0.content_after,ae1_0.content_before,ae1_0.created_at,ae1_0.data_summary,ae1_0.entity_id,ae1_0.entity_type,ae1_0.function_name,ae1_0.ip_address,ae1_0.menu_name,ae1_0.module_name,ae1_0.operator_account,ae1_0.operator_id,ae1_0.operator_name,ae1_0.reason,ae1_0.snapshot_hash,ae1_0.snapshot_hash_version,ae1_0.source,ae1_0.tenant_id from audit_event ae1_0 where ae1_0.id=?",
+              "calls": 1026,
+              "parameters": 1
+            }
+          ]
+        },
+        "bulk-concurrent-membership": {
+          "selectCalls": 5,
+          "threadAllocatedBytes": 186320,
+          "elapsedNanos": 150865507,
+          "members": 2,
+          "auditRows": 0,
+          "selectShapes": [
+            {
+              "sql": "select pf1_0.id,pf1_0.code,pf1_0.created_at,pf1_0.created_by,pf1_0.description,pf1_0.name,pf1_0.status,pf1_0.tenant_id,pf1_0.updated_at,pf1_0.updated_by from product_family pf1_0 where pf1_0.id=?",
+              "calls": 1,
+              "parameters": 1
+            },
+            {
+              "sql": "select m1_0.id,m1_0.brand_name,m1_0.code,m1_0.created_at,m1_0.created_by,m1_0.description,m1_0.effective_date,m1_0.expiry_date,m1_0.material_purpose,m1_0.material_type_id,m1_0.name,m1_0.specification,m1_0.status,m1_0.tenant_id,m1_0.unit,m1_0.updated_at,m1_0.updated_by,m1_0.version from material m1_0 where m1_0.id=?",
+              "calls": 1,
+              "parameters": 1
+            },
+            {
+              "sql": "select mt1_0.id,mt1_0.code,mt1_0.created_at,mt1_0.created_by,mt1_0.description,mt1_0.name,mt1_0.status,mt1_0.tenant_id,mt1_0.updated_at,mt1_0.updated_by from material_type mt1_0 where mt1_0.id=?",
+              "calls": 1,
+              "parameters": 1
+            },
+            {
+              "sql": "select pfm1_0.id,pfm1_0.created_at,pfm1_0.created_by,pfm1_0.product_family_id,pfm1_0.product_id,pfm1_0.tenant_id,pfm1_0.updated_at,pfm1_0.updated_by from product_family_member pfm1_0 where pfm1_0.tenant_id=? and pfm1_0.product_id=?",
+              "calls": 2,
+              "parameters": 2
+            }
+          ]
+        },
+        "bulk-raw-type": {
+          "selectCalls": 3,
+          "threadAllocatedBytes": 91136,
+          "elapsedNanos": 6672244,
+          "members": 1,
+          "auditRows": 0,
+          "selectShapes": [
+            {
+              "sql": "select pf1_0.id,pf1_0.code,pf1_0.created_at,pf1_0.created_by,pf1_0.description,pf1_0.name,pf1_0.status,pf1_0.tenant_id,pf1_0.updated_at,pf1_0.updated_by from product_family pf1_0 where pf1_0.id=?",
+              "calls": 1,
+              "parameters": 1
+            },
+            {
+              "sql": "select m1_0.id,m1_0.brand_name,m1_0.code,m1_0.created_at,m1_0.created_by,m1_0.description,m1_0.effective_date,m1_0.expiry_date,m1_0.material_purpose,m1_0.material_type_id,m1_0.name,m1_0.specification,m1_0.status,m1_0.tenant_id,m1_0.unit,m1_0.updated_at,m1_0.updated_by,m1_0.version from material m1_0 where m1_0.id=?",
+              "calls": 1,
+              "parameters": 1
+            },
+            {
+              "sql": "select mt1_0.id,mt1_0.code,mt1_0.created_at,mt1_0.created_by,mt1_0.description,mt1_0.name,mt1_0.status,mt1_0.tenant_id,mt1_0.updated_at,mt1_0.updated_by from material_type mt1_0 where mt1_0.id=?",
+              "calls": 1,
+              "parameters": 1
+            }
+          ]
+        },
+        "bulk-conflict": {
+          "selectCalls": 7,
+          "threadAllocatedBytes": 239024,
+          "elapsedNanos": 19918205,
+          "members": 1,
+          "auditRows": 0,
+          "selectShapes": [
+            {
+              "sql": "select pf1_0.id,pf1_0.code,pf1_0.created_at,pf1_0.created_by,pf1_0.description,pf1_0.name,pf1_0.status,pf1_0.tenant_id,pf1_0.updated_at,pf1_0.updated_by from product_family pf1_0 where pf1_0.id=?",
+              "calls": 2,
+              "parameters": 1
+            },
+            {
+              "sql": "select m1_0.id,m1_0.brand_name,m1_0.code,m1_0.created_at,m1_0.created_by,m1_0.description,m1_0.effective_date,m1_0.expiry_date,m1_0.material_purpose,m1_0.material_type_id,m1_0.name,m1_0.specification,m1_0.status,m1_0.tenant_id,m1_0.unit,m1_0.updated_at,m1_0.updated_by,m1_0.version from material m1_0 where m1_0.id=?",
+              "calls": 2,
+              "parameters": 1
+            },
+            {
+              "sql": "select mt1_0.id,mt1_0.code,mt1_0.created_at,mt1_0.created_by,mt1_0.description,mt1_0.name,mt1_0.status,mt1_0.tenant_id,mt1_0.updated_at,mt1_0.updated_by from material_type mt1_0 where mt1_0.id=?",
+              "calls": 1,
+              "parameters": 1
+            },
+            {
+              "sql": "select pfm1_0.id,pfm1_0.created_at,pfm1_0.created_by,pfm1_0.product_family_id,pfm1_0.product_id,pfm1_0.tenant_id,pfm1_0.updated_at,pfm1_0.updated_by from product_family_member pfm1_0 where pfm1_0.tenant_id=? and pfm1_0.product_id=?",
+              "calls": 2,
+              "parameters": 2
+            }
+          ]
+        },
+        "bulk-qualification-before-conflict": {
+          "selectCalls": 4,
+          "threadAllocatedBytes": 121920,
+          "elapsedNanos": 10212729,
+          "members": 1,
+          "auditRows": 0,
+          "selectShapes": [
+            {
+              "sql": "select pf1_0.id,pf1_0.code,pf1_0.created_at,pf1_0.created_by,pf1_0.description,pf1_0.name,pf1_0.status,pf1_0.tenant_id,pf1_0.updated_at,pf1_0.updated_by from product_family pf1_0 where pf1_0.id=?",
+              "calls": 1,
+              "parameters": 1
+            },
+            {
+              "sql": "select m1_0.id,m1_0.brand_name,m1_0.code,m1_0.created_at,m1_0.created_by,m1_0.description,m1_0.effective_date,m1_0.expiry_date,m1_0.material_purpose,m1_0.material_type_id,m1_0.name,m1_0.specification,m1_0.status,m1_0.tenant_id,m1_0.unit,m1_0.updated_at,m1_0.updated_by,m1_0.version from material m1_0 where m1_0.id=?",
+              "calls": 2,
+              "parameters": 1
+            },
+            {
+              "sql": "select mt1_0.id,mt1_0.code,mt1_0.created_at,mt1_0.created_by,mt1_0.description,mt1_0.name,mt1_0.status,mt1_0.tenant_id,mt1_0.updated_at,mt1_0.updated_by from material_type mt1_0 where mt1_0.id=?",
+              "calls": 1,
+              "parameters": 1
+            }
+          ]
+        },
+        "bulk-first-missing": {
+          "selectCalls": 2,
+          "threadAllocatedBytes": 63056,
+          "elapsedNanos": 5713294,
+          "members": 1,
+          "auditRows": 0,
+          "selectShapes": [
+            {
+              "sql": "select pf1_0.id,pf1_0.code,pf1_0.created_at,pf1_0.created_by,pf1_0.description,pf1_0.name,pf1_0.status,pf1_0.tenant_id,pf1_0.updated_at,pf1_0.updated_by from product_family pf1_0 where pf1_0.id=?",
+              "calls": 1,
+              "parameters": 1
+            },
+            {
+              "sql": "select m1_0.id,m1_0.brand_name,m1_0.code,m1_0.created_at,m1_0.created_by,m1_0.description,m1_0.effective_date,m1_0.expiry_date,m1_0.material_purpose,m1_0.material_type_id,m1_0.name,m1_0.specification,m1_0.status,m1_0.tenant_id,m1_0.unit,m1_0.updated_at,m1_0.updated_by,m1_0.version from material m1_0 where m1_0.id=?",
+              "calls": 1,
+              "parameters": 1
+            }
+          ]
+        },
+        "bulk-first-ineligible": {
+          "selectCalls": 2,
+          "threadAllocatedBytes": 65888,
+          "elapsedNanos": 6194370,
+          "members": 1,
+          "auditRows": 0,
+          "selectShapes": [
+            {
+              "sql": "select pf1_0.id,pf1_0.code,pf1_0.created_at,pf1_0.created_by,pf1_0.description,pf1_0.name,pf1_0.status,pf1_0.tenant_id,pf1_0.updated_at,pf1_0.updated_by from product_family pf1_0 where pf1_0.id=?",
+              "calls": 1,
+              "parameters": 1
+            },
+            {
+              "sql": "select m1_0.id,m1_0.brand_name,m1_0.code,m1_0.created_at,m1_0.created_by,m1_0.description,m1_0.effective_date,m1_0.expiry_date,m1_0.material_purpose,m1_0.material_type_id,m1_0.name,m1_0.specification,m1_0.status,m1_0.tenant_id,m1_0.unit,m1_0.updated_at,m1_0.updated_by,m1_0.version from material m1_0 where m1_0.id=?",
+              "calls": 1,
+              "parameters": 1
+            }
+          ]
+        },
+        "bulk-null-id": {
+          "selectCalls": 1,
+          "threadAllocatedBytes": 32464,
+          "elapsedNanos": 2653487,
+          "members": 1,
+          "auditRows": 0,
+          "selectShapes": [
+            {
+              "sql": "select pf1_0.id,pf1_0.code,pf1_0.created_at,pf1_0.created_by,pf1_0.description,pf1_0.name,pf1_0.status,pf1_0.tenant_id,pf1_0.updated_at,pf1_0.updated_by from product_family pf1_0 where pf1_0.id=?",
+              "calls": 1,
+              "parameters": 1
+            }
+          ]
+        },
+        "bulk-empty": {
+          "selectCalls": 1,
+          "threadAllocatedBytes": 31976,
+          "elapsedNanos": 2333950,
+          "members": 1,
+          "auditRows": 0,
+          "selectShapes": [
+            {
+              "sql": "select pf1_0.id,pf1_0.code,pf1_0.created_at,pf1_0.created_by,pf1_0.description,pf1_0.name,pf1_0.status,pf1_0.tenant_id,pf1_0.updated_at,pf1_0.updated_by from product_family pf1_0 where pf1_0.id=?",
+              "calls": 1,
+              "parameters": 1
+            }
+          ]
+        },
+        "bulk-null": {
+          "selectCalls": 1,
+          "threadAllocatedBytes": 32048,
+          "elapsedNanos": 2957482,
+          "members": 1,
+          "auditRows": 0,
+          "selectShapes": [
+            {
+              "sql": "select pf1_0.id,pf1_0.code,pf1_0.created_at,pf1_0.created_by,pf1_0.description,pf1_0.name,pf1_0.status,pf1_0.tenant_id,pf1_0.updated_at,pf1_0.updated_by from product_family pf1_0 where pf1_0.id=?",
+              "calls": 1,
+              "parameters": 1
+            }
+          ]
+        },
+        "bulk-existing-noop": {
+          "selectCalls": 12,
+          "threadAllocatedBytes": 446896,
+          "elapsedNanos": 38042511,
+          "members": 3,
+          "auditRows": 4,
+          "selectShapes": [
+            {
+              "sql": "select pf1_0.id,pf1_0.code,pf1_0.created_at,pf1_0.created_by,pf1_0.description,pf1_0.name,pf1_0.status,pf1_0.tenant_id,pf1_0.updated_at,pf1_0.updated_by from product_family pf1_0 where pf1_0.id=?",
+              "calls": 1,
+              "parameters": 1
+            },
+            {
+              "sql": "select m1_0.id,m1_0.brand_name,m1_0.code,m1_0.created_at,m1_0.created_by,m1_0.description,m1_0.effective_date,m1_0.expiry_date,m1_0.material_purpose,m1_0.material_type_id,m1_0.name,m1_0.specification,m1_0.status,m1_0.tenant_id,m1_0.unit,m1_0.updated_at,m1_0.updated_by,m1_0.version from material m1_0 where m1_0.id=?",
+              "calls": 3,
+              "parameters": 1
+            },
+            {
+              "sql": "select mt1_0.id,mt1_0.code,mt1_0.created_at,mt1_0.created_by,mt1_0.description,mt1_0.name,mt1_0.status,mt1_0.tenant_id,mt1_0.updated_at,mt1_0.updated_by from material_type mt1_0 where mt1_0.id=?",
+              "calls": 2,
+              "parameters": 1
+            },
+            {
+              "sql": "select pfm1_0.id,pfm1_0.created_at,pfm1_0.created_by,pfm1_0.product_family_id,pfm1_0.product_id,pfm1_0.tenant_id,pfm1_0.updated_at,pfm1_0.updated_by from product_family_member pfm1_0 where pfm1_0.tenant_id=? and pfm1_0.product_id=?",
+              "calls": 6,
+              "parameters": 2
+            }
+          ]
+        },
+        "bulk-ordered-duplicates": {
+          "selectCalls": 18,
+          "threadAllocatedBytes": 787008,
+          "elapsedNanos": 178381209,
+          "members": 3,
+          "auditRows": 4,
+          "selectShapes": [
+            {
+              "sql": "select pf1_0.id,pf1_0.code,pf1_0.created_at,pf1_0.created_by,pf1_0.description,pf1_0.name,pf1_0.status,pf1_0.tenant_id,pf1_0.updated_at,pf1_0.updated_by from product_family pf1_0 where pf1_0.id=?",
+              "calls": 1,
+              "parameters": 1
+            },
+            {
+              "sql": "select m1_0.id,m1_0.brand_name,m1_0.code,m1_0.created_at,m1_0.created_by,m1_0.description,m1_0.effective_date,m1_0.expiry_date,m1_0.material_purpose,m1_0.material_type_id,m1_0.name,m1_0.specification,m1_0.status,m1_0.tenant_id,m1_0.unit,m1_0.updated_at,m1_0.updated_by,m1_0.version from material m1_0 where m1_0.id=?",
+              "calls": 3,
+              "parameters": 1
+            },
+            {
+              "sql": "select mt1_0.id,mt1_0.code,mt1_0.created_at,mt1_0.created_by,mt1_0.description,mt1_0.name,mt1_0.status,mt1_0.tenant_id,mt1_0.updated_at,mt1_0.updated_by from material_type mt1_0 where mt1_0.id=?",
+              "calls": 2,
+              "parameters": 1
+            },
+            {
+              "sql": "select pfm1_0.id,pfm1_0.created_at,pfm1_0.created_by,pfm1_0.product_family_id,pfm1_0.product_id,pfm1_0.tenant_id,pfm1_0.updated_at,pfm1_0.updated_by from product_family_member pfm1_0 where pfm1_0.tenant_id=? and pfm1_0.product_id=?",
+              "calls": 6,
+              "parameters": 2
+            },
+            {
+              "sql": "select pfm1_0.id,pfm1_0.created_at,pfm1_0.created_by,pfm1_0.product_family_id,pfm1_0.product_id,pfm1_0.tenant_id,pfm1_0.updated_at,pfm1_0.updated_by from product_family_member pfm1_0 where pfm1_0.id=?",
+              "calls": 2,
+              "parameters": 1
+            },
+            {
+              "sql": "select ae1_0.id,ae1_0.action,ae1_0.content_after,ae1_0.content_before,ae1_0.created_at,ae1_0.data_summary,ae1_0.entity_id,ae1_0.entity_type,ae1_0.function_name,ae1_0.ip_address,ae1_0.menu_name,ae1_0.module_name,ae1_0.operator_account,ae1_0.operator_id,ae1_0.operator_name,ae1_0.reason,ae1_0.snapshot_hash,ae1_0.snapshot_hash_version,ae1_0.source,ae1_0.tenant_id from audit_event ae1_0 where ae1_0.id=?",
+              "calls": 4,
+              "parameters": 1
+            }
+          ]
+        },
+        "bulk-audit-failure": {
+          "selectCalls": 14,
+          "threadAllocatedBytes": 1068600,
+          "elapsedNanos": 76070799,
+          "members": 1,
+          "auditRows": 0,
+          "selectShapes": [
+            {
+              "sql": "select pf1_0.id,pf1_0.code,pf1_0.created_at,pf1_0.created_by,pf1_0.description,pf1_0.name,pf1_0.status,pf1_0.tenant_id,pf1_0.updated_at,pf1_0.updated_by from product_family pf1_0 where pf1_0.id=?",
+              "calls": 1,
+              "parameters": 1
+            },
+            {
+              "sql": "select m1_0.id,m1_0.brand_name,m1_0.code,m1_0.created_at,m1_0.created_by,m1_0.description,m1_0.effective_date,m1_0.expiry_date,m1_0.material_purpose,m1_0.material_type_id,m1_0.name,m1_0.specification,m1_0.status,m1_0.tenant_id,m1_0.unit,m1_0.updated_at,m1_0.updated_by,m1_0.version from material m1_0 where m1_0.id=?",
+              "calls": 2,
+              "parameters": 1
+            },
+            {
+              "sql": "select mt1_0.id,mt1_0.code,mt1_0.created_at,mt1_0.created_by,mt1_0.description,mt1_0.name,mt1_0.status,mt1_0.tenant_id,mt1_0.updated_at,mt1_0.updated_by from material_type mt1_0 where mt1_0.id=?",
+              "calls": 1,
+              "parameters": 1
+            },
+            {
+              "sql": "select pfm1_0.id,pfm1_0.created_at,pfm1_0.created_by,pfm1_0.product_family_id,pfm1_0.product_id,pfm1_0.tenant_id,pfm1_0.updated_at,pfm1_0.updated_by from product_family_member pfm1_0 where pfm1_0.tenant_id=? and pfm1_0.product_id=?",
+              "calls": 4,
+              "parameters": 2
+            },
+            {
+              "sql": "select pfm1_0.id,pfm1_0.created_at,pfm1_0.created_by,pfm1_0.product_family_id,pfm1_0.product_id,pfm1_0.tenant_id,pfm1_0.updated_at,pfm1_0.updated_by from product_family_member pfm1_0 where pfm1_0.id=?",
+              "calls": 2,
+              "parameters": 1
+            },
+            {
+              "sql": "select ae1_0.id,ae1_0.action,ae1_0.content_after,ae1_0.content_before,ae1_0.created_at,ae1_0.data_summary,ae1_0.entity_id,ae1_0.entity_type,ae1_0.function_name,ae1_0.ip_address,ae1_0.menu_name,ae1_0.module_name,ae1_0.operator_account,ae1_0.operator_id,ae1_0.operator_name,ae1_0.reason,ae1_0.snapshot_hash,ae1_0.snapshot_hash_version,ae1_0.source,ae1_0.tenant_id from audit_event ae1_0 where ae1_0.id=?",
+              "calls": 4,
+              "parameters": 1
+            }
+          ]
+        },
+        "bulk-tenant": {
+          "selectCalls": 8,
+          "threadAllocatedBytes": 11450120,
+          "elapsedNanos": 263743366,
+          "members": 3,
+          "auditRows": 2,
+          "selectShapes": [
+            {
+              "sql": "select pf1_0.id,pf1_0.code,pf1_0.created_at,pf1_0.created_by,pf1_0.description,pf1_0.name,pf1_0.status,pf1_0.tenant_id,pf1_0.updated_at,pf1_0.updated_by from product_family pf1_0 where pf1_0.id=?",
+              "calls": 1,
+              "parameters": 1
+            },
+            {
+              "sql": "select m1_0.id,m1_0.brand_name,m1_0.code,m1_0.created_at,m1_0.created_by,m1_0.description,m1_0.effective_date,m1_0.expiry_date,m1_0.material_purpose,m1_0.material_type_id,m1_0.name,m1_0.specification,m1_0.status,m1_0.tenant_id,m1_0.unit,m1_0.updated_at,m1_0.updated_by,m1_0.version from material m1_0 where m1_0.id=?",
+              "calls": 1,
+              "parameters": 1
+            },
+            {
+              "sql": "select mt1_0.id,mt1_0.code,mt1_0.created_at,mt1_0.created_by,mt1_0.description,mt1_0.name,mt1_0.status,mt1_0.tenant_id,mt1_0.updated_at,mt1_0.updated_by from material_type mt1_0 where mt1_0.id=?",
+              "calls": 1,
+              "parameters": 1
+            },
+            {
+              "sql": "select pfm1_0.id,pfm1_0.created_at,pfm1_0.created_by,pfm1_0.product_family_id,pfm1_0.product_id,pfm1_0.tenant_id,pfm1_0.updated_at,pfm1_0.updated_by from product_family_member pfm1_0 where pfm1_0.tenant_id=? and pfm1_0.product_id=?",
+              "calls": 2,
+              "parameters": 2
+            },
+            {
+              "sql": "select pfm1_0.id,pfm1_0.created_at,pfm1_0.created_by,pfm1_0.product_family_id,pfm1_0.product_id,pfm1_0.tenant_id,pfm1_0.updated_at,pfm1_0.updated_by from product_family_member pfm1_0 where pfm1_0.id=?",
+              "calls": 1,
+              "parameters": 1
+            },
+            {
+              "sql": "select ae1_0.id,ae1_0.action,ae1_0.content_after,ae1_0.content_before,ae1_0.created_at,ae1_0.data_summary,ae1_0.entity_id,ae1_0.entity_type,ae1_0.function_name,ae1_0.ip_address,ae1_0.menu_name,ae1_0.module_name,ae1_0.operator_account,ae1_0.operator_id,ae1_0.operator_name,ae1_0.reason,ae1_0.snapshot_hash,ae1_0.snapshot_hash_version,ae1_0.source,ae1_0.tenant_id from audit_event ae1_0 where ae1_0.id=?",
+              "calls": 2,
+              "parameters": 1
+            }
+          ]
+        }
+      },
+      "bulkAuditFailureSuccessfulWrites": [
+        {
+          "tx": "793",
+          "tag": "bulk-audit-failure",
+          "sql": "insert into product_family_member (created_at,created_by,product_family_id,product_id,tenant_id,updated_at,updated_by,id) values (?,?,?,?,?,?,?,?)"
+        },
+        {
+          "tx": "793",
+          "tag": "bulk-audit-failure",
+          "sql": "insert into audit_event (action,content_after,content_before,created_at,data_summary,entity_id,entity_type,function_name,ip_address,menu_name,module_name,operator_account,operator_id,operator_name,reason,snapshot_hash,snapshot_hash_version,source,tenant_id,id) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"
+        },
+        {
+          "tx": "793",
+          "tag": "bulk-audit-failure",
+          "sql": "insert into audit_event (action,content_after,content_before,created_at,data_summary,entity_id,entity_type,function_name,ip_address,menu_name,module_name,operator_account,operator_id,operator_name,reason,snapshot_hash,snapshot_hash_version,source,tenant_id,id) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"
+        },
+        {
+          "tx": "793",
+          "tag": "bulk-audit-failure",
+          "sql": "insert into product_family_member (created_at,created_by,product_family_id,product_id,tenant_id,updated_at,updated_by,id) values (?,?,?,?,?,?,?,?)"
+        }
+      ]
+    },
+    "verified": {
+      "observationFiles": 33,
+      "taggedSelectExecutions": 8807,
+      "uniqueAuditEventsReencoded": 4339,
+      "auditObservationRowsReencoded": 4343,
+      "bulkObservations": {
+        "bulk-conflict-order": {
+          "selectCalls": 5,
+          "threadAllocatedBytes": 211096,
+          "elapsedNanos": 18292450,
+          "members": 2,
+          "auditRows": 0,
+          "selectShapes": [
+            {
+              "sql": "select pf1_0.id,pf1_0.code,pf1_0.created_at,pf1_0.created_by,pf1_0.description,pf1_0.name,pf1_0.status,pf1_0.tenant_id,pf1_0.updated_at,pf1_0.updated_by from product_family pf1_0 where pf1_0.id=?",
+              "calls": 2,
+              "parameters": 1
+            },
+            {
+              "sql": "select m1_0.id,m1_0.brand_name,m1_0.code,m1_0.created_at,m1_0.created_by,m1_0.description,m1_0.effective_date,m1_0.expiry_date,m1_0.material_purpose,m1_0.material_type_id,m1_0.name,m1_0.specification,m1_0.status,m1_0.tenant_id,m1_0.unit,m1_0.updated_at,m1_0.updated_by,m1_0.version from material m1_0 where m1_0.id in (?,?)",
+              "calls": 1,
+              "parameters": 2
+            },
+            {
+              "sql": "select mt1_0.id,mt1_0.code,mt1_0.created_at,mt1_0.created_by,mt1_0.description,mt1_0.name,mt1_0.status,mt1_0.tenant_id,mt1_0.updated_at,mt1_0.updated_by from material_type mt1_0 where mt1_0.id in (?)",
+              "calls": 1,
+              "parameters": 1
+            },
+            {
+              "sql": "select pfm1_0.id,pfm1_0.created_at,pfm1_0.created_by,pfm1_0.product_family_id,pfm1_0.product_id,pfm1_0.tenant_id,pfm1_0.updated_at,pfm1_0.updated_by from product_family_member pfm1_0 where pfm1_0.tenant_id=? and pfm1_0.product_id in (?,?)",
+              "calls": 1,
+              "parameters": 3
+            }
+          ]
+        },
+        "bulk-1025": {
+          "selectCalls": 4108,
+          "threadAllocatedBytes": 496209328,
+          "elapsedNanos": 6514705018,
+          "members": 1026,
+          "auditRows": 2050,
+          "selectShapes": [
+            {
+              "sql": "select pf1_0.id,pf1_0.code,pf1_0.created_at,pf1_0.created_by,pf1_0.description,pf1_0.name,pf1_0.status,pf1_0.tenant_id,pf1_0.updated_at,pf1_0.updated_by from product_family pf1_0 where pf1_0.id=?",
+              "calls": 1,
+              "parameters": 1
+            },
+            {
+              "sql": "select m1_0.id,m1_0.brand_name,m1_0.code,m1_0.created_at,m1_0.created_by,m1_0.description,m1_0.effective_date,m1_0.expiry_date,m1_0.material_purpose,m1_0.material_type_id,m1_0.name,m1_0.specification,m1_0.status,m1_0.tenant_id,m1_0.unit,m1_0.updated_at,m1_0.updated_by,m1_0.version from material m1_0 where m1_0.id in (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+              "calls": 2,
+              "parameters": 512
+            },
+            {
+              "sql": "select m1_0.id,m1_0.brand_name,m1_0.code,m1_0.created_at,m1_0.created_by,m1_0.description,m1_0.effective_date,m1_0.expiry_date,m1_0.material_purpose,m1_0.material_type_id,m1_0.name,m1_0.specification,m1_0.status,m1_0.tenant_id,m1_0.unit,m1_0.updated_at,m1_0.updated_by,m1_0.version from material m1_0 where m1_0.id in (?)",
+              "calls": 1,
+              "parameters": 1
+            },
+            {
+              "sql": "select mt1_0.id,mt1_0.code,mt1_0.created_at,mt1_0.created_by,mt1_0.description,mt1_0.name,mt1_0.status,mt1_0.tenant_id,mt1_0.updated_at,mt1_0.updated_by from material_type mt1_0 where mt1_0.id in (?)",
+              "calls": 1,
+              "parameters": 1
+            },
+            {
+              "sql": "select pfm1_0.id,pfm1_0.created_at,pfm1_0.created_by,pfm1_0.product_family_id,pfm1_0.product_id,pfm1_0.tenant_id,pfm1_0.updated_at,pfm1_0.updated_by from product_family_member pfm1_0 where pfm1_0.tenant_id=? and pfm1_0.product_id in (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+              "calls": 2,
+              "parameters": 513
+            },
+            {
+              "sql": "select pfm1_0.id,pfm1_0.created_at,pfm1_0.created_by,pfm1_0.product_family_id,pfm1_0.product_id,pfm1_0.tenant_id,pfm1_0.updated_at,pfm1_0.updated_by from product_family_member pfm1_0 where pfm1_0.tenant_id=? and pfm1_0.product_id in (?)",
+              "calls": 1,
+              "parameters": 2
+            },
+            {
+              "sql": "select pfm1_0.id,pfm1_0.created_at,pfm1_0.created_by,pfm1_0.product_family_id,pfm1_0.product_id,pfm1_0.tenant_id,pfm1_0.updated_at,pfm1_0.updated_by from product_family_member pfm1_0 where pfm1_0.tenant_id=? and pfm1_0.product_id=?",
+              "calls": 1025,
+              "parameters": 2
+            },
+            {
+              "sql": "select pfm1_0.id,pfm1_0.created_at,pfm1_0.created_by,pfm1_0.product_family_id,pfm1_0.product_id,pfm1_0.tenant_id,pfm1_0.updated_at,pfm1_0.updated_by from product_family_member pfm1_0 where pfm1_0.id=?",
+              "calls": 1025,
+              "parameters": 1
+            },
+            {
+              "sql": "select ae1_0.id,ae1_0.action,ae1_0.content_after,ae1_0.content_before,ae1_0.created_at,ae1_0.data_summary,ae1_0.entity_id,ae1_0.entity_type,ae1_0.function_name,ae1_0.ip_address,ae1_0.menu_name,ae1_0.module_name,ae1_0.operator_account,ae1_0.operator_id,ae1_0.operator_name,ae1_0.reason,ae1_0.snapshot_hash,ae1_0.snapshot_hash_version,ae1_0.source,ae1_0.tenant_id from audit_event ae1_0 where ae1_0.id=?",
+              "calls": 2050,
+              "parameters": 1
+            }
+          ]
+        },
+        "bulk-513": {
+          "selectCalls": 2058,
+          "threadAllocatedBytes": 176431136,
+          "elapsedNanos": 3214126259,
+          "members": 514,
+          "auditRows": 1026,
+          "selectShapes": [
+            {
+              "sql": "select pf1_0.id,pf1_0.code,pf1_0.created_at,pf1_0.created_by,pf1_0.description,pf1_0.name,pf1_0.status,pf1_0.tenant_id,pf1_0.updated_at,pf1_0.updated_by from product_family pf1_0 where pf1_0.id=?",
+              "calls": 1,
+              "parameters": 1
+            },
+            {
+              "sql": "select m1_0.id,m1_0.brand_name,m1_0.code,m1_0.created_at,m1_0.created_by,m1_0.description,m1_0.effective_date,m1_0.expiry_date,m1_0.material_purpose,m1_0.material_type_id,m1_0.name,m1_0.specification,m1_0.status,m1_0.tenant_id,m1_0.unit,m1_0.updated_at,m1_0.updated_by,m1_0.version from material m1_0 where m1_0.id in (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+              "calls": 1,
+              "parameters": 512
+            },
+            {
+              "sql": "select m1_0.id,m1_0.brand_name,m1_0.code,m1_0.created_at,m1_0.created_by,m1_0.description,m1_0.effective_date,m1_0.expiry_date,m1_0.material_purpose,m1_0.material_type_id,m1_0.name,m1_0.specification,m1_0.status,m1_0.tenant_id,m1_0.unit,m1_0.updated_at,m1_0.updated_by,m1_0.version from material m1_0 where m1_0.id in (?)",
+              "calls": 1,
+              "parameters": 1
+            },
+            {
+              "sql": "select mt1_0.id,mt1_0.code,mt1_0.created_at,mt1_0.created_by,mt1_0.description,mt1_0.name,mt1_0.status,mt1_0.tenant_id,mt1_0.updated_at,mt1_0.updated_by from material_type mt1_0 where mt1_0.id in (?)",
+              "calls": 1,
+              "parameters": 1
+            },
+            {
+              "sql": "select pfm1_0.id,pfm1_0.created_at,pfm1_0.created_by,pfm1_0.product_family_id,pfm1_0.product_id,pfm1_0.tenant_id,pfm1_0.updated_at,pfm1_0.updated_by from product_family_member pfm1_0 where pfm1_0.tenant_id=? and pfm1_0.product_id in (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+              "calls": 1,
+              "parameters": 513
+            },
+            {
+              "sql": "select pfm1_0.id,pfm1_0.created_at,pfm1_0.created_by,pfm1_0.product_family_id,pfm1_0.product_id,pfm1_0.tenant_id,pfm1_0.updated_at,pfm1_0.updated_by from product_family_member pfm1_0 where pfm1_0.tenant_id=? and pfm1_0.product_id in (?)",
+              "calls": 1,
+              "parameters": 2
+            },
+            {
+              "sql": "select pfm1_0.id,pfm1_0.created_at,pfm1_0.created_by,pfm1_0.product_family_id,pfm1_0.product_id,pfm1_0.tenant_id,pfm1_0.updated_at,pfm1_0.updated_by from product_family_member pfm1_0 where pfm1_0.tenant_id=? and pfm1_0.product_id=?",
+              "calls": 513,
+              "parameters": 2
+            },
+            {
+              "sql": "select pfm1_0.id,pfm1_0.created_at,pfm1_0.created_by,pfm1_0.product_family_id,pfm1_0.product_id,pfm1_0.tenant_id,pfm1_0.updated_at,pfm1_0.updated_by from product_family_member pfm1_0 where pfm1_0.id=?",
+              "calls": 513,
+              "parameters": 1
+            },
+            {
+              "sql": "select ae1_0.id,ae1_0.action,ae1_0.content_after,ae1_0.content_before,ae1_0.created_at,ae1_0.data_summary,ae1_0.entity_id,ae1_0.entity_type,ae1_0.function_name,ae1_0.ip_address,ae1_0.menu_name,ae1_0.module_name,ae1_0.operator_account,ae1_0.operator_id,ae1_0.operator_name,ae1_0.reason,ae1_0.snapshot_hash,ae1_0.snapshot_hash_version,ae1_0.source,ae1_0.tenant_id from audit_event ae1_0 where ae1_0.id=?",
+              "calls": 1026,
+              "parameters": 1
+            }
+          ]
+        },
+        "bulk-100": {
+          "selectCalls": 404,
+          "threadAllocatedBytes": 23204704,
+          "elapsedNanos": 613885610,
+          "members": 101,
+          "auditRows": 200,
+          "selectShapes": [
+            {
+              "sql": "select pf1_0.id,pf1_0.code,pf1_0.created_at,pf1_0.created_by,pf1_0.description,pf1_0.name,pf1_0.status,pf1_0.tenant_id,pf1_0.updated_at,pf1_0.updated_by from product_family pf1_0 where pf1_0.id=?",
+              "calls": 1,
+              "parameters": 1
+            },
+            {
+              "sql": "select m1_0.id,m1_0.brand_name,m1_0.code,m1_0.created_at,m1_0.created_by,m1_0.description,m1_0.effective_date,m1_0.expiry_date,m1_0.material_purpose,m1_0.material_type_id,m1_0.name,m1_0.specification,m1_0.status,m1_0.tenant_id,m1_0.unit,m1_0.updated_at,m1_0.updated_by,m1_0.version from material m1_0 where m1_0.id in (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+              "calls": 1,
+              "parameters": 100
+            },
+            {
+              "sql": "select mt1_0.id,mt1_0.code,mt1_0.created_at,mt1_0.created_by,mt1_0.description,mt1_0.name,mt1_0.status,mt1_0.tenant_id,mt1_0.updated_at,mt1_0.updated_by from material_type mt1_0 where mt1_0.id in (?)",
+              "calls": 1,
+              "parameters": 1
+            },
+            {
+              "sql": "select pfm1_0.id,pfm1_0.created_at,pfm1_0.created_by,pfm1_0.product_family_id,pfm1_0.product_id,pfm1_0.tenant_id,pfm1_0.updated_at,pfm1_0.updated_by from product_family_member pfm1_0 where pfm1_0.tenant_id=? and pfm1_0.product_id in (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+              "calls": 1,
+              "parameters": 101
+            },
+            {
+              "sql": "select pfm1_0.id,pfm1_0.created_at,pfm1_0.created_by,pfm1_0.product_family_id,pfm1_0.product_id,pfm1_0.tenant_id,pfm1_0.updated_at,pfm1_0.updated_by from product_family_member pfm1_0 where pfm1_0.tenant_id=? and pfm1_0.product_id=?",
+              "calls": 100,
+              "parameters": 2
+            },
+            {
+              "sql": "select pfm1_0.id,pfm1_0.created_at,pfm1_0.created_by,pfm1_0.product_family_id,pfm1_0.product_id,pfm1_0.tenant_id,pfm1_0.updated_at,pfm1_0.updated_by from product_family_member pfm1_0 where pfm1_0.id=?",
+              "calls": 100,
+              "parameters": 1
+            },
+            {
+              "sql": "select ae1_0.id,ae1_0.action,ae1_0.content_after,ae1_0.content_before,ae1_0.created_at,ae1_0.data_summary,ae1_0.entity_id,ae1_0.entity_type,ae1_0.function_name,ae1_0.ip_address,ae1_0.menu_name,ae1_0.module_name,ae1_0.operator_account,ae1_0.operator_id,ae1_0.operator_name,ae1_0.reason,ae1_0.snapshot_hash,ae1_0.snapshot_hash_version,ae1_0.source,ae1_0.tenant_id from audit_event ae1_0 where ae1_0.id=?",
+              "calls": 200,
+              "parameters": 1
+            }
+          ]
+        },
+        "bulk-10": {
+          "selectCalls": 44,
+          "threadAllocatedBytes": 2263568,
+          "elapsedNanos": 105139687,
+          "members": 11,
+          "auditRows": 20,
+          "selectShapes": [
+            {
+              "sql": "select pf1_0.id,pf1_0.code,pf1_0.created_at,pf1_0.created_by,pf1_0.description,pf1_0.name,pf1_0.status,pf1_0.tenant_id,pf1_0.updated_at,pf1_0.updated_by from product_family pf1_0 where pf1_0.id=?",
+              "calls": 1,
+              "parameters": 1
+            },
+            {
+              "sql": "select m1_0.id,m1_0.brand_name,m1_0.code,m1_0.created_at,m1_0.created_by,m1_0.description,m1_0.effective_date,m1_0.expiry_date,m1_0.material_purpose,m1_0.material_type_id,m1_0.name,m1_0.specification,m1_0.status,m1_0.tenant_id,m1_0.unit,m1_0.updated_at,m1_0.updated_by,m1_0.version from material m1_0 where m1_0.id in (?,?,?,?,?,?,?,?,?,?)",
+              "calls": 1,
+              "parameters": 10
+            },
+            {
+              "sql": "select mt1_0.id,mt1_0.code,mt1_0.created_at,mt1_0.created_by,mt1_0.description,mt1_0.name,mt1_0.status,mt1_0.tenant_id,mt1_0.updated_at,mt1_0.updated_by from material_type mt1_0 where mt1_0.id in (?)",
+              "calls": 1,
+              "parameters": 1
+            },
+            {
+              "sql": "select pfm1_0.id,pfm1_0.created_at,pfm1_0.created_by,pfm1_0.product_family_id,pfm1_0.product_id,pfm1_0.tenant_id,pfm1_0.updated_at,pfm1_0.updated_by from product_family_member pfm1_0 where pfm1_0.tenant_id=? and pfm1_0.product_id in (?,?,?,?,?,?,?,?,?,?)",
+              "calls": 1,
+              "parameters": 11
+            },
+            {
+              "sql": "select pfm1_0.id,pfm1_0.created_at,pfm1_0.created_by,pfm1_0.product_family_id,pfm1_0.product_id,pfm1_0.tenant_id,pfm1_0.updated_at,pfm1_0.updated_by from product_family_member pfm1_0 where pfm1_0.tenant_id=? and pfm1_0.product_id=?",
+              "calls": 10,
+              "parameters": 2
+            },
+            {
+              "sql": "select pfm1_0.id,pfm1_0.created_at,pfm1_0.created_by,pfm1_0.product_family_id,pfm1_0.product_id,pfm1_0.tenant_id,pfm1_0.updated_at,pfm1_0.updated_by from product_family_member pfm1_0 where pfm1_0.id=?",
+              "calls": 10,
+              "parameters": 1
+            },
+            {
+              "sql": "select ae1_0.id,ae1_0.action,ae1_0.content_after,ae1_0.content_before,ae1_0.created_at,ae1_0.data_summary,ae1_0.entity_id,ae1_0.entity_type,ae1_0.function_name,ae1_0.ip_address,ae1_0.menu_name,ae1_0.module_name,ae1_0.operator_account,ae1_0.operator_id,ae1_0.operator_name,ae1_0.reason,ae1_0.snapshot_hash,ae1_0.snapshot_hash_version,ae1_0.source,ae1_0.tenant_id from audit_event ae1_0 where ae1_0.id=?",
+              "calls": 20,
+              "parameters": 1
+            }
+          ]
+        },
+        "bulk-1": {
+          "selectCalls": 8,
+          "threadAllocatedBytes": 402448,
+          "elapsedNanos": 22271206,
+          "members": 2,
+          "auditRows": 2,
+          "selectShapes": [
+            {
+              "sql": "select pf1_0.id,pf1_0.code,pf1_0.created_at,pf1_0.created_by,pf1_0.description,pf1_0.name,pf1_0.status,pf1_0.tenant_id,pf1_0.updated_at,pf1_0.updated_by from product_family pf1_0 where pf1_0.id=?",
+              "calls": 1,
+              "parameters": 1
+            },
+            {
+              "sql": "select m1_0.id,m1_0.brand_name,m1_0.code,m1_0.created_at,m1_0.created_by,m1_0.description,m1_0.effective_date,m1_0.expiry_date,m1_0.material_purpose,m1_0.material_type_id,m1_0.name,m1_0.specification,m1_0.status,m1_0.tenant_id,m1_0.unit,m1_0.updated_at,m1_0.updated_by,m1_0.version from material m1_0 where m1_0.id in (?)",
+              "calls": 1,
+              "parameters": 1
+            },
+            {
+              "sql": "select mt1_0.id,mt1_0.code,mt1_0.created_at,mt1_0.created_by,mt1_0.description,mt1_0.name,mt1_0.status,mt1_0.tenant_id,mt1_0.updated_at,mt1_0.updated_by from material_type mt1_0 where mt1_0.id in (?)",
+              "calls": 1,
+              "parameters": 1
+            },
+            {
+              "sql": "select pfm1_0.id,pfm1_0.created_at,pfm1_0.created_by,pfm1_0.product_family_id,pfm1_0.product_id,pfm1_0.tenant_id,pfm1_0.updated_at,pfm1_0.updated_by from product_family_member pfm1_0 where pfm1_0.tenant_id=? and pfm1_0.product_id in (?)",
+              "calls": 1,
+              "parameters": 2
+            },
+            {
+              "sql": "select pfm1_0.id,pfm1_0.created_at,pfm1_0.created_by,pfm1_0.product_family_id,pfm1_0.product_id,pfm1_0.tenant_id,pfm1_0.updated_at,pfm1_0.updated_by from product_family_member pfm1_0 where pfm1_0.tenant_id=? and pfm1_0.product_id=?",
+              "calls": 1,
+              "parameters": 2
+            },
+            {
+              "sql": "select pfm1_0.id,pfm1_0.created_at,pfm1_0.created_by,pfm1_0.product_family_id,pfm1_0.product_id,pfm1_0.tenant_id,pfm1_0.updated_at,pfm1_0.updated_by from product_family_member pfm1_0 where pfm1_0.id=?",
+              "calls": 1,
+              "parameters": 1
+            },
+            {
+              "sql": "select ae1_0.id,ae1_0.action,ae1_0.content_after,ae1_0.content_before,ae1_0.created_at,ae1_0.data_summary,ae1_0.entity_id,ae1_0.entity_type,ae1_0.function_name,ae1_0.ip_address,ae1_0.menu_name,ae1_0.module_name,ae1_0.operator_account,ae1_0.operator_id,ae1_0.operator_name,ae1_0.reason,ae1_0.snapshot_hash,ae1_0.snapshot_hash_version,ae1_0.source,ae1_0.tenant_id from audit_event ae1_0 where ae1_0.id=?",
+              "calls": 2,
+              "parameters": 1
+            }
+          ]
+        },
+        "bulk-many-types": {
+          "selectCalls": 2059,
+          "threadAllocatedBytes": 203056816,
+          "elapsedNanos": 4509328972,
+          "members": 514,
+          "auditRows": 1026,
+          "selectShapes": [
+            {
+              "sql": "select pf1_0.id,pf1_0.code,pf1_0.created_at,pf1_0.created_by,pf1_0.description,pf1_0.name,pf1_0.status,pf1_0.tenant_id,pf1_0.updated_at,pf1_0.updated_by from product_family pf1_0 where pf1_0.id=?",
+              "calls": 1,
+              "parameters": 1
+            },
+            {
+              "sql": "select m1_0.id,m1_0.brand_name,m1_0.code,m1_0.created_at,m1_0.created_by,m1_0.description,m1_0.effective_date,m1_0.expiry_date,m1_0.material_purpose,m1_0.material_type_id,m1_0.name,m1_0.specification,m1_0.status,m1_0.tenant_id,m1_0.unit,m1_0.updated_at,m1_0.updated_by,m1_0.version from material m1_0 where m1_0.id in (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+              "calls": 1,
+              "parameters": 512
+            },
+            {
+              "sql": "select m1_0.id,m1_0.brand_name,m1_0.code,m1_0.created_at,m1_0.created_by,m1_0.description,m1_0.effective_date,m1_0.expiry_date,m1_0.material_purpose,m1_0.material_type_id,m1_0.name,m1_0.specification,m1_0.status,m1_0.tenant_id,m1_0.unit,m1_0.updated_at,m1_0.updated_by,m1_0.version from material m1_0 where m1_0.id in (?)",
+              "calls": 1,
+              "parameters": 1
+            },
+            {
+              "sql": "select mt1_0.id,mt1_0.code,mt1_0.created_at,mt1_0.created_by,mt1_0.description,mt1_0.name,mt1_0.status,mt1_0.tenant_id,mt1_0.updated_at,mt1_0.updated_by from material_type mt1_0 where mt1_0.id in (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+              "calls": 1,
+              "parameters": 512
+            },
+            {
+              "sql": "select mt1_0.id,mt1_0.code,mt1_0.created_at,mt1_0.created_by,mt1_0.description,mt1_0.name,mt1_0.status,mt1_0.tenant_id,mt1_0.updated_at,mt1_0.updated_by from material_type mt1_0 where mt1_0.id in (?)",
+              "calls": 1,
+              "parameters": 1
+            },
+            {
+              "sql": "select pfm1_0.id,pfm1_0.created_at,pfm1_0.created_by,pfm1_0.product_family_id,pfm1_0.product_id,pfm1_0.tenant_id,pfm1_0.updated_at,pfm1_0.updated_by from product_family_member pfm1_0 where pfm1_0.tenant_id=? and pfm1_0.product_id in (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+              "calls": 1,
+              "parameters": 513
+            },
+            {
+              "sql": "select pfm1_0.id,pfm1_0.created_at,pfm1_0.created_by,pfm1_0.product_family_id,pfm1_0.product_id,pfm1_0.tenant_id,pfm1_0.updated_at,pfm1_0.updated_by from product_family_member pfm1_0 where pfm1_0.tenant_id=? and pfm1_0.product_id in (?)",
+              "calls": 1,
+              "parameters": 2
+            },
+            {
+              "sql": "select pfm1_0.id,pfm1_0.created_at,pfm1_0.created_by,pfm1_0.product_family_id,pfm1_0.product_id,pfm1_0.tenant_id,pfm1_0.updated_at,pfm1_0.updated_by from product_family_member pfm1_0 where pfm1_0.tenant_id=? and pfm1_0.product_id=?",
+              "calls": 513,
+              "parameters": 2
+            },
+            {
+              "sql": "select pfm1_0.id,pfm1_0.created_at,pfm1_0.created_by,pfm1_0.product_family_id,pfm1_0.product_id,pfm1_0.tenant_id,pfm1_0.updated_at,pfm1_0.updated_by from product_family_member pfm1_0 where pfm1_0.id=?",
+              "calls": 513,
+              "parameters": 1
+            },
+            {
+              "sql": "select ae1_0.id,ae1_0.action,ae1_0.content_after,ae1_0.content_before,ae1_0.created_at,ae1_0.data_summary,ae1_0.entity_id,ae1_0.entity_type,ae1_0.function_name,ae1_0.ip_address,ae1_0.menu_name,ae1_0.module_name,ae1_0.operator_account,ae1_0.operator_id,ae1_0.operator_name,ae1_0.reason,ae1_0.snapshot_hash,ae1_0.snapshot_hash_version,ae1_0.source,ae1_0.tenant_id from audit_event ae1_0 where ae1_0.id=?",
+              "calls": 1026,
+              "parameters": 1
+            }
+          ]
+        },
+        "bulk-concurrent-membership": {
+          "selectCalls": 5,
+          "threadAllocatedBytes": 245336,
+          "elapsedNanos": 134478116,
+          "members": 2,
+          "auditRows": 0,
+          "selectShapes": [
+            {
+              "sql": "select pf1_0.id,pf1_0.code,pf1_0.created_at,pf1_0.created_by,pf1_0.description,pf1_0.name,pf1_0.status,pf1_0.tenant_id,pf1_0.updated_at,pf1_0.updated_by from product_family pf1_0 where pf1_0.id=?",
+              "calls": 1,
+              "parameters": 1
+            },
+            {
+              "sql": "select m1_0.id,m1_0.brand_name,m1_0.code,m1_0.created_at,m1_0.created_by,m1_0.description,m1_0.effective_date,m1_0.expiry_date,m1_0.material_purpose,m1_0.material_type_id,m1_0.name,m1_0.specification,m1_0.status,m1_0.tenant_id,m1_0.unit,m1_0.updated_at,m1_0.updated_by,m1_0.version from material m1_0 where m1_0.id in (?)",
+              "calls": 1,
+              "parameters": 1
+            },
+            {
+              "sql": "select mt1_0.id,mt1_0.code,mt1_0.created_at,mt1_0.created_by,mt1_0.description,mt1_0.name,mt1_0.status,mt1_0.tenant_id,mt1_0.updated_at,mt1_0.updated_by from material_type mt1_0 where mt1_0.id in (?)",
+              "calls": 1,
+              "parameters": 1
+            },
+            {
+              "sql": "select pfm1_0.id,pfm1_0.created_at,pfm1_0.created_by,pfm1_0.product_family_id,pfm1_0.product_id,pfm1_0.tenant_id,pfm1_0.updated_at,pfm1_0.updated_by from product_family_member pfm1_0 where pfm1_0.tenant_id=? and pfm1_0.product_id in (?)",
+              "calls": 1,
+              "parameters": 2
+            },
+            {
+              "sql": "select pfm1_0.id,pfm1_0.created_at,pfm1_0.created_by,pfm1_0.product_family_id,pfm1_0.product_id,pfm1_0.tenant_id,pfm1_0.updated_at,pfm1_0.updated_by from product_family_member pfm1_0 where pfm1_0.tenant_id=? and pfm1_0.product_id=?",
+              "calls": 1,
+              "parameters": 2
+            }
+          ]
+        },
+        "bulk-raw-type": {
+          "selectCalls": 3,
+          "threadAllocatedBytes": 142352,
+          "elapsedNanos": 17781314,
+          "members": 1,
+          "auditRows": 0,
+          "selectShapes": [
+            {
+              "sql": "select pf1_0.id,pf1_0.code,pf1_0.created_at,pf1_0.created_by,pf1_0.description,pf1_0.name,pf1_0.status,pf1_0.tenant_id,pf1_0.updated_at,pf1_0.updated_by from product_family pf1_0 where pf1_0.id=?",
+              "calls": 1,
+              "parameters": 1
+            },
+            {
+              "sql": "select m1_0.id,m1_0.brand_name,m1_0.code,m1_0.created_at,m1_0.created_by,m1_0.description,m1_0.effective_date,m1_0.expiry_date,m1_0.material_purpose,m1_0.material_type_id,m1_0.name,m1_0.specification,m1_0.status,m1_0.tenant_id,m1_0.unit,m1_0.updated_at,m1_0.updated_by,m1_0.version from material m1_0 where m1_0.id in (?)",
+              "calls": 1,
+              "parameters": 1
+            },
+            {
+              "sql": "select mt1_0.id,mt1_0.code,mt1_0.created_at,mt1_0.created_by,mt1_0.description,mt1_0.name,mt1_0.status,mt1_0.tenant_id,mt1_0.updated_at,mt1_0.updated_by from material_type mt1_0 where mt1_0.id in (?)",
+              "calls": 1,
+              "parameters": 1
+            }
+          ]
+        },
+        "bulk-conflict": {
+          "selectCalls": 5,
+          "threadAllocatedBytes": 217672,
+          "elapsedNanos": 17480917,
+          "members": 1,
+          "auditRows": 0,
+          "selectShapes": [
+            {
+              "sql": "select pf1_0.id,pf1_0.code,pf1_0.created_at,pf1_0.created_by,pf1_0.description,pf1_0.name,pf1_0.status,pf1_0.tenant_id,pf1_0.updated_at,pf1_0.updated_by from product_family pf1_0 where pf1_0.id=?",
+              "calls": 2,
+              "parameters": 1
+            },
+            {
+              "sql": "select m1_0.id,m1_0.brand_name,m1_0.code,m1_0.created_at,m1_0.created_by,m1_0.description,m1_0.effective_date,m1_0.expiry_date,m1_0.material_purpose,m1_0.material_type_id,m1_0.name,m1_0.specification,m1_0.status,m1_0.tenant_id,m1_0.unit,m1_0.updated_at,m1_0.updated_by,m1_0.version from material m1_0 where m1_0.id in (?,?)",
+              "calls": 1,
+              "parameters": 2
+            },
+            {
+              "sql": "select mt1_0.id,mt1_0.code,mt1_0.created_at,mt1_0.created_by,mt1_0.description,mt1_0.name,mt1_0.status,mt1_0.tenant_id,mt1_0.updated_at,mt1_0.updated_by from material_type mt1_0 where mt1_0.id in (?)",
+              "calls": 1,
+              "parameters": 1
+            },
+            {
+              "sql": "select pfm1_0.id,pfm1_0.created_at,pfm1_0.created_by,pfm1_0.product_family_id,pfm1_0.product_id,pfm1_0.tenant_id,pfm1_0.updated_at,pfm1_0.updated_by from product_family_member pfm1_0 where pfm1_0.tenant_id=? and pfm1_0.product_id in (?,?)",
+              "calls": 1,
+              "parameters": 3
+            }
+          ]
+        },
+        "bulk-qualification-before-conflict": {
+          "selectCalls": 3,
+          "threadAllocatedBytes": 147784,
+          "elapsedNanos": 9054016,
+          "members": 1,
+          "auditRows": 0,
+          "selectShapes": [
+            {
+              "sql": "select pf1_0.id,pf1_0.code,pf1_0.created_at,pf1_0.created_by,pf1_0.description,pf1_0.name,pf1_0.status,pf1_0.tenant_id,pf1_0.updated_at,pf1_0.updated_by from product_family pf1_0 where pf1_0.id=?",
+              "calls": 1,
+              "parameters": 1
+            },
+            {
+              "sql": "select m1_0.id,m1_0.brand_name,m1_0.code,m1_0.created_at,m1_0.created_by,m1_0.description,m1_0.effective_date,m1_0.expiry_date,m1_0.material_purpose,m1_0.material_type_id,m1_0.name,m1_0.specification,m1_0.status,m1_0.tenant_id,m1_0.unit,m1_0.updated_at,m1_0.updated_by,m1_0.version from material m1_0 where m1_0.id in (?,?)",
+              "calls": 1,
+              "parameters": 2
+            },
+            {
+              "sql": "select mt1_0.id,mt1_0.code,mt1_0.created_at,mt1_0.created_by,mt1_0.description,mt1_0.name,mt1_0.status,mt1_0.tenant_id,mt1_0.updated_at,mt1_0.updated_by from material_type mt1_0 where mt1_0.id in (?)",
+              "calls": 1,
+              "parameters": 1
+            }
+          ]
+        },
+        "bulk-first-missing": {
+          "selectCalls": 2,
+          "threadAllocatedBytes": 95472,
+          "elapsedNanos": 6985027,
+          "members": 1,
+          "auditRows": 0,
+          "selectShapes": [
+            {
+              "sql": "select pf1_0.id,pf1_0.code,pf1_0.created_at,pf1_0.created_by,pf1_0.description,pf1_0.name,pf1_0.status,pf1_0.tenant_id,pf1_0.updated_at,pf1_0.updated_by from product_family pf1_0 where pf1_0.id=?",
+              "calls": 1,
+              "parameters": 1
+            },
+            {
+              "sql": "select m1_0.id,m1_0.brand_name,m1_0.code,m1_0.created_at,m1_0.created_by,m1_0.description,m1_0.effective_date,m1_0.expiry_date,m1_0.material_purpose,m1_0.material_type_id,m1_0.name,m1_0.specification,m1_0.status,m1_0.tenant_id,m1_0.unit,m1_0.updated_at,m1_0.updated_by,m1_0.version from material m1_0 where m1_0.id in (?,?)",
+              "calls": 1,
+              "parameters": 2
+            }
+          ]
+        },
+        "bulk-first-ineligible": {
+          "selectCalls": 2,
+          "threadAllocatedBytes": 95624,
+          "elapsedNanos": 11779704,
+          "members": 1,
+          "auditRows": 0,
+          "selectShapes": [
+            {
+              "sql": "select pf1_0.id,pf1_0.code,pf1_0.created_at,pf1_0.created_by,pf1_0.description,pf1_0.name,pf1_0.status,pf1_0.tenant_id,pf1_0.updated_at,pf1_0.updated_by from product_family pf1_0 where pf1_0.id=?",
+              "calls": 1,
+              "parameters": 1
+            },
+            {
+              "sql": "select m1_0.id,m1_0.brand_name,m1_0.code,m1_0.created_at,m1_0.created_by,m1_0.description,m1_0.effective_date,m1_0.expiry_date,m1_0.material_purpose,m1_0.material_type_id,m1_0.name,m1_0.specification,m1_0.status,m1_0.tenant_id,m1_0.unit,m1_0.updated_at,m1_0.updated_by,m1_0.version from material m1_0 where m1_0.id in (?,?)",
+              "calls": 1,
+              "parameters": 2
+            }
+          ]
+        },
+        "bulk-null-id": {
+          "selectCalls": 1,
+          "threadAllocatedBytes": 32488,
+          "elapsedNanos": 3171593,
+          "members": 1,
+          "auditRows": 0,
+          "selectShapes": [
+            {
+              "sql": "select pf1_0.id,pf1_0.code,pf1_0.created_at,pf1_0.created_by,pf1_0.description,pf1_0.name,pf1_0.status,pf1_0.tenant_id,pf1_0.updated_at,pf1_0.updated_by from product_family pf1_0 where pf1_0.id=?",
+              "calls": 1,
+              "parameters": 1
+            }
+          ]
+        },
+        "bulk-empty": {
+          "selectCalls": 1,
+          "threadAllocatedBytes": 32000,
+          "elapsedNanos": 3193888,
+          "members": 1,
+          "auditRows": 0,
+          "selectShapes": [
+            {
+              "sql": "select pf1_0.id,pf1_0.code,pf1_0.created_at,pf1_0.created_by,pf1_0.description,pf1_0.name,pf1_0.status,pf1_0.tenant_id,pf1_0.updated_at,pf1_0.updated_by from product_family pf1_0 where pf1_0.id=?",
+              "calls": 1,
+              "parameters": 1
+            }
+          ]
+        },
+        "bulk-null": {
+          "selectCalls": 1,
+          "threadAllocatedBytes": 32072,
+          "elapsedNanos": 4809720,
+          "members": 1,
+          "auditRows": 0,
+          "selectShapes": [
+            {
+              "sql": "select pf1_0.id,pf1_0.code,pf1_0.created_at,pf1_0.created_by,pf1_0.description,pf1_0.name,pf1_0.status,pf1_0.tenant_id,pf1_0.updated_at,pf1_0.updated_by from product_family pf1_0 where pf1_0.id=?",
+              "calls": 1,
+              "parameters": 1
+            }
+          ]
+        },
+        "bulk-existing-noop": {
+          "selectCalls": 7,
+          "threadAllocatedBytes": 338248,
+          "elapsedNanos": 24967370,
+          "members": 3,
+          "auditRows": 4,
+          "selectShapes": [
+            {
+              "sql": "select pf1_0.id,pf1_0.code,pf1_0.created_at,pf1_0.created_by,pf1_0.description,pf1_0.name,pf1_0.status,pf1_0.tenant_id,pf1_0.updated_at,pf1_0.updated_by from product_family pf1_0 where pf1_0.id=?",
+              "calls": 1,
+              "parameters": 1
+            },
+            {
+              "sql": "select m1_0.id,m1_0.brand_name,m1_0.code,m1_0.created_at,m1_0.created_by,m1_0.description,m1_0.effective_date,m1_0.expiry_date,m1_0.material_purpose,m1_0.material_type_id,m1_0.name,m1_0.specification,m1_0.status,m1_0.tenant_id,m1_0.unit,m1_0.updated_at,m1_0.updated_by,m1_0.version from material m1_0 where m1_0.id in (?,?,?)",
+              "calls": 1,
+              "parameters": 3
+            },
+            {
+              "sql": "select mt1_0.id,mt1_0.code,mt1_0.created_at,mt1_0.created_by,mt1_0.description,mt1_0.name,mt1_0.status,mt1_0.tenant_id,mt1_0.updated_at,mt1_0.updated_by from material_type mt1_0 where mt1_0.id in (?,?)",
+              "calls": 1,
+              "parameters": 2
+            },
+            {
+              "sql": "select pfm1_0.id,pfm1_0.created_at,pfm1_0.created_by,pfm1_0.product_family_id,pfm1_0.product_id,pfm1_0.tenant_id,pfm1_0.updated_at,pfm1_0.updated_by from product_family_member pfm1_0 where pfm1_0.tenant_id=? and pfm1_0.product_id in (?,?,?)",
+              "calls": 1,
+              "parameters": 4
+            },
+            {
+              "sql": "select pfm1_0.id,pfm1_0.created_at,pfm1_0.created_by,pfm1_0.product_family_id,pfm1_0.product_id,pfm1_0.tenant_id,pfm1_0.updated_at,pfm1_0.updated_by from product_family_member pfm1_0 where pfm1_0.tenant_id=? and pfm1_0.product_id=?",
+              "calls": 3,
+              "parameters": 2
+            }
+          ]
+        },
+        "bulk-ordered-duplicates": {
+          "selectCalls": 13,
+          "threadAllocatedBytes": 674416,
+          "elapsedNanos": 48856074,
+          "members": 3,
+          "auditRows": 4,
+          "selectShapes": [
+            {
+              "sql": "select pf1_0.id,pf1_0.code,pf1_0.created_at,pf1_0.created_by,pf1_0.description,pf1_0.name,pf1_0.status,pf1_0.tenant_id,pf1_0.updated_at,pf1_0.updated_by from product_family pf1_0 where pf1_0.id=?",
+              "calls": 1,
+              "parameters": 1
+            },
+            {
+              "sql": "select m1_0.id,m1_0.brand_name,m1_0.code,m1_0.created_at,m1_0.created_by,m1_0.description,m1_0.effective_date,m1_0.expiry_date,m1_0.material_purpose,m1_0.material_type_id,m1_0.name,m1_0.specification,m1_0.status,m1_0.tenant_id,m1_0.unit,m1_0.updated_at,m1_0.updated_by,m1_0.version from material m1_0 where m1_0.id in (?,?,?)",
+              "calls": 1,
+              "parameters": 3
+            },
+            {
+              "sql": "select mt1_0.id,mt1_0.code,mt1_0.created_at,mt1_0.created_by,mt1_0.description,mt1_0.name,mt1_0.status,mt1_0.tenant_id,mt1_0.updated_at,mt1_0.updated_by from material_type mt1_0 where mt1_0.id in (?,?)",
+              "calls": 1,
+              "parameters": 2
+            },
+            {
+              "sql": "select pfm1_0.id,pfm1_0.created_at,pfm1_0.created_by,pfm1_0.product_family_id,pfm1_0.product_id,pfm1_0.tenant_id,pfm1_0.updated_at,pfm1_0.updated_by from product_family_member pfm1_0 where pfm1_0.tenant_id=? and pfm1_0.product_id in (?,?,?)",
+              "calls": 1,
+              "parameters": 4
+            },
+            {
+              "sql": "select pfm1_0.id,pfm1_0.created_at,pfm1_0.created_by,pfm1_0.product_family_id,pfm1_0.product_id,pfm1_0.tenant_id,pfm1_0.updated_at,pfm1_0.updated_by from product_family_member pfm1_0 where pfm1_0.tenant_id=? and pfm1_0.product_id=?",
+              "calls": 3,
+              "parameters": 2
+            },
+            {
+              "sql": "select pfm1_0.id,pfm1_0.created_at,pfm1_0.created_by,pfm1_0.product_family_id,pfm1_0.product_id,pfm1_0.tenant_id,pfm1_0.updated_at,pfm1_0.updated_by from product_family_member pfm1_0 where pfm1_0.id=?",
+              "calls": 2,
+              "parameters": 1
+            },
+            {
+              "sql": "select ae1_0.id,ae1_0.action,ae1_0.content_after,ae1_0.content_before,ae1_0.created_at,ae1_0.data_summary,ae1_0.entity_id,ae1_0.entity_type,ae1_0.function_name,ae1_0.ip_address,ae1_0.menu_name,ae1_0.module_name,ae1_0.operator_account,ae1_0.operator_id,ae1_0.operator_name,ae1_0.reason,ae1_0.snapshot_hash,ae1_0.snapshot_hash_version,ae1_0.source,ae1_0.tenant_id from audit_event ae1_0 where ae1_0.id=?",
+              "calls": 4,
+              "parameters": 1
+            }
+          ]
+        },
+        "bulk-audit-failure": {
+          "selectCalls": 12,
+          "threadAllocatedBytes": 830640,
+          "elapsedNanos": 63347312,
+          "members": 1,
+          "auditRows": 0,
+          "selectShapes": [
+            {
+              "sql": "select pf1_0.id,pf1_0.code,pf1_0.created_at,pf1_0.created_by,pf1_0.description,pf1_0.name,pf1_0.status,pf1_0.tenant_id,pf1_0.updated_at,pf1_0.updated_by from product_family pf1_0 where pf1_0.id=?",
+              "calls": 1,
+              "parameters": 1
+            },
+            {
+              "sql": "select m1_0.id,m1_0.brand_name,m1_0.code,m1_0.created_at,m1_0.created_by,m1_0.description,m1_0.effective_date,m1_0.expiry_date,m1_0.material_purpose,m1_0.material_type_id,m1_0.name,m1_0.specification,m1_0.status,m1_0.tenant_id,m1_0.unit,m1_0.updated_at,m1_0.updated_by,m1_0.version from material m1_0 where m1_0.id in (?,?)",
+              "calls": 1,
+              "parameters": 2
+            },
+            {
+              "sql": "select mt1_0.id,mt1_0.code,mt1_0.created_at,mt1_0.created_by,mt1_0.description,mt1_0.name,mt1_0.status,mt1_0.tenant_id,mt1_0.updated_at,mt1_0.updated_by from material_type mt1_0 where mt1_0.id in (?)",
+              "calls": 1,
+              "parameters": 1
+            },
+            {
+              "sql": "select pfm1_0.id,pfm1_0.created_at,pfm1_0.created_by,pfm1_0.product_family_id,pfm1_0.product_id,pfm1_0.tenant_id,pfm1_0.updated_at,pfm1_0.updated_by from product_family_member pfm1_0 where pfm1_0.tenant_id=? and pfm1_0.product_id in (?,?)",
+              "calls": 1,
+              "parameters": 3
+            },
+            {
+              "sql": "select pfm1_0.id,pfm1_0.created_at,pfm1_0.created_by,pfm1_0.product_family_id,pfm1_0.product_id,pfm1_0.tenant_id,pfm1_0.updated_at,pfm1_0.updated_by from product_family_member pfm1_0 where pfm1_0.tenant_id=? and pfm1_0.product_id=?",
+              "calls": 2,
+              "parameters": 2
+            },
+            {
+              "sql": "select pfm1_0.id,pfm1_0.created_at,pfm1_0.created_by,pfm1_0.product_family_id,pfm1_0.product_id,pfm1_0.tenant_id,pfm1_0.updated_at,pfm1_0.updated_by from product_family_member pfm1_0 where pfm1_0.id=?",
+              "calls": 2,
+              "parameters": 1
+            },
+            {
+              "sql": "select ae1_0.id,ae1_0.action,ae1_0.content_after,ae1_0.content_before,ae1_0.created_at,ae1_0.data_summary,ae1_0.entity_id,ae1_0.entity_type,ae1_0.function_name,ae1_0.ip_address,ae1_0.menu_name,ae1_0.module_name,ae1_0.operator_account,ae1_0.operator_id,ae1_0.operator_name,ae1_0.reason,ae1_0.snapshot_hash,ae1_0.snapshot_hash_version,ae1_0.source,ae1_0.tenant_id from audit_event ae1_0 where ae1_0.id=?",
+              "calls": 4,
+              "parameters": 1
+            }
+          ]
+        },
+        "bulk-tenant": {
+          "selectCalls": 8,
+          "threadAllocatedBytes": 1237320,
+          "elapsedNanos": 72302810,
+          "members": 3,
+          "auditRows": 2,
+          "selectShapes": [
+            {
+              "sql": "select pf1_0.id,pf1_0.code,pf1_0.created_at,pf1_0.created_by,pf1_0.description,pf1_0.name,pf1_0.status,pf1_0.tenant_id,pf1_0.updated_at,pf1_0.updated_by from product_family pf1_0 where pf1_0.id=?",
+              "calls": 1,
+              "parameters": 1
+            },
+            {
+              "sql": "select m1_0.id,m1_0.brand_name,m1_0.code,m1_0.created_at,m1_0.created_by,m1_0.description,m1_0.effective_date,m1_0.expiry_date,m1_0.material_purpose,m1_0.material_type_id,m1_0.name,m1_0.specification,m1_0.status,m1_0.tenant_id,m1_0.unit,m1_0.updated_at,m1_0.updated_by,m1_0.version from material m1_0 where m1_0.id in (?)",
+              "calls": 1,
+              "parameters": 1
+            },
+            {
+              "sql": "select mt1_0.id,mt1_0.code,mt1_0.created_at,mt1_0.created_by,mt1_0.description,mt1_0.name,mt1_0.status,mt1_0.tenant_id,mt1_0.updated_at,mt1_0.updated_by from material_type mt1_0 where mt1_0.id in (?)",
+              "calls": 1,
+              "parameters": 1
+            },
+            {
+              "sql": "select pfm1_0.id,pfm1_0.created_at,pfm1_0.created_by,pfm1_0.product_family_id,pfm1_0.product_id,pfm1_0.tenant_id,pfm1_0.updated_at,pfm1_0.updated_by from product_family_member pfm1_0 where pfm1_0.tenant_id=? and pfm1_0.product_id in (?)",
+              "calls": 1,
+              "parameters": 2
+            },
+            {
+              "sql": "select pfm1_0.id,pfm1_0.created_at,pfm1_0.created_by,pfm1_0.product_family_id,pfm1_0.product_id,pfm1_0.tenant_id,pfm1_0.updated_at,pfm1_0.updated_by from product_family_member pfm1_0 where pfm1_0.tenant_id=? and pfm1_0.product_id=?",
+              "calls": 1,
+              "parameters": 2
+            },
+            {
+              "sql": "select pfm1_0.id,pfm1_0.created_at,pfm1_0.created_by,pfm1_0.product_family_id,pfm1_0.product_id,pfm1_0.tenant_id,pfm1_0.updated_at,pfm1_0.updated_by from product_family_member pfm1_0 where pfm1_0.id=?",
+              "calls": 1,
+              "parameters": 1
+            },
+            {
+              "sql": "select ae1_0.id,ae1_0.action,ae1_0.content_after,ae1_0.content_before,ae1_0.created_at,ae1_0.data_summary,ae1_0.entity_id,ae1_0.entity_type,ae1_0.function_name,ae1_0.ip_address,ae1_0.menu_name,ae1_0.module_name,ae1_0.operator_account,ae1_0.operator_id,ae1_0.operator_name,ae1_0.reason,ae1_0.snapshot_hash,ae1_0.snapshot_hash_version,ae1_0.source,ae1_0.tenant_id from audit_event ae1_0 where ae1_0.id=?",
+              "calls": 2,
+              "parameters": 1
+            }
+          ]
+        }
+      },
+      "bulkAuditFailureSuccessfulWrites": [
+        {
+          "tx": "794",
+          "tag": "bulk-audit-failure",
+          "sql": "insert into product_family_member (created_at,created_by,product_family_id,product_id,tenant_id,updated_at,updated_by,id) values (?,?,?,?,?,?,?,?)"
+        },
+        {
+          "tx": "794",
+          "tag": "bulk-audit-failure",
+          "sql": "insert into audit_event (action,content_after,content_before,created_at,data_summary,entity_id,entity_type,function_name,ip_address,menu_name,module_name,operator_account,operator_id,operator_name,reason,snapshot_hash,snapshot_hash_version,source,tenant_id,id) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"
+        },
+        {
+          "tx": "794",
+          "tag": "bulk-audit-failure",
+          "sql": "insert into audit_event (action,content_after,content_before,created_at,data_summary,entity_id,entity_type,function_name,ip_address,menu_name,module_name,operator_account,operator_id,operator_name,reason,snapshot_hash,snapshot_hash_version,source,tenant_id,id) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"
+        },
+        {
+          "tx": "794",
+          "tag": "bulk-audit-failure",
+          "sql": "insert into product_family_member (created_at,created_by,product_family_id,product_id,tenant_id,updated_at,updated_by,id) values (?,?,?,?,?,?,?,?)"
+        }
+      ]
+    }
+  },
+  "all33NormalizedCommittedStateAndAuditPayloadsEqual": true,
+  "indexPlans": [
+    {
+      "table": "material",
+      "selected": 100,
+      "node": "Index Scan",
+      "index": "material_pkey",
+      "executionMs": 0.276,
+      "sharedHitBlocks": 205,
+      "rowsRemoved": 0
+    },
+    {
+      "table": "material",
+      "selected": 512,
+      "node": "Index Scan",
+      "index": "material_pkey",
+      "executionMs": 0.434,
+      "sharedHitBlocks": 1036,
+      "rowsRemoved": 0
+    },
+    {
+      "table": "material_type",
+      "selected": 512,
+      "node": "Seq Scan",
+      "index": null,
+      "executionMs": 0.12,
+      "sharedHitBlocks": 6,
+      "rowsRemoved": 6
+    },
+    {
+      "table": "product_family_member",
+      "selected": 100,
+      "node": "Index Scan",
+      "index": "uk_product_family_member_tenant_product",
+      "executionMs": 0.304,
+      "sharedHitBlocks": 204,
+      "rowsRemoved": 0
+    },
+    {
+      "table": "product_family_member",
+      "selected": 512,
+      "node": "Seq Scan",
+      "index": null,
+      "executionMs": 7.502,
+      "sharedHitBlocks": 417,
+      "rowsRemoved": 49489
+    }
+  ],
+  "indexDecision": "No new index/schema changes: existing PK and tenant/product unique cover predicates. Actual planner chooses seqscan for member512 and small type512;100 uses unique. A local warm50k fixture is not production threshold/SLA or proof all queries choose indexes.",
+  "remaining": "Second-round realtime and member/audit merge reads remain4N plus bounded precheck; no all-constant query claim",
+  "allocationScope": "Calling-thread cumulative bytes during service/proxy call with same test instrumentation; excludes fixture/assertion/observation serialization and other threads; not peak/RSS or production SLA. N1 allocations may rise; larger samples reduce.",
+  "verificationLimits": [
+    "In-process MockMvc/JWT on transfer plus existing55 controller tests, no browser/socket bulk UX",
+    "Concurrent writer is independent JDBC fixture, not a full concurrent product API/START matrix",
+    "Old repository6 use H2;new23 and Batch21 use actual PG",
+    "Index probe adds50k owned disposable fixtures after runtime tests; separate from business/audit counts",
+    "Knowledge schema/89 and finite semantic records do not complete931/fullP0",
+    "Whole auditW2-W7/A12/highrisk/A23inclalreadyreviewed/capacity/UNKNOWN/userpaused continue; wholefile0/historyuniqueunknown"
+  ]
+}
