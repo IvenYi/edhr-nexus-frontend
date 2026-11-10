@@ -1,0 +1,73 @@
+{
+  "checkedAtUtc": "2026-11-10T05:09:31.706624+00:00",
+  "checkedAtAsiaShanghai": "2026-11-10T13:09:31.706624+08:00",
+  "target": "07d6d4168a00a265afea8105db9a1a0e2554f683",
+  "headBeforeL0EvidenceCommit": "0f5d4354ed381adb07650548a2ec417969d2416d",
+  "fetchStdout": "",
+  "fetchStderr": "From https://github.com/IvenYi/edhr-nexus-frontend\n * branch              edhr-dev   -> FETCH_HEAD\n",
+  "allDispatchedRolesObservedFinalBeforeReview": true,
+  "roleStatusObservation": "Actual collaboration.list_agents after final v2 FINAL; all three specialist instances completed, no children",
+  "roles": {
+    "ontology": "not-applicable/FINAL",
+    "initialIndependentV1": "failed/FINAL preserved",
+    "freshIndependentV2": "passed/FINAL"
+  },
+  "requiredChecksPassed": [
+    "check.independent-final-binding",
+    "check.policy-and-retained-boundaries",
+    "check.fixture-medium-resolution",
+    "check.backend-127",
+    "check.knowledge-89",
+    "check.readonly-permission-capacity",
+    "check.actual-sql-plans",
+    "check.ui-reuse-binding",
+    "check.static-delta",
+    "check.owned-cleanup"
+  ],
+  "protectedSourceFingerprints": 40,
+  "knowledgeFilesUnchanged": 353,
+  "noProductUiKnowledgePolicyOrContractChanges": true,
+  "packageMemberHashesVerified": 1223,
+  "packagesVerified": 4,
+  "trackedDelta": [
+    "docs/development/branch-review-20261015/NEXT.md",
+    "docs/development/branch-review-20261110-record-access-increment/decision-package.yaml",
+    "gmp-platform/backend/src/test/java/com/zencas/edhr/recordcontrol/service/RecordControlPostgresIntegrationTest.java"
+  ],
+  "untrackedEvidenceAndReports": [
+    "docs/development/branch-review-20261110-record-access-increment/README.md",
+    "docs/development/branch-review-20261110-record-access-increment/evidence-packages.json",
+    "docs/development/branch-review-20261110-record-access-increment/evidence/independent-v1-failed-manifest.json",
+    "docs/development/branch-review-20261110-record-access-increment/evidence/independent-v1-failed.zip",
+    "docs/development/branch-review-20261110-record-access-increment/evidence/independent-v2-final-manifest.json",
+    "docs/development/branch-review-20261110-record-access-increment/evidence/independent-v2-final.zip",
+    "docs/development/branch-review-20261110-record-access-increment/evidence/main-manifest.json",
+    "docs/development/branch-review-20261110-record-access-increment/evidence/main.zip",
+    "docs/development/branch-review-20261110-record-access-increment/evidence/ontology-manifest.json",
+    "docs/development/branch-review-20261110-record-access-increment/evidence/ontology.zip",
+    "docs/development/branch-review-20261110-record-access-increment/independent-review.md",
+    "docs/development/branch-review-20261110-record-access-increment/initial-independent-review-failed.md",
+    "docs/development/branch-review-20261110-record-access-increment/initial-quality-result-failed.yaml",
+    "docs/development/branch-review-20261110-record-access-increment/main-analysis.json",
+    "docs/development/branch-review-20261110-record-access-increment/ontology-result.yaml",
+    "docs/development/branch-review-20261110-record-access-increment/ontology-review.md",
+    "docs/development/branch-review-20261110-record-access-increment/performance-next.md",
+    "docs/development/branch-review-20261110-record-access-increment/quality-result.yaml",
+    "docs/development/branch-review-20261110-record-access-increment/robustness-review.md",
+    "docs/development/branch-review-20261110-record-access-increment/source-review.md",
+    "docs/development/branch-review-20261110-record-access-increment/verification.md"
+  ],
+  "drift": "none in this slice; new record-control changes explicitly increment-audited, no new feature or performance implementation",
+  "stage": "W3/W7 incremental source/knowledge/fixture review plus W6 robustness/performance/A23 observation",
+  "completeOverallAudit": false,
+  "wholeFileCompleted": 0,
+  "historicalUnique": "unknown",
+  "next": [
+    "Fetch actual merge/new commits each round",
+    "Await actual performance-design answer before page-qualification SQL/index changes",
+    "Continue W2-W7/full matrices/A12/UI debt/semantic review/A23 including already reviewed and user-paused queue"
+  ],
+  "postReviewAllowed": "L0 evidence and delivery records only; rerun impact assessment if protected sources or target changes",
+  "ciQueriedOrTriggered": false,
+  "mergeDeployOrRestore": false
+}

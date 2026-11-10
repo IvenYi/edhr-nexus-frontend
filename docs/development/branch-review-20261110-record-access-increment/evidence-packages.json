@@ -1,0 +1,84 @@
+{
+  "baseCommit": "07d6d4168a00a265afea8105db9a1a0e2554f683",
+  "testedCandidate": "0f5d4354ed381adb07650548a2ec417969d2416d",
+  "packages": [
+    {
+      "name": "main",
+      "path": "evidence/main.zip",
+      "bytes": 11749305,
+      "sha256": "7a391be3ad5f3a403bfcdd995ffb0d939c75a9607d4071522bc5277aed07cfea",
+      "manifest": "evidence/main-manifest.json",
+      "manifestSha256": "810190e0ef76fd108c6e578bacea47cb913d36d1b767c2a1a6f8f987d24bcf15",
+      "members": 509,
+      "roleManifestMembersVerified": null
+    },
+    {
+      "name": "ontology",
+      "path": "evidence/ontology.zip",
+      "bytes": 2182256,
+      "sha256": "1613cbfde60ae78ca0b972f6731ca32f648af38899573e169ec643250ae74d7b",
+      "manifest": "evidence/ontology-manifest.json",
+      "manifestSha256": "db248b10174f6c99a08a31188385c05c0672a6df796024170a6812f1349e2c9b",
+      "members": 226,
+      "roleManifestMembersVerified": 225
+    },
+    {
+      "name": "independent-v1-failed",
+      "path": "evidence/independent-v1-failed.zip",
+      "bytes": 5175473,
+      "sha256": "f07809aecb26781483166052dbf77212aabdb58b5eb2b56c4c5a263f4b0a5c6a",
+      "manifest": "evidence/independent-v1-failed-manifest.json",
+      "manifestSha256": "2b6cc1781b0c5bba8b68d5e6b8b0cab9256d2f986225ab2799f8b8c9b048cb67",
+      "members": 227,
+      "roleManifestMembersVerified": 226
+    },
+    {
+      "name": "independent-v2-final",
+      "path": "evidence/independent-v2-final.zip",
+      "bytes": 5298475,
+      "sha256": "8abb1a790a11e81298d4589d6ac22867e08b086d9cd9e5967a0d808854241bbc",
+      "manifest": "evidence/independent-v2-final-manifest.json",
+      "manifestSha256": "f2e976211af7e4fe404a7377ccc464af13fdfab5ebd25aae7b3320b05e7bfd05",
+      "members": 261,
+      "roleManifestMembersVerified": 259
+    }
+  ],
+  "copiedFormalArtifacts": [
+    {
+      "path": "main-analysis.json",
+      "source": "main/main-analysis.json",
+      "sha256": "022e8c4302af2001add4aae238797bb20c74c45b16c35206eb1d1356688825e8"
+    },
+    {
+      "path": "ontology-result.yaml",
+      "source": "ontology/ontology-result.yaml",
+      "sha256": "d327cb9878214e975065ffb328c97c996c3fd370a205e98f91cd040ea96d9c16"
+    },
+    {
+      "path": "ontology-review.md",
+      "source": "ontology/REVIEW.md",
+      "sha256": "e934229bb1f94d5d9824447d35a0cbdeec9374f573085e2b918c7e20a4e83d06"
+    },
+    {
+      "path": "initial-quality-result-failed.yaml",
+      "source": "independent-v1-failed/quality-result.yaml",
+      "sha256": "f4f663c9c1dbb1e28ab8b9e70f572fa1347439fc15351d4497a46e918b09263c"
+    },
+    {
+      "path": "initial-independent-review-failed.md",
+      "source": "independent-v1-failed/independent-review.md",
+      "sha256": "178f9f15d3420dd52c65e36a642daf9cf4e5525cf5ccba9be07db4ca3f2d26e3"
+    },
+    {
+      "path": "quality-result.yaml",
+      "source": "independent-v2-final/quality-result.yaml",
+      "sha256": "ef14a030d73ccb8e285c2164b07fe4447ad11d572cdd4c58cf6729dffab3c741"
+    },
+    {
+      "path": "independent-review.md",
+      "source": "independent-v2-final/independent-review.md",
+      "sha256": "6964e199af1bdbb79ff9cc12d497a563835ce2b773529671716cd3d582bdcd51"
+    }
+  ],
+  "note": "Four separate immutable result histories; initial failed is not overwritten by final passed"
+}

@@ -1,0 +1,158 @@
+qualityResult:
+  result: failed
+  baseCommit: "07d6d4168a00a265afea8105db9a1a0e2554f683"
+  headCommit: "594a1944682f21550fbbd1a108b852d3ef34655b"
+  contractBaseline:
+    sourceCommit: "594a1944682f21550fbbd1a108b852d3ef34655b"
+    targetBranch: edhr-dev
+    targetCommit: "07d6d4168a00a265afea8105db9a1a0e2554f683"
+    contractReadCommit: "594a1944682f21550fbbd1a108b852d3ef34655b"
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: clean
+    includedPaths: []
+    excludedPaths: []
+    untrackedPaths: []
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+    - id: check.binding-and-contract
+      required: true
+      category: documentation
+      description: 独立fetch核对目标、固定候选、契约增量及实际执行40份输入与Git绑定
+      method: command
+      command: git fetch origin edhr-dev; python3 analyze.py
+      outcome: passed
+      evidence: [initial-binding.json, source-binding.json, verified/run.json]
+    - id: check.knowledge-and-permission-source
+      required: true
+      category: ontology
+      description: DEC0096精确替代0087-09，保留0074签署身份、0093及0095资格边界，核对当前源码及夹具未降标准
+      method: inspection
+      command: 固定594a源码与07d6目标和2dc历史增量人工逐项核对
+      outcome: passed
+      evidence: [independent-review.md, source-binding.json]
+    - id: check.capacity-fixture-business-identity
+      required: true
+      category: database
+      description: 容量克隆须使用实际workflow_instance.business_id列，不能把未知JSON键当有效业务身份
+      method: query
+      command: docker exec -i own-PG psql -U postgres -d edhr_record_control_test_verified -f - < fixture-proof.sql
+      outcome: failed
+      evidence: [fixture-proof.sql, fixture-proof.log, independent-review.md]
+    - id: check.focused-backend-127
+      required: true
+      category: regression
+      description: 九类127聚焦后端全部通过，涵盖原生PG及H2和单元测试，不代表全2144或全HTTP链
+      method: automated-test
+      command: EDHR_RECORD_ROOT=own-worktree EDHR_RECORD_RAW=own-raw python3 run.py verified
+      outcome: passed
+      evidence: [verified/run.json, verified/test-summary.json, verified/maven.log, verified/cleanup.json]
+    - id: check.capacity-real-plans-and-readonly
+      required: true
+      category: database
+      description: 捕获真实服务count/page共24份auto_explain计划和12组读取，四类资格一致且八表前后摘要相等断言通过；克隆身份缺陷如实单列
+      method: query
+      command: python3 analyze.py
+      outcome: passed
+      evidence: [actual-plan-analysis.json, verified/postgres.log, verified/read-observations, verified/test-summary.json]
+    - id: check.knowledge-tests-89
+      required: true
+      category: ontology
+      description: 本实例实际执行当前知识自动校验89项，不能代替全量语义审计
+      method: automated-test
+      command: python3 command.py knowledge
+      outcome: passed
+      evidence: [knowledge-run.json, knowledge.log, TEST-com.zencas.edhr.knowledge.BusinessKnowledgeModelTest.xml]
+    - id: check.workflow-components-58
+      required: true
+      category: e2e
+      description: 实际React组件加合成API浏览器58项，1440和390宽；非主环境真实签署端到端
+      method: browser
+      command: CHROME_PATH=/usr/bin/chromium python3 command.py workflow-ui
+      outcome: passed
+      evidence: [workflow-ui-run.json, workflow-ui.log, ui/result.json, ui/record-denied-390.png]
+    - id: check.personnel-components-11
+      required: true
+      category: e2e
+      description: 实际人员选择组件合成API浏览器11项，保留跨批次可达及领域资格边界
+      method: browser
+      command: CHROME_PATH=/usr/bin/chromium python3 command.py personnel-ui
+      outcome: passed
+      evidence: [personnel-ui-run.json, personnel-ui.log, personnel-ui/result.json]
+    - id: check.build-and-scoped-static
+      required: true
+      category: regression
+      description: 前端生产构建、列表样式及外部字体检查通过
+      method: command
+      command: python3 command.py frontend-build; python3 command.py list-style; python3 command.py fonts
+      outcome: passed
+      evidence: [frontend-build-run.json, frontend-build.log, list-style-run.json, list-style.log, fonts-run.json, fonts.log]
+    - id: check.no-added-premium-debt
+      required: true
+      category: visual
+      description: 当前strict审计86项与2dc同版本工具基线发现集合完全相同、新增0；全站规范本身仍不通过
+      method: inspection
+      command: python3 command.py premium; compare complete finding sets against parent baseline
+      outcome: passed
+      evidence: [premium-baseline-comparison.json, premium-audit.json, premium-run.json]
+    - id: check.global-premium-strict
+      required: false
+      category: visual
+      description: 遗留全站strict检查exit2，14项未决加72项违反，保留全量审计队列
+      method: command
+      command: python3 command.py premium
+      outcome: failed
+      evidence: [premium-run.json, premium-audit.json, premium.log]
+    - id: check.global-lint
+      required: false
+      category: regression
+      description: 遗留无ESLint配置，实际exit2；未改配置或降低规则
+      method: command
+      command: python3 command.py lint
+      outcome: failed
+      evidence: [lint-run.json, lint.log]
+    - id: check.cleanup
+      required: true
+      category: documentation
+      description: 自有PG已删除、仅移除自建依赖软链、固定候选工作树clean
+      method: command
+      command: 核对cleanup.json及git status --porcelain和own容器删除状态
+      outcome: passed
+      evidence: [cleanup.json, verified/cleanup.json]
+  findings:
+    - id: QF-RECORD-ACCESS-001
+      severity: medium
+      scope: RecordControlPostgresIntegrationTest capacity metadata fixture only
+      summary: jsonb_populate_record使用不存在的business_key键，克隆workflow_instance业务身份仍指向原申请，不能称业务关联元数据完全一致
+      reproductionSteps:
+        - 在594a新增容量测试两处INSERT中核对workflow_instance的business_key键。
+        - 核对实体及baseline schema均使用business_id，未定义business_key。
+        - 在独立PG执行fixture-proof.sql；输入原business_id及新business_key，返回仍为original-request。
+      expectedResult: 20个目标及背景实例正确使用business_id并验证目标申请与实例对应，背景关系也可核对。
+      actualResult: 未知business_key被忽略，克隆保留原实例business_id；当前任务总数断言不会检测该元数据不一致。
+      evidence:
+        - fixture-proof.sql
+        - fixture-proof.log
+        - verified/source/gmp-platform/backend/src/test/java/com/zencas/edhr/recordcontrol/service/RecordControlPostgresIntegrationTest.java
+        - verified/source/gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql
+        - independent-review.md
+      resolutionStatus: open
+      resolutionEvidence: []
+  residualRisks:
+    - id: risk.correlated-read-capacity
+      description: 2万背景任务晚命中布局，审批人42每页20申请的task SeqScan执行20次、每次平均过滤20010行，本地实际SQL62.367ms；无关44一次hashed子计划扫描，申请人41及admin短路0次。
+      impact: 查询次数为2不代表数据库内工作有界；局部warm/instrumentation延迟不构成生产SLA或所有账号共同行为。
+      mitigation: 修正测试元数据后重测；另行讨论权限等价的SQL及索引方案，本轮未改SQL/索引/政策。
+    - id: risk.global-static-debt
+      description: strict86项遗留发现及ESLint未配置均未关闭；本轮未新增发现，不宣称全站premium合规。
+      impact: 完整全站静态与界面审查仍未完成。
+      mitigation: 保留整体审计队列，小批按实际依据处理，不用新配置或放宽断言伪造绿色。
+    - id: risk.runtime-scope
+      description: 浏览器为真实组件加合成API，后端127为混合PG/H2/单元；未运行完整2144、全部多租户/并发/真实环境矩阵。
+      impact: 当前局部结果不能覆盖主环境所有流程、规模或发布能力。
+      mitigation: 保留W2至W7、历史931子集86UI、A12及高风险和UNKNOWN容量队列，候选变化后新鲜独立QA。
+    - id: risk.test-only-fix-pending
+      description: 当前functional assertions及真实服务计划通过，但容量fixture业务关联元数据需纠正；这不是产品权限或SQL缺陷。
+      impact: 594a不能作为符合canonical metadata声明的最终交付候选。
+      mitigation: 主实现修复并补关联断言后，以新提交由未参与修复的全新实例最终验收。
+  blockingConditions: []

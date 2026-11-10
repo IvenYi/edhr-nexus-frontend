@@ -1,0 +1,76 @@
+ontologyResult:
+  result: not-applicable
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: 0f5d4354ed381adb07650548a2ec417969d2416d
+    targetBranch: edhr-dev
+    targetCommit: 07d6d4168a00a265afea8105db9a1a0e2554f683
+    contractReadCommit: 07d6d4168a00a265afea8105db9a1a0e2554f683
+    uncommittedContractPaths: []
+  reason: This incremental correction only replaces two ignored capacity-fixture JSON keys with actual business_id
+    and asserts target/background business associations. Product, UI, knowledge, schema, permissions, contracts
+    and knowledge-test tool bytes are unchanged. No new business semantics or knowledge update; original finite32
+    conclusions and actually executed89 retained, not rerun or expanded.
+  changedArtifacts: []
+  knowledgeSync: []
+  conflicts: []
+  questions: []
+  validationEvidence:
+  - id: validation.record-access-increment.fixture-only-delta
+    checkType: evidence-path
+    command: python3 /tmp/edhr-record-access-increment-ontology-rebind-20261110.py
+    outcome: passed
+    evidence:
+    - fixture-only-594a-to-0f5.diff
+    - source-binding.json
+    - 'Exact transform: two JSON keys and two association assertions; no product/policy/knowledge changes'
+  - id: validation.record-access-increment.reused-knowledge89
+    checkType: schema
+    command: Reuse actual original knowledge89; verify354 input fingerprints and unchanged tools/knowledge-model
+      tree, no rerun
+    outcome: passed
+    evidence:
+    - initial-594a/knowledge-result.json
+    - initial-594a/knowledge89.log
+    - initial-594a/TEST-com.zencas.edhr.knowledge.BusinessKnowledgeModelTest.xml
+    - source-binding.json
+    - Original89/89 at07d6, all353 knowledge bytes and354 recorded inputs unchanged at0f5; not executed again
+  - id: validation.record-access-increment.retained-finite-semantics
+    checkType: projection
+    command: Retain original finite32 review under unchanged product/knowledge bytes; no new semantic review
+    outcome: passed
+    evidence:
+    - initial-594a/ontology-result.yaml
+    - initial-594a/finite-review-records.json
+    - initial-594a/REVIEW.md
+    - No new semantic coverage credit or maturity change
+  - id: validation.record-access-increment.final-source-binding
+    checkType: evidence-path
+    command: Read parent final9XML/127 tests,40 source fingerprints,12 observations and24 plans; bind tested bytes
+      to clean0f5
+    outcome: passed
+    evidence:
+    - source-binding.json
+    - final-source-0f5/
+    - /tmp/edhr-record-access-increment-20261110/final
+    - plan-analysis-final.json
+    - Parent actually reran127/127, not executed by ontology; clean0f5 equals tested dirty594a bytes for40 inputs
+  - id: validation.record-access-increment.history-preservation
+    checkType: reference
+    command: Verify original79 artifact hashes and manifest; copy v1 failed formal evidence without changing its
+      state
+    outcome: passed
+    evidence:
+    - initial-594a/manifest.json
+    - historical-qa-v1-594a/quality-result.yaml
+    - historical-qa-v1-594a/independent-review.md
+    - 594a v1 failed remains historical failed; ontology NA does not approve quality or merge
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages:
+    - P1
+    - P2
+    - P3
