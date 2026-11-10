@@ -1,0 +1,657 @@
+[
+  {
+    "path": "analysis.json",
+    "bytes": 29024,
+    "sha256": "561cff43ec96147d71cc8862b56cf1418f00a31a0edc10b2309f123cc5a1fd02"
+  },
+  {
+    "path": "analyze.py",
+    "bytes": 3716,
+    "sha256": "d82827971d27c2dc72bcd6163a7a5a0ec09a68dece693be1d1698b3af259258b"
+  },
+  {
+    "path": "baseline/TEST-com.zencas.edhr.compliance.controller.AuditActionFilterPostgresTest.xml",
+    "bytes": 551327,
+    "sha256": "a933984747db2ec396f701017d48ce4fee1e9d4c9060cee85184ff9b7b7c71c5"
+  },
+  {
+    "path": "baseline/TEST-com.zencas.edhr.compliance.controller.AuditReadObservationPostgresTest.xml",
+    "bytes": 22005114,
+    "sha256": "fe1b55bec60ac1af47c89ddcd4c1742c67a250d849058833792ccb63798c147c"
+  },
+  {
+    "path": "baseline/cleanup.json",
+    "bytes": 84,
+    "sha256": "f6b70a6eb2854e6e35ca45863c4c5abd7091a20f4fbcdc6ffb7d2d50c7a4b24d"
+  },
+  {
+    "path": "baseline/maven.log",
+    "bytes": 22489587,
+    "sha256": "8ff6c8a0acf8f0c017958dda561c1c2ef06dca083faf72018eec2e6e6a71aee7"
+  },
+  {
+    "path": "baseline/observations/action_all.json",
+    "bytes": 1919,
+    "sha256": "284023daedfad86b11097296a9fc11f2eeb11248ef687fc31a47f44ca70660fb"
+  },
+  {
+    "path": "baseline/observations/action_cancel.json",
+    "bytes": 1889,
+    "sha256": "786626d6dd609a210245deded3a0499a504d001506ee7823a64e18ceceeb7d10"
+  },
+  {
+    "path": "baseline/observations/action_create.json",
+    "bytes": 1889,
+    "sha256": "e11f9805d64d9c25170a8e6ed8f71ac08997ee94c3511a7a6051a35d794f101b"
+  },
+  {
+    "path": "baseline/observations/action_lower.json",
+    "bytes": 1888,
+    "sha256": "b2aa3276398033b9601d3183b34bc34cdafe6b17b19bab30e5ed73be803dc7ae"
+  },
+  {
+    "path": "baseline/observations/action_object.json",
+    "bytes": 1886,
+    "sha256": "aee18d491cd537c31d387603c5bbf838851dacf6aed0ae710adbddfc6133d2f8"
+  },
+  {
+    "path": "baseline/observations/action_update.json",
+    "bytes": 1890,
+    "sha256": "9aae0778ae9f5285900858639ec86427731296f8e8c5da05c7a39e6886557412"
+  },
+  {
+    "path": "baseline/observations/action_user_cancel.json",
+    "bytes": 1891,
+    "sha256": "976196f553ae670ad043613d69b0c29c039cce31698d662e76a2d54f19587d5d"
+  },
+  {
+    "path": "baseline/observations/action_user_update.json",
+    "bytes": 1891,
+    "sha256": "f0576014e7673364a10cf768b9b1c4ada1b92786ce12b5a302f591323e03a5cd"
+  },
+  {
+    "path": "baseline/observations/action_work.json",
+    "bytes": 1482,
+    "sha256": "685ea3e8177e9beba20b2ca97bb10844d41fb93a476795088281f5a0179d2c77"
+  },
+  {
+    "path": "baseline/observations/blank_100.json",
+    "bytes": 1970,
+    "sha256": "7f533d2568f5c9b4e379dc400e58eaebf79dc40da9d684513d7ee86a13578de9"
+  },
+  {
+    "path": "baseline/observations/blank_1000.json",
+    "bytes": 1997,
+    "sha256": "b50205eca95d4c0f2fabf970aae08eadc7d8e2b17ce35cb54d980915dd81c7bd"
+  },
+  {
+    "path": "baseline/observations/blank_5000.json",
+    "bytes": 2018,
+    "sha256": "af9fab378aebcb8721f80acfee47416f9f3d639dc0ad9e4404292df99233b161"
+  },
+  {
+    "path": "baseline/observations/distinct_100.json",
+    "bytes": 1973,
+    "sha256": "d81eff550c4c98ee42c295999aa84525db1cd4a7cc2b57cf06bcb24176aad652"
+  },
+  {
+    "path": "baseline/observations/distinct_1000.json",
+    "bytes": 2000,
+    "sha256": "c230a992f143640d9a813c20c190c535e49a16658e1f17e7972d7671fe232372"
+  },
+  {
+    "path": "baseline/observations/distinct_5000.json",
+    "bytes": 2022,
+    "sha256": "91db2a5161fd0473c00286051ddd78d6fb18d75762c53461f7377f13b58550fe"
+  },
+  {
+    "path": "baseline/observations/fallback_selective.json",
+    "bytes": 1907,
+    "sha256": "e0553bbe8cd6a15404678d8f585a4f128f29b8d89cdbb26c52bc78bbe0b17700"
+  },
+  {
+    "path": "baseline/observations/index_boundary.json",
+    "bytes": 6710,
+    "sha256": "06ec14bad98029fa467d9a80499c661f375980c88bd0ee0dc6d3923d6441801f"
+  },
+  {
+    "path": "baseline/observations/missing_100.json",
+    "bytes": 1972,
+    "sha256": "de755c30748eb2b6de9f4ac1a531c1ba100d1ba52d146127b5c6bd56a75e7bfc"
+  },
+  {
+    "path": "baseline/observations/missing_1000.json",
+    "bytes": 1999,
+    "sha256": "e2a7db322bfde2b40db3bed6d32f62c3519ebec44cd14611376cf2bb674f4012"
+  },
+  {
+    "path": "baseline/observations/missing_5000.json",
+    "bytes": 2020,
+    "sha256": "098930894ab55872b8a673bffcd09cc23900f2c6fcd4d7ab379a607d02000a72"
+  },
+  {
+    "path": "baseline/observations/profile.json",
+    "bytes": 2276,
+    "sha256": "45fabb8069feb3ca50266bf3c036db0bbe86271ece8c5c60fe455042b105f989"
+  },
+  {
+    "path": "baseline/observations/shared_100.json",
+    "bytes": 1971,
+    "sha256": "475589f8c8443abbfb6e60e53a51bf039a061a5faf752d2ce40d143864eb2e51"
+  },
+  {
+    "path": "baseline/observations/shared_1000.json",
+    "bytes": 1998,
+    "sha256": "b350940a12514cd319a89d1f8c99e0bbbc1d0ea2c48d9516c166c6f9fcefadc2"
+  },
+  {
+    "path": "baseline/observations/shared_5000.json",
+    "bytes": 2020,
+    "sha256": "1c071441ae13351647ab22510294978852518aadb9aa06bff1bbf6c6f92d6f89"
+  },
+  {
+    "path": "baseline/observations/wide_1024.json",
+    "bytes": 1997,
+    "sha256": "a3f3b30efe82b2e3d4eb22babb42ae7f30143a753493bb90c3a9fec778ba242a"
+  },
+  {
+    "path": "baseline/observations/wide_131072.json",
+    "bytes": 2000,
+    "sha256": "a5f7af54bcc2300d0097d38b27ec754f830f0871155e776a4f8b36af68807021"
+  },
+  {
+    "path": "baseline/postgres.log",
+    "bytes": 36195672,
+    "sha256": "6dbc45c16eb2e180c8d988b9d4102cc1dcb78a2f921f2ab4796a5be1585d3b78"
+  },
+  {
+    "path": "baseline/run.json",
+    "bytes": 3873,
+    "sha256": "00413a9ccc0df432256155abad9afe6c029c84b8d46237248688b28e7c350c4e"
+  },
+  {
+    "path": "baseline/source/AGENTS.md",
+    "bytes": 25065,
+    "sha256": "13dc7cdacea0b1bb0aef2abb268781f9c69584acd4879b204d2b7fd81a2927fc"
+  },
+  {
+    "path": "baseline/source/codeplzreadme.md",
+    "bytes": 3035,
+    "sha256": "7a1be8efffec596b034335058dca2860346d256622f899c8dac97c5172dd6df2"
+  },
+  {
+    "path": "baseline/source/docs/agents/agent-handoff-contract.md",
+    "bytes": 31233,
+    "sha256": "3439a35dd1baa77ac723f1b5afa237a338d56e31386f06b02b4aacfd754e3a12"
+  },
+  {
+    "path": "baseline/source/docs/agents/quality-verifier.md",
+    "bytes": 7519,
+    "sha256": "6b3de9323924fb4ba5ae87be76c5136d28e754810c46b22b8e3d1cdd6c2f826f"
+  },
+  {
+    "path": "baseline/source/docs/development/branch-review-20261106-audit-read/decision-package.yaml",
+    "bytes": 5369,
+    "sha256": "f28e6b19a9a585a1edb025206f58f949b2369c0fcb26245eb5b158777f4c54b6"
+  },
+  {
+    "path": "baseline/source/gmp-platform/backend/src/main/java/com/zencas/edhr/common/config/SecurityConfig.java",
+    "bytes": 3527,
+    "sha256": "a8f3c83746619d893e5f1a1e41ae6d3430917a2da8eca97201d646fcd437124c"
+  },
+  {
+    "path": "baseline/source/gmp-platform/backend/src/main/java/com/zencas/edhr/common/dto/PageResult.java",
+    "bytes": 1195,
+    "sha256": "ec374abfb27c655bf55f21900e837c8d635a33373e210a8d4b6cfffa9cdf2b62"
+  },
+  {
+    "path": "baseline/source/gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/controller/AuditController.java",
+    "bytes": 14918,
+    "sha256": "8a1f7b0c24515ef93b7c817512574be3470b312c947579d9c9f3cc44bca70b5e"
+  },
+  {
+    "path": "baseline/source/gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/entity/AuditEvent.java",
+    "bytes": 4697,
+    "sha256": "34a236e63d78eed77cfd67094b4ced89f99614fa09b206546189e7e2907480aa"
+  },
+  {
+    "path": "baseline/source/gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/entity/AuditEventHash.java",
+    "bytes": 7419,
+    "sha256": "9ed9137b4d216699fc9f3374edbab6cbe8ae8b4862e9b7b2bcf562511b293ce2"
+  },
+  {
+    "path": "baseline/source/gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/repository/AuditEventRepository.java",
+    "bytes": 2175,
+    "sha256": "1e0006a97a4bb745de780902b689407307d1eab7f9aabf168762dc9f806625bf"
+  },
+  {
+    "path": "baseline/source/gmp-platform/backend/src/main/java/com/zencas/edhr/identity/repository/UserAccountRepository.java",
+    "bytes": 1096,
+    "sha256": "948fb479ccf3c86f9f939f9b72de6b5cdeaef9faccbd4b206c9ebe73901280f9"
+  },
+  {
+    "path": "baseline/source/gmp-platform/backend/src/test/java/com/zencas/edhr/compliance/controller/AuditActionFilterPostgresTest.java",
+    "bytes": 2513,
+    "sha256": "391d147ad1e64a47ef7376d6984cdbcaaf6f96f75274b1d87da6ccf5315c7a71"
+  },
+  {
+    "path": "baseline/source/gmp-platform/backend/src/test/java/com/zencas/edhr/compliance/controller/AuditReadObservationPostgresTest.java",
+    "bytes": 12288,
+    "sha256": "f05f8b7755fe5b2c447f488d7dda746c74901d3c85536b586361dae92ea83660"
+  },
+  {
+    "path": "baseline/test-summary.json",
+    "bytes": 496,
+    "sha256": "40704aadb403584052ddcf1e7e604a1f8ace0248140fff3c14033c31c5ca8c66"
+  },
+  {
+    "path": "final/TEST-com.zencas.edhr.common.audit.AuditAspectTest.xml",
+    "bytes": 33465,
+    "sha256": "f7c36b0187d2b6bdfef26f7381eabb1510e8a9d91e25176487cfa15bf75e103f"
+  },
+  {
+    "path": "final/TEST-com.zencas.edhr.compliance.controller.AuditActionFilterPostgresTest.xml",
+    "bytes": 531218,
+    "sha256": "003d0665f0280fd62155b0bf6e8a9d10776c16951210269c33d3045d632552e0"
+  },
+  {
+    "path": "final/TEST-com.zencas.edhr.compliance.controller.AuditActionWhitespacePostgresTest.xml",
+    "bytes": 92225,
+    "sha256": "701d969eeaacff1b080d0097df80a4826ff851796d4c46eb1eafbadb911f91bb"
+  },
+  {
+    "path": "final/TEST-com.zencas.edhr.compliance.controller.AuditControllerTest.xml",
+    "bytes": 33858,
+    "sha256": "a935f3e9004465bdb2c19aae18543f82295c2536fb028f3a39896ee07b935d6c"
+  },
+  {
+    "path": "final/TEST-com.zencas.edhr.compliance.controller.AuditPaginationBoundaryTest.xml",
+    "bytes": 33918,
+    "sha256": "45dc020d77abf61bafceeeb2cb1032a268a6899d8a0dc3223fd4a6266b6c6661"
+  },
+  {
+    "path": "final/TEST-com.zencas.edhr.compliance.controller.AuditReadObservationPostgresTest.xml",
+    "bytes": 21999714,
+    "sha256": "15452e77b89878ea7dcdbcd3cb1b9eb878c1ebccc80f3377614167467bf6c75a"
+  },
+  {
+    "path": "final/TEST-com.zencas.edhr.compliance.entity.AuditEventHashTest.xml",
+    "bytes": 40209,
+    "sha256": "2f91427a4a79ddc54e48ba115449d2a8003968b0f69e1ff1a9856bd193d8c4a2"
+  },
+  {
+    "path": "final/TEST-com.zencas.edhr.compliance.entity.AuditEventTest.xml",
+    "bytes": 33011,
+    "sha256": "d3cbfe92158f985a0f7a13920d943fdebb3ee9e7ac942363851ddf8455bfe976"
+  },
+  {
+    "path": "final/TEST-com.zencas.edhr.production.service.DhrAuditReadTest.xml",
+    "bytes": 33361,
+    "sha256": "2210da15d58ae5cf221ec73fe84e92acfb103c8171f872aea29fd6df82cdb827"
+  },
+  {
+    "path": "final/cleanup.json",
+    "bytes": 81,
+    "sha256": "8f67bd99b42f7ba158598e5e87685255a977fd0db1b1de19aae41ffc16f96760"
+  },
+  {
+    "path": "final/maven.log",
+    "bytes": 22520374,
+    "sha256": "bf953f9271d92c69202f031c6d7813a6cbac8707549f7a4245675508ca047f69"
+  },
+  {
+    "path": "final/observations/action_all.json",
+    "bytes": 2371,
+    "sha256": "15485ac93be555a23395b64a0d7205c76160ee75a39eb66ce91bb48636608bd4"
+  },
+  {
+    "path": "final/observations/action_cancel.json",
+    "bytes": 2338,
+    "sha256": "231adc3a309ed38c4685b2ef9f0b726a98d8a1747f0b09f865f500f14b86dfef"
+  },
+  {
+    "path": "final/observations/action_create.json",
+    "bytes": 2345,
+    "sha256": "4f7461f1cb07bbad890a502b7db688594b3012dc6a728adf912226f5e2218dde"
+  },
+  {
+    "path": "final/observations/action_lower.json",
+    "bytes": 2355,
+    "sha256": "185cbcc4aa4b061c5ddf9cf592d5ccdb620b7330a69605859c9614e67b89b51d"
+  },
+  {
+    "path": "final/observations/action_object.json",
+    "bytes": 2341,
+    "sha256": "5467bcf6bf90fad3fb18138dad8f31aaa0cc0b0bfc8c3fc42bf18504b2d4ea76"
+  },
+  {
+    "path": "final/observations/action_update.json",
+    "bytes": 2356,
+    "sha256": "329d0164b536bd3bd999c55fd8c1d83896ba43f6a81cf63ad35c4fe864d3258e"
+  },
+  {
+    "path": "final/observations/action_user_cancel.json",
+    "bytes": 2343,
+    "sha256": "40820d0b7558d38e1613851381d256e7cebb22668a987f974c730060b20c94ea"
+  },
+  {
+    "path": "final/observations/action_user_update.json",
+    "bytes": 2343,
+    "sha256": "fcf7e93ecae885a5b54ac034507352e8eae7fba7520ba9380dd0c015720297a0"
+  },
+  {
+    "path": "final/observations/action_work.json",
+    "bytes": 2339,
+    "sha256": "67d0ca5757dfefad9de92427907db3a5b1e9d3ad1ab36056a76b7be54d0bf026"
+  },
+  {
+    "path": "final/observations/blank_100.json",
+    "bytes": 2422,
+    "sha256": "da4e2bdfeb43752f327300187949189993e4a876bc7cf3204bb52c904dc17088"
+  },
+  {
+    "path": "final/observations/blank_1000.json",
+    "bytes": 2449,
+    "sha256": "79cc5a4c2b2bf21e1b5f7a0ca0c02418fd64e56c01534fa552a4c755dd7e0076"
+  },
+  {
+    "path": "final/observations/blank_5000.json",
+    "bytes": 2470,
+    "sha256": "519662d8170eb7e22ccf182d6450e8c36834e59f0bd45d4c29a14b19fc0aac25"
+  },
+  {
+    "path": "final/observations/distinct_100.json",
+    "bytes": 2425,
+    "sha256": "0d876811eb1cf410300fb90c5ec1b38d440dd96f8f787d4f155e8b27e5aa950d"
+  },
+  {
+    "path": "final/observations/distinct_1000.json",
+    "bytes": 2452,
+    "sha256": "bc9c3f6c5a5a7cbc947135c7fc72297d8cf8066c5bb334698f31a48c7a8983d7"
+  },
+  {
+    "path": "final/observations/distinct_5000.json",
+    "bytes": 2474,
+    "sha256": "33c4ee89c3abeaf8ba898d87cfa275a7ec03a471517aa809e5f1c5204bbb20a6"
+  },
+  {
+    "path": "final/observations/fallback_selective.json",
+    "bytes": 2359,
+    "sha256": "6c5e03c9c1b82c68c4d69fea649dec115f805adf8c12a114577f01e41f049057"
+  },
+  {
+    "path": "final/observations/index_boundary.json",
+    "bytes": 6712,
+    "sha256": "6ffa2c8f098898f23d0381ec6b6eff40ba5f604f38dad4b5938858be783bc902"
+  },
+  {
+    "path": "final/observations/missing_100.json",
+    "bytes": 2424,
+    "sha256": "0aca8a55b52e2cbe8c874b73d6f7a4ce0ab6e35dc0f742970beb1d1dceaf81b6"
+  },
+  {
+    "path": "final/observations/missing_1000.json",
+    "bytes": 2451,
+    "sha256": "6e108829c8cfb55f581a6498ae6e49268c340844d71fa66c79e4aa97b96155e6"
+  },
+  {
+    "path": "final/observations/missing_5000.json",
+    "bytes": 2472,
+    "sha256": "042bb48f428894bedc629d9a5ed25ffb760b8ad675f3c3adadf30ad2b01d8f9b"
+  },
+  {
+    "path": "final/observations/profile.json",
+    "bytes": 2728,
+    "sha256": "16b4063fce43ba029654f195aba42184f6ba63cd2f4c2741af1dd61b1c1efff3"
+  },
+  {
+    "path": "final/observations/shared_100.json",
+    "bytes": 2423,
+    "sha256": "1c14d0f759636b77b5c261ac6414ddb5e1a8135bfe47af87fd6cff8d8b1ea1dc"
+  },
+  {
+    "path": "final/observations/shared_1000.json",
+    "bytes": 2450,
+    "sha256": "cfaf65d02a710693da6962e95a14dd6768903518665577cb166e8349f6f34ab6"
+  },
+  {
+    "path": "final/observations/shared_5000.json",
+    "bytes": 2472,
+    "sha256": "847ae2cd42bd2da6a24d555e285d5e346e5c6487fcc785be98f35b03063b42ae"
+  },
+  {
+    "path": "final/observations/wide_1024.json",
+    "bytes": 2449,
+    "sha256": "a6074cf757de1a7d17f3e1cce1b487993fd3809ff7e8d8b3175e0a2b1c60c9f7"
+  },
+  {
+    "path": "final/observations/wide_131072.json",
+    "bytes": 2452,
+    "sha256": "b0a411e74fba7effbf3ebd9a1603c40ab7b92f4f164083904f40806d6d66dc2d"
+  },
+  {
+    "path": "final/postgres.log",
+    "bytes": 36287104,
+    "sha256": "86d6f6896ab6ed857bda529de4c2bac868f47eb32ab60fda7eb3f1d26947f703"
+  },
+  {
+    "path": "final/run.json",
+    "bytes": 5949,
+    "sha256": "3816bb42c7f5b28beb3525ea8531b085eaaf3fc32cf0e147794d4675bdb67f54"
+  },
+  {
+    "path": "final/source/AGENTS.md",
+    "bytes": 25065,
+    "sha256": "13dc7cdacea0b1bb0aef2abb268781f9c69584acd4879b204d2b7fd81a2927fc"
+  },
+  {
+    "path": "final/source/codeplzreadme.md",
+    "bytes": 3035,
+    "sha256": "7a1be8efffec596b034335058dca2860346d256622f899c8dac97c5172dd6df2"
+  },
+  {
+    "path": "final/source/docs/agents/agent-handoff-contract.md",
+    "bytes": 31233,
+    "sha256": "3439a35dd1baa77ac723f1b5afa237a338d56e31386f06b02b4aacfd754e3a12"
+  },
+  {
+    "path": "final/source/docs/agents/quality-verifier.md",
+    "bytes": 7519,
+    "sha256": "6b3de9323924fb4ba5ae87be76c5136d28e754810c46b22b8e3d1cdd6c2f826f"
+  },
+  {
+    "path": "final/source/docs/development/branch-review-20261106-audit-read/decision-package.yaml",
+    "bytes": 6446,
+    "sha256": "7eda939fef6a3cab44047615f36a07a8ca2aa050c39023a79ef5f03ad3bb0d1a"
+  },
+  {
+    "path": "final/source/gmp-platform/backend/src/main/java/com/zencas/edhr/common/config/SecurityConfig.java",
+    "bytes": 3527,
+    "sha256": "a8f3c83746619d893e5f1a1e41ae6d3430917a2da8eca97201d646fcd437124c"
+  },
+  {
+    "path": "final/source/gmp-platform/backend/src/main/java/com/zencas/edhr/common/dto/PageResult.java",
+    "bytes": 1195,
+    "sha256": "ec374abfb27c655bf55f21900e837c8d635a33373e210a8d4b6cfffa9cdf2b62"
+  },
+  {
+    "path": "final/source/gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/controller/AuditController.java",
+    "bytes": 14944,
+    "sha256": "03af0d9813beac3d1d8c8d612864a4c18a892506c5f6b5ce3b6556048818b3c3"
+  },
+  {
+    "path": "final/source/gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/entity/AuditEvent.java",
+    "bytes": 4697,
+    "sha256": "34a236e63d78eed77cfd67094b4ced89f99614fa09b206546189e7e2907480aa"
+  },
+  {
+    "path": "final/source/gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/entity/AuditEventHash.java",
+    "bytes": 7419,
+    "sha256": "9ed9137b4d216699fc9f3374edbab6cbe8ae8b4862e9b7b2bcf562511b293ce2"
+  },
+  {
+    "path": "final/source/gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/repository/AuditEventRepository.java",
+    "bytes": 2774,
+    "sha256": "7fdfaf6ed38a704d420c206555e683fbba0aefc1fbf0cc1f8e2cde99a3bb2982"
+  },
+  {
+    "path": "final/source/gmp-platform/backend/src/main/java/com/zencas/edhr/identity/repository/UserAccountRepository.java",
+    "bytes": 1096,
+    "sha256": "948fb479ccf3c86f9f939f9b72de6b5cdeaef9faccbd4b206c9ebe73901280f9"
+  },
+  {
+    "path": "final/source/gmp-platform/backend/src/test/java/com/zencas/edhr/common/audit/AuditAspectTest.java",
+    "bytes": 4214,
+    "sha256": "dfad0cbf514f5c207543d4c598b5997d69c8dafe08ff375ba6e3133306313adb"
+  },
+  {
+    "path": "final/source/gmp-platform/backend/src/test/java/com/zencas/edhr/compliance/controller/AuditActionFilterPostgresTest.java",
+    "bytes": 2513,
+    "sha256": "391d147ad1e64a47ef7376d6984cdbcaaf6f96f75274b1d87da6ccf5315c7a71"
+  },
+  {
+    "path": "final/source/gmp-platform/backend/src/test/java/com/zencas/edhr/compliance/controller/AuditActionWhitespacePostgresTest.java",
+    "bytes": 1720,
+    "sha256": "099829b388fddaa3f4dfe7ad2ac6933765290655133c0f215bb02e7022d3f7ec"
+  },
+  {
+    "path": "final/source/gmp-platform/backend/src/test/java/com/zencas/edhr/compliance/controller/AuditControllerTest.java",
+    "bytes": 19535,
+    "sha256": "a59ba7015c4b597df682667dddf39817d7001e31619b5a02fdce2cae2c578d9c"
+  },
+  {
+    "path": "final/source/gmp-platform/backend/src/test/java/com/zencas/edhr/compliance/controller/AuditPaginationBoundaryTest.java",
+    "bytes": 2933,
+    "sha256": "c5cd39fd4a074d666a4fe583ea1f46bedb090735208138be592f23c72969856d"
+  },
+  {
+    "path": "final/source/gmp-platform/backend/src/test/java/com/zencas/edhr/compliance/controller/AuditReadObservationPostgresTest.java",
+    "bytes": 12288,
+    "sha256": "f05f8b7755fe5b2c447f488d7dda746c74901d3c85536b586361dae92ea83660"
+  },
+  {
+    "path": "final/source/gmp-platform/backend/src/test/java/com/zencas/edhr/compliance/entity/AuditEventHashTest.java",
+    "bytes": 9525,
+    "sha256": "6621e06bd4eb190062e363dccbfac17092547844072dea12206b9242c748e731"
+  },
+  {
+    "path": "final/source/gmp-platform/backend/src/test/java/com/zencas/edhr/compliance/entity/AuditEventTest.java",
+    "bytes": 1724,
+    "sha256": "a9dee9a5c3a7b0fa04a2cee5044b1ded733beb9b10755944d49bcf2862cbd1aa"
+  },
+  {
+    "path": "final/source/gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrAuditReadTest.java",
+    "bytes": 5264,
+    "sha256": "89d899ed54416d0132949859fd7f05e3f7678f4ef643086da54aebfdb00bc48b"
+  },
+  {
+    "path": "final/test-summary.json",
+    "bytes": 1651,
+    "sha256": "e79727044beed70254afdf836be0b6afc2f9bea94b7d7fe5ff6266b09db3a23c"
+  },
+  {
+    "path": "knowledge/TEST-com.zencas.edhr.knowledge.BusinessKnowledgeModelTest.xml",
+    "bytes": 20417,
+    "sha256": "2b82d1016615ada2c5d9b56f72ccb9ac33d22e34ac708422f2ccd2ac63c246d3"
+  },
+  {
+    "path": "knowledge/maven.log",
+    "bytes": 2112,
+    "sha256": "9e5170d60641f0119ddbd65cbada2ceefe00ed2cb905f644a6bc921301a32ddb"
+  },
+  {
+    "path": "knowledge/test-summary.json",
+    "bytes": 66,
+    "sha256": "0357e2f0eddc2c11e6d014540c0ff131715c903d922f2e96b8c18626f776dc09"
+  },
+  {
+    "path": "run.py",
+    "bytes": 5059,
+    "sha256": "cf9dc6b0a2d243327edee519ab482fb27209c41ef8c65b9b9e90d3033bfb0671"
+  },
+  {
+    "path": "unit_negative/TEST-com.zencas.edhr.compliance.controller.AuditPaginationBoundaryTest.xml",
+    "bytes": 131587,
+    "sha256": "f77c6d0217142abaeeeb36fb41ab95c947e2bc74591dabe842deb0f962cf07a7"
+  },
+  {
+    "path": "unit_negative/maven.log",
+    "bytes": 101224,
+    "sha256": "a96e6ddedac16d7bab92b5bff10910e6e903ccc4c8d09618d2fed93b7a21bc10"
+  },
+  {
+    "path": "unit_negative/run.json",
+    "bytes": 3595,
+    "sha256": "bb0cec15cbbcf76bd6ff58047119f472961b2483770fc399af9c8ffba7f098d7"
+  },
+  {
+    "path": "unit_negative/source/AGENTS.md",
+    "bytes": 25065,
+    "sha256": "13dc7cdacea0b1bb0aef2abb268781f9c69584acd4879b204d2b7fd81a2927fc"
+  },
+  {
+    "path": "unit_negative/source/codeplzreadme.md",
+    "bytes": 3035,
+    "sha256": "7a1be8efffec596b034335058dca2860346d256622f899c8dac97c5172dd6df2"
+  },
+  {
+    "path": "unit_negative/source/docs/agents/agent-handoff-contract.md",
+    "bytes": 31233,
+    "sha256": "3439a35dd1baa77ac723f1b5afa237a338d56e31386f06b02b4aacfd754e3a12"
+  },
+  {
+    "path": "unit_negative/source/docs/agents/quality-verifier.md",
+    "bytes": 7519,
+    "sha256": "6b3de9323924fb4ba5ae87be76c5136d28e754810c46b22b8e3d1cdd6c2f826f"
+  },
+  {
+    "path": "unit_negative/source/docs/development/branch-review-20261106-audit-read/decision-package.yaml",
+    "bytes": 5369,
+    "sha256": "f28e6b19a9a585a1edb025206f58f949b2369c0fcb26245eb5b158777f4c54b6"
+  },
+  {
+    "path": "unit_negative/source/gmp-platform/backend/src/main/java/com/zencas/edhr/common/config/SecurityConfig.java",
+    "bytes": 3527,
+    "sha256": "a8f3c83746619d893e5f1a1e41ae6d3430917a2da8eca97201d646fcd437124c"
+  },
+  {
+    "path": "unit_negative/source/gmp-platform/backend/src/main/java/com/zencas/edhr/common/dto/PageResult.java",
+    "bytes": 1195,
+    "sha256": "ec374abfb27c655bf55f21900e837c8d635a33373e210a8d4b6cfffa9cdf2b62"
+  },
+  {
+    "path": "unit_negative/source/gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/controller/AuditController.java",
+    "bytes": 14918,
+    "sha256": "8a1f7b0c24515ef93b7c817512574be3470b312c947579d9c9f3cc44bca70b5e"
+  },
+  {
+    "path": "unit_negative/source/gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/entity/AuditEvent.java",
+    "bytes": 4697,
+    "sha256": "34a236e63d78eed77cfd67094b4ced89f99614fa09b206546189e7e2907480aa"
+  },
+  {
+    "path": "unit_negative/source/gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/entity/AuditEventHash.java",
+    "bytes": 7419,
+    "sha256": "9ed9137b4d216699fc9f3374edbab6cbe8ae8b4862e9b7b2bcf562511b293ce2"
+  },
+  {
+    "path": "unit_negative/source/gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/repository/AuditEventRepository.java",
+    "bytes": 2175,
+    "sha256": "1e0006a97a4bb745de780902b689407307d1eab7f9aabf168762dc9f806625bf"
+  },
+  {
+    "path": "unit_negative/source/gmp-platform/backend/src/main/java/com/zencas/edhr/identity/repository/UserAccountRepository.java",
+    "bytes": 1096,
+    "sha256": "948fb479ccf3c86f9f939f9b72de6b5cdeaef9faccbd4b206c9ebe73901280f9"
+  },
+  {
+    "path": "unit_negative/source/gmp-platform/backend/src/test/java/com/zencas/edhr/compliance/controller/AuditPaginationBoundaryTest.java",
+    "bytes": 2933,
+    "sha256": "c5cd39fd4a074d666a4fe583ea1f46bedb090735208138be592f23c72969856d"
+  },
+  {
+    "path": "unit_negative/test-summary.json",
+    "bytes": 313,
+    "sha256": "e712623b7e7dd4cc17b2026328207bfab39dc0dd6745d82da8d0e23f42ca13c8"
+  }
+]

@@ -1,0 +1,70 @@
+decisionPackage:
+  id: DEC-PACKAGE-AUDIT-PERSONNEL-LIST-COUNT-20261105
+  scope: PR58合入后的持续全审；人员目标目录只取有界内容，移除未使用总数查询
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: 00f864cdaf0796c9410173c835a477c7a3068d06
+    targetBranch: edhr-dev
+    targetCommit: 00f864cdaf0796c9410173c835a477c7a3068d06
+    contractReadCommit: 90cca1c08155a01cb0a51efe6d7fc31f19eda777
+    uncommittedContractPaths: []
+  summary: 用户确认PR58已合入并继续整体审计，整树同90cca，无外部增量；沿已讨论且已取证的独立目录COUNT队列推进。调用方只使用前100内容，当前满100时额外COUNT。使用现有Spring Data3.3有界列表API，保持全部既有Specification、排序、100限制和返回结构，无新业务取舍或政策。
+  confirmed: {concepts: [], relationships: [], rules: [], executionContracts: []}
+  inferred:
+    - id: inference.personnel-list-without-unused-total
+      statement: 用JpaSpecificationExecutor.findBy的sortBy/limit(100)/all直接读取列表，移除Page/getContent未消费的总数，不在Java全量截断。
+      rationale: 既有PERF-TENANT-DIRECTORY-COUNT-20261104实际证据、用户继续已列队审计及现有全部调用方返回List；不冒称用户新确认100为业务政策。
+      relatedIds: [DEC-0081-01, DEC-0092-02, DEC-0093-02, DEC-0093-04]
+  unresolved: []
+  replacementScopes: []
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - area: identity-personnel-target-search
+        change: 使用相同where/排序和数据库上限100直接返回List，不执行未使用COUNT。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/identity/service/TenantTransferTargets.java]
+    transitiveImpacts:
+      - area: domain-target-consumers
+        change: 通用/普通表单同租户委托、记录控制原候选与申请人回避、DHR/普通表单管理员双权限目标读取均复用同一目录，须回归但不改其条件。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/WorkflowResponsibilityService.java, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormWorkflowOperations.java]
+    potentialImpacts:
+      - area: fluent-query-framework
+        concern: 先核现有3.3.0 API实际支持SQL setMaxResults，不能用Java stream.limit隐藏全量加载；实体加载及事务边界按真实PG回归。
+        evidenceReferences: []
+    unaffectedAreas:
+      - area: business-runtime-and-UI
+        change: 租户/ACTIVE/未锁定、关键词、当前处理人排除、双权限AND及领域scope全部保持；写入require/eligible/签名/状态/锁/事务/审计/冻结、PR58姓名批量读取、前端、迁移及索引不改。
+        evidenceReferences: []
+    compatibilityAndMigration: []
+    snapshotImpacts:
+      - area: original-responsibility
+        change: 只读，不重算候选或恢复历史；COUNT不参与任何快照或当前责任解释。
+        evidenceReferences: []
+    auditImpacts:
+      - area: query-only
+        change: 不新增或变更业务审计/签署事件；原始旧源/新源SQL记录和回执分开保留。
+        evidenceReferences: []
+    permissionImpacts:
+      - area: unchanged-qualification
+        change: 完整Specification在SQL限量前组合，写入资格仍在提交时即时复核，不因去COUNT放宽人员集合。
+        evidenceReferences: []
+    testImpacts:
+      - scope: native-personnel-list
+        scenarios: [0/1/99/100/101/5000匹配人员单查询且无COUNT, 数据库有界读取, 同名120人按数字ID排序取前100, 停用/锁定/跨租户/当前人前置排除, 原双权限/原候选/姓名/签名/审计相邻回归]
+        evidenceReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/service/WorkflowReadObservationPostgresTest.java]
+    evidenceGaps: [非生产延迟/吞吐/全分布EXPLAIN或完整HTTP/JWT/浏览器签署链, 巨大候选参数/文本ID计划/全账号矩阵仍另审, 931知识候选/86 UI及W2-W7高风险/A12/其他性能/暂停范围保持]
+  extensionStrategy:
+    selectedPaths: [product-core]
+    rationale: 使用已安装Spring Data3.3原有查询能力，不增加仓储框架、缓存、配置或依赖。
+    ownershipBoundaries:
+      - owner: identity-personnel-directory
+        responsibility: 保持有界目录读取及既有资格；领域消费者保留其授权、原候选和最终写入校验。
+  affectedFiles:
+    - {path: gmp-platform/backend/src/main/java/com/zencas/edhr/identity/service/TenantTransferTargets.java, changeType: update, reason: 直接有界读取列表免COUNT}
+    - {path: gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/service/WorkflowReadObservationPostgresTest.java, changeType: update, reason: 增加无COUNT/单查询/数据库限量预算及同名与资格回归}
+  acceptanceScenarios:
+    - id: scenario.bounded-personnel-content-without-total
+      given: 前置有无资格人员，同名可用人员120及最多5000匹配人员
+      when: 调用原目录及其领域消费者
+      then: 结果/顺序/资格/100上限与原规则一致，SQL在数据库限量且只查询一次，无额外COUNT，原写入保护保持
+      evidenceRequirements: [旧源最终同字节7例负控, 主侧152原生回归, 有限本体边界核对, 全新独立最终质量及服务器SQL复测]

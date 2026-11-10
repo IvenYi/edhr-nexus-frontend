@@ -1,0 +1,24 @@
+{
+  "observedAt": "2026-11-07T23:15:43.446623+08:00",
+  "headBeforeMetadata": "fb18a959f020b64f456ef1b602f4a9977eb9201c",
+  "actualRemoteRefs": {
+    "refs/heads/audit/edhr-dev-family-membership-transfer-20261107": "fb18a959f020b64f456ef1b602f4a9977eb9201c",
+    "refs/heads/edhr-dev": "04db7e838ec5e194355ff954ff173a02205e0fd6"
+  },
+  "pullRequest": {
+    "baseRefName": "edhr-dev",
+    "headRefName": "audit/edhr-dev-family-membership-transfer-20261107",
+    "headRefOid": "fb18a959f020b64f456ef1b602f4a9977eb9201c",
+    "mergeStateStatus": "CLEAN",
+    "mergeable": "MERGEABLE",
+    "number": 73,
+    "state": "OPEN",
+    "url": "https://github.com/IvenYi/edhr-nexus-frontend/pull/73"
+  },
+  "protectedInputsVerified": 25,
+  "workingTreeBeforeMetadata": "clean",
+  "runtimeTestedCommit": "1709dbc4d3d28d8721ff001b69ad934a6de54d18",
+  "qualityReviewedImportOnlyCandidate": "b2b0df85572f634925d9e3b1ac4a91c0988bb86c",
+  "postMetadataRequirement": "After L0 metadata commit/push recheck local HEAD=actual remote branch=PR head, clean tree and25 protected inputs; this document cannot self-record its own future commit hash",
+  "noMergeDeployRestoreOrCiCalls": true
+}

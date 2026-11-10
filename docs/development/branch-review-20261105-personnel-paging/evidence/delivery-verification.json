@@ -1,0 +1,47 @@
+{
+  "observedAtUtc": "2026-11-05T09:40:27.646610+00:00",
+  "observationKind": "GitHub pull metadata and git remote refs only; no CI/Actions query",
+  "pullRequest": {
+    "base": {
+      "ref": "edhr-dev",
+      "sha": "f8638f5400356c4820d59bf26be50a79b453ca12"
+    },
+    "draft": false,
+    "head": {
+      "ref": "audit/edhr-dev-personnel-paging-20261105",
+      "sha": "689e42c09128f2e6fe5c7066ff8ccf4a69de95d7"
+    },
+    "html_url": "https://github.com/IvenYi/edhr-nexus-frontend/pull/61",
+    "mergeable": true,
+    "mergeable_state": "clean",
+    "number": 61,
+    "state": "open"
+  },
+  "localHeadAtObservation": "689e42c09128f2e6fe5c7066ff8ccf4a69de95d7",
+  "remoteRefsAtObservation": {
+    "refs/heads/audit/edhr-dev-personnel-paging-20261105": "689e42c09128f2e6fe5c7066ff8ccf4a69de95d7",
+    "refs/heads/edhr-dev": "f8638f5400356c4820d59bf26be50a79b453ca12"
+  },
+  "testedCodeCommit": "b81b67ed7602740cda7b43cadcd3ce7bf8ba928a",
+  "ontologyResult": "updated",
+  "qualityResult": "passed",
+  "requiredChecksPassed": 16,
+  "testedCandidatePathDelta": [
+    "M\tdocs/development/branch-review-20261015/NEXT.md",
+    "A\tdocs/development/branch-review-20261105-personnel-paging/acceptance.json",
+    "A\tdocs/development/branch-review-20261105-personnel-paging/evidence/final-independent.tar.gz",
+    "A\tdocs/development/branch-review-20261105-personnel-paging/evidence/tested-candidate-preservation.json",
+    "A\tdocs/development/branch-review-20261105-personnel-paging/final-quality-manifest.json",
+    "A\tdocs/development/branch-review-20261105-personnel-paging/quality-result.yaml",
+    "A\tdocs/development/branch-review-20261105-personnel-paging/scope-review.md"
+  ],
+  "existingCandidatePathsModified": [
+    "docs/development/branch-review-20261015/NEXT.md"
+  ],
+  "allOtherExistingCandidatePathsUnchanged": true,
+  "globalPersonnelResultCap": false,
+  "sameReleaseFrontendBackendRequired": true,
+  "postObservationWork": "This new L0 record and NEXT update receive a separate skip-ci commit; final local/remote/PR head equality checked after push. Observed head intentionally precedes that registration.",
+  "automaticMergeDeployRestoreOrCi": false,
+  "recommendation": "Manual merge PR61 finite authorized personnel fixes; index and whole-audit residuals remain"
+}

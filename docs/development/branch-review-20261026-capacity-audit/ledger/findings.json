@@ -3731,17 +3731,42 @@
       "gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/entity/AuditEvent.java"
     ],
     "description": "AuditEvent在PrePersist按原JSON/时间字符串封存hash，PostgreSQL JSONB/时间往返归一化后computeSnapshotHash不能还原原hash；基线a828两条原生PG探针均失败。",
-    "disposition": "preexisting-medium-open",
+    "disposition": "new-auto-events-resolved-legacy-history-gap-retained",
     "resolution": {
-      "fixCommits": [],
-      "testedCommits": [],
-      "pullRequests": [],
-      "mergeCommits": []
+      "fixCommits": [
+        "1c077d2877f760156ab0072f557990c45c1df4b0",
+        "f640dc75e5e588da9dd60579157092bfcd0e8148",
+        "1c2cbb86b119f593925e5a147505a7ed97dd7fa2"
+      ],
+      "testedCommits": [
+        "1c2cbb86b119f593925e5a147505a7ed97dd7fa2"
+      ],
+      "pullRequests": [67],
+      "mergeCommits": [],
+      "currentVerification": {
+        "scope": "New automatically sealed audit-event-v2 events only; actual persisted JSON/time/text values, original18fields, nullable version without backfill.",
+        "newAutomaticEventRoundtrip": "verified-resolved",
+        "legacyHistory": "retained original hashes; original JSON strings/nanoseconds not reliably recoverable, not resealed or certified",
+        "mainRegression": 206,
+        "freshIndependentRegression": 206,
+        "knowledgeChecks": 89,
+        "finalQuality": "passed",
+        "resolvedIndependentFindings": ["QF-W5-UTF16-001", "QF-W5-VARCHAR-002", "QF-W5-JSON-UTF16-003"],
+        "priorFailedCandidatesRetained": ["1c077d2877f760156ab0072f557990c45c1df4b0", "f640dc75e5e588da9dd60579157092bfcd0e8148"],
+        "evidencePaths": [
+          "docs/development/branch-review-20261106-audit-hash/main-validation.json",
+          "docs/development/branch-review-20261106-audit-hash/quality-result.yaml",
+          "docs/development/branch-review-20261106-audit-hash/independent-review.md",
+          "docs/development/branch-review-20261106-audit-hash/pre-pr-drift-review.md"
+        ],
+        "qualification": "Current acceptance is separate from original import flags below; no backfilled historical audit or overall W5/full-audit completion. No merge/deployment/history rewrite."
+      }
     },
     "limitations": [
       "Existing application AuditEvent read/export does not rehash; distinct DHR/signature/file hash checks must not be conflated.",
       "Not introduced or repaired by this delegation/write-guard slice; no new hash algorithm or historical audit rewrite authorized.",
-      "Future separate W5 review must define stable canonical payload/version and historical compatibility; current stored-hash/atomicity tests do not certify round-trip rehash."
+      "Future separate W5 review must define stable canonical payload/version and historical compatibility; current stored-hash/atomicity tests do not certify round-trip rehash.",
+      "The preceding limitations retain the original write-guard slice's historical scope. The 2026-11-06 separate new-event repair is now independently verified at1c2cbb86; legacy replay limitations and incomplete/cropped offline ZIP evidence remain, with no old hash rewrite or new read/download policy."
     ],
     "evidence": [
       {

@@ -1,0 +1,156 @@
+qualityResult:
+  result: passed
+  baseCommit: e69a8f3d97b34fea8737947c780b047bb0310c64
+  headCommit: 9d4416c3f74a3a0e79da53670c6cd13b132bff1b
+  contractBaseline:
+    sourceCommit: 9d4416c3f74a3a0e79da53670c6cd13b132bff1b
+    targetBranch: edhr-dev
+    targetCommit: e69a8f3d97b34fea8737947c780b047bb0310c64
+    contractReadCommit: 9d4416c3f74a3a0e79da53670c6cd13b132bff1b
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: clean
+    includedPaths: []
+    excludedPaths: []
+    untrackedPaths: []
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+    - id: qa.baseline-contract-independence
+      required: true
+      category: documentation
+      description: 全新未参与修复实例，独立detached候选及fetch/契约核对
+      method: command
+      command: git fetch origin edhr-dev; git rev-parse HEAD origin/edhr-dev; git diff base head -- AGENTS.md codeplzreadme.md docs/agents
+      outcome: passed
+      evidence: [baseline.json, context-manifest.json, final/run.json, final-state.json]
+    - id: qa.minimal-protected-scope
+      required: true
+      category: regression
+      description: 仅两处产品文件；schema/历史/v2摘要/前端/契约/知识不改
+      method: inspection
+      command: python inspect.py
+      outcome: passed
+      evidence: [inspection.json, context/]
+    - id: qa.normative-action-policy
+      required: true
+      category: ontology
+      description: SQL筛选落实既有DEC-0013-03及生产动作投影，不新增业务政策
+      method: inspection
+      command: compare existing normative knowledge, Java display projection and repository CASE
+      outcome: passed
+      evidence: [context/docs/knowledge/decisions/DEC-0013-production-work-order-lifecycle-and-audit-projection.yaml, context/docs/knowledge/rules/production.yaml, source-review-notes.md]
+    - id: qa.pagination-six
+      required: true
+      category: unit
+      description: 普通、末页与最大正数page/size中间算术不溢出，total/page/size保留
+      method: automated-test
+      command: EDHR_AUDIT_ROOT=/tmp/edhr-audit-read-qa-worktree-20261106 EDHR_AUDIT_RAW=/tmp/edhr-audit-read-qa-20261106 python3 run.py final
+      outcome: passed
+      evidence: [final/TEST-com.zencas.edhr.compliance.controller.AuditPaginationBoundaryTest.xml, final/run.json]
+    - id: qa.native-action-nine
+      required: true
+      category: integration
+      description: 实际PG生产CREATE/UPDATE与非生产原分类、实体过滤及原action/hash保持
+      method: automated-test
+      command: same independent final runner, AuditActionFilterPostgresTest
+      outcome: passed
+      evidence: [final/TEST-com.zencas.edhr.compliance.controller.AuditActionFilterPostgresTest.xml, final/observations/action_update.json, final/postgres.log]
+    - id: qa.native-whitespace-seventeen
+      required: true
+      category: integration
+      description: 两种既有Java trim边界的SQL筛选与未改显示投影oracle等价
+      method: automated-test
+      command: same independent final runner, AuditActionWhitespacePostgresTest
+      outcome: passed
+      evidence: [final/TEST-com.zencas.edhr.compliance.controller.AuditActionWhitespacePostgresTest.xml]
+    - id: qa.native-read-seventeen
+      required: true
+      category: integration
+      description: 共享/不同/缺失/空人员、宽JSON、派生筛选、个人目标账户、索引代表性边界
+      method: automated-test
+      command: same independent final runner, AuditReadObservationPostgresTest
+      outcome: passed
+      evidence: [final/TEST-com.zencas.edhr.compliance.controller.AuditReadObservationPostgresTest.xml, final/observations/profile.json, final/observations/fallback_selective.json]
+    - id: qa.adjacent-regression-sixty-seven
+      required: true
+      category: regression
+      description: 原controller10/hash48/event2/aspect3/DHR读取4项相邻回归
+      method: automated-test
+      command: same independent final runner, five existing adjacent test classes
+      outcome: passed
+      evidence: [final/test-summary.json, final/maven.log]
+    - id: qa.sql-execute-reconciliation
+      required: true
+      category: database
+      description: 独立25具名观察及27461业务SELECT逐SQL形状/次数核对；主包前后同核
+      method: command
+      command: python reconcile.py
+      outcome: passed
+      evidence: [reconciliation.json, final/postgres.log, final/observations/]
+    - id: qa.read-immutability
+      required: true
+      category: audit
+      description: 测量区无tagged DML/Hibernate写入，动作测试原事件字段与hash前后相同
+      method: automated-test
+      command: actual PG action fixture comparisons plus observer reconciliation
+      outcome: passed
+      evidence: [reconciliation.json, final/TEST-com.zencas.edhr.compliance.controller.AuditActionFilterPostgresTest.xml]
+    - id: qa.index-and-resource-cleanup
+      required: true
+      category: database
+      description: 候选表达式索引仅隔离事务且已回滚，自有PG清理，不增生产索引
+      method: automated-test
+      command: same independent final runner; inspect actual rolled-back index and owned-container cleanup
+      outcome: passed
+      evidence: [final/observations/index_boundary.json, final/cleanup.json, final/postgres.log]
+    - id: qa.old-source-negative-controls
+      required: true
+      category: regression
+      description: 原分页3真失败、原动作6真失败且无错误/跳过，同字节测试在当前候选通过
+      method: command
+      command: python inspect.py
+      outcome: passed
+      evidence: [inspection.json, final/test-summary.json]
+    - id: qa.raw-evidence-integrity
+      required: true
+      category: documentation
+      description: 四归档共335原件的路径、字节数、SHA及外层checksum一致
+      method: command
+      command: python inspect.py
+      outcome: passed
+      evidence: [inspection.json]
+    - id: qa.knowledge-eighty-nine
+      required: true
+      category: ontology
+      description: 独立89知识校验通过，350知识文件与基线相同；不代表全盘语义通过
+      method: automated-test
+      command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f tools/knowledge-model/pom.xml test
+      outcome: passed
+      evidence: [knowledge/maven.log, knowledge/test-summary.json, knowledge-file-manifest.json]
+    - id: qa.boundaries-structure-a23
+      required: true
+      category: requirements
+      description: 现行权限/个人对象边界保持；具体拆分与索引提案、资源测量限制和A23无范围漂移
+      method: inspection
+      command: source inspection and compare current DP/reports with delivered product diff
+      outcome: passed
+      evidence: [source-review-notes.md, REVIEW.md, inspection.json, reconciliation.json]
+  findings: []
+  residualRisks:
+    - id: PERF-AUDIT-LIST-MATERIALIZATION-001
+      description: 旧风险仍open；20条页面面对5000条匹配日志仍5001 SELECT，全实体JSON和逐行姓名加载未优化。
+      impact: 审计随历史增长导致响应时间和分配增长，索引单独不能消除Java全载/N+1。
+      mitigation: 依用户实际选择推进本页批量姓名及等价数据库分页设计，未答不视授权，不设总数截断。
+    - id: gap.audit-global-read-policy
+      description: 全局和详情当前authenticated-only；完整对象读取政策尚缺证据，未执行真实JWT跨角色HTTP矩阵。
+      impact: 不能宣称本批完成全局权限审计或用菜单可见性证明后端授权。
+      mitigation: 在W3/W5权限审查补原政策/用户确认及角色矩阵，保留共享生产与个人入口语义。
+    - id: gap.audit-name-filter-policy
+      description: 当前显示优先现存displayName，姓名筛选仍用历史operatorName，统一语义未确认。
+      impact: 不可把当前产品行为等同于新业务政策或擅自变更匹配范围。
+      mitigation: 后续设计先核现行依据，批量复用仍保留当前显示/筛选及重复账户语义。
+    - id: gap.audit-runtime-and-whole-review
+      description: 本批未执行浏览器/全HTTP/生产并发或峰值内存；整体W2-W7及知识/UI/历史/A12/容量/UNKNOWN/A23余项保持。
+      impact: 116和89及有限本体记录不能代替全系统、整文件或整体审计完成。
+      mitigation: 按既定台账分批推进并增量核新提交，继续保留用户暂停项。
+  blockingConditions: []

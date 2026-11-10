@@ -1,0 +1,888 @@
+{
+  "events": [
+    {
+      "name": "lock_submit_false",
+      "selectStatements": 11,
+      "shapesMatch": true,
+      "shapes": [
+        {
+          "sql": "select production_object_id from dhr_instance where tenant_id=? and id=?",
+          "count": 1
+        },
+        {
+          "sql": "select id from production_object where tenant_id=? and id=? for update",
+          "count": 1
+        },
+        {
+          "sql": "select * from dhr_instance where tenant_id=? and id=? for update",
+          "count": 1
+        },
+        {
+          "sql": "select count(*) from record_control_request q join form_instance_record f on f.id=q.record_id and f.tenant_id=q.tenant_id join dhr_instance d on d.production_object_id=f.object_id and d.tenant_id=f.tenant_id where d.tenant_id='default' and d.id=? and q.status='in_review'",
+          "count": 1
+        },
+        {
+          "sql": "select * from dhr_summary_draft where tenant_id=? and dhr_instance_id=? for update",
+          "count": 1
+        },
+        {
+          "sql": "select *,(select p.status from production_object p where p.id=dhr_instance.production_object_id and p.tenant_id=dhr_instance.tenant_id) as production_status,case when status='early_terminated' and summary_status='not_started' and (select p.status from production_object p where p.id=dhr_instance.production_object_id and p.tenant_id=dhr_instance.tenant_id)='early_terminated' then 'terminated' when status='in_progress' and summary_status='not_started' and (select p.status from production_object p where p.id=dhr_instance.production_object_id and p.tenant_id=dhr_instance.tenant_id)='in_progress' then 'filling' when status='completed' and (select p.status from production_object p where p.id=dhr_instance.production_object_id and p.tenant_id=dhr_instance.tenant_id)='completed' and summary_status='not_started' then 'pending_summary' when status='completed' and (select p.status from production_object p where p.id=dhr_instance.production_object_id and p.tenant_id=dhr_instance.tenant_id)='completed' and summary_status='draft' then 'summarizing' when status='completed' and (select p.status from production_object p where p.id=dhr_instance.production_object_id and p.tenant_id=dhr_instance.tenant_id)='completed' and summary_status='pending_review' then 'pending_review' when status='completed' and (select p.status from production_object p where p.id=dhr_instance.production_object_id and p.tenant_id=dhr_instance.tenant_id)='completed' and summary_status='formalized' then 'finalized' else 'status_error' end as display_status,(select t.reason from dhr_termination t where t.dhr_instance_id=dhr_instance.id and t.tenant_id=dhr_instance.tenant_id) as termination_reason,(select t.terminated_at from dhr_termination t where t.dhr_instance_id=dhr_instance.id and t.tenant_id=dhr_instance.tenant_id) as termination_at,(select t.terminated_by from dhr_termination t where t.dhr_instance_id=dhr_instance.id and t.tenant_id=dhr_instance.tenant_id) as terminated_by,(select t.snapshot_json is not null from dhr_termination t where t.dhr_instance_id=dhr_instance.id and t.tenant_id=dhr_instance.tenant_id) as termination_snapshot_available from dhr_instance where tenant_id=? and id=?",
+          "count": 1
+        },
+        {
+          "sql": "select snapshot_json,state_json from production_execution where object_id=?",
+          "count": 2
+        },
+        {
+          "sql": "select id,instance_no,operation_id,operation_name,form_id,copy_id,template_id,version_id, template_code,template_name,template_version,snapshot_json,values_json,status,current_revision_id, created_by,created_at,updated_by,updated_at from form_instance_record where tenant_id=? and source_type='production_execution' and object_id=? order by updated_at,id",
+          "count": 1
+        },
+        {
+          "sql": "select overlay_directory_json,evidence_placement_json from dhr_summary_draft where tenant_id='default' and dhr_instance_id=?",
+          "count": 1
+        },
+        {
+          "sql": "select * from dhr_attachment where tenant_id='default' and dhr_instance_id=? and active=true order by linked_at,id",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "name": "lock_submit_true",
+      "selectStatements": 13,
+      "shapesMatch": true,
+      "shapes": [
+        {
+          "sql": "select production_object_id from dhr_instance where tenant_id=? and id=?",
+          "count": 1
+        },
+        {
+          "sql": "select id from production_object where tenant_id=? and id=? for update",
+          "count": 1
+        },
+        {
+          "sql": "select * from dhr_instance where tenant_id=? and id=? for update",
+          "count": 1
+        },
+        {
+          "sql": "select count(*) from record_control_request q join form_instance_record f on f.id=q.record_id and f.tenant_id=q.tenant_id join dhr_instance d on d.production_object_id=f.object_id and d.tenant_id=f.tenant_id where d.tenant_id='default' and d.id=? and q.status='in_review'",
+          "count": 1
+        },
+        {
+          "sql": "select * from dhr_summary_draft where tenant_id=? and dhr_instance_id=? for update",
+          "count": 1
+        },
+        {
+          "sql": "select *,(select p.status from production_object p where p.id=dhr_instance.production_object_id and p.tenant_id=dhr_instance.tenant_id) as production_status,case when status='early_terminated' and summary_status='not_started' and (select p.status from production_object p where p.id=dhr_instance.production_object_id and p.tenant_id=dhr_instance.tenant_id)='early_terminated' then 'terminated' when status='in_progress' and summary_status='not_started' and (select p.status from production_object p where p.id=dhr_instance.production_object_id and p.tenant_id=dhr_instance.tenant_id)='in_progress' then 'filling' when status='completed' and (select p.status from production_object p where p.id=dhr_instance.production_object_id and p.tenant_id=dhr_instance.tenant_id)='completed' and summary_status='not_started' then 'pending_summary' when status='completed' and (select p.status from production_object p where p.id=dhr_instance.production_object_id and p.tenant_id=dhr_instance.tenant_id)='completed' and summary_status='draft' then 'summarizing' when status='completed' and (select p.status from production_object p where p.id=dhr_instance.production_object_id and p.tenant_id=dhr_instance.tenant_id)='completed' and summary_status='pending_review' then 'pending_review' when status='completed' and (select p.status from production_object p where p.id=dhr_instance.production_object_id and p.tenant_id=dhr_instance.tenant_id)='completed' and summary_status='formalized' then 'finalized' else 'status_error' end as display_status,(select t.reason from dhr_termination t where t.dhr_instance_id=dhr_instance.id and t.tenant_id=dhr_instance.tenant_id) as termination_reason,(select t.terminated_at from dhr_termination t where t.dhr_instance_id=dhr_instance.id and t.tenant_id=dhr_instance.tenant_id) as termination_at,(select t.terminated_by from dhr_termination t where t.dhr_instance_id=dhr_instance.id and t.tenant_id=dhr_instance.tenant_id) as terminated_by,(select t.snapshot_json is not null from dhr_termination t where t.dhr_instance_id=dhr_instance.id and t.tenant_id=dhr_instance.tenant_id) as termination_snapshot_available from dhr_instance where tenant_id=? and id=?",
+          "count": 1
+        },
+        {
+          "sql": "select snapshot_json,state_json from production_execution where object_id=?",
+          "count": 2
+        },
+        {
+          "sql": "select id,instance_no,operation_id,operation_name,form_id,copy_id,template_id,version_id, template_code,template_name,template_version,snapshot_json,values_json,status,current_revision_id, created_by,created_at,updated_by,updated_at from form_instance_record where tenant_id=? and source_type='production_execution' and object_id=? order by updated_at,id",
+          "count": 1
+        },
+        {
+          "sql": "select overlay_directory_json,evidence_placement_json from dhr_summary_draft where tenant_id='default' and dhr_instance_id=?",
+          "count": 1
+        },
+        {
+          "sql": "select * from dhr_attachment where tenant_id='default' and dhr_instance_id=? and active=true order by linked_at,id",
+          "count": 1
+        },
+        {
+          "sql": "select coalesce(max(version_no),0)+1 from dhr_summary_version where tenant_id=? and dhr_instance_id=?",
+          "count": 1
+        },
+        {
+          "sql": "select ae1_0.id,ae1_0.action,ae1_0.content_after,ae1_0.content_before,ae1_0.created_at,ae1_0.data_summary,ae1_0.entity_id,ae1_0.entity_type,ae1_0.function_name,ae1_0.ip_address,ae1_0.menu_name,ae1_0.module_name,ae1_0.operator_account,ae1_0.operator_id,ae1_0.operator_name,ae1_0.reason,ae1_0.snapshot_hash,ae1_0.source,ae1_0.tenant_id from audit_event ae1_0 where ae1_0.id=?",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "name": "lock_unlink_false",
+      "selectStatements": 3,
+      "shapesMatch": true,
+      "shapes": [
+        {
+          "sql": "select status,summary_status from dhr_instance where tenant_id='default' and id=? for update",
+          "count": 1
+        },
+        {
+          "sql": "select * from dhr_attachment where tenant_id='default' and dhr_instance_id=? and id=? for update",
+          "count": 1
+        },
+        {
+          "sql": "select ae1_0.id,ae1_0.action,ae1_0.content_after,ae1_0.content_before,ae1_0.created_at,ae1_0.data_summary,ae1_0.entity_id,ae1_0.entity_type,ae1_0.function_name,ae1_0.ip_address,ae1_0.menu_name,ae1_0.module_name,ae1_0.operator_account,ae1_0.operator_id,ae1_0.operator_name,ae1_0.reason,ae1_0.snapshot_hash,ae1_0.source,ae1_0.tenant_id from audit_event ae1_0 where ae1_0.id=?",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "name": "lock_unlink_true",
+      "selectStatements": 1,
+      "shapesMatch": true,
+      "shapes": [
+        {
+          "sql": "select status,summary_status from dhr_instance where tenant_id='default' and id=? for update",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "name": "reject_manual_review",
+      "selectStatements": 11,
+      "shapesMatch": true,
+      "shapes": [
+        {
+          "sql": "select production_object_id from dhr_instance where tenant_id=? and id=?",
+          "count": 1
+        },
+        {
+          "sql": "select id from production_object where tenant_id=? and id=? for update",
+          "count": 1
+        },
+        {
+          "sql": "select * from dhr_instance where tenant_id=? and id=? for update",
+          "count": 1
+        },
+        {
+          "sql": "select count(*) from record_control_request q join form_instance_record f on f.id=q.record_id and f.tenant_id=q.tenant_id join dhr_instance d on d.production_object_id=f.object_id and d.tenant_id=f.tenant_id where d.tenant_id='default' and d.id=? and q.status='in_review'",
+          "count": 1
+        },
+        {
+          "sql": "select * from dhr_summary_draft where tenant_id=? and dhr_instance_id=? for update",
+          "count": 1
+        },
+        {
+          "sql": "select *,(select p.status from production_object p where p.id=dhr_instance.production_object_id and p.tenant_id=dhr_instance.tenant_id) as production_status,case when status='early_terminated' and summary_status='not_started' and (select p.status from production_object p where p.id=dhr_instance.production_object_id and p.tenant_id=dhr_instance.tenant_id)='early_terminated' then 'terminated' when status='in_progress' and summary_status='not_started' and (select p.status from production_object p where p.id=dhr_instance.production_object_id and p.tenant_id=dhr_instance.tenant_id)='in_progress' then 'filling' when status='completed' and (select p.status from production_object p where p.id=dhr_instance.production_object_id and p.tenant_id=dhr_instance.tenant_id)='completed' and summary_status='not_started' then 'pending_summary' when status='completed' and (select p.status from production_object p where p.id=dhr_instance.production_object_id and p.tenant_id=dhr_instance.tenant_id)='completed' and summary_status='draft' then 'summarizing' when status='completed' and (select p.status from production_object p where p.id=dhr_instance.production_object_id and p.tenant_id=dhr_instance.tenant_id)='completed' and summary_status='pending_review' then 'pending_review' when status='completed' and (select p.status from production_object p where p.id=dhr_instance.production_object_id and p.tenant_id=dhr_instance.tenant_id)='completed' and summary_status='formalized' then 'finalized' else 'status_error' end as display_status,(select t.reason from dhr_termination t where t.dhr_instance_id=dhr_instance.id and t.tenant_id=dhr_instance.tenant_id) as termination_reason,(select t.terminated_at from dhr_termination t where t.dhr_instance_id=dhr_instance.id and t.tenant_id=dhr_instance.tenant_id) as termination_at,(select t.terminated_by from dhr_termination t where t.dhr_instance_id=dhr_instance.id and t.tenant_id=dhr_instance.tenant_id) as terminated_by,(select t.snapshot_json is not null from dhr_termination t where t.dhr_instance_id=dhr_instance.id and t.tenant_id=dhr_instance.tenant_id) as termination_snapshot_available from dhr_instance where tenant_id=? and id=?",
+          "count": 1
+        },
+        {
+          "sql": "select snapshot_json,state_json from production_execution where object_id=?",
+          "count": 2
+        },
+        {
+          "sql": "select id,instance_no,operation_id,operation_name,form_id,copy_id,template_id,version_id, template_code,template_name,template_version,snapshot_json,values_json,status,current_revision_id, created_by,created_at,updated_by,updated_at from form_instance_record where tenant_id=? and source_type='production_execution' and object_id=? order by updated_at,id",
+          "count": 1
+        },
+        {
+          "sql": "select overlay_directory_json,evidence_placement_json from dhr_summary_draft where tenant_id='default' and dhr_instance_id=?",
+          "count": 1
+        },
+        {
+          "sql": "select * from dhr_attachment where tenant_id='default' and dhr_instance_id=? and active=true order by linked_at,id",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "name": "reject_missing",
+      "selectStatements": 10,
+      "shapesMatch": true,
+      "shapes": [
+        {
+          "sql": "select production_object_id from dhr_instance where tenant_id=? and id=?",
+          "count": 1
+        },
+        {
+          "sql": "select id from production_object where tenant_id=? and id=? for update",
+          "count": 1
+        },
+        {
+          "sql": "select * from dhr_instance where tenant_id=? and id=? for update",
+          "count": 1
+        },
+        {
+          "sql": "select count(*) from record_control_request q join form_instance_record f on f.id=q.record_id and f.tenant_id=q.tenant_id join dhr_instance d on d.production_object_id=f.object_id and d.tenant_id=f.tenant_id where d.tenant_id='default' and d.id=? and q.status='in_review'",
+          "count": 1
+        },
+        {
+          "sql": "select * from dhr_summary_draft where tenant_id=? and dhr_instance_id=? for update",
+          "count": 1
+        },
+        {
+          "sql": "select *,(select p.status from production_object p where p.id=dhr_instance.production_object_id and p.tenant_id=dhr_instance.tenant_id) as production_status,case when status='early_terminated' and summary_status='not_started' and (select p.status from production_object p where p.id=dhr_instance.production_object_id and p.tenant_id=dhr_instance.tenant_id)='early_terminated' then 'terminated' when status='in_progress' and summary_status='not_started' and (select p.status from production_object p where p.id=dhr_instance.production_object_id and p.tenant_id=dhr_instance.tenant_id)='in_progress' then 'filling' when status='completed' and (select p.status from production_object p where p.id=dhr_instance.production_object_id and p.tenant_id=dhr_instance.tenant_id)='completed' and summary_status='not_started' then 'pending_summary' when status='completed' and (select p.status from production_object p where p.id=dhr_instance.production_object_id and p.tenant_id=dhr_instance.tenant_id)='completed' and summary_status='draft' then 'summarizing' when status='completed' and (select p.status from production_object p where p.id=dhr_instance.production_object_id and p.tenant_id=dhr_instance.tenant_id)='completed' and summary_status='pending_review' then 'pending_review' when status='completed' and (select p.status from production_object p where p.id=dhr_instance.production_object_id and p.tenant_id=dhr_instance.tenant_id)='completed' and summary_status='formalized' then 'finalized' else 'status_error' end as display_status,(select t.reason from dhr_termination t where t.dhr_instance_id=dhr_instance.id and t.tenant_id=dhr_instance.tenant_id) as termination_reason,(select t.terminated_at from dhr_termination t where t.dhr_instance_id=dhr_instance.id and t.tenant_id=dhr_instance.tenant_id) as termination_at,(select t.terminated_by from dhr_termination t where t.dhr_instance_id=dhr_instance.id and t.tenant_id=dhr_instance.tenant_id) as terminated_by,(select t.snapshot_json is not null from dhr_termination t where t.dhr_instance_id=dhr_instance.id and t.tenant_id=dhr_instance.tenant_id) as termination_snapshot_available from dhr_instance where tenant_id=? and id=?",
+          "count": 1
+        },
+        {
+          "sql": "select snapshot_json,state_json from production_execution where object_id=?",
+          "count": 1
+        },
+        {
+          "sql": "select id,instance_no,operation_id,operation_name,form_id,copy_id,template_id,version_id, template_code,template_name,template_version,snapshot_json,values_json,status,current_revision_id, created_by,created_at,updated_by,updated_at from form_instance_record where tenant_id=? and source_type='production_execution' and object_id=? order by updated_at,id",
+          "count": 1
+        },
+        {
+          "sql": "select overlay_directory_json,evidence_placement_json from dhr_summary_draft where tenant_id='default' and dhr_instance_id=?",
+          "count": 1
+        },
+        {
+          "sql": "select * from dhr_attachment where tenant_id='default' and dhr_instance_id=? and active=true order by linked_at,id",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "name": "reject_order_false",
+      "selectStatements": 10,
+      "shapesMatch": true,
+      "shapes": [
+        {
+          "sql": "select production_object_id from dhr_instance where tenant_id=? and id=?",
+          "count": 1
+        },
+        {
+          "sql": "select id from production_object where tenant_id=? and id=? for update",
+          "count": 1
+        },
+        {
+          "sql": "select * from dhr_instance where tenant_id=? and id=? for update",
+          "count": 1
+        },
+        {
+          "sql": "select count(*) from record_control_request q join form_instance_record f on f.id=q.record_id and f.tenant_id=q.tenant_id join dhr_instance d on d.production_object_id=f.object_id and d.tenant_id=f.tenant_id where d.tenant_id='default' and d.id=? and q.status='in_review'",
+          "count": 1
+        },
+        {
+          "sql": "select * from dhr_summary_draft where tenant_id=? and dhr_instance_id=? for update",
+          "count": 1
+        },
+        {
+          "sql": "select *,(select p.status from production_object p where p.id=dhr_instance.production_object_id and p.tenant_id=dhr_instance.tenant_id) as production_status,case when status='early_terminated' and summary_status='not_started' and (select p.status from production_object p where p.id=dhr_instance.production_object_id and p.tenant_id=dhr_instance.tenant_id)='early_terminated' then 'terminated' when status='in_progress' and summary_status='not_started' and (select p.status from production_object p where p.id=dhr_instance.production_object_id and p.tenant_id=dhr_instance.tenant_id)='in_progress' then 'filling' when status='completed' and (select p.status from production_object p where p.id=dhr_instance.production_object_id and p.tenant_id=dhr_instance.tenant_id)='completed' and summary_status='not_started' then 'pending_summary' when status='completed' and (select p.status from production_object p where p.id=dhr_instance.production_object_id and p.tenant_id=dhr_instance.tenant_id)='completed' and summary_status='draft' then 'summarizing' when status='completed' and (select p.status from production_object p where p.id=dhr_instance.production_object_id and p.tenant_id=dhr_instance.tenant_id)='completed' and summary_status='pending_review' then 'pending_review' when status='completed' and (select p.status from production_object p where p.id=dhr_instance.production_object_id and p.tenant_id=dhr_instance.tenant_id)='completed' and summary_status='formalized' then 'finalized' else 'status_error' end as display_status,(select t.reason from dhr_termination t where t.dhr_instance_id=dhr_instance.id and t.tenant_id=dhr_instance.tenant_id) as termination_reason,(select t.terminated_at from dhr_termination t where t.dhr_instance_id=dhr_instance.id and t.tenant_id=dhr_instance.tenant_id) as termination_at,(select t.terminated_by from dhr_termination t where t.dhr_instance_id=dhr_instance.id and t.tenant_id=dhr_instance.tenant_id) as terminated_by,(select t.snapshot_json is not null from dhr_termination t where t.dhr_instance_id=dhr_instance.id and t.tenant_id=dhr_instance.tenant_id) as termination_snapshot_available from dhr_instance where tenant_id=? and id=?",
+          "count": 1
+        },
+        {
+          "sql": "select snapshot_json,state_json from production_execution where object_id=?",
+          "count": 1
+        },
+        {
+          "sql": "select id,instance_no,operation_id,operation_name,form_id,copy_id,template_id,version_id, template_code,template_name,template_version,snapshot_json,values_json,status,current_revision_id, created_by,created_at,updated_by,updated_at from form_instance_record where tenant_id=? and source_type='production_execution' and object_id=? order by updated_at,id",
+          "count": 1
+        },
+        {
+          "sql": "select overlay_directory_json,evidence_placement_json from dhr_summary_draft where tenant_id='default' and dhr_instance_id=?",
+          "count": 1
+        },
+        {
+          "sql": "select * from dhr_attachment where tenant_id='default' and dhr_instance_id=? and active=true order by linked_at,id",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "name": "reject_order_true",
+      "selectStatements": 10,
+      "shapesMatch": true,
+      "shapes": [
+        {
+          "sql": "select production_object_id from dhr_instance where tenant_id=? and id=?",
+          "count": 1
+        },
+        {
+          "sql": "select id from production_object where tenant_id=? and id=? for update",
+          "count": 1
+        },
+        {
+          "sql": "select * from dhr_instance where tenant_id=? and id=? for update",
+          "count": 1
+        },
+        {
+          "sql": "select count(*) from record_control_request q join form_instance_record f on f.id=q.record_id and f.tenant_id=q.tenant_id join dhr_instance d on d.production_object_id=f.object_id and d.tenant_id=f.tenant_id where d.tenant_id='default' and d.id=? and q.status='in_review'",
+          "count": 1
+        },
+        {
+          "sql": "select * from dhr_summary_draft where tenant_id=? and dhr_instance_id=? for update",
+          "count": 1
+        },
+        {
+          "sql": "select *,(select p.status from production_object p where p.id=dhr_instance.production_object_id and p.tenant_id=dhr_instance.tenant_id) as production_status,case when status='early_terminated' and summary_status='not_started' and (select p.status from production_object p where p.id=dhr_instance.production_object_id and p.tenant_id=dhr_instance.tenant_id)='early_terminated' then 'terminated' when status='in_progress' and summary_status='not_started' and (select p.status from production_object p where p.id=dhr_instance.production_object_id and p.tenant_id=dhr_instance.tenant_id)='in_progress' then 'filling' when status='completed' and (select p.status from production_object p where p.id=dhr_instance.production_object_id and p.tenant_id=dhr_instance.tenant_id)='completed' and summary_status='not_started' then 'pending_summary' when status='completed' and (select p.status from production_object p where p.id=dhr_instance.production_object_id and p.tenant_id=dhr_instance.tenant_id)='completed' and summary_status='draft' then 'summarizing' when status='completed' and (select p.status from production_object p where p.id=dhr_instance.production_object_id and p.tenant_id=dhr_instance.tenant_id)='completed' and summary_status='pending_review' then 'pending_review' when status='completed' and (select p.status from production_object p where p.id=dhr_instance.production_object_id and p.tenant_id=dhr_instance.tenant_id)='completed' and summary_status='formalized' then 'finalized' else 'status_error' end as display_status,(select t.reason from dhr_termination t where t.dhr_instance_id=dhr_instance.id and t.tenant_id=dhr_instance.tenant_id) as termination_reason,(select t.terminated_at from dhr_termination t where t.dhr_instance_id=dhr_instance.id and t.tenant_id=dhr_instance.tenant_id) as termination_at,(select t.terminated_by from dhr_termination t where t.dhr_instance_id=dhr_instance.id and t.tenant_id=dhr_instance.tenant_id) as terminated_by,(select t.snapshot_json is not null from dhr_termination t where t.dhr_instance_id=dhr_instance.id and t.tenant_id=dhr_instance.tenant_id) as termination_snapshot_available from dhr_instance where tenant_id=? and id=?",
+          "count": 1
+        },
+        {
+          "sql": "select snapshot_json,state_json from production_execution where object_id=?",
+          "count": 1
+        },
+        {
+          "sql": "select id,instance_no,operation_id,operation_name,form_id,copy_id,template_id,version_id, template_code,template_name,template_version,snapshot_json,values_json,status,current_revision_id, created_by,created_at,updated_by,updated_at from form_instance_record where tenant_id=? and source_type='production_execution' and object_id=? order by updated_at,id",
+          "count": 1
+        },
+        {
+          "sql": "select overlay_directory_json,evidence_placement_json from dhr_summary_draft where tenant_id='default' and dhr_instance_id=?",
+          "count": 1
+        },
+        {
+          "sql": "select * from dhr_attachment where tenant_id='default' and dhr_instance_id=? and active=true order by linked_at,id",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "name": "reject_pending",
+      "selectStatements": 10,
+      "shapesMatch": true,
+      "shapes": [
+        {
+          "sql": "select production_object_id from dhr_instance where tenant_id=? and id=?",
+          "count": 1
+        },
+        {
+          "sql": "select id from production_object where tenant_id=? and id=? for update",
+          "count": 1
+        },
+        {
+          "sql": "select * from dhr_instance where tenant_id=? and id=? for update",
+          "count": 1
+        },
+        {
+          "sql": "select count(*) from record_control_request q join form_instance_record f on f.id=q.record_id and f.tenant_id=q.tenant_id join dhr_instance d on d.production_object_id=f.object_id and d.tenant_id=f.tenant_id where d.tenant_id='default' and d.id=? and q.status='in_review'",
+          "count": 1
+        },
+        {
+          "sql": "select * from dhr_summary_draft where tenant_id=? and dhr_instance_id=? for update",
+          "count": 1
+        },
+        {
+          "sql": "select *,(select p.status from production_object p where p.id=dhr_instance.production_object_id and p.tenant_id=dhr_instance.tenant_id) as production_status,case when status='early_terminated' and summary_status='not_started' and (select p.status from production_object p where p.id=dhr_instance.production_object_id and p.tenant_id=dhr_instance.tenant_id)='early_terminated' then 'terminated' when status='in_progress' and summary_status='not_started' and (select p.status from production_object p where p.id=dhr_instance.production_object_id and p.tenant_id=dhr_instance.tenant_id)='in_progress' then 'filling' when status='completed' and (select p.status from production_object p where p.id=dhr_instance.production_object_id and p.tenant_id=dhr_instance.tenant_id)='completed' and summary_status='not_started' then 'pending_summary' when status='completed' and (select p.status from production_object p where p.id=dhr_instance.production_object_id and p.tenant_id=dhr_instance.tenant_id)='completed' and summary_status='draft' then 'summarizing' when status='completed' and (select p.status from production_object p where p.id=dhr_instance.production_object_id and p.tenant_id=dhr_instance.tenant_id)='completed' and summary_status='pending_review' then 'pending_review' when status='completed' and (select p.status from production_object p where p.id=dhr_instance.production_object_id and p.tenant_id=dhr_instance.tenant_id)='completed' and summary_status='formalized' then 'finalized' else 'status_error' end as display_status,(select t.reason from dhr_termination t where t.dhr_instance_id=dhr_instance.id and t.tenant_id=dhr_instance.tenant_id) as termination_reason,(select t.terminated_at from dhr_termination t where t.dhr_instance_id=dhr_instance.id and t.tenant_id=dhr_instance.tenant_id) as termination_at,(select t.terminated_by from dhr_termination t where t.dhr_instance_id=dhr_instance.id and t.tenant_id=dhr_instance.tenant_id) as terminated_by,(select t.snapshot_json is not null from dhr_termination t where t.dhr_instance_id=dhr_instance.id and t.tenant_id=dhr_instance.tenant_id) as termination_snapshot_available from dhr_instance where tenant_id=? and id=?",
+          "count": 1
+        },
+        {
+          "sql": "select snapshot_json,state_json from production_execution where object_id=?",
+          "count": 1
+        },
+        {
+          "sql": "select id,instance_no,operation_id,operation_name,form_id,copy_id,template_id,version_id, template_code,template_name,template_version,snapshot_json,values_json,status,current_revision_id, created_by,created_at,updated_by,updated_at from form_instance_record where tenant_id=? and source_type='production_execution' and object_id=? order by updated_at,id",
+          "count": 1
+        },
+        {
+          "sql": "select overlay_directory_json,evidence_placement_json from dhr_summary_draft where tenant_id='default' and dhr_instance_id=?",
+          "count": 1
+        },
+        {
+          "sql": "select * from dhr_attachment where tenant_id='default' and dhr_instance_id=? and active=true order by linked_at,id",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "name": "reject_source_changed",
+      "selectStatements": 10,
+      "shapesMatch": true,
+      "shapes": [
+        {
+          "sql": "select production_object_id from dhr_instance where tenant_id=? and id=?",
+          "count": 1
+        },
+        {
+          "sql": "select id from production_object where tenant_id=? and id=? for update",
+          "count": 1
+        },
+        {
+          "sql": "select * from dhr_instance where tenant_id=? and id=? for update",
+          "count": 1
+        },
+        {
+          "sql": "select count(*) from record_control_request q join form_instance_record f on f.id=q.record_id and f.tenant_id=q.tenant_id join dhr_instance d on d.production_object_id=f.object_id and d.tenant_id=f.tenant_id where d.tenant_id='default' and d.id=? and q.status='in_review'",
+          "count": 1
+        },
+        {
+          "sql": "select * from dhr_summary_draft where tenant_id=? and dhr_instance_id=? for update",
+          "count": 1
+        },
+        {
+          "sql": "select *,(select p.status from production_object p where p.id=dhr_instance.production_object_id and p.tenant_id=dhr_instance.tenant_id) as production_status,case when status='early_terminated' and summary_status='not_started' and (select p.status from production_object p where p.id=dhr_instance.production_object_id and p.tenant_id=dhr_instance.tenant_id)='early_terminated' then 'terminated' when status='in_progress' and summary_status='not_started' and (select p.status from production_object p where p.id=dhr_instance.production_object_id and p.tenant_id=dhr_instance.tenant_id)='in_progress' then 'filling' when status='completed' and (select p.status from production_object p where p.id=dhr_instance.production_object_id and p.tenant_id=dhr_instance.tenant_id)='completed' and summary_status='not_started' then 'pending_summary' when status='completed' and (select p.status from production_object p where p.id=dhr_instance.production_object_id and p.tenant_id=dhr_instance.tenant_id)='completed' and summary_status='draft' then 'summarizing' when status='completed' and (select p.status from production_object p where p.id=dhr_instance.production_object_id and p.tenant_id=dhr_instance.tenant_id)='completed' and summary_status='pending_review' then 'pending_review' when status='completed' and (select p.status from production_object p where p.id=dhr_instance.production_object_id and p.tenant_id=dhr_instance.tenant_id)='completed' and summary_status='formalized' then 'finalized' else 'status_error' end as display_status,(select t.reason from dhr_termination t where t.dhr_instance_id=dhr_instance.id and t.tenant_id=dhr_instance.tenant_id) as termination_reason,(select t.terminated_at from dhr_termination t where t.dhr_instance_id=dhr_instance.id and t.tenant_id=dhr_instance.tenant_id) as termination_at,(select t.terminated_by from dhr_termination t where t.dhr_instance_id=dhr_instance.id and t.tenant_id=dhr_instance.tenant_id) as terminated_by,(select t.snapshot_json is not null from dhr_termination t where t.dhr_instance_id=dhr_instance.id and t.tenant_id=dhr_instance.tenant_id) as termination_snapshot_available from dhr_instance where tenant_id=? and id=?",
+          "count": 1
+        },
+        {
+          "sql": "select snapshot_json,state_json from production_execution where object_id=?",
+          "count": 1
+        },
+        {
+          "sql": "select id,instance_no,operation_id,operation_name,form_id,copy_id,template_id,version_id, template_code,template_name,template_version,snapshot_json,values_json,status,current_revision_id, created_by,created_at,updated_by,updated_at from form_instance_record where tenant_id=? and source_type='production_execution' and object_id=? order by updated_at,id",
+          "count": 1
+        },
+        {
+          "sql": "select overlay_directory_json,evidence_placement_json from dhr_summary_draft where tenant_id='default' and dhr_instance_id=?",
+          "count": 1
+        },
+        {
+          "sql": "select * from dhr_attachment where tenant_id='default' and dhr_instance_id=? and active=true order by linked_at,id",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "name": "reject_stale_revision",
+      "selectStatements": 5,
+      "shapesMatch": true,
+      "shapes": [
+        {
+          "sql": "select production_object_id from dhr_instance where tenant_id=? and id=?",
+          "count": 1
+        },
+        {
+          "sql": "select id from production_object where tenant_id=? and id=? for update",
+          "count": 1
+        },
+        {
+          "sql": "select * from dhr_instance where tenant_id=? and id=? for update",
+          "count": 1
+        },
+        {
+          "sql": "select count(*) from record_control_request q join form_instance_record f on f.id=q.record_id and f.tenant_id=q.tenant_id join dhr_instance d on d.production_object_id=f.object_id and d.tenant_id=f.tenant_id where d.tenant_id='default' and d.id=? and q.status='in_review'",
+          "count": 1
+        },
+        {
+          "sql": "select * from dhr_summary_draft where tenant_id=? and dhr_instance_id=? for update",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "name": "reject_tampered",
+      "selectStatements": 10,
+      "shapesMatch": true,
+      "shapes": [
+        {
+          "sql": "select production_object_id from dhr_instance where tenant_id=? and id=?",
+          "count": 1
+        },
+        {
+          "sql": "select id from production_object where tenant_id=? and id=? for update",
+          "count": 1
+        },
+        {
+          "sql": "select * from dhr_instance where tenant_id=? and id=? for update",
+          "count": 1
+        },
+        {
+          "sql": "select count(*) from record_control_request q join form_instance_record f on f.id=q.record_id and f.tenant_id=q.tenant_id join dhr_instance d on d.production_object_id=f.object_id and d.tenant_id=f.tenant_id where d.tenant_id='default' and d.id=? and q.status='in_review'",
+          "count": 1
+        },
+        {
+          "sql": "select * from dhr_summary_draft where tenant_id=? and dhr_instance_id=? for update",
+          "count": 1
+        },
+        {
+          "sql": "select *,(select p.status from production_object p where p.id=dhr_instance.production_object_id and p.tenant_id=dhr_instance.tenant_id) as production_status,case when status='early_terminated' and summary_status='not_started' and (select p.status from production_object p where p.id=dhr_instance.production_object_id and p.tenant_id=dhr_instance.tenant_id)='early_terminated' then 'terminated' when status='in_progress' and summary_status='not_started' and (select p.status from production_object p where p.id=dhr_instance.production_object_id and p.tenant_id=dhr_instance.tenant_id)='in_progress' then 'filling' when status='completed' and (select p.status from production_object p where p.id=dhr_instance.production_object_id and p.tenant_id=dhr_instance.tenant_id)='completed' and summary_status='not_started' then 'pending_summary' when status='completed' and (select p.status from production_object p where p.id=dhr_instance.production_object_id and p.tenant_id=dhr_instance.tenant_id)='completed' and summary_status='draft' then 'summarizing' when status='completed' and (select p.status from production_object p where p.id=dhr_instance.production_object_id and p.tenant_id=dhr_instance.tenant_id)='completed' and summary_status='pending_review' then 'pending_review' when status='completed' and (select p.status from production_object p where p.id=dhr_instance.production_object_id and p.tenant_id=dhr_instance.tenant_id)='completed' and summary_status='formalized' then 'finalized' else 'status_error' end as display_status,(select t.reason from dhr_termination t where t.dhr_instance_id=dhr_instance.id and t.tenant_id=dhr_instance.tenant_id) as termination_reason,(select t.terminated_at from dhr_termination t where t.dhr_instance_id=dhr_instance.id and t.tenant_id=dhr_instance.tenant_id) as termination_at,(select t.terminated_by from dhr_termination t where t.dhr_instance_id=dhr_instance.id and t.tenant_id=dhr_instance.tenant_id) as terminated_by,(select t.snapshot_json is not null from dhr_termination t where t.dhr_instance_id=dhr_instance.id and t.tenant_id=dhr_instance.tenant_id) as termination_snapshot_available from dhr_instance where tenant_id=? and id=?",
+          "count": 1
+        },
+        {
+          "sql": "select snapshot_json,state_json from production_execution where object_id=?",
+          "count": 1
+        },
+        {
+          "sql": "select id,instance_no,operation_id,operation_name,form_id,copy_id,template_id,version_id, template_code,template_name,template_version,snapshot_json,values_json,status,current_revision_id, created_by,created_at,updated_by,updated_at from form_instance_record where tenant_id=? and source_type='production_execution' and object_id=? order by updated_at,id",
+          "count": 1
+        },
+        {
+          "sql": "select overlay_directory_json,evidence_placement_json from dhr_summary_draft where tenant_id='default' and dhr_instance_id=?",
+          "count": 1
+        },
+        {
+          "sql": "select * from dhr_attachment where tenant_id='default' and dhr_instance_id=? and active=true order by linked_at,id",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "name": "submit_0",
+      "selectStatements": 13,
+      "shapesMatch": true,
+      "shapes": [
+        {
+          "sql": "select production_object_id from dhr_instance where tenant_id=? and id=?",
+          "count": 1
+        },
+        {
+          "sql": "select id from production_object where tenant_id=? and id=? for update",
+          "count": 1
+        },
+        {
+          "sql": "select * from dhr_instance where tenant_id=? and id=? for update",
+          "count": 1
+        },
+        {
+          "sql": "select count(*) from record_control_request q join form_instance_record f on f.id=q.record_id and f.tenant_id=q.tenant_id join dhr_instance d on d.production_object_id=f.object_id and d.tenant_id=f.tenant_id where d.tenant_id='default' and d.id=? and q.status='in_review'",
+          "count": 1
+        },
+        {
+          "sql": "select * from dhr_summary_draft where tenant_id=? and dhr_instance_id=? for update",
+          "count": 1
+        },
+        {
+          "sql": "select *,(select p.status from production_object p where p.id=dhr_instance.production_object_id and p.tenant_id=dhr_instance.tenant_id) as production_status,case when status='early_terminated' and summary_status='not_started' and (select p.status from production_object p where p.id=dhr_instance.production_object_id and p.tenant_id=dhr_instance.tenant_id)='early_terminated' then 'terminated' when status='in_progress' and summary_status='not_started' and (select p.status from production_object p where p.id=dhr_instance.production_object_id and p.tenant_id=dhr_instance.tenant_id)='in_progress' then 'filling' when status='completed' and (select p.status from production_object p where p.id=dhr_instance.production_object_id and p.tenant_id=dhr_instance.tenant_id)='completed' and summary_status='not_started' then 'pending_summary' when status='completed' and (select p.status from production_object p where p.id=dhr_instance.production_object_id and p.tenant_id=dhr_instance.tenant_id)='completed' and summary_status='draft' then 'summarizing' when status='completed' and (select p.status from production_object p where p.id=dhr_instance.production_object_id and p.tenant_id=dhr_instance.tenant_id)='completed' and summary_status='pending_review' then 'pending_review' when status='completed' and (select p.status from production_object p where p.id=dhr_instance.production_object_id and p.tenant_id=dhr_instance.tenant_id)='completed' and summary_status='formalized' then 'finalized' else 'status_error' end as display_status,(select t.reason from dhr_termination t where t.dhr_instance_id=dhr_instance.id and t.tenant_id=dhr_instance.tenant_id) as termination_reason,(select t.terminated_at from dhr_termination t where t.dhr_instance_id=dhr_instance.id and t.tenant_id=dhr_instance.tenant_id) as termination_at,(select t.terminated_by from dhr_termination t where t.dhr_instance_id=dhr_instance.id and t.tenant_id=dhr_instance.tenant_id) as terminated_by,(select t.snapshot_json is not null from dhr_termination t where t.dhr_instance_id=dhr_instance.id and t.tenant_id=dhr_instance.tenant_id) as termination_snapshot_available from dhr_instance where tenant_id=? and id=?",
+          "count": 1
+        },
+        {
+          "sql": "select snapshot_json,state_json from production_execution where object_id=?",
+          "count": 2
+        },
+        {
+          "sql": "select id,instance_no,operation_id,operation_name,form_id,copy_id,template_id,version_id, template_code,template_name,template_version,snapshot_json,values_json,status,current_revision_id, created_by,created_at,updated_by,updated_at from form_instance_record where tenant_id=? and source_type='production_execution' and object_id=? order by updated_at,id",
+          "count": 1
+        },
+        {
+          "sql": "select overlay_directory_json,evidence_placement_json from dhr_summary_draft where tenant_id='default' and dhr_instance_id=?",
+          "count": 1
+        },
+        {
+          "sql": "select * from dhr_attachment where tenant_id='default' and dhr_instance_id=? and active=true order by linked_at,id",
+          "count": 1
+        },
+        {
+          "sql": "select coalesce(max(version_no),0)+1 from dhr_summary_version where tenant_id=? and dhr_instance_id=?",
+          "count": 1
+        },
+        {
+          "sql": "select ae1_0.id,ae1_0.action,ae1_0.content_after,ae1_0.content_before,ae1_0.created_at,ae1_0.data_summary,ae1_0.entity_id,ae1_0.entity_type,ae1_0.function_name,ae1_0.ip_address,ae1_0.menu_name,ae1_0.module_name,ae1_0.operator_account,ae1_0.operator_id,ae1_0.operator_name,ae1_0.reason,ae1_0.snapshot_hash,ae1_0.source,ae1_0.tenant_id from audit_event ae1_0 where ae1_0.id=?",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "name": "submit_1",
+      "selectStatements": 13,
+      "shapesMatch": true,
+      "shapes": [
+        {
+          "sql": "select production_object_id from dhr_instance where tenant_id=? and id=?",
+          "count": 1
+        },
+        {
+          "sql": "select id from production_object where tenant_id=? and id=? for update",
+          "count": 1
+        },
+        {
+          "sql": "select * from dhr_instance where tenant_id=? and id=? for update",
+          "count": 1
+        },
+        {
+          "sql": "select count(*) from record_control_request q join form_instance_record f on f.id=q.record_id and f.tenant_id=q.tenant_id join dhr_instance d on d.production_object_id=f.object_id and d.tenant_id=f.tenant_id where d.tenant_id='default' and d.id=? and q.status='in_review'",
+          "count": 1
+        },
+        {
+          "sql": "select * from dhr_summary_draft where tenant_id=? and dhr_instance_id=? for update",
+          "count": 1
+        },
+        {
+          "sql": "select *,(select p.status from production_object p where p.id=dhr_instance.production_object_id and p.tenant_id=dhr_instance.tenant_id) as production_status,case when status='early_terminated' and summary_status='not_started' and (select p.status from production_object p where p.id=dhr_instance.production_object_id and p.tenant_id=dhr_instance.tenant_id)='early_terminated' then 'terminated' when status='in_progress' and summary_status='not_started' and (select p.status from production_object p where p.id=dhr_instance.production_object_id and p.tenant_id=dhr_instance.tenant_id)='in_progress' then 'filling' when status='completed' and (select p.status from production_object p where p.id=dhr_instance.production_object_id and p.tenant_id=dhr_instance.tenant_id)='completed' and summary_status='not_started' then 'pending_summary' when status='completed' and (select p.status from production_object p where p.id=dhr_instance.production_object_id and p.tenant_id=dhr_instance.tenant_id)='completed' and summary_status='draft' then 'summarizing' when status='completed' and (select p.status from production_object p where p.id=dhr_instance.production_object_id and p.tenant_id=dhr_instance.tenant_id)='completed' and summary_status='pending_review' then 'pending_review' when status='completed' and (select p.status from production_object p where p.id=dhr_instance.production_object_id and p.tenant_id=dhr_instance.tenant_id)='completed' and summary_status='formalized' then 'finalized' else 'status_error' end as display_status,(select t.reason from dhr_termination t where t.dhr_instance_id=dhr_instance.id and t.tenant_id=dhr_instance.tenant_id) as termination_reason,(select t.terminated_at from dhr_termination t where t.dhr_instance_id=dhr_instance.id and t.tenant_id=dhr_instance.tenant_id) as termination_at,(select t.terminated_by from dhr_termination t where t.dhr_instance_id=dhr_instance.id and t.tenant_id=dhr_instance.tenant_id) as terminated_by,(select t.snapshot_json is not null from dhr_termination t where t.dhr_instance_id=dhr_instance.id and t.tenant_id=dhr_instance.tenant_id) as termination_snapshot_available from dhr_instance where tenant_id=? and id=?",
+          "count": 1
+        },
+        {
+          "sql": "select snapshot_json,state_json from production_execution where object_id=?",
+          "count": 2
+        },
+        {
+          "sql": "select id,instance_no,operation_id,operation_name,form_id,copy_id,template_id,version_id, template_code,template_name,template_version,snapshot_json,values_json,status,current_revision_id, created_by,created_at,updated_by,updated_at from form_instance_record where tenant_id=? and source_type='production_execution' and object_id=? order by updated_at,id",
+          "count": 1
+        },
+        {
+          "sql": "select overlay_directory_json,evidence_placement_json from dhr_summary_draft where tenant_id='default' and dhr_instance_id=?",
+          "count": 1
+        },
+        {
+          "sql": "select * from dhr_attachment where tenant_id='default' and dhr_instance_id=? and active=true order by linked_at,id",
+          "count": 1
+        },
+        {
+          "sql": "select coalesce(max(version_no),0)+1 from dhr_summary_version where tenant_id=? and dhr_instance_id=?",
+          "count": 1
+        },
+        {
+          "sql": "select ae1_0.id,ae1_0.action,ae1_0.content_after,ae1_0.content_before,ae1_0.created_at,ae1_0.data_summary,ae1_0.entity_id,ae1_0.entity_type,ae1_0.function_name,ae1_0.ip_address,ae1_0.menu_name,ae1_0.module_name,ae1_0.operator_account,ae1_0.operator_id,ae1_0.operator_name,ae1_0.reason,ae1_0.snapshot_hash,ae1_0.source,ae1_0.tenant_id from audit_event ae1_0 where ae1_0.id=?",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "name": "submit_10",
+      "selectStatements": 13,
+      "shapesMatch": true,
+      "shapes": [
+        {
+          "sql": "select production_object_id from dhr_instance where tenant_id=? and id=?",
+          "count": 1
+        },
+        {
+          "sql": "select id from production_object where tenant_id=? and id=? for update",
+          "count": 1
+        },
+        {
+          "sql": "select * from dhr_instance where tenant_id=? and id=? for update",
+          "count": 1
+        },
+        {
+          "sql": "select count(*) from record_control_request q join form_instance_record f on f.id=q.record_id and f.tenant_id=q.tenant_id join dhr_instance d on d.production_object_id=f.object_id and d.tenant_id=f.tenant_id where d.tenant_id='default' and d.id=? and q.status='in_review'",
+          "count": 1
+        },
+        {
+          "sql": "select * from dhr_summary_draft where tenant_id=? and dhr_instance_id=? for update",
+          "count": 1
+        },
+        {
+          "sql": "select *,(select p.status from production_object p where p.id=dhr_instance.production_object_id and p.tenant_id=dhr_instance.tenant_id) as production_status,case when status='early_terminated' and summary_status='not_started' and (select p.status from production_object p where p.id=dhr_instance.production_object_id and p.tenant_id=dhr_instance.tenant_id)='early_terminated' then 'terminated' when status='in_progress' and summary_status='not_started' and (select p.status from production_object p where p.id=dhr_instance.production_object_id and p.tenant_id=dhr_instance.tenant_id)='in_progress' then 'filling' when status='completed' and (select p.status from production_object p where p.id=dhr_instance.production_object_id and p.tenant_id=dhr_instance.tenant_id)='completed' and summary_status='not_started' then 'pending_summary' when status='completed' and (select p.status from production_object p where p.id=dhr_instance.production_object_id and p.tenant_id=dhr_instance.tenant_id)='completed' and summary_status='draft' then 'summarizing' when status='completed' and (select p.status from production_object p where p.id=dhr_instance.production_object_id and p.tenant_id=dhr_instance.tenant_id)='completed' and summary_status='pending_review' then 'pending_review' when status='completed' and (select p.status from production_object p where p.id=dhr_instance.production_object_id and p.tenant_id=dhr_instance.tenant_id)='completed' and summary_status='formalized' then 'finalized' else 'status_error' end as display_status,(select t.reason from dhr_termination t where t.dhr_instance_id=dhr_instance.id and t.tenant_id=dhr_instance.tenant_id) as termination_reason,(select t.terminated_at from dhr_termination t where t.dhr_instance_id=dhr_instance.id and t.tenant_id=dhr_instance.tenant_id) as termination_at,(select t.terminated_by from dhr_termination t where t.dhr_instance_id=dhr_instance.id and t.tenant_id=dhr_instance.tenant_id) as terminated_by,(select t.snapshot_json is not null from dhr_termination t where t.dhr_instance_id=dhr_instance.id and t.tenant_id=dhr_instance.tenant_id) as termination_snapshot_available from dhr_instance where tenant_id=? and id=?",
+          "count": 1
+        },
+        {
+          "sql": "select snapshot_json,state_json from production_execution where object_id=?",
+          "count": 2
+        },
+        {
+          "sql": "select id,instance_no,operation_id,operation_name,form_id,copy_id,template_id,version_id, template_code,template_name,template_version,snapshot_json,values_json,status,current_revision_id, created_by,created_at,updated_by,updated_at from form_instance_record where tenant_id=? and source_type='production_execution' and object_id=? order by updated_at,id",
+          "count": 1
+        },
+        {
+          "sql": "select overlay_directory_json,evidence_placement_json from dhr_summary_draft where tenant_id='default' and dhr_instance_id=?",
+          "count": 1
+        },
+        {
+          "sql": "select * from dhr_attachment where tenant_id='default' and dhr_instance_id=? and active=true order by linked_at,id",
+          "count": 1
+        },
+        {
+          "sql": "select coalesce(max(version_no),0)+1 from dhr_summary_version where tenant_id=? and dhr_instance_id=?",
+          "count": 1
+        },
+        {
+          "sql": "select ae1_0.id,ae1_0.action,ae1_0.content_after,ae1_0.content_before,ae1_0.created_at,ae1_0.data_summary,ae1_0.entity_id,ae1_0.entity_type,ae1_0.function_name,ae1_0.ip_address,ae1_0.menu_name,ae1_0.module_name,ae1_0.operator_account,ae1_0.operator_id,ae1_0.operator_name,ae1_0.reason,ae1_0.snapshot_hash,ae1_0.source,ae1_0.tenant_id from audit_event ae1_0 where ae1_0.id=?",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "name": "submit_100",
+      "selectStatements": 13,
+      "shapesMatch": true,
+      "shapes": [
+        {
+          "sql": "select production_object_id from dhr_instance where tenant_id=? and id=?",
+          "count": 1
+        },
+        {
+          "sql": "select id from production_object where tenant_id=? and id=? for update",
+          "count": 1
+        },
+        {
+          "sql": "select * from dhr_instance where tenant_id=? and id=? for update",
+          "count": 1
+        },
+        {
+          "sql": "select count(*) from record_control_request q join form_instance_record f on f.id=q.record_id and f.tenant_id=q.tenant_id join dhr_instance d on d.production_object_id=f.object_id and d.tenant_id=f.tenant_id where d.tenant_id='default' and d.id=? and q.status='in_review'",
+          "count": 1
+        },
+        {
+          "sql": "select * from dhr_summary_draft where tenant_id=? and dhr_instance_id=? for update",
+          "count": 1
+        },
+        {
+          "sql": "select *,(select p.status from production_object p where p.id=dhr_instance.production_object_id and p.tenant_id=dhr_instance.tenant_id) as production_status,case when status='early_terminated' and summary_status='not_started' and (select p.status from production_object p where p.id=dhr_instance.production_object_id and p.tenant_id=dhr_instance.tenant_id)='early_terminated' then 'terminated' when status='in_progress' and summary_status='not_started' and (select p.status from production_object p where p.id=dhr_instance.production_object_id and p.tenant_id=dhr_instance.tenant_id)='in_progress' then 'filling' when status='completed' and (select p.status from production_object p where p.id=dhr_instance.production_object_id and p.tenant_id=dhr_instance.tenant_id)='completed' and summary_status='not_started' then 'pending_summary' when status='completed' and (select p.status from production_object p where p.id=dhr_instance.production_object_id and p.tenant_id=dhr_instance.tenant_id)='completed' and summary_status='draft' then 'summarizing' when status='completed' and (select p.status from production_object p where p.id=dhr_instance.production_object_id and p.tenant_id=dhr_instance.tenant_id)='completed' and summary_status='pending_review' then 'pending_review' when status='completed' and (select p.status from production_object p where p.id=dhr_instance.production_object_id and p.tenant_id=dhr_instance.tenant_id)='completed' and summary_status='formalized' then 'finalized' else 'status_error' end as display_status,(select t.reason from dhr_termination t where t.dhr_instance_id=dhr_instance.id and t.tenant_id=dhr_instance.tenant_id) as termination_reason,(select t.terminated_at from dhr_termination t where t.dhr_instance_id=dhr_instance.id and t.tenant_id=dhr_instance.tenant_id) as termination_at,(select t.terminated_by from dhr_termination t where t.dhr_instance_id=dhr_instance.id and t.tenant_id=dhr_instance.tenant_id) as terminated_by,(select t.snapshot_json is not null from dhr_termination t where t.dhr_instance_id=dhr_instance.id and t.tenant_id=dhr_instance.tenant_id) as termination_snapshot_available from dhr_instance where tenant_id=? and id=?",
+          "count": 1
+        },
+        {
+          "sql": "select snapshot_json,state_json from production_execution where object_id=?",
+          "count": 2
+        },
+        {
+          "sql": "select id,instance_no,operation_id,operation_name,form_id,copy_id,template_id,version_id, template_code,template_name,template_version,snapshot_json,values_json,status,current_revision_id, created_by,created_at,updated_by,updated_at from form_instance_record where tenant_id=? and source_type='production_execution' and object_id=? order by updated_at,id",
+          "count": 1
+        },
+        {
+          "sql": "select overlay_directory_json,evidence_placement_json from dhr_summary_draft where tenant_id='default' and dhr_instance_id=?",
+          "count": 1
+        },
+        {
+          "sql": "select * from dhr_attachment where tenant_id='default' and dhr_instance_id=? and active=true order by linked_at,id",
+          "count": 1
+        },
+        {
+          "sql": "select coalesce(max(version_no),0)+1 from dhr_summary_version where tenant_id=? and dhr_instance_id=?",
+          "count": 1
+        },
+        {
+          "sql": "select ae1_0.id,ae1_0.action,ae1_0.content_after,ae1_0.content_before,ae1_0.created_at,ae1_0.data_summary,ae1_0.entity_id,ae1_0.entity_type,ae1_0.function_name,ae1_0.ip_address,ae1_0.menu_name,ae1_0.module_name,ae1_0.operator_account,ae1_0.operator_id,ae1_0.operator_name,ae1_0.reason,ae1_0.snapshot_hash,ae1_0.source,ae1_0.tenant_id from audit_event ae1_0 where ae1_0.id=?",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "name": "submit_300",
+      "selectStatements": 13,
+      "shapesMatch": true,
+      "shapes": [
+        {
+          "sql": "select production_object_id from dhr_instance where tenant_id=? and id=?",
+          "count": 1
+        },
+        {
+          "sql": "select id from production_object where tenant_id=? and id=? for update",
+          "count": 1
+        },
+        {
+          "sql": "select * from dhr_instance where tenant_id=? and id=? for update",
+          "count": 1
+        },
+        {
+          "sql": "select count(*) from record_control_request q join form_instance_record f on f.id=q.record_id and f.tenant_id=q.tenant_id join dhr_instance d on d.production_object_id=f.object_id and d.tenant_id=f.tenant_id where d.tenant_id='default' and d.id=? and q.status='in_review'",
+          "count": 1
+        },
+        {
+          "sql": "select * from dhr_summary_draft where tenant_id=? and dhr_instance_id=? for update",
+          "count": 1
+        },
+        {
+          "sql": "select *,(select p.status from production_object p where p.id=dhr_instance.production_object_id and p.tenant_id=dhr_instance.tenant_id) as production_status,case when status='early_terminated' and summary_status='not_started' and (select p.status from production_object p where p.id=dhr_instance.production_object_id and p.tenant_id=dhr_instance.tenant_id)='early_terminated' then 'terminated' when status='in_progress' and summary_status='not_started' and (select p.status from production_object p where p.id=dhr_instance.production_object_id and p.tenant_id=dhr_instance.tenant_id)='in_progress' then 'filling' when status='completed' and (select p.status from production_object p where p.id=dhr_instance.production_object_id and p.tenant_id=dhr_instance.tenant_id)='completed' and summary_status='not_started' then 'pending_summary' when status='completed' and (select p.status from production_object p where p.id=dhr_instance.production_object_id and p.tenant_id=dhr_instance.tenant_id)='completed' and summary_status='draft' then 'summarizing' when status='completed' and (select p.status from production_object p where p.id=dhr_instance.production_object_id and p.tenant_id=dhr_instance.tenant_id)='completed' and summary_status='pending_review' then 'pending_review' when status='completed' and (select p.status from production_object p where p.id=dhr_instance.production_object_id and p.tenant_id=dhr_instance.tenant_id)='completed' and summary_status='formalized' then 'finalized' else 'status_error' end as display_status,(select t.reason from dhr_termination t where t.dhr_instance_id=dhr_instance.id and t.tenant_id=dhr_instance.tenant_id) as termination_reason,(select t.terminated_at from dhr_termination t where t.dhr_instance_id=dhr_instance.id and t.tenant_id=dhr_instance.tenant_id) as termination_at,(select t.terminated_by from dhr_termination t where t.dhr_instance_id=dhr_instance.id and t.tenant_id=dhr_instance.tenant_id) as terminated_by,(select t.snapshot_json is not null from dhr_termination t where t.dhr_instance_id=dhr_instance.id and t.tenant_id=dhr_instance.tenant_id) as termination_snapshot_available from dhr_instance where tenant_id=? and id=?",
+          "count": 1
+        },
+        {
+          "sql": "select snapshot_json,state_json from production_execution where object_id=?",
+          "count": 2
+        },
+        {
+          "sql": "select id,instance_no,operation_id,operation_name,form_id,copy_id,template_id,version_id, template_code,template_name,template_version,snapshot_json,values_json,status,current_revision_id, created_by,created_at,updated_by,updated_at from form_instance_record where tenant_id=? and source_type='production_execution' and object_id=? order by updated_at,id",
+          "count": 1
+        },
+        {
+          "sql": "select overlay_directory_json,evidence_placement_json from dhr_summary_draft where tenant_id='default' and dhr_instance_id=?",
+          "count": 1
+        },
+        {
+          "sql": "select * from dhr_attachment where tenant_id='default' and dhr_instance_id=? and active=true order by linked_at,id",
+          "count": 1
+        },
+        {
+          "sql": "select coalesce(max(version_no),0)+1 from dhr_summary_version where tenant_id=? and dhr_instance_id=?",
+          "count": 1
+        },
+        {
+          "sql": "select ae1_0.id,ae1_0.action,ae1_0.content_after,ae1_0.content_before,ae1_0.created_at,ae1_0.data_summary,ae1_0.entity_id,ae1_0.entity_type,ae1_0.function_name,ae1_0.ip_address,ae1_0.menu_name,ae1_0.module_name,ae1_0.operator_account,ae1_0.operator_id,ae1_0.operator_name,ae1_0.reason,ae1_0.snapshot_hash,ae1_0.source,ae1_0.tenant_id from audit_event ae1_0 where ae1_0.id=?",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "name": "submit_50mib",
+      "selectStatements": 13,
+      "shapesMatch": true,
+      "shapes": [
+        {
+          "sql": "select production_object_id from dhr_instance where tenant_id=? and id=?",
+          "count": 1
+        },
+        {
+          "sql": "select id from production_object where tenant_id=? and id=? for update",
+          "count": 1
+        },
+        {
+          "sql": "select * from dhr_instance where tenant_id=? and id=? for update",
+          "count": 1
+        },
+        {
+          "sql": "select count(*) from record_control_request q join form_instance_record f on f.id=q.record_id and f.tenant_id=q.tenant_id join dhr_instance d on d.production_object_id=f.object_id and d.tenant_id=f.tenant_id where d.tenant_id='default' and d.id=? and q.status='in_review'",
+          "count": 1
+        },
+        {
+          "sql": "select * from dhr_summary_draft where tenant_id=? and dhr_instance_id=? for update",
+          "count": 1
+        },
+        {
+          "sql": "select *,(select p.status from production_object p where p.id=dhr_instance.production_object_id and p.tenant_id=dhr_instance.tenant_id) as production_status,case when status='early_terminated' and summary_status='not_started' and (select p.status from production_object p where p.id=dhr_instance.production_object_id and p.tenant_id=dhr_instance.tenant_id)='early_terminated' then 'terminated' when status='in_progress' and summary_status='not_started' and (select p.status from production_object p where p.id=dhr_instance.production_object_id and p.tenant_id=dhr_instance.tenant_id)='in_progress' then 'filling' when status='completed' and (select p.status from production_object p where p.id=dhr_instance.production_object_id and p.tenant_id=dhr_instance.tenant_id)='completed' and summary_status='not_started' then 'pending_summary' when status='completed' and (select p.status from production_object p where p.id=dhr_instance.production_object_id and p.tenant_id=dhr_instance.tenant_id)='completed' and summary_status='draft' then 'summarizing' when status='completed' and (select p.status from production_object p where p.id=dhr_instance.production_object_id and p.tenant_id=dhr_instance.tenant_id)='completed' and summary_status='pending_review' then 'pending_review' when status='completed' and (select p.status from production_object p where p.id=dhr_instance.production_object_id and p.tenant_id=dhr_instance.tenant_id)='completed' and summary_status='formalized' then 'finalized' else 'status_error' end as display_status,(select t.reason from dhr_termination t where t.dhr_instance_id=dhr_instance.id and t.tenant_id=dhr_instance.tenant_id) as termination_reason,(select t.terminated_at from dhr_termination t where t.dhr_instance_id=dhr_instance.id and t.tenant_id=dhr_instance.tenant_id) as termination_at,(select t.terminated_by from dhr_termination t where t.dhr_instance_id=dhr_instance.id and t.tenant_id=dhr_instance.tenant_id) as terminated_by,(select t.snapshot_json is not null from dhr_termination t where t.dhr_instance_id=dhr_instance.id and t.tenant_id=dhr_instance.tenant_id) as termination_snapshot_available from dhr_instance where tenant_id=? and id=?",
+          "count": 1
+        },
+        {
+          "sql": "select snapshot_json,state_json from production_execution where object_id=?",
+          "count": 2
+        },
+        {
+          "sql": "select id,instance_no,operation_id,operation_name,form_id,copy_id,template_id,version_id, template_code,template_name,template_version,snapshot_json,values_json,status,current_revision_id, created_by,created_at,updated_by,updated_at from form_instance_record where tenant_id=? and source_type='production_execution' and object_id=? order by updated_at,id",
+          "count": 1
+        },
+        {
+          "sql": "select overlay_directory_json,evidence_placement_json from dhr_summary_draft where tenant_id='default' and dhr_instance_id=?",
+          "count": 1
+        },
+        {
+          "sql": "select * from dhr_attachment where tenant_id='default' and dhr_instance_id=? and active=true order by linked_at,id",
+          "count": 1
+        },
+        {
+          "sql": "select coalesce(max(version_no),0)+1 from dhr_summary_version where tenant_id=? and dhr_instance_id=?",
+          "count": 1
+        },
+        {
+          "sql": "select ae1_0.id,ae1_0.action,ae1_0.content_after,ae1_0.content_before,ae1_0.created_at,ae1_0.data_summary,ae1_0.entity_id,ae1_0.entity_type,ae1_0.function_name,ae1_0.ip_address,ae1_0.menu_name,ae1_0.module_name,ae1_0.operator_account,ae1_0.operator_id,ae1_0.operator_name,ae1_0.reason,ae1_0.snapshot_hash,ae1_0.source,ae1_0.tenant_id from audit_event ae1_0 where ae1_0.id=?",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "name": "submit_scope",
+      "selectStatements": 13,
+      "shapesMatch": true,
+      "shapes": [
+        {
+          "sql": "select production_object_id from dhr_instance where tenant_id=? and id=?",
+          "count": 1
+        },
+        {
+          "sql": "select id from production_object where tenant_id=? and id=? for update",
+          "count": 1
+        },
+        {
+          "sql": "select * from dhr_instance where tenant_id=? and id=? for update",
+          "count": 1
+        },
+        {
+          "sql": "select count(*) from record_control_request q join form_instance_record f on f.id=q.record_id and f.tenant_id=q.tenant_id join dhr_instance d on d.production_object_id=f.object_id and d.tenant_id=f.tenant_id where d.tenant_id='default' and d.id=? and q.status='in_review'",
+          "count": 1
+        },
+        {
+          "sql": "select * from dhr_summary_draft where tenant_id=? and dhr_instance_id=? for update",
+          "count": 1
+        },
+        {
+          "sql": "select *,(select p.status from production_object p where p.id=dhr_instance.production_object_id and p.tenant_id=dhr_instance.tenant_id) as production_status,case when status='early_terminated' and summary_status='not_started' and (select p.status from production_object p where p.id=dhr_instance.production_object_id and p.tenant_id=dhr_instance.tenant_id)='early_terminated' then 'terminated' when status='in_progress' and summary_status='not_started' and (select p.status from production_object p where p.id=dhr_instance.production_object_id and p.tenant_id=dhr_instance.tenant_id)='in_progress' then 'filling' when status='completed' and (select p.status from production_object p where p.id=dhr_instance.production_object_id and p.tenant_id=dhr_instance.tenant_id)='completed' and summary_status='not_started' then 'pending_summary' when status='completed' and (select p.status from production_object p where p.id=dhr_instance.production_object_id and p.tenant_id=dhr_instance.tenant_id)='completed' and summary_status='draft' then 'summarizing' when status='completed' and (select p.status from production_object p where p.id=dhr_instance.production_object_id and p.tenant_id=dhr_instance.tenant_id)='completed' and summary_status='pending_review' then 'pending_review' when status='completed' and (select p.status from production_object p where p.id=dhr_instance.production_object_id and p.tenant_id=dhr_instance.tenant_id)='completed' and summary_status='formalized' then 'finalized' else 'status_error' end as display_status,(select t.reason from dhr_termination t where t.dhr_instance_id=dhr_instance.id and t.tenant_id=dhr_instance.tenant_id) as termination_reason,(select t.terminated_at from dhr_termination t where t.dhr_instance_id=dhr_instance.id and t.tenant_id=dhr_instance.tenant_id) as termination_at,(select t.terminated_by from dhr_termination t where t.dhr_instance_id=dhr_instance.id and t.tenant_id=dhr_instance.tenant_id) as terminated_by,(select t.snapshot_json is not null from dhr_termination t where t.dhr_instance_id=dhr_instance.id and t.tenant_id=dhr_instance.tenant_id) as termination_snapshot_available from dhr_instance where tenant_id=? and id=?",
+          "count": 1
+        },
+        {
+          "sql": "select snapshot_json,state_json from production_execution where object_id=?",
+          "count": 2
+        },
+        {
+          "sql": "select id,instance_no,operation_id,operation_name,form_id,copy_id,template_id,version_id, template_code,template_name,template_version,snapshot_json,values_json,status,current_revision_id, created_by,created_at,updated_by,updated_at from form_instance_record where tenant_id=? and source_type='production_execution' and object_id=? order by updated_at,id",
+          "count": 1
+        },
+        {
+          "sql": "select overlay_directory_json,evidence_placement_json from dhr_summary_draft where tenant_id='default' and dhr_instance_id=?",
+          "count": 1
+        },
+        {
+          "sql": "select * from dhr_attachment where tenant_id='default' and dhr_instance_id=? and active=true order by linked_at,id",
+          "count": 1
+        },
+        {
+          "sql": "select coalesce(max(version_no),0)+1 from dhr_summary_version where tenant_id=? and dhr_instance_id=?",
+          "count": 1
+        },
+        {
+          "sql": "select ae1_0.id,ae1_0.action,ae1_0.content_after,ae1_0.content_before,ae1_0.created_at,ae1_0.data_summary,ae1_0.entity_id,ae1_0.entity_type,ae1_0.function_name,ae1_0.ip_address,ae1_0.menu_name,ae1_0.module_name,ae1_0.operator_account,ae1_0.operator_id,ae1_0.operator_name,ae1_0.reason,ae1_0.snapshot_hash,ae1_0.source,ae1_0.tenant_id from audit_event ae1_0 where ae1_0.id=?",
+          "count": 1
+        }
+      ]
+    }
+  ],
+  "businessSELECT": 195,
+  "taggedStatementTypesIncludingDriver": {
+    "set": 19,
+    "select": 195,
+    "insert": 25,
+    "delete": 8,
+    "update": 17
+  },
+  "driverMetadataSelect": [],
+  "hibernateNonSelect": 9,
+  "limits": "successful execute inside exact action tags only; parse/bind/SET/transaction, untagged initialization/setup/workspace/saveDraft/assert/frozen verification/EXPLAIN and runner SQL are separate"
+}

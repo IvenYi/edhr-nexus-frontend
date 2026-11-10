@@ -1,0 +1,213 @@
+qualityResult:
+  result: passed
+  baseCommit: c0a9d5ac33690d10d009e768c286671475db0943
+  headCommit: 2e2cde63d1a247942e94b8e5b941f6c1e174b6db
+  contractBaseline:
+    sourceCommit: 2e2cde63d1a247942e94b8e5b941f6c1e174b6db
+    targetBranch: edhr-dev
+    targetCommit: c0a9d5ac33690d10d009e768c286671475db0943
+    contractReadCommit: 2e2cde63d1a247942e94b8e5b941f6c1e174b6db
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: clean
+    includedPaths: []
+    excludedPaths: []
+    untrackedPaths: []
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+  - id: check.baseline-contract-and-candidate
+    required: true
+    category: documentation
+    description: Independent initial/final fetch agree on targetc0, clean candidate2e2 and ancestor relationship;
+      candidate contracts read, unchanged from target.
+    method: command
+    command: git fetch origin edhr-dev; git rev-parse HEAD origin/edhr-dev; git status --porcelain; git merge-base
+      --is-ancestor target candidate; git diff target candidate -- AGENTS.md docs/agents
+    outcome: passed
+    evidence:
+    - baseline-start.json
+    - final-baseline.json
+    - source-snapshot/
+  - id: check.current-confirmed-boundaries
+    required: true
+    category: requirements
+    description: Current DEC0081/0092/0093 and original confirmations retain separate tenant-wide handler delegation,
+      record-control candidate/applicant rules and signed administrative reassignment; DHR later limited extension
+      respected.
+    method: inspection
+    command: Read applicable original user-confirmation records, current decision statements, identity/central-entry
+      rules and existing open questions
+    outcome: passed
+    evidence:
+    - policy-snapshot/
+    - independent-source-review.md
+    - evidence-scope/semantic-review.md
+  - id: check.scope-before-limit
+    required: true
+    category: security
+    description: Directory common and caller scopes combine before PageRequest100; exact original userIds.asText/originSnapshot/unrestricted,
+      applicant and transfer-operator exclusions retained. Empty scope does not expand users; DHR/form dual permissions
+      and ordinary delegation unchanged.
+    method: inspection
+    command: Read changed directory and responsibility targets/eligible in full surrounding context; compare target
+      diff
+    outcome: passed
+    evidence:
+    - independent-source-review.md
+    - source-snapshot/
+    - native/surefire/
+  - id: check.write-path-and-adjacent-byte-preservation
+    required: true
+    category: security
+    description: 'Eight source ranges/files byte-identical: responsibility change, eligibility/guards, public wrappers,
+      directory require/available and adjacent Form/Engine/Access/controller files. Signing authority, state, locks,
+      transaction, audit and freeze unchanged.'
+    method: command
+    command: Compare independent Git source range/file bytes between targetc0 and candidate2e2
+    outcome: passed
+    evidence:
+    - independent-source-equivalence.json
+    - independent-source-review.md
+  - id: check.original-test-and-fixture-preservation
+    required: true
+    category: regression
+    description: Removing only five new methods/eight invocations restores exact base test and fixture bytes. No
+      assertion was reduced or fixture repaired.
+    method: command
+    command: Compare baseline RecordControlPostgresIntegrationTest blob to candidate after removal of the single
+      newly added method block
+    outcome: passed
+    evidence:
+    - original-test-preservation.json
+  - id: check.native-candidate-138
+    required: true
+    category: integration
+    description: Own detached candidate worktree/random-loopback PG16.15/full configured Liquibase11 changesets;
+      nine classes138 actual tests0F/E/S, including native record-control52 and ordinary transfer23.
+    method: automated-test
+    command: python3 run-independent.py; actual Maven command and database URLs recorded in native/command.json
+    outcome: passed
+    evidence:
+    - run-independent.py
+    - native/command.json
+    - native/maven.log
+    - native/test-summary.json
+    - native/surefire/
+    - native/database-state.txt
+    - orchestration-commands.json
+  - id: check.real-old-source-negative-control
+    required: true
+    category: integration
+    description: 'Independent child ran originalc0 products plus exact candidate tests: eight tests, seven genuine
+      assertion failures, one empty-candidate positive, no errors/skips. Candidate138 includes all eight passing.'
+    method: automated-test
+    command: Run five selected candidate methods/eight invocations in detached originalc0 tree with full configured
+      Liquibase and own PG
+    outcome: passed
+    evidence:
+    - old-source-control/result.yaml
+    - old-source-control/attempt-01/test-summary.json
+    - old-source-control/attempt-01/surefire-reports/
+    - old-source-control/attempt-01/source-fingerprints.json
+  - id: check.knowledge-89-and-345-byte-preservation
+    required: true
+    category: ontology
+    description: Own formal knowledge test89/89 0F/E/S and independent345-file Git byte equality; version0.3.25/schema1.2.0/P0
+      in progress unchanged. Does not certify all knowledge semantics.
+    method: automated-test
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f tools/knowledge-model/pom.xml test; compare tracked knowledge
+      Git blobs
+    outcome: passed
+    evidence:
+    - knowledge/command.json
+    - knowledge/maven.log
+    - knowledge/test-summary.json
+    - knowledge/surefire/
+    - knowledge-byte-check.json
+  - id: check.original-evidence-and-scope-accounting
+    required: true
+    category: documentation
+    description: Independent evidence subrole18 checks verify93 primary originals and nested61/23 manifests, current9/23
+      fingerprints, red/green reports and ontology19 finite IDs;7420 inventory,931/86 pending and wholeFile0/historyUniqueunknown
+      stay distinct.
+    method: command
+    command: python3 evidence-scope/audit-evidence.py; verify subrole final manifest
+    outcome: passed
+    evidence:
+    - evidence-scope/result.yaml
+    - evidence-scope/checks.json
+    - evidence-scope/archive-member-verification.json
+    - evidence-scope/main-original-xml-case-verification.json
+    - subrole-final-verification.json
+  - id: check.A23-performance-and-extraction-limits
+    required: true
+    category: documentation
+    description: Concrete pure-candidate decoding and Form projection extraction plans retain lock/transaction/signature
+      ownership; necessary write checks kept. HugeIN/CAST/Page COUNT and static5+N/summary605/export risks remain
+      unoptimized/unmeasured. No frontend diff or current browser/UI strict rerun claim.
+    method: inspection
+    command: Read current review-notes, impact/extension strategy, source and pending audit ledger; verify no frontend/migration
+      delta
+    outcome: passed
+    evidence:
+    - independent-source-review.md
+    - evidence-scope/semantic-review.md
+    - final-baseline.json
+  - id: check.resource-isolation-and-all-subroles-final
+    required: true
+    category: documentation
+    description: Own worktree/link/PG and old-source resources normally removed; main repository clean. Both read-only
+      subroles FINAL before parent result. Helper observation/assumption failures retained, no product/test repairs
+      or CI/Actions/merge/deploy/history work.
+    method: command
+    command: Verify own cleanup and all child result/manifest bytes, recheck main Git state
+    outcome: passed
+    evidence:
+    - cleanup.json
+    - subrole-final-verification.json
+    - old-source-control/final-cleanup.json
+    - environment-history.md
+    - final-baseline.json
+  findings: []
+  residualRisks:
+  - id: residual.large-candidate-and-query-plans
+    description: Original snapshot parsing and IN parameters scale with the original candidate pool. Huge arrays/binding
+      limits, CAST(id AS VARCHAR), full-page count queries, actual plans and production latency were not capacity-tested.
+    impact: Finite correctness repair does not establish a production capacity/index/SLA conclusion.
+    mitigation: Keep W6 real SQL/large-data measurement and user discussion before separate performance/index changes.
+  - id: residual.whole-audit-and-knowledge
+    description: Only this finite target-read repair is accepted;7420 paths are inventory, wholeFile0/historyUnique
+      unknown,19 ontology IDs limited,931 nested increment candidates remain pending.
+    impact: No whole-branch/code-to-all-ontology or release-readiness certification.
+    mitigation: Continue W2 remainder/W3-W5 and W6/W7 from current ledger and latest remote checkpoints.
+  - id: residual.browser-and-security-matrices
+    description: No browser/UI strict executed in this backend-only batch; old86 raw diagnostics stay pending. Native/controller
+      tests are not full tenant/account/recipient/concurrency or real browser-backend electronic-signature E2E.
+    impact: No full UI/accessibility/real-account matrix certification; paused production modal and friend-owned
+      signature page stay paused.
+    mitigation: Preserve explicit UI/account/security queues and execute applicable end-to-end matrices in their
+      own batches.
+  - id: residual.other-performance-and-domain-gaps
+    description: Static per-task-name5+N, JSON/COUNT, summary5+2N/605, export/PDF accumulation and wide-record trade-offs
+      remain. Full quality/exception/source-signature interpretation, DHR directory combinations, A12 historical
+      search/rebuild and old high/gaps remain.
+    impact: This batch closes neither the other performance candidates nor all domain/history requirements.
+    mitigation: Keep precise implemented-versus-remaining scope; quantify independent risks and discuss changes
+      without silently altering policy.
+  blockingConditions: []
+verificationScope:
+  status: FINAL
+  independence: Fresh final QA team did not participate in implementation or repair products/tests/fixtures/configuration.
+  testedCandidate: 2e2cde63d1a247942e94b8e5b941f6c1e174b6db
+  targetAtStartAndFinish: c0a9d5ac33690d10d009e768c286671475db0943
+  uniqueNativeTests: 138
+  uniqueKnowledgeTests: 89
+  oldSourceTests: 8
+  oldSourceRealAssertionFailures: 7
+  oldSourcePositiveControls: 1
+  oldSourceErrorsOrSkips: 0
+  allTwoSubrolesFinal: true
+  browserExecuted: false
+  globalUiStrictExecuted: false
+  permittedSubsequentWork: Only L0 evidence/acceptance/scope/delivery additions and NEXT status updates; other candidate
+    paths unchanged. Reassess any product/test/knowledge/contract change.

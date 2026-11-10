@@ -1,0 +1,75 @@
+decisionPackage:
+  id: DEC-PACKAGE-AUDIT-WORKFLOW-READ-OBSERVATION-20261104
+  scope: PR57合入后的持续全审；中央流程详情逐任务姓名及人员目录满页计数的原生只读取证
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: fa5921698f5fa4024ad7ca86ee2a90e3cd3a9620
+    targetBranch: edhr-dev
+    targetCommit: fa5921698f5fa4024ad7ca86ee2a90e3cd3a9620
+    contractReadCommit: 8b53f71d272ece3328b17a4c50ecdd2b700c45a9
+    uncommittedContractPaths: []
+  summary: PR57人工合入且整树同8b53，无外部源码或知识增量。新增显式开启的真实PG观测测试，分别记录JdbcTemplate与Hibernate实际只读SQL并核返回内容；不把低效次数作为固定断言，先量化后与用户讨论性能整改。
+  confirmed: {concepts: [], relationships: [], rules: [], executionContracts: []}
+  inferred:
+    - id: inference.workflow-detail-name-lookups
+      statement: WorkflowOperationsQuery.detail对每个任务另查姓名，重复处理人和空处理人也不复用；约5+N为待运行核实的静态推算。
+      rationale: 当前detail方法的JdbcTemplate调用及任务仓储查询；未推定生产延迟或典型任务规模。
+      relatedIds: [DEC-0092-01, DEC-0093-01]
+    - id: inference.personnel-directory-unused-count
+      statement: PageRequest取前100且仅消费content，满页可能另查总数；本轮观测0/1/99/100/101/5000匹配人员，不先替换查询API或加索引。
+      rationale: 当前Spring Data findAll返回Page及调用方只读getContent；实际SQL以新观测原件为准。
+      relatedIds: [DEC-0081-01]
+  unresolved: []
+  replacementScopes: []
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - area: test-only-native-observation
+        change: 新增独立数据库保护、opt-in系统属性、当前线程SQL观察与真实返回语义断言，产品代码不变。
+        evidenceReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/service/WorkflowReadObservationPostgresTest.java]
+    transitiveImpacts:
+      - area: regression-isolation
+        change: 测试配置仅显式Import到本观测上下文；用专属edhr_workflow_read_test数据库，与原记录控制/转办测试数据库分离。
+        evidenceReferences: []
+    potentialImpacts:
+      - area: future-read-optimization
+        concern: 姓名批量映射须保留任务状态摘要和当前姓名fallback/读取授权，不能把当前账户名当历史签署人快照；目录避免COUNT须保留排序/资格/100上限。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/WorkflowOperationsQuery.java, gmp-platform/backend/src/main/java/com/zencas/edhr/identity/service/TenantTransferTargets.java]
+    unaffectedAreas:
+      - area: all-product-runtime
+        change: 产品源码、业务政策、页面、权限、写入/签名/锁/事务/审计/冻结、迁移和索引不修改。
+        evidenceReferences: []
+    compatibilityAndMigration: []
+    snapshotImpacts:
+      - area: original-evidence
+        change: 无业务快照写入或历史重建；只在自有一次性PG种观测数据。
+        evidenceReferences: []
+    auditImpacts:
+      - area: observation-provenance
+        change: SQL、返回形状、数据量、执行时间与来源指纹留原件；不增加运行审计事件，不把取证算业务修复。
+        evidenceReferences: []
+    permissionImpacts:
+      - area: read-permission
+        change: 观测使用现有干预读取身份，不能替代全部普通账号矩阵；不改变读取资格或写入授权。
+        evidenceReferences: [docs/knowledge/decisions/DEC-0092-workflow-operations-entry-and-actions.yaml, docs/knowledge/decisions/DEC-0093-central-form-dhr-workflow-responsibility.yaml]
+    testImpacts:
+      - scope: detail-and-directory
+        scenarios: [详情0/1/100/1000任务, 重复的两个有效账户及null和缺失账户姓名, 目录0/1/99/100/101/5000人员排序限100, 与现有138项相邻回归]
+        evidenceReferences: []
+    evidenceGaps: [实际HTTP或浏览器/JWT签署整链未覆盖, 本地单进程次数不是生产延迟/吞吐SLA, 巨大原候选IN参数/文本ID计划仍另审, 931知识候选/86 UI诊断及原W2-W7高风险/A12/暂缓范围继续]
+  extensionStrategy:
+    selectedPaths: [product-core]
+    rationale: 仅补现有产品读路径的opt-in工程观测，不引入生产缓存、规则框架或配置。
+    ownershipBoundaries:
+      - owner: workflow-read-observation-tests
+        responsibility: 隔离种数、观察SQL并校验返回，不更改运行路径或固定低效次数。
+  affectedFiles:
+    - {path: gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/service/WorkflowReadObservationPostgresTest.java, changeType: create, reason: 原生有限只读成本及返回语义取证}
+    - {path: gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/WorkflowOperationsQuery.java, changeType: read-only, reason: 核实际详情读取及姓名语义}
+    - {path: gmp-platform/backend/src/main/java/com/zencas/edhr/identity/service/TenantTransferTargets.java, changeType: read-only, reason: 核目录查询及Page消费边界}
+  acceptanceScenarios:
+    - id: scenario.workflow-read-cost-originals
+      given: 自有随机loopback PG及完整配置Liquibase，数据量和姓名种类受控
+      when: 调用实际详情服务及人员目录
+      then: 返回内容和100上限正确，SQL和数据量可从原件复核，未对生产代码做性能优化或改业务规则
+      evidenceRequirements: [主侧实际观测与相邻回归, 源码保持证明, 有限本体边界核对, 全新独立最终质量及独立复测观测]

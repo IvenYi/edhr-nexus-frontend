@@ -1,0 +1,88 @@
+{
+  "native": {
+    "totals": {
+      "tests": 49,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "classes": [
+      {
+        "class": "com.zencas.edhr.production.service.DhrExportReadObservationPostgresTest",
+        "tests": 12,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "com.zencas.edhr.production.controller.DhrArchiveControllerStreamingTest",
+        "tests": 3,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "com.zencas.edhr.production.service.DhrAttachmentAndArchiveTest",
+        "tests": 13,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "com.zencas.edhr.production.service.DhrFormFilesTest",
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "com.zencas.edhr.production.service.DhrArchiveLayoutReaderTest",
+        "tests": 3,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "com.zencas.edhr.production.service.DhrSummaryServiceTest",
+        "tests": 8,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "com.zencas.edhr.production.service.DhrPdfRendererTest",
+        "tests": 6,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    ],
+    "missingFreshReports": []
+  },
+  "knowledge": [
+    {
+      "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "tests": 89,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  ],
+  "measuredSelectStatements": 33,
+  "measuredNonSelectStatements": 3,
+  "negativeControl": {
+    "tests": 19,
+    "failures": 3,
+    "errors": 0,
+    "skipped": 0
+  },
+  "sources": "raw main archive source snapshots; native runs truthfully report base HEAD plus dirty tree, not later commit",
+  "visualReview": {
+    "files": [
+      "real-print-optimized/long-last.png",
+      "real-print-optimized/landscape.png"
+    ],
+    "actualInspection": "main agent individually opened both generated final sample PNGs; last row ROW-060 and footer on third page visible, landscape page has expected text and footer",
+    "limit": "two focused renderer sample pages only; no full app visual E2E or all 300 form layouts"
+  }
+}

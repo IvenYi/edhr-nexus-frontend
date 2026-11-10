@@ -1,0 +1,93 @@
+{
+  "regression": {
+    "totals": {
+      "tests": 81,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "classes": [
+      {
+        "class": "com.zencas.edhr.production.service.DhrAttachmentUploadVerifyObservationPostgresTest",
+        "tests": 27,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "com.zencas.edhr.production.service.DhrSummaryServiceTest",
+        "tests": 8,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "com.zencas.edhr.production.service.DhrSummaryPersistenceTest",
+        "tests": 24,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "com.zencas.edhr.production.service.DhrAttachmentWriteFailureTest",
+        "tests": 5,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "com.zencas.edhr.production.service.DhrAttachmentAndArchiveTest",
+        "tests": 13,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "com.zencas.edhr.production.service.DhrFormFilesTest",
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    ],
+    "missingFreshReports": []
+  },
+  "focused": {
+    "totals": {
+      "tests": 27,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "classes": [
+      {
+        "class": "com.zencas.edhr.production.service.DhrAttachmentUploadVerifyObservationPostgresTest",
+        "tests": 27,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    ],
+    "missingFreshReports": []
+  },
+  "knowledge": [
+    {
+      "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "tests": 89,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  ],
+  "observations": 52,
+  "businessSELECT": 128,
+  "serverTypes": {
+    "set": 52,
+    "select": 128,
+    "insert": 36,
+    "update": 12
+  },
+  "constraintErrors": 3,
+  "noProductEdits": true,
+  "scope": "27 actual native plus 54 adjacent tests =81, not all81 PG or all-system coverage"
+}

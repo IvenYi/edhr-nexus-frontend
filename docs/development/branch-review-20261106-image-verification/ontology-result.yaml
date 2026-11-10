@@ -1,0 +1,82 @@
+ontologyResult:
+  result: not-applicable
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: cf5594947e96dcc56497997d7941da0f7a89be7e
+    targetBranch: edhr-dev
+    targetCommit: cf5594947e96dcc56497997d7941da0f7a89be7e
+    contractReadCommit: cf5594947e96dcc56497997d7941da0f7a89be7e
+    uncommittedContractPaths: []
+  reason: 经有限源码/现行确认核对，本批仅替换PNG/JPEG核验的整文件数组为固定缓冲和自有临时快照；完整SHA、固定同一视图、原header/尺寸检查、原件/资格/锁/更新/审计及相邻读取规则保持。没有新增或替代业务概念、状态、规则、证据范围、归档/留存政策，350份知识逐字节不变，因此不为工程优化新建知识或提升成熟度。此结果限本批，不表示全库或整体场景一致通过。
+  changedArtifacts: []
+  knowledgeSync:
+  - id: term.dhr-controlled-attachment
+    disposition: retained
+    scope: 仅核工程优化保持受控附件、来源/核验/关联追溯与冻结引用含义；临时快照不是新增附件或第四种表单来源。
+    sourceReferences:
+    - docs/knowledge/glossary.yaml
+    - docs/development/branch-review-20261106-image-verification/decision-package.yaml
+  - id: concept.dhr-controlled-attachment
+    disposition: retained
+    scope: 临时文件只属一次核验，不产生受控附件身份、业务状态、运行事实或知识成熟度变化；原概念specified/internal保留。
+    sourceReferences:
+    - docs/knowledge/ontology.yaml
+    - docs/development/branch-review-20261106-image-verification/decision-package.yaml
+  - id: relation.dhr-summary-version-contains-controlled-attachments
+    disposition: retained
+    scope: 限附件核验分支：未写冻结attachment_snapshot或替换登记路径/SHA；不将临时快照误作DHR汇总冻结。完整跨版本矩阵未由本体角色运行。
+    sourceReferences:
+    - docs/knowledge/ontology.yaml
+    - docs/development/branch-review-20261106-image-verification/decision-package.yaml
+  - id: DEC-0063-10
+    disposition: retained
+    scope: 原件字节/SHA、50MiB含边界、七格式、Office不转换及带原因解除后原件保留规范不变；小缓冲和临时IO属于用户同意的工程取舍，非新业务政策。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml
+    - docs/development/branch-review-20261106-image-verification/decision-package.yaml
+  - id: DEC-0063-13
+    disposition: retained
+    scope: 原tenant/DHR/active/可编辑与来源元信息保持；摘要/图片header尺寸合格不等于系统自动完成来源、对象和内容关联的人工核验。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml
+    - docs/development/branch-review-20261106-image-verification/decision-package.yaml
+  - id: rule.dhr-summary-controlled-attachment-upload
+    disposition: retained
+    scope: 本批仅核验PNG/JPEG，upload仍原字节数组和原七格式/52428800容量规则；不因内存优化缩小容量、取消SHA或新增允许格式。
+    sourceReferences:
+    - docs/knowledge/rules/dhr-summary.yaml
+    - docs/development/branch-review-20261106-image-verification/decision-package.yaml
+  conflicts: []
+  questions: []
+  validationEvidence:
+  - id: validation.image-verification-finite-semantics
+    checkType: evidence-path
+    command: Direct read current records, decision confirmations, actual DhrAttachmentService/controller
+      and adjacent source; compare final snapshot and cf559494 baseline
+    outcome: passed
+    evidence:
+    - 'finite-audit-records.jsonl: 16 reviewed; 13 consistent in declared subscopes,
+      3 evidence-gap retained'
+    - final-source-manifest.json
+    - 'knowledge-fingerprint-inventory.json: 350 files byte-identical; inventory is
+      not semantic coverage'
+  - id: validation.formal-knowledge-model
+    checkType: schema
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f tools/knowledge-model/pom.xml
+      clean test
+    outcome: passed
+    evidence:
+    - 'knowledge-validation.log: exit 0 BUILD SUCCESS'
+    - 'TEST-com.zencas.edhr.knowledge.BusinessKnowledgeModelTest.xml: 89 tests, zero
+      failures/errors/skips'
+    - knowledge-test-summary.json; schema/reference/status/projection only, not product/PG/UI/production
+      acceptance
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages:
+    - P1
+    - P2
+    - P3

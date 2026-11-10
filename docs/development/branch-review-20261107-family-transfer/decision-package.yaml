@@ -1,0 +1,51 @@
+decisionPackage:
+  id: DEC-PACKAGE-FAMILY-TRANSFER-20261107
+  scope: Product-family member transfer JPA write order and atomic audit
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: 04db7e838ec5e194355ff954ff173a02205e0fd6
+    targetBranch: edhr-dev
+    targetCommit: 04db7e838ec5e194355ff954ff173a02205e0fd6
+    contractReadCommit: 04db7e838ec5e194355ff954ff173a02205e0fd6
+    uncommittedContractPaths: []
+  summary: PR72已人工合入、整树同42bd62cc，无外部/知识/契约增量。回到W4产品簇转移，按既有唯一归属/事务/二次确认/三方审计规则，用完整canonical PG和真实Spring/JPA复现delete后save的flush顺序；仅在删除后显式flush，保持新成员ID及三方审计和失败回滚。同批纠正两个直接相关fact的sourcePath/evidence/locator/provenance到真实Controller，不改事实定义/类型/规则/成熟度或历史原文。不修改开工/制程/作业规则、唯一约束或历史数据。相邻批量添加SQL只量化不优化。
+  confirmed: {concepts: [], relationships: [], rules: [], executionContracts: []}
+  inferred: []
+  unresolved: []
+  replacementScopes: []
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - {area: membership-transfer, change: 使同一事务先发旧成员DELETE再发新成员INSERT，避免唯一tenant/product冲突, evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductFamilyMembershipService.java]}
+    transitiveImpacts:
+      - {area: three-side-audit, change: 确认产品/旧簇/新簇审计内容与原子性，失败回滚包括已发DELETE及已插入审计, evidenceReferences: [docs/knowledge/decisions/DEC-0002-product-family-process-modeling.yaml]}
+    potentialImpacts:
+      - {area: outer-transaction-flush, concern: flush不是commit；必须真实审计拒绝/新行拒绝/提交前并发读证明无部分提交，不顺带新增锁策略, evidenceReferences: []}
+    unaffectedAreas:
+      - {area: process-and-work, change: 原首次START当前归属复核/冻结、产品优先簇兜底、作业动态匹配和已有实例保留保持, evidenceReferences: [docs/knowledge/decisions/DEC-0002-product-family-process-modeling.yaml, docs/knowledge/decisions/DEC-0007-production-work-applicability-and-runtime-snapshot.yaml]}
+    compatibilityAndMigration:
+      - {area: identity-and-schema, change: 保持delete+新ID/created元数据语义，无migration/DDL约束放宽/历史恢复, evidenceReferences: []}
+    snapshotImpacts:
+      - {area: prior-freezes, change: 不修改已开工或旧冻结；本批成员事务不代表整条START历史矩阵验收, evidenceReferences: []}
+    auditImpacts:
+      - {area: audit, change: 原三方UPDATE内容/身份/审计hash版本保持，同事务成功或回滚, evidenceReferences: []}
+    permissionImpacts:
+      - {area: endpoint, change: 原master-data.product-families权限、二次confirmed、无转移原因要求不变, evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java]}
+    testImpacts:
+      - {scope: actual-JPA-PG-and-adjacent, scenarios: [真实转移commit与三方审计, JWT/MVC确认和权限, 同簇no-op及原资格拒绝, 审计第三次insert拒绝/新成员拒绝整体rollback, 外层未提交读隔离, 原成员和制程/批次回归, 1/10/100批量添加SELECT观察], evidenceReferences: []}
+    evidenceGaps: [完整跨租户/所有并发写策略及真实浏览器确认不由本批局部证明, 批量添加/选项全载性能只量化讨论，未授权自动优化, 全审W2-W7/931知识86UI/A12/高风险/完整矩阵/A23及暂停项继续]
+  extensionStrategy:
+    selectedPaths: [transaction-orchestration]
+    rationale: 用原仓储flush保证同事务SQL顺序，不原位UPDATE改变成员identity，不复制数据模型或增加通用框架
+    ownershipBoundaries:
+      - {owner: ProductFamilyMembershipService, responsibility: 原成员转移及三方审计同事务}
+  affectedFiles:
+    - {path: gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductFamilyMembershipService.java, changeType: update, reason: 确认缺陷后delete后显式flush保证顺序}
+    - {path: gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/service/ProductFamilyTransferPostgresTest.java, changeType: create, reason: 完整canonical真实JPA/事务/审计/JWT-MVC及失败/读隔离/批量观察}
+    - {path: docs/knowledge/facts/core-business.yaml, changeType: update, reason: 确认/不采集原因两fact的当前来源纠错，复用既有Controller证据，不新增业务政策或运行事实注册}
+  acceptanceScenarios:
+    - id: scenario.product-family-transfer-order-and-atomicity
+      given: 合格产品已属于原簇且租户产品唯一约束开启
+      when: 有权确认转移至另簇或数据库/审计拒绝
+      then: 合法转移新ID与三方审计一起提交；失败恢复原成员且无部分审计，外部读者不见未提交缺口
+      evidenceRequirements: [旧源同字节真实PG负对照, canonical约束与真实SQL顺序, 原资格及确认/权限回归, 全新独立最终质量/本体边界, 全部FINAL后实际PR前漂移复核]

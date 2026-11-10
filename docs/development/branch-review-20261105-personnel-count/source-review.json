@@ -1,0 +1,60 @@
+{
+  "sourcePreChange": "00f864cdaf0796c9410173c835a477c7a3068d06",
+  "sourceFingerprints": [
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/identity/service/TenantTransferTargets.java",
+      "bytes": 5412,
+      "sha256": "3cc13372876d1a60932916235f7e22bf4f5f35a25974188aa4e2fd8af994ddde"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/identity/repository/UserAccountRepository.java",
+      "bytes": 1096,
+      "sha256": "948fb479ccf3c86f9f939f9b72de6b5cdeaef9faccbd4b206c9ebe73901280f9"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/identity/entity/UserAccount.java",
+      "bytes": 1676,
+      "sha256": "599f4f147512209882524a95f673a98bf41a50ff33a201854af4f342879d960e"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/WorkflowResponsibilityService.java",
+      "bytes": 18432,
+      "sha256": "a8395ff9b57a7a52f27e1423a19acdcd9611f850f3e9dfb30e8fd6a7b57b92f5"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/WorkflowOperationsQuery.java",
+      "bytes": 10122,
+      "sha256": "8111b25d328cce2a8d37466c51207c626d1fca87c22d565ebc978d4019d6fc42"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormWorkflowOperations.java",
+      "bytes": 19446,
+      "sha256": "428ac43f257f01a1168c0fc7a2a685235d7d52c013bd1c6a3b38018561920cc7"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionAccess.java",
+      "bytes": 19931,
+      "sha256": "4cc08bef2602a87812713e43e94001485ad47f287899dd336e5e74872a3b273d"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/service/WorkflowReadObservationPostgresTest.java",
+      "bytes": 18260,
+      "sha256": "437fcc7cb0e40dbc232603f42bcbd59e946d39a334156294a8740658d72ccd97"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/recordcontrol/service/RecordControlPostgresIntegrationTest.java",
+      "bytes": 77904,
+      "sha256": "811cb3511204eb7a78f200a3f45796041c9d704839a7a36eedc2ee27aafb1be2"
+    }
+  ],
+  "reviewedMethods": [
+    "TenantTransferTargets all search overloads/Specification/terminal read/require/available",
+    "Shared ordinary transfer, frozen candidate and managerial permission consumers at method boundaries",
+    "Read observer directory budget/SQL limit and new eligibility+tie regression; original name cases retained"
+  ],
+  "wholeFileComplete": 0,
+  "historicalUniqueCoverage": null,
+  "productFilesChanged": 1,
+  "testFilesChanged": 1,
+  "allOtherAuditQueuesRemain": true
+}

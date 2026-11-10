@@ -1239,32 +1239,32 @@ facts:
     conceptId: concept.product-family
     valueType: string
     sourceType: derived
-    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductProcessResolutionService.java"
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java"
     aliases: ["productFamilyTransfer.confirmation"]
     availability: configuration-and-runtime
     allowedOperators: [equals]
     status: implemented
     visibility: internal
-    evidenceIds: [evidence.product-process-resolution-service]
-    sourceRevision: working-tree
-    sourceLocator: "productFamilyTransfer.confirmation"
-    capturedAt: '2026-09-13'
+    evidenceIds: [evidence.process-modeling-controller]
+    sourceRevision: 04db7e838ec5e194355ff954ff173a02205e0fd6
+    sourceLocator: "transferProductFamilyMember的confirmed参数经requireConfirmed拒绝false；second-confirmation是规则层确认语义标签，不是新增请求字段或通用事实求值注册"
+    capturedAt: '2026-11-07'
     reviewStatus: reviewed
   - id: fact.catalog.productfamilytransfer-reason
     name: "规则事实 productFamilyTransfer.reason"
     conceptId: concept.product-family
     valueType: string
     sourceType: derived
-    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductProcessResolutionService.java"
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java"
     aliases: ["productFamilyTransfer.reason"]
     availability: configuration-and-runtime
     allowedOperators: [is-null]
     status: implemented
     visibility: internal
-    evidenceIds: [evidence.product-process-resolution-service]
-    sourceRevision: working-tree
-    sourceLocator: "productFamilyTransfer.reason"
-    capturedAt: '2026-09-13'
+    evidenceIds: [evidence.process-modeling-controller]
+    sourceRevision: 04db7e838ec5e194355ff954ff173a02205e0fd6
+    sourceLocator: "transferProductFamilyMember仅接收id、productId和confirmed，不采集转移原因；空原因语义来自本入口字段缺省，不是新增原因输入或通用事实求值注册"
+    capturedAt: '2026-11-07'
     reviewStatus: reviewed
   - id: fact.catalog.productmodeleditor-formbinding-required
     name: "规则事实 productModelEditor.formBinding.required"

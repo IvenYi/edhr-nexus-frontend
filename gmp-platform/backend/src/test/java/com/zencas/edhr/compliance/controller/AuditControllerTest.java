@@ -81,8 +81,8 @@ class AuditControllerTest {
                 "",
                 pageable))
                 .thenReturn(new PageImpl<>(List.of(event), pageable, 1));
-        when(userAccountRepository.findByUsername("admin"))
-                .thenReturn(Optional.of(UserAccount.builder()
+        when(userAccountRepository.findByUsernameIn(List.of("admin")))
+                .thenReturn(List.of(UserAccount.builder()
                         .id(99L)
                         .username("admin")
                         .displayName("系统管理员")
@@ -183,7 +183,7 @@ class AuditControllerTest {
                 .build();
         when(auditEventRepository.search("", "", "", "", "", "", "", "", queryAll))
                 .thenReturn(new PageImpl<>(List.of(legacyEvent), queryAll, 1));
-        when(userAccountRepository.findByUsername("admin")).thenReturn(Optional.empty());
+        when(userAccountRepository.findByUsernameIn(List.of("admin"))).thenReturn(List.of());
 
         ApiResponse<PageResult<AuditLogItem>> response = controller.list(
                 1,
@@ -219,7 +219,7 @@ class AuditControllerTest {
                 AuditEvent.builder().id(25L).entityType("AUDIT_LOG").action("EXPORT").operatorName("admin").source("UI").build());
         when(auditEventRepository.search("", "", "", "", "", "", "", "", queryAll))
                 .thenReturn(new PageImpl<>(events, queryAll, events.size()));
-        when(userAccountRepository.findByUsername("admin")).thenReturn(Optional.empty());
+        when(userAccountRepository.findByUsernameIn(List.of("admin"))).thenReturn(List.of());
 
         ApiResponse<PageResult<AuditLogItem>> response = controller.list(
                 1,
@@ -258,7 +258,7 @@ class AuditControllerTest {
                 AuditEvent.builder().id(45L).entityType("AUDIT_LOG").action("EXPORT").operatorName("admin").source("UI").build());
         when(auditEventRepository.search("", "", "", "", "", "", "", "", queryAll))
                 .thenReturn(new PageImpl<>(events, queryAll, events.size()));
-        when(userAccountRepository.findByUsername("admin")).thenReturn(Optional.empty());
+        when(userAccountRepository.findByUsernameIn(List.of("admin"))).thenReturn(List.of());
 
         ApiResponse<PageResult<AuditLogItem>> response = controller.list(
                 1,
@@ -300,7 +300,7 @@ class AuditControllerTest {
                         .build());
         when(auditEventRepository.search("", "", "", "", "", "", "", "", queryAll))
                 .thenReturn(new PageImpl<>(events, queryAll, events.size()));
-        when(userAccountRepository.findByUsername("admin")).thenReturn(Optional.empty());
+        when(userAccountRepository.findByUsernameIn(List.of("admin"))).thenReturn(List.of());
 
         ApiResponse<PageResult<AuditLogItem>> response = controller.list(
                 1,
@@ -399,13 +399,12 @@ class AuditControllerTest {
                 "",
                 queryAll))
                 .thenReturn(new PageImpl<>(List.of(selfChange, adminChange), queryAll, 2));
-        when(userAccountRepository.findByUsername("zhangsan")).thenReturn(Optional.of(UserAccount.builder()
+        when(userAccountRepository.findByUsernameIn(List.of("zhangsan", "admin"))).thenReturn(List.of(UserAccount.builder()
                 .id(1001L)
                 .username("zhangsan")
                 .displayName("张三")
                 .passwordHash("hash")
-                .build()));
-        when(userAccountRepository.findByUsername("admin")).thenReturn(Optional.of(UserAccount.builder()
+                .build(), UserAccount.builder()
                 .id(1L)
                 .username("admin")
                 .displayName("管理员")

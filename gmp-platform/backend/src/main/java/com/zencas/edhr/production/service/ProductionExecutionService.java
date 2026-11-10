@@ -142,7 +142,7 @@ public class ProductionExecutionService {
     }
 
     @Transactional(readOnly = true)
-    public List<Map<String, String>> transferTargets(Long id, String operationId, String formId, String instanceId, String keyword) {
+    public com.zencas.edhr.identity.service.TenantTransferTargets.Page transferTargets(Long id, String operationId, String formId, String instanceId, String keyword, int page, int size) {
         if (operationId == null || operationId.isBlank() || formId == null || formId.isBlank()) throw invalid("请选择待转办的表单审批任务");
         ProductionObject object = production.requireObject(id);
         WorkOrder order = production.requireOrder(object.getWorkOrderId());
@@ -152,7 +152,7 @@ public class ProductionExecutionService {
         if (!dhrInstances.customFormsMutable(id, false)) throw invalid("批记录审核中或已定稿，不能转办");
         String operator = AuditContext.getOperatorId();
         if (operator == null || operator.isBlank()) throw invalid("请先登录");
-        return engine.transferTargets(parse(execution.getSnapshotJson()), parse(execution.getStateJson()), operationId, formId, instanceId, operator, keyword);
+        return engine.transferTargets(parse(execution.getSnapshotJson()), parse(execution.getStateJson()), operationId, formId, instanceId, operator, keyword, page, size);
     }
 
     // First START reads mutable configuration and the DHR directory in multiple queries.

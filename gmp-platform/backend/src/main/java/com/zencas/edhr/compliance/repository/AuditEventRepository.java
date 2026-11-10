@@ -18,7 +18,13 @@ public interface AuditEventRepository extends JpaRepository<AuditEvent, Long>, J
             select event from AuditEvent event
             where (:entityType = '' or lower(event.entityType) = lower(:entityType))
               and (:entityId = '' or event.entityId = :entityId)
-              and (:action = '' or lower(event.action) = lower(:action))
+              and (:action = '' or
+                (case when upper(cast(function('regexp_replace', event.entityType,
+                  '^[\\x01-\\x20]+|[\\x01-\\x20]+$', '', 'g') as string)) in ('WORK_ORDER','PRODUCTION_OBJECT')
+                  then case when upper(cast(function('regexp_replace', event.action,
+                    '^[\\x09-\\x0D\\x1C-\\x20\\u1680\\u2000-\\u2006\\u2008-\\u200A\\u2028\\u2029\\u205F\\u3000]+|[\\x09-\\x0D\\x1C-\\x20\\u1680\\u2000-\\u2006\\u2008-\\u200A\\u2028\\u2029\\u205F\\u3000]+$', '', 'g') as string)) = 'CREATE'
+                    then 'create' else 'update' end
+                  else lower(event.action) end) = lower(:action))
               and (:operatorName = '' or lower(coalesce(event.operatorName, '')) like lower(concat('%', :operatorName, '%')))
               and (:operatorAccount = '' or lower(coalesce(event.operatorAccount, '')) like lower(concat('%', :operatorAccount, '%')))
               and (:moduleName = '' or lower(coalesce(event.moduleName, '')) like lower(concat('%', :moduleName, '%')))

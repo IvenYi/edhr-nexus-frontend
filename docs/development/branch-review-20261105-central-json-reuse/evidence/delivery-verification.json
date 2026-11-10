@@ -1,0 +1,89 @@
+{
+  "observedAt": "2026-11-05T13:51:00.712215+00:00",
+  "pullRequest": {
+    "base": "b52138259111dd5a0d99299087913500eff627f4",
+    "head": "d482ba22e657ded7ff3cd5c18aad1b828eb20fb6",
+    "html_url": "https://github.com/IvenYi/edhr-nexus-frontend/pull/62",
+    "mergeable": true,
+    "mergeable_state": "clean",
+    "merged": false,
+    "number": 62,
+    "state": "open",
+    "title": "perf(workflow): 按对象复用快照并收紧中央列表读取范围"
+  },
+  "testedCommit": "8a72398cbe3cf404fcddee9d1cef251f3ebc75dd",
+  "finalAcceptanceArchiveCommit": "d482ba22e657ded7ff3cd5c18aad1b828eb20fb6",
+  "actualRemoteHeadAtObservation": "d482ba22e657ded7ff3cd5c18aad1b828eb20fb6",
+  "sourceGuards": [
+    {
+      "path": "AGENTS.md",
+      "sha256": "13dc7cdacea0b1bb0aef2abb268781f9c69584acd4879b204d2b7fd81a2927fc",
+      "sameAsTested": true
+    },
+    {
+      "path": "codeplzreadme.md",
+      "sha256": "7a1be8efffec596b034335058dca2860346d256622f899c8dac97c5172dd6df2",
+      "sameAsTested": true
+    },
+    {
+      "path": "docs/agents/agent-handoff-contract.md",
+      "sha256": "3439a35dd1baa77ac723f1b5afa237a338d56e31386f06b02b4aacfd754e3a12",
+      "sameAsTested": true
+    },
+    {
+      "path": "docs/agents/quality-verifier.md",
+      "sha256": "6b3de9323924fb4ba5ae87be76c5136d28e754810c46b22b8e3d1cdd6c2f826f",
+      "sameAsTested": true
+    },
+    {
+      "path": "docs/agents/business-knowledge-modeler.md",
+      "sha256": "9806c900f98e1cbcf4f8d68a998a07a5449369df037183c75ec08cd666bf56ae",
+      "sameAsTested": true
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormWorkflowOperations.java",
+      "sha256": "005bbdeaf96fb4ed489f5d4bce4a663f7bd1a4695dda6f6a55fa83320c94ae9d",
+      "sameAsTested": true
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/WorkflowOperationsQuery.java",
+      "sha256": "bf4de2abc0c5009692882076bd2950563515ad5fcdfa2fe1404ba2fc9570541d",
+      "sameAsTested": true
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/service/WorkflowReadObservationPostgresTest.java",
+      "sha256": "438438d15054eb7d281edc69bbc6c1cba9758bba826e865ac29a9ffa47ca40c2",
+      "sameAsTested": true
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/recordcontrol/service/RecordControlPostgresIntegrationTest.java",
+      "sha256": "ed278968cb8b1aade7dccef98416656889c952e0ca4eccfc879e67d09ab52b83",
+      "sameAsTested": true
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowOperationsController.java",
+      "sha256": "b721a9e8edf18042f501dd0a026d8cdba1a37790ecf357112ead05e05b0b91c4",
+      "sameAsTested": true
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/workflow-center/InstanceList.tsx",
+      "sha256": "971a129802348e936ce40b7ac18d01cab39ca74e0383b26dd0ec85b3aff3afe7",
+      "sameAsTested": true
+    },
+    {
+      "path": "gmp-platform/frontend/src/api/workflow-operations.ts",
+      "sha256": "a66ce91f7c5e36db9f17057a803222b90189297e45fc4f3eab10c8b7c80ff39c",
+      "sameAsTested": true
+    }
+  ],
+  "quality": "passed 15/15 required,105 native,89 knowledge",
+  "ontology": "NA FINAL,13 original IDs +3 existing subset delta,350 unchanged",
+  "allDispatchedRolesAndChildrenFinal": true,
+  "allOwnedResourcesClean": true,
+  "taskDrift": false,
+  "postQualityChanges": "L0 README/NEXT/old stage navigation/scope/acceptance/archive/delivery only",
+  "registrationCommitWillBePushedAndRechecked": true,
+  "riskStates": "two measured performance defects verified-resolved in declared scope; production/history/global audit residuals retained",
+  "noActionsQueriesOrManualTriggers": true,
+  "mergedOrDeployedByAgent": false
+}

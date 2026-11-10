@@ -1,6 +1,7 @@
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { Alert, Autocomplete, Button, DialogActions, DialogContent, DialogTitle, Stack, TextField, Typography } from '@mui/material';
+import { Alert, Button, DialogActions, DialogContent, DialogTitle, Stack, TextField, Typography } from '@mui/material';
+import PersonnelTargetSelect from '@/components/identity/PersonnelTargetSelect';
 import FormDialog from '@/components/FormDialog';
 import FormDialogSection from '@/components/FormDialogSection';
 import ButtonSignatureCredentials from './ButtonSignatureCredentials';
@@ -14,21 +15,14 @@ export default function WorkflowResponsibilityDialog({ taskId, taskState, previo
   const { showMessage } = useSnackbar();
   const cache = useQueryClient();
   const [target, setTarget] = useState<Target | null>(null);
-  const [input, setInput] = useState('');
-  const [searchInput, setSearchInput] = useState('');
-  const [keyword, setKeyword] = useState('');
   const [reason, setReason] = useState('');
   const [account, setAccount] = useState('');
   const [password, setPassword] = useState('');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   const submitting = useRef(false);
-  const composing = useRef(false);
   const reasonRef = useRef<HTMLInputElement>();
   const context = useQuery({ queryKey: ['workflow-transfer-context', taskId], queryFn: () => getTransferContext(taskId), enabled: !reassign, retry: false });
-  useEffect(() => { const timeout = setTimeout(() => { if (!composing.current) setKeyword(searchInput.trim()); }, 300); return () => clearTimeout(timeout); }, [searchInput]);
-  const targets = useQuery({ queryKey: ['workflow-responsibility-targets', taskId, reassign, keyword], retry: false,
-    queryFn: ({ signal }) => getResponsibilityTargets(taskId, reassign, keyword, signal) });
   const signatureRequired = reassign || context.data?.signatureRequired;
   const confirm = async () => {
     if (submitting.current) return;
@@ -50,13 +44,9 @@ export default function WorkflowResponsibilityDialog({ taskId, taskState, previo
       <Typography variant="body2" color="text.secondary">任务 {taskId}{previousAssignee ? ` · 原处理人：${previousAssignee}` : ''}</Typography>
       <Typography variant="caption" color="text.secondary">只更换当前处理人，流程节点和审批结果保持不变。</Typography>
       {!reassign && context.isError && <Alert severity="error" action={<Button onClick={() => void context.refetch()}>重试</Button>}>任务配置加载失败</Alert>}
-      {targets.isError && <Alert severity="error" action={<Button onClick={() => void targets.refetch()}>重试</Button>}>可选人员加载失败</Alert>}
-      <Autocomplete options={targets.data ?? []} value={target} inputValue={input} loading={targets.isFetching} disabled={busy}
-        filterOptions={options => options} isOptionEqualToValue={(a, b) => a.id === b.id} getOptionLabel={option => `${option.name}（${option.username}）`}
-        onChange={(_, value) => { setTarget(value); setError(''); }} onInputChange={(_, value, why) => { setInput(value); if (why === 'input') setSearchInput(value); if (why === 'clear') { setSearchInput(''); setKeyword(''); setTarget(null); } }}
-        clearText="清除人员" openText="展开人员" closeText="收起人员" loadingText="正在加载人员…" noOptionsText="暂无符合条件的人员，请按姓名或账号搜索"
-        renderInput={params => <TextField {...params} required size="small" label="新处理人" onCompositionStart={() => { composing.current = true; }}
-          onCompositionEnd={event => { composing.current = false; setKeyword((event.target as HTMLInputElement).value.trim()); }} />} />
+      <PersonnelTargetSelect key={`${taskId}:${reassign}`} scope={['responsibility', taskId, reassign]}
+        loadPage={(page, keyword, signal) => getResponsibilityTargets(taskId, reassign, keyword, page, signal)}
+        value={target} onChange={person => { setTarget(person); setError(''); }} disabled={busy} />
       <TextField inputRef={reasonRef} label={reassign ? '重新分配原因' : '转办原因'} required multiline minRows={3} size="small" value={reason}
         disabled={busy} onChange={event => { setReason(event.target.value); setError(''); }} inputProps={{ maxLength: 500 }} helperText={`${reason.length}/500`} />
     </Stack></FormDialogSection>
@@ -65,7 +55,7 @@ export default function WorkflowResponsibilityDialog({ taskId, taskState, previo
       {error && <Alert severity="error" sx={{ mt: 1.5 }}>{error}</Alert>}
     </DialogContent>
     <DialogActions><Button disabled={busy} onClick={onClose}>取消</Button><Button variant="contained" sx={{ minWidth: 128 }}
-      disabled={busy || !target || !reason.trim() || targets.isError || (!reassign && !context.data) || (Boolean(signatureRequired) && (!account.trim() || !password))}
+      disabled={busy || !target || !reason.trim() || (!reassign && !context.data) || (Boolean(signatureRequired) && (!account.trim() || !password))}
       onClick={() => void confirm()}>{busy ? '处理中…' : reassign ? '签署并重新分配' : signatureRequired ? '签署并转办' : '确认转办'}</Button></DialogActions>
   </FormDialog>;
 }

@@ -199,11 +199,11 @@ class WorkflowTransferPostgresTest {
 
     @Test
     void personnelSearchAndCommandUseTheSameTenantAvailabilityWithRealSql() {
-        assertThat(engine.transferTargets(TASK, "1", "")).extracting(item -> item.get("id")).containsExactlyInAnyOrder("2", "3", "7");
-        assertThat(engine.transferTargets(TASK, "1", "REVIEWER")).extracting(item -> item.get("id")).containsExactly("3", "2");
-        assertThat(engine.transferTargets(TASK, "1", "复核")).extracting(item -> item.get("id")).containsExactly("3", "2");
-        assertThat(engine.transferTargets(TASK, "1", " reviewer2 ")).extracting(item -> item.get("id")).containsExactly("2");
-        assertThat(engine.transferTargets(TASK, "1", "no-match")).isEmpty();
+        assertThat(engine.transferTargets(TASK, "1", "", 1, 100).content()).extracting(item -> item.get("id")).containsExactlyInAnyOrder("2", "3", "7");
+        assertThat(engine.transferTargets(TASK, "1", "REVIEWER", 1, 100).content()).extracting(item -> item.get("id")).containsExactly("3", "2");
+        assertThat(engine.transferTargets(TASK, "1", "复核", 1, 100).content()).extracting(item -> item.get("id")).containsExactly("3", "2");
+        assertThat(engine.transferTargets(TASK, "1", " reviewer2 ", 1, 100).content()).extracting(item -> item.get("id")).containsExactly("2");
+        assertThat(engine.transferTargets(TASK, "1", "no-match", 1, 100).content()).isEmpty();
         engine.transferTask(TASK, "02", "1", "按实际用户标识记录");
         assertThat(tasks.findById(TASK).orElseThrow().getAssigneeId()).isEqualTo("2");
         assertThat(todo("2")).containsExactly(TASK);
@@ -237,7 +237,7 @@ class WorkflowTransferPostgresTest {
     void endedTaskRejectsSearchAndTransferWithoutWrites(String taskStatus) {
         jdbc.update("UPDATE workflow_task SET status=? WHERE id=10", taskStatus);
         Map<String, String> before = state();
-        assertThatThrownBy(() -> engine.transferTargets(TASK, "1", "")).hasMessageContaining("无权转办");
+        assertThatThrownBy(() -> engine.transferTargets(TASK, "1", "", 1, 100).content()).hasMessageContaining("无权转办");
         assertThatThrownBy(() -> engine.transferTask(TASK, "2", "1", "无效请求")).isInstanceOf(RuntimeException.class);
         assertThat(state()).isEqualTo(before);
     }
@@ -246,7 +246,7 @@ class WorkflowTransferPostgresTest {
     void terminatedInstanceRejectsBothEntrypoints() {
         jdbc.update("UPDATE workflow_instance SET status='TERMINATED' WHERE id=20");
         Map<String, String> before = state();
-        assertThatThrownBy(() -> engine.transferTargets(TASK, "1", "")).hasMessageContaining("无权转办");
+        assertThatThrownBy(() -> engine.transferTargets(TASK, "1", "", 1, 100).content()).hasMessageContaining("无权转办");
         assertThatThrownBy(() -> engine.transferTask(TASK, "2", "1", "无效请求")).hasMessageContaining("已结束");
         assertThat(state()).isEqualTo(before);
     }
@@ -255,7 +255,7 @@ class WorkflowTransferPostgresTest {
     void dhrTaskStillCannotUseGenericSearchTransferOrQueue() {
         jdbc.update("UPDATE workflow_instance SET business_type='DHR_SUMMARY' WHERE id=20");
         Map<String, String> before = state();
-        assertThatThrownBy(() -> engine.transferTargets(TASK, "1", "")).hasMessageContaining("DHR");
+        assertThatThrownBy(() -> engine.transferTargets(TASK, "1", "", 1, 100).content()).hasMessageContaining("DHR");
         assertThatThrownBy(() -> engine.transferTask(TASK, "2", "1", "无效请求")).hasMessageContaining("DHR");
         assertThat(todo("1")).isEmpty();
         assertThat(state()).isEqualTo(before);
@@ -367,7 +367,8 @@ class WorkflowTransferPostgresTest {
     void controllerUsesAuthenticatedActorAndRequiresTheTargetAndReasonInJson() throws Exception {
         String original = taskSnapshot();
         mvc.perform(get("/api/v1/workflow/tasks/10/transfer-targets").param("keyword", "reviewer2"))
-                .andExpect(status().isOk()).andExpect(jsonPath("$.data[0].id").value("2"));
+                .andExpect(status().isOk()).andExpect(jsonPath("$.data.content[0].id").value("2"))
+                .andExpect(jsonPath("$.data.page").value(1)).andExpect(jsonPath("$.data.hasNext").value(false));
         mvc.perform(post("/api/v1/workflow/tasks/10/transfer").contentType("application/json")
                         .content("{\"newAssigneeId\":\"2\",\"operatorId\":\"6\",\"reason\":\"  认证用户发起委托  \"}"))
                 .andExpect(status().isOk()).andExpect(jsonPath("$.data.newAssigneeId").value("2"));
@@ -388,6 +389,16 @@ class WorkflowTransferPostgresTest {
                         .content("{\"reason\":\"没有目标\"}"))
                 .andExpect(status().isBadRequest());
         assertThat(state()).isEqualTo(before);
+    }
+
+    @Test void controllerCanReachTargetsAfterTheFirstHundred() throws Exception {
+        jdbc.update("INSERT INTO user_account(id,tenant_id,username,display_name,password_hash,status) SELECT 100+n,9,'paged-api-'||n,'paged-api','not-used','ACTIVE' FROM generate_series(0,150) n");
+        mvc.perform(get("/api/v1/workflow/tasks/10/transfer-targets").param("keyword", "paged-api").param("page", "3").param("size", "50"))
+                .andExpect(status().isOk()).andExpect(jsonPath("$.data.content.length()").value(50))
+                .andExpect(jsonPath("$.data.content[0].id").value("200")).andExpect(jsonPath("$.data.hasNext").value(true));
+        mvc.perform(get("/api/v1/workflow/tasks/10/transfer-targets").param("keyword", "paged-api").param("page", "4").param("size", "50"))
+                .andExpect(status().isOk()).andExpect(jsonPath("$.data.content.length()").value(1))
+                .andExpect(jsonPath("$.data.content[0].id").value("250")).andExpect(jsonPath("$.data.hasNext").value(false));
     }
 
     private void operator(String id) {

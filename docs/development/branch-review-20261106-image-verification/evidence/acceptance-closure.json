@@ -1,0 +1,53 @@
+{
+  "createdAt": "2026-11-06T03:14:20.168015+00:00",
+  "testedCommit": "b7f576e9a5b519ceac97b372341612c3a217c12a",
+  "latestFetchedTarget": "cf5594947e96dcc56497997d7941da0f7a89be7e",
+  "targetUnchanged": true,
+  "afterAllSpecializedFormalFinal": true,
+  "roles": [
+    {
+      "name": "image_verify_ontology",
+      "formalFinal": true,
+      "result": "not-applicable",
+      "manifestSha256": "3ff73b7738642958660cadb42aa13bcdab2f9ab96256c12824323422d2e5a34d"
+    },
+    {
+      "name": "w5_hash_compatibility_plan",
+      "formalFinal": true,
+      "result": "read-only-plan-completed-issue-open",
+      "manifestSha256": "6a3d8d435add779a34335db1e30a580f251466c224888754404bfd6f9781574e"
+    },
+    {
+      "name": "image_verify_final_quality",
+      "formalFinal": true,
+      "result": "passed",
+      "manifestSha256": "d35eef548ffb9b1eaf508ce1013284e8b3e00022b71a2316b62f6b93ce4f58f8"
+    }
+  ],
+  "qualityChecks": 18,
+  "mainRegression": 87,
+  "independentRegression": 87,
+  "knowledgeMainAndIndependent": 89,
+  "sourceFingerprints": [
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrAttachmentService.java",
+      "sha256": "444c6d75c2c19770e726ed4b62babf852aef1977136925015eb8f929415db497",
+      "equalsIndependentTestedCommit": true
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrAttachmentUploadVerifyObservationPostgresTest.java",
+      "sha256": "e1da714bb9ca7dd1557a5520a467f5284f61315a0f1dd76036fbfa5814cb29c9",
+      "equalsIndependentTestedCommit": true
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrAttachmentImageVerificationTest.java",
+      "sha256": "5046484417cb772b54ece0867f387335dbcf6e3330e1716146d37d2d6ab2ac71",
+      "equalsIndependentTestedCommit": true
+    }
+  ],
+  "postTestDisposition": "L0 acceptance/docs/evidence only; all main/test/frontend/knowledge/contract bytes equal tested candidate; no new runtime test needed for copying final signed reports",
+  "driftReview": "pre-pr-drift-review.md",
+  "overallAuditComplete": false,
+  "currentBatchBlockingConditions": [],
+  "remaining": "Original W2-W7,931/86,A12/high/full matrices,history/text-ID index/large PDF-Office-upload/UNKNOWN-reconciliation/A23 incl reviewed code and paused queues retained; W5 old issue open."
+}

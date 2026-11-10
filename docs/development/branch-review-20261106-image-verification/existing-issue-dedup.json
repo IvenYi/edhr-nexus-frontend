@@ -1,0 +1,53 @@
+{
+  "sourcePath": "docs/development/branch-review-20261026-capacity-audit/ledger/findings.json",
+  "sourceCommit": "cf5594947e96dcc56497997d7941da0f7a89be7e",
+  "sourceSha256": "1a4ac05b5456cd69e5fe83c934d1a9f0b13743cde6e68ba7c7ac4d062b0f27fb",
+  "existingRecord": {
+    "id": "W5-AUDIT-HASH-001",
+    "recordKind": "product-defect",
+    "originalStatus": "preexisting-reproduced-on-fixed-baseline",
+    "severity": "medium",
+    "workPackage": "W5",
+    "aliases": [],
+    "parentIssueId": null,
+    "affectedPaths": [
+      "gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/entity/AuditEvent.java"
+    ],
+    "description": "AuditEvent在PrePersist按原JSON/时间字符串封存hash，PostgreSQL JSONB/时间往返归一化后computeSnapshotHash不能还原原hash；基线a828两条原生PG探针均失败。",
+    "disposition": "preexisting-medium-open",
+    "resolution": {
+      "fixCommits": [],
+      "testedCommits": [],
+      "pullRequests": [],
+      "mergeCommits": []
+    },
+    "limitations": [
+      "Existing application AuditEvent read/export does not rehash; distinct DHR/signature/file hash checks must not be conflated.",
+      "Not introduced or repaired by this delegation/write-guard slice; no new hash algorithm or historical audit rewrite authorized.",
+      "Future separate W5 review must define stable canonical payload/version and historical compatibility; current stored-hash/atomicity tests do not certify round-trip rehash."
+    ],
+    "evidence": [
+      {
+        "path": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/primary/edhr-w3-audit-hash-baseline-probe-summary.json",
+        "commit": "df6ea28a6388a89611786116700836c6bf7f4819",
+        "sha256": "cafa3d3b08f0f209bbe0112cc2c32b51276bb62cb31f539c9f7486e94c9da04f",
+        "locator": "/suite; /cases"
+      },
+      {
+        "path": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/helpers/edhr-w3-audit-hash-source-map.json",
+        "commit": "df6ea28a6388a89611786116700836c6bf7f4819",
+        "sha256": "4853027c08457fe0d5e329c15a203f10a2ab14b48444bcd34564513cada10a17",
+        "locator": "/sourceScopes"
+      },
+      {
+        "path": "docs/development/branch-review-20261020-w3-write-boundaries/README.md",
+        "commit": "df6ea28a6388a89611786116700836c6bf7f4819",
+        "sha256": "007c95447154cdc08c4eccd1828ef07ff509643008538dc62f8ad8ed45d5984b",
+        "locator": "本批发现、实际验证与限制"
+      }
+    ],
+    "newlyAdjudicatedInThisBatch": false,
+    "runtimeReverifiedInThisBatch": false
+  },
+  "disposition": "retain preexisting-medium-open; compatibility plan only, no new issue or runtime-replay claim, no old hash changes"
+}

@@ -1,0 +1,124 @@
+ontologyResult:
+  result: not-applicable
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: fa5921698f5fa4024ad7ca86ee2a90e3cd3a9620
+    targetBranch: edhr-dev
+    targetCommit: fa5921698f5fa4024ad7ca86ee2a90e3cd3a9620
+    contractReadCommit: fa5921698f5fa4024ad7ca86ee2a90e3cd3a9620
+    uncommittedContractPaths: []
+  reason: 本轮仅新增opt-in原生只读观测测试，全部产品代码、知识、契约和架构字节保持；有限核对当前目录姓名、历史签署证据、只读领域所有权和既有目录目标范围，未引入新业务政策或定义替代。查询优化选择仍待主审与用户讨论，不需改写知识。
+  changedArtifacts: []
+  knowledgeSync:
+  - id: DEC-0074-01
+    disposition: retained
+    scope: 实际签署人身份与会话身份分开；当前目录姓名不能重写signature.signerName/snapshotData。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0074-shared-terminal-button-signature.yaml
+    - docs/knowledge/evidence/button-signature-confirmed.md
+  - id: DEC-0081-01
+    disposition: retained
+    scope: 通用/普通表单本人转办的同租户正常可用目标范围保留，目录成本观测不加候选或权限政策。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0081-tenant-scoped-task-delegation.yaml
+    - docs/knowledge/evidence/tenant-task-delegation-2026-10-20.md
+  - id: DEC-0081-02
+    disposition: retained
+    scope: 原候选来源与当前责任分开；姓名只读不重算冻结来源或让旧候选获得处理权。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0081-tenant-scoped-task-delegation.yaml
+    - docs/knowledge/evidence/tenant-task-delegation-2026-10-20.md
+  - id: DEC-0092-01
+    disposition: retained
+    scope: 流程日志/干预继续既有实例读取和身份，不新增重复运行任务或改变历史身份。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0092-workflow-operations-entry-and-actions.yaml
+    - docs/development/workflow-operations-20261030/user-confirmed.md
+  - id: DEC-0092-02
+    disposition: retained
+    scope: 记录控制转办仍原候选且申请人回避，不从通用租户内委托外推开放范围。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0092-workflow-operations-entry-and-actions.yaml
+    - docs/knowledge/evidence/workflow-operations-20261030.md
+  - id: DEC-0093-01
+    disposition: retained
+    scope: 集中只读查询按领域授权，菜单/读取不授予动作；表单和DHR拥有各自运行事实。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0093-central-form-dhr-workflow-responsibility.yaml
+    - docs/development/workflow-central-entry-extension-20261102/user-confirmed.md
+  - id: DEC-0093-03
+    disposition: retained
+    scope: 责任历史和领域数据审计保留实际会话/签署人及签名关联；当前姓名投影不是历史签名证据。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0093-central-form-dhr-workflow-responsibility.yaml
+    - docs/development/workflow-central-entry-extension-20261102/user-confirmed.md
+  - id: DEC-0093-04
+    disposition: retained
+    scope: 具体查询/分页/权限码属于工程选择；SQL次数和本地观测不冒充新政策、全系统或生产验收。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0093-central-form-dhr-workflow-responsibility.yaml
+    - docs/knowledge/evidence/central-form-dhr-workflow-20261102.md
+  conflicts: []
+  questions: []
+  validationEvidence:
+  - id: validation.stable-baseline-and-source
+    checkType: reference
+    command: git rev-parse / git diff previousDelivery..base and base..workingTree
+      over product, contracts, knowledge and architecture
+    outcome: passed
+    evidence:
+    - baseline.json
+    - commands.json
+    - source-fingerprints.json
+  - id: validation.knowledge-byte-preservation
+    checkType: reference
+    command: Compare all345 tracked docs/knowledge file bytes against fa592169 Git
+      blobs
+    outcome: passed
+    evidence:
+    - knowledge-byte-check.json
+  - id: validation.finite-policy-read-boundary
+    checkType: evidence-path
+    command: Read eight existing statements, original confirmations and five current
+      product anchors; separate current-name projection from persisted signature/audit
+      identity
+    outcome: passed
+    evidence:
+    - finite-id-review.json
+    - semantic-review.md
+    - read-snapshot/
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages:
+    - P1
+    - P2
+    - P3
+verificationScope:
+  status: FINAL
+  formalKnowledgeTestsExecuted: 0
+  nativeTestsExecuted: 0
+  browserExecuted: false
+  roleChangedRepositoryPaths: []
+  finiteExistingStatementsReviewed: 8
+  newHistoricalUniqueCoverageClaim: false
+  knowledgeFilesByteCompared: 345
+  fullKnowledgeSemanticAuditComplete: false
+  pendingKnowledgeIncrementCandidates: 931
+  priorUiDiagnosticCandidatesStillPending: 86
+  sourceFingerprints: 25
+  childRoles: []
+  readScope: Mandatory governance references loaded; relevant model/ownership/status/stage
+    and open-question scope read. Historical prose/source snapshots are provenance,
+    not whole-file semantic completion.
+  testFingerprintIntentionallyNotFinal: Parent may adjust observation tools/fixtures;
+    this role pins stable product anchors and current decisionPackage only.
+  residuals:
+  - Future batching must preserve existing current-name fallback and task/visibility
+    semantics without replacing historical signatures
+  - No actual SQL counts, execution-plan or production SLA certified by this role;
+    main/final QA execute tests
+  - Full account/JWT/browser/signature/tenant/recipient matrices,931 knowledge/86
+    UI, W2-W7/high/A12 and paused scopes remain

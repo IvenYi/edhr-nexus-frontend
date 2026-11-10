@@ -1,0 +1,729 @@
+{
+  "baseCommit": "a429f983a7a69553753034e9306d12598fcc15be",
+  "oldPhase": "budget: unchanged base products plus new identical final native test",
+  "finalPhase": "optimized: same native test, two product changes",
+  "events": [
+    {
+      "name": "lock_submit_false",
+      "applicationName": "audit_summary_lock_submit_false",
+      "measuredThreadId": 126,
+      "elapsedNanos": 31481681,
+      "threadAllocatedBytes": 248112,
+      "heapBefore": 142684144,
+      "heapAfter": 143732720,
+      "trackedLogicalReadBytes": 68,
+      "trackedReadEvents": 2,
+      "rejection": "请确认质量结论、异常处置、源签署和完整证据范围已人工核查",
+      "data": {
+        "successfulSubmit": false
+      },
+      "selectStatements": 11
+    },
+    {
+      "name": "lock_submit_true",
+      "applicationName": "audit_summary_lock_submit_true",
+      "measuredThreadId": 124,
+      "elapsedNanos": 43596752,
+      "threadAllocatedBytes": 416512,
+      "heapBefore": 134295536,
+      "heapAfter": 134295536,
+      "trackedLogicalReadBytes": 68,
+      "trackedReadEvents": 2,
+      "rejection": null,
+      "data": {
+        "successfulSubmit": true
+      },
+      "selectStatements": 13
+    },
+    {
+      "name": "lock_unlink_false",
+      "applicationName": "audit_summary_lock_unlink_false",
+      "measuredThreadId": 127,
+      "elapsedNanos": 29757169,
+      "threadAllocatedBytes": 138840,
+      "heapBefore": 143732720,
+      "heapAfter": 146878448,
+      "trackedLogicalReadBytes": 0,
+      "trackedReadEvents": 0,
+      "rejection": null,
+      "data": {
+        "successfulSubmit": false
+      },
+      "selectStatements": 3
+    },
+    {
+      "name": "lock_unlink_true",
+      "applicationName": "audit_summary_lock_unlink_true",
+      "measuredThreadId": 125,
+      "elapsedNanos": 36636428,
+      "threadAllocatedBytes": 111888,
+      "heapBefore": 134295536,
+      "heapAfter": 134295536,
+      "trackedLogicalReadBytes": 0,
+      "trackedReadEvents": 0,
+      "rejection": "当前 DHR 不能修改附件；请先退回或重新整理，历史版本保持不变",
+      "data": {
+        "successfulSubmit": true
+      },
+      "selectStatements": 1
+    },
+    {
+      "name": "reject_manual_review",
+      "applicationName": "audit_summary_reject_manual_review",
+      "measuredThreadId": 1,
+      "elapsedNanos": 4190039,
+      "threadAllocatedBytes": 248704,
+      "heapBefore": 189617968,
+      "heapAfter": 190666544,
+      "trackedLogicalReadBytes": 136,
+      "trackedReadEvents": 4,
+      "rejection": "请确认质量结论、异常处置、源签署和完整证据范围已人工核查",
+      "data": {
+        "failure": "manual_review"
+      },
+      "selectStatements": 11
+    },
+    {
+      "name": "reject_missing",
+      "applicationName": "audit_summary_reject_missing",
+      "measuredThreadId": 1,
+      "elapsedNanos": 13756566,
+      "threadAllocatedBytes": 585808,
+      "heapBefore": 167597872,
+      "heapAfter": 167597872,
+      "trackedLogicalReadBytes": 0,
+      "trackedReadEvents": 0,
+      "rejection": "附件丢失或摘要不一致",
+      "data": {
+        "failure": "missing"
+      },
+      "selectStatements": 10
+    },
+    {
+      "name": "reject_order_false",
+      "applicationName": "audit_summary_reject_order_false",
+      "measuredThreadId": 1,
+      "elapsedNanos": 3689153,
+      "threadAllocatedBytes": 211336,
+      "heapBefore": 205346608,
+      "heapAfter": 205346608,
+      "trackedLogicalReadBytes": 0,
+      "trackedReadEvents": 0,
+      "rejection": "附件“original-0.png”尚未核验，不能提交汇总",
+      "data": {
+        "missingFirst": false
+      },
+      "selectStatements": 10
+    },
+    {
+      "name": "reject_order_true",
+      "applicationName": "audit_summary_reject_order_true",
+      "measuredThreadId": 1,
+      "elapsedNanos": 3790934,
+      "threadAllocatedBytes": 211456,
+      "heapBefore": 200103728,
+      "heapAfter": 200103728,
+      "trackedLogicalReadBytes": 0,
+      "trackedReadEvents": 0,
+      "rejection": "附件丢失或摘要不一致",
+      "data": {
+        "missingFirst": true
+      },
+      "selectStatements": 10
+    },
+    {
+      "name": "reject_pending",
+      "applicationName": "audit_summary_reject_pending",
+      "measuredThreadId": 1,
+      "elapsedNanos": 6139396,
+      "threadAllocatedBytes": 218664,
+      "heapBefore": 179132208,
+      "heapAfter": 179132208,
+      "trackedLogicalReadBytes": 0,
+      "trackedReadEvents": 0,
+      "rejection": "附件“original-0.png”尚未核验，不能提交汇总",
+      "data": {
+        "failure": "pending"
+      },
+      "selectStatements": 10
+    },
+    {
+      "name": "reject_source_changed",
+      "applicationName": "audit_summary_reject_source_changed",
+      "measuredThreadId": 1,
+      "elapsedNanos": 4048588,
+      "threadAllocatedBytes": 210368,
+      "heapBefore": 184375088,
+      "heapAfter": 184375088,
+      "trackedLogicalReadBytes": 0,
+      "trackedReadEvents": 0,
+      "rejection": "来源记录或附件在核查后发生变化，请刷新并重新确认汇总草稿",
+      "data": {
+        "failure": "source_changed"
+      },
+      "selectStatements": 10
+    },
+    {
+      "name": "reject_stale_revision",
+      "applicationName": "audit_summary_reject_stale_revision",
+      "measuredThreadId": 1,
+      "elapsedNanos": 2578775,
+      "threadAllocatedBytes": 79336,
+      "heapBefore": 194860848,
+      "heapAfter": 195909424,
+      "trackedLogicalReadBytes": 0,
+      "trackedReadEvents": 0,
+      "rejection": "汇总草稿已被其他操作更新，请刷新后重试",
+      "data": {
+        "failure": "stale_revision"
+      },
+      "selectStatements": 5
+    },
+    {
+      "name": "reject_tampered",
+      "applicationName": "audit_summary_reject_tampered",
+      "measuredThreadId": 1,
+      "elapsedNanos": 8771362,
+      "threadAllocatedBytes": 246912,
+      "heapBefore": 173889328,
+      "heapAfter": 173889328,
+      "trackedLogicalReadBytes": 8,
+      "trackedReadEvents": 2,
+      "rejection": "附件丢失或摘要不一致",
+      "data": {
+        "failure": "tampered"
+      },
+      "selectStatements": 10
+    },
+    {
+      "name": "submit_0",
+      "applicationName": "audit_summary_submit_0",
+      "measuredThreadId": 1,
+      "elapsedNanos": 8321561,
+      "threadAllocatedBytes": 379904,
+      "heapBefore": 210589488,
+      "heapAfter": 210589488,
+      "trackedLogicalReadBytes": 0,
+      "trackedReadEvents": 0,
+      "rejection": null,
+      "data": {
+        "fileBytes": 0,
+        "attachments": 0
+      },
+      "selectStatements": 13
+    },
+    {
+      "name": "submit_1",
+      "applicationName": "audit_summary_submit_1",
+      "measuredThreadId": 1,
+      "elapsedNanos": 9075555,
+      "threadAllocatedBytes": 396480,
+      "heapBefore": 215832368,
+      "heapAfter": 215832368,
+      "trackedLogicalReadBytes": 68,
+      "trackedReadEvents": 2,
+      "rejection": null,
+      "data": {
+        "fileBytes": 68,
+        "attachments": 1
+      },
+      "selectStatements": 13
+    },
+    {
+      "name": "submit_10",
+      "applicationName": "audit_summary_submit_10",
+      "measuredThreadId": 1,
+      "elapsedNanos": 11060901,
+      "threadAllocatedBytes": 592552,
+      "heapBefore": 222123824,
+      "heapAfter": 222123824,
+      "trackedLogicalReadBytes": 680,
+      "trackedReadEvents": 20,
+      "rejection": null,
+      "data": {
+        "fileBytes": 68,
+        "attachments": 10
+      },
+      "selectStatements": 13
+    },
+    {
+      "name": "submit_100",
+      "applicationName": "audit_summary_submit_100",
+      "measuredThreadId": 1,
+      "elapsedNanos": 11067415,
+      "threadAllocatedBytes": 2649064,
+      "heapBefore": 236803888,
+      "heapAfter": 239949616,
+      "trackedLogicalReadBytes": 6800,
+      "trackedReadEvents": 200,
+      "rejection": null,
+      "data": {
+        "fileBytes": 68,
+        "attachments": 100
+      },
+      "selectStatements": 13
+    },
+    {
+      "name": "submit_300",
+      "applicationName": "audit_summary_submit_300",
+      "measuredThreadId": 1,
+      "elapsedNanos": 24464670,
+      "threadAllocatedBytes": 7692216,
+      "heapBefore": 273504048,
+      "heapAfter": 281892656,
+      "trackedLogicalReadBytes": 20400,
+      "trackedReadEvents": 600,
+      "rejection": null,
+      "data": {
+        "fileBytes": 68,
+        "attachments": 300
+      },
+      "selectStatements": 13
+    },
+    {
+      "name": "submit_50mib",
+      "applicationName": "audit_summary_submit_50mib",
+      "measuredThreadId": 1,
+      "elapsedNanos": 42656417,
+      "threadAllocatedBytes": 389592,
+      "heapBefore": 290281264,
+      "heapAfter": 291329840,
+      "trackedLogicalReadBytes": 52428800,
+      "trackedReadEvents": 6401,
+      "rejection": null,
+      "data": {
+        "fileBytes": 52428800,
+        "attachments": 1
+      },
+      "selectStatements": 13
+    },
+    {
+      "name": "submit_scope",
+      "applicationName": "audit_summary_submit_scope",
+      "measuredThreadId": 1,
+      "elapsedNanos": 20334466,
+      "threadAllocatedBytes": 389320,
+      "heapBefore": 298669872,
+      "heapAfter": 128004080,
+      "trackedLogicalReadBytes": 68,
+      "trackedReadEvents": 2,
+      "rejection": null,
+      "data": {
+        "excludedMissingOriginals": 3,
+        "attachments": 1
+      },
+      "selectStatements": 13
+    }
+  ],
+  "comparison": [
+    {
+      "name": "lock_submit_false",
+      "before": {
+        "selectStatements": 13,
+        "trackedLogicalReadBytes": 68,
+        "threadAllocatedBytes": 264544,
+        "heapBefore": 186481912,
+        "heapAfter": 187530488,
+        "elapsedNanos": 32094352,
+        "rejection": "请确认质量结论、异常处置、源签署和完整证据范围已人工核查"
+      },
+      "after": {
+        "selectStatements": 11,
+        "trackedLogicalReadBytes": 68,
+        "threadAllocatedBytes": 248112,
+        "heapBefore": 142684144,
+        "heapAfter": 143732720,
+        "elapsedNanos": 31481681,
+        "rejection": "请确认质量结论、异常处置、源签署和完整证据范围已人工核查"
+      }
+    },
+    {
+      "name": "lock_submit_true",
+      "before": {
+        "selectStatements": 15,
+        "trackedLogicalReadBytes": 68,
+        "threadAllocatedBytes": 430360,
+        "heapBefore": 177044728,
+        "heapAfter": 178093304,
+        "elapsedNanos": 43549275,
+        "rejection": null
+      },
+      "after": {
+        "selectStatements": 13,
+        "trackedLogicalReadBytes": 68,
+        "threadAllocatedBytes": 416512,
+        "heapBefore": 134295536,
+        "heapAfter": 134295536,
+        "elapsedNanos": 43596752,
+        "rejection": null
+      }
+    },
+    {
+      "name": "lock_unlink_false",
+      "before": {
+        "selectStatements": 3,
+        "trackedLogicalReadBytes": 0,
+        "threadAllocatedBytes": 136888,
+        "heapBefore": 187530488,
+        "heapAfter": 190676216,
+        "elapsedNanos": 28566930,
+        "rejection": null
+      },
+      "after": {
+        "selectStatements": 3,
+        "trackedLogicalReadBytes": 0,
+        "threadAllocatedBytes": 138840,
+        "heapBefore": 143732720,
+        "heapAfter": 146878448,
+        "elapsedNanos": 29757169,
+        "rejection": null
+      }
+    },
+    {
+      "name": "lock_unlink_true",
+      "before": {
+        "selectStatements": 1,
+        "trackedLogicalReadBytes": 0,
+        "threadAllocatedBytes": 106256,
+        "heapBefore": 178093304,
+        "heapAfter": 178093304,
+        "elapsedNanos": 34307486,
+        "rejection": "当前 DHR 不能修改附件；请先退回或重新整理，历史版本保持不变"
+      },
+      "after": {
+        "selectStatements": 1,
+        "trackedLogicalReadBytes": 0,
+        "threadAllocatedBytes": 111888,
+        "heapBefore": 134295536,
+        "heapAfter": 134295536,
+        "elapsedNanos": 36636428,
+        "rejection": "当前 DHR 不能修改附件；请先退回或重新整理，历史版本保持不变"
+      }
+    },
+    {
+      "name": "reject_manual_review",
+      "before": {
+        "selectStatements": 15,
+        "trackedLogicalReadBytes": 136,
+        "threadAllocatedBytes": 289728,
+        "heapBefore": 173539328,
+        "heapAfter": 173539328,
+        "elapsedNanos": 6137076,
+        "rejection": "请确认质量结论、异常处置、源签署和完整证据范围已人工核查"
+      },
+      "after": {
+        "selectStatements": 11,
+        "trackedLogicalReadBytes": 136,
+        "threadAllocatedBytes": 248704,
+        "heapBefore": 189617968,
+        "heapAfter": 190666544,
+        "elapsedNanos": 4190039,
+        "rejection": "请确认质量结论、异常处置、源签署和完整证据范围已人工核查"
+      }
+    },
+    {
+      "name": "reject_missing",
+      "before": {
+        "selectStatements": 12,
+        "trackedLogicalReadBytes": 0,
+        "threadAllocatedBytes": 659624,
+        "heapBefore": 148373504,
+        "heapAfter": 149422080,
+        "elapsedNanos": 15431567,
+        "rejection": "附件丢失或摘要不一致"
+      },
+      "after": {
+        "selectStatements": 10,
+        "trackedLogicalReadBytes": 0,
+        "threadAllocatedBytes": 585808,
+        "heapBefore": 167597872,
+        "heapAfter": 167597872,
+        "elapsedNanos": 13756566,
+        "rejection": "附件丢失或摘要不一致"
+      }
+    },
+    {
+      "name": "reject_order_false",
+      "before": {
+        "selectStatements": 10,
+        "trackedLogicalReadBytes": 0,
+        "threadAllocatedBytes": 202744,
+        "heapBefore": 189267968,
+        "heapAfter": 189267968,
+        "elapsedNanos": 4421212,
+        "rejection": "附件“original-0.png”尚未核验，不能提交汇总"
+      },
+      "after": {
+        "selectStatements": 10,
+        "trackedLogicalReadBytes": 0,
+        "threadAllocatedBytes": 211336,
+        "heapBefore": 205346608,
+        "heapAfter": 205346608,
+        "elapsedNanos": 3689153,
+        "rejection": "附件“original-0.png”尚未核验，不能提交汇总"
+      }
+    },
+    {
+      "name": "reject_order_true",
+      "before": {
+        "selectStatements": 12,
+        "trackedLogicalReadBytes": 0,
+        "threadAllocatedBytes": 230712,
+        "heapBefore": 184025088,
+        "heapAfter": 184025088,
+        "elapsedNanos": 6256725,
+        "rejection": "附件丢失或摘要不一致"
+      },
+      "after": {
+        "selectStatements": 10,
+        "trackedLogicalReadBytes": 0,
+        "threadAllocatedBytes": 211456,
+        "heapBefore": 200103728,
+        "heapAfter": 200103728,
+        "elapsedNanos": 3790934,
+        "rejection": "附件丢失或摘要不一致"
+      }
+    },
+    {
+      "name": "reject_pending",
+      "before": {
+        "selectStatements": 10,
+        "trackedLogicalReadBytes": 0,
+        "threadAllocatedBytes": 208840,
+        "heapBefore": 163053568,
+        "heapAfter": 163053568,
+        "elapsedNanos": 8688361,
+        "rejection": "附件“original-0.png”尚未核验，不能提交汇总"
+      },
+      "after": {
+        "selectStatements": 10,
+        "trackedLogicalReadBytes": 0,
+        "threadAllocatedBytes": 218664,
+        "heapBefore": 179132208,
+        "heapAfter": 179132208,
+        "elapsedNanos": 6139396,
+        "rejection": "附件“original-0.png”尚未核验，不能提交汇总"
+      }
+    },
+    {
+      "name": "reject_source_changed",
+      "before": {
+        "selectStatements": 10,
+        "trackedLogicalReadBytes": 0,
+        "threadAllocatedBytes": 206168,
+        "heapBefore": 168296448,
+        "heapAfter": 168296448,
+        "elapsedNanos": 10028602,
+        "rejection": "来源记录或附件在核查后发生变化，请刷新并重新确认汇总草稿"
+      },
+      "after": {
+        "selectStatements": 10,
+        "trackedLogicalReadBytes": 0,
+        "threadAllocatedBytes": 210368,
+        "heapBefore": 184375088,
+        "heapAfter": 184375088,
+        "elapsedNanos": 4048588,
+        "rejection": "来源记录或附件在核查后发生变化，请刷新并重新确认汇总草稿"
+      }
+    },
+    {
+      "name": "reject_stale_revision",
+      "before": {
+        "selectStatements": 5,
+        "trackedLogicalReadBytes": 0,
+        "threadAllocatedBytes": 77088,
+        "heapBefore": 178782208,
+        "heapAfter": 178782208,
+        "elapsedNanos": 3483336,
+        "rejection": "汇总草稿已被其他操作更新，请刷新后重试"
+      },
+      "after": {
+        "selectStatements": 5,
+        "trackedLogicalReadBytes": 0,
+        "threadAllocatedBytes": 79336,
+        "heapBefore": 194860848,
+        "heapAfter": 195909424,
+        "elapsedNanos": 2578775,
+        "rejection": "汇总草稿已被其他操作更新，请刷新后重试"
+      }
+    },
+    {
+      "name": "reject_tampered",
+      "before": {
+        "selectStatements": 12,
+        "trackedLogicalReadBytes": 8,
+        "threadAllocatedBytes": 266096,
+        "heapBefore": 156762112,
+        "heapAfter": 156762112,
+        "elapsedNanos": 12411589,
+        "rejection": "附件丢失或摘要不一致"
+      },
+      "after": {
+        "selectStatements": 10,
+        "trackedLogicalReadBytes": 8,
+        "threadAllocatedBytes": 246912,
+        "heapBefore": 173889328,
+        "heapAfter": 173889328,
+        "elapsedNanos": 8771362,
+        "rejection": "附件丢失或摘要不一致"
+      }
+    },
+    {
+      "name": "submit_0",
+      "before": {
+        "selectStatements": 13,
+        "trackedLogicalReadBytes": 0,
+        "threadAllocatedBytes": 398856,
+        "heapBefore": 194510848,
+        "heapAfter": 194510848,
+        "elapsedNanos": 9489068,
+        "rejection": null
+      },
+      "after": {
+        "selectStatements": 13,
+        "trackedLogicalReadBytes": 0,
+        "threadAllocatedBytes": 379904,
+        "heapBefore": 210589488,
+        "heapAfter": 210589488,
+        "elapsedNanos": 8321561,
+        "rejection": null
+      }
+    },
+    {
+      "name": "submit_1",
+      "before": {
+        "selectStatements": 15,
+        "trackedLogicalReadBytes": 68,
+        "threadAllocatedBytes": 408176,
+        "heapBefore": 199753728,
+        "heapAfter": 199753728,
+        "elapsedNanos": 11795922,
+        "rejection": null
+      },
+      "after": {
+        "selectStatements": 13,
+        "trackedLogicalReadBytes": 68,
+        "threadAllocatedBytes": 396480,
+        "heapBefore": 215832368,
+        "heapAfter": 215832368,
+        "elapsedNanos": 9075555,
+        "rejection": null
+      }
+    },
+    {
+      "name": "submit_10",
+      "before": {
+        "selectStatements": 33,
+        "trackedLogicalReadBytes": 680,
+        "threadAllocatedBytes": 795872,
+        "heapBefore": 206045184,
+        "heapAfter": 208142336,
+        "elapsedNanos": 13261994,
+        "rejection": null
+      },
+      "after": {
+        "selectStatements": 13,
+        "trackedLogicalReadBytes": 680,
+        "threadAllocatedBytes": 592552,
+        "heapBefore": 222123824,
+        "heapAfter": 222123824,
+        "elapsedNanos": 11060901,
+        "rejection": null
+      }
+    },
+    {
+      "name": "submit_100",
+      "before": {
+        "selectStatements": 213,
+        "trackedLogicalReadBytes": 6800,
+        "threadAllocatedBytes": 4859088,
+        "heapBefore": 221773824,
+        "heapAfter": 227016704,
+        "elapsedNanos": 50930244,
+        "rejection": null
+      },
+      "after": {
+        "selectStatements": 13,
+        "trackedLogicalReadBytes": 6800,
+        "threadAllocatedBytes": 2649064,
+        "heapBefore": 236803888,
+        "heapAfter": 239949616,
+        "elapsedNanos": 11067415,
+        "rejection": null
+      }
+    },
+    {
+      "name": "submit_300",
+      "before": {
+        "selectStatements": 613,
+        "trackedLogicalReadBytes": 20400,
+        "threadAllocatedBytes": 14332336,
+        "heapBefore": 139295992,
+        "heapAfter": 153976056,
+        "elapsedNanos": 125000819,
+        "rejection": null
+      },
+      "after": {
+        "selectStatements": 13,
+        "trackedLogicalReadBytes": 20400,
+        "threadAllocatedBytes": 7692216,
+        "heapBefore": 273504048,
+        "heapAfter": 281892656,
+        "elapsedNanos": 24464670,
+        "rejection": null
+      }
+    },
+    {
+      "name": "submit_50mib",
+      "before": {
+        "selectStatements": 15,
+        "trackedLogicalReadBytes": 52428800,
+        "threadAllocatedBytes": 404000,
+        "heapBefore": 163413240,
+        "heapAfter": 163413240,
+        "elapsedNanos": 52725116,
+        "rejection": null
+      },
+      "after": {
+        "selectStatements": 13,
+        "trackedLogicalReadBytes": 52428800,
+        "threadAllocatedBytes": 389592,
+        "heapBefore": 290281264,
+        "heapAfter": 291329840,
+        "elapsedNanos": 42656417,
+        "rejection": null
+      }
+    },
+    {
+      "name": "submit_scope",
+      "before": {
+        "selectStatements": 15,
+        "trackedLogicalReadBytes": 68,
+        "threadAllocatedBytes": 401776,
+        "heapBefore": 171801848,
+        "heapAfter": 171801848,
+        "elapsedNanos": 6733004,
+        "rejection": null
+      },
+      "after": {
+        "selectStatements": 13,
+        "trackedLogicalReadBytes": 68,
+        "threadAllocatedBytes": 389320,
+        "heapBefore": 298669872,
+        "heapAfter": 128004080,
+        "elapsedNanos": 20334466,
+        "rejection": null
+      }
+    }
+  ],
+  "businessSELECTBefore": 1035,
+  "businessSELECTAfter": 195,
+  "sourceReused": "same active query snapshot plus per-submit internal path/SHA, no cross-request cache or path in JSON",
+  "limits": [
+    "13 SELECT only declared one WORK source/NONE fixture, not universal request/HTTP total",
+    "JFR logical bytes filtered by recorded Java thread and original paths, not physical IO",
+    "thread allocations cumulative, not heap peak/RSS; global heap snapshots/concurrent lock timing not performance SLA",
+    "50MiB direct VERIFIED fixture proves submit streaming SHA consumer, not upload/verify/seven-format matrix",
+    "PDF/large manifest/production concurrency and all original remaining queues open"
+  ]
+}

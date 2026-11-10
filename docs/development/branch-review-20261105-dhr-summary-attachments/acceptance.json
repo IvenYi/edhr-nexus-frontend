@@ -1,0 +1,55 @@
+{
+  "result": "passed",
+  "executionLevel": "L2",
+  "baseCommit": "a429f983a7a69553753034e9306d12598fcc15be",
+  "testedCandidate": "48be11f44962b2dfe7390f7bb45b1ec833ac2bd3",
+  "actualQualityContractReadCommit": "48be11f44962b2dfe7390f7bb45b1ec833ac2bd3",
+  "prePrTargetFetchedCommit": "a429f983a7a69553753034e9306d12598fcc15be",
+  "mainRegression": {
+    "tests": 72,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "independentSummary": {
+    "result": "passed",
+    "baseCommit": "a429f983a7a69553753034e9306d12598fcc15be",
+    "headCommit": "48be11f44962b2dfe7390f7bb45b1ec833ac2bd3",
+    "requiredChecks": 16,
+    "passedChecks": 16,
+    "nativeAndAdjacent": {
+      "tests": 72,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "knowledge": {
+      "tests": 89,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "businessSELECT": 195,
+    "driverMetadataSELECT": 1,
+    "businessWrites": 50,
+    "SET": 19,
+    "externalIndependentJFR": 19,
+    "child": {
+      "result": "passed",
+      "status": "FINAL",
+      "checks": 8
+    },
+    "resourcesClean": true,
+    "findings": 0,
+    "blockingConditions": 0,
+    "generatedAt": "2026-11-05T15:57:11.750940+00:00"
+  },
+  "ontologyResult": "not-applicable",
+  "allRolesAndChildrenFinal": true,
+  "driftReview": "scope-review.md",
+  "closedIssue": "redundant submission attachment metadata queries in declared locked path",
+  "remainingScope": "PDF/upload/verification capacity and all original whole-audit queues remain open",
+  "historical7704Quality": "69/89/16 only test stage, not reused for final product",
+  "protectedClosure": "After tested candidate only L0 results/archive/scope/delivery docs and NEXT; source/test/knowledge/config unchanged",
+  "generatedAt": "2026-11-05T15:59:42.791727+00:00"
+}

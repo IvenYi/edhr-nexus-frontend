@@ -1,0 +1,51 @@
+ontologyResult:
+  result: not-applicable
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: a429f983a7a69553753034e9306d12598fcc15be
+    targetBranch: edhr-dev
+    targetCommit: a429f983a7a69553753034e9306d12598fcc15be
+    contractReadCommit: a429f983a7a69553753034e9306d12598fcc15be
+    uncommittedContractPaths: []
+  reason: Current scope only adds native audit tests/development records, without
+    confirmed semantic/policy replacement or product-source mutation. Current source/definitions
+    agree in declared finite subscopes. Performance metadata reuse remains unapproved
+    and unimplemented; full scenarios retain evidence gaps.
+  changedArtifacts: []
+  knowledgeSync: []
+  conflicts: []
+  questions: []
+  validationEvidence:
+  - id: validation.summary-attachment-package-and-result
+    checkType: schema
+    command: python /tmp/build-summary-attachment-ontology.py; local strict result/decision
+      package invariant checks
+    outcome: passed
+    evidence:
+    - validation-result.log
+    - finite-audit-summary.json
+  - id: validation.summary-attachment-existing-records
+    checkType: reference
+    command: Resolve selected IDs in actual current YAML and source paths/line anchors;
+      no new formal rule IDs
+    outcome: passed
+    evidence:
+    - finite-audit-records.jsonl
+    - source-snapshot-manifest.json
+  - id: validation.summary-attachment-baseline
+    checkType: evidence-path
+    command: git baseline/source snapshots and 350 current knowledge byte fingerprints
+    outcome: passed
+    evidence:
+    - baseline.json
+    - knowledge-fingerprint-inventory.json
+    - source-snapshot-manifest.json
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages:
+    - P1
+    - P2
+    - P3

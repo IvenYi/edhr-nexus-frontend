@@ -1,0 +1,1489 @@
+{
+  "taskStatus": "completed",
+  "finality": "FINAL",
+  "role": "business-knowledge-modeler; finite engineering-boundary review, not final QA",
+  "sourceCommit": "703f2ee90417e778cf745fbbcd24f908a345d3bd",
+  "targetCommit": "b6691e2c6289ab414a7a3fed1f128562cbba4166",
+  "files": [
+    {
+      "path": "REVIEW-PRELIMINARY.md",
+      "bytes": 1825,
+      "sha256": "d0e1b38c9c12897ee49c2158998f5c01b045385012e65942804b189cac20ead9"
+    },
+    {
+      "path": "REVIEW.md",
+      "bytes": 6603,
+      "sha256": "4075ce683a2f53ed10bde8271582c4023884fb191fbdce77902695219487f826"
+    },
+    {
+      "path": "TEST-com.zencas.edhr.knowledge.BusinessKnowledgeModelTest.xml",
+      "bytes": 20412,
+      "sha256": "9156e69b20838da5e0d8a2c03d54640d3836c2446c00e47f225ca799762355e5"
+    },
+    {
+      "path": "assemble-preliminary.py",
+      "bytes": 1258,
+      "sha256": "b0193619ffa48079442bce8f9b8f0605b432b30bab81590530f651a4ee2a4fc1"
+    },
+    {
+      "path": "baseline.json",
+      "bytes": 820,
+      "sha256": "d01f1a5cc0c57f7b3fa2657b31fe00351a7dcaaa07f8409e7924540cbde9bbe8"
+    },
+    {
+      "path": "candidate-changed-paths.json",
+      "bytes": 2265,
+      "sha256": "b5294be7644c0f9da18a084e34ea189da2652a772e91c6f2025c4ee125432eae"
+    },
+    {
+      "path": "candidate-runtime.patch",
+      "bytes": 39322,
+      "sha256": "82c022cd279ab39575e810f1c2860e39f99c65e0d26ad0f756cd7e4871f3cae9"
+    },
+    {
+      "path": "capture.py",
+      "bytes": 4112,
+      "sha256": "c1ba9fcb6a2b16af22b28b8720b555d0442fbd4c17a7817edb89758fb0d89d5a"
+    },
+    {
+      "path": "child-finality.json",
+      "bytes": 224,
+      "sha256": "5f06b8c27426e80fcc783b2bf13ae9ae7efd8bedbed06262c37354e718b857b5"
+    },
+    {
+      "path": "final-fetch.log",
+      "bytes": 99,
+      "sha256": "c3e64018d200015797ce51afe7f1c0e9e94838768b7c15c36485d1e2ad883251"
+    },
+    {
+      "path": "final-verification.json",
+      "bytes": 1451,
+      "sha256": "595ba3aa3add197e7bc32d550988630f90947e4b76b40a06c32390855bac1152"
+    },
+    {
+      "path": "finalize.py",
+      "bytes": 12626,
+      "sha256": "1978d87a085e6f52ce97e8dbdf10895bfd297c52537d55dd5e0e066b44544c77"
+    },
+    {
+      "path": "finite-audit-records.jsonl",
+      "bytes": 12915,
+      "sha256": "f3bfce3f3ba48ab0e38b5f58b7f697c7a7ca1ad7d0abc59bbb7d96d2f89f9381"
+    },
+    {
+      "path": "finite-audit-summary.json",
+      "bytes": 168,
+      "sha256": "3df51ce7ceac7e7168b0e33db94d36d24fb23b7a86f5b24822c2f64fe83a4f3b"
+    },
+    {
+      "path": "finite-authority-delta-role/REVIEW.md",
+      "bytes": 1810,
+      "sha256": "fcc12129dbf3b2bcfb18336904e71f8accd24fce718768e4de52de665763927c"
+    },
+    {
+      "path": "finite-authority-delta-role/build_report.py",
+      "bytes": 5359,
+      "sha256": "7ec6b63ed26f72d8bedf50590495a77ba23484e5d34a4ecddde0c04395ac0721"
+    },
+    {
+      "path": "finite-authority-delta-role/fixed-source/docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml",
+      "bytes": 23213,
+      "sha256": "11e70ec27862eb971a2ad01cd928e8c2ecba36be4df70e170bd1f5296c4e0253"
+    },
+    {
+      "path": "finite-authority-delta-role/fixed-source/docs/knowledge/open-questions.yaml",
+      "bytes": 22420,
+      "sha256": "c7b3bdecd1a6ac164d95ff515b5412998a556a07e9b5fcb64b3643473aa6e2bf"
+    },
+    {
+      "path": "finite-authority-delta-role/fixed-source/gmp-platform/backend/src/main/java/com/zencas/edhr/identity/security/JwtAuthenticationFilter.java",
+      "bytes": 2960,
+      "sha256": "4ed2eb9458b68717b8bf5873dedc7fa1d0fbf92d6e5efb9eebebe9d82b074ed4"
+    },
+    {
+      "path": "finite-authority-delta-role/manifest.json",
+      "bytes": 1607,
+      "sha256": "3f792d6a986b9c8ec639480bfd27bf62fd45a3f06d74c8bb2144451cb4d47c11"
+    },
+    {
+      "path": "finite-authority-delta-role/manifest.sha256",
+      "bytes": 80,
+      "sha256": "9ee8acefa4e0ad9f69caea427e1d247e8a74c701dbf587de82d77dc0ddb8b288"
+    },
+    {
+      "path": "finite-authority-delta-role/result.json",
+      "bytes": 1429,
+      "sha256": "a6d26757277b48971529ec7dc62c2d137d4c3251a483a9f8dddc379e3705c13a"
+    },
+    {
+      "path": "finite-authority-delta-role/source-binding.json",
+      "bytes": 1077,
+      "sha256": "7966fe9b38d11331a02927bd64f48c5dd687af1597cdaa6ba32409b11819a03c"
+    },
+    {
+      "path": "finite-authority-delta-role/working-context/docs/development/branch-review-20261107-dhr-header-jwt/decision-package.yaml",
+      "bytes": 6400,
+      "sha256": "bbcd0839819d3876abe0921d3384ce4803d0fb006b773107f25ee76c1a173082"
+    },
+    {
+      "path": "finite-authority-role/REVIEW.md",
+      "bytes": 1668,
+      "sha256": "f4ae20e633d7cb9a1b5b75cc209b45a23f93cc148bc4784bc211d715005b5225"
+    },
+    {
+      "path": "finite-authority-role/build_report.py",
+      "bytes": 8557,
+      "sha256": "1b802ee22bf87c6d232ad9de1b9873ac0ba5c59437c067da213fc6de7335c8ad"
+    },
+    {
+      "path": "finite-authority-role/fixed-source/AGENTS.md",
+      "bytes": 25065,
+      "sha256": "13dc7cdacea0b1bb0aef2abb268781f9c69584acd4879b204d2b7fd81a2927fc"
+    },
+    {
+      "path": "finite-authority-role/fixed-source/docs/agents/agent-handoff-contract.md",
+      "bytes": 31233,
+      "sha256": "3439a35dd1baa77ac723f1b5afa237a338d56e31386f06b02b4aacfd754e3a12"
+    },
+    {
+      "path": "finite-authority-role/fixed-source/docs/agents/business-knowledge-modeler.md",
+      "bytes": 15881,
+      "sha256": "9806c900f98e1cbcf4f8d68a998a07a5449369df037183c75ec08cd666bf56ae"
+    },
+    {
+      "path": "finite-authority-role/fixed-source/docs/architecture/business-knowledge-model.md",
+      "bytes": 72976,
+      "sha256": "5fc7640ffecbf5ea8191c7242f86dd0a700ae50db307adecb2bacacf7ffeb095"
+    },
+    {
+      "path": "finite-authority-role/fixed-source/docs/knowledge/README.md",
+      "bytes": 114117,
+      "sha256": "709c3d40dbd39e6e1cfc6a09bdcd1766775e04e153bff26871f5a6f1bdfa4f42"
+    },
+    {
+      "path": "finite-authority-role/fixed-source/docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml",
+      "bytes": 23213,
+      "sha256": "11e70ec27862eb971a2ad01cd928e8c2ecba36be4df70e170bd1f5296c4e0253"
+    },
+    {
+      "path": "finite-authority-role/fixed-source/docs/knowledge/decisions/DEC-0090-dhr-archive-minimum-scope.yaml",
+      "bytes": 4730,
+      "sha256": "72c1491280ff65e95197cbb7c7cff4d177251e4a9d0a9a8458e9f02cb6a4cc5b"
+    },
+    {
+      "path": "finite-authority-role/fixed-source/docs/knowledge/glossary.yaml",
+      "bytes": 72304,
+      "sha256": "a4a9568a25b6698cb1a09c92ae0e9811edf90f0f849cb422c64c0a4b508f1302"
+    },
+    {
+      "path": "finite-authority-role/fixed-source/docs/knowledge/open-questions.yaml",
+      "bytes": 22420,
+      "sha256": "c7b3bdecd1a6ac164d95ff515b5412998a556a07e9b5fcb64b3643473aa6e2bf"
+    },
+    {
+      "path": "finite-authority-role/fixed-source/docs/knowledge/rules/dhr-summary.yaml",
+      "bytes": 18575,
+      "sha256": "2a9240f5ecac5da9e1277e1f750d46695ab93097aa3229ab976f19c38934d601"
+    },
+    {
+      "path": "finite-authority-role/fixed-source-manifest.json",
+      "bytes": 1834,
+      "sha256": "3531e7cd1dbeb493f688ae5416aa61c0b666392851d1eb005315dd3311536436"
+    },
+    {
+      "path": "finite-authority-role/manifest.json",
+      "bytes": 3158,
+      "sha256": "33b17d321969bcf7f2af7633b14dc3ca24efc85427214a3d52f2de4532abf79e"
+    },
+    {
+      "path": "finite-authority-role/manifest.sha256",
+      "bytes": 80,
+      "sha256": "4c00ac3b7fcf1b6c6490ea3395115bc30d884aa85754bf998e1032c28221d521"
+    },
+    {
+      "path": "finite-authority-role/records.jsonl",
+      "bytes": 12915,
+      "sha256": "f3bfce3f3ba48ab0e38b5f58b7f697c7a7ca1ad7d0abc59bbb7d96d2f89f9381"
+    },
+    {
+      "path": "finite-authority-role/result.json",
+      "bytes": 1416,
+      "sha256": "80ee2e4f781124f0d360012fe097684e1abda8dbeccde1dfc776134ecba29f54"
+    },
+    {
+      "path": "finite-authority-role/working-context/docs/development/branch-review-20261107-dhr-header-jwt/decision-package.yaml",
+      "bytes": 5218,
+      "sha256": "b8f7a2aa976bf4c37a6ca6bc127f6f51f1e048487b954c435d1e6c175a9fbe66"
+    },
+    {
+      "path": "finite-authority-role/working-context-manifest.json",
+      "bytes": 213,
+      "sha256": "62e2d6921311690fc26c5a6699ce3dbfffae4955f891213acab879b7e4aa0d75"
+    },
+    {
+      "path": "fixed-final-source/AGENTS.md",
+      "bytes": 25065,
+      "sha256": "13dc7cdacea0b1bb0aef2abb268781f9c69584acd4879b204d2b7fd81a2927fc"
+    },
+    {
+      "path": "fixed-final-source/codeplzreadme.md",
+      "bytes": 3035,
+      "sha256": "7a1be8efffec596b034335058dca2860346d256622f899c8dac97c5172dd6df2"
+    },
+    {
+      "path": "fixed-final-source/docs/agents/agent-handoff-contract.md",
+      "bytes": 31233,
+      "sha256": "3439a35dd1baa77ac723f1b5afa237a338d56e31386f06b02b4aacfd754e3a12"
+    },
+    {
+      "path": "fixed-final-source/docs/agents/business-knowledge-modeler.md",
+      "bytes": 15881,
+      "sha256": "9806c900f98e1cbcf4f8d68a998a07a5449369df037183c75ec08cd666bf56ae"
+    },
+    {
+      "path": "fixed-final-source/docs/agents/quality-verifier.md",
+      "bytes": 7519,
+      "sha256": "6b3de9323924fb4ba5ae87be76c5136d28e754810c46b22b8e3d1cdd6c2f826f"
+    },
+    {
+      "path": "fixed-final-source/docs/architecture/business-knowledge-model.md",
+      "bytes": 72976,
+      "sha256": "5fc7640ffecbf5ea8191c7242f86dd0a700ae50db307adecb2bacacf7ffeb095"
+    },
+    {
+      "path": "fixed-final-source/docs/development/branch-review-20261107-dhr-archive-async/header-risk-followup.md",
+      "bytes": 3611,
+      "sha256": "724418ae0a1c3b9bf5364074e45a89009137b592ea9fc9db618105b1c5876425"
+    },
+    {
+      "path": "fixed-final-source/docs/development/branch-review-20261107-dhr-header-jwt/decision-package.yaml",
+      "bytes": 6947,
+      "sha256": "8ff673a45ae5fbdd12885e9457f5d7051d98d54e1f9a976af5efbe1515df494c"
+    },
+    {
+      "path": "fixed-final-source/docs/knowledge/README.md",
+      "bytes": 114117,
+      "sha256": "709c3d40dbd39e6e1cfc6a09bdcd1766775e04e153bff26871f5a6f1bdfa4f42"
+    },
+    {
+      "path": "fixed-final-source/docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml",
+      "bytes": 23213,
+      "sha256": "11e70ec27862eb971a2ad01cd928e8c2ecba36be4df70e170bd1f5296c4e0253"
+    },
+    {
+      "path": "fixed-final-source/docs/knowledge/decisions/DEC-0090-dhr-archive-minimum-scope.yaml",
+      "bytes": 4730,
+      "sha256": "72c1491280ff65e95197cbb7c7cff4d177251e4a9d0a9a8458e9f02cb6a4cc5b"
+    },
+    {
+      "path": "fixed-final-source/docs/knowledge/glossary.yaml",
+      "bytes": 72304,
+      "sha256": "a4a9568a25b6698cb1a09c92ae0e9811edf90f0f849cb422c64c0a4b508f1302"
+    },
+    {
+      "path": "fixed-final-source/docs/knowledge/open-questions.yaml",
+      "bytes": 22420,
+      "sha256": "c7b3bdecd1a6ac164d95ff515b5412998a556a07e9b5fcb64b3643473aa6e2bf"
+    },
+    {
+      "path": "fixed-final-source/docs/knowledge/rules/dhr-summary.yaml",
+      "bytes": 18575,
+      "sha256": "2a9240f5ecac5da9e1277e1f750d46695ab93097aa3229ab976f19c38934d601"
+    },
+    {
+      "path": "fixed-final-source/docs/knowledge/schema.yaml",
+      "bytes": 13171,
+      "sha256": "e21dcf0b3cf15b540dc528b574e53202fe26b092017e00451afa326b59cfba84"
+    },
+    {
+      "path": "fixed-final-source/gmp-platform/backend/src/main/java/com/zencas/edhr/common/config/SecurityConfig.java",
+      "bytes": 3752,
+      "sha256": "b285b8b05225449d2dd42f8fe9dde18784affb64e1306f81ae90a505c4cf0f92"
+    },
+    {
+      "path": "fixed-final-source/gmp-platform/backend/src/main/java/com/zencas/edhr/common/exception/GlobalExceptionHandler.java",
+      "bytes": 6628,
+      "sha256": "722be56d9cb9fe25715c06e6215bfecce41495338d8a2833a0b12969a24f4e53"
+    },
+    {
+      "path": "fixed-final-source/gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/controller/FileController.java",
+      "bytes": 20066,
+      "sha256": "45b7f380ea681e47551e37da8cd01325d0a29b375c40d1f47f0bce032be82f10"
+    },
+    {
+      "path": "fixed-final-source/gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/entity/AuditEvent.java",
+      "bytes": 4697,
+      "sha256": "34a236e63d78eed77cfd67094b4ced89f99614fa09b206546189e7e2907480aa"
+    },
+    {
+      "path": "fixed-final-source/gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/entity/AuditEventHash.java",
+      "bytes": 7419,
+      "sha256": "9ed9137b4d216699fc9f3374edbab6cbe8ae8b4862e9b7b2bcf562511b293ce2"
+    },
+    {
+      "path": "fixed-final-source/gmp-platform/backend/src/main/java/com/zencas/edhr/identity/security/JwtAuthenticationFilter.java",
+      "bytes": 3058,
+      "sha256": "f99359a0fd7f3c8ee9de9e08ba60666b46d5f55a105155f225cba71047e95f18"
+    },
+    {
+      "path": "fixed-final-source/gmp-platform/backend/src/main/java/com/zencas/edhr/identity/security/JwtTokenProvider.java",
+      "bytes": 3744,
+      "sha256": "dac346e8e55d93b2d8e5ccab8d7faf1e1ca82d55c56ad189f8b8fafda32d0fd5"
+    },
+    {
+      "path": "fixed-final-source/gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrArchiveController.java",
+      "bytes": 4141,
+      "sha256": "2af42d704b922f345c622e6f96a9bec00a486d3b70e3cd746a7c85a28bee6e7c"
+    },
+    {
+      "path": "fixed-final-source/gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrArchiveResponseFilter.java",
+      "bytes": 3276,
+      "sha256": "4324f380768290d3785134aa77cc13fc8a5bbad3e245592506f817b8c7559731"
+    },
+    {
+      "path": "fixed-final-source/gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrArchiveService.java",
+      "bytes": 24964,
+      "sha256": "8fe3110f8d9e7dc326a944184b938ac7ae40564892d13861e135974a3680c463"
+    },
+    {
+      "path": "fixed-final-source/gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrPdfRenderer.java",
+      "bytes": 6731,
+      "sha256": "a223113e0d0e1a025f51c5f9ca108dacf6e113af5edb784c2fc2ede1e00fef72"
+    },
+    {
+      "path": "fixed-final-source/gmp-platform/backend/src/test/java/com/zencas/edhr/common/audit/AuditAspectTest.java",
+      "bytes": 4214,
+      "sha256": "dfad0cbf514f5c207543d4c598b5997d69c8dafe08ff375ba6e3133306313adb"
+    },
+    {
+      "path": "fixed-final-source/gmp-platform/backend/src/test/java/com/zencas/edhr/common/config/SecurityConfigTest.java",
+      "bytes": 4900,
+      "sha256": "24f2b173d1f89cb7b8f38f7da02f1c802bddc2d8aac0bcb9e2f34c486b833225"
+    },
+    {
+      "path": "fixed-final-source/gmp-platform/backend/src/test/java/com/zencas/edhr/common/config/SecurityJwtExpirationTest.java",
+      "bytes": 3839,
+      "sha256": "559592cc416d9c6f5e75011b7e235ccf1c0371c6abb2a967d942db7ad2f9498e"
+    },
+    {
+      "path": "fixed-final-source/gmp-platform/backend/src/test/java/com/zencas/edhr/compliance/entity/AuditEventHashTest.java",
+      "bytes": 9525,
+      "sha256": "6621e06bd4eb190062e363dccbfac17092547844072dea12206b9242c748e731"
+    },
+    {
+      "path": "fixed-final-source/gmp-platform/backend/src/test/java/com/zencas/edhr/compliance/entity/AuditEventTest.java",
+      "bytes": 1724,
+      "sha256": "a9dee9a5c3a7b0fa04a2cee5044b1ded733beb9b10755944d49bcf2862cbd1aa"
+    },
+    {
+      "path": "fixed-final-source/gmp-platform/backend/src/test/java/com/zencas/edhr/identity/security/JwtAuthenticationFilterTest.java",
+      "bytes": 4564,
+      "sha256": "79f25c990c7d7c6841d6b5731a8bc023baba77e6aa8b9c1cb38155a446de891f"
+    },
+    {
+      "path": "fixed-final-source/gmp-platform/backend/src/test/java/com/zencas/edhr/identity/security/JwtTokenProviderTest.java",
+      "bytes": 745,
+      "sha256": "8489942bb75fba4cec0d2705894e46d507e6faa19d7276cf8aef3554edd5f8da"
+    },
+    {
+      "path": "fixed-final-source/gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/DhrArchiveAsyncLifecycleTest.java",
+      "bytes": 11586,
+      "sha256": "0fc66262a7b0368826ada0ea34053771e956d69be7de1c27c0d090d7b9bcbb85"
+    },
+    {
+      "path": "fixed-final-source/gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/DhrArchiveAsyncOwnershipTest.java",
+      "bytes": 5401,
+      "sha256": "cca996bc8bd216bafe5188838cff487efe8a500dd55333168d2b3dc9279309eb"
+    },
+    {
+      "path": "fixed-final-source/gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/DhrArchiveControllerStreamingTest.java",
+      "bytes": 6329,
+      "sha256": "41f73cc260a11fd76f2ae68ae52e195f638d0eb62a9c023a3a7f75b5b08a408a"
+    },
+    {
+      "path": "fixed-final-source/gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/DhrArchiveJwtHeadersTest.java",
+      "bytes": 19248,
+      "sha256": "ce1ead3930ab60a8d18c91cafd4208783a748750b39e4a6e335cfdf0d898bb18"
+    },
+    {
+      "path": "fixed-final-source/gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/DhrArchiveResponseFilterTest.java",
+      "bytes": 5488,
+      "sha256": "ca3774b43b2849e5f9a2005523fa7bacfd650ad7c7661b407d251c3e5f4f0362"
+    },
+    {
+      "path": "fixed-final-source/gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrArchiveCleanupFailureTest.java",
+      "bytes": 8231,
+      "sha256": "128054003e7f48118432143d566bfab6f1de052fee3089cc7d5df16ee22ad7d1"
+    },
+    {
+      "path": "fixed-final-source/gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrArchiveLayoutReaderTest.java",
+      "bytes": 3783,
+      "sha256": "776455608257d250dbc86920d92ac7fa660981383894070f4b10d89c0e9cf465"
+    },
+    {
+      "path": "fixed-final-source/gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrExportReadObservationPostgresTest.java",
+      "bytes": 20945,
+      "sha256": "940dffecc977aacc21acf10fb1422f782be5dde9f0c28f435c1d80e049b21de7"
+    },
+    {
+      "path": "fixed-final-source/gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrFormFilesTest.java",
+      "bytes": 7611,
+      "sha256": "708b8ea1ce47ae742fc3cdb538d585790b8b3eb3f6488e2c12977254a76e6ac2"
+    },
+    {
+      "path": "fixed-final-source/tools/knowledge-model/pom.xml",
+      "bytes": 2477,
+      "sha256": "5a167cb50c29dcc7e6ade7082155c882650c8a8bd16f61d37aa49eee1a201209"
+    },
+    {
+      "path": "fixed-final-source-manifest.json",
+      "bytes": 8636,
+      "sha256": "4638503b086f98f00b9d86ab65d3c2406b51b1d15dda90e2337f22b257ce19e7"
+    },
+    {
+      "path": "fixed-initial-source/AGENTS.md",
+      "bytes": 25065,
+      "sha256": "13dc7cdacea0b1bb0aef2abb268781f9c69584acd4879b204d2b7fd81a2927fc"
+    },
+    {
+      "path": "fixed-initial-source/codeplzreadme.md",
+      "bytes": 3035,
+      "sha256": "7a1be8efffec596b034335058dca2860346d256622f899c8dac97c5172dd6df2"
+    },
+    {
+      "path": "fixed-initial-source/docs/agents/agent-handoff-contract.md",
+      "bytes": 31233,
+      "sha256": "3439a35dd1baa77ac723f1b5afa237a338d56e31386f06b02b4aacfd754e3a12"
+    },
+    {
+      "path": "fixed-initial-source/docs/agents/business-knowledge-modeler.md",
+      "bytes": 15881,
+      "sha256": "9806c900f98e1cbcf4f8d68a998a07a5449369df037183c75ec08cd666bf56ae"
+    },
+    {
+      "path": "fixed-initial-source/docs/architecture/business-knowledge-model.md",
+      "bytes": 72976,
+      "sha256": "5fc7640ffecbf5ea8191c7242f86dd0a700ae50db307adecb2bacacf7ffeb095"
+    },
+    {
+      "path": "fixed-initial-source/docs/development/branch-review-20261107-dhr-archive-async/header-risk-followup.md",
+      "bytes": 3611,
+      "sha256": "724418ae0a1c3b9bf5364074e45a89009137b592ea9fc9db618105b1c5876425"
+    },
+    {
+      "path": "fixed-initial-source/docs/knowledge/README.md",
+      "bytes": 114117,
+      "sha256": "709c3d40dbd39e6e1cfc6a09bdcd1766775e04e153bff26871f5a6f1bdfa4f42"
+    },
+    {
+      "path": "fixed-initial-source/docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml",
+      "bytes": 23213,
+      "sha256": "11e70ec27862eb971a2ad01cd928e8c2ecba36be4df70e170bd1f5296c4e0253"
+    },
+    {
+      "path": "fixed-initial-source/docs/knowledge/decisions/DEC-0090-dhr-archive-minimum-scope.yaml",
+      "bytes": 4730,
+      "sha256": "72c1491280ff65e95197cbb7c7cff4d177251e4a9d0a9a8458e9f02cb6a4cc5b"
+    },
+    {
+      "path": "fixed-initial-source/docs/knowledge/glossary.yaml",
+      "bytes": 72304,
+      "sha256": "a4a9568a25b6698cb1a09c92ae0e9811edf90f0f849cb422c64c0a4b508f1302"
+    },
+    {
+      "path": "fixed-initial-source/docs/knowledge/open-questions.yaml",
+      "bytes": 22420,
+      "sha256": "c7b3bdecd1a6ac164d95ff515b5412998a556a07e9b5fcb64b3643473aa6e2bf"
+    },
+    {
+      "path": "fixed-initial-source/docs/knowledge/rules/dhr-summary.yaml",
+      "bytes": 18575,
+      "sha256": "2a9240f5ecac5da9e1277e1f750d46695ab93097aa3229ab976f19c38934d601"
+    },
+    {
+      "path": "fixed-initial-source/docs/knowledge/schema.yaml",
+      "bytes": 13171,
+      "sha256": "e21dcf0b3cf15b540dc528b574e53202fe26b092017e00451afa326b59cfba84"
+    },
+    {
+      "path": "fixed-initial-source/gmp-platform/backend/src/main/java/com/zencas/edhr/common/config/SecurityConfig.java",
+      "bytes": 3527,
+      "sha256": "a8f3c83746619d893e5f1a1e41ae6d3430917a2da8eca97201d646fcd437124c"
+    },
+    {
+      "path": "fixed-initial-source/gmp-platform/backend/src/main/java/com/zencas/edhr/common/exception/GlobalExceptionHandler.java",
+      "bytes": 6628,
+      "sha256": "722be56d9cb9fe25715c06e6215bfecce41495338d8a2833a0b12969a24f4e53"
+    },
+    {
+      "path": "fixed-initial-source/gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/controller/FileController.java",
+      "bytes": 20066,
+      "sha256": "45b7f380ea681e47551e37da8cd01325d0a29b375c40d1f47f0bce032be82f10"
+    },
+    {
+      "path": "fixed-initial-source/gmp-platform/backend/src/main/java/com/zencas/edhr/identity/security/JwtAuthenticationFilter.java",
+      "bytes": 2960,
+      "sha256": "4ed2eb9458b68717b8bf5873dedc7fa1d0fbf92d6e5efb9eebebe9d82b074ed4"
+    },
+    {
+      "path": "fixed-initial-source/gmp-platform/backend/src/main/java/com/zencas/edhr/identity/security/JwtTokenProvider.java",
+      "bytes": 3744,
+      "sha256": "dac346e8e55d93b2d8e5ccab8d7faf1e1ca82d55c56ad189f8b8fafda32d0fd5"
+    },
+    {
+      "path": "fixed-initial-source/gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrArchiveController.java",
+      "bytes": 4056,
+      "sha256": "36ef802f93d890b1d845823b8aecbbb8f063c208a112390aaafac39bc08fd269"
+    },
+    {
+      "path": "fixed-initial-source/gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrArchiveService.java",
+      "bytes": 24964,
+      "sha256": "8fe3110f8d9e7dc326a944184b938ac7ae40564892d13861e135974a3680c463"
+    },
+    {
+      "path": "fixed-initial-source/tools/knowledge-model/pom.xml",
+      "bytes": 2477,
+      "sha256": "5a167cb50c29dcc7e6ade7082155c882650c8a8bd16f61d37aa49eee1a201209"
+    },
+    {
+      "path": "fixed-initial-source-manifest.json",
+      "bytes": 3835,
+      "sha256": "2bb18dba3d5dc0b9fe9a9f6b9af963436e3de395afa4dac22f4b05c160f5ab4e"
+    },
+    {
+      "path": "initial-working-context/docs/development/branch-review-20261107-dhr-header-jwt/decision-package.yaml",
+      "bytes": 5218,
+      "sha256": "b8f7a2aa976bf4c37a6ca6bc127f6f51f1e048487b954c435d1e6c175a9fbe66"
+    },
+    {
+      "path": "knowledge-fingerprints-final.json",
+      "bytes": 64930,
+      "sha256": "8abd8be0c770ecd1611627768af5b4b534be786c3d7e533e76a286dadb191899"
+    },
+    {
+      "path": "knowledge-fingerprints-initial.json",
+      "bytes": 64930,
+      "sha256": "8abd8be0c770ecd1611627768af5b4b534be786c3d7e533e76a286dadb191899"
+    },
+    {
+      "path": "knowledge-run.json",
+      "bytes": 354,
+      "sha256": "c55d23f5149086d6928841928d87abc5d711b89c9ab8c3e0584b51ec2d3fcb82"
+    },
+    {
+      "path": "knowledge-summary.json",
+      "bytes": 66,
+      "sha256": "0357e2f0eddc2c11e6d014540c0ff131715c903d922f2e96b8c18626f776dc09"
+    },
+    {
+      "path": "knowledge-validation.log",
+      "bytes": 2112,
+      "sha256": "dc0d60df0c80c3e72fa837d3a9aeae0b6bc5c6f7c5e1a225fb5123336a0d3aa1"
+    },
+    {
+      "path": "latest-negative-source-binding.json",
+      "bytes": 1101,
+      "sha256": "86e4d5ec3ef4aa42b6b1beaf49d3f38c8d2bfe2ab9265dde109a71ba74d6a5cf"
+    },
+    {
+      "path": "ontology-result.yaml",
+      "bytes": 4654,
+      "sha256": "45fca4a94c3d4fcbc584f6cef00eb66f94feab1a7bb2f5a6aa0c90373daee2c3"
+    },
+    {
+      "path": "parent-final-source-binding.json",
+      "bytes": 7658,
+      "sha256": "03f472f0dcdc1fb0a5fd437164d09a7838053bf445ce960e1ddb2fa926d585c2"
+    },
+    {
+      "path": "parent-generated-evidence/final/TEST-com.zencas.edhr.common.audit.AuditAspectTest.xml",
+      "bytes": 34196,
+      "sha256": "58f46c3bf83b7e5e2ddd8a2631d7d5cfef59d2b1bfd408616587177e22215055"
+    },
+    {
+      "path": "parent-generated-evidence/final/TEST-com.zencas.edhr.common.config.SecurityConfigTest.xml",
+      "bytes": 42499,
+      "sha256": "1cf478dd9b63c002068312453eb134be010e26041a9bb288b10cb070f72172c8"
+    },
+    {
+      "path": "parent-generated-evidence/final/TEST-com.zencas.edhr.common.config.SecurityJwtExpirationTest.xml",
+      "bytes": 38682,
+      "sha256": "31e251a9252219a991517bb05d95932c96628622f0e448884fe6ca6e1f56fc33"
+    },
+    {
+      "path": "parent-generated-evidence/final/TEST-com.zencas.edhr.compliance.entity.AuditEventHashTest.xml",
+      "bytes": 40860,
+      "sha256": "c7daaae9d90da5ab414126eed4bd2d5f50d1b723e07379095f008ebad380afbb"
+    },
+    {
+      "path": "parent-generated-evidence/final/TEST-com.zencas.edhr.compliance.entity.AuditEventTest.xml",
+      "bytes": 33680,
+      "sha256": "b03a9ae3fdb0b1206844177f1611db6d62247429129477bb483ca50948bf7d93"
+    },
+    {
+      "path": "parent-generated-evidence/final/TEST-com.zencas.edhr.identity.security.JwtAuthenticationFilterTest.xml",
+      "bytes": 33887,
+      "sha256": "ccf3a2a16671a87b53bedd741bb802cc8a244ca87b0cbc175917784f4c7c4b04"
+    },
+    {
+      "path": "parent-generated-evidence/final/TEST-com.zencas.edhr.identity.security.JwtTokenProviderTest.xml",
+      "bytes": 33552,
+      "sha256": "3068abad7ede7bcd1fc696622dcf3e44420b561211443a71fbf89ef0a5325e1c"
+    },
+    {
+      "path": "parent-generated-evidence/final/TEST-com.zencas.edhr.production.controller.DhrArchiveAsyncLifecycleTest.xml",
+      "bytes": 81478,
+      "sha256": "9b12eff365f85233703061cc8cfc08aabcf65d6c1d15e3bb24eb40ad82a24fd2"
+    },
+    {
+      "path": "parent-generated-evidence/final/TEST-com.zencas.edhr.production.controller.DhrArchiveAsyncOwnershipTest.xml",
+      "bytes": 46747,
+      "sha256": "9f707b86c90be75dc2e03bc5da4d31916f37c4bd9fad5ba9b4d095eeb8821fe0"
+    },
+    {
+      "path": "parent-generated-evidence/final/TEST-com.zencas.edhr.production.controller.DhrArchiveControllerStreamingTest.xml",
+      "bytes": 34803,
+      "sha256": "4bb0ffa4cde85a18d0f99da72eda5200a0b61ac36bf70bfa8079b350847b8204"
+    },
+    {
+      "path": "parent-generated-evidence/final/TEST-com.zencas.edhr.production.controller.DhrArchiveJwtHeadersTest.xml",
+      "bytes": 60289,
+      "sha256": "911f09a974a519f7464ced89e9a12d79dd411eea8a864316e2350f2213841ea4"
+    },
+    {
+      "path": "parent-generated-evidence/final/TEST-com.zencas.edhr.production.controller.DhrArchiveResponseFilterTest.xml",
+      "bytes": 34578,
+      "sha256": "f44d29608acd916de1d35a62477cb319a7be3ae9eb17fca344d11bcfbc8511ee"
+    },
+    {
+      "path": "parent-generated-evidence/final/TEST-com.zencas.edhr.production.service.DhrArchiveCleanupFailureTest.xml",
+      "bytes": 82370,
+      "sha256": "0725be71c406f9fe5194e3205397db128495475efec210289edb48965168fa7b"
+    },
+    {
+      "path": "parent-generated-evidence/final/TEST-com.zencas.edhr.production.service.DhrArchiveLayoutReaderTest.xml",
+      "bytes": 34195,
+      "sha256": "01397884a14d90ec8baa474c03757d35efe1695a3515f1d67be2823e7252081d"
+    },
+    {
+      "path": "parent-generated-evidence/final/TEST-com.zencas.edhr.production.service.DhrExportReadObservationPostgresTest.xml",
+      "bytes": 321143,
+      "sha256": "304ae4b87bf7f414d8c6fa6f50ea8a83699557b1a98f36aaf9c615019943e8bf"
+    },
+    {
+      "path": "parent-generated-evidence/final/TEST-com.zencas.edhr.production.service.DhrFormFilesTest.xml",
+      "bytes": 34553,
+      "sha256": "26298220b623c135a856a75402e07fbf6c3c39baa4170300d0aceef041933f6a"
+    },
+    {
+      "path": "parent-generated-evidence/final/cleanup.json",
+      "bytes": 90,
+      "sha256": "1f35a45be34669a5b131f8cd396e25f67cb6a36a39d98e79ff19b565f50718bc"
+    },
+    {
+      "path": "parent-generated-evidence/final/http/client-cancelled.json",
+      "bytes": 262,
+      "sha256": "07f6f227e0f968874ee6fe8067a43bc2e4debd647672375a1cb807a5dad572e5"
+    },
+    {
+      "path": "parent-generated-evidence/final/http/forbidden.json",
+      "bytes": 316,
+      "sha256": "486afb5b178248298d1c9dd29f32758308d91c7e0276ae15c7cd5574fbe6d3f4"
+    },
+    {
+      "path": "parent-generated-evidence/final/http/normal.json",
+      "bytes": 418,
+      "sha256": "a46beaf8db14495957bfda1b3b55f1a8ddc4f9010779249e647bc70a6f48b77a"
+    },
+    {
+      "path": "parent-generated-evidence/final/http/queued-timeout.json",
+      "bytes": 424,
+      "sha256": "5cae1ac2f247886473c9cd90be9f438b353261f7e1c449be44e5f9400f1dd822"
+    },
+    {
+      "path": "parent-generated-evidence/final/http/rejected.json",
+      "bytes": 420,
+      "sha256": "e69254e0133c7df9204c5d8aa2dae20eeec72f6e80cbfb65997074a82f973b77"
+    },
+    {
+      "path": "parent-generated-evidence/final/jwt-http/anonymous.json",
+      "bytes": 989,
+      "sha256": "cbcf6ec1cb2ba0ce19ccc9637cef22faf7abcd77d08d42807e8855eb504491a2"
+    },
+    {
+      "path": "parent-generated-evidence/final/jwt-http/client-cancelled.json",
+      "bytes": 513,
+      "sha256": "723353dde357f153d2da8d0c55ad6e8ef28df150c2d3805904cbed14cb1ce1e4"
+    },
+    {
+      "path": "parent-generated-evidence/final/jwt-http/forced-header-overlap.json",
+      "bytes": 1095,
+      "sha256": "5e49fb7685e8c1bfa356829efc7cca9de751002b939ec6bb548a6884892f3efe"
+    },
+    {
+      "path": "parent-generated-evidence/final/jwt-http/head.json",
+      "bytes": 1050,
+      "sha256": "c77e3663935d4590c6aa00ad05edbe9ca66b13299b23cb27ea593f37b6e32c6b"
+    },
+    {
+      "path": "parent-generated-evidence/final/jwt-http/inline.json",
+      "bytes": 1054,
+      "sha256": "34b1133b7253a4826907fcd47b71def52bcd6a5236da173b8da6d8a1aeb412b4"
+    },
+    {
+      "path": "parent-generated-evidence/final/jwt-http/invalid-jwt.json",
+      "bytes": 991,
+      "sha256": "df73a0abd56d706f680f1fe9c44a467d6158d9cdb30cb25cf30c4b1c793178f8"
+    },
+    {
+      "path": "parent-generated-evidence/final/jwt-http/normal.json",
+      "bytes": 1054,
+      "sha256": "cb39ddb7618dd58bf2cc0d7631f701875c8d7b911bc989b2a82483bd8a75dbb6"
+    },
+    {
+      "path": "parent-generated-evidence/final/jwt-http/pdf-page-preview.json",
+      "bytes": 925,
+      "sha256": "8116147d78e2b872b5d4673f2170701a713e943d88ce815cd7bdbe292a073092"
+    },
+    {
+      "path": "parent-generated-evidence/final/jwt-http/private-preview.json",
+      "bytes": 1128,
+      "sha256": "22534a662a220c6a942e7a5c0c07f56a9eb21e32f78d98f09bb824645bd42f06"
+    },
+    {
+      "path": "parent-generated-evidence/final/jwt-http/public-preview.json",
+      "bytes": 1127,
+      "sha256": "a0635284891ec9b7a87e788fd542a7de91b3fd697005bc7144d9e79c39303615"
+    },
+    {
+      "path": "parent-generated-evidence/final/jwt-http/queued-timeout.json",
+      "bytes": 1061,
+      "sha256": "4be6402515b81ac6e86cc7933e715b01a4d81f5a99a7e58c00867b45a3a20e6a"
+    },
+    {
+      "path": "parent-generated-evidence/final/jwt-http/rejected.json",
+      "bytes": 1055,
+      "sha256": "0ebf54496605d00ae2f4984853ba2ca5baad22d8df9adc846eba48d0d75a09c3"
+    },
+    {
+      "path": "parent-generated-evidence/final/jwt-http/view-only.json",
+      "bytes": 982,
+      "sha256": "bb77b6d0b1f7cdecc97660419c7549e8cd59911625223a29bb1a378d464d9c99"
+    },
+    {
+      "path": "parent-generated-evidence/final/run.json",
+      "bytes": 9172,
+      "sha256": "2c17e05413750de86f6f84bcb41644c66982b7869ec7f51121de4cf3ae7e189c"
+    },
+    {
+      "path": "parent-generated-evidence/final/temporary-archives.json",
+      "bytes": 218,
+      "sha256": "4019f891f42c2810ac3bf057a44e3e84cbcee8ed126139a066f97915a44800c2"
+    },
+    {
+      "path": "parent-generated-evidence/final/test-summary.json",
+      "bytes": 2827,
+      "sha256": "6cfda50b9645d663e04364f8c314856edc931c580574bc046d0bd0a51d61beb3"
+    },
+    {
+      "path": "parent-generated-evidence/history/final/TEST-com.zencas.edhr.common.audit.AuditAspectTest.xml",
+      "bytes": 34151,
+      "sha256": "7b2a7e447df54fdead5116a23661f1802097c83ad47afbb798e9e58f58015a7b"
+    },
+    {
+      "path": "parent-generated-evidence/history/final/TEST-com.zencas.edhr.common.config.SecurityConfigTest.xml",
+      "bytes": 42458,
+      "sha256": "6c64492f4b4eb0368cf14cad439aee7acbe280432eaa545807865a608e4eb0c7"
+    },
+    {
+      "path": "parent-generated-evidence/history/final/TEST-com.zencas.edhr.common.config.SecurityJwtExpirationTest.xml",
+      "bytes": 38635,
+      "sha256": "ac96262d1c2eaaf26ca7302b4bc20b4e467eee58e8ad89f1e9e7947b1cf71450"
+    },
+    {
+      "path": "parent-generated-evidence/history/final/TEST-com.zencas.edhr.compliance.entity.AuditEventHashTest.xml",
+      "bytes": 40832,
+      "sha256": "8e5b1c1ec790fd04cea0c089b08a7a8769287a8ec029f4bd66140cd65414282e"
+    },
+    {
+      "path": "parent-generated-evidence/history/final/TEST-com.zencas.edhr.compliance.entity.AuditEventTest.xml",
+      "bytes": 33635,
+      "sha256": "5419d4b7be8588c798978f5f57e95c79a62c02aa792662154f2cfd0c5cfd8003"
+    },
+    {
+      "path": "parent-generated-evidence/history/final/TEST-com.zencas.edhr.identity.security.JwtAuthenticationFilterTest.xml",
+      "bytes": 33842,
+      "sha256": "a2299442a7d1c7e32bab7fc8c5459805e049fb91d246949ac6704dcd6e89061b"
+    },
+    {
+      "path": "parent-generated-evidence/history/final/TEST-com.zencas.edhr.identity.security.JwtTokenProviderTest.xml",
+      "bytes": 33507,
+      "sha256": "95c13aa20a4068468ac7d0718c5ce75f12d0369ab2439a3c4505cc106d5366b0"
+    },
+    {
+      "path": "parent-generated-evidence/history/final/TEST-com.zencas.edhr.production.controller.DhrArchiveAsyncLifecycleTest.xml",
+      "bytes": 81414,
+      "sha256": "801e4bc15ec856b7b3b0d088e93436696ddc39cb1b93d60aa05374a1d6c2a7b3"
+    },
+    {
+      "path": "parent-generated-evidence/history/final/TEST-com.zencas.edhr.production.controller.DhrArchiveAsyncOwnershipTest.xml",
+      "bytes": 46666,
+      "sha256": "d3c52e96a63b2343280ef603b1bf3bd5b63d4fe19875e5589e1c1f74e391dc1f"
+    },
+    {
+      "path": "parent-generated-evidence/history/final/TEST-com.zencas.edhr.production.controller.DhrArchiveControllerStreamingTest.xml",
+      "bytes": 34740,
+      "sha256": "5bead17fff6c2da104348e2ef47371ab7303996ca75feed3fca2050da66baa70"
+    },
+    {
+      "path": "parent-generated-evidence/history/final/TEST-com.zencas.edhr.production.controller.DhrArchiveJwtHeadersTest.xml",
+      "bytes": 67190,
+      "sha256": "2e30ff634bafec7b0932c06eef998a3e84533ff757232628024fe4e771b3c11c"
+    },
+    {
+      "path": "parent-generated-evidence/history/final/TEST-com.zencas.edhr.production.controller.DhrArchiveResponseFilterTest.xml",
+      "bytes": 34332,
+      "sha256": "55cd4a7b74b3a56f66d39cee99d5f2be17e86a3716a006515769625ed0701787"
+    },
+    {
+      "path": "parent-generated-evidence/history/final/TEST-com.zencas.edhr.production.service.DhrArchiveCleanupFailureTest.xml",
+      "bytes": 82236,
+      "sha256": "0de218c185b2f44ed7dc32e8eb8a0be25e8a265862716d8a995be60fd1697ea9"
+    },
+    {
+      "path": "parent-generated-evidence/history/final/TEST-com.zencas.edhr.production.service.DhrArchiveLayoutReaderTest.xml",
+      "bytes": 34130,
+      "sha256": "ca6cf546fe0c2b1e7001de26991ec0d1a2bc2244737ce991020d38204962ad89"
+    },
+    {
+      "path": "parent-generated-evidence/history/final/TEST-com.zencas.edhr.production.service.DhrExportReadObservationPostgresTest.xml",
+      "bytes": 321071,
+      "sha256": "42e9f3159a5a51961da44b239e7a1874e238c0b3558f127d2c96bfd4b7a33656"
+    },
+    {
+      "path": "parent-generated-evidence/history/final/TEST-com.zencas.edhr.production.service.DhrFormFilesTest.xml",
+      "bytes": 34480,
+      "sha256": "598b35cebb8d279aea0cbd018542b5e5f56b3a7e1d61f6a4845089230f13169a"
+    },
+    {
+      "path": "parent-generated-evidence/history/final/jwt-http/anonymous.json",
+      "bytes": 989,
+      "sha256": "54396d96dacb8a43248c41319485451f151f136b3e52ef0ca2ee730bd0640cb2"
+    },
+    {
+      "path": "parent-generated-evidence/history/final/jwt-http/client-cancelled.json",
+      "bytes": 513,
+      "sha256": "723353dde357f153d2da8d0c55ad6e8ef28df150c2d3805904cbed14cb1ce1e4"
+    },
+    {
+      "path": "parent-generated-evidence/history/final/jwt-http/forced-header-overlap.json",
+      "bytes": 1095,
+      "sha256": "a8a69fff4ad84cbfd9ba2a1dd7b09433a1255c8d74d5190961b0cf138e3e0bbe"
+    },
+    {
+      "path": "parent-generated-evidence/history/final/jwt-http/head.json",
+      "bytes": 1050,
+      "sha256": "63fed4915bece55d423d00b7388654aa6eade3ae224dc2f97777036f54eb9da9"
+    },
+    {
+      "path": "parent-generated-evidence/history/final/jwt-http/inline.json",
+      "bytes": 1054,
+      "sha256": "a1eed402d7817c56a34ad5750395a4c873e0125ce886259e8bc607b425284a37"
+    },
+    {
+      "path": "parent-generated-evidence/history/final/jwt-http/invalid-jwt.json",
+      "bytes": 991,
+      "sha256": "4359c9314d50be9df04d754f71c030b390059e856e6ff44c2d1af546b92a2a6e"
+    },
+    {
+      "path": "parent-generated-evidence/history/final/jwt-http/normal.json",
+      "bytes": 1054,
+      "sha256": "24d1b9d385c3b336677009b6be86049dfd37f61b92116af40c038875482e0901"
+    },
+    {
+      "path": "parent-generated-evidence/history/final/jwt-http/pdf-page-preview.json",
+      "bytes": 925,
+      "sha256": "72102073bc70a854df5fdafa941c801fcc94c320525618757798ff8eb0bcf6d3"
+    },
+    {
+      "path": "parent-generated-evidence/history/final/jwt-http/private-preview.json",
+      "bytes": 1128,
+      "sha256": "53b2b88bda4666f07b2f8bea41a7b922e522fd1fe027c2feb7ba641f7f873bb6"
+    },
+    {
+      "path": "parent-generated-evidence/history/final/jwt-http/public-preview.json",
+      "bytes": 1127,
+      "sha256": "d9f0e67cf962cdc5d09bb42fea1b856baa851c6597b6d00e1ece818cda24b7be"
+    },
+    {
+      "path": "parent-generated-evidence/history/final/jwt-http/view-only.json",
+      "bytes": 982,
+      "sha256": "fd1414a5dcf828894c6b1ba6a5842f075f11614e308c4a0e145c80e68847333a"
+    },
+    {
+      "path": "parent-generated-evidence/history/final/run.json",
+      "bytes": 9136,
+      "sha256": "5010d4eb3e679c9acb3e03d7265e30ee0154b701859e81d5f1effdab9a133aa4"
+    },
+    {
+      "path": "parent-generated-evidence/history/final/test-summary.json",
+      "bytes": 2827,
+      "sha256": "ecb50903eb8788d55f3b43e7d6152231196ff724b1c60340db955ed0d85feaf0"
+    },
+    {
+      "path": "parent-generated-evidence/history/negative_context/TEST-com.zencas.edhr.production.controller.DhrArchiveJwtHeadersTest.xml",
+      "bytes": 235349,
+      "sha256": "636256d56b8449dd1c243a0087dc5e5c189d25e484b9f664ef05da680f3eebd5"
+    },
+    {
+      "path": "parent-generated-evidence/history/negative_context/jwt-http/anonymous.json",
+      "bytes": 989,
+      "sha256": "0311e4bda6410b50592a7664a8c51f51ad45dd4752ab4f8ed3de477c5064abd5"
+    },
+    {
+      "path": "parent-generated-evidence/history/negative_context/jwt-http/client-cancelled.json",
+      "bytes": 513,
+      "sha256": "723353dde357f153d2da8d0c55ad6e8ef28df150c2d3805904cbed14cb1ce1e4"
+    },
+    {
+      "path": "parent-generated-evidence/history/negative_context/jwt-http/forced-header-overlap.json",
+      "bytes": 1069,
+      "sha256": "f4e3ca6f8b09b579b00bf6d60b99c1346a8aa8dae20f3f364a0cc3f48c5d5091"
+    },
+    {
+      "path": "parent-generated-evidence/history/negative_context/jwt-http/head.json",
+      "bytes": 1050,
+      "sha256": "c1071f3022d15388be2251af8006ec1e3a9aa845d99a123b16e4ffc5f38c2fe4"
+    },
+    {
+      "path": "parent-generated-evidence/history/negative_context/jwt-http/inline.json",
+      "bytes": 1054,
+      "sha256": "9ef7f4b2c5d5f6eb083834188c5673e95642fcb4e0ae5e31334d5c07785cc384"
+    },
+    {
+      "path": "parent-generated-evidence/history/negative_context/jwt-http/invalid-jwt.json",
+      "bytes": 991,
+      "sha256": "311369f55212d7e6e171b9446d8fca9402b8c042c57aed3cb74f4a34140d3b3e"
+    },
+    {
+      "path": "parent-generated-evidence/history/negative_context/jwt-http/normal.json",
+      "bytes": 1054,
+      "sha256": "052dc5b6f242b3f46216236d39b11385d1f230c67e35109b5aa720c454866dbb"
+    },
+    {
+      "path": "parent-generated-evidence/history/negative_context/jwt-http/pdf-page-preview.json",
+      "bytes": 925,
+      "sha256": "63dc0a89324e9a362b20be13637047d66dc3d5e4a221ad77f931c2de40182ff9"
+    },
+    {
+      "path": "parent-generated-evidence/history/negative_context/jwt-http/private-preview.json",
+      "bytes": 1128,
+      "sha256": "03da2c9510772a185d274f8a9a203dbbcd2ea27d38414329f8dd9e2f6ca69b5c"
+    },
+    {
+      "path": "parent-generated-evidence/history/negative_context/jwt-http/public-preview.json",
+      "bytes": 1127,
+      "sha256": "cb972f18dbfb5dc0b362001f7b19b08425ec9ef3382e87ca527b1316f254780a"
+    },
+    {
+      "path": "parent-generated-evidence/history/negative_context/jwt-http/queued-timeout.json",
+      "bytes": 1077,
+      "sha256": "68d4a88043e69bfca2f9b1c9aa8b819e48d131f40ba008eef4ee20b23042c78e"
+    },
+    {
+      "path": "parent-generated-evidence/history/negative_context/jwt-http/rejected.json",
+      "bytes": 1071,
+      "sha256": "d4d88eb2abd63aa8f686a97db407309801889dfc4444abc967ac347cc55c62ec"
+    },
+    {
+      "path": "parent-generated-evidence/history/negative_context/jwt-http/view-only.json",
+      "bytes": 982,
+      "sha256": "ef3872834e9d8123b6b2c075a1f03ee8d2945c8284542bad4d6c7b2809a8edd4"
+    },
+    {
+      "path": "parent-generated-evidence/history/negative_context/run.json",
+      "bytes": 4448,
+      "sha256": "096cc5bd45669405cdfdd6b50e3e05e1b2cbe239002db6920a499daf2764bf38"
+    },
+    {
+      "path": "parent-generated-evidence/history/negative_context/test-summary.json",
+      "bytes": 312,
+      "sha256": "b92574a65b3cf9f7f65b980fcf9962279b1cd4b4701db35a2251b8207e8a7bbd"
+    },
+    {
+      "path": "parent-generated-evidence/history/negative_final/TEST-com.zencas.edhr.production.controller.DhrArchiveJwtHeadersTest.xml",
+      "bytes": 276313,
+      "sha256": "192a9156e9980c80325eb8f64b8294586e69c0cf08cc93043248b44c20921512"
+    },
+    {
+      "path": "parent-generated-evidence/history/negative_final/jwt-http/anonymous.json",
+      "bytes": 989,
+      "sha256": "caa1ff96bd483ac5b67cfb642f2daaa31cb7122da19d246cc633c5d806bffc90"
+    },
+    {
+      "path": "parent-generated-evidence/history/negative_final/jwt-http/client-cancelled.json",
+      "bytes": 513,
+      "sha256": "723353dde357f153d2da8d0c55ad6e8ef28df150c2d3805904cbed14cb1ce1e4"
+    },
+    {
+      "path": "parent-generated-evidence/history/negative_final/jwt-http/forced-header-overlap.json",
+      "bytes": 1127,
+      "sha256": "3e0a164c37d7deec522fa8ea6f7ad48af985531fe0bcaed0b52ba49e8e888369"
+    },
+    {
+      "path": "parent-generated-evidence/history/negative_final/jwt-http/head.json",
+      "bytes": 1050,
+      "sha256": "b86928307187b881b6d837b08b975b8fb12d419392221cced80faec7db73fefb"
+    },
+    {
+      "path": "parent-generated-evidence/history/negative_final/jwt-http/inline.json",
+      "bytes": 1054,
+      "sha256": "8a4f84591d873b30eba43a6caa69098d21384bef793b14b27d33c54c2ada21d5"
+    },
+    {
+      "path": "parent-generated-evidence/history/negative_final/jwt-http/invalid-jwt.json",
+      "bytes": 991,
+      "sha256": "d2cfb176b707abf1c04d02d3c577b57199e48028dd85aee9840fd1999daf6e38"
+    },
+    {
+      "path": "parent-generated-evidence/history/negative_final/jwt-http/normal.json",
+      "bytes": 1054,
+      "sha256": "6e74e650f31e04c48a9a540f56350cd3b7bcd9dd0a47e52f668c524f11372cc2"
+    },
+    {
+      "path": "parent-generated-evidence/history/negative_final/jwt-http/pdf-page-preview.json",
+      "bytes": 925,
+      "sha256": "3a4bae4fc520f6113fc5640a173a587ee50fc35be4c42d85612a95ff6e63d64e"
+    },
+    {
+      "path": "parent-generated-evidence/history/negative_final/jwt-http/private-preview.json",
+      "bytes": 1128,
+      "sha256": "5597fdf149cf0d1e878e96d7ae6b6af9150528e37f2654f0b9a5278a2df9a7eb"
+    },
+    {
+      "path": "parent-generated-evidence/history/negative_final/jwt-http/public-preview.json",
+      "bytes": 1127,
+      "sha256": "edf66344c9d9d717f395737e74205397d681557587eae7d5105f81e828c536c2"
+    },
+    {
+      "path": "parent-generated-evidence/history/negative_final/jwt-http/queued-timeout.json",
+      "bytes": 1077,
+      "sha256": "bfd15254c5db3a04be9da053ec7696f88d6872a1ce5eddc654c2efbe54b3b9b5"
+    },
+    {
+      "path": "parent-generated-evidence/history/negative_final/jwt-http/rejected.json",
+      "bytes": 1071,
+      "sha256": "9b59f3aab8b4b9c7b0f1967426f8e7a4313ab0994657e6e864cc5532d14f8651"
+    },
+    {
+      "path": "parent-generated-evidence/history/negative_final/jwt-http/view-only.json",
+      "bytes": 982,
+      "sha256": "da1d7a0c28d13ffc8005987fac1e6e1bba3c3cd2dba436e59265b8989bc4ec57"
+    },
+    {
+      "path": "parent-generated-evidence/history/negative_final/run.json",
+      "bytes": 4440,
+      "sha256": "cf103056a6295c0fcddd9d3e054173da25d3d06bccb5c1b7777909abca64b604"
+    },
+    {
+      "path": "parent-generated-evidence/history/negative_final/test-summary.json",
+      "bytes": 312,
+      "sha256": "b92574a65b3cf9f7f65b980fcf9962279b1cd4b4701db35a2251b8207e8a7bbd"
+    },
+    {
+      "path": "parent-generated-evidence/history/probe/TEST-com.zencas.edhr.production.controller.DhrArchiveJwtHeadersTest.xml",
+      "bytes": 61453,
+      "sha256": "a10b1569db6bca4433359333227f18f1521f5593044be4611972809f0df85d4e"
+    },
+    {
+      "path": "parent-generated-evidence/history/probe/jwt-http/anonymous.json",
+      "bytes": 989,
+      "sha256": "1285efc02b485e18501b84a237f69357a3e1f5fe98e36657a3734e8af583ecd2"
+    },
+    {
+      "path": "parent-generated-evidence/history/probe/jwt-http/client-cancelled.json",
+      "bytes": 513,
+      "sha256": "723353dde357f153d2da8d0c55ad6e8ef28df150c2d3805904cbed14cb1ce1e4"
+    },
+    {
+      "path": "parent-generated-evidence/history/probe/jwt-http/forced-header-overlap.json",
+      "bytes": 1095,
+      "sha256": "7d8bf896efa09e1ba56a500f56e1a8dad1fcb344424758e90534a8fccf6ebabf"
+    },
+    {
+      "path": "parent-generated-evidence/history/probe/jwt-http/head.json",
+      "bytes": 1050,
+      "sha256": "45fd9d7a3917b3c91b1bf5d3a0915add579b040f2db85c6e733594bf899f3f60"
+    },
+    {
+      "path": "parent-generated-evidence/history/probe/jwt-http/inline.json",
+      "bytes": 1054,
+      "sha256": "8bf498f2b3567c05a747de0e2ddd51a46c4b079b4c73d47df8fda9f9af944859"
+    },
+    {
+      "path": "parent-generated-evidence/history/probe/jwt-http/invalid-jwt.json",
+      "bytes": 991,
+      "sha256": "c50ecbdc69fc4bdaa40335d00b64afcd500bfcd1da4893e1f37c9a46487f681c"
+    },
+    {
+      "path": "parent-generated-evidence/history/probe/jwt-http/normal.json",
+      "bytes": 1054,
+      "sha256": "0ce7d7cc49e98abc590d9ecf72491783cfc0e29e6419d4797a75b7f84a479cf6"
+    },
+    {
+      "path": "parent-generated-evidence/history/probe/jwt-http/pdf-page-preview.json",
+      "bytes": 925,
+      "sha256": "53faac0ea506318942e1593b88daf4b216ea337031860ab7cf8a5eaa7a7cdd3b"
+    },
+    {
+      "path": "parent-generated-evidence/history/probe/jwt-http/private-preview.json",
+      "bytes": 1128,
+      "sha256": "cee72c6ad5ecb038c4fd27bb417c91c1340a28332d8b3ffd228df10cccab0315"
+    },
+    {
+      "path": "parent-generated-evidence/history/probe/jwt-http/public-preview.json",
+      "bytes": 1127,
+      "sha256": "2070e4c7ecccd4e7c4a2c926cbe47d47462d8fc6b41a5d18ded8d80f76ea1561"
+    },
+    {
+      "path": "parent-generated-evidence/history/probe/jwt-http/queued-timeout.json",
+      "bytes": 1102,
+      "sha256": "08f62ce803e36cfc9c62eeffea10706f29cc87bb29c67a2565a23d5deae5ff9d"
+    },
+    {
+      "path": "parent-generated-evidence/history/probe/jwt-http/rejected.json",
+      "bytes": 1096,
+      "sha256": "f44ed610038eaacc74ecece9a6871a8584c5578aa4c9761927cbc0852f0e30d5"
+    },
+    {
+      "path": "parent-generated-evidence/history/probe/jwt-http/view-only.json",
+      "bytes": 982,
+      "sha256": "45ec60e9fe41c0b5e45fdac1ca64687fc04d5a1d4272ba3f14fda6707df09639"
+    },
+    {
+      "path": "parent-generated-evidence/history/probe/run.json",
+      "bytes": 5258,
+      "sha256": "e57357a2ca1591c38c82f1e9babc7ad6fab05092135f0b37c4fa96d11aad5fe7"
+    },
+    {
+      "path": "parent-generated-evidence/history/probe/test-summary.json",
+      "bytes": 312,
+      "sha256": "46eacf2f5aaca09b64b48f2f874b17c6b6c94e8a154e90b78226d862d0ac27b7"
+    },
+    {
+      "path": "parent-generated-evidence/history/probe_verified/TEST-com.zencas.edhr.production.controller.DhrArchiveJwtHeadersTest.xml",
+      "bytes": 59888,
+      "sha256": "9048f250df8692c0e9e3f0db82b6b63323e46038db95d34886d2381bdf8e25d6"
+    },
+    {
+      "path": "parent-generated-evidence/history/probe_verified/jwt-http/anonymous.json",
+      "bytes": 989,
+      "sha256": "51c828879c6328f435a3700e94f931b2ae1195e3123499eb75c9d2622ab79b19"
+    },
+    {
+      "path": "parent-generated-evidence/history/probe_verified/jwt-http/client-cancelled.json",
+      "bytes": 513,
+      "sha256": "723353dde357f153d2da8d0c55ad6e8ef28df150c2d3805904cbed14cb1ce1e4"
+    },
+    {
+      "path": "parent-generated-evidence/history/probe_verified/jwt-http/forced-header-overlap.json",
+      "bytes": 1095,
+      "sha256": "396bf11079476c719642b46813674f1f4f8a67b56e2f8b6634d5e72f76652329"
+    },
+    {
+      "path": "parent-generated-evidence/history/probe_verified/jwt-http/head.json",
+      "bytes": 1050,
+      "sha256": "257a961133f521a88e0a62dc88166a66f9846ed82f2f2e153515d845fd47215a"
+    },
+    {
+      "path": "parent-generated-evidence/history/probe_verified/jwt-http/inline.json",
+      "bytes": 1054,
+      "sha256": "d14206410c769aa639f41e5c4cb20c4f01c618460382a3678883f93c17f3ee7a"
+    },
+    {
+      "path": "parent-generated-evidence/history/probe_verified/jwt-http/invalid-jwt.json",
+      "bytes": 991,
+      "sha256": "38e2f6baa9a32996293428e53d6da888d2434bf3ddbc4e57f1ec37025509e886"
+    },
+    {
+      "path": "parent-generated-evidence/history/probe_verified/jwt-http/normal.json",
+      "bytes": 1054,
+      "sha256": "0154e517f73a21e6be986845e8aebbd7a90fc705f6e91a09d8a6d43ef8c1e610"
+    },
+    {
+      "path": "parent-generated-evidence/history/probe_verified/jwt-http/pdf-page-preview.json",
+      "bytes": 925,
+      "sha256": "94ae1a6d533758be231e9d57f6efbbefef93d7e0b7e31e5b32edfe2cd20d1dec"
+    },
+    {
+      "path": "parent-generated-evidence/history/probe_verified/jwt-http/private-preview.json",
+      "bytes": 1128,
+      "sha256": "3d3a9b08e5d0274f2716c8167b174cfb3d4fbbbe5f1e6cc0510ce642096bde10"
+    },
+    {
+      "path": "parent-generated-evidence/history/probe_verified/jwt-http/public-preview.json",
+      "bytes": 1127,
+      "sha256": "b8ec384fe594096a619404a58fb86e81bf72ddeb5caf49cee1a5d40f78e0d209"
+    },
+    {
+      "path": "parent-generated-evidence/history/probe_verified/jwt-http/queued-timeout.json",
+      "bytes": 1061,
+      "sha256": "b5e6fccedbc3a9a58b2d66fc090e21305c07bc9bbd5a36b82dccc4f3292612e6"
+    },
+    {
+      "path": "parent-generated-evidence/history/probe_verified/jwt-http/rejected.json",
+      "bytes": 1055,
+      "sha256": "bda3d326dd49f31aba050b1994051989f2d323d286cd8a9f8dee89fa65c14d59"
+    },
+    {
+      "path": "parent-generated-evidence/history/probe_verified/jwt-http/view-only.json",
+      "bytes": 982,
+      "sha256": "fd32afd740455595f2ec4d64bce4a8cee2e6c544e546402a2de0a67a0b228d89"
+    },
+    {
+      "path": "parent-generated-evidence/history/probe_verified/run.json",
+      "bytes": 5294,
+      "sha256": "313a7845bf915035fdda4590f4ec019f04faeed760f9b12f6a298e36a6886bdb"
+    },
+    {
+      "path": "parent-generated-evidence/history/probe_verified/test-summary.json",
+      "bytes": 312,
+      "sha256": "6cbc9797af2177bcf644e7baaba395422cd9b122d57d032a2d83c962472f773f"
+    },
+    {
+      "path": "parent-generated-evidence/history/retry/TEST-com.zencas.edhr.common.audit.AuditAspectTest.xml",
+      "bytes": 34150,
+      "sha256": "8989ad8797c6c08a20dc700ab06315375bf4dd0d8d3338f40bf2a23feab8b7f6"
+    },
+    {
+      "path": "parent-generated-evidence/history/retry/TEST-com.zencas.edhr.common.config.SecurityConfigTest.xml",
+      "bytes": 42456,
+      "sha256": "1280e2a5883d8563370dd184a1ebd0c18e6e9e98b0b1300d5bb7dc70135a8560"
+    },
+    {
+      "path": "parent-generated-evidence/history/retry/TEST-com.zencas.edhr.common.config.SecurityJwtExpirationTest.xml",
+      "bytes": 38634,
+      "sha256": "b1b7736f8d8526d6977f11ce458e7a9f27f6e7ca89153d0f432e55e2759cbc84"
+    },
+    {
+      "path": "parent-generated-evidence/history/retry/TEST-com.zencas.edhr.compliance.entity.AuditEventHashTest.xml",
+      "bytes": 40818,
+      "sha256": "637867dce5ac50e547c9e1f6c906e416266d421ac98d3a98d04998c7fd7b1173"
+    },
+    {
+      "path": "parent-generated-evidence/history/retry/TEST-com.zencas.edhr.compliance.entity.AuditEventTest.xml",
+      "bytes": 33635,
+      "sha256": "d194fd5ec0124ffffa4dc9757255c017b972be055bf97966043b85a176a8c99a"
+    },
+    {
+      "path": "parent-generated-evidence/history/retry/TEST-com.zencas.edhr.identity.security.JwtAuthenticationFilterTest.xml",
+      "bytes": 33841,
+      "sha256": "d4503748b9979c5c92e66620370bae087c055eb6d29845404083cd68301e4590"
+    },
+    {
+      "path": "parent-generated-evidence/history/retry/TEST-com.zencas.edhr.identity.security.JwtTokenProviderTest.xml",
+      "bytes": 33507,
+      "sha256": "ef719a676e720af22660078f0633a1cfc1493a944aec23e1dfdc4537318c8a1d"
+    },
+    {
+      "path": "parent-generated-evidence/history/retry/TEST-com.zencas.edhr.production.controller.DhrArchiveAsyncLifecycleTest.xml",
+      "bytes": 81416,
+      "sha256": "804a1771b7b92d5170152d6900b4df2bc6209d773b9c7deca2a87dead2c37a36"
+    },
+    {
+      "path": "parent-generated-evidence/history/retry/TEST-com.zencas.edhr.production.controller.DhrArchiveAsyncOwnershipTest.xml",
+      "bytes": 46666,
+      "sha256": "e0afba0982c25ec6e2007fb71a0153c7d878c63429fa9f9d88b6400cc616b309"
+    },
+    {
+      "path": "parent-generated-evidence/history/retry/TEST-com.zencas.edhr.production.controller.DhrArchiveControllerStreamingTest.xml",
+      "bytes": 34739,
+      "sha256": "d0c6e04675a58c597988c3a4aed8e7e7712d33949b85b742330f3f9a98722b69"
+    },
+    {
+      "path": "parent-generated-evidence/history/retry/TEST-com.zencas.edhr.production.controller.DhrArchiveJwtHeadersTest.xml",
+      "bytes": 67447,
+      "sha256": "7bd4eeafabf8a433a3c571197f9d59858e697cbc63fe8a7a3748b81c0636840f"
+    },
+    {
+      "path": "parent-generated-evidence/history/retry/TEST-com.zencas.edhr.production.controller.DhrArchiveResponseFilterTest.xml",
+      "bytes": 34515,
+      "sha256": "b91e5e8a94298bf643b00bdc9f5ab1c3777a3c7f970926a5f94e0ac7714db065"
+    },
+    {
+      "path": "parent-generated-evidence/history/retry/TEST-com.zencas.edhr.production.service.DhrArchiveCleanupFailureTest.xml",
+      "bytes": 82234,
+      "sha256": "577287d7e5337c80336eb291d62806553e7acf8eb5aa67bfcce096db33d7b9fb"
+    },
+    {
+      "path": "parent-generated-evidence/history/retry/TEST-com.zencas.edhr.production.service.DhrArchiveLayoutReaderTest.xml",
+      "bytes": 34131,
+      "sha256": "cea82b487b5e315d7bff02ca2917c076a1d6aa4dd1202455f20fa88f9d4883b5"
+    },
+    {
+      "path": "parent-generated-evidence/history/retry/TEST-com.zencas.edhr.production.service.DhrExportReadObservationPostgresTest.xml",
+      "bytes": 321071,
+      "sha256": "e0b05a86e40bd01d2b79d2795be2c363b217c60ba92b9f545de5e40b7dafe992"
+    },
+    {
+      "path": "parent-generated-evidence/history/retry/TEST-com.zencas.edhr.production.service.DhrFormFilesTest.xml",
+      "bytes": 34481,
+      "sha256": "32a217c95d10dbb6d5871c31d6c52d5acaa112774974db9e1eb3c5cb07af0134"
+    },
+    {
+      "path": "parent-generated-evidence/history/retry/jwt-http/anonymous.json",
+      "bytes": 989,
+      "sha256": "ab375aeee97d180ccfa5d6d797bc35f9061294a78bd0ea975e30bdb0e025a807"
+    },
+    {
+      "path": "parent-generated-evidence/history/retry/jwt-http/client-cancelled.json",
+      "bytes": 513,
+      "sha256": "723353dde357f153d2da8d0c55ad6e8ef28df150c2d3805904cbed14cb1ce1e4"
+    },
+    {
+      "path": "parent-generated-evidence/history/retry/jwt-http/forced-header-overlap.json",
+      "bytes": 1095,
+      "sha256": "8ec8143d202933706b22b897945ba8df5e7783591d9b4a34f95d2d89b33d377f"
+    },
+    {
+      "path": "parent-generated-evidence/history/retry/jwt-http/head.json",
+      "bytes": 1050,
+      "sha256": "0912acc4d027f8f9c0fc7f980577aa17a218becd7d42e1c87e84876d7cc3e0d4"
+    },
+    {
+      "path": "parent-generated-evidence/history/retry/jwt-http/inline.json",
+      "bytes": 1054,
+      "sha256": "fd7c0b1194373850da8c1f33c4b9efd231cef8b561ab30cffdeb0b89bd220209"
+    },
+    {
+      "path": "parent-generated-evidence/history/retry/jwt-http/invalid-jwt.json",
+      "bytes": 991,
+      "sha256": "9dcdd1c5938cd5809e9b385cbbe6e66738645af1c168203402d12e97f5132faa"
+    },
+    {
+      "path": "parent-generated-evidence/history/retry/jwt-http/normal.json",
+      "bytes": 1054,
+      "sha256": "6c2d1b906ffc4fa310c308d861cc112a6db810d1ea326f605ea4e8ac930f5942"
+    },
+    {
+      "path": "parent-generated-evidence/history/retry/jwt-http/pdf-page-preview.json",
+      "bytes": 925,
+      "sha256": "2a29c4d0f3a31c38b749d18271479a43659fb9a097729e0465cc3f5920f3189c"
+    },
+    {
+      "path": "parent-generated-evidence/history/retry/jwt-http/private-preview.json",
+      "bytes": 1128,
+      "sha256": "fba3c070f95d2a51108e1481a4412b0590171941ff7c39c6af598d3d298268d2"
+    },
+    {
+      "path": "parent-generated-evidence/history/retry/jwt-http/public-preview.json",
+      "bytes": 1127,
+      "sha256": "5733f97126de34314b6f34aa6256d2052b6e1eb67aba7818e23e2f961de4625b"
+    },
+    {
+      "path": "parent-generated-evidence/history/retry/jwt-http/view-only.json",
+      "bytes": 982,
+      "sha256": "428b56ed4082a0797de8c840890f86b0c542d48041d01865d66328d2b158e1fe"
+    },
+    {
+      "path": "parent-generated-evidence/history/retry/run.json",
+      "bytes": 9136,
+      "sha256": "225caf9f52fa9dcbd78947e825c3145fd2b6cd77e692d0341545268fb189db86"
+    },
+    {
+      "path": "parent-generated-evidence/history/retry/test-summary.json",
+      "bytes": 2827,
+      "sha256": "90f2352fb333113817394aca334052bf5e54195a64dd84676ef4fc6f7f97c4e8"
+    },
+    {
+      "path": "parent-generated-evidence/latest-negative/TEST-com.zencas.edhr.production.controller.DhrArchiveJwtHeadersTest.xml",
+      "bytes": 276782,
+      "sha256": "ebb00b49d1e49b16354b743ef31976ea4fc8c951af281517d9a857bb956f0642"
+    },
+    {
+      "path": "parent-generated-evidence/latest-negative/jwt-http/anonymous.json",
+      "bytes": 989,
+      "sha256": "c4211015b54f0841d43a658a238f07ae5ed3f7b172f23d7082f969eb1a22ed1a"
+    },
+    {
+      "path": "parent-generated-evidence/latest-negative/jwt-http/client-cancelled.json",
+      "bytes": 513,
+      "sha256": "723353dde357f153d2da8d0c55ad6e8ef28df150c2d3805904cbed14cb1ce1e4"
+    },
+    {
+      "path": "parent-generated-evidence/latest-negative/jwt-http/forced-header-overlap.json",
+      "bytes": 1128,
+      "sha256": "7aedd3e3a3c70afa55cd0e7382a80116a4ef38b5722d38d3951d6bbb9386aa60"
+    },
+    {
+      "path": "parent-generated-evidence/latest-negative/jwt-http/head.json",
+      "bytes": 1050,
+      "sha256": "6bb6c91e3572c5bde3a20c937b3abd2ab13cf762eccecd912ee365aba16ded5c"
+    },
+    {
+      "path": "parent-generated-evidence/latest-negative/jwt-http/inline.json",
+      "bytes": 1054,
+      "sha256": "61680bbfc839e95033dbd8fd174605da4d1ecd5006d40a549695002e5ca8672e"
+    },
+    {
+      "path": "parent-generated-evidence/latest-negative/jwt-http/invalid-jwt.json",
+      "bytes": 991,
+      "sha256": "f3e927c6494b04bb6c95024b8f441a61bec8c512c018d9e7ab85e48880daf508"
+    },
+    {
+      "path": "parent-generated-evidence/latest-negative/jwt-http/normal.json",
+      "bytes": 1054,
+      "sha256": "3e244823ff4c7ef11adfad8739efdaa4037147133926138ac88bd3ef4f9a57f8"
+    },
+    {
+      "path": "parent-generated-evidence/latest-negative/jwt-http/pdf-page-preview.json",
+      "bytes": 925,
+      "sha256": "94b65501d66072d964ad7ce264c3949c8375fc30f0b928cb700bc5218b4e2771"
+    },
+    {
+      "path": "parent-generated-evidence/latest-negative/jwt-http/private-preview.json",
+      "bytes": 1128,
+      "sha256": "55f15ea5a46d826d5d826b0a2a262da9d9ccc3cadc9aa9002c807ce9e742caec"
+    },
+    {
+      "path": "parent-generated-evidence/latest-negative/jwt-http/public-preview.json",
+      "bytes": 1127,
+      "sha256": "6a108aff8cd2e495a46506ee6484378ca137abcdf8a7bfda1a71171c0a414989"
+    },
+    {
+      "path": "parent-generated-evidence/latest-negative/jwt-http/queued-timeout.json",
+      "bytes": 1077,
+      "sha256": "d9329a85cfd3aadb8c7629cecef95b155fd35c63f0d4204c3a5aebd4e01bbda6"
+    },
+    {
+      "path": "parent-generated-evidence/latest-negative/jwt-http/rejected.json",
+      "bytes": 1071,
+      "sha256": "6271fbe8724a19ceb660e09e39fab415825ee26a24916256251b5944b7570810"
+    },
+    {
+      "path": "parent-generated-evidence/latest-negative/jwt-http/view-only.json",
+      "bytes": 982,
+      "sha256": "dfe11d28fd5f8d26d4d97f27b20f23541b3e2c0b1e35379ecc64dcb08825b78f"
+    },
+    {
+      "path": "parent-generated-evidence/latest-negative/run.json",
+      "bytes": 4527,
+      "sha256": "898abce413a1184b39ced48890d9d93ac8ab8eaabedad27133b45f72907e4076"
+    },
+    {
+      "path": "parent-generated-evidence/latest-negative/test-summary.json",
+      "bytes": 312,
+      "sha256": "b92574a65b3cf9f7f65b980fcf9962279b1cd4b4701db35a2251b8207e8a7bbd"
+    },
+    {
+      "path": "parent-run-history.json",
+      "bytes": 8458,
+      "sha256": "93016a16b46fa7c52194e50eedc228d5f093846a020253d1fcca655d3e037f75"
+    },
+    {
+      "path": "parent-xml-recalculation.json",
+      "bytes": 3053,
+      "sha256": "162abb48114aee22da7f7b51e1f794024770610a0c9d50727577d855cd9f54b9"
+    }
+  ]
+}

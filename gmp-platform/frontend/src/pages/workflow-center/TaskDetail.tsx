@@ -1,12 +1,13 @@
+import PersonnelTargetSelect from '@/components/identity/PersonnelTargetSelect';
+import { getTaskTransferTargets } from '@/api/workflow-operations';
 import { useParams } from 'react-router-dom';
-import { Alert, Autocomplete, Box, Typography, Button, TextField, Card, CardContent, Stack, Divider, DialogActions, DialogContent, DialogTitle } from '@mui/material';
+import { Alert, Box, Typography, Button, TextField, Card, CardContent, Stack, Divider, DialogActions, DialogContent, DialogTitle } from '@mui/material';
 import { useEffect, useRef, useState } from 'react';
 import { CheckCircle, Cancel, Forward, Send } from '@mui/icons-material';
 import { useSnackbar } from '@/components/SnackbarProvider';
 import PageHeader from '@/components/PageHeader';
 import FormDialog from '@/components/FormDialog';
 import client from '@/api/client';
-import type { ApiResponse } from '@/types/common';
 
 type TransferTarget = { id: string; name: string; username: string };
 
@@ -17,13 +18,8 @@ export default function TaskDetail() {
   const [loading, setLoading] = useState<string | null>(null);
   const [transferOpen, setTransferOpen] = useState(false);
   const [transferTarget, setTransferTarget] = useState<TransferTarget | null>(null);
-  const [transferInput, setTransferInput] = useState('');
-  const [transferKeyword, setTransferKeyword] = useState('');
-  const [transferTargets, setTransferTargets] = useState<TransferTarget[]>([]);
   const [transferReason, setTransferReason] = useState('');
-  const [transferLoading, setTransferLoading] = useState(false);
   const [transferError, setTransferError] = useState('');
-  const [transferAttempt, setTransferAttempt] = useState(0);
   const [transferredTo, setTransferredTo] = useState('');
   const transferRequest = useRef<AbortController | null>(null);
   const { showMessage } = useSnackbar();
@@ -35,30 +31,8 @@ export default function TaskDetail() {
     return () => transferRequest.current?.abort();
   }, [id]);
 
-  useEffect(() => {
-    if (!transferOpen || !id) return;
-    const controller = new AbortController();
-    setTransferLoading(true);
-    setTransferError('');
-    void client.get<ApiResponse<TransferTarget[]>>(`/workflow/tasks/${id}/transfer-targets`, {
-      params: { keyword: transferKeyword }, signal: controller.signal,
-    }).then((response) => {
-      if (!controller.signal.aborted) setTransferTargets(response.data.data);
-    }).catch((error: unknown) => {
-      if (!controller.signal.aborted) {
-        setTransferTargets([]);
-        setTransferTarget(null);
-        setTransferError(error instanceof Error ? error.message : '可转办人员加载失败，请重试');
-      }
-    }).finally(() => { if (!controller.signal.aborted) setTransferLoading(false); });
-    return () => controller.abort();
-  }, [id, transferOpen, transferKeyword, transferAttempt]);
-
   const openTransfer = () => {
     setTransferTarget(null);
-    setTransferInput('');
-    setTransferKeyword('');
-    setTransferTargets([]);
     setTransferReason('');
     setTransferError('');
     setTransferOpen(true);
@@ -171,19 +145,11 @@ export default function TaskDetail() {
         <DialogContent>
           <Stack spacing={2}>
             <Typography variant="body2" color="text.secondary">选择本租户的其他可用用户承担当前任务。转办不会推进流程，原审批候选来源会保留。</Typography>
-            {transferError && <Alert severity="error" action={<Button color="inherit" size="small" disabled={loading !== null || transferLoading} onClick={() => setTransferAttempt((value) => value + 1)}>重新加载人员</Button>}>{transferError}</Alert>}
-            <Autocomplete options={transferTargets} value={transferTarget} inputValue={transferInput}
-              loading={transferLoading} disabled={loading !== null} filterOptions={(options) => options}
-              getOptionLabel={(option) => `${option.name}（${option.username}）`}
-              isOptionEqualToValue={(option, value) => option.id === value.id}
-              onChange={(_, value) => setTransferTarget(value)}
-              onInputChange={(_, value, reason) => {
-                if (reason !== 'reset' || value) setTransferInput(value);
-                if (reason === 'input' || reason === 'clear') { setTransferKeyword(value); setTransferTarget(null); }
-              }}
-              loadingText="正在加载可转办人员…"
-              noOptionsText={transferError ? '人员加载失败，请重试' : transferKeyword.trim() ? '没有找到匹配的可转办人员' : '本租户暂无其他可转办人员'}
-              renderInput={(params) => <TextField {...params} label="转办给" required helperText="按姓名或账号搜索；仅可选择本租户已启用且未锁定的其他用户" />} />
+            {transferError && <Alert severity="error">{transferError}</Alert>}
+            {id && <PersonnelTargetSelect key={id} scope={['task', id]} enabled={transferOpen}
+              loadPage={(page, keyword, signal) => getTaskTransferTargets(id, keyword, page, signal)}
+              value={transferTarget} onChange={setTransferTarget} disabled={loading !== null} label="转办给"
+              helperText="仅可选择本租户已启用且未锁定的其他用户" />}
             <TextField label="转办原因" required multiline minRows={3} value={transferReason}
               disabled={loading !== null} inputProps={{ maxLength: 500 }}
               onChange={(event) => setTransferReason(event.target.value)} helperText={`${transferReason.length}/500`} />
@@ -191,7 +157,7 @@ export default function TaskDetail() {
         </DialogContent>
         <DialogActions>
           <Button disabled={loading !== null} onClick={() => setTransferOpen(false)}>取消</Button>
-          <Button variant="contained" disabled={loading !== null || transferLoading || !transferTarget || !transferReason.trim()}
+          <Button variant="contained" disabled={loading !== null || !transferTarget || !transferReason.trim()}
             onClick={() => { void submitTransfer(); }}>{loading === 'transfer' ? '正在转办…' : '确认转办'}</Button>
         </DialogActions>
       </FormDialog>

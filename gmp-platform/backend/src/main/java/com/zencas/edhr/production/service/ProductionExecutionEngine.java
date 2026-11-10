@@ -374,11 +374,11 @@ public class ProductionExecutionEngine {
         }
     }
 
-    public List<Map<String, String>> transferTargets(JsonNode snapshot, ObjectNode state, String operationId, String formId,
-                                                      String instanceId, String operator, String keyword) {
+    public com.zencas.edhr.identity.service.TenantTransferTargets.Page transferTargets(JsonNode snapshot, ObjectNode state, String operationId, String formId,
+                                                      String instanceId, String operator, String keyword, int page, int size) {
         TransferContext context = transferContext(snapshot, state, operationId, formId, instanceId, operator);
         if (!transferEnabled(context.controls())) throw invalid("当前表单节点未启用转办");
-        return access.transferTargets(context.form(), context.node(), context.formState(), operator, keyword);
+        return access.transferTargets(context.form(), context.node(), context.formState(), operator, keyword, page, size);
     }
 
     public void transferForm(JsonNode snapshot, ObjectNode state, String operationId, String formId, String instanceId,

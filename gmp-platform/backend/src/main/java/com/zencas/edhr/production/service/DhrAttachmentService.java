@@ -23,6 +23,8 @@ import java.nio.file.Path;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HexFormat;
 import java.util.List;
 import java.util.Map;
@@ -35,6 +37,7 @@ import static com.zencas.edhr.production.service.ExecutionSnapshotBuilder.invali
 @RequiredArgsConstructor
 @Slf4j
 public class DhrAttachmentService {
+    private static final String ACTIVE_ATTACHMENTS = "SELECT * FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND active=TRUE ORDER BY linked_at,id";
     private static final long MAX_BYTES = 50L * 1024 * 1024;
     private static final Set<String> SOURCE_KINDS = Set.of("EXTERNAL_REPORT", "CERTIFICATE", "PAPER_SCAN", "OTHER");
     private final JdbcTemplate jdbc;
@@ -54,8 +57,38 @@ public class DhrAttachmentService {
     @Transactional(readOnly = true)
     public ArrayNode snapshot(Long dhrId) {
         ArrayNode result = mapper.createArrayNode();
-        jdbc.query("SELECT * FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND active=TRUE ORDER BY linked_at,id",
-                (org.springframework.jdbc.core.RowCallbackHandler) rs -> result.addObject()
+        jdbc.query(ACTIVE_ATTACHMENTS,
+                (org.springframework.jdbc.core.RowCallbackHandler) rs -> result.add(snapshotRow(rs)), dhrId);
+        return result;
+    }
+
+    /** Only summary submission, after locking the parent DHR, may reuse these internal originals. */
+    SubmissionAttachments forSubmission(Long dhrId) {
+        ArrayNode snapshot = mapper.createArrayNode();
+        List<Map<String, Object>> originals = new ArrayList<>();
+        jdbc.query(ACTIVE_ATTACHMENTS, (org.springframework.jdbc.core.RowCallbackHandler) rs -> {
+            snapshot.add(snapshotRow(rs));
+            Map<String, Object> original = new HashMap<>();
+            original.put("stored_path", rs.getObject("stored_path"));
+            original.put("sha256", rs.getObject("sha256"));
+            originals.add(original);
+        }, dhrId);
+        return new SubmissionAttachments(snapshot, originals);
+    }
+
+    void verifyForSubmission(SubmissionAttachments source) {
+        for (int index = 0; index < source.snapshot().size(); index++) {
+            var attachment = source.snapshot().get(index);
+            if (!"VERIFIED".equals(attachment.path("verificationStatus").asText()))
+                throw invalid("附件“" + attachment.path("name").asText() + "”尚未核验，不能提交汇总");
+            verifiedFile(source.originals().get(index));
+        }
+    }
+
+    record SubmissionAttachments(ArrayNode snapshot, List<Map<String, Object>> originals) {}
+
+    private ObjectNode snapshotRow(java.sql.ResultSet rs) throws java.sql.SQLException {
+        return mapper.createObjectNode()
                         .put("id", rs.getString("id")).put("name", rs.getString("original_name"))
                         .put("mimeType", rs.getString("mime_type")).put("size", rs.getLong("file_size"))
                         .put("sha256", rs.getString("sha256")).put("sourceKind", rs.getString("source_kind"))
@@ -66,8 +99,7 @@ public class DhrAttachmentService {
                         .put("verifiedBy", rs.getString("verified_by"))
                         .put("verifiedAt", rs.getTimestamp("verified_at") == null ? null : rs.getTimestamp("verified_at").toLocalDateTime().toString())
                         .put("linkedBy", rs.getString("linked_by"))
-                        .put("linkedAt", rs.getTimestamp("linked_at").toLocalDateTime().toString()), dhrId);
-        return result;
+                        .put("linkedAt", rs.getTimestamp("linked_at").toLocalDateTime().toString());
     }
 
     @Transactional
@@ -146,9 +178,14 @@ public class DhrAttachmentService {
         Path file = Path.of(String.valueOf(row.get("stored_path")));
         try {
             if (!Files.isRegularFile(file)) throw invalid("附件文件丢失或摘要不一致");
-            byte[] bytes = Files.readAllBytes(file);
-            if (!sha256(bytes).equals(row.get("sha256"))) throw invalid("附件文件丢失或摘要不一致");
-            inspectReadable(bytes, String.valueOf(row.get("mime_type")));
+            String mime = String.valueOf(row.get("mime_type"));
+            if ("image/png".equals(mime) || "image/jpeg".equals(mime)) {
+                verifyImage(file, row.get("sha256"));
+            } else {
+                byte[] bytes = Files.readAllBytes(file);
+                if (!sha256(bytes).equals(row.get("sha256"))) throw invalid("附件文件丢失或摘要不一致");
+                inspectReadable(bytes, mime);
+            }
         } catch (IOException ex) { throw invalid("附件无法读取"); }
         jdbc.update("UPDATE dhr_attachment SET verification_status='VERIFIED',verified_by=?,verified_at=? WHERE id=?",
                 actor(), LocalDateTime.now(), attachmentId);
@@ -246,19 +283,57 @@ public class DhrAttachmentService {
                 DhrOfficeAttachment.inspect(bytes, mime);
             } else {
                 try (var input = javax.imageio.ImageIO.createImageInputStream(new java.io.ByteArrayInputStream(bytes))) {
-                    var readers = javax.imageio.ImageIO.getImageReaders(input);
-                    if (!readers.hasNext()) throw invalid("图片无法读取");
-                    var reader = readers.next();
-                    try {
-                        reader.setInput(input, true, true);
-                        long width = reader.getWidth(0), height = reader.getHeight(0);
-                        if (width < 1 || height < 1 || width * height > 100_000_000L) throw invalid("图片尺寸无效或超限");
-                    } finally { reader.dispose(); }
+                    inspectImage(input);
                 }
             }
         } catch (Exception ex) {
             if (ex instanceof com.zencas.edhr.common.exception.BusinessException business) throw business;
             throw invalid("附件内容无法完整读取");
+        }
+    }
+
+    private static void inspectImage(javax.imageio.stream.ImageInputStream input) throws IOException {
+        var readers = javax.imageio.ImageIO.getImageReaders(input);
+        if (!readers.hasNext()) throw invalid("图片无法读取");
+        var reader = readers.next();
+        try {
+            reader.setInput(input, true, true);
+            long width = reader.getWidth(0), height = reader.getHeight(0);
+            if (width < 1 || height < 1 || width * height > 100_000_000L) throw invalid("图片尺寸无效或超限");
+        } finally { reader.dispose(); }
+    }
+
+    private static void verifyImage(Path file, Object expectedSha) throws IOException {
+        // Hash and format checks consume the same copied bytes, even if the original path changes later.
+        try (var snapshot = new TemporaryImage(Files.createTempFile("edhr-dhr-image-", ".tmp"))) {
+            var digest = MessageDigest.getInstance("SHA-256");
+            try (var input = Files.newInputStream(file); var output = Files.newOutputStream(snapshot.path())) {
+                byte[] buffer = new byte[8192];
+                int count;
+                while ((count = input.read(buffer)) != -1) {
+                    digest.update(buffer, 0, count);
+                    output.write(buffer, 0, count);
+                }
+            }
+            if (!HexFormat.of().formatHex(digest.digest()).equals(expectedSha)) throw invalid("附件文件丢失或摘要不一致");
+            try (var input = javax.imageio.ImageIO.createImageInputStream(snapshot.path().toFile())) {
+                inspectImage(input);
+            } catch (Exception ex) {
+                if (ex instanceof com.zencas.edhr.common.exception.BusinessException business) throw business;
+                throw invalid("附件内容无法完整读取");
+            }
+        } catch (NoSuchAlgorithmException failure) {
+            throw new IllegalStateException("无法计算附件摘要", failure);
+        }
+    }
+
+    private record TemporaryImage(Path path) implements AutoCloseable {
+        @Override public void close() throws IOException {
+            try { Files.deleteIfExists(path); }
+            catch (IOException failure) {
+                log.error("无法清理 DHR 图片核验临时快照: {}", path, failure);
+                throw failure;
+            }
         }
     }
 

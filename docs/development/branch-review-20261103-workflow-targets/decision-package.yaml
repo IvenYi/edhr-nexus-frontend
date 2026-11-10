@@ -1,0 +1,72 @@
+decisionPackage:
+  id: DEC-PACKAGE-AUDIT-WORKFLOW-TARGET-SCOPE-20261103
+  scope: 最新edhr-dev增量审查及普通表单/DHR改派目标先截断后资格过滤的确定性整改
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: 7c2c74d0a9f6b30c6e2dfbd9ad1620d5d29f9a37
+    targetBranch: edhr-dev
+    targetCommit: 7c2c74d0a9f6b30c6e2dfbd9ad1620d5d29f9a37
+    contractReadCommit: cd8a7c82c20bd914a0588579445b2f90d02cd02d
+    uncommittedContractPaths: []
+  summary: PR55已合入，另有6后端/14前端/3测试及34知识路径的远端增量；已同步工作文件并核契约无差异。最新DEC0093/0094按各自声明适用，不能沿用旧DHR管理员改派未开放限制。发现新两域目标接口先取100租户用户再按权限过滤，会漏掉之后合格用户；按现有双权限及人员资格在数据库限定后取100，提交时资格/签名/状态复核保持。
+  confirmed: {concepts: [], relationships: [], rules: [], executionContracts: []}
+  inferred:
+    - id: inference.target-qualification-before-search-limit
+      statement: 普通表单需要production.execution和form-management.review，DHR需要records.dhr-review和dhr.reviews.act，按当前服务的现有资格做等价DB存在性过滤后再截取，修正可用目标漏列，不改变允许改派的人员范围。
+      rationale: DEC0093-02/04及原始现有qualified/eligible实现；资格码映射是现有工程契约，不冒充用户逐字段确认。
+      relatedIds: [DEC-0093-02, DEC-0093-04]
+  unresolved: []
+  replacementScopes: []
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - area: target-read-boundary
+        change: TenantTransferTargets支持必需权限集合的有界DB查询，两域目标读取使用现有双权限，不再先截断任意用户后逐人查权限。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/identity/service/TenantTransferTargets.java, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormWorkflowOperations.java, gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/WorkflowResponsibilityService.java]
+    transitiveImpacts:
+      - area: shared-personnel-query
+        change: 其他租户内转办继续无额外权限集合的原范围，当前处理人排除在DB限量之前；保留原后置状态/租户/锁定检查及写入require，不扩大冻结候选或申请人规则。
+        evidenceReferences: []
+    potentialImpacts:
+      - area: separate-read-performance
+        concern: 记录控制/通用改派仍有冻结候选后过滤100人的旧路径，中央列表JSON lateral和详情逐任务名查是独立候选；先分别量化，不用本修复声称全部N+1关闭。
+        evidenceReferences: []
+    unaffectedAreas:
+      - area: runtime-and-UI
+        change: 普通表单与DHR改派范围、管理员及签署人权限、有效签名/原因/预期状态、锁/事务/审计/冻结证据、HTTP/页面/100上限/排序/搜索协议保持，未改生产弹窗或朋友暂缓签署页。
+        evidenceReferences: [docs/knowledge/decisions/DEC-0093-central-form-dhr-workflow-responsibility.yaml, docs/knowledge/decisions/DEC-0094-record-control-authenticated-candidate-read.yaml]
+    compatibilityAndMigration: []
+    snapshotImpacts:
+      - area: frozen-origin
+        change: 不改候选来源/责任快照或DHR汇总版本，只修正目标候选查询，不回写历史。
+        evidenceReferences: []
+    auditImpacts:
+      - area: reassign-events
+        change: 目标只读不写审计/签名/任务；原责任写入及领域审计不动。
+        evidenceReferences: []
+    permissionImpacts:
+      - area: eligibility-equivalence
+        change: 两项权限都要求存在，允许分在多个角色，重复授权不放宽；原租户/有效/未锁定/非当前处理人保持，最终提交仍即时复核，不能依赖旧查询结果。
+        evidenceReferences: []
+    testImpacts:
+      - scope: real-postgres-limit-boundary
+        scenarios: [120个前置无权用户仍能查到第121个合格目标, 任一单权限不足, 两域原有签名/并发/审计及数据隔离回归, 原普通转办范围, 增量页面已有交互边界核查]
+        evidenceReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/recordcontrol/service/RecordControlPostgresIntegrationTest.java]
+    evidenceGaps: [增量盘点与有限方法审查不代表全部新功能/34知识文件或全仓语义完成, 原UI验收只作索引且本批不重设计, 全部账户/并发/发布级矩阵和原high/A12/四gap/全审队列保持]
+  extensionStrategy:
+    selectedPaths: [product-core]
+    rationale: 在既有人选目录封装DB资格条件，两现有消费者传已定权限集合，无缓存/动态规则框架或新配置。
+    ownershipBoundaries:
+      - owner: identity-personnel-and-domain-target-readers
+        responsibility: 目录限定可用人员和DB有界读取，领域指定现有权限，写入端继续复核实时资格。
+  affectedFiles:
+    - {path: gmp-platform/backend/src/main/java/com/zencas/edhr/identity/service/TenantTransferTargets.java, changeType: update, reason: 必需权限存在性和当前处理人排除在限量之前}
+    - {path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormWorkflowOperations.java, changeType: update, reason: 普通表单双权限DB目标检索}
+    - {path: gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/WorkflowResponsibilityService.java, changeType: update, reason: DHR双权限DB目标检索且保留其他领域原路径}
+    - {path: gmp-platform/backend/src/test/java/com/zencas/edhr/recordcontrol/service/RecordControlPostgresIntegrationTest.java, changeType: update, reason: 两个真实限量边界及单权限负例}
+  acceptanceScenarios:
+    - id: scenario.qualified-target-not-hidden-by-unqualified-prefix
+      given: 同租户有120个排序在前但无双权限的有效用户，和排序在后的真实合格目标
+      when: 管理人员从普通表单或DHR当前审批任务搜索相同关键词
+      then: 列出合格目标且不列单权限用户，最多100和原排序保持，提交资格/签名/审计/冻结证据规则不变
+      evidenceRequirements: [修改前同用例真实断言红, 原生完整迁移/代理回归, 原普通转办/两域改派回归, 本体有限ID核对, 全新独立最终质量]

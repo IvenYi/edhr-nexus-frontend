@@ -1,0 +1,44 @@
+ontologyResult:
+  result: not-applicable
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: ea5c57e63cb4980961498c4c192705ef91a37170
+    targetBranch: edhr-dev
+    targetCommit: ea5c57e63cb4980961498c4c192705ef91a37170
+    contractReadCommit: ea5c57e63cb4980961498c4c192705ef91a37170
+    uncommittedContractPaths: []
+  reason: 本批仅新增普通表单详情及原候选集合的显式opt-in性能/来源取证，当前产品、权限、原候选、签署、历史及冻结字节保持；没有新确认业务政策、规则或替代声明。有限13个相关ID核对为12一致和1保留既有完整多租户证据缺口，不改变成熟度或知识阶段。
+  changedArtifacts: []
+  knowledgeSync: []
+  conflicts: []
+  questions: []
+  validationEvidence:
+  - id: validation.form-read.contract-baseline
+    checkType: reference
+    command: python3 /tmp/edhr-form-detail-ontology-build-20261105.py
+    outcome: passed
+    evidence:
+    - contract-baseline.json：实际来源/目标/契约读取ea5c57e6，5契约未变；remote target相同
+  - id: validation.form-read.knowledge-preservation
+    checkType: evidence-path
+    command: python3 /tmp/edhr-form-detail-ontology-build-20261105.py
+    outcome: passed
+    evidence:
+    - knowledge-unchanged.json：345文件逐字节与baseline一致；schema1.2.0/0.3.25
+  - id: validation.form-read.source-ownership
+    checkType: projection
+    command: source inspection and baseline byte comparison
+    outcome: passed
+    evidence:
+    - semantic-audit.json：13真实ID逐项依据；12consistent/1既有evidence-gap
+    - protected-source-unchanged.json：13完整源文件不变
+    - source-fingerprints.json及read-snapshots：32个实际输入原件；当前目录名与历史签署来源分开
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages:
+    - P1
+    - P2
+    - P3

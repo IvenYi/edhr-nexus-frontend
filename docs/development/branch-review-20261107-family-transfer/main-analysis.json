@@ -1,0 +1,329 @@
+{
+  "baseCommit": "04db7e838ec5e194355ff954ff173a02205e0fd6",
+  "testedCandidate": "1709dbc4d3d28d8721ff001b69ad934a6de54d18",
+  "scope": "finite W4 transfer order/atomicity and adjacent read observation",
+  "fingerprints": [
+    {
+      "path": "AGENTS.md",
+      "bytes": 25065,
+      "sha256": "13dc7cdacea0b1bb0aef2abb268781f9c69584acd4879b204d2b7fd81a2927fc"
+    },
+    {
+      "path": "codeplzreadme.md",
+      "bytes": 3035,
+      "sha256": "7a1be8efffec596b034335058dca2860346d256622f899c8dac97c5172dd6df2"
+    },
+    {
+      "path": "docs/agents/agent-handoff-contract.md",
+      "bytes": 31233,
+      "sha256": "3439a35dd1baa77ac723f1b5afa237a338d56e31386f06b02b4aacfd754e3a12"
+    },
+    {
+      "path": "docs/agents/quality-verifier.md",
+      "bytes": 7519,
+      "sha256": "6b3de9323924fb4ba5ae87be76c5136d28e754810c46b22b8e3d1cdd6c2f826f"
+    },
+    {
+      "path": "docs/development/branch-review-20261107-family-transfer/decision-package.yaml",
+      "bytes": 5264,
+      "sha256": "795423fbf94ccee1035c4e3887d4ed9c1f44db21e693ebd294edde126a1ac5cd"
+    },
+    {
+      "path": "gmp-platform/backend/pom.xml",
+      "bytes": 8805,
+      "sha256": "b98fcc84b57f57f1a8a7fd01ed2e7ab66a0c32c15c62980646a13d378a5669e5"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductFamilyMembershipService.java",
+      "bytes": 13759,
+      "sha256": "c990a1b99e0afea7487e57df2eb8d8f9ee40890b6d098e19765af24c4eb90bd0"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/entity/ProductFamilyMember.java",
+      "bytes": 2143,
+      "sha256": "f356a91fc0d88d6d543544bfa2bef9a3c6e33b1ef0f14aa1fb70b494b958bfa0"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/repository/ProductFamilyMemberRepository.java",
+      "bytes": 1014,
+      "sha256": "bd3ae2444a82fd2cd1c67b9985fb11d4f30be9bc2d32dee798403e74a172c137"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java",
+      "bytes": 95507,
+      "sha256": "87e717d595fdbd03139b5fb62b65b266ebfdfe1cc4178a80dd30b517e6675dab"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/entity/AuditEvent.java",
+      "bytes": 4697,
+      "sha256": "34a236e63d78eed77cfd67094b4ced89f99614fa09b206546189e7e2907480aa"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/entity/AuditEventHash.java",
+      "bytes": 7419,
+      "sha256": "9ed9137b4d216699fc9f3374edbab6cbe8ae8b4862e9b7b2bcf562511b293ce2"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/resources/db/changelog/db.changelog-master.yaml",
+      "bytes": 584,
+      "sha256": "c6aee09872f78a36a7207348519d203dd6e8c21bff2f893540ef214fc6d5f964"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql",
+      "bytes": 106718,
+      "sha256": "61560f972ef9eeeb8f69620c947b54b2326ad9341d929b19385653bec81cf99b"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/resources/db/changelog/baseline/0002-current-seed.sql",
+      "bytes": 58311,
+      "sha256": "7007b3d4d47fd9d9eca097d1c23125afad64c4cce272dea3bf62323d25911eeb"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/service/ProductFamilyTransferPostgresTest.java",
+      "bytes": 17220,
+      "sha256": "0b08a4a6d6200326c3f21718d3b24213fb21695f6fd702c1c3900215873f7940"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/service/ProductFamilyMembershipServiceTest.java",
+      "bytes": 8821,
+      "sha256": "8946853eeb80d21074bef229749cb1417ba0708802d3682cca0e25374290edfa"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/repository/ProductFamilyMemberRepositoryTest.java",
+      "bytes": 8348,
+      "sha256": "da02c9e6dab612da3ee97958632e4227f18b1e70ce698392115aedf6fa6fc57d"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/service/ProductProcessResolutionServiceTest.java",
+      "bytes": 5548,
+      "sha256": "7cff9b79fe20dc58c54342cf957599e780cb63eb9fbf5f234d01563bcfa84ae6"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/ProcessModelingControllerTest.java",
+      "bytes": 84914,
+      "sha256": "3d66178ff6a832fcdc6d6c52cdadf3f0680dbf00bde282cb38c1bd3f416118d6"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/BatchProcessIntegrationTest.java",
+      "bytes": 28046,
+      "sha256": "e3b874297ba362318a558d24bdfc9909de7f6d25e47774c88976ff10fd955b03"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/compliance/entity/AuditEventHashTest.java",
+      "bytes": 9525,
+      "sha256": "6621e06bd4eb190062e363dccbfac17092547844072dea12206b9242c748e731"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/compliance/entity/AuditEventTest.java",
+      "bytes": 1724,
+      "sha256": "a9dee9a5c3a7b0fa04a2cee5044b1ded733beb9b10755944d49bcf2862cbd1aa"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/common/audit/AuditAspectTest.java",
+      "bytes": 4214,
+      "sha256": "dfad0cbf514f5c207543d4c598b5997d69c8dafe08ff375ba6e3133306313adb"
+    },
+    {
+      "path": "docs/knowledge/facts/core-business.yaml",
+      "bytes": 142094,
+      "sha256": "168e4a16c1880fd6044816e09693ad9e5f98e246eb7a8ec97d08f877d00523d0"
+    }
+  ],
+  "sameTestNegativeGreen": true,
+  "negativeProductMatchesBase": true,
+  "phases": {
+    "negative": {
+      "tests": 13,
+      "failures": 3,
+      "errors": 1,
+      "skipped": 0
+    },
+    "retry": {
+      "tests": 156,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 2
+    },
+    "verified": {
+      "tests": 156,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  "setupZeroJUnit": "final: incorrect test class name in runner before Maven; not a product test failure",
+  "retrySkipped": "Two existing growth observers not enabled; verified supplies original opt-in and pg_stat_statements; no assertions changed",
+  "sqlAndState": {
+    "negative": {
+      "bulkSelectCounts": {
+        "bulk-1": 8,
+        "bulk-10": 62,
+        "bulk-100": 602
+      },
+      "successfulMutationExecutions": {
+        "native-transfer": [],
+        "http-transfer": [],
+        "uncommitted-transfer": [],
+        "audit-failure": [],
+        "member-failure": []
+      },
+      "persistedAuditHashesIndependentlyRecomputed": 222,
+      "observationFiles": 16
+    },
+    "verified": {
+      "bulkSelectCounts": {
+        "bulk-1": 8,
+        "bulk-10": 62,
+        "bulk-100": 602
+      },
+      "successfulMutationExecutions": {
+        "native-transfer": [
+          {
+            "tx": "786",
+            "tag": "native-transfer",
+            "action": "delete",
+            "tail": "from product_family_member where id=$1"
+          },
+          {
+            "tx": "786",
+            "tag": "native-transfer",
+            "action": "insert",
+            "tail": "into product_family_member (created_at,created_by,product_family_id,product_id,tenant_id,updated_at,updated_by,id) values ($1,$2,$3,$4,$5,$6,$7,$8)"
+          },
+          {
+            "tx": "786",
+            "tag": "native-transfer",
+            "action": "insert",
+            "tail": "into audit_event (action,content_after,content_before,created_at,data_summary,entity_id,entity_type,function_name,ip_address,menu_name,module_name,operator_account,operator_id,operator_name,reason,snapshot_hash,snapshot_hash_version,source,tenant_id,id) values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20)"
+          },
+          {
+            "tx": "786",
+            "tag": "native-transfer",
+            "action": "insert",
+            "tail": "into audit_event (action,content_after,content_before,created_at,data_summary,entity_id,entity_type,function_name,ip_address,menu_name,module_name,operator_account,operator_id,operator_name,reason,snapshot_hash,snapshot_hash_version,source,tenant_id,id) values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20)"
+          },
+          {
+            "tx": "786",
+            "tag": "native-transfer",
+            "action": "insert",
+            "tail": "into audit_event (action,content_after,content_before,created_at,data_summary,entity_id,entity_type,function_name,ip_address,menu_name,module_name,operator_account,operator_id,operator_name,reason,snapshot_hash,snapshot_hash_version,source,tenant_id,id) values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20)"
+          }
+        ],
+        "http-transfer": [
+          {
+            "tx": "777",
+            "tag": "http-transfer",
+            "action": "delete",
+            "tail": "from product_family_member where id=$1"
+          },
+          {
+            "tx": "777",
+            "tag": "http-transfer",
+            "action": "insert",
+            "tail": "into product_family_member (created_at,created_by,product_family_id,product_id,tenant_id,updated_at,updated_by,id) values ($1,$2,$3,$4,$5,$6,$7,$8)"
+          },
+          {
+            "tx": "777",
+            "tag": "http-transfer",
+            "action": "insert",
+            "tail": "into audit_event (action,content_after,content_before,created_at,data_summary,entity_id,entity_type,function_name,ip_address,menu_name,module_name,operator_account,operator_id,operator_name,reason,snapshot_hash,snapshot_hash_version,source,tenant_id,id) values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20)"
+          },
+          {
+            "tx": "777",
+            "tag": "http-transfer",
+            "action": "insert",
+            "tail": "into audit_event (action,content_after,content_before,created_at,data_summary,entity_id,entity_type,function_name,ip_address,menu_name,module_name,operator_account,operator_id,operator_name,reason,snapshot_hash,snapshot_hash_version,source,tenant_id,id) values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20)"
+          },
+          {
+            "tx": "777",
+            "tag": "http-transfer",
+            "action": "insert",
+            "tail": "into audit_event (action,content_after,content_before,created_at,data_summary,entity_id,entity_type,function_name,ip_address,menu_name,module_name,operator_account,operator_id,operator_name,reason,snapshot_hash,snapshot_hash_version,source,tenant_id,id) values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20)"
+          }
+        ],
+        "uncommitted-transfer": [
+          {
+            "tx": "928",
+            "tag": "uncommitted-transfer",
+            "action": "delete",
+            "tail": "from product_family_member where id=$1"
+          },
+          {
+            "tx": "928",
+            "tag": "uncommitted-transfer",
+            "action": "insert",
+            "tail": "into product_family_member (created_at,created_by,product_family_id,product_id,tenant_id,updated_at,updated_by,id) values ($1,$2,$3,$4,$5,$6,$7,$8)"
+          },
+          {
+            "tx": "928",
+            "tag": "uncommitted-transfer",
+            "action": "insert",
+            "tail": "into audit_event (action,content_after,content_before,created_at,data_summary,entity_id,entity_type,function_name,ip_address,menu_name,module_name,operator_account,operator_id,operator_name,reason,snapshot_hash,snapshot_hash_version,source,tenant_id,id) values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20)"
+          },
+          {
+            "tx": "928",
+            "tag": "uncommitted-transfer",
+            "action": "insert",
+            "tail": "into audit_event (action,content_after,content_before,created_at,data_summary,entity_id,entity_type,function_name,ip_address,menu_name,module_name,operator_account,operator_id,operator_name,reason,snapshot_hash,snapshot_hash_version,source,tenant_id,id) values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20)"
+          },
+          {
+            "tx": "928",
+            "tag": "uncommitted-transfer",
+            "action": "insert",
+            "tail": "into audit_event (action,content_after,content_before,created_at,data_summary,entity_id,entity_type,function_name,ip_address,menu_name,module_name,operator_account,operator_id,operator_name,reason,snapshot_hash,snapshot_hash_version,source,tenant_id,id) values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20)"
+          }
+        ],
+        "audit-failure": [
+          {
+            "tx": "794",
+            "tag": "audit-failure",
+            "action": "delete",
+            "tail": "from product_family_member where id=$1"
+          },
+          {
+            "tx": "794",
+            "tag": "audit-failure",
+            "action": "insert",
+            "tail": "into product_family_member (created_at,created_by,product_family_id,product_id,tenant_id,updated_at,updated_by,id) values ($1,$2,$3,$4,$5,$6,$7,$8)"
+          },
+          {
+            "tx": "794",
+            "tag": "audit-failure",
+            "action": "insert",
+            "tail": "into audit_event (action,content_after,content_before,created_at,data_summary,entity_id,entity_type,function_name,ip_address,menu_name,module_name,operator_account,operator_id,operator_name,reason,snapshot_hash,snapshot_hash_version,source,tenant_id,id) values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20)"
+          },
+          {
+            "tx": "794",
+            "tag": "audit-failure",
+            "action": "insert",
+            "tail": "into audit_event (action,content_after,content_before,created_at,data_summary,entity_id,entity_type,function_name,ip_address,menu_name,module_name,operator_account,operator_id,operator_name,reason,snapshot_hash,snapshot_hash_version,source,tenant_id,id) values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20)"
+          }
+        ],
+        "member-failure": [
+          {
+            "tx": "944",
+            "tag": "member-failure",
+            "action": "delete",
+            "tail": "from product_family_member where id=$1"
+          }
+        ]
+      },
+      "persistedAuditHashesIndependentlyRecomputed": 231,
+      "observationFiles": 16
+    }
+  },
+  "resources": "All four owned disposable PG containers removed; worker executor joined by asserted test; MockMvc no HTTP port",
+  "limitations": [
+    "calling-thread tagged Hibernate SQL, fixtures/assert reads excluded; not all-network SQL",
+    "Failed statements are ERROR/STATEMENT, not successful execute; prepared/batched INSERT counts differ",
+    "Synthetic local fixtures; no production latency/SLA or complete concurrent writer/START matrix",
+    "Legacy repository6 use H2; transfer13 and Batch21 use canonical PG",
+    "No actual browser/socket login flow",
+    "Whole audit incomplete; no whole-file completion or historical unique count"
+  ],
+  "nextBatchAuthorization": {
+    "source": "user response to call_dad21472bffe4d2d8d878fa7adb7c04e",
+    "answer": "先批量化预校验读取（推荐）",
+    "scope": "Next batch only; preserve existing real-time recheck, writes and audit; current product unchanged"
+  }
+}

@@ -10,18 +10,21 @@ import com.zencas.edhr.identity.repository.UserAccountRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/audit/logs")
 @RequiredArgsConstructor
 public class AuditController {
+
+    private static final int OPERATOR_NAME_BATCH_SIZE = 500;
 
     private final AuditEventRepository auditEventRepository;
     private final UserAccountRepository userAccountRepository;
@@ -44,7 +47,7 @@ public class AuditController {
         int safePage = Math.max(page, 1);
         int safeSize = Math.max(size, 1);
         PageRequest queryAll = PageRequest.of(0, Integer.MAX_VALUE, Sort.by(direction, sort));
-        List<AuditLogItem> filteredItems = auditEventRepository.search(
+        List<AuditEvent> filteredItems = auditEventRepository.search(
                 blankToEmpty(entityType),
                 blankToEmpty(entityId),
                 blankToEmpty(action),
@@ -56,15 +59,17 @@ public class AuditController {
                 queryAll)
                 .getContent()
                 .stream()
-                .map(this::toAuditLogItem)
-                .filter(item -> matchesAuditText(item.getModuleName(), moduleName))
-                .filter(item -> matchesAuditText(item.getMenuName(), menuName))
-                .filter(item -> matchesAuditText(item.getDataSummary(), dataKeyword))
+                .filter(event -> matchesAuditText(resolveModuleName(event), moduleName))
+                .filter(event -> matchesAuditText(resolveMenuName(event), menuName))
+                .filter(event -> matchesAuditText(resolveDataSummary(event, event.getEntityType(), event.getEntityId()), dataKeyword))
                 .toList();
-        int fromIndex = Math.min((safePage - 1) * safeSize, filteredItems.size());
-        int toIndex = Math.min(fromIndex + safeSize, filteredItems.size());
+        int fromIndex = (int) Math.min((long) (safePage - 1) * safeSize, filteredItems.size());
+        int toIndex = (int) Math.min((long) fromIndex + safeSize, filteredItems.size());
+        List<AuditEvent> pageEvents = filteredItems.subList(fromIndex, toIndex);
+        Map<String, String> operatorNames = loadOperatorNames(pageEvents);
         return ApiResponse.success(PageResult.of(
-                filteredItems.subList(fromIndex, toIndex), page, size, filteredItems.size()));
+                pageEvents.stream().map(event -> toAuditLogItem(event, operatorNames)).toList(),
+                page, size, filteredItems.size()));
     }
 
     @GetMapping("/me")
@@ -110,7 +115,7 @@ public class AuditController {
         return value.toLowerCase(Locale.ROOT).contains(keyword.trim().toLowerCase(Locale.ROOT));
     }
 
-    private AuditLogItem toAuditLogItem(AuditEvent event) {
+    private AuditLogItem toAuditLogItem(AuditEvent event, Map<String, String> operatorNames) {
         String triggerMethod = StringUtils.hasText(event.getSource()) ? event.getSource() : "UI";
         String action = resolveProjectedAction(event);
         String actionLabel = resolveActionLabel(action, event.getEntityType());
@@ -123,7 +128,7 @@ public class AuditController {
                 .action(action)
                 .actionLabel(actionLabel)
                 .operatorId(event.getOperatorId())
-                .operatorDisplayName(resolveOperatorDisplayName(event))
+                .operatorDisplayName(resolveOperatorDisplayName(event, operatorNames))
                 .operatorAccount(resolveOperatorAccount(event))
                 .operationTime(event.getCreatedAt() == null ? "" : event.getCreatedAt().toString())
                 .triggerMethod(triggerMethod)
@@ -141,13 +146,27 @@ public class AuditController {
                 .build();
     }
 
-    private String resolveOperatorDisplayName(AuditEvent event) {
-        String account = resolveOperatorAccount(event);
-        if (StringUtils.hasText(account)) {
-            Optional<UserAccount> user = userAccountRepository.findByUsername(account);
-            if (user.isPresent() && StringUtils.hasText(user.get().getDisplayName())) {
-                return user.get().getDisplayName();
+    private Map<String, String> loadOperatorNames(List<AuditEvent> events) {
+        List<String> accounts = events.stream().map(this::resolveOperatorAccount).distinct().toList();
+        Map<String, String> names = new HashMap<>();
+        for (int start = 0; start < accounts.size();) {
+            int end = start + Math.min(OPERATOR_NAME_BATCH_SIZE, accounts.size() - start);
+            for (UserAccount user : userAccountRepository.findByUsernameIn(accounts.subList(start, end))) {
+                if (names.containsKey(user.getUsername())) {
+                    throw new IncorrectResultSizeDataAccessException(1);
+                }
+                names.put(user.getUsername(), user.getDisplayName());
             }
+            start = end;
+        }
+        return names;
+    }
+
+    private String resolveOperatorDisplayName(AuditEvent event, Map<String, String> operatorNames) {
+        String account = resolveOperatorAccount(event);
+        String currentName = operatorNames.get(account);
+        if (StringUtils.hasText(currentName)) {
+            return currentName;
         }
         if (StringUtils.hasText(event.getOperatorName()) && !event.getOperatorName().equals(account)) {
             return event.getOperatorName();

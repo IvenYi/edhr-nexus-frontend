@@ -1,0 +1,44 @@
+{
+  "taskStartedClientDate": "2026-11-05",
+  "clientTimezone": "Asia/Shanghai",
+  "observationStage": "After normal push and PR58 title/body replacement, before this L0 registration commit",
+  "pullRequest": {
+    "number": 58,
+    "url": "https://github.com/IvenYi/edhr-nexus-frontend/pull/58",
+    "title": "perf(workflow): 批量读取详情处理人姓名并保留原投影",
+    "state": "open",
+    "merged": false,
+    "mergeable": true,
+    "mergeableState": "clean",
+    "baseBranch": "edhr-dev",
+    "baseCommit": "fa5921698f5fa4024ad7ca86ee2a90e3cd3a9620",
+    "sourceBranch": "audit/edhr-dev-detail-read-audit-20261104",
+    "headBeforeThisRegistration": "1b95ac555ddaee194bf43de49a276e12577ddf3e"
+  },
+  "testedCandidate": "6e10604c7121c3e9ddb7196b560e1a079fd1ccf9",
+  "quality": {
+    "result": "passed",
+    "status": "FINAL",
+    "requiredChecksPassed": 12,
+    "allDispatchedRolesAndChildrenFinal": true,
+    "manifestSha256": "26b424f0aaffdac6cfef391fc43495c67a9b0a95ecb8992d8d6a552b4f6b5f73",
+    "artifacts": 167,
+    "archiveMembersIncludingManifestAndDigestReceipt": 169
+  },
+  "preservation": {
+    "onlyExistingCandidatePathMayChange": "docs/development/branch-review-20261015/NEXT.md",
+    "allowedAdditions": "New L0 evidence/acceptance/scope/delivery records in this batch only",
+    "allOtherExistingCandidatePathsUnchanged": true,
+    "nineCurrentSourceFingerprintsVerified": true,
+    "archiveMemberBytesAndStoredSha256Verified": true,
+    "note": "Final local/remote/PR head equality and unchanged target are checked after push without self-referential hashes; this is not a new runtime or CI result."
+  },
+  "finiteVerifiedFindingResolved": "PERF-WORKFLOW-DETAIL-NAMES-20261104",
+  "directoryCountFindingStillOpen": "PERF-TENANT-DIRECTORY-COUNT-20261104",
+  "userPerformanceChoiceAuthorized": true,
+  "wholeAuditComplete": false,
+  "pendingKnowledgeCandidates": 931,
+  "priorUiDiagnosticCandidatesPending": 86,
+  "recommendation": "Manual merge updated PR58 finite name-batch implementation and diagnostic evidence",
+  "automaticMergeDeploymentHistoryRestorationOrCiActionsQueryTrigger": false
+}

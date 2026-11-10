@@ -1,0 +1,64 @@
+ontologyResult:
+  result: not-applicable
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: a4777e9f6ef7518d8684a48516c21cf5904cff01
+    targetBranch: edhr-dev
+    targetCommit: 2cb85492b2dbf47f5b837c565eecc5832b62b39a
+    contractReadCommit: 2cb85492b2dbf47f5b837c565eecc5832b62b39a
+    uncommittedContractPaths: []
+  reason: >-
+    本批只在原生成/审计/传输失败与临时ZIP清理也失败时保留原异常身份、附属清理错误和路径诊断；原成功清理与单独清理失败仍按原语义传播。
+    未新增或替代冻结版本、证据范围、原件、审计、权限或归档生命周期政策，350知识文件及知识0.3.25/schema1.2/P0保持，知识无需修改。
+    最终19个主侧运行输入已与当前及clean候选a4777e9f6ef7518d8684a48516c21cf5904cff01逐字节核对一致；本角色只实际执行知识89，不冒称执行产品/文件系统/PG/HTTP或重算SQL/JFR。
+  changedArtifacts: []
+  knowledgeSync:
+    - id: DEC-0063-11
+      disposition: retained
+      scope: 完整及选定ZIP继续同一显式冻结版本，缺失/损坏仍阻断；异常诊断修复不增加成功导出或省略证据。
+      sourceReferences: [docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml, final-source/gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrArchiveService.java]
+    - id: rule.dhr-summary-zip-source-trace
+      disposition: retained
+      scope: 原正文/附件/摘要/追溯/资格保留；Service及Controller只改变双失败抑制语义，不把本片验收扩为全部HTTP/异步/容量验证。
+      sourceReferences: [docs/knowledge/rules/dhr-summary.yaml, finite-audit-records.jsonl, final-source/gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrArchiveController.java]
+    - id: DEC-0063-10
+      disposition: retained
+      scope: 历史受控附件原件及冻结引用不物理删除；仅处理本次创建的临时ZIP，不扫描未知孤儿、恢复或删除历史数据。
+      sourceReferences: [docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml, final-source/docs/development/branch-review-20261106-dhr-archive-cleanup/decision-package.yaml]
+    - id: term.dhr-archive
+      disposition: retained
+      scope: 继续区分放行后的受控保存生命周期与冻结版本或ZIP下载副本；本次不实现归档执行、解封、保存期限或备份恢复。
+      sourceReferences: [docs/knowledge/glossary.yaml, docs/knowledge/decisions/DEC-0090-dhr-archive-minimum-scope.yaml, docs/knowledge/evidence/dhr-archive-minimum-20261029.md]
+    - id: question.multi-tenant-workflow-isolation
+      disposition: deferred
+      scope: 完整租户隔离相邻未决仍保留，不因自有文件系统故障和局部错误传播修复宣称全局隔离完成，不阻塞默认MVP本片。
+      sourceReferences: [docs/knowledge/open-questions.yaml, finite-audit-records.jsonl]
+  conflicts: []
+  questions: []
+  validationEvidence:
+    - id: validation.knowledge89
+      checkType: schema
+      command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f tools/knowledge-model/pom.xml test
+      outcome: passed
+      evidence: [knowledge-validation.log, knowledge-run.json, knowledge-test-summary.json, TEST-com.zencas.edhr.knowledge.BusinessKnowledgeModelTest.xml]
+    - id: validation.finite-reference-boundary
+      checkType: reference
+      command: Formal knowledge validator and ten finite affected-record semantic reviews
+      outcome: passed
+      evidence: [finite-audit-records.jsonl, finite-audit-summary.json, knowledge-fingerprint-inventory-final.json, 350 files unchanged; finite10 is 8 consistent plus 2 explicit gaps; not whole-audit proof]
+    - id: validation.failure-propagation-scope
+      checkType: projection
+      command: Read final product/test source and parent-generated old13/final85 XML and evidence; no product or FS runtime by ontology role
+      outcome: passed
+      evidence: [REVIEW.md, final-source-manifest.json, parent-generated-evidence/provenance.json, parent-generated-evidence/negative/test-summary.json, parent-generated-evidence/final/test-summary.json]
+    - id: validation.fixed-provenance
+      checkType: evidence-path
+      command: python3 /tmp/edhr-archive-cleanup-ontology-20261106/finalize.py /tmp/edhr-archive-cleanup-20261106 a4777e9f6ef7518d8684a48516c21cf5904cff01
+      outcome: passed
+      evidence: [baseline.json, final-fetch.log, final-review-proof.json, final-source-manifest.json, parent-generated-evidence/final/cleanup.json, parent-generated-evidence/final/cleanup-final-verification.json]
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages: [P1, P2, P3]

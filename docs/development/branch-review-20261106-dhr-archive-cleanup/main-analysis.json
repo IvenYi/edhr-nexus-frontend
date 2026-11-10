@@ -1,0 +1,462 @@
+{
+  "baseline": "2cb85492b2dbf47f5b837c565eecc5832b62b39a",
+  "runs": {
+    "negative": {
+      "totals": {
+        "tests": 13,
+        "failures": 6,
+        "errors": 0,
+        "skipped": 0
+      },
+      "classes": [
+        {
+          "class": "com.zencas.edhr.production.service.DhrArchiveCleanupFailureTest",
+          "tests": 7,
+          "failures": 4,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "class": "com.zencas.edhr.production.controller.DhrArchiveControllerStreamingTest",
+          "tests": 6,
+          "failures": 2,
+          "errors": 0,
+          "skipped": 0
+        }
+      ],
+      "missingFreshReports": []
+    },
+    "final": {
+      "totals": {
+        "tests": 85,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "classes": [
+        {
+          "class": "com.zencas.edhr.production.service.DhrArchiveCleanupFailureTest",
+          "tests": 7,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "class": "com.zencas.edhr.production.controller.DhrArchiveControllerStreamingTest",
+          "tests": 6,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "class": "com.zencas.edhr.production.service.DhrExportReadObservationPostgresTest",
+          "tests": 12,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "class": "com.zencas.edhr.production.service.DhrFormFilesTest",
+          "tests": 4,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "class": "com.zencas.edhr.production.service.DhrArchiveLayoutReaderTest",
+          "tests": 3,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "class": "com.zencas.edhr.compliance.entity.AuditEventHashTest",
+          "tests": 48,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "class": "com.zencas.edhr.compliance.entity.AuditEventTest",
+          "tests": 2,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "class": "com.zencas.edhr.common.audit.AuditAspectTest",
+          "tests": 3,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        }
+      ],
+      "missingFreshReports": []
+    }
+  },
+  "negativeControls": {
+    "DhrArchiveCleanupFailureTest.java": "128054003e7f48118432143d566bfab6f1de052fee3089cc7d5df16ee22ad7d1",
+    "DhrArchiveControllerStreamingTest.java": "3237cc471a03cea30888f75cb16417c384a9afcd4459c03b6507ef42ae58425d"
+  },
+  "finalInputsStillIdentical": 19,
+  "oldRuntimeMatchesGitBaseline": true,
+  "negativeFailureTypes": [
+    "java.lang.AssertionError",
+    "java.lang.AssertionError",
+    "java.lang.AssertionError",
+    "java.lang.AssertionError",
+    "java.lang.AssertionError",
+    "java.lang.AssertionError"
+  ],
+  "nativeObservations": {
+    "events": 11,
+    "instrumentedSelects": 33,
+    "eventsData": [
+      {
+        "name": "ordinary-0",
+        "elapsedNanos": 34291,
+        "threadAllocatedBytes": 664,
+        "heapBefore": 403124544,
+        "heapAfter": 403124544,
+        "trackedLogicalReadBytes": 0,
+        "trackedReadEvents": 0,
+        "data": {
+          "fields": 0,
+          "imageBytes": 262144,
+          "kind": "ordinary",
+          "sameFileIdentity": true
+        },
+        "jdbcSql": [],
+        "hibernateSql": [],
+        "selectStatements": 0
+      },
+      {
+        "name": "ordinary-1",
+        "elapsedNanos": 4953784,
+        "threadAllocatedBytes": 550544,
+        "heapBefore": 410464576,
+        "heapAfter": 410464576,
+        "trackedLogicalReadBytes": 262144,
+        "trackedReadEvents": 2,
+        "data": {
+          "fields": 1,
+          "imageBytes": 262144,
+          "kind": "ordinary",
+          "sameFileIdentity": true
+        },
+        "jdbcSql": [],
+        "hibernateSql": [
+          "select fo1_0.id,fo1_0.created_at,fo1_0.file_size,fo1_0.md5_hash,fo1_0.mime_type,fo1_0.original_name,fo1_0.stored_path,fo1_0.target_id,fo1_0.target_type,fo1_0.tenant_id,fo1_0.uploaded_by from file_object fo1_0 where fo1_0.id=?"
+        ],
+        "selectStatements": 1
+      },
+      {
+        "name": "ordinary-10",
+        "elapsedNanos": 2100335,
+        "threadAllocatedBytes": 292136,
+        "heapBefore": 415707456,
+        "heapAfter": 415707456,
+        "trackedLogicalReadBytes": 262144,
+        "trackedReadEvents": 2,
+        "data": {
+          "fields": 10,
+          "imageBytes": 262144,
+          "kind": "ordinary",
+          "sameFileIdentity": true
+        },
+        "jdbcSql": [],
+        "hibernateSql": [
+          "select fo1_0.id,fo1_0.created_at,fo1_0.file_size,fo1_0.md5_hash,fo1_0.mime_type,fo1_0.original_name,fo1_0.stored_path,fo1_0.target_id,fo1_0.target_type,fo1_0.tenant_id,fo1_0.uploaded_by from file_object fo1_0 where fo1_0.id=?"
+        ],
+        "selectStatements": 1
+      },
+      {
+        "name": "ordinary-100",
+        "elapsedNanos": 2011010,
+        "threadAllocatedBytes": 326064,
+        "heapBefore": 419901760,
+        "heapAfter": 420950336,
+        "trackedLogicalReadBytes": 262144,
+        "trackedReadEvents": 2,
+        "data": {
+          "fields": 100,
+          "imageBytes": 262144,
+          "kind": "ordinary",
+          "sameFileIdentity": true
+        },
+        "jdbcSql": [],
+        "hibernateSql": [
+          "select fo1_0.id,fo1_0.created_at,fo1_0.file_size,fo1_0.md5_hash,fo1_0.mime_type,fo1_0.original_name,fo1_0.stored_path,fo1_0.target_id,fo1_0.target_type,fo1_0.tenant_id,fo1_0.uploaded_by from file_object fo1_0 where fo1_0.id=?"
+        ],
+        "selectStatements": 1
+      },
+      {
+        "name": "signature-0",
+        "elapsedNanos": 31337,
+        "threadAllocatedBytes": 664,
+        "heapBefore": 427241792,
+        "heapAfter": 427241792,
+        "trackedLogicalReadBytes": 0,
+        "trackedReadEvents": 0,
+        "data": {
+          "fields": 0,
+          "imageBytes": 262144,
+          "kind": "signature",
+          "sameFileIdentity": true
+        },
+        "jdbcSql": [],
+        "hibernateSql": [],
+        "selectStatements": 0
+      },
+      {
+        "name": "signature-1",
+        "elapsedNanos": 2867832,
+        "threadAllocatedBytes": 1335784,
+        "heapBefore": 432484672,
+        "heapAfter": 434581824,
+        "trackedLogicalReadBytes": 262144,
+        "trackedReadEvents": 2,
+        "data": {
+          "fields": 1,
+          "imageBytes": 262144,
+          "kind": "signature",
+          "sameFileIdentity": true
+        },
+        "jdbcSql": [],
+        "hibernateSql": [
+          "select fo1_0.id,fo1_0.created_at,fo1_0.file_size,fo1_0.md5_hash,fo1_0.mime_type,fo1_0.original_name,fo1_0.stored_path,fo1_0.target_id,fo1_0.target_type,fo1_0.tenant_id,fo1_0.uploaded_by from file_object fo1_0 where fo1_0.id=?"
+        ],
+        "selectStatements": 1
+      },
+      {
+        "name": "signature-10",
+        "elapsedNanos": 2105413,
+        "threadAllocatedBytes": 1341472,
+        "heapBefore": 440873280,
+        "heapAfter": 442970432,
+        "trackedLogicalReadBytes": 262144,
+        "trackedReadEvents": 2,
+        "data": {
+          "fields": 10,
+          "imageBytes": 262144,
+          "kind": "signature",
+          "sameFileIdentity": true
+        },
+        "jdbcSql": [],
+        "hibernateSql": [
+          "select fo1_0.id,fo1_0.created_at,fo1_0.file_size,fo1_0.md5_hash,fo1_0.mime_type,fo1_0.original_name,fo1_0.stored_path,fo1_0.target_id,fo1_0.target_type,fo1_0.tenant_id,fo1_0.uploaded_by from file_object fo1_0 where fo1_0.id=?"
+        ],
+        "selectStatements": 1
+      },
+      {
+        "name": "signature-100",
+        "elapsedNanos": 5041196,
+        "threadAllocatedBytes": 1400336,
+        "heapBefore": 458699072,
+        "heapAfter": 460796224,
+        "trackedLogicalReadBytes": 262144,
+        "trackedReadEvents": 2,
+        "data": {
+          "fields": 100,
+          "imageBytes": 262144,
+          "kind": "signature",
+          "sameFileIdentity": true
+        },
+        "jdbcSql": [],
+        "hibernateSql": [
+          "select fo1_0.id,fo1_0.created_at,fo1_0.file_size,fo1_0.md5_hash,fo1_0.mime_type,fo1_0.original_name,fo1_0.stored_path,fo1_0.target_id,fo1_0.target_type,fo1_0.tenant_id,fo1_0.uploaded_by from file_object fo1_0 where fo1_0.id=?"
+        ],
+        "selectStatements": 1
+      },
+      {
+        "name": "archive-1",
+        "elapsedNanos": 111066910,
+        "threadAllocatedBytes": 6798912,
+        "heapBefore": 289016336,
+        "heapAfter": 225968128,
+        "trackedLogicalReadBytes": 597179,
+        "trackedReadEvents": 74,
+        "data": {
+          "pdfBytesPerForm": 197878,
+          "forms": 1,
+          "rendering": "valid synthetic PDF, renderer mocked; actual frozen integrity/archive/merge/audit"
+        },
+        "jdbcSql": [
+          "SELECT v.*,d.dhr_no,d.object_no,d.object_type,d.production_object_id,d.status AS dhr_status\nFROM dhr_summary_version v JOIN dhr_instance d ON d.id=v.dhr_instance_id AND d.tenant_id=v.tenant_id\nWHERE v.tenant_id='default' AND v.dhr_instance_id=? AND v.id=?\n",
+          "SELECT source_record_id,target_node_key,before_node_key,display_order,display_name,source_snapshot,source_hash\nFROM dhr_summary_evidence WHERE tenant_id='default' AND summary_version_id=? ORDER BY id\n",
+          "SELECT dhr_instance_id,version_no,status,review_mode,review_workflow_definition_id,\n       review_workflow_version_id,base_directory_snapshot,overlay_directory_snapshot,\n       candidate_snapshot,attachment_snapshot,check_result_snapshot,snapshot_hash\nFROM dhr_summary_version WHERE tenant_id='default' AND id=?\n",
+          "SELECT source_record_id,target_node_key,before_node_key,display_order,display_name FROM dhr_summary_evidence WHERE tenant_id='default' AND summary_version_id=? ORDER BY id",
+          "SELECT id,entity_type,entity_id,action,content_before,content_after,snapshot_hash,operator_id,operator_name,created_at\nFROM audit_event WHERE tenant_id='default' AND ((entity_type='DHR_INSTANCE' AND entity_id=?)\n  OR (entity_type IN ('DHR_SUMMARY_VERSION','DHR_SUMMARY_REVIEW','DHR_SUMMARY_EXPORT') AND entity_id=?)\n  OR (entity_type IN ('DHR_SUMMARY_DRAFT','DHR_ATTACHMENT') AND data_summary=?))\nORDER BY created_at,id\n",
+          "SELECT id,action,content_before,content_after,snapshot_hash,operator_id,operator_name,created_at,data_summary\nFROM audit_event WHERE tenant_id='default' AND entity_type='PRODUCTION_EXECUTION' AND entity_id=? AND created_at<=?\nORDER BY created_at,id\n",
+          "SELECT id,meaning,signer_id,signer_name,auth_method,auth_event_ref,snapshot_hash,snapshot_data,signed_at\nFROM signature WHERE tenant_id='default' AND target_type='PRODUCTION_EXECUTION' AND target_id=? AND signed_at<=?\nORDER BY signed_at,id\n",
+          "SELECT s.id,s.meaning,s.signer_id,s.signer_name,s.auth_method,s.auth_event_ref,s.snapshot_hash,s.snapshot_data,s.signed_at,\n       t.id AS task_id,t.action,t.opinion\nFROM dhr_summary_review r JOIN workflow_task t ON t.instance_id=r.workflow_instance_id\nJOIN signature s ON s.id=t.signature_id\nWHERE r.summary_version_id=? ORDER BY s.signed_at,s.id\n"
+        ],
+        "hibernateSql": [
+          "select ae1_0.id,ae1_0.action,ae1_0.content_after,ae1_0.content_before,ae1_0.created_at,ae1_0.data_summary,ae1_0.entity_id,ae1_0.entity_type,ae1_0.function_name,ae1_0.ip_address,ae1_0.menu_name,ae1_0.module_name,ae1_0.operator_account,ae1_0.operator_id,ae1_0.operator_name,ae1_0.reason,ae1_0.snapshot_hash,ae1_0.snapshot_hash_version,ae1_0.source,ae1_0.tenant_id from audit_event ae1_0 where ae1_0.id=?",
+          "insert into audit_event (action,content_after,content_before,created_at,data_summary,entity_id,entity_type,function_name,ip_address,menu_name,module_name,operator_account,operator_id,operator_name,reason,snapshot_hash,snapshot_hash_version,source,tenant_id,id) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"
+        ],
+        "selectStatements": 9,
+        "outputArchiveBytes": 597179
+      },
+      {
+        "name": "archive-10",
+        "elapsedNanos": 144771691,
+        "threadAllocatedBytes": 13771656,
+        "heapBefore": 204996608,
+        "heapAfter": 222822400,
+        "trackedLogicalReadBytes": 4167979,
+        "trackedReadEvents": 510,
+        "data": {
+          "pdfBytesPerForm": 197878,
+          "forms": 10,
+          "rendering": "valid synthetic PDF, renderer mocked; actual frozen integrity/archive/merge/audit"
+        },
+        "jdbcSql": [
+          "SELECT v.*,d.dhr_no,d.object_no,d.object_type,d.production_object_id,d.status AS dhr_status\nFROM dhr_summary_version v JOIN dhr_instance d ON d.id=v.dhr_instance_id AND d.tenant_id=v.tenant_id\nWHERE v.tenant_id='default' AND v.dhr_instance_id=? AND v.id=?\n",
+          "SELECT source_record_id,target_node_key,before_node_key,display_order,display_name,source_snapshot,source_hash\nFROM dhr_summary_evidence WHERE tenant_id='default' AND summary_version_id=? ORDER BY id\n",
+          "SELECT dhr_instance_id,version_no,status,review_mode,review_workflow_definition_id,\n       review_workflow_version_id,base_directory_snapshot,overlay_directory_snapshot,\n       candidate_snapshot,attachment_snapshot,check_result_snapshot,snapshot_hash\nFROM dhr_summary_version WHERE tenant_id='default' AND id=?\n",
+          "SELECT source_record_id,target_node_key,before_node_key,display_order,display_name FROM dhr_summary_evidence WHERE tenant_id='default' AND summary_version_id=? ORDER BY id",
+          "SELECT id,entity_type,entity_id,action,content_before,content_after,snapshot_hash,operator_id,operator_name,created_at\nFROM audit_event WHERE tenant_id='default' AND ((entity_type='DHR_INSTANCE' AND entity_id=?)\n  OR (entity_type IN ('DHR_SUMMARY_VERSION','DHR_SUMMARY_REVIEW','DHR_SUMMARY_EXPORT') AND entity_id=?)\n  OR (entity_type IN ('DHR_SUMMARY_DRAFT','DHR_ATTACHMENT') AND data_summary=?))\nORDER BY created_at,id\n",
+          "SELECT id,action,content_before,content_after,snapshot_hash,operator_id,operator_name,created_at,data_summary\nFROM audit_event WHERE tenant_id='default' AND entity_type='PRODUCTION_EXECUTION' AND entity_id=? AND created_at<=?\nORDER BY created_at,id\n",
+          "SELECT id,meaning,signer_id,signer_name,auth_method,auth_event_ref,snapshot_hash,snapshot_data,signed_at\nFROM signature WHERE tenant_id='default' AND target_type='PRODUCTION_EXECUTION' AND target_id=? AND signed_at<=?\nORDER BY signed_at,id\n",
+          "SELECT s.id,s.meaning,s.signer_id,s.signer_name,s.auth_method,s.auth_event_ref,s.snapshot_hash,s.snapshot_data,s.signed_at,\n       t.id AS task_id,t.action,t.opinion\nFROM dhr_summary_review r JOIN workflow_task t ON t.instance_id=r.workflow_instance_id\nJOIN signature s ON s.id=t.signature_id\nWHERE r.summary_version_id=? ORDER BY s.signed_at,s.id\n"
+        ],
+        "hibernateSql": [
+          "select ae1_0.id,ae1_0.action,ae1_0.content_after,ae1_0.content_before,ae1_0.created_at,ae1_0.data_summary,ae1_0.entity_id,ae1_0.entity_type,ae1_0.function_name,ae1_0.ip_address,ae1_0.menu_name,ae1_0.module_name,ae1_0.operator_account,ae1_0.operator_id,ae1_0.operator_name,ae1_0.reason,ae1_0.snapshot_hash,ae1_0.snapshot_hash_version,ae1_0.source,ae1_0.tenant_id from audit_event ae1_0 where ae1_0.id=?",
+          "insert into audit_event (action,content_after,content_before,created_at,data_summary,entity_id,entity_type,function_name,ip_address,menu_name,module_name,operator_account,operator_id,operator_name,reason,snapshot_hash,snapshot_hash_version,source,tenant_id,id) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"
+        ],
+        "selectStatements": 9,
+        "outputArchiveBytes": 4167979
+      },
+      {
+        "name": "archive-100",
+        "elapsedNanos": 1033025146,
+        "threadAllocatedBytes": 155722952,
+        "heapBefore": 244842496,
+        "heapAfter": 406323200,
+        "trackedLogicalReadBytes": 39878035,
+        "trackedReadEvents": 4869,
+        "data": {
+          "pdfBytesPerForm": 197878,
+          "forms": 100,
+          "rendering": "valid synthetic PDF, renderer mocked; actual frozen integrity/archive/merge/audit"
+        },
+        "jdbcSql": [
+          "SELECT v.*,d.dhr_no,d.object_no,d.object_type,d.production_object_id,d.status AS dhr_status\nFROM dhr_summary_version v JOIN dhr_instance d ON d.id=v.dhr_instance_id AND d.tenant_id=v.tenant_id\nWHERE v.tenant_id='default' AND v.dhr_instance_id=? AND v.id=?\n",
+          "SELECT source_record_id,target_node_key,before_node_key,display_order,display_name,source_snapshot,source_hash\nFROM dhr_summary_evidence WHERE tenant_id='default' AND summary_version_id=? ORDER BY id\n",
+          "SELECT dhr_instance_id,version_no,status,review_mode,review_workflow_definition_id,\n       review_workflow_version_id,base_directory_snapshot,overlay_directory_snapshot,\n       candidate_snapshot,attachment_snapshot,check_result_snapshot,snapshot_hash\nFROM dhr_summary_version WHERE tenant_id='default' AND id=?\n",
+          "SELECT source_record_id,target_node_key,before_node_key,display_order,display_name FROM dhr_summary_evidence WHERE tenant_id='default' AND summary_version_id=? ORDER BY id",
+          "SELECT id,entity_type,entity_id,action,content_before,content_after,snapshot_hash,operator_id,operator_name,created_at\nFROM audit_event WHERE tenant_id='default' AND ((entity_type='DHR_INSTANCE' AND entity_id=?)\n  OR (entity_type IN ('DHR_SUMMARY_VERSION','DHR_SUMMARY_REVIEW','DHR_SUMMARY_EXPORT') AND entity_id=?)\n  OR (entity_type IN ('DHR_SUMMARY_DRAFT','DHR_ATTACHMENT') AND data_summary=?))\nORDER BY created_at,id\n",
+          "SELECT id,action,content_before,content_after,snapshot_hash,operator_id,operator_name,created_at,data_summary\nFROM audit_event WHERE tenant_id='default' AND entity_type='PRODUCTION_EXECUTION' AND entity_id=? AND created_at<=?\nORDER BY created_at,id\n",
+          "SELECT id,meaning,signer_id,signer_name,auth_method,auth_event_ref,snapshot_hash,snapshot_data,signed_at\nFROM signature WHERE tenant_id='default' AND target_type='PRODUCTION_EXECUTION' AND target_id=? AND signed_at<=?\nORDER BY signed_at,id\n",
+          "SELECT s.id,s.meaning,s.signer_id,s.signer_name,s.auth_method,s.auth_event_ref,s.snapshot_hash,s.snapshot_data,s.signed_at,\n       t.id AS task_id,t.action,t.opinion\nFROM dhr_summary_review r JOIN workflow_task t ON t.instance_id=r.workflow_instance_id\nJOIN signature s ON s.id=t.signature_id\nWHERE r.summary_version_id=? ORDER BY s.signed_at,s.id\n"
+        ],
+        "hibernateSql": [
+          "select ae1_0.id,ae1_0.action,ae1_0.content_after,ae1_0.content_before,ae1_0.created_at,ae1_0.data_summary,ae1_0.entity_id,ae1_0.entity_type,ae1_0.function_name,ae1_0.ip_address,ae1_0.menu_name,ae1_0.module_name,ae1_0.operator_account,ae1_0.operator_id,ae1_0.operator_name,ae1_0.reason,ae1_0.snapshot_hash,ae1_0.snapshot_hash_version,ae1_0.source,ae1_0.tenant_id from audit_event ae1_0 where ae1_0.id=?",
+          "insert into audit_event (action,content_after,content_before,created_at,data_summary,entity_id,entity_type,function_name,ip_address,menu_name,module_name,operator_account,operator_id,operator_name,reason,snapshot_hash,snapshot_hash_version,source,tenant_id,id) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"
+        ],
+        "selectStatements": 9,
+        "outputArchiveBytes": 39878035
+      }
+    ],
+    "scope": "Existing observer calling-thread SELECTs; no per-event server SQL marker, not an exact attribution of all network SQL."
+  },
+  "serverExportAuditInsertExecutions": 3,
+  "jfrIndependentRecalculation": [
+    {
+      "name": "archive-1",
+      "bytes": 597179,
+      "events": 74,
+      "watchedPaths": 1,
+      "matchesOriginalObserver": true
+    },
+    {
+      "name": "archive-10",
+      "bytes": 4167979,
+      "events": 510,
+      "watchedPaths": 1,
+      "matchesOriginalObserver": true
+    },
+    {
+      "name": "archive-100",
+      "bytes": 39878035,
+      "events": 4869,
+      "watchedPaths": 1,
+      "matchesOriginalObserver": true
+    },
+    {
+      "name": "ordinary-0",
+      "bytes": 0,
+      "events": 0,
+      "watchedPaths": 0,
+      "matchesOriginalObserver": true
+    },
+    {
+      "name": "ordinary-1",
+      "bytes": 262144,
+      "events": 2,
+      "watchedPaths": 1,
+      "matchesOriginalObserver": true
+    },
+    {
+      "name": "ordinary-10",
+      "bytes": 262144,
+      "events": 2,
+      "watchedPaths": 1,
+      "matchesOriginalObserver": true
+    },
+    {
+      "name": "ordinary-100",
+      "bytes": 262144,
+      "events": 2,
+      "watchedPaths": 1,
+      "matchesOriginalObserver": true
+    },
+    {
+      "name": "signature-0",
+      "bytes": 0,
+      "events": 0,
+      "watchedPaths": 0,
+      "matchesOriginalObserver": true
+    },
+    {
+      "name": "signature-1",
+      "bytes": 262144,
+      "events": 2,
+      "watchedPaths": 1,
+      "matchesOriginalObserver": true
+    },
+    {
+      "name": "signature-10",
+      "bytes": 262144,
+      "events": 2,
+      "watchedPaths": 1,
+      "matchesOriginalObserver": true
+    },
+    {
+      "name": "signature-100",
+      "bytes": 262144,
+      "events": 2,
+      "watchedPaths": 1,
+      "matchesOriginalObserver": true
+    }
+  ],
+  "containerCleanupInitialObservation": {
+    "ownedContainer": "edhr-archive-cleanup-main-final-20261106",
+    "removed": false
+  },
+  "containerCleanupFollowup": {
+    "ownedContainer": "edhr-archive-cleanup-main-final-20261106",
+    "removed": true,
+    "observedAtUTC": "2026-11-06T15:52:32.915004+00:00",
+    "inspectExitCode": 1,
+    "reason": "Original immediate post-stop observation raced Docker --rm removal; kept original false record, verified actual later absence. Runner now polls bounded removal for subsequent independent runs."
+  },
+  "ownedResourcesClean": true,
+  "limits": [
+    "FS fault tests are opt-in real Linux owned-path replacement, not disk-loss/permission injection on other OS",
+    "New lifecycle tests mock database/renderer/qualification; native12 use actual canonical PG/frozen integrity/archive/merge/audit but renderer is mocked",
+    "No full HTTP async/timeout/cancellation/never-started body, UNKNOWN persistence reconciliation or capacity closure",
+    "No product behavior/policy/index/paging changes except primary/cleanup error propagation"
+  ]
+}

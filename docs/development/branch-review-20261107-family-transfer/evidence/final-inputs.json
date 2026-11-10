@@ -1,0 +1,132 @@
+{
+  "runtimeTestedCommit": "1709dbc4d3d28d8721ff001b69ad934a6de54d18",
+  "importOnlyCandidate": "b2b0df85572f634925d9e3b1ac4a91c0988bb86c",
+  "change": "Only unused test import removed;24 input hashes unchanged,1 changed; actual compile/javap evidence separate",
+  "sourceFingerprints": [
+    {
+      "path": "AGENTS.md",
+      "bytes": 25065,
+      "sha256": "13dc7cdacea0b1bb0aef2abb268781f9c69584acd4879b204d2b7fd81a2927fc"
+    },
+    {
+      "path": "codeplzreadme.md",
+      "bytes": 3035,
+      "sha256": "7a1be8efffec596b034335058dca2860346d256622f899c8dac97c5172dd6df2"
+    },
+    {
+      "path": "docs/agents/agent-handoff-contract.md",
+      "bytes": 31233,
+      "sha256": "3439a35dd1baa77ac723f1b5afa237a338d56e31386f06b02b4aacfd754e3a12"
+    },
+    {
+      "path": "docs/agents/quality-verifier.md",
+      "bytes": 7519,
+      "sha256": "6b3de9323924fb4ba5ae87be76c5136d28e754810c46b22b8e3d1cdd6c2f826f"
+    },
+    {
+      "path": "docs/development/branch-review-20261107-family-transfer/decision-package.yaml",
+      "bytes": 5264,
+      "sha256": "795423fbf94ccee1035c4e3887d4ed9c1f44db21e693ebd294edde126a1ac5cd"
+    },
+    {
+      "path": "gmp-platform/backend/pom.xml",
+      "bytes": 8805,
+      "sha256": "b98fcc84b57f57f1a8a7fd01ed2e7ab66a0c32c15c62980646a13d378a5669e5"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductFamilyMembershipService.java",
+      "bytes": 13759,
+      "sha256": "c990a1b99e0afea7487e57df2eb8d8f9ee40890b6d098e19765af24c4eb90bd0"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/entity/ProductFamilyMember.java",
+      "bytes": 2143,
+      "sha256": "f356a91fc0d88d6d543544bfa2bef9a3c6e33b1ef0f14aa1fb70b494b958bfa0"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/repository/ProductFamilyMemberRepository.java",
+      "bytes": 1014,
+      "sha256": "bd3ae2444a82fd2cd1c67b9985fb11d4f30be9bc2d32dee798403e74a172c137"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java",
+      "bytes": 95507,
+      "sha256": "87e717d595fdbd03139b5fb62b65b266ebfdfe1cc4178a80dd30b517e6675dab"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/entity/AuditEvent.java",
+      "bytes": 4697,
+      "sha256": "34a236e63d78eed77cfd67094b4ced89f99614fa09b206546189e7e2907480aa"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/entity/AuditEventHash.java",
+      "bytes": 7419,
+      "sha256": "9ed9137b4d216699fc9f3374edbab6cbe8ae8b4862e9b7b2bcf562511b293ce2"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/resources/db/changelog/db.changelog-master.yaml",
+      "bytes": 584,
+      "sha256": "c6aee09872f78a36a7207348519d203dd6e8c21bff2f893540ef214fc6d5f964"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql",
+      "bytes": 106718,
+      "sha256": "61560f972ef9eeeb8f69620c947b54b2326ad9341d929b19385653bec81cf99b"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/resources/db/changelog/baseline/0002-current-seed.sql",
+      "bytes": 58311,
+      "sha256": "7007b3d4d47fd9d9eca097d1c23125afad64c4cce272dea3bf62323d25911eeb"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/service/ProductFamilyTransferPostgresTest.java",
+      "bytes": 17170,
+      "sha256": "99b01d21862a62d9673c1de4c74d689a6157294ea5e2ea73c36d8cd83e4fd4e1"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/service/ProductFamilyMembershipServiceTest.java",
+      "bytes": 8821,
+      "sha256": "8946853eeb80d21074bef229749cb1417ba0708802d3682cca0e25374290edfa"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/repository/ProductFamilyMemberRepositoryTest.java",
+      "bytes": 8348,
+      "sha256": "da02c9e6dab612da3ee97958632e4227f18b1e70ce698392115aedf6fa6fc57d"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/service/ProductProcessResolutionServiceTest.java",
+      "bytes": 5548,
+      "sha256": "7cff9b79fe20dc58c54342cf957599e780cb63eb9fbf5f234d01563bcfa84ae6"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/ProcessModelingControllerTest.java",
+      "bytes": 84914,
+      "sha256": "3d66178ff6a832fcdc6d6c52cdadf3f0680dbf00bde282cb38c1bd3f416118d6"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/BatchProcessIntegrationTest.java",
+      "bytes": 28046,
+      "sha256": "e3b874297ba362318a558d24bdfc9909de7f6d25e47774c88976ff10fd955b03"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/compliance/entity/AuditEventHashTest.java",
+      "bytes": 9525,
+      "sha256": "6621e06bd4eb190062e363dccbfac17092547844072dea12206b9242c748e731"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/compliance/entity/AuditEventTest.java",
+      "bytes": 1724,
+      "sha256": "a9dee9a5c3a7b0fa04a2cee5044b1ded733beb9b10755944d49bcf2862cbd1aa"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/common/audit/AuditAspectTest.java",
+      "bytes": 4214,
+      "sha256": "dfad0cbf514f5c207543d4c598b5997d69c8dafe08ff375ba6e3133306313adb"
+    },
+    {
+      "path": "docs/knowledge/facts/core-business.yaml",
+      "bytes": 142094,
+      "sha256": "168e4a16c1880fd6044816e09693ad9e5f98e246eb7a8ec97d08f877d00523d0"
+    }
+  ]
+}

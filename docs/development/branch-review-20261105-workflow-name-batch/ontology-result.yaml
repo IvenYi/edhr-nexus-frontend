@@ -1,0 +1,143 @@
+ontologyResult:
+  result: not-applicable
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: 5e2d1c084eea20a8d1be6f86bda4121b612cacce
+    targetBranch: edhr-dev
+    targetCommit: fa5921698f5fa4024ad7ca86ee2a90e3cd3a9620
+    contractReadCommit: 5e2d1c084eea20a8d1be6f86bda4121b612cacce
+    uncommittedContractPaths: []
+  reason: 用户仅授权姓名查询性能优化；稳定源码在原可见实例检查后按原文本ID一次读取当前目录名，NULL/缺失fallback、任务投影和历史签署/日志证据保持。无新业务概念、政策、生命周期或定义替代，知识无需修改。
+  changedArtifacts: []
+  knowledgeSync:
+  - id: DEC-0074-01
+    disposition: retained
+    scope: 实际签署人身份及独立签名凭证与会话身份分开；当前目录姓名不能改写signature.signerName/snapshotData。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0074-shared-terminal-button-signature.yaml
+    - docs/knowledge/evidence/button-signature-confirmed.md
+  - id: DEC-0081-01
+    disposition: retained
+    scope: 通用任务/普通表单本人转办的同租户正常可用目标范围保持；批量姓名不新增目标权限政策。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0081-tenant-scoped-task-delegation.yaml
+    - docs/knowledge/evidence/tenant-task-delegation-2026-10-20.md
+  - id: DEC-0081-02
+    disposition: retained
+    scope: 原候选来源与当前责任分开；只读姓名不会重算候选或赋予旧候选当前处理权。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0081-tenant-scoped-task-delegation.yaml
+    - docs/knowledge/evidence/tenant-task-delegation-2026-10-20.md
+  - id: DEC-0092-01
+    disposition: retained
+    scope: 集中日志/干预继续原实例身份和读路径；姓名复用不创建运行任务或修改历史身份。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0092-workflow-operations-entry-and-actions.yaml
+    - docs/development/workflow-operations-20261030/user-confirmed.md
+  - id: DEC-0092-02
+    disposition: retained
+    scope: 记录控制转办仍限自身授权候选且申请人回避；不能从通用委托外推资格。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0092-workflow-operations-entry-and-actions.yaml
+    - docs/development/workflow-operations-20261030/user-confirmed.md
+    - docs/knowledge/evidence/workflow-operations-20261030.md
+  - id: DEC-0093-01
+    disposition: retained
+    scope: 集中日志/干预按领域授权读取；菜单及姓名映射不授予审批、填报或内容修改权。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0093-central-form-dhr-workflow-responsibility.yaml
+    - docs/development/workflow-central-entry-extension-20261102/user-confirmed.md
+    - docs/knowledge/evidence/central-form-dhr-workflow-20261102.md
+  - id: DEC-0093-03
+    disposition: retained
+    scope: 责任历史、领域审计及签名关联保留实际会话/签署身份；当前姓名投影不替代历史签署证据。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0093-central-form-dhr-workflow-responsibility.yaml
+    - docs/development/workflow-central-entry-extension-20261102/user-confirmed.md
+    - docs/knowledge/evidence/central-form-dhr-workflow-20261102.md
+  - id: DEC-0093-04
+    disposition: retained
+    scope: 具体查询/权限码/投影实现是工程选择；批量SQL和有限测试不构成新业务政策或全系统验收。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0093-central-form-dhr-workflow-responsibility.yaml
+    - docs/knowledge/evidence/central-form-dhr-workflow-20261102.md
+  conflicts: []
+  questions: []
+  validationEvidence:
+  - id: validation.current-contract-and-inputs
+    checkType: reference
+    command: Read source5e2 project/handoff/role contracts, fixed knowledge/original evidence and current decisionPackage;
+      compare target contract delta
+    outcome: passed
+    evidence:
+    - baseline.json
+    - commands.json
+    - input-fingerprints.json
+    - read-snapshot/
+  - id: validation.finite-eight-current-policy-statements
+    checkType: evidence-path
+    command: Compare eight current statements and original user confirmations against current-name versus historical-signature
+      ownership boundary
+    outcome: passed
+    evidence:
+    - finite-id-review.json
+    - semantic-review.md
+  - id: validation.knowledge-345-unchanged
+    checkType: reference
+    command: Byte-compare345 tracked knowledge files against source5e2 and recheck final fingerprints
+    outcome: passed
+    evidence:
+    - knowledge-byte-check.json
+  - id: validation.stable-query-and-adjacent-guards
+    checkType: projection
+    command: Read stable diff, compare unchanged list/authorization/task-fields/log/tail/transaction ranges and
+      adjacent product files, fingerprint26 current inputs
+    outcome: passed
+    evidence:
+    - source-fingerprints.json
+    - guard-byte-equivalence.json
+    - product.diff
+    - final-source-snapshot/
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages:
+    - P1
+    - P2
+    - P3
+verificationScope:
+  status: FINAL
+  finiteExistingStatementsReviewed: 8
+  historicalUniqueCoverageClaim: false
+  knowledgeFilesUnchanged: 345
+  currentSourceFingerprints: 26
+  guardByteComparisonGroups: 12
+  formalKnowledgeTestsExecuted: 0
+  nativeTestsExecuted: 0
+  browserExecuted: false
+  roleChangedRepositoryPaths: []
+  childRoles: []
+  sourceWorkingTree:
+    head: 5e2d1c084eea20a8d1be6f86bda4121b612cacce
+    productIncludedUncommitted:
+    - gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/WorkflowOperationsQuery.java
+    testIncludedAsReadOnlyAnchor: gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/service/WorkflowReadObservationPostgresTest.java
+    noFabricatedCandidateCommit: true
+  readScope: Mandatory governance/model/open-question inputs loaded in full into provenance snapshots; relevant
+    ownership/status/stage and eight declarations/original confirmations semantically reviewed. Snapshot/hash presence
+    is not whole-file or full-knowledge semantic completion.
+  implementationChoiceBoundary: One request-local varchar-array query, exact text identity, no cross-request cache;
+    query timing is consolidated once rather than per task, still current directory data. This is engineering implementation
+    of approved optimization, not new signing or historical-name policy.
+  fullKnowledgeSemanticAuditComplete: false
+  pendingKnowledgeCandidates: 931
+  priorUiDiagnosticCandidates: 86
+  residuals:
+  - Main/fresh quality own final151/89/old-source/SQL/server verification; this role does not certify actual run
+    results
+  - Directory unused COUNT intentionally not optimized by user selection
+  - Huge candidate/text-ID plans, production latency/network/concurrent rename and full account/recipient/ACL/signature/UI
+    matrices not certified
+  - All prior W2-W7/high/A12/full-audit gaps and user-paused scopes remain

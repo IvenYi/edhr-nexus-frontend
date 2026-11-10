@@ -1,0 +1,360 @@
+{
+  "sourceRoot": "/tmp/edhr-archive-async-source-20261107",
+  "files": [
+    {
+      "path": "CompletionChainProbe.java",
+      "bytes": 2250,
+      "sha256": "76e29c1fb1eb41408bea1006a4705a39e71ed7512c63403193b18f1584e4d62d"
+    },
+    {
+      "path": "REVIEW.md",
+      "bytes": 8626,
+      "sha256": "ce4db2c2ddf9999c1094edf260123a53879cba7018dfc04a6c7956314f157cf0"
+    },
+    {
+      "path": "baseline.json",
+      "bytes": 743,
+      "sha256": "ce7d5c619f1a937603a02560c140eb1996ae6198b8305d4604d4d704bf6a8079"
+    },
+    {
+      "path": "capture.py",
+      "bytes": 3977,
+      "sha256": "39789bd184ea2a3ff600f635911e924010a07538931892898699a57fe7bd1ac7"
+    },
+    {
+      "path": "dependency-bytecode/CallableInterceptorChain.javap",
+      "bytes": 13160,
+      "sha256": "ec4dc6f7c0ac753c3c4fcce444d012407120b67dbc231c6e22ea836f29db8441"
+    },
+    {
+      "path": "dependency-bytecode/CallableProcessingInterceptor.javap",
+      "bytes": 1299,
+      "sha256": "07f8874b55d898bd6b82b4841949db00f0271c0158cf9772907ceebc4a12fe2e"
+    },
+    {
+      "path": "dependency-bytecode/StandardServletAsyncWebRequest.javap",
+      "bytes": 16970,
+      "sha256": "44228865d98e52781602e29ef1b379c4cebedfe6b9ef4710acddeba09f70d9af"
+    },
+    {
+      "path": "dependency-bytecode/StreamingResponseBodyReturnValueHandler.javap",
+      "bytes": 8542,
+      "sha256": "eef54b03a9224cb1b1cba4d3a600616cef6eb550bbb06cb724b2219f4cfa7061"
+    },
+    {
+      "path": "dependency-bytecode/StreamingResponseBodyTask.javap",
+      "bytes": 2003,
+      "sha256": "0aa61ce248d30c4a55c8b627fea5409e547143856190914a58642b00ff63df60"
+    },
+    {
+      "path": "dependency-bytecode/WebAsyncManager.javap",
+      "bytes": 58468,
+      "sha256": "e41a16dc6ea743c9d5095ec2ff8ead35e6051368d1e40ccb41d94a640fa38a92"
+    },
+    {
+      "path": "dependency-evidence.json",
+      "bytes": 1045,
+      "sha256": "ea7c991e8d1f1cb00eaa29eceea397522cd34439089cea8633a5da58562e403d"
+    },
+    {
+      "path": "dependency-probe.json",
+      "bytes": 1390,
+      "sha256": "f6aff7516dfc89f649abd99f01febc5bdb31379a4817aae379ef75a5649810a6"
+    },
+    {
+      "path": "dependency-probe.jsonl",
+      "bytes": 287,
+      "sha256": "e136bb739ad19d1d39333b27705757256d9da3ac79eb4aface77072215793e13"
+    },
+    {
+      "path": "history-role/REVIEW.md",
+      "bytes": 3396,
+      "sha256": "c0cf869ae9b95ffae3a1d95c0988394dcaadde6891e403bf5fb5e2905dedf5ec"
+    },
+    {
+      "path": "history-role/baseline.json",
+      "bytes": 639,
+      "sha256": "b99ca3c4fca82d21683dba615f8649e941544ebd26a3504e0398f4356afd8674"
+    },
+    {
+      "path": "history-role/capture.py",
+      "bytes": 3487,
+      "sha256": "39917ed397b127ce7ffeaff12fd218d71965e24e2c6c618f15b82658a098b543"
+    },
+    {
+      "path": "history-role/manifest.json",
+      "bytes": 4756,
+      "sha256": "6b2efc1006c38928f26b3ada50fee9b1e453b932c5801b8cdf12361848955550"
+    },
+    {
+      "path": "history-role/manifest.sha256",
+      "bytes": 80,
+      "sha256": "568c214ecf0705fc39922ae039b33332faf7b056267747d2e69bd917514d03f3"
+    },
+    {
+      "path": "history-role/result.json",
+      "bytes": 1743,
+      "sha256": "0bdd556d2365bc94115b249b0820be2b666d00ecd4eb5ae847c19c212b55a740"
+    },
+    {
+      "path": "history-role/search-1.txt",
+      "bytes": 5405,
+      "sha256": "7d8ecdd79992f265965f0eb533b03ea336db60745a41a4df9fb24bc4844a9bbb"
+    },
+    {
+      "path": "history-role/search-2.txt",
+      "bytes": 19930,
+      "sha256": "e3f82a250baa1eab92d6ed482b50f8108854831637dd1f36f7614ca338c8c2c6"
+    },
+    {
+      "path": "history-role/search-results.json",
+      "bytes": 941,
+      "sha256": "8420ce23eb51da5146ad21ac7795d7fa8d82f9e6acac6502f742895b6a42a138"
+    },
+    {
+      "path": "history-role/source/AGENTS.md",
+      "bytes": 25065,
+      "sha256": "13dc7cdacea0b1bb0aef2abb268781f9c69584acd4879b204d2b7fd81a2927fc"
+    },
+    {
+      "path": "history-role/source/codeplzreadme.md",
+      "bytes": 3035,
+      "sha256": "7a1be8efffec596b034335058dca2860346d256622f899c8dac97c5172dd6df2"
+    },
+    {
+      "path": "history-role/source/docs/agents/agent-handoff-contract.md",
+      "bytes": 31233,
+      "sha256": "3439a35dd1baa77ac723f1b5afa237a338d56e31386f06b02b4aacfd754e3a12"
+    },
+    {
+      "path": "history-role/source/docs/development/branch-review-20261015/NEXT.md",
+      "bytes": 164467,
+      "sha256": "dd93e2abec079dae8994155a31634a26c38bf626f5a313d4198b94bd890b85f9"
+    },
+    {
+      "path": "history-role/source/docs/development/branch-review-20261105-dhr-export/README.md",
+      "bytes": 2882,
+      "sha256": "52760462bae7931eec2e1826be92d69bafab854d0c58ff4c4d197c35cbaebc49"
+    },
+    {
+      "path": "history-role/source/docs/development/branch-review-20261105-dhr-export/quality-result.yaml",
+      "bytes": 10246,
+      "sha256": "8d23acedea318eb2f00b94736a208e1aa48e0892a7bb3539fc8c4151e57589da"
+    },
+    {
+      "path": "history-role/source/docs/development/branch-review-20261105-dhr-export/review-notes.md",
+      "bytes": 6692,
+      "sha256": "101ae1bcde22cf3f0a4b2d80d094fefd65e5d8ebeb83b2e40e6c182876f7b460"
+    },
+    {
+      "path": "history-role/source/docs/development/branch-review-20261105-dhr-export/scope-review.md",
+      "bytes": 3737,
+      "sha256": "237db8f5ac045b38801d6e177f969bd694a50f3b5553d64504b5b20852eff5ed"
+    },
+    {
+      "path": "history-role/source/docs/development/branch-review-20261106-dhr-archive-cleanup/README.md",
+      "bytes": 5425,
+      "sha256": "3e897c7d4a9139fede86ce4115de8f8dda9bb6831feecf04f3dd937fb48e5d8d"
+    },
+    {
+      "path": "history-role/source/docs/development/branch-review-20261106-dhr-archive-cleanup/decision-package.yaml",
+      "bytes": 6006,
+      "sha256": "b66a1054e952db2237b801c2946b0a33433fb7b817ce0e36660a3c1c98fc8735"
+    },
+    {
+      "path": "history-role/source/docs/development/branch-review-20261106-dhr-archive-cleanup/findings.md",
+      "bytes": 1241,
+      "sha256": "a3c2f1beb4cfd22f2f19797da684a88ba7097d02d730e4098ff67eda9d6157c8"
+    },
+    {
+      "path": "history-role/source/docs/development/branch-review-20261106-dhr-archive-cleanup/independent-review.md",
+      "bytes": 5173,
+      "sha256": "5051acc85edb6894da2b78e7e680fd49ca047201e4fa2e864656beb410251b17"
+    },
+    {
+      "path": "history-role/source/docs/development/branch-review-20261106-dhr-archive-cleanup/ontology-review.md",
+      "bytes": 4000,
+      "sha256": "ad7a6840550cdc04a5316ed8a39d57c197f08ee2f5b15e0c593a9cc935fdc459"
+    },
+    {
+      "path": "history-role/source/docs/development/branch-review-20261106-dhr-archive-cleanup/pre-pr-drift-review.md",
+      "bytes": 2279,
+      "sha256": "18e318ba2d038e2d841216fb9543b27d4eebf8dcaf35c4acdcf28f5f6150a9fa"
+    },
+    {
+      "path": "history-role/source/docs/development/branch-review-20261106-dhr-archive-cleanup/quality-result.yaml",
+      "bytes": 9742,
+      "sha256": "234ba3c5216cd1a6c5ec47f65d70c79c55bbdd1a6bdf18bc6b04da0a862201bd"
+    },
+    {
+      "path": "history-role/source/docs/development/branch-review-20261106-dhr-archive-cleanup/source-review.md",
+      "bytes": 6828,
+      "sha256": "c97e4b4477a1e463aaa304958e261f451802a45c727300aa47f5148f88a15208"
+    },
+    {
+      "path": "history-role/source/docs/knowledge/schema.yaml",
+      "bytes": 13171,
+      "sha256": "e21dcf0b3cf15b540dc528b574e53202fe26b092017e00451afa326b59cfba84"
+    },
+    {
+      "path": "history-role/source/gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrArchiveController.java",
+      "bytes": 2458,
+      "sha256": "bba601c2e47778b3a25db68d4849e58c040733bd4edc1cc44d5085697a89b9bc"
+    },
+    {
+      "path": "history-role/source-manifest.json",
+      "bytes": 4523,
+      "sha256": "e2b4c042d05b61520089477ccda685ceb93c3d8b61d21ddb76476543eaa2e288"
+    },
+    {
+      "path": "history-role/working-decision-package.yaml",
+      "bytes": 5268,
+      "sha256": "cb1a5300e5dc6631460750bad07dfe80ff55292470a1501f79f4986bcfdcbd35"
+    },
+    {
+      "path": "manifest.json",
+      "bytes": 13148,
+      "sha256": "7a56bff59441256879e905299e1ce57fe4f9e0dda9aadca6967b87e144d2cc3a"
+    },
+    {
+      "path": "manifest.sha256",
+      "bytes": 80,
+      "sha256": "8c78fd6fe9cb899343bbc67cbd0626151b06509c41e4a3aa0cbfc5738b102970"
+    },
+    {
+      "path": "probe-classes/org/springframework/web/context/request/async/CompletionChainProbe$1.class",
+      "bytes": 1061,
+      "sha256": "0d0bc40562702539a23c09c4143fa5a52fd2824c9d89b14753667d51e010500e"
+    },
+    {
+      "path": "probe-classes/org/springframework/web/context/request/async/CompletionChainProbe$2.class",
+      "bytes": 1131,
+      "sha256": "8e518c1591b1ae92e9d1df802e86d9dc530d8c21db040fa439cb8ccbdfcaaa0f"
+    },
+    {
+      "path": "probe-classes/org/springframework/web/context/request/async/CompletionChainProbe.class",
+      "bytes": 3035,
+      "sha256": "7b62fd4775936b14f11f70f51bb4acf5024d3d1e6cf21e793aa1a454c2015b53"
+    },
+    {
+      "path": "result.json",
+      "bytes": 2468,
+      "sha256": "d66b27ee0ea9684376b99b121e3623a3f3a1fbf5273da597b68dfff39dcc6633"
+    },
+    {
+      "path": "search-results.json",
+      "bytes": 526,
+      "sha256": "1763cbc26d8af2dd058846f00c6b88b0da10ec0362b531593cbbe7fc631406a9"
+    },
+    {
+      "path": "source-manifest.json",
+      "bytes": 5282,
+      "sha256": "e8a2ab250af1877e6596bbae0cf7dcd087216828ba00cdaf5d226e1b05f3a58a"
+    },
+    {
+      "path": "source-snapshot/AGENTS.md",
+      "bytes": 25065,
+      "sha256": "13dc7cdacea0b1bb0aef2abb268781f9c69584acd4879b204d2b7fd81a2927fc"
+    },
+    {
+      "path": "source-snapshot/codeplzreadme.md",
+      "bytes": 3035,
+      "sha256": "7a1be8efffec596b034335058dca2860346d256622f899c8dac97c5172dd6df2"
+    },
+    {
+      "path": "source-snapshot/docs/agents/agent-handoff-contract.md",
+      "bytes": 31233,
+      "sha256": "3439a35dd1baa77ac723f1b5afa237a338d56e31386f06b02b4aacfd754e3a12"
+    },
+    {
+      "path": "source-snapshot/docs/architecture/business-knowledge-model.md",
+      "bytes": 72976,
+      "sha256": "5fc7640ffecbf5ea8191c7242f86dd0a700ae50db307adecb2bacacf7ffeb095"
+    },
+    {
+      "path": "source-snapshot/docs/development/branch-review-20261106-dhr-archive-cleanup/README.md",
+      "bytes": 5425,
+      "sha256": "3e897c7d4a9139fede86ce4115de8f8dda9bb6831feecf04f3dd937fb48e5d8d"
+    },
+    {
+      "path": "source-snapshot/docs/development/branch-review-20261106-dhr-archive-cleanup/findings.md",
+      "bytes": 1241,
+      "sha256": "a3c2f1beb4cfd22f2f19797da684a88ba7097d02d730e4098ff67eda9d6157c8"
+    },
+    {
+      "path": "source-snapshot/docs/development/branch-review-20261106-dhr-archive-cleanup/quality-result.yaml",
+      "bytes": 9742,
+      "sha256": "234ba3c5216cd1a6c5ec47f65d70c79c55bbdd1a6bdf18bc6b04da0a862201bd"
+    },
+    {
+      "path": "source-snapshot/docs/knowledge/README.md",
+      "bytes": 114117,
+      "sha256": "709c3d40dbd39e6e1cfc6a09bdcd1766775e04e153bff26871f5a6f1bdfa4f42"
+    },
+    {
+      "path": "source-snapshot/docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml",
+      "bytes": 23213,
+      "sha256": "11e70ec27862eb971a2ad01cd928e8c2ecba36be4df70e170bd1f5296c4e0253"
+    },
+    {
+      "path": "source-snapshot/docs/knowledge/decisions/DEC-0090-dhr-archive-minimum-scope.yaml",
+      "bytes": 4730,
+      "sha256": "72c1491280ff65e95197cbb7c7cff4d177251e4a9d0a9a8458e9f02cb6a4cc5b"
+    },
+    {
+      "path": "source-snapshot/docs/knowledge/open-questions.yaml",
+      "bytes": 22420,
+      "sha256": "c7b3bdecd1a6ac164d95ff515b5412998a556a07e9b5fcb64b3643473aa6e2bf"
+    },
+    {
+      "path": "source-snapshot/docs/knowledge/rules/dhr-summary.yaml",
+      "bytes": 18575,
+      "sha256": "2a9240f5ecac5da9e1277e1f750d46695ab93097aa3229ab976f19c38934d601"
+    },
+    {
+      "path": "source-snapshot/docs/knowledge/schema.yaml",
+      "bytes": 13171,
+      "sha256": "e21dcf0b3cf15b540dc528b574e53202fe26b092017e00451afa326b59cfba84"
+    },
+    {
+      "path": "source-snapshot/gmp-platform/backend/pom.xml",
+      "bytes": 8805,
+      "sha256": "b98fcc84b57f57f1a8a7fd01ed2e7ab66a0c32c15c62980646a13d378a5669e5"
+    },
+    {
+      "path": "source-snapshot/gmp-platform/backend/src/main/java/com/zencas/edhr/common/config/SecurityConfig.java",
+      "bytes": 3527,
+      "sha256": "a8f3c83746619d893e5f1a1e41ae6d3430917a2da8eca97201d646fcd437124c"
+    },
+    {
+      "path": "source-snapshot/gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrArchiveController.java",
+      "bytes": 2458,
+      "sha256": "bba601c2e47778b3a25db68d4849e58c040733bd4edc1cc44d5085697a89b9bc"
+    },
+    {
+      "path": "source-snapshot/gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrArchiveService.java",
+      "bytes": 24964,
+      "sha256": "8fe3110f8d9e7dc326a944184b938ac7ae40564892d13861e135974a3680c463"
+    },
+    {
+      "path": "source-snapshot/gmp-platform/backend/src/main/resources/application.yml",
+      "bytes": 1469,
+      "sha256": "20ca1e1de3053bcac20cf31a85763016b86201ead5ca4f9f4283f86942c407e5"
+    },
+    {
+      "path": "source-snapshot/gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/DhrArchiveControllerStreamingTest.java",
+      "bytes": 5967,
+      "sha256": "3237cc471a03cea30888f75cb16417c384a9afcd4459c03b6507ef42ae58425d"
+    },
+    {
+      "path": "source-snapshot/gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrArchiveCleanupFailureTest.java",
+      "bytes": 8231,
+      "sha256": "128054003e7f48118432143d566bfab6f1de052fee3089cc7d5df16ee22ad7d1"
+    },
+    {
+      "path": "working-context/docs/development/branch-review-20261107-dhr-archive-async/decision-package.yaml",
+      "bytes": 5268,
+      "sha256": "cb1a5300e5dc6631460750bad07dfe80ff55292470a1501f79f4986bcfdcbd35"
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+knowledgeModelVersion: 0.3.25
+implementationAnchors:
+  - id: anchor.personnel-targets.complete-qualified-navigation
+    targetId: rule.personnel-targets-complete-qualified-navigation
+    targetType: rule
+    codeReferences:
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/identity/service/TenantTransferTargets.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/WorkflowResponsibilityService.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormWorkflowOperations.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionAccess.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionEngine.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java
+    apiReferences:
+      - GET /api/v1/workflow/tasks/{id}/transfer-targets
+      - GET /api/v1/workflow/operations/tasks/{id}/transfer-targets
+      - GET /api/v1/workflow/operations/tasks/{id}/reassignment-targets
+      - GET /api/v1/production/execution/{id}/transfer-targets
+    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql]
+    uiReferences:
+      - gmp-platform/frontend/src/components/identity/PersonnelTargetSelect.tsx
+      - gmp-platform/frontend/src/components/workflow/WorkflowResponsibilityDialog.tsx
+      - gmp-platform/frontend/src/pages/workflow-center/TaskDetail.tsx
+      - gmp-platform/frontend/src/pages/production/ProductionExecutionPage.tsx
+      - gmp-platform/frontend/src/pages/form-management/FormReviewPage.tsx
+    testReferences:
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/service/WorkflowReadObservationPostgresTest.java
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/recordcontrol/service/RecordControlPostgresIntegrationTest.java
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/engine/WorkflowTransferPostgresTest.java
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.qualified-personnel-selection-user-confirmed, evidence.qualified-personnel-directory-source, evidence.qualified-personnel-domain-target-source, evidence.qualified-personnel-selector-source]
+    sourceRevision: working-tree
+    sourceLocator: f8638f54基线上的本轮实现入口映射；TenantTransferTargets.search统一有界分页和资格，领域服务保留原目标范围，四类实际人员选择入口须全部迁移。该锚点记录实现与验收范围，不将主审在途代码或旧167项证据冒称本轮全集完整可达已验收；实际组合须另取主审及独立质量原件。
+    capturedAt: '2026-11-05'
+    reviewStatus: reviewed

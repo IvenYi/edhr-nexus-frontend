@@ -1,0 +1,33 @@
+{
+  "timeUTC": "2026-11-06T06:24:22.400324+00:00",
+  "reviewAfterAllRolesFinal": true,
+  "roles": {
+    "ontology": "not-applicable / FINAL",
+    "source": "two report-only tasks / FINAL",
+    "freshQuality": "passed / FINAL"
+  },
+  "base": "e69a8f3d97b34fea8737947c780b047bb0310c64",
+  "testedCandidate": "9d4416c3f74a3a0e79da53670c6cd13b132bff1b",
+  "targetObserved": "e69a8f3d97b34fea8737947c780b047bb0310c64",
+  "targetChanged": false,
+  "contractsKnowledgeFrontendSchemaChanged": false,
+  "runtimeChangedSinceTestedCandidate": false,
+  "qaManifestFilesVerified": 86,
+  "taskDrift": false,
+  "currentChanges": [
+    "M docs/development/branch-review-20261015/NEXT.md",
+    "?? docs/development/branch-review-20261106-audit-read/findings.md"
+  ],
+  "businessRuleChanges": [],
+  "performanceImplemented": false,
+  "wholeFileCompletions": 0,
+  "historicalUniqueCoverage": "unknown",
+  "remaining": [
+    "W2余项及W3-W5跨链/完整权限矩阵",
+    "W6健壮性/性能/具体抽取/A23含旧已审",
+    "W7新代码/契约/知识增量",
+    "931知识/86UI候选/高风险/A12/完整矩阵",
+    "旧历史与ZIP限制/text-ID索引/上传PDFOffice导出容量/UNKNOWN持久对账",
+    "朋友签署页/生产弹窗样式暂停"
+  ]
+}

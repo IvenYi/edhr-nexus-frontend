@@ -1,0 +1,559 @@
+{
+  "baseCommit": "9dc5c0014643d99db299d27a80788cc777a0ccca",
+  "negative": {
+    "totals": {
+      "tests": 2,
+      "failures": 2,
+      "errors": 0,
+      "skipped": 0
+    },
+    "classes": [
+      {
+        "class": "com.zencas.edhr.compliance.entity.AuditEventRoundTripPostgresTest",
+        "tests": 2,
+        "failures": 2,
+        "errors": 0,
+        "skipped": 0
+      }
+    ],
+    "missingFreshReports": []
+  },
+  "textNegative": {
+    "totals": {
+      "tests": 4,
+      "failures": 3,
+      "errors": 0,
+      "skipped": 0
+    },
+    "classes": [
+      {
+        "class": "com.zencas.edhr.compliance.entity.AuditEventTextPersistencePostgresTest",
+        "tests": 4,
+        "failures": 3,
+        "errors": 0,
+        "skipped": 0
+      }
+    ],
+    "missingFreshReports": []
+  },
+  "jsonCarrierNegative": {
+    "totals": {
+      "tests": 5,
+      "failures": 3,
+      "errors": 0,
+      "skipped": 0
+    },
+    "classes": [
+      {
+        "class": "com.zencas.edhr.compliance.entity.AuditEventJsonTextPersistencePostgresTest",
+        "tests": 5,
+        "failures": 3,
+        "errors": 0,
+        "skipped": 0
+      }
+    ],
+    "missingFreshReports": []
+  },
+  "final": {
+    "totals": {
+      "tests": 206,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "classes": [
+      {
+        "class": "com.zencas.edhr.compliance.entity.AuditEventRoundTripPostgresTest",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "com.zencas.edhr.compliance.entity.AuditEventHashTest",
+        "tests": 48,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "com.zencas.edhr.compliance.entity.AuditEventTest",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "com.zencas.edhr.compliance.entity.AuditEventHashCompatibilityPostgresTest",
+        "tests": 18,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "com.zencas.edhr.compliance.entity.AuditHashMigrationPostgresTest",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "com.zencas.edhr.common.config.CurrentDatabaseBaselinePostgresTest",
+        "tests": 3,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "com.zencas.edhr.common.audit.AuditAspectTest",
+        "tests": 3,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "com.zencas.edhr.compliance.controller.AuditControllerTest",
+        "tests": 10,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "com.zencas.edhr.production.service.DhrAuditReadTest",
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "com.zencas.edhr.production.service.DhrAttachmentUploadVerifyObservationPostgresTest",
+        "tests": 27,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "com.zencas.edhr.production.service.DhrAttachmentImageVerificationTest",
+        "tests": 6,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "com.zencas.edhr.production.service.DhrAttachmentAndArchiveTest",
+        "tests": 13,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "com.zencas.edhr.identity.controller.AuthControllerTest",
+        "tests": 24,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "com.zencas.edhr.production.service.SignatureSnapshotPostgresTest",
+        "tests": 9,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "com.zencas.edhr.production.service.DhrAttachmentTransactionPostgresTest",
+        "tests": 11,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "com.zencas.edhr.compliance.entity.AuditEventTextPersistencePostgresTest",
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "com.zencas.edhr.compliance.entity.AuditEventVarcharPersistencePostgresTest",
+        "tests": 15,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "com.zencas.edhr.compliance.entity.AuditEventJsonTextPersistencePostgresTest",
+        "tests": 5,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    ],
+    "missingFreshReports": []
+  },
+  "knowledge": [
+    {
+      "tests": 89,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  ],
+  "oldAndNewRoundtripTestByteIdentical": true,
+  "beforeAndAfterTextTestByteIdentical": true,
+  "beforeAndAfterJsonCarrierTestByteIdentical": true,
+  "roundTrips": [
+    {
+      "name": "boundary_array",
+      "hashMatches": true,
+      "providedLegacyNotCertified": false,
+      "requestedTime": "2026-11-06T23:59:59.999999999",
+      "sealedTime": "2026-11-06T23:59:59.999999",
+      "storedTime": "2026-11-06T23:59:59.999999"
+    },
+    {
+      "name": "boundary_bigint",
+      "hashMatches": true,
+      "providedLegacyNotCertified": false,
+      "requestedTime": "2026-11-06T23:59:59.999999999",
+      "sealedTime": "2026-11-06T23:59:59.999999",
+      "storedTime": "2026-11-06T23:59:59.999999"
+    },
+    {
+      "name": "boundary_depth",
+      "hashMatches": true,
+      "providedLegacyNotCertified": false,
+      "requestedTime": "2026-11-06T23:59:59.999999999",
+      "sealedTime": "2026-11-06T23:59:59.999999",
+      "storedTime": "2026-11-06T23:59:59.999999"
+    },
+    {
+      "name": "boundary_duplicate",
+      "hashMatches": true,
+      "providedLegacyNotCertified": false,
+      "requestedTime": "2026-11-06T23:59:59.999999999",
+      "sealedTime": "2026-11-06T23:59:59.999999",
+      "storedTime": "2026-11-06T23:59:59.999999"
+    },
+    {
+      "name": "boundary_exponent",
+      "hashMatches": true,
+      "providedLegacyNotCertified": false,
+      "requestedTime": "2026-11-06T23:59:59.999999999",
+      "sealedTime": "2026-11-06T23:59:59.999999",
+      "storedTime": "2026-11-06T23:59:59.999999"
+    },
+    {
+      "name": "boundary_fraction",
+      "hashMatches": true,
+      "providedLegacyNotCertified": false,
+      "requestedTime": "2026-11-06T23:59:59.999999999",
+      "sealedTime": "2026-11-06T23:59:59.999999",
+      "storedTime": "2026-11-06T23:59:59.999999"
+    },
+    {
+      "name": "boundary_jsonnull",
+      "hashMatches": true,
+      "providedLegacyNotCertified": false,
+      "requestedTime": "2026-11-06T23:59:59.999999999",
+      "sealedTime": "2026-11-06T23:59:59.999999",
+      "storedTime": "2026-11-06T23:59:59.999999"
+    },
+    {
+      "name": "boundary_name",
+      "hashMatches": true,
+      "providedLegacyNotCertified": false,
+      "requestedTime": "2026-11-06T23:59:59.999999999",
+      "sealedTime": "2026-11-06T23:59:59.999999",
+      "storedTime": "2026-11-06T23:59:59.999999"
+    },
+    {
+      "name": "boundary_object",
+      "hashMatches": true,
+      "providedLegacyNotCertified": false,
+      "requestedTime": "2026-11-06T23:59:59.999999999",
+      "sealedTime": "2026-11-06T23:59:59.999999",
+      "storedTime": "2026-11-06T23:59:59.999999"
+    },
+    {
+      "name": "boundary_scalar",
+      "hashMatches": true,
+      "providedLegacyNotCertified": false,
+      "requestedTime": "2026-11-06T23:59:59.999999999",
+      "sealedTime": "2026-11-06T23:59:59.999999",
+      "storedTime": "2026-11-06T23:59:59.999999"
+    },
+    {
+      "name": "boundary_unicode",
+      "hashMatches": true,
+      "providedLegacyNotCertified": false,
+      "requestedTime": "2026-11-06T23:59:59.999999999",
+      "sealedTime": "2026-11-06T23:59:59.999999",
+      "storedTime": "2026-11-06T23:59:59.999999"
+    },
+    {
+      "name": "immutable",
+      "hashMatches": true,
+      "providedLegacyNotCertified": false,
+      "requestedTime": "2026-11-06T12:00:00.123456",
+      "sealedTime": "2026-11-06T12:00:00.123456",
+      "storedTime": "2026-11-06T12:00:00.123456"
+    },
+    {
+      "name": "json",
+      "hashMatches": true,
+      "providedLegacyNotCertified": false,
+      "requestedTime": "2026-11-06T12:00:00.123456",
+      "sealedTime": "2026-11-06T12:00:00.123456",
+      "storedTime": "2026-11-06T12:00:00.123456"
+    },
+    {
+      "name": "jsontext_mapper_high",
+      "hashMatches": true,
+      "providedLegacyNotCertified": false,
+      "requestedTime": "2026-11-06T12:00:00.123456",
+      "sealedTime": "2026-11-06T12:00:00.123456",
+      "storedTime": "2026-11-06T12:00:00.123456"
+    },
+    {
+      "name": "jsontext_paired",
+      "hashMatches": true,
+      "providedLegacyNotCertified": false,
+      "requestedTime": "2026-11-06T12:00:00.123456",
+      "sealedTime": "2026-11-06T12:00:00.123456",
+      "storedTime": "2026-11-06T12:00:00.123456"
+    },
+    {
+      "name": "jsontext_raw_high_value",
+      "hashMatches": true,
+      "providedLegacyNotCertified": false,
+      "requestedTime": "2026-11-06T12:00:00.123456",
+      "sealedTime": "2026-11-06T12:00:00.123456",
+      "storedTime": "2026-11-06T12:00:00.123456"
+    },
+    {
+      "name": "jsontext_raw_low_key",
+      "hashMatches": true,
+      "providedLegacyNotCertified": false,
+      "requestedTime": "2026-11-06T12:00:00.123456",
+      "sealedTime": "2026-11-06T12:00:00.123456",
+      "storedTime": "2026-11-06T12:00:00.123456"
+    },
+    {
+      "name": "provided",
+      "hashMatches": false,
+      "providedLegacyNotCertified": true,
+      "requestedTime": "2026-11-06T12:00:00.123456",
+      "sealedTime": "2026-11-06T12:00:00.123456",
+      "storedTime": "2026-11-06T12:00:00.123456"
+    },
+    {
+      "name": "tamper",
+      "hashMatches": true,
+      "providedLegacyNotCertified": false,
+      "requestedTime": "2026-11-06T12:00:00.123456",
+      "sealedTime": "2026-11-06T12:00:00.123456",
+      "storedTime": "2026-11-06T12:00:00.123456"
+    },
+    {
+      "name": "text_embedded",
+      "hashMatches": true,
+      "providedLegacyNotCertified": false,
+      "requestedTime": "2026-11-06T12:00:00.123456",
+      "sealedTime": "2026-11-06T12:00:00.123456",
+      "storedTime": "2026-11-06T12:00:00.123456"
+    },
+    {
+      "name": "text_high",
+      "hashMatches": true,
+      "providedLegacyNotCertified": false,
+      "requestedTime": "2026-11-06T12:00:00.123456",
+      "sealedTime": "2026-11-06T12:00:00.123456",
+      "storedTime": "2026-11-06T12:00:00.123456"
+    },
+    {
+      "name": "text_low",
+      "hashMatches": true,
+      "providedLegacyNotCertified": false,
+      "requestedTime": "2026-11-06T12:00:00.123456",
+      "sealedTime": "2026-11-06T12:00:00.123456",
+      "storedTime": "2026-11-06T12:00:00.123456"
+    },
+    {
+      "name": "text_paired",
+      "hashMatches": true,
+      "providedLegacyNotCertified": false,
+      "requestedTime": "2026-11-06T12:00:00.123456",
+      "sealedTime": "2026-11-06T12:00:00.123456",
+      "storedTime": "2026-11-06T12:00:00.123456"
+    },
+    {
+      "name": "time",
+      "hashMatches": true,
+      "providedLegacyNotCertified": false,
+      "requestedTime": "2026-11-06T12:00:00.123456789",
+      "sealedTime": "2026-11-06T12:00:00.123456",
+      "storedTime": "2026-11-06T12:00:00.123456"
+    },
+    {
+      "name": "varchar_action",
+      "hashMatches": true,
+      "providedLegacyNotCertified": false,
+      "requestedTime": "2026-11-06T12:00:00.123456",
+      "sealedTime": "2026-11-06T12:00:00.123456",
+      "storedTime": "2026-11-06T12:00:00.123456"
+    },
+    {
+      "name": "varchar_dataSummary",
+      "hashMatches": true,
+      "providedLegacyNotCertified": false,
+      "requestedTime": "2026-11-06T12:00:00.123456",
+      "sealedTime": "2026-11-06T12:00:00.123456",
+      "storedTime": "2026-11-06T12:00:00.123456"
+    },
+    {
+      "name": "varchar_entityId",
+      "hashMatches": true,
+      "providedLegacyNotCertified": false,
+      "requestedTime": "2026-11-06T12:00:00.123456",
+      "sealedTime": "2026-11-06T12:00:00.123456",
+      "storedTime": "2026-11-06T12:00:00.123456"
+    },
+    {
+      "name": "varchar_entityType",
+      "hashMatches": true,
+      "providedLegacyNotCertified": false,
+      "requestedTime": "2026-11-06T12:00:00.123456",
+      "sealedTime": "2026-11-06T12:00:00.123456",
+      "storedTime": "2026-11-06T12:00:00.123456"
+    },
+    {
+      "name": "varchar_functionName",
+      "hashMatches": true,
+      "providedLegacyNotCertified": false,
+      "requestedTime": "2026-11-06T12:00:00.123456",
+      "sealedTime": "2026-11-06T12:00:00.123456",
+      "storedTime": "2026-11-06T12:00:00.123456"
+    },
+    {
+      "name": "varchar_ipAddress",
+      "hashMatches": true,
+      "providedLegacyNotCertified": false,
+      "requestedTime": "2026-11-06T12:00:00.123456",
+      "sealedTime": "2026-11-06T12:00:00.123456",
+      "storedTime": "2026-11-06T12:00:00.123456"
+    },
+    {
+      "name": "varchar_menuName",
+      "hashMatches": true,
+      "providedLegacyNotCertified": false,
+      "requestedTime": "2026-11-06T12:00:00.123456",
+      "sealedTime": "2026-11-06T12:00:00.123456",
+      "storedTime": "2026-11-06T12:00:00.123456"
+    },
+    {
+      "name": "varchar_moduleName",
+      "hashMatches": true,
+      "providedLegacyNotCertified": false,
+      "requestedTime": "2026-11-06T12:00:00.123456",
+      "sealedTime": "2026-11-06T12:00:00.123456",
+      "storedTime": "2026-11-06T12:00:00.123456"
+    },
+    {
+      "name": "varchar_operatorAccount",
+      "hashMatches": true,
+      "providedLegacyNotCertified": false,
+      "requestedTime": "2026-11-06T12:00:00.123456",
+      "sealedTime": "2026-11-06T12:00:00.123456",
+      "storedTime": "2026-11-06T12:00:00.123456"
+    },
+    {
+      "name": "varchar_operatorId",
+      "hashMatches": true,
+      "providedLegacyNotCertified": false,
+      "requestedTime": "2026-11-06T12:00:00.123456",
+      "sealedTime": "2026-11-06T12:00:00.123456",
+      "storedTime": "2026-11-06T12:00:00.123456"
+    },
+    {
+      "name": "varchar_operatorName",
+      "hashMatches": true,
+      "providedLegacyNotCertified": false,
+      "requestedTime": "2026-11-06T12:00:00.123456",
+      "sealedTime": "2026-11-06T12:00:00.123456",
+      "storedTime": "2026-11-06T12:00:00.123456"
+    },
+    {
+      "name": "varchar_source",
+      "hashMatches": true,
+      "providedLegacyNotCertified": false,
+      "requestedTime": "2026-11-06T12:00:00.123456",
+      "sealedTime": "2026-11-06T12:00:00.123456",
+      "storedTime": "2026-11-06T12:00:00.123456"
+    },
+    {
+      "name": "varchar_tenantId",
+      "hashMatches": true,
+      "providedLegacyNotCertified": false,
+      "requestedTime": "2026-11-06T12:00:00.123456",
+      "sealedTime": "2026-11-06T12:00:00.123456",
+      "storedTime": "2026-11-06T12:00:00.123456"
+    },
+    {
+      "name": "varchar_unicode",
+      "hashMatches": true,
+      "providedLegacyNotCertified": false,
+      "requestedTime": "2026-11-06T12:00:00.123456",
+      "sealedTime": "2026-11-06T12:00:00.123456",
+      "storedTime": "2026-11-06T12:00:00.123456"
+    }
+  ],
+  "sqlCoreProbe": [
+    {
+      "tag": "audit_hash_json_write",
+      "businessStatements": {
+        "insert into audit_event (action,content_after,content_before,created_at,data_summary,entity_id,entity_type,function_name,ip_address,menu_name,module_name,operator_account,operator_id,operator_name,reason,snapshot_hash,snapshot_hash_version,source,tenant_id,id) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)": 1
+      },
+      "driverMetadataStatements": {}
+    },
+    {
+      "tag": "audit_hash_json_read",
+      "businessStatements": {
+        "select ae1_0.id,ae1_0.action,ae1_0.content_after,ae1_0.content_before,ae1_0.created_at,ae1_0.data_summary,ae1_0.entity_id,ae1_0.entity_type,ae1_0.function_name,ae1_0.ip_address,ae1_0.menu_name,ae1_0.module_name,ae1_0.operator_account,ae1_0.operator_id,ae1_0.operator_name,ae1_0.reason,ae1_0.snapshot_hash,ae1_0.snapshot_hash_version,ae1_0.source,ae1_0.tenant_id from audit_event ae1_0 where ae1_0.id=?": 1
+      },
+      "driverMetadataStatements": {}
+    },
+    {
+      "tag": "audit_hash_time_write",
+      "businessStatements": {
+        "insert into audit_event (action,content_after,content_before,created_at,data_summary,entity_id,entity_type,function_name,ip_address,menu_name,module_name,operator_account,operator_id,operator_name,reason,snapshot_hash,snapshot_hash_version,source,tenant_id,id) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)": 1
+      },
+      "driverMetadataStatements": {}
+    },
+    {
+      "tag": "audit_hash_time_read",
+      "businessStatements": {
+        "select ae1_0.id,ae1_0.action,ae1_0.content_after,ae1_0.content_before,ae1_0.created_at,ae1_0.data_summary,ae1_0.entity_id,ae1_0.entity_type,ae1_0.function_name,ae1_0.ip_address,ae1_0.menu_name,ae1_0.module_name,ae1_0.operator_account,ae1_0.operator_id,ae1_0.operator_name,ae1_0.reason,ae1_0.snapshot_hash,ae1_0.snapshot_hash_version,ae1_0.source,ae1_0.tenant_id from audit_event ae1_0 where ae1_0.id=?": 1
+      },
+      "driverMetadataStatements": {}
+    }
+  ],
+  "initialIndependent": "1c077d28 had174/89 passed but independent quality failed two medium text persistence boundaries; f640 had201/89 and original6 probes/59 bound parameter hashes passed but fresh independent failed raw JSON carrier UTF16. All failed originals retained; main fixed and another fresh final QA required.",
+  "producerScope": "Configuration controller+real repositories; real aspect with synthetic joinpoint+real repository; actual signature audit producer invoked on target with synthetic user/signature/request+real JPA, not full certification; real attachment native27 now rehashes actual events; Signature native9 independent from AuditEvent.",
+  "intermediateAttempts": [
+    {
+      "phase": "final",
+      "tests": 163,
+      "failures": 0,
+      "errors": 4,
+      "cause": "new test private producer invoked CGLIB proxy without target fields;3 existing Auth PDF tests lacked configured font"
+    },
+    {
+      "phase": "retry",
+      "tests": 174,
+      "failures": 1,
+      "errors": 1,
+      "cause": "new test generic invoke overload inferred Class target; existing PDF extraction differed due Noto duplicate glyph mappings; main corrected explicit Object target and existing test font config, no lowered assertions"
+    }
+  ]
+}

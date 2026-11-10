@@ -1,0 +1,856 @@
+{
+  "testedCandidate": "6e10604c7121c3e9ddb7196b560e1a079fd1ccf9",
+  "rawArtifacts": [
+    {
+      "member": "ArgumentPreparedStatementSetter.javap.txt",
+      "bytes": 2934,
+      "sha256": "a6fe4bb1fa61655cff6a312143d1ff58683b74ff0048f1293c064d2c2dda077c"
+    },
+    {
+      "member": "FINAL.md",
+      "bytes": 409,
+      "sha256": "381f817a524363017b0dee3145e2cc7274bf4b732110958efcb9ca8c6f9291cf"
+    },
+    {
+      "member": "SqlArrayValue.javap.txt",
+      "bytes": 2955,
+      "sha256": "658c00137a31bdc480c8f053a4dd54fc649ff310edf1e14c34099c5e070797d2"
+    },
+    {
+      "member": "baseline-start.json",
+      "bytes": 175,
+      "sha256": "7316a402e4ba2df8d7a8b1aa0e9fa71ad92ef35f0540e7a2651990aeece044a0"
+    },
+    {
+      "member": "cleanup.json",
+      "bytes": 181,
+      "sha256": "5ce48f7744fd810758c7dfdc81f3999890de6b415c685fa12ceb3473917a1b16"
+    },
+    {
+      "member": "edhr-workflow-name-finalqa-runner-20261105.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "member": "evidence-scope/FINAL.md",
+      "bytes": 392,
+      "sha256": "977d6dcf4d40a6e9b52b2c5a652b3cc31439ad230dc91cbad386f381e7066a1a"
+    },
+    {
+      "member": "evidence-scope/audit-workflow-name-evidence-20261105.py",
+      "bytes": 12726,
+      "sha256": "d14311bb83dcf50e513896e0fe16a32907b262ab2d6ecd3e7caeaab7f6a7055f"
+    },
+    {
+      "member": "evidence-scope/baseline.json",
+      "bytes": 338,
+      "sha256": "d823212cd63490368409534acdac430e186335721a7cb5390485e90289f9f5f7"
+    },
+    {
+      "member": "evidence-scope/boundary-review.json",
+      "bytes": 1423,
+      "sha256": "52611f92fa807bfb23f47e4a1df28a621cdf10c8e0328b72ae820964975ba3bc"
+    },
+    {
+      "member": "evidence-scope/checks.json",
+      "bytes": 3436,
+      "sha256": "9557541d85edc0cf9c984300e2057748c36f14b67a8872895df1e1cac86893c2"
+    },
+    {
+      "member": "evidence-scope/commands.json",
+      "bytes": 2924798,
+      "sha256": "1dd5b3de7c8d754df7a7a9ef63d901e284719bfd172dd5b798c01ddbfe7c07b3"
+    },
+    {
+      "member": "evidence-scope/final-helper.log",
+      "bytes": 147,
+      "sha256": "5ef83bc440cb40cc52d3e468c2670fa73475369ceab602abf37abd9dad6e9c96"
+    },
+    {
+      "member": "evidence-scope/initial-fixture-test.diff",
+      "bytes": 1575,
+      "sha256": "fa3c47b1d59cae52dc3634ba7aae75112b8ae253614d9b0ac97ff97e909a0910"
+    },
+    {
+      "member": "evidence-scope/initial-helper.log",
+      "bytes": 670,
+      "sha256": "4bf6cb61140c90e1645aa8ed50bb0e323682b1be89c3cd1e6bc5d82ec32c3427"
+    },
+    {
+      "member": "evidence-scope/initial-helper.py",
+      "bytes": 12684,
+      "sha256": "e5e2de60581aecce6cd5c7350431e4e10cdaf7bccbfa7aa6999e97a7529622f7"
+    },
+    {
+      "member": "evidence-scope/input-fingerprints.json",
+      "bytes": 3361,
+      "sha256": "c3b40201d47903275bdafc85b4e2341109a3d04c089deba507c2526e41464d0c"
+    },
+    {
+      "member": "evidence-scope/manifest.json",
+      "bytes": 6013,
+      "sha256": "9a6aee2adc60a28287d488d487d6922d74ed242b09c66530551262ee588416df"
+    },
+    {
+      "member": "evidence-scope/manifest.sha256",
+      "bytes": 80,
+      "sha256": "da3bd51f3a488a88df48400dfaaa6a05996a0c37edfaf48229213460bc97cc1c"
+    },
+    {
+      "member": "evidence-scope/phase-original-review.json",
+      "bytes": 58650,
+      "sha256": "041ed612dc6663b226ae8b29e5c2e83492c2794f5018aa3651d8e4876533938c"
+    },
+    {
+      "member": "evidence-scope/read-sources/AGENTS.md",
+      "bytes": 25065,
+      "sha256": "13dc7cdacea0b1bb0aef2abb268781f9c69584acd4879b204d2b7fd81a2927fc"
+    },
+    {
+      "member": "evidence-scope/read-sources/docs/agents/agent-handoff-contract.md",
+      "bytes": 31233,
+      "sha256": "3439a35dd1baa77ac723f1b5afa237a338d56e31386f06b02b4aacfd754e3a12"
+    },
+    {
+      "member": "evidence-scope/read-sources/docs/agents/quality-verifier.md",
+      "bytes": 7519,
+      "sha256": "6b3de9323924fb4ba5ae87be76c5136d28e754810c46b22b8e3d1cdd6c2f826f"
+    },
+    {
+      "member": "evidence-scope/read-sources/docs/architecture/business-knowledge-model.md",
+      "bytes": 71928,
+      "sha256": "40943884babe168dba02ed42184d1f0bdb3ac12f66fa2b9b1653b45fadebde04"
+    },
+    {
+      "member": "evidence-scope/read-sources/docs/development/branch-review-20261105-workflow-name-batch/README.md",
+      "bytes": 2828,
+      "sha256": "bee88f06a3805508607f0eb385bcb8ce77c1caf451cfcd8bf49b26b05a9944e0"
+    },
+    {
+      "member": "evidence-scope/read-sources/docs/development/branch-review-20261105-workflow-name-batch/baseline-review.json",
+      "bytes": 659,
+      "sha256": "5d6d9d93bb43dedf35f01a197940fc8b8bda13ee96ec31b60b08ab71c8d272c8"
+    },
+    {
+      "member": "evidence-scope/read-sources/docs/development/branch-review-20261105-workflow-name-batch/decision-package.yaml",
+      "bytes": 5514,
+      "sha256": "004564af8637b820afb5fad2cb940e25cb9fbd5a7bdf99a86544dd2963014ea4"
+    },
+    {
+      "member": "evidence-scope/read-sources/docs/development/branch-review-20261105-workflow-name-batch/evidence-manifest.json",
+      "bytes": 23498,
+      "sha256": "a1fa4426cb73a7b0f127bfbc7c874eb69d9027f995899223757d9ca2f1edac77"
+    },
+    {
+      "member": "evidence-scope/read-sources/docs/development/branch-review-20261105-workflow-name-batch/ontology-result.yaml",
+      "bytes": 7050,
+      "sha256": "25deb64c10588f6cb6a16d908f82b335f5231d14966740f052959c39bb241b37"
+    },
+    {
+      "member": "evidence-scope/read-sources/docs/development/branch-review-20261105-workflow-name-batch/performance-report.json",
+      "bytes": 4281,
+      "sha256": "d7726e34e2fac7e04870a23ac7a212989375812bbc8129464d0e745a73cf4f89"
+    },
+    {
+      "member": "evidence-scope/read-sources/docs/development/branch-review-20261105-workflow-name-batch/review-notes.md",
+      "bytes": 3669,
+      "sha256": "ddc049376de36ab47a8efdf2f7315302efe58f187a13279bce5d92d1f9c13b35"
+    },
+    {
+      "member": "evidence-scope/read-sources/docs/development/branch-review-20261105-workflow-name-batch/source-review.json",
+      "bytes": 2658,
+      "sha256": "29eec66ebf9777d2d00644f0fc81ab6552f759cd5c789288e7630c98c639773e"
+    },
+    {
+      "member": "evidence-scope/read-sources/docs/knowledge/README.md",
+      "bytes": 113165,
+      "sha256": "2b3d1758e0088a5bd3f7c188917bed21893a3d7fe97df45028125c8fea69b8e9"
+    },
+    {
+      "member": "evidence-scope/read-sources/docs/knowledge/decisions/DEC-0074-shared-terminal-button-signature.yaml",
+      "bytes": 7527,
+      "sha256": "09d6cb083c1350f3c64a2abb8583ca9a4eb1a7b3a837cdd67b9f6dc28d9e2d3f"
+    },
+    {
+      "member": "evidence-scope/read-sources/docs/knowledge/decisions/DEC-0081-tenant-scoped-task-delegation.yaml",
+      "bytes": 5824,
+      "sha256": "c47a0ea204787a4f03cf5e507e71ec002e1e7514ade7cd122d2290049aa0c5da"
+    },
+    {
+      "member": "evidence-scope/read-sources/docs/knowledge/decisions/DEC-0092-workflow-operations-entry-and-actions.yaml",
+      "bytes": 7319,
+      "sha256": "52df0c8618a91276e3376728e0e519324e691c24345693fb8f977f267a7e866c"
+    },
+    {
+      "member": "evidence-scope/read-sources/docs/knowledge/decisions/DEC-0093-central-form-dhr-workflow-responsibility.yaml",
+      "bytes": 6213,
+      "sha256": "cb692c88ae96c473b4c7a05705c3d386f5376c968bf177adc09c259e674c8004"
+    },
+    {
+      "member": "evidence-scope/read-sources/docs/knowledge/open-questions.yaml",
+      "bytes": 22420,
+      "sha256": "c7b3bdecd1a6ac164d95ff515b5412998a556a07e9b5fcb64b3643473aa6e2bf"
+    },
+    {
+      "member": "evidence-scope/result.yaml",
+      "bytes": 6059,
+      "sha256": "77dd957a10cd3d68060e4a1a0ede9b51d7c9bbdc0ec858bf70915dff93f045ec"
+    },
+    {
+      "member": "evidence-scope/semantic-review.md",
+      "bytes": 3755,
+      "sha256": "7c87e0bdadeea5fb921bc4b763693f5766986857e60b95acebacf64aa317946e"
+    },
+    {
+      "member": "evidence-scope-command.log",
+      "bytes": 670,
+      "sha256": "4bf6cb61140c90e1645aa8ed50bb0e323682b1be89c3cd1e6bc5d82ec32c3427"
+    },
+    {
+      "member": "final-baseline.json",
+      "bytes": 318,
+      "sha256": "095f7c8d8da4ec39dd2c268cb0c816190908c5bd169b47ed442b920a9ca0fbac"
+    },
+    {
+      "member": "finalize-workflow-name-final-qa.py",
+      "bytes": 13608,
+      "sha256": "e8b6c93a80ad20c855adb12ca8524b0ea2643868127f748d0b104531a8224cbe"
+    },
+    {
+      "member": "independent-observation-comparison.json",
+      "bytes": 20507,
+      "sha256": "3e05939a2828667f04378352ab7106387b1939b81b114e1aa2445c1468e5bc76"
+    },
+    {
+      "member": "independent-source-equivalence.json",
+      "bytes": 2884,
+      "sha256": "38841013a500bf2992bb4b7c0800025aaa3b2e2433c41142e88ccaee8fb079e3"
+    },
+    {
+      "member": "independent-source-review.md",
+      "bytes": 6043,
+      "sha256": "0581401420836a56035177b73ab420a242c3928a693c956700b359a873192b24"
+    },
+    {
+      "member": "inspect-workflow-name-final-qa.py",
+      "bytes": 4997,
+      "sha256": "35e564f8c1a38964aba0dfd07234b0c97685990d1d4356b5289ff8739afb11e0"
+    },
+    {
+      "member": "knowledge/command.json",
+      "bytes": 204,
+      "sha256": "491b2ed105cf72f0176f3f461ba3069b2ae34cace3a96203e78d8950c74ac124"
+    },
+    {
+      "member": "knowledge/maven.log",
+      "bytes": 2238,
+      "sha256": "ccf11598f66356d9c9293203206bc1c4531fca379104ba4c72dcee44e92f1f4b"
+    },
+    {
+      "member": "knowledge/surefire/TEST-com.zencas.edhr.knowledge.BusinessKnowledgeModelTest.xml",
+      "bytes": 20485,
+      "sha256": "a0e1346450d48149db089c247d4959e2d8531f0c8e1204b1cf35f840087f75ae"
+    },
+    {
+      "member": "knowledge/test-summary.json",
+      "bytes": 273,
+      "sha256": "0b4d865246f6de3b46810875f715a814b9e3cc6748e42eb3dfbfaad8c75e5cb3"
+    },
+    {
+      "member": "knowledge-byte-check.json",
+      "bytes": 67658,
+      "sha256": "be476345d86a1c42f0b3faaecf81d55399f78076a9b2b1d3a58a8eeaff7623c1"
+    },
+    {
+      "member": "manifest.json",
+      "bytes": 32168,
+      "sha256": "26b424f0aaffdac6cfef391fc43495c67a9b0a95ecb8992d8d6a552b4f6b5f73"
+    },
+    {
+      "member": "manifest.sha256",
+      "bytes": 80,
+      "sha256": "dea1027c7cb7706358a81d5ddc4423584b3ec61d374f5e69997ac1e729a75151"
+    },
+    {
+      "member": "native/command.json",
+      "bytes": 774,
+      "sha256": "7eadf3c6233bbf5f6548373f54ed6b5fb5e3340a1649e3d242deedf22f3ae402"
+    },
+    {
+      "member": "native/liquibase-applied.json",
+      "bytes": 926,
+      "sha256": "6c6ac43cc2b9c8f76ab4b21216413c272aa105ce177704428a1487209c1abfee"
+    },
+    {
+      "member": "native/maven.log",
+      "bytes": 2978154,
+      "sha256": "6229d58f44efab39fc5fb03b54cda1ceeedbe39a0382e7c77687d65c19a13518"
+    },
+    {
+      "member": "native/observations.jsonl",
+      "bytes": 42373,
+      "sha256": "d5b2c4420fe10f10807d549063179c90060036efd300f598ce611ef97e339099"
+    },
+    {
+      "member": "native/surefire/TEST-com.zencas.edhr.production.service.DhrReviewLifecycleIntegrationTest.xml",
+      "bytes": 286956,
+      "sha256": "0e8b5c3215dac0e1dc05190e7f2d71321342783e46043145e0bd89a40dd1f024"
+    },
+    {
+      "member": "native/surefire/TEST-com.zencas.edhr.production.service.DhrReviewServiceTest.xml",
+      "bytes": 34806,
+      "sha256": "9412a1e0522aeed91460305a7793ea9e3e8ee170135b2011eee2352898710ce8"
+    },
+    {
+      "member": "native/surefire/TEST-com.zencas.edhr.production.service.ExecutionAccessTest.xml",
+      "bytes": 35066,
+      "sha256": "41006ff90adac46dbe9672e644f2145f7d2211f846115459a89007c60767ff4c"
+    },
+    {
+      "member": "native/surefire/TEST-com.zencas.edhr.production.service.ProductionExecutionEngineTest.xml",
+      "bytes": 36561,
+      "sha256": "f609038333a603f605ffd66010547c120a8ea8d4deeeba0143e66a846ff1c6dd"
+    },
+    {
+      "member": "native/surefire/TEST-com.zencas.edhr.recordcontrol.service.RecordControlPostgresIntegrationTest.xml",
+      "bytes": 2204875,
+      "sha256": "c2bf20401effe658f9871b4ce9b46c412fcf062684c4641e71e27a41694bed3c"
+    },
+    {
+      "member": "native/surefire/TEST-com.zencas.edhr.workflow.controller.RecordControlCandidateAuthorizationTest.xml",
+      "bytes": 37071,
+      "sha256": "994f6b286f899996aa3e9693c9d670f7082c7138a7c340d0756ab993c833af24"
+    },
+    {
+      "member": "native/surefire/TEST-com.zencas.edhr.workflow.controller.RecordControlWorkflowControllerTest.xml",
+      "bytes": 33221,
+      "sha256": "f7fdd972eda422a87e9b52f78584d836c60b7e19556620818804202a02fa7804"
+    },
+    {
+      "member": "native/surefire/TEST-com.zencas.edhr.workflow.controller.WorkflowTaskControllerTest.xml",
+      "bytes": 33726,
+      "sha256": "af052f24dc0e0d3d2201a835303dec73f9d70abf3d68fdadbf50c673e44089a4"
+    },
+    {
+      "member": "native/surefire/TEST-com.zencas.edhr.workflow.engine.WorkflowTransferPostgresTest.xml",
+      "bytes": 437565,
+      "sha256": "a97e4cc83d7f5496123b5f7b2792af9bc8adaace17b83f76d429e82af450d591"
+    },
+    {
+      "member": "native/surefire/TEST-com.zencas.edhr.workflow.service.WorkflowReadObservationPostgresTest.xml",
+      "bytes": 193270,
+      "sha256": "c60121419ecc8c624580b4d421216f0d2117c6a27d115f9c703d3d594e63330d"
+    },
+    {
+      "member": "native/test-summary.json",
+      "bytes": 1859,
+      "sha256": "423fb975ceb60763dae8e66ac323aaba42d6cab73fa569e8d13f5b592e739372"
+    },
+    {
+      "member": "native-postgres.log",
+      "bytes": 8004,
+      "sha256": "3d6414dfa092c5195fdffa69c080c7fd3b38624d67c35e7c957e030ef59378f3"
+    },
+    {
+      "member": "old-source-control/FINAL.md",
+      "bytes": 339,
+      "sha256": "76b625f0bf37b294e341a3c06130cce049531fa5654241e858120e03411fc0fb"
+    },
+    {
+      "member": "old-source-control/TEST-com.zencas.edhr.workflow.service.WorkflowReadObservationPostgresTest.xml",
+      "bytes": 888471,
+      "sha256": "19e677416b3fe6898408400fecebe23a458a35d0f4a04ef7b679ef60f0327079"
+    },
+    {
+      "member": "old-source-control/assembled-working-tree.json",
+      "bytes": 498,
+      "sha256": "6b4abc7ea1fc448abebc6f95c868e8e92e1a6da487df85c44e5e221bd071e76e"
+    },
+    {
+      "member": "old-source-control/assertions-passed.json",
+      "bytes": 117,
+      "sha256": "6b97004cfba8f639d9f6ac482754f3612d75b4d7fea17ec5c6b5236bd0a7cb06"
+    },
+    {
+      "member": "old-source-control/cleanup.json",
+      "bytes": 304,
+      "sha256": "0f477b29a916a72281cf8ff03cc5fd59b7a964824b308f4454b8ac84dda9f3f1"
+    },
+    {
+      "member": "old-source-control/commands.json",
+      "bytes": 23772,
+      "sha256": "659716259a0220a42b26b6140cb8879efadb5e69c09160827a643757ac81a895"
+    },
+    {
+      "member": "old-source-control/contract-and-product-equivalence.json",
+      "bytes": 792,
+      "sha256": "ac9442ca4a36c841093a7d4d3f51ef7c3e2ec0906ab80c2653fdc4511f9a88c4"
+    },
+    {
+      "member": "old-source-control/environment-history.md",
+      "bytes": 610,
+      "sha256": "27da747308c1edf66b920eae32af94b04676f397a8abe42049c012383c6d8d74"
+    },
+    {
+      "member": "old-source-control/finalize-negative.py",
+      "bytes": 8722,
+      "sha256": "5a128ced2854e4194a85fad6fc9d00fa87320f9e332aa7dfb875e685fd7645cd"
+    },
+    {
+      "member": "old-source-control/manifest.json",
+      "bytes": 7765,
+      "sha256": "9a9a6b6eb00800c7d8d6b4b74c3743dca17998fb862141aa5f6effedeb3c4656"
+    },
+    {
+      "member": "old-source-control/manifest.sha256",
+      "bytes": 80,
+      "sha256": "c36eaccc8789b9c2ea0ed58334afa8eaaaa160d32e26887b9599f24a65e57027"
+    },
+    {
+      "member": "old-source-control/maven.log",
+      "bytes": 859499,
+      "sha256": "fb7c381639631217ffed24b164fd6660b94a8050fe0d22edd396d01dca279bf4"
+    },
+    {
+      "member": "old-source-control/migration-state.txt",
+      "bytes": 430,
+      "sha256": "1b31a4f76764c64733830146a7775d90e814062057af4796120ec2635754cb88"
+    },
+    {
+      "member": "old-source-control/observation-summary.json",
+      "bytes": 1496,
+      "sha256": "441f26ee48bbe0a64a8979f8a2b7647c7b2cd150462ce3009b8264407b67c1c6"
+    },
+    {
+      "member": "old-source-control/observations.jsonl",
+      "bytes": 181255,
+      "sha256": "78ec05cff63ee1902b071ae2f4f2e83868f59e2dbf874c46c811e7c46ee6f055"
+    },
+    {
+      "member": "old-source-control/performance-failure-source-lines.json",
+      "bytes": 1403,
+      "sha256": "f3a33fbd305edc380eba29a3d6aca172c8e3df950b5ab8c58df3fc21e9744bce"
+    },
+    {
+      "member": "old-source-control/postgres.log",
+      "bytes": 4221,
+      "sha256": "1b969d3604e174177020f2b3f1d2a5b072b71c10e489988b789da60c3b176639"
+    },
+    {
+      "member": "old-source-control/read-fingerprints.json",
+      "bytes": 3644,
+      "sha256": "cd7dae65aa6d112b1f2b48467d93daec596d4253e738f140f8a1743941b6f6ce"
+    },
+    {
+      "member": "old-source-control/read-snapshot/AGENTS.md",
+      "bytes": 25065,
+      "sha256": "13dc7cdacea0b1bb0aef2abb268781f9c69584acd4879b204d2b7fd81a2927fc"
+    },
+    {
+      "member": "old-source-control/read-snapshot/docs/agents/agent-handoff-contract.md",
+      "bytes": 31233,
+      "sha256": "3439a35dd1baa77ac723f1b5afa237a338d56e31386f06b02b4aacfd754e3a12"
+    },
+    {
+      "member": "old-source-control/read-snapshot/docs/agents/quality-verifier.md",
+      "bytes": 7519,
+      "sha256": "6b3de9323924fb4ba5ae87be76c5136d28e754810c46b22b8e3d1cdd6c2f826f"
+    },
+    {
+      "member": "old-source-control/read-snapshot/docs/development/branch-review-20261105-workflow-name-batch/README.md",
+      "bytes": 2828,
+      "sha256": "bee88f06a3805508607f0eb385bcb8ce77c1caf451cfcd8bf49b26b05a9944e0"
+    },
+    {
+      "member": "old-source-control/read-snapshot/docs/development/branch-review-20261105-workflow-name-batch/decision-package.yaml",
+      "bytes": 5514,
+      "sha256": "004564af8637b820afb5fad2cb940e25cb9fbd5a7bdf99a86544dd2963014ea4"
+    },
+    {
+      "member": "old-source-control/read-snapshot/docs/development/workflow-central-entry-extension-20261102/user-confirmed.md",
+      "bytes": 1035,
+      "sha256": "2c70023da550cb20adf6775686873bdbaf672a086744f7f7371c58f7a994b88e"
+    },
+    {
+      "member": "old-source-control/read-snapshot/docs/development/workflow-operations-20261030/user-confirmed.md",
+      "bytes": 452,
+      "sha256": "dc46e5f388e5b277baaa7467c19b440964f3c3784211eedb099d750de5eb8f0c"
+    },
+    {
+      "member": "old-source-control/read-snapshot/docs/knowledge/README.md",
+      "bytes": 113165,
+      "sha256": "2b3d1758e0088a5bd3f7c188917bed21893a3d7fe97df45028125c8fea69b8e9"
+    },
+    {
+      "member": "old-source-control/read-snapshot/docs/knowledge/decisions/DEC-0074-shared-terminal-button-signature.yaml",
+      "bytes": 7527,
+      "sha256": "09d6cb083c1350f3c64a2abb8583ca9a4eb1a7b3a837cdd67b9f6dc28d9e2d3f"
+    },
+    {
+      "member": "old-source-control/read-snapshot/docs/knowledge/decisions/DEC-0081-tenant-scoped-task-delegation.yaml",
+      "bytes": 5824,
+      "sha256": "c47a0ea204787a4f03cf5e507e71ec002e1e7514ade7cd122d2290049aa0c5da"
+    },
+    {
+      "member": "old-source-control/read-snapshot/docs/knowledge/decisions/DEC-0092-workflow-operations-entry-and-actions.yaml",
+      "bytes": 7319,
+      "sha256": "52df0c8618a91276e3376728e0e519324e691c24345693fb8f977f267a7e866c"
+    },
+    {
+      "member": "old-source-control/read-snapshot/docs/knowledge/decisions/DEC-0093-central-form-dhr-workflow-responsibility.yaml",
+      "bytes": 6213,
+      "sha256": "cb692c88ae96c473b4c7a05705c3d386f5376c968bf177adc09c259e674c8004"
+    },
+    {
+      "member": "old-source-control/read-snapshot/docs/knowledge/evidence/button-signature-confirmed.md",
+      "bytes": 14758,
+      "sha256": "6e8a7ef08b2c76c854d2d66bf257e611e75f545cbdc75bacad2ef4039d67dff8"
+    },
+    {
+      "member": "old-source-control/read-snapshot/docs/knowledge/evidence/tenant-task-delegation-2026-10-20.md",
+      "bytes": 7941,
+      "sha256": "0610323c3fad5a8c4052eeb68fdd77aea9f231d1b4119d8442022fdc574f1509"
+    },
+    {
+      "member": "old-source-control/read-snapshot/docs/knowledge/open-questions.yaml",
+      "bytes": 22420,
+      "sha256": "c7b3bdecd1a6ac164d95ff515b5412998a556a07e9b5fcb64b3643473aa6e2bf"
+    },
+    {
+      "member": "old-source-control/result.yaml",
+      "bytes": 4171,
+      "sha256": "2d00accf357183855550d1f5811c5edf7276252a0406224084929c444caecd42"
+    },
+    {
+      "member": "old-source-control/run-old-independent.py",
+      "bytes": 8582,
+      "sha256": "5729f08b3aa2c3abae25d1db6a504f6c563ac100c3d67d1b3c29bca2ddf5ac37"
+    },
+    {
+      "member": "old-source-control/run.json",
+      "bytes": 1187,
+      "sha256": "d39fc26387cc28e42a488f0ea49b82a54c3d6020c4305ed92d44d141aab7dc3e"
+    },
+    {
+      "member": "old-source-control/runner.log",
+      "bytes": 235,
+      "sha256": "7676b43e273af95459116d7f03240fa7731f94e0335d57c99684fb96026e5f7c"
+    },
+    {
+      "member": "old-source-control/semantic-scope.md",
+      "bytes": 921,
+      "sha256": "c62a0651564e4cc86647297736f36de24e4d4c2b19f76b9559c0a80ad2570d5a"
+    },
+    {
+      "member": "old-source-control/source-fingerprints.json",
+      "bytes": 1095,
+      "sha256": "dde181ebffe1d57b5d79f3696f12c3676291a7ed47206d5a7139576a299cf76d"
+    },
+    {
+      "member": "old-source-control/source-snapshot/gmp-platform/backend/src/main/java/com/zencas/edhr/identity/service/TenantTransferTargets.java",
+      "bytes": 5434,
+      "sha256": "2878992aed2e574224fb3646e6c5607850a074a3c6257f3eda40e5bb09350cfa"
+    },
+    {
+      "member": "old-source-control/source-snapshot/gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/WorkflowOperationsQuery.java",
+      "bytes": 9393,
+      "sha256": "b59d4d91b44b62081d45fc45fbafeab258300459282a6254819067b62d6f357b"
+    },
+    {
+      "member": "old-source-control/source-snapshot/gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/WorkflowResponsibilityService.java",
+      "bytes": 18432,
+      "sha256": "a8395ff9b57a7a52f27e1423a19acdcd9611f850f3e9dfb30e8fd6a7b57b92f5"
+    },
+    {
+      "member": "old-source-control/source-snapshot/gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/service/WorkflowReadObservationPostgresTest.java",
+      "bytes": 16098,
+      "sha256": "a54b2a55dfb22a2f01b04ba7e1fe31112f07d8412ce496f6d28e6a651fca1bf0"
+    },
+    {
+      "member": "old-source-control/test-summary.json",
+      "bytes": 1570,
+      "sha256": "a2ed8a7be6ae17a7a6c7d50f32f0d3d31c264d10d76731f1976c302850c7d6a7"
+    },
+    {
+      "member": "orchestration-commands.json",
+      "bytes": 8914,
+      "sha256": "51ac044c74ec014578bc5352b5504318fb188af7d66807fd80b047728c4ab21c"
+    },
+    {
+      "member": "policy-snapshot/docs/architecture/business-knowledge-model.md",
+      "bytes": 71928,
+      "sha256": "40943884babe168dba02ed42184d1f0bdb3ac12f66fa2b9b1653b45fadebde04"
+    },
+    {
+      "member": "policy-snapshot/docs/development/workflow-central-entry-extension-20261102/user-confirmed.md",
+      "bytes": 1035,
+      "sha256": "2c70023da550cb20adf6775686873bdbaf672a086744f7f7371c58f7a994b88e"
+    },
+    {
+      "member": "policy-snapshot/docs/development/workflow-operations-20261030/user-confirmed.md",
+      "bytes": 452,
+      "sha256": "dc46e5f388e5b277baaa7467c19b440964f3c3784211eedb099d750de5eb8f0c"
+    },
+    {
+      "member": "policy-snapshot/docs/knowledge/README.md",
+      "bytes": 113165,
+      "sha256": "2b3d1758e0088a5bd3f7c188917bed21893a3d7fe97df45028125c8fea69b8e9"
+    },
+    {
+      "member": "policy-snapshot/docs/knowledge/decisions/DEC-0074-shared-terminal-button-signature.yaml",
+      "bytes": 7527,
+      "sha256": "09d6cb083c1350f3c64a2abb8583ca9a4eb1a7b3a837cdd67b9f6dc28d9e2d3f"
+    },
+    {
+      "member": "policy-snapshot/docs/knowledge/decisions/DEC-0081-tenant-scoped-task-delegation.yaml",
+      "bytes": 5824,
+      "sha256": "c47a0ea204787a4f03cf5e507e71ec002e1e7514ade7cd122d2290049aa0c5da"
+    },
+    {
+      "member": "policy-snapshot/docs/knowledge/decisions/DEC-0092-workflow-operations-entry-and-actions.yaml",
+      "bytes": 7319,
+      "sha256": "52df0c8618a91276e3376728e0e519324e691c24345693fb8f977f267a7e866c"
+    },
+    {
+      "member": "policy-snapshot/docs/knowledge/decisions/DEC-0093-central-form-dhr-workflow-responsibility.yaml",
+      "bytes": 6213,
+      "sha256": "cb692c88ae96c473b4c7a05705c3d386f5376c968bf177adc09c259e674c8004"
+    },
+    {
+      "member": "policy-snapshot/docs/knowledge/evidence/button-signature-confirmed.md",
+      "bytes": 14758,
+      "sha256": "6e8a7ef08b2c76c854d2d66bf257e611e75f545cbdc75bacad2ef4039d67dff8"
+    },
+    {
+      "member": "policy-snapshot/docs/knowledge/evidence/tenant-task-delegation-2026-10-20.md",
+      "bytes": 7941,
+      "sha256": "0610323c3fad5a8c4052eeb68fdd77aea9f231d1b4119d8442022fdc574f1509"
+    },
+    {
+      "member": "policy-snapshot/docs/knowledge/open-questions.yaml",
+      "bytes": 22420,
+      "sha256": "c7b3bdecd1a6ac164d95ff515b5412998a556a07e9b5fcb64b3643473aa6e2bf"
+    },
+    {
+      "member": "quality-result.yaml",
+      "bytes": 10674,
+      "sha256": "dc509f82d62f6cf76400d6264a3e0da0e41882879c79c9c983c4dd7937ac5a19"
+    },
+    {
+      "member": "run-result.json",
+      "bytes": 811,
+      "sha256": "72cbbf6c415bb6821cc32fb7e20a91c3299a8a217105d35a759ae5fc941990ef"
+    },
+    {
+      "member": "run-workflow-name-final-qa.py",
+      "bytes": 8009,
+      "sha256": "930f24d22e4f8c65b1507dbf54931e7bcc02198623bd9290785637c3cc6f2975"
+    },
+    {
+      "member": "server-sql/FINAL.md",
+      "bytes": 281,
+      "sha256": "ef145ae21702d0a336f6a80b9a28523eb9f6347ca68a8e35158a20982bbc9865"
+    },
+    {
+      "member": "server-sql/TEST-com.zencas.edhr.workflow.service.WorkflowReadObservationPostgresTest.xml",
+      "bytes": 192993,
+      "sha256": "4d1b4582d08be348fbea30c9c44850b1341a0f4930b15ee8cf0e79b1812491b1"
+    },
+    {
+      "member": "server-sql/baseline.json",
+      "bytes": 129,
+      "sha256": "149f25f3aaab636fafea17b77c79cfe054256c42691d6fc895762ba136246baf"
+    },
+    {
+      "member": "server-sql/cleanup.json",
+      "bytes": 157,
+      "sha256": "62e3850c472b89109f049a49746147e52a9b5d6c2c3f7d972d0df9b1cead2004"
+    },
+    {
+      "member": "server-sql/commands.json",
+      "bytes": 5080,
+      "sha256": "52132c40cd98328eb63e28d4dcb1ad1a4b00107641148637a677bb1cdf9223ca"
+    },
+    {
+      "member": "server-sql/crosscheck-console.log",
+      "bytes": 253,
+      "sha256": "62d04bd4443dbd92fdae2bb89914aa8806f100735e12a4a5eb677f23a7739074"
+    },
+    {
+      "member": "server-sql/crosscheck.py",
+      "bytes": 4233,
+      "sha256": "8b45c7df5e54ef4d4bccee3e019397b5b548d3b892c961e7ae5edd352d96ab4f"
+    },
+    {
+      "member": "server-sql/final-baseline.json",
+      "bytes": 982,
+      "sha256": "ad3473a3800e4db05faea76aec626601bb62876acef215fad771aa64a6973cf3"
+    },
+    {
+      "member": "server-sql/finalize.py",
+      "bytes": 9086,
+      "sha256": "db9b00c6d892a6ff63b87ce45c996f84277a1251deae1a8c15a36c9bf71db4d2"
+    },
+    {
+      "member": "server-sql/manifest.json",
+      "bytes": 5024,
+      "sha256": "614ef318501ad61b2a74a78b3d2354cdb46b93f0058582f044165c576d1d232a"
+    },
+    {
+      "member": "server-sql/manifest.sha256",
+      "bytes": 80,
+      "sha256": "268cf8bed2b65ea01998b7063edf8c19de5f01b19eee323f377a60bdf92daef2"
+    },
+    {
+      "member": "server-sql/maven.log",
+      "bytes": 161264,
+      "sha256": "b93666348d49332b52285307f723a2ddab7b9d307f09bdbeaad236b7d41500ec"
+    },
+    {
+      "member": "server-sql/observations.jsonl",
+      "bytes": 42373,
+      "sha256": "a864809b8078a3de30109bf808e361c044223ef479d7e47d4bfd2cc3a8a1c5b9"
+    },
+    {
+      "member": "server-sql/postgres.log",
+      "bytes": 307863,
+      "sha256": "9ff94d014df49c1b28e83cb74dbc9cb22971199c7e5f8147039be2f1f3f50750"
+    },
+    {
+      "member": "server-sql/result.yaml",
+      "bytes": 4977,
+      "sha256": "15092e21e1c8421c99d08a68b075ba9df43336dfbd9c52bab36d1c0d0b95115d"
+    },
+    {
+      "member": "server-sql/run.json",
+      "bytes": 885,
+      "sha256": "95617115fb574a9336843dc73beca11b1f94e9ed1d79053103df69e1b9526ebb"
+    },
+    {
+      "member": "server-sql/runner-console.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "member": "server-sql/runner.py",
+      "bytes": 5189,
+      "sha256": "ae273af8dd700b18e2dd21a971f0221e94c6f63fc6688a664758e11a7509a707"
+    },
+    {
+      "member": "server-sql/server-crosscheck.json",
+      "bytes": 41195,
+      "sha256": "bd0e9356344b3eb9ce527efe86924089c50da47ed3e6f49bcc6dd8bdb763adb5"
+    },
+    {
+      "member": "server-sql/source-fingerprints.json",
+      "bytes": 1649,
+      "sha256": "a3dbbfec6538873926b07b0dac8b60655df2f51c80714571a19b03807dbe651c"
+    },
+    {
+      "member": "server-sql/source-snapshot/AGENTS.md",
+      "bytes": 25065,
+      "sha256": "13dc7cdacea0b1bb0aef2abb268781f9c69584acd4879b204d2b7fd81a2927fc"
+    },
+    {
+      "member": "server-sql/source-snapshot/docs/agents/agent-handoff-contract.md",
+      "bytes": 31233,
+      "sha256": "3439a35dd1baa77ac723f1b5afa237a338d56e31386f06b02b4aacfd754e3a12"
+    },
+    {
+      "member": "server-sql/source-snapshot/docs/agents/quality-verifier.md",
+      "bytes": 7519,
+      "sha256": "6b3de9323924fb4ba5ae87be76c5136d28e754810c46b22b8e3d1cdd6c2f826f"
+    },
+    {
+      "member": "server-sql/source-snapshot/docs/development/branch-review-20261105-workflow-name-batch/decision-package.yaml",
+      "bytes": 5514,
+      "sha256": "004564af8637b820afb5fad2cb940e25cb9fbd5a7bdf99a86544dd2963014ea4"
+    },
+    {
+      "member": "server-sql/source-snapshot/docs/knowledge/README.md",
+      "bytes": 113165,
+      "sha256": "2b3d1758e0088a5bd3f7c188917bed21893a3d7fe97df45028125c8fea69b8e9"
+    },
+    {
+      "member": "server-sql/source-snapshot/docs/knowledge/open-questions.yaml",
+      "bytes": 22420,
+      "sha256": "c7b3bdecd1a6ac164d95ff515b5412998a556a07e9b5fcb64b3643473aa6e2bf"
+    },
+    {
+      "member": "server-sql/source-snapshot/gmp-platform/backend/src/main/java/com/zencas/edhr/identity/service/TenantTransferTargets.java",
+      "bytes": 5434,
+      "sha256": "2878992aed2e574224fb3646e6c5607850a074a3c6257f3eda40e5bb09350cfa"
+    },
+    {
+      "member": "server-sql/source-snapshot/gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/WorkflowOperationsQuery.java",
+      "bytes": 10122,
+      "sha256": "8111b25d328cce2a8d37466c51207c626d1fca87c22d565ebc978d4019d6fc42"
+    },
+    {
+      "member": "server-sql/source-snapshot/gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/service/WorkflowReadObservationPostgresTest.java",
+      "bytes": 16098,
+      "sha256": "a54b2a55dfb22a2f01b04ba7e1fe31112f07d8412ce496f6d28e6a651fca1bf0"
+    },
+    {
+      "member": "server-sql/test-summary.json",
+      "bytes": 66,
+      "sha256": "ec3c967fcee8b5d68e3e7468f3d577ed57121b5ae24a823e42ddcdec8e3d1da6"
+    },
+    {
+      "member": "server-sql/verification-notes.md",
+      "bytes": 2304,
+      "sha256": "6d1ea7b635f456107d52db4729122fd19b941e5b135bf01f389154588b5c9e2a"
+    },
+    {
+      "member": "source-fingerprints.json",
+      "bytes": 1360,
+      "sha256": "0bf62dc097c8ef45ef12daabe9a0640a0e5444ed9cc745cbfd001f7e47946bf1"
+    },
+    {
+      "member": "source-snapshot/AGENTS.md",
+      "bytes": 25065,
+      "sha256": "13dc7cdacea0b1bb0aef2abb268781f9c69584acd4879b204d2b7fd81a2927fc"
+    },
+    {
+      "member": "source-snapshot/docs/agents/agent-handoff-contract.md",
+      "bytes": 31233,
+      "sha256": "3439a35dd1baa77ac723f1b5afa237a338d56e31386f06b02b4aacfd754e3a12"
+    },
+    {
+      "member": "source-snapshot/docs/agents/quality-verifier.md",
+      "bytes": 7519,
+      "sha256": "6b3de9323924fb4ba5ae87be76c5136d28e754810c46b22b8e3d1cdd6c2f826f"
+    },
+    {
+      "member": "source-snapshot/gmp-platform/backend/src/main/java/com/zencas/edhr/identity/service/TenantTransferTargets.java",
+      "bytes": 5434,
+      "sha256": "2878992aed2e574224fb3646e6c5607850a074a3c6257f3eda40e5bb09350cfa"
+    },
+    {
+      "member": "source-snapshot/gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/WorkflowOperationsQuery.java",
+      "bytes": 10122,
+      "sha256": "8111b25d328cce2a8d37466c51207c626d1fca87c22d565ebc978d4019d6fc42"
+    },
+    {
+      "member": "source-snapshot/gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/WorkflowResponsibilityService.java",
+      "bytes": 18432,
+      "sha256": "a8395ff9b57a7a52f27e1423a19acdcd9611f850f3e9dfb30e8fd6a7b57b92f5"
+    },
+    {
+      "member": "source-snapshot/gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/service/WorkflowReadObservationPostgresTest.java",
+      "bytes": 16098,
+      "sha256": "a54b2a55dfb22a2f01b04ba7e1fe31112f07d8412ce496f6d28e6a651fca1bf0"
+    },
+    {
+      "member": "subrole-final-verification.json",
+      "bytes": 591,
+      "sha256": "2a94a198d6942fc2b7276757e6bb0332a5630eec75c33076af173a82edcef629"
+    }
+  ],
+  "archive": {
+    "path": "evidence/final-independent.tar.gz",
+    "bytes": 1699478,
+    "sha256": "21c83add4972526ce1c96ed062702cd1db5402312adb537125b0eec7b176f90b"
+  },
+  "note": "All frozen final QA/child originals retained; raw member sizes differ from gzip storage. Older diagnostic and initial failure evidence remains unchanged."
+}

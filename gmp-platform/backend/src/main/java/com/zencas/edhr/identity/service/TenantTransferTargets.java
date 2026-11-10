@@ -1,15 +1,19 @@
 package com.zencas.edhr.identity.service;
 
 import com.zencas.edhr.identity.entity.UserAccount;
+import com.zencas.edhr.identity.entity.UserRole;
+import com.zencas.edhr.identity.entity.RolePermission;
+import com.zencas.edhr.identity.entity.Permission;
 import com.zencas.edhr.identity.repository.UserAccountRepository;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.ScrollPosition;
 import org.springframework.data.jpa.domain.Specification;
 
 /** Shared personnel eligibility for explicit tenant-scoped delegation, not approval candidate resolution. */
@@ -17,24 +21,59 @@ import org.springframework.data.jpa.domain.Specification;
 public class TenantTransferTargets {
     private final UserAccountRepository users;
 
-    public List<Map<String, String>> search(Long tenantId, String operatorId, String keyword) {
+    public record Page(List<Map<String, String>> content, int page, int size, boolean hasNext) { }
+
+    public Page search(Long tenantId, String operatorId, String keyword, int page, int size) {
+        return search(tenantId, operatorId, keyword, Set.of(), page, size);
+    }
+
+    public Page search(Long tenantId, String operatorId, String keyword, Set<String> requiredPermissions, int page, int size) {
+        return search(tenantId, operatorId, keyword, requiredPermissions, (root, query, cb) -> cb.conjunction(), page, size);
+    }
+
+    public Page search(Long tenantId, String operatorId, String keyword, Specification<UserAccount> scope, int page, int size) {
+        return search(tenantId, operatorId, keyword, Set.of(), scope, page, size);
+    }
+
+    private Page search(Long tenantId, String operatorId, String keyword,
+                        Set<String> requiredPermissions, Specification<UserAccount> scope, int page, int size) {
         if (tenantId == null) throw new IllegalArgumentException("无法确定转办的租户范围");
+        if (page < 1 || size < 1 || size > 100 || (long) (page - 1) * size > Integer.MAX_VALUE)
+            throw new IllegalArgumentException("人员查询页码或每页条数无效");
         String query = keyword == null ? "" : keyword.strip().toLowerCase(Locale.ROOT);
         LocalDateTime now = LocalDateTime.now();
-        Specification<UserAccount> specification = (root, ignored, cb) -> {
+        Specification<UserAccount> specification = (root, criteriaQuery, cb) -> {
             var eligible = cb.and(cb.equal(root.get("tenantId"), tenantId), cb.equal(root.get("status"), "ACTIVE"),
                     cb.or(cb.isNull(root.get("lockedUntil")), cb.lessThanOrEqualTo(root.get("lockedUntil"), now)));
+            if (operatorId != null && !operatorId.isBlank())
+                eligible = cb.and(eligible, cb.notEqual(root.get("id").as(String.class), operatorId));
+            for (String code : requiredPermissions) {
+                var permissionQuery = criteriaQuery.subquery(Long.class);
+                var membership = permissionQuery.from(UserRole.class);
+                var grant = permissionQuery.from(RolePermission.class);
+                var permission = permissionQuery.from(Permission.class);
+                permissionQuery.select(membership.get("id")).where(
+                        cb.equal(membership.get("userId"), root.get("id")),
+                        cb.equal(grant.get("roleId"), membership.get("roleId")),
+                        cb.equal(permission.get("id"), grant.get("permissionId")),
+                        cb.equal(permission.get("code"), code));
+                eligible = cb.and(eligible, cb.exists(permissionQuery));
+            }
             if (query.isBlank()) return eligible;
             String like = "%" + query + "%";
             return cb.and(eligible, cb.or(cb.like(cb.lower(root.get("displayName")), like),
                     cb.like(cb.lower(root.get("username")), like)));
         };
-        return users.findAll(specification, PageRequest.of(0, 100,
-                        Sort.by("displayName").ascending().and(Sort.by("id").ascending()))).getContent().stream()
+        var position = page == 1 ? ScrollPosition.offset() : ScrollPosition.offset((long) (page - 1) * size - 1);
+        var window = users.findBy(specification.and(scope), finder -> finder
+                        .sortBy(Sort.by("displayName").ascending().and(Sort.by("id").ascending()))
+                        .limit(size).scroll(position));
+        var content = window.getContent().stream()
                 .filter(user -> available(user, tenantId, now))
                 .filter(user -> !String.valueOf(user.getId()).equals(operatorId))
                 .map(user -> Map.of("id", String.valueOf(user.getId()), "name", user.getDisplayName(), "username", user.getUsername()))
                 .toList();
+        return new Page(content, page, size, window.hasNext());
     }
 
     public UserAccount require(Long tenantId, String operatorId, String targetId) {

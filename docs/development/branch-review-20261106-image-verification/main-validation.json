@@ -1,0 +1,103 @@
+{
+  "negativeBudget": {
+    "totals": {
+      "tests": 27,
+      "failures": 2,
+      "errors": 0,
+      "skipped": 0
+    },
+    "classes": [
+      {
+        "class": "com.zencas.edhr.production.service.DhrAttachmentUploadVerifyObservationPostgresTest",
+        "tests": 27,
+        "failures": 2,
+        "errors": 0,
+        "skipped": 0
+      }
+    ],
+    "missingFreshReports": []
+  },
+  "finalRegression": {
+    "totals": {
+      "tests": 87,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "classes": [
+      {
+        "class": "com.zencas.edhr.production.service.DhrAttachmentUploadVerifyObservationPostgresTest",
+        "tests": 27,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "com.zencas.edhr.production.service.DhrSummaryServiceTest",
+        "tests": 8,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "com.zencas.edhr.production.service.DhrSummaryPersistenceTest",
+        "tests": 24,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "com.zencas.edhr.production.service.DhrAttachmentWriteFailureTest",
+        "tests": 5,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "com.zencas.edhr.production.service.DhrAttachmentAndArchiveTest",
+        "tests": 13,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "com.zencas.edhr.production.service.DhrFormFilesTest",
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "com.zencas.edhr.production.service.DhrAttachmentImageVerificationTest",
+        "tests": 6,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    ],
+    "missingFreshReports": []
+  },
+  "knowledge": [
+    {
+      "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "tests": 89,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  ],
+  "actions": 52,
+  "businessSELECT": 128,
+  "serverTypes": {
+    "set": 52,
+    "select": 128,
+    "insert": 36,
+    "update": 12
+  },
+  "constraintErrors": 3,
+  "intermediateAttempt": {
+    "phase": "native-optimized",
+    "outcome": "test compile failed on AssertJ ObjectAssert.hasMessage; main fixed assertion typing without lowering requirement; zero fresh tests, raw retained"
+  },
+  "scope": "27 native + 54 adjacent + 6 new lifecycle unit tests =87. Not all87 PostgreSQL or full-system/UI acceptance."
+}

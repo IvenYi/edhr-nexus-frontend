@@ -1,0 +1,98 @@
+{
+  "executionLevel": "L2",
+  "targetCommit": "00f864cdaf0796c9410173c835a477c7a3068d06",
+  "testedCandidate": "ca836ef60415d61cf352cc3375a23106ec0f46a3",
+  "ontologyResult": "not-applicable",
+  "qualityResult": "passed",
+  "requiredChecksPassed": 13,
+  "scope": "TenantTransferTargets bounded list without unused Page total; ordinary user-management pagination unchanged",
+  "productFilesChanged": 1,
+  "testFilesChanged": 1,
+  "nativeTests": 152,
+  "readObservationAndBoundaryInvocations": 14,
+  "baselineAdjacentInvocations": 138,
+  "formalKnowledgeTests": 89,
+  "oldSourceControl": {
+    "tests": 7,
+    "realQueryBudgetFailures": 4,
+    "positiveControls": 3,
+    "errors": 0,
+    "skipped": 0
+  },
+  "finiteVerifiedFindingResolved": "PERF-TENANT-DIRECTORY-COUNT-20261104",
+  "personnelBefore": {
+    "matching": [
+      0,
+      1,
+      99,
+      100,
+      101,
+      5000
+    ],
+    "sql": [
+      1,
+      1,
+      1,
+      2,
+      2,
+      2
+    ]
+  },
+  "personnelAfter": {
+    "matching": [
+      0,
+      1,
+      99,
+      100,
+      101,
+      5000
+    ],
+    "sql": [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
+    ]
+  },
+  "eligibilityAndTie120": {
+    "sql": 1,
+    "returned": 100,
+    "inactiveLockedOtherTenantCurrentExcluded": true,
+    "sort": "displayName then numeric id"
+  },
+  "databaseLimit": 100,
+  "independentServerCrosscheck": {
+    "testInvocations": 14,
+    "businessSelects": 47,
+    "querySignatures": 7,
+    "personnelDirectoryCalls": 7,
+    "directoryCountQueries": 0,
+    "actualDirectoryLimit": 100,
+    "nameSingleArrayCalls": 5,
+    "excludedOtherSelects": 32
+  },
+  "whereAndWriteProtectionUnchanged": true,
+  "nameBatchPreserved": true,
+  "runtimeBrowserOrHttpE2E": false,
+  "newBusinessPolicyUiMigrationIndexDependency": false,
+  "knowledge": {
+    "unchangedFiles": 345,
+    "finiteExistingIds": 9,
+    "consistent": 8,
+    "existingFullTenantEvidenceGapRetained": 1,
+    "pendingIncrementCandidates": 931,
+    "fullSemanticAuditComplete": false
+  },
+  "priorUiDiagnosticCandidatesPending": 86,
+  "wholeFileComplete": 0,
+  "historicalUniqueCoverage": null,
+  "wholeAuditComplete": false,
+  "residuals": [
+    "Form independent detail/central JSONCOUNT/huge original candidate parameters/text-ID plans/Summary605/export memory remain",
+    "Production latency/network/concurrency/SLA and full-distribution EXPLAIN not certified",
+    "All original W2-W7/high/A12/complete account/recipient/ACL/signature/browser matrices and user paused scopes continue"
+  ],
+  "recommendation": "Manual merge finite directory-read optimization only; no automatic merge/deploy/restore/CI query or trigger"
+}

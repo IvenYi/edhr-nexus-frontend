@@ -1,0 +1,86 @@
+{
+  "regression": {
+    "totals": {
+      "tests": 72,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "classes": [
+      {
+        "class": "com.zencas.edhr.production.service.DhrSummaryAttachmentObservationPostgresTest",
+        "tests": 18,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "com.zencas.edhr.production.service.DhrSummaryServiceTest",
+        "tests": 8,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "com.zencas.edhr.production.service.DhrSummaryPersistenceTest",
+        "tests": 24,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "com.zencas.edhr.production.service.DhrAttachmentWriteFailureTest",
+        "tests": 5,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "com.zencas.edhr.production.service.DhrAttachmentAndArchiveTest",
+        "tests": 13,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "com.zencas.edhr.production.service.DhrFormFilesTest",
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    ],
+    "missingFreshReports": []
+  },
+  "negativeControl": {
+    "totals": {
+      "tests": 18,
+      "failures": 5,
+      "errors": 0,
+      "skipped": 0
+    },
+    "classes": [
+      {
+        "class": "com.zencas.edhr.production.service.DhrSummaryAttachmentObservationPostgresTest",
+        "tests": 18,
+        "failures": 5,
+        "errors": 0,
+        "skipped": 0
+      }
+    ],
+    "missingFreshReports": []
+  },
+  "knowledge89ReusedReason": "350 knowledge and validation tools unchanged from initial passed run; independent final will rerun",
+  "observations": 19,
+  "businessSELECT": 195,
+  "serverTypes": {
+    "set": 19,
+    "select": 195,
+    "insert": 25,
+    "delete": 8,
+    "update": 17
+  },
+  "driverMetadataSelect": [],
+  "sourceScope": "actual base HEAD plus dirty product/test during main run; all source snapshots kept, not rewritten to later commit",
+  "old7704QualityScope": "test-only 69/89/16; historical only, does not cover this optimization"
+}

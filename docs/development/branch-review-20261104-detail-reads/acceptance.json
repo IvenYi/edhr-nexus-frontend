@@ -1,0 +1,76 @@
+{
+  "executionLevel": "L2",
+  "baseCommit": "fa5921698f5fa4024ad7ca86ee2a90e3cd3a9620",
+  "testedCandidate": "b687300ac8f02b9c6a307f58c8ddc525e7e7b6e5",
+  "ontologyResult": "not-applicable",
+  "qualityResult": "passed",
+  "requiredChecksPassed": 11,
+  "acceptedScope": "Opt-in native performance observation and finite read-result checks; no product implementation changes",
+  "newTestFiles": 1,
+  "newNativeInvocations": 10,
+  "mainNativeTests": 148,
+  "freshNativeTests": 148,
+  "formalKnowledgeTests": 89,
+  "productCodeChanged": false,
+  "performanceFixed": false,
+  "performanceImplementationDecision": "Awaiting user choice; no elapsed time treated as approval",
+  "observedDetail": {
+    "tasks": [
+      0,
+      1,
+      100,
+      1000
+    ],
+    "sql": [
+      5,
+      6,
+      105,
+      1005
+    ]
+  },
+  "observedDirectory": {
+    "matchingPersonnel": [
+      0,
+      1,
+      99,
+      100,
+      101,
+      5000
+    ],
+    "sql": [
+      1,
+      1,
+      1,
+      2,
+      2,
+      2
+    ]
+  },
+  "knownOpenFindings": [
+    "PERF-WORKFLOW-DETAIL-NAMES-20261104",
+    "PERF-TENANT-DIRECTORY-COUNT-20261104"
+  ],
+  "runtimeBrowserOrHttpEndToEndTested": false,
+  "knowledge": {
+    "unchangedFiles": 345,
+    "finiteExistingStatements": 8,
+    "pendingIncrementCandidates": 931,
+    "fullSemanticAuditComplete": false
+  },
+  "priorUiDiagnosticCandidatesPending": 86,
+  "wholeFileComplete": 0,
+  "historicalUniqueCoverage": null,
+  "wholeAuditComplete": false,
+  "residuals": [
+    "Huge original candidate IN/text-ID plans and production-scale latency/network/concurrency not measured",
+    "All previous Summary605/export memory/full account/recipient/ACL/concurrency/quality/DHR-directory/A12/archive/W2-W7 gaps and user paused scopes continue"
+  ],
+  "recommendation": "Manual merge finite diagnostic test/evidence only; performance proposals remain unimplemented, no automatic merge/deploy/restore/CI query or trigger",
+  "independentServerCrosscheck": {
+    "matchedObservedSignatures": 8,
+    "matchedSelectExecutions": 1130,
+    "nameLookups": 1101,
+    "otherServerSelectsExcluded": 29,
+    "allNetworkSqlCertified": false
+  }
+}

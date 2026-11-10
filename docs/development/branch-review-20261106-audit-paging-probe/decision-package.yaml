@@ -1,0 +1,59 @@
+decisionPackage:
+  id: DEC-PACKAGE-AUDIT-PAGING-PROBE-20261106
+  scope: Current audit full-materialization risk and test-only bounded paging proposal
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: f2646c9a098291883434b7e6a7db628fe631ebd6
+    targetBranch: edhr-dev
+    targetCommit: f2646c9a098291883434b7e6a7db628fe631ebd6
+    contractReadCommit: f2646c9a098291883434b7e6a7db628fe631ebd6
+    uncommittedContractPaths: []
+  summary: PR68已人工合入且整树同0c04162f，无额外代码/契约/知识增量；继续W5读取/W6容量性能和A23。只增加隔离原生试验，核无派生筛选时复用真实repository分页的等价性、宽JSON分配、排序与计数快照边界；产品优化仍待用户讨论，不因merge视为DB分页/索引授权。
+  confirmed:
+    concepts: []
+    relationships: []
+    rules: []
+    executionContracts: []
+  inferred: []
+  unresolved: []
+  replacementScopes: []
+  engineeringScope:
+    authorized: 整体审计、原生取证/测试、明确方案及必要独立验证
+    candidateOnly: 没有模块/菜单/摘要派生关键词时使用真实repository数据库分页；其他筛选保持原Java路径；比较准确总数/顺序/完整DTO/姓名/个人边界
+    riskExperiments: 同时间排序与ID次序候选、两语句计数在READ_COMMITTED和REPEATABLE_READ下的独立合成并发实验；SpringData/JPA实际int offset边界拒绝及候选回退，不增加新页数上限
+    notImplemented: 生产DB分页/索引/事务/排序或姓名搜索政策改动；不修数据/重写历史
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - {area: audit-read-test, change: 完整canonical PostgreSQL实际controller与repository/原私有投影的试验对照，生产代码不改, evidenceReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/compliance/controller/AuditDatabasePagingProbePostgresTest.java]}
+    transitiveImpacts:
+      - {area: query-candidate, change: 核全局/个人/原实体动作姓名筛选、边界页和宽JSON，不把试验函数当已上线接口, evidenceReferences: []}
+    potentialImpacts:
+      - {area: two-statement-paging, concern: 多一次COUNT的读取代价、时间并列时的稳定顺序、内容与总数同一视图；先实验，不擅定现有业务政策, evidenceReferences: []}
+    unaffectedAreas:
+      - {area: runtime, change: 全部生产代码/前端/迁移/权限/签署/原审计/hash/已合PR68保持, evidenceReferences: []}
+    compatibilityAndMigration:
+      - {area: no-migration, change: 仅隔离合成数据试验，无生产schema/索引/历史DML或结果上限, evidenceReferences: []}
+    snapshotImpacts:
+      - {area: read-snapshot-probe, change: 数据库读取隔离实验不是生产/DHR冻结规则变更, evidenceReferences: []}
+    auditImpacts:
+      - {area: read-only-product, change: 原生controller及候选读区不写审计；并发新增仅自有库夹具并单独分类, evidenceReferences: []}
+    permissionImpacts:
+      - {area: current-boundaries, change: 原个人目标账户与全局权限证据缺口保留，试验不新增访问入口或资格, evidenceReferences: []}
+    testImpacts:
+      - {scope: native-prototype-and-adjacent, scenarios: [全DTO/总数与排序对照, 现有SQL动作与姓名筛选, 派生过滤兜回原controller, 超尾和最大正数页, 宽JSON/SQL/实体加载/分配, 时间并列与分页候选, 两语句并发快照代表性实验, 原134聚焦回归与知识89, 全新独立最终质量], evidenceReferences: []}
+    evidenceGaps: [测试原型不能替生产controller/HTTP上线验证, READ_COMMITTED/RR实验为代表性SQL两阶段，不冒称已改真实repository计数事务, 全部派生筛选SQL等价/全局权限/姓名搜索政策/生产并发峰值和原全审余项仍保留]
+  extensionStrategy:
+    selectedPaths: [product-core]
+    rationale: 候选先复用真实repository及原投影，保持范围有限；不提前搭通用查询/缓存或大重构
+    ownershipBoundaries:
+      - {owner: main-auditor, responsibility: 只读生产源、测试原型/固定证据、性能讨论与最终判断}
+      - {owner: future-audit-query, responsibility: 生产方案只在用户实际确认后实施，保留原所有筛选及完整集合}
+  affectedFiles:
+    - {path: gmp-platform/backend/src/test/java/com/zencas/edhr/compliance/controller/AuditDatabasePagingProbePostgresTest.java, changeType: create, reason: 原生当前路径/候选/代表性并发和排序试验}
+  acceptanceScenarios:
+    - id: scenario.audit-paging-proposal-evidence
+      given: 固定最新基线与隔离合成PostgreSQL数据
+      when: 对照当前controller、真实repository候选及代表性读取隔离实验
+      then: 只按原始证据描述可行范围、成本、差异与残余风险，不自动实施产品优化或宣称全审完成
+      evidenceRequirements: [产品/知识/契约固定指纹, 实际XML与SQL/绑定/资源, 有限本体与只读方案核对, 全新独立最终复验, 全部FINAL后实际无漂移/阶段/剩余复核]

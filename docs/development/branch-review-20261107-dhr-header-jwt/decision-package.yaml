@@ -1,0 +1,58 @@
+decisionPackage:
+  id: DEC-PACKAGE-DHR-HEADER-JWT-20261107
+  scope: Serialize DHR export body with the initial security-header filter chain, preserving lazy headers
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: b6691e2c6289ab414a7a3fed1f128562cbba4166
+    targetBranch: edhr-dev
+    targetCommit: b6691e2c6289ab414a7a3fed1f128562cbba4166
+    contractReadCommit: b6691e2c6289ab414a7a3fed1f128562cbba4166
+    uncommittedContractPaths: []
+  summary: PR71已人工合入，整树同45858291，无外部/知识/契约增量。沿W6-SECURITY-STREAM-HEADER-RACE-001优先实际JWT签发/过滤器/安全配置/Controller/异常处理与Tomcat取证。已证同一响应安全头并写，以导出请求局部monitor协调initial安全链与body，保留原lazy头/预览缓存、权限、原CAS/TWR和流前EXPORT顺序。同时实证reject/timeout重新派发丢JWT身份误报401，仅让JWT过滤器在ASYNC按原Bearer重新执行现有验签，不permitAll/改ERROR策略/放宽过期。不全局eager或跨大版本升级依赖。
+  confirmed: {concepts: [], relationships: [], rules: [], executionContracts: []}
+  inferred: []
+  unresolved: []
+  replacementScopes: []
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - {area: DHR-export-response, change: 在初始安全过滤器链退出之前禁止另线程body写响应，inline同线程保持可重入, evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrArchiveController.java]}
+      - {area: JWT-async-identity, change: 原JWT过滤器在ASYNC重新派发执行既有验签和权限恢复，避免有效Bearer的请求失败被错误改为401, evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/identity/security/JwtAuthenticationFilter.java]}
+      - {area: unstarted-error-response, change: 修复身份后实测错误JSON沿用ZIP长度导致EOF；ASYNC错误且尚未开始body/未commit时原子标记失败，以Servlet长度-1清除ZIP长度、Disposition显式inline替代attachment、清除ZIP ContentType，保留安全头与真实业务错误，completion仍负责文件清理, evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrArchiveResponseFilter.java]}
+    transitiveImpacts:
+      - {area: security-chain, change: 新局部filter须位于HeaderWriterFilter外侧，不能容器与安全链双注册，GET与HEAD及context-path匹配, evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/common/config/SecurityConfig.java]}
+    potentialImpacts:
+      - {area: waiting-worker, concern: monitor等待不能interrupt；completion不取monitor可先CAS拒绝晚到body，保留实际网络中断/下游filter挂起缺口, evidenceReferences: []}
+    unaffectedAreas:
+      - {area: lazy-and-caches, change: 保留当前默认writer和lazy时机，不改FileController私有缓存/304/reset策略或其他端点, evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/controller/FileController.java]}
+    compatibilityAndMigration:
+      - {area: deployment, change: 不改依赖/schema/迁移/历史数据；请求局部对象不持久化/跨请求共享, evidenceReferences: []}
+    snapshotImpacts:
+      - {area: frozen-evidence, change: 原DHR指定冻结版本/原件/hash及内容保持, evidenceReferences: []}
+    auditImpacts:
+      - {area: generation-audit, change: EXPORT仍在body之前；不承诺回滚审计或已发HTTP状态字节, evidenceReferences: []}
+    permissionImpacts:
+      - {area: JWT-and-method, change: JWT签发/验签规则及原view+export保持；ASYNC重跑现有过滤逻辑，已过期或无效仍拒绝，不新增session/permitAll/ERROR放行，合成凭据不等同真实登录目录, evidenceReferences: []}
+    testImpacts:
+      - {scope: JWT-real-container-and-adjacent, scenarios: [确定性并发写头调度, 正常GET与HEAD, inline executor, JWT401与方法403, reject与排队timeout及cancel, 两类真实文件预览缓存, 原95及知识89与全新独立最终质量], evidenceReferences: []}
+    evidenceGaps: [ZIP生成及文件仓库为mock协作者，不能冒充DB与真实登录目录全HTTP链, 合成调度延迟不作生产延迟或频率/SLA, 实际网络活动流取消/下游挂起/崩溃/UNKNOWN和容量仍保留]
+  extensionStrategy:
+    selectedPaths: [product-core]
+    rationale: 利用标准SecurityFilterChain和请求局部Java monitor，不复制框架默认writer/认证链或建通用锁框架，不修改HTTP缓存政策
+    ownershipBoundaries:
+      - {owner: DHR-export-filter, responsibility: initial安全链与该请求body的响应写入交接}
+      - {owner: archive-controller, responsibility: 继续单次归属和TWR；统一WAITING/BODY/FAILED/CLEANED原子阶段区分未启动错误与已开始流，completion不等待monitor}
+  affectedFiles:
+    - {path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrArchiveResponseFilter.java, changeType: create, reason: 精确导出GET/HEAD的请求局部响应门闩}
+    - {path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrArchiveController.java, changeType: update, reason: 在同一monitor内领取body清理归属并复制}
+    - {path: gmp-platform/backend/src/main/java/com/zencas/edhr/common/config/SecurityConfig.java, changeType: update, reason: 仅安全链中在HeaderWriterFilter前注册局部filter，不创建Filter bean}
+    - {path: gmp-platform/backend/src/main/java/com/zencas/edhr/identity/security/JwtAuthenticationFilter.java, changeType: update, reason: ASYNC重新派发按原规则验签并恢复身份，不默认跳过}
+    - {path: gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/DhrArchiveJwtHeadersTest.java, changeType: create, reason: 实际JWT配置/Tomcat/异常处理与受控并写及原预览缓存回归}
+    - {path: gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/DhrArchiveResponseFilterTest.java, changeType: create, reason: context-path的GET和HEAD、无关预览与完成先于等待body的归属}
+    - {path: gmp-platform/backend/src/test/java/com/zencas/edhr/identity/security/JwtAuthenticationFilterTest.java, changeType: update, reason: 保留原断言并补ASYNC有效/无效Bearer与审计上下文清理}
+  acceptanceScenarios:
+    - id: scenario.dhr-jwt-response-handoff
+      given: 同一导出请求的initial链尚在退出、worker准备提交响应
+      when: 实际JWT安全链遇正常/受控并发/inline/拒绝/排队结束
+      then: 同一响应安全头不并写，body不早于initial链结束或inline可重入；原文件清理/错误语义/权限及预览缓存保持
+      evidenceRequirements: [固定源码及原始真实HTTP记录, 同字节旧源负对照, 原95与知识89, 本体边界与全新独立最终质量, 全部FINAL后实际PR前漂移复核]

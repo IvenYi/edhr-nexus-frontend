@@ -29,7 +29,7 @@ public class DhrFormFiles {
     public Resolved resolve(JsonNode record, String objectId, LocalDateTime cutoff) throws IOException {
         ObjectNode rendering = record.deepCopy();
         Map<String, Original> originals = new LinkedHashMap<>();
-        resolveValues(rendering.path("fieldValues"), objectId, cutoff, originals);
+        resolveValues(rendering.path("fieldValues"), objectId, cutoff, originals, new HashMap<>());
         return new Resolved(rendering, List.copyOf(originals.values()));
     }
 
@@ -74,20 +74,27 @@ public class DhrFormFiles {
         }
     }
 
-    private void resolveValues(JsonNode node, String objectId, LocalDateTime cutoff, Map<String, Original> originals) throws IOException {
+    private void resolveValues(JsonNode node, String objectId, LocalDateTime cutoff, Map<String, Original> originals,
+                               Map<String, String> signatureUrls) throws IOException {
         if (node.isArray()) {
-            for (JsonNode child : node) resolveValues(child, objectId, cutoff, originals);
+            for (JsonNode child : node) resolveValues(child, objectId, cutoff, originals, signatureUrls);
         } else if (node.isObject()) {
             if (node.hasNonNull("fileId")) {
                 String id = node.path("fileId").asText();
                 if (!originals.containsKey(id)) originals.put(id, read(id, "PRODUCTION_EXECUTION", objectId, cutoff));
             }
             if (node.hasNonNull("signatureImageFileId")) {
-                Original image = read(node.path("signatureImageFileId").asText(), "SIGNATURE_EVIDENCE", null, cutoff);
-                if (!Set.of("image/png", "image/jpeg").contains(image.mimeType())) throw invalid("签名图片格式不支持导出");
-                ((ObjectNode) node).put("signatureImageObjectUrl", "data:" + image.mimeType() + ";base64," + Base64.getEncoder().encodeToString(image.bytes()));
+                String id = node.path("signatureImageFileId").asText();
+                String url = signatureUrls.get(id);
+                if (url == null) {
+                    Original image = read(id, "SIGNATURE_EVIDENCE", null, cutoff);
+                    if (!Set.of("image/png", "image/jpeg").contains(image.mimeType())) throw invalid("签名图片格式不支持导出");
+                    url = "data:" + image.mimeType() + ";base64," + Base64.getEncoder().encodeToString(image.bytes());
+                    signatureUrls.put(id, url);
+                }
+                ((ObjectNode) node).put("signatureImageObjectUrl", url);
             }
-            for (JsonNode child : node) resolveValues(child, objectId, cutoff, originals);
+            for (JsonNode child : node) resolveValues(child, objectId, cutoff, originals, signatureUrls);
         }
     }
 

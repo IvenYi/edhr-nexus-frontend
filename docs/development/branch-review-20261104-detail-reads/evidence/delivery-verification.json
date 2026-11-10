@@ -1,0 +1,44 @@
+{
+  "observationStage": "After PR creation, before this L0 registration commit",
+  "taskStartedClientDate": "2026-11-04",
+  "clientTimezone": "Asia/Shanghai",
+  "pullRequest": {
+    "number": 58,
+    "url": "https://github.com/IvenYi/edhr-nexus-frontend/pull/58",
+    "title": "test(audit): 取证流程详情姓名N+1与人员目录额外计数",
+    "state": "open",
+    "merged": false,
+    "mergeable": true,
+    "mergeableState": "clean",
+    "baseBranch": "edhr-dev",
+    "baseCommit": "fa5921698f5fa4024ad7ca86ee2a90e3cd3a9620",
+    "sourceBranch": "audit/edhr-dev-detail-read-audit-20261104",
+    "headBeforeRegistration": "340b74d37929640280970ac8140f9227c9d909ee"
+  },
+  "testedCandidate": "b687300ac8f02b9c6a307f58c8ddc525e7e7b6e5",
+  "quality": {
+    "result": "passed",
+    "status": "FINAL",
+    "requiredChecksPassed": 11,
+    "allDispatchedRolesAndChildrenFinal": true,
+    "manifestSha256": "1c400e416749f501106ff11a9d4b04aac50d1c83edd569a66be8c327dd100402",
+    "artifacts": 126,
+    "archiveMembersIncludingManifestAndDigestReceipt": 128
+  },
+  "preservation": {
+    "onlyExistingCandidatePathMayChange": "docs/development/branch-review-20261015/NEXT.md",
+    "allowedAdditions": "New L0 evidence/acceptance/scope/delivery records in this batch only",
+    "allOtherExistingCandidatePathsUnchanged": true,
+    "nineCurrentSourceFingerprintsVerified": true,
+    "archiveMemberBytesAndStoredSha256Verified": true,
+    "note": "Final local/remote/PR head equality and unchanged target are verified after push without a self-referential hash; this record is not a new runtime or CI result."
+  },
+  "productCodeChanged": false,
+  "performanceFixed": false,
+  "performanceImplementationDecision": "Awaiting user choice; no elapsed time treated as approval",
+  "wholeAuditComplete": false,
+  "pendingKnowledgeCandidates": 931,
+  "priorUiDiagnosticCandidatesPending": 86,
+  "recommendation": "Manual merge finite diagnostic test/evidence only; preserve open performance findings and continue overall audit",
+  "automaticMergeDeploymentHistoryRestorationOrCiActionsQueryTrigger": false
+}

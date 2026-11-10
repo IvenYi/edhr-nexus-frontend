@@ -1,0 +1,540 @@
+{
+  "sourceRoot": "/tmp/edhr-header-jwt-source-20261107",
+  "files": [
+    {
+      "path": "GateDependencyProbe.java",
+      "bytes": 6796,
+      "sha256": "621db2124850ec655d63aad2a8617bd8abd1153ca054ada818bc008648cafe5e"
+    },
+    {
+      "path": "REVIEW.md",
+      "bytes": 8310,
+      "sha256": "cd3e83272bc8e1db5038e6a6c23c6f237596707e2f86e1c30ef70465c7d58bb8"
+    },
+    {
+      "path": "bytecode/HeaderWriterFilter.javap",
+      "bytes": 5980,
+      "sha256": "2a525abca4cd6052fd07353d31b96f297eac36378e13644a5e0562fd647e6831"
+    },
+    {
+      "path": "bytecode/HeaderWriterResponse.javap",
+      "bytes": 2492,
+      "sha256": "0c63e908d42c48d220bae81e7939db298b5647a91b3dca835f5987a309101ef5"
+    },
+    {
+      "path": "bytecode/HeadersConfigurer.javap",
+      "bytes": 51970,
+      "sha256": "50a2a368dfbec0fbede6990078de954895eabc88a43912835a1663fcfee9ea1f"
+    },
+    {
+      "path": "classes/GateDependencyProbe.class",
+      "bytes": 11706,
+      "sha256": "c35c96b3c76f82da2d6d8d80362610e468c92a4f6f309c0b611f073721ab2a7d"
+    },
+    {
+      "path": "classes/HeaderWriterConcurrencyProbe.class",
+      "bytes": 10672,
+      "sha256": "4a6a4b0a5a20b8db401176fe336f85ee8d28e988a4fdf1b778597fde9a2dec19"
+    },
+    {
+      "path": "gate-probe-run.json",
+      "bytes": 5532,
+      "sha256": "926dee4dfbbc888182cdf694cb56f893c3a54dd4457c62384ab352282a2b2979"
+    },
+    {
+      "path": "manifest.json",
+      "bytes": 19091,
+      "sha256": "5cd042a46069cdecf0ee245c9a91e069e4eca4b10aafdfa8bbef7167ee560e97"
+    },
+    {
+      "path": "manifest.sha256",
+      "bytes": 80,
+      "sha256": "b918952c18bec7ebfcdd51cb6964c09c702abdaa353585987919a98dd7376ea8"
+    },
+    {
+      "path": "prior-package-source.json",
+      "bytes": 311,
+      "sha256": "01dac47660677dd20f0371cf5eefad84ac00b5ff77c194437a144f119b950111"
+    },
+    {
+      "path": "prior-source/HeaderWriterConcurrencyProbe.java",
+      "bytes": 5945,
+      "sha256": "1a07016ff9ea1ffa809583b033cde71b63d419d43edffedbed0bc8764655538a"
+    },
+    {
+      "path": "prior-source/REVIEW.md",
+      "bytes": 8230,
+      "sha256": "9cd2307c393f35f3f6ac14799f65300971f44e43eaeffd5be5fc4c5508700a68"
+    },
+    {
+      "path": "prior-source/probe-result.jsonl",
+      "bytes": 3787,
+      "sha256": "89ea55f15536571a86d9ff8a2586cc586ee69c853a4083d3ae83c65d3c9d112d"
+    },
+    {
+      "path": "prior-source/result.json",
+      "bytes": 3678,
+      "sha256": "f2a09c03d7b8fe35719719292f1ff6a9e7e556811149fed3beefc8dc7acdb294"
+    },
+    {
+      "path": "probe-0.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "probe-0.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "probe-1.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "probe-1.stdout",
+      "bytes": 2448,
+      "sha256": "7c9b04111d702ab2f418fc9f6387f736fd031edafad840c445fbcf310328c33a"
+    },
+    {
+      "path": "result.json",
+      "bytes": 2150,
+      "sha256": "aa7cd75e64dcb67fe1ebaacf60db877737549fee2375e32d703e6fb780678342"
+    },
+    {
+      "path": "run-gate-probe.py",
+      "bytes": 1897,
+      "sha256": "9daa952dc12948ace79fc3a9f3cd0d2b002f5d8716abc8b006c808fa58a1a50e"
+    },
+    {
+      "path": "setup-initial/README.md",
+      "bytes": 410,
+      "sha256": "20f1015e7e9378d6d45d9d9635e9ed4470879c1ffed6734754f6ccfa52bbd6bd"
+    },
+    {
+      "path": "setup-initial/probe-0.stderr",
+      "bytes": 274,
+      "sha256": "2836baa1a0b0027a70b9f5b137db11219bfc635afa12bf22d8191bb715ff308b"
+    },
+    {
+      "path": "setup-initial/probe-0.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "source/AGENTS.md",
+      "bytes": 25065,
+      "sha256": "13dc7cdacea0b1bb0aef2abb268781f9c69584acd4879b204d2b7fd81a2927fc"
+    },
+    {
+      "path": "source/codeplzreadme.md",
+      "bytes": 3035,
+      "sha256": "7a1be8efffec596b034335058dca2860346d256622f899c8dac97c5172dd6df2"
+    },
+    {
+      "path": "source/docs/agents/agent-handoff-contract.md",
+      "bytes": 31233,
+      "sha256": "3439a35dd1baa77ac723f1b5afa237a338d56e31386f06b02b4aacfd754e3a12"
+    },
+    {
+      "path": "source/docs/agents/quality-verifier.md",
+      "bytes": 7519,
+      "sha256": "6b3de9323924fb4ba5ae87be76c5136d28e754810c46b22b8e3d1cdd6c2f826f"
+    },
+    {
+      "path": "source/docs/development/branch-review-20261107-dhr-archive-async/header-risk-followup.md",
+      "bytes": 3611,
+      "sha256": "724418ae0a1c3b9bf5364074e45a89009137b592ea9fc9db618105b1c5876425"
+    },
+    {
+      "path": "source/docs/knowledge/README.md",
+      "bytes": 114117,
+      "sha256": "709c3d40dbd39e6e1cfc6a09bdcd1766775e04e153bff26871f5a6f1bdfa4f42"
+    },
+    {
+      "path": "source/docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml",
+      "bytes": 23213,
+      "sha256": "11e70ec27862eb971a2ad01cd928e8c2ecba36be4df70e170bd1f5296c4e0253"
+    },
+    {
+      "path": "source/docs/knowledge/decisions/DEC-0090-dhr-archive-minimum-scope.yaml",
+      "bytes": 4730,
+      "sha256": "72c1491280ff65e95197cbb7c7cff4d177251e4a9d0a9a8458e9f02cb6a4cc5b"
+    },
+    {
+      "path": "source/docs/knowledge/open-questions.yaml",
+      "bytes": 22420,
+      "sha256": "c7b3bdecd1a6ac164d95ff515b5412998a556a07e9b5fcb64b3643473aa6e2bf"
+    },
+    {
+      "path": "source/docs/knowledge/rules/dhr-summary.yaml",
+      "bytes": 18575,
+      "sha256": "2a9240f5ecac5da9e1277e1f750d46695ab93097aa3229ab976f19c38934d601"
+    },
+    {
+      "path": "source/gmp-platform/backend/src/main/java/com/zencas/edhr/common/config/SecurityConfig.java",
+      "bytes": 3527,
+      "sha256": "a8f3c83746619d893e5f1a1e41ae6d3430917a2da8eca97201d646fcd437124c"
+    },
+    {
+      "path": "source/gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/controller/FileController.java",
+      "bytes": 20066,
+      "sha256": "45b7f380ea681e47551e37da8cd01325d0a29b375c40d1f47f0bce032be82f10"
+    },
+    {
+      "path": "source/gmp-platform/backend/src/main/java/com/zencas/edhr/identity/security/JwtAuthenticationFilter.java",
+      "bytes": 2960,
+      "sha256": "4ed2eb9458b68717b8bf5873dedc7fa1d0fbf92d6e5efb9eebebe9d82b074ed4"
+    },
+    {
+      "path": "source/gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrArchiveController.java",
+      "bytes": 4056,
+      "sha256": "36ef802f93d890b1d845823b8aecbbb8f063c208a112390aaafac39bc08fd269"
+    },
+    {
+      "path": "source-manifest.json",
+      "bytes": 2753,
+      "sha256": "cb6d516d97d6d7a3d8973c96cf386946bb1125a94e60672e14ad90037f7db8ac"
+    },
+    {
+      "path": "upstream-role/REVIEW.md",
+      "bytes": 5174,
+      "sha256": "72892e09f312d5b360d1019d52e7ca1dd5d8c645ef0718abafe0df888455e6ca"
+    },
+    {
+      "path": "upstream-role/baseline.json",
+      "bytes": 1946,
+      "sha256": "f784863a97bde67bf93baef4d73db467c3f57ee854ee34d07aba24a339093248"
+    },
+    {
+      "path": "upstream-role/comparison.json",
+      "bytes": 9268,
+      "sha256": "d523425db6f8b10d18301c9ba2468b7494906e4e9d9b71fb460ff2c71f2690f2"
+    },
+    {
+      "path": "upstream-role/fixed-input/AGENTS.md",
+      "bytes": 25065,
+      "sha256": "13dc7cdacea0b1bb0aef2abb268781f9c69584acd4879b204d2b7fd81a2927fc"
+    },
+    {
+      "path": "upstream-role/fixed-input/codeplzreadme.md",
+      "bytes": 3035,
+      "sha256": "7a1be8efffec596b034335058dca2860346d256622f899c8dac97c5172dd6df2"
+    },
+    {
+      "path": "upstream-role/fixed-input/docs/agents/agent-handoff-contract.md",
+      "bytes": 31233,
+      "sha256": "3439a35dd1baa77ac723f1b5afa237a338d56e31386f06b02b4aacfd754e3a12"
+    },
+    {
+      "path": "upstream-role/fixed-input/docs/agents/quality-verifier.md",
+      "bytes": 7519,
+      "sha256": "6b3de9323924fb4ba5ae87be76c5136d28e754810c46b22b8e3d1cdd6c2f826f"
+    },
+    {
+      "path": "upstream-role/fixed-input/docs/development/branch-review-20261107-dhr-archive-async/header-risk-followup.md",
+      "bytes": 3611,
+      "sha256": "724418ae0a1c3b9bf5364074e45a89009137b592ea9fc9db618105b1c5876425"
+    },
+    {
+      "path": "upstream-role/fixed-input/docs/knowledge/README.md",
+      "bytes": 114117,
+      "sha256": "709c3d40dbd39e6e1cfc6a09bdcd1766775e04e153bff26871f5a6f1bdfa4f42"
+    },
+    {
+      "path": "upstream-role/fixed-input/docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml",
+      "bytes": 23213,
+      "sha256": "11e70ec27862eb971a2ad01cd928e8c2ecba36be4df70e170bd1f5296c4e0253"
+    },
+    {
+      "path": "upstream-role/fixed-input/docs/knowledge/decisions/DEC-0090-dhr-archive-minimum-scope.yaml",
+      "bytes": 4730,
+      "sha256": "72c1491280ff65e95197cbb7c7cff4d177251e4a9d0a9a8458e9f02cb6a4cc5b"
+    },
+    {
+      "path": "upstream-role/fixed-input/docs/knowledge/open-questions.yaml",
+      "bytes": 22420,
+      "sha256": "c7b3bdecd1a6ac164d95ff515b5412998a556a07e9b5fcb64b3643473aa6e2bf"
+    },
+    {
+      "path": "upstream-role/manifest.json",
+      "bytes": 11356,
+      "sha256": "576c981c5c59f64ef51f6447fde571f8e32cee047285caa091b63c848302fddc"
+    },
+    {
+      "path": "upstream-role/manifest.sha256",
+      "bytes": 80,
+      "sha256": "16e9cedc79c50aec86564aad6ef9fc7c0927927405265c416fd5f3403da80be9"
+    },
+    {
+      "path": "upstream-role/official/6.3.0-HeaderWriterFilter.java",
+      "bytes": 5615,
+      "sha256": "9c0a9a6d86408237005df2cba75f0e476865b844da3706544c987e61127bcf87"
+    },
+    {
+      "path": "upstream-role/official/6.3.0-HeadersConfigurer.java",
+      "bytes": 51489,
+      "sha256": "b593d2ec05d37b68b62294a4df99e8df61ced1795e4110a7088673fb0f113b63"
+    },
+    {
+      "path": "upstream-role/official/6.3.0-spring-security-web.pom",
+      "bytes": 3204,
+      "sha256": "d8f4a3a4d57afff3e0b990a820a739c8d228d90deb32b5d750798e581284d7cf"
+    },
+    {
+      "path": "upstream-role/official/6.3.1-HeaderWriterFilter.java",
+      "bytes": 5615,
+      "sha256": "9c0a9a6d86408237005df2cba75f0e476865b844da3706544c987e61127bcf87"
+    },
+    {
+      "path": "upstream-role/official/6.3.10-HeaderWriterFilter.java",
+      "bytes": 5615,
+      "sha256": "9c0a9a6d86408237005df2cba75f0e476865b844da3706544c987e61127bcf87"
+    },
+    {
+      "path": "upstream-role/official/6.3.2-HeaderWriterFilter.java",
+      "bytes": 5615,
+      "sha256": "9c0a9a6d86408237005df2cba75f0e476865b844da3706544c987e61127bcf87"
+    },
+    {
+      "path": "upstream-role/official/6.3.3-HeaderWriterFilter.java",
+      "bytes": 5615,
+      "sha256": "9c0a9a6d86408237005df2cba75f0e476865b844da3706544c987e61127bcf87"
+    },
+    {
+      "path": "upstream-role/official/6.3.4-HeaderWriterFilter.java",
+      "bytes": 5615,
+      "sha256": "9c0a9a6d86408237005df2cba75f0e476865b844da3706544c987e61127bcf87"
+    },
+    {
+      "path": "upstream-role/official/6.3.5-HeaderWriterFilter.java",
+      "bytes": 5615,
+      "sha256": "9c0a9a6d86408237005df2cba75f0e476865b844da3706544c987e61127bcf87"
+    },
+    {
+      "path": "upstream-role/official/6.3.6-HeaderWriterFilter.java",
+      "bytes": 5615,
+      "sha256": "9c0a9a6d86408237005df2cba75f0e476865b844da3706544c987e61127bcf87"
+    },
+    {
+      "path": "upstream-role/official/6.3.7-HeaderWriterFilter.java",
+      "bytes": 5615,
+      "sha256": "9c0a9a6d86408237005df2cba75f0e476865b844da3706544c987e61127bcf87"
+    },
+    {
+      "path": "upstream-role/official/6.3.8-HeaderWriterFilter.java",
+      "bytes": 5615,
+      "sha256": "9c0a9a6d86408237005df2cba75f0e476865b844da3706544c987e61127bcf87"
+    },
+    {
+      "path": "upstream-role/official/6.3.9-HeaderWriterFilter.java",
+      "bytes": 5615,
+      "sha256": "9c0a9a6d86408237005df2cba75f0e476865b844da3706544c987e61127bcf87"
+    },
+    {
+      "path": "upstream-role/official/6.3.x-HeaderWriterFilter.java",
+      "bytes": 5615,
+      "sha256": "9c0a9a6d86408237005df2cba75f0e476865b844da3706544c987e61127bcf87"
+    },
+    {
+      "path": "upstream-role/official/6.4.0-HeaderWriterFilter.java",
+      "bytes": 5615,
+      "sha256": "9c0a9a6d86408237005df2cba75f0e476865b844da3706544c987e61127bcf87"
+    },
+    {
+      "path": "upstream-role/official/6.4.1-HeaderWriterFilter.java",
+      "bytes": 5615,
+      "sha256": "9c0a9a6d86408237005df2cba75f0e476865b844da3706544c987e61127bcf87"
+    },
+    {
+      "path": "upstream-role/official/6.4.2-HeaderWriterFilter.java",
+      "bytes": 5615,
+      "sha256": "9c0a9a6d86408237005df2cba75f0e476865b844da3706544c987e61127bcf87"
+    },
+    {
+      "path": "upstream-role/official/6.4.3-HeaderWriterFilter.java",
+      "bytes": 5615,
+      "sha256": "9c0a9a6d86408237005df2cba75f0e476865b844da3706544c987e61127bcf87"
+    },
+    {
+      "path": "upstream-role/official/6.4.x-HeaderWriterFilter.java",
+      "bytes": 5618,
+      "sha256": "d05f67d0769ad90121cdc77511260d4221531b2d184ba89b6d42e08b9e6721e3"
+    },
+    {
+      "path": "upstream-role/official/6.5.0-HeaderWriterFilter.java",
+      "bytes": 5615,
+      "sha256": "9c0a9a6d86408237005df2cba75f0e476865b844da3706544c987e61127bcf87"
+    },
+    {
+      "path": "upstream-role/official/6.5.1-HeaderWriterFilter.java",
+      "bytes": 5615,
+      "sha256": "9c0a9a6d86408237005df2cba75f0e476865b844da3706544c987e61127bcf87"
+    },
+    {
+      "path": "upstream-role/official/6.5.10-HeaderWriterFilter.java",
+      "bytes": 5618,
+      "sha256": "d05f67d0769ad90121cdc77511260d4221531b2d184ba89b6d42e08b9e6721e3"
+    },
+    {
+      "path": "upstream-role/official/6.5.11-HeaderWriterFilter.java",
+      "bytes": 5618,
+      "sha256": "d05f67d0769ad90121cdc77511260d4221531b2d184ba89b6d42e08b9e6721e3"
+    },
+    {
+      "path": "upstream-role/official/6.5.2-HeaderWriterFilter.java",
+      "bytes": 5615,
+      "sha256": "9c0a9a6d86408237005df2cba75f0e476865b844da3706544c987e61127bcf87"
+    },
+    {
+      "path": "upstream-role/official/6.5.8-HeaderWriterFilter.java",
+      "bytes": 5618,
+      "sha256": "d05f67d0769ad90121cdc77511260d4221531b2d184ba89b6d42e08b9e6721e3"
+    },
+    {
+      "path": "upstream-role/official/6.5.9-HeaderWriterFilter.java",
+      "bytes": 5618,
+      "sha256": "d05f67d0769ad90121cdc77511260d4221531b2d184ba89b6d42e08b9e6721e3"
+    },
+    {
+      "path": "upstream-role/official/6.5.x-HeaderWriterFilter.java",
+      "bytes": 5618,
+      "sha256": "d05f67d0769ad90121cdc77511260d4221531b2d184ba89b6d42e08b9e6721e3"
+    },
+    {
+      "path": "upstream-role/official/7.0.0-HeaderWriterFilter.java",
+      "bytes": 5618,
+      "sha256": "d05f67d0769ad90121cdc77511260d4221531b2d184ba89b6d42e08b9e6721e3"
+    },
+    {
+      "path": "upstream-role/official/7.0.1-HeaderWriterFilter.java",
+      "bytes": 5618,
+      "sha256": "d05f67d0769ad90121cdc77511260d4221531b2d184ba89b6d42e08b9e6721e3"
+    },
+    {
+      "path": "upstream-role/official/7.0.2-HeaderWriterFilter.java",
+      "bytes": 5618,
+      "sha256": "d05f67d0769ad90121cdc77511260d4221531b2d184ba89b6d42e08b9e6721e3"
+    },
+    {
+      "path": "upstream-role/official/7.0.3-HeaderWriterFilter.java",
+      "bytes": 5618,
+      "sha256": "d05f67d0769ad90121cdc77511260d4221531b2d184ba89b6d42e08b9e6721e3"
+    },
+    {
+      "path": "upstream-role/official/7.0.4-HeaderWriterFilter.java",
+      "bytes": 5618,
+      "sha256": "d05f67d0769ad90121cdc77511260d4221531b2d184ba89b6d42e08b9e6721e3"
+    },
+    {
+      "path": "upstream-role/official/7.0.5-HeaderWriterFilter.java",
+      "bytes": 5618,
+      "sha256": "d05f67d0769ad90121cdc77511260d4221531b2d184ba89b6d42e08b9e6721e3"
+    },
+    {
+      "path": "upstream-role/official/7.0.6-HeaderWriterFilter.java",
+      "bytes": 5618,
+      "sha256": "d05f67d0769ad90121cdc77511260d4221531b2d184ba89b6d42e08b9e6721e3"
+    },
+    {
+      "path": "upstream-role/official/7.0.7-HeaderWriterFilter.java",
+      "bytes": 5618,
+      "sha256": "d05f67d0769ad90121cdc77511260d4221531b2d184ba89b6d42e08b9e6721e3"
+    },
+    {
+      "path": "upstream-role/official/7.0.8-HeaderWriterFilter.java",
+      "bytes": 5805,
+      "sha256": "f22b99760a92687f57038784201baf09f36aa3c17bb99f41c358b3548ddc6614"
+    },
+    {
+      "path": "upstream-role/official/7.0.8-spring-security-web.pom",
+      "bytes": 3210,
+      "sha256": "424037f802c649704fe66cd6f76f6e0033fb2447b1cf61bffd3c7831270d724d"
+    },
+    {
+      "path": "upstream-role/official/7.1.0-HeaderWriterFilter.java",
+      "bytes": 5618,
+      "sha256": "d05f67d0769ad90121cdc77511260d4221531b2d184ba89b6d42e08b9e6721e3"
+    },
+    {
+      "path": "upstream-role/official/7.1.1-HeaderWriterFilter.java",
+      "bytes": 5618,
+      "sha256": "d05f67d0769ad90121cdc77511260d4221531b2d184ba89b6d42e08b9e6721e3"
+    },
+    {
+      "path": "upstream-role/official/7.1.2-HeaderWriterFilter.java",
+      "bytes": 5805,
+      "sha256": "f22b99760a92687f57038784201baf09f36aa3c17bb99f41c358b3548ddc6614"
+    },
+    {
+      "path": "upstream-role/official/commit-fix.json",
+      "bytes": 7687,
+      "sha256": "dbf42b34d9e66e1a3a87fa342cabfb808541e7062ad17feb323eeef7ef0c8cf0"
+    },
+    {
+      "path": "upstream-role/official/commits.json",
+      "bytes": 68311,
+      "sha256": "54b03975d46e7ebd4bb1fcc180eab48f2969f7a8cdf2e77c23d636e1b9de853d"
+    },
+    {
+      "path": "upstream-role/official/issue-9175-comments.json",
+      "bytes": 83900,
+      "sha256": "dafb462ad078c4fb02eb896c55d0ac8d2b544bc8ab2737fc552e42289747af17"
+    },
+    {
+      "path": "upstream-role/official/issue-9175.json",
+      "bytes": 22122,
+      "sha256": "8f8331fd7c13a725ed8fa9da413970fbb3b7c2ff2e3e235e55443701c45ddb1f"
+    },
+    {
+      "path": "upstream-role/official/main-HeaderWriterFilter.java",
+      "bytes": 5805,
+      "sha256": "f22b99760a92687f57038784201baf09f36aa3c17bb99f41c358b3548ddc6614"
+    },
+    {
+      "path": "upstream-role/official/maven-metadata.xml",
+      "bytes": 10107,
+      "sha256": "c3ca00546dd8d32e5b686b5b6366d42f2b1bb779f183cbbc96e93fac750c38a6"
+    },
+    {
+      "path": "upstream-role/official/release-7.0.8.json",
+      "bytes": 4739,
+      "sha256": "7ba9e1230bb6a0f758f1d822fc06c88b99176ee876bbb673a9cda17648e9e874"
+    },
+    {
+      "path": "upstream-role/official/release-7.1.2.json",
+      "bytes": 5304,
+      "sha256": "5e74a6b961e78a6193f1069f58d885ec03546eaac29a91dd322bea96c0ed2134"
+    },
+    {
+      "path": "upstream-role/official/tags.json",
+      "bytes": 45471,
+      "sha256": "da866f99cc0cd838299d4dc8533c1ba98f1053796bab14c6059fa535e6aba64f"
+    },
+    {
+      "path": "upstream-role/official-fetches-fourth.json",
+      "bytes": 1830,
+      "sha256": "0ea50bd3e66960dd120aa3d515ff27554da140128251254b3800d88ebbdb687f"
+    },
+    {
+      "path": "upstream-role/official-fetches-second.json",
+      "bytes": 8511,
+      "sha256": "82000cb197cfcb0b061cb4d0e71ea2364b3800a1df92062bcf92c3401aae4f51"
+    },
+    {
+      "path": "upstream-role/official-fetches-third.json",
+      "bytes": 1378,
+      "sha256": "36422e1f87b5d3eb627f9248d159f172a2034b0eef5842afd2acc25f3a3295c3"
+    },
+    {
+      "path": "upstream-role/official-fetches.json",
+      "bytes": 9073,
+      "sha256": "14d64a860d3eada2ee9432a38f336e6461321a5fadd849f16220a6a533ba4373"
+    },
+    {
+      "path": "upstream-role/result.json",
+      "bytes": 1584,
+      "sha256": "00572505ca2f8ba8ff78776d048d9ece0d10a1672833b1ff8c4061c2b478de8c"
+    }
+  ]
+}

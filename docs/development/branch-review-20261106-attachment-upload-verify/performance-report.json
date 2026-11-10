@@ -1,0 +1,1027 @@
+{
+  "baseCommit": "c4e451c264c11978515b2ae0088e64011fe2fcef",
+  "events": [
+    {
+      "name": "download_format_doc",
+      "applicationName": "audit_write_download_format_doc",
+      "measuredThreadId": 1,
+      "elapsedNanos": 2791976,
+      "threadAllocatedBytes": 67368,
+      "heapBefore": 241562896,
+      "heapAfter": 241562896,
+      "fixtureReadBytes": 0,
+      "storedReadBytes": 99840,
+      "storedWriteBytes": 0,
+      "trackedIoEvents": 14,
+      "requestedRollback": false,
+      "failureClass": null,
+      "data": {
+        "bytes": 99840
+      },
+      "selectStatements": 4
+    },
+    {
+      "name": "download_format_docx",
+      "applicationName": "audit_write_download_format_docx",
+      "measuredThreadId": 1,
+      "elapsedNanos": 1802466,
+      "threadAllocatedBytes": 67384,
+      "heapBefore": 254145808,
+      "heapAfter": 254145808,
+      "fixtureReadBytes": 0,
+      "storedReadBytes": 2281,
+      "storedWriteBytes": 0,
+      "trackedIoEvents": 2,
+      "requestedRollback": false,
+      "failureClass": null,
+      "data": {
+        "bytes": 2281
+      },
+      "selectStatements": 4
+    },
+    {
+      "name": "download_format_jpg",
+      "applicationName": "audit_write_download_format_jpg",
+      "measuredThreadId": 1,
+      "elapsedNanos": 2005498,
+      "threadAllocatedBytes": 67368,
+      "heapBefore": 226882832,
+      "heapAfter": 226882832,
+      "fixtureReadBytes": 0,
+      "storedReadBytes": 631,
+      "storedWriteBytes": 0,
+      "trackedIoEvents": 2,
+      "requestedRollback": false,
+      "failureClass": null,
+      "data": {
+        "bytes": 631
+      },
+      "selectStatements": 4
+    },
+    {
+      "name": "download_format_pdf",
+      "applicationName": "audit_write_download_format_pdf",
+      "measuredThreadId": 1,
+      "elapsedNanos": 2992482,
+      "threadAllocatedBytes": 69136,
+      "heapBefore": 205911312,
+      "heapAfter": 205911312,
+      "fixtureReadBytes": 0,
+      "storedReadBytes": 522,
+      "storedWriteBytes": 0,
+      "trackedIoEvents": 2,
+      "requestedRollback": false,
+      "failureClass": null,
+      "data": {
+        "bytes": 522
+      },
+      "selectStatements": 4
+    },
+    {
+      "name": "download_format_png",
+      "applicationName": "audit_write_download_format_png",
+      "measuredThreadId": 1,
+      "elapsedNanos": 2151294,
+      "threadAllocatedBytes": 67432,
+      "heapBefore": 216397072,
+      "heapAfter": 216397072,
+      "fixtureReadBytes": 0,
+      "storedReadBytes": 68,
+      "storedWriteBytes": 0,
+      "trackedIoEvents": 2,
+      "requestedRollback": false,
+      "failureClass": null,
+      "data": {
+        "bytes": 68
+      },
+      "selectStatements": 4
+    },
+    {
+      "name": "download_format_xls",
+      "applicationName": "audit_write_download_format_xls",
+      "measuredThreadId": 1,
+      "elapsedNanos": 2023424,
+      "threadAllocatedBytes": 67368,
+      "heapBefore": 265680144,
+      "heapAfter": 265680144,
+      "fixtureReadBytes": 0,
+      "storedReadBytes": 4096,
+      "storedWriteBytes": 0,
+      "trackedIoEvents": 2,
+      "requestedRollback": false,
+      "failureClass": null,
+      "data": {
+        "bytes": 4096
+      },
+      "selectStatements": 4
+    },
+    {
+      "name": "download_format_xlsx",
+      "applicationName": "audit_write_download_format_xlsx",
+      "measuredThreadId": 1,
+      "elapsedNanos": 2034171,
+      "threadAllocatedBytes": 67760,
+      "heapBefore": 279311632,
+      "heapAfter": 279311632,
+      "fixtureReadBytes": 0,
+      "storedReadBytes": 3302,
+      "storedWriteBytes": 0,
+      "trackedIoEvents": 2,
+      "requestedRollback": false,
+      "failureClass": null,
+      "data": {
+        "bytes": 3302
+      },
+      "selectStatements": 4
+    },
+    {
+      "name": "download_size_10mib_channel",
+      "applicationName": "audit_write_download_size_10mib_channel",
+      "measuredThreadId": 1,
+      "elapsedNanos": 11882681,
+      "threadAllocatedBytes": 69376,
+      "heapBefore": 174390016,
+      "heapAfter": 174390016,
+      "fixtureReadBytes": 0,
+      "storedReadBytes": 10485760,
+      "storedWriteBytes": 0,
+      "trackedIoEvents": 1281,
+      "requestedRollback": false,
+      "failureClass": null,
+      "data": {
+        "bytes": 10485760
+      },
+      "selectStatements": 4
+    },
+    {
+      "name": "download_size_1mib_channel",
+      "applicationName": "audit_write_download_size_1mib_channel",
+      "measuredThreadId": 1,
+      "elapsedNanos": 4973503,
+      "threadAllocatedBytes": 79392,
+      "heapBefore": 139787008,
+      "heapAfter": 139787008,
+      "fixtureReadBytes": 0,
+      "storedReadBytes": 1048576,
+      "storedWriteBytes": 0,
+      "trackedIoEvents": 129,
+      "requestedRollback": false,
+      "failureClass": null,
+      "data": {
+        "bytes": 1048576
+      },
+      "selectStatements": 4
+    },
+    {
+      "name": "download_size_50mib_channel",
+      "applicationName": "audit_write_download_size_50mib_channel",
+      "measuredThreadId": 1,
+      "elapsedNanos": 45655295,
+      "threadAllocatedBytes": 69288,
+      "heapBefore": 297073408,
+      "heapAfter": 297073408,
+      "fixtureReadBytes": 0,
+      "storedReadBytes": 52428800,
+      "storedWriteBytes": 0,
+      "trackedIoEvents": 6401,
+      "requestedRollback": false,
+      "failureClass": null,
+      "data": {
+        "bytes": 52428800
+      },
+      "selectStatements": 4
+    },
+    {
+      "name": "download_size_50mib_generic",
+      "applicationName": "audit_write_download_size_50mib_generic",
+      "measuredThreadId": 1,
+      "elapsedNanos": 40342028,
+      "threadAllocatedBytes": 68704,
+      "heapBefore": 191231248,
+      "heapAfter": 191231248,
+      "fixtureReadBytes": 0,
+      "storedReadBytes": 52428800,
+      "storedWriteBytes": 0,
+      "trackedIoEvents": 6401,
+      "requestedRollback": false,
+      "failureClass": null,
+      "data": {
+        "bytes": 52428800
+      },
+      "selectStatements": 4
+    },
+    {
+      "name": "failure_outer_rollback",
+      "applicationName": "audit_write_failure_outer_rollback",
+      "measuredThreadId": 1,
+      "elapsedNanos": 6307354,
+      "threadAllocatedBytes": 118040,
+      "heapBefore": 183003536,
+      "heapAfter": 183003536,
+      "fixtureReadBytes": 68,
+      "storedReadBytes": 0,
+      "storedWriteBytes": 68,
+      "trackedIoEvents": 3,
+      "requestedRollback": true,
+      "failureClass": null,
+      "data": {
+        "fault": "outer_rollback"
+      },
+      "selectStatements": 2
+    },
+    {
+      "name": "failure_upload_audit",
+      "applicationName": "audit_write_failure_upload_audit",
+      "measuredThreadId": 1,
+      "elapsedNanos": 12646364,
+      "threadAllocatedBytes": 523144,
+      "heapBefore": 172517776,
+      "heapAfter": 172517776,
+      "fixtureReadBytes": 68,
+      "storedReadBytes": 0,
+      "storedWriteBytes": 68,
+      "trackedIoEvents": 3,
+      "requestedRollback": false,
+      "failureClass": "org.springframework.dao.DataIntegrityViolationException",
+      "data": {
+        "fault": "upload_audit"
+      },
+      "selectStatements": 2
+    },
+    {
+      "name": "failure_upload_sql",
+      "applicationName": "audit_write_failure_upload_sql",
+      "measuredThreadId": 1,
+      "elapsedNanos": 5985565,
+      "threadAllocatedBytes": 221072,
+      "heapBefore": 167274896,
+      "heapAfter": 167274896,
+      "fixtureReadBytes": 68,
+      "storedReadBytes": 0,
+      "storedWriteBytes": 68,
+      "trackedIoEvents": 3,
+      "requestedRollback": false,
+      "failureClass": "org.springframework.dao.DataIntegrityViolationException",
+      "data": {
+        "fault": "upload_sql"
+      },
+      "selectStatements": 1
+    },
+    {
+      "name": "failure_verify_audit",
+      "applicationName": "audit_write_failure_verify_audit",
+      "measuredThreadId": 1,
+      "elapsedNanos": 5964865,
+      "threadAllocatedBytes": 296696,
+      "heapBefore": 177760656,
+      "heapAfter": 177760656,
+      "fixtureReadBytes": 0,
+      "storedReadBytes": 68,
+      "storedWriteBytes": 0,
+      "trackedIoEvents": 2,
+      "requestedRollback": false,
+      "failureClass": "org.springframework.dao.DataIntegrityViolationException",
+      "data": {
+        "fault": "verify_audit"
+      },
+      "selectStatements": 3
+    },
+    {
+      "name": "reject_upload_FORMALIZED",
+      "applicationName": "audit_write_reject_upload_FORMALIZED",
+      "measuredThreadId": 1,
+      "elapsedNanos": 1626695,
+      "threadAllocatedBytes": 28784,
+      "heapBefore": 299234576,
+      "heapAfter": 299234576,
+      "fixtureReadBytes": 0,
+      "storedReadBytes": 0,
+      "storedWriteBytes": 0,
+      "trackedIoEvents": 0,
+      "requestedRollback": false,
+      "failureClass": "com.zencas.edhr.common.exception.BusinessException",
+      "data": {
+        "state": "FORMALIZED"
+      },
+      "selectStatements": 1
+    },
+    {
+      "name": "reject_upload_IN_PROGRESS",
+      "applicationName": "audit_write_reject_upload_IN_PROGRESS",
+      "measuredThreadId": 1,
+      "elapsedNanos": 1075687,
+      "threadAllocatedBytes": 28456,
+      "heapBefore": 283505936,
+      "heapAfter": 283505936,
+      "fixtureReadBytes": 0,
+      "storedReadBytes": 0,
+      "storedWriteBytes": 0,
+      "trackedIoEvents": 0,
+      "requestedRollback": false,
+      "failureClass": "com.zencas.edhr.common.exception.BusinessException",
+      "data": {
+        "state": "IN_PROGRESS"
+      },
+      "selectStatements": 1
+    },
+    {
+      "name": "reject_upload_PENDING_REVIEW",
+      "applicationName": "audit_write_reject_upload_PENDING_REVIEW",
+      "measuredThreadId": 1,
+      "elapsedNanos": 1221374,
+      "threadAllocatedBytes": 28456,
+      "heapBefore": 291894544,
+      "heapAfter": 291894544,
+      "fixtureReadBytes": 0,
+      "storedReadBytes": 0,
+      "storedWriteBytes": 0,
+      "trackedIoEvents": 0,
+      "requestedRollback": false,
+      "failureClass": "com.zencas.edhr.common.exception.BusinessException",
+      "data": {
+        "state": "PENDING_REVIEW"
+      },
+      "selectStatements": 1
+    },
+    {
+      "name": "reject_upload_oversize",
+      "applicationName": "audit_write_reject_upload_oversize",
+      "measuredThreadId": 1,
+      "elapsedNanos": 9081191,
+      "threadAllocatedBytes": 635648,
+      "heapBefore": 269477024,
+      "heapAfter": 270525600,
+      "fixtureReadBytes": 0,
+      "storedReadBytes": 0,
+      "storedWriteBytes": 0,
+      "trackedIoEvents": 0,
+      "requestedRollback": false,
+      "failureClass": "com.zencas.edhr.common.exception.BusinessException",
+      "data": {
+        "bytes": 52428801
+      },
+      "selectStatements": 1
+    },
+    {
+      "name": "reject_upload_truncated",
+      "applicationName": "audit_write_reject_upload_truncated",
+      "measuredThreadId": 1,
+      "elapsedNanos": 7379776,
+      "threadAllocatedBytes": 86744,
+      "heapBefore": 275768480,
+      "heapAfter": 275768480,
+      "fixtureReadBytes": 19,
+      "storedReadBytes": 0,
+      "storedWriteBytes": 0,
+      "trackedIoEvents": 2,
+      "requestedRollback": false,
+      "failureClass": "com.zencas.edhr.common.exception.BusinessException",
+      "data": {
+        "bytes": 19
+      },
+      "selectStatements": 1
+    },
+    {
+      "name": "reject_verify_FORMALIZED",
+      "applicationName": "audit_write_reject_verify_FORMALIZED",
+      "measuredThreadId": 1,
+      "elapsedNanos": 1826913,
+      "threadAllocatedBytes": 28888,
+      "heapBefore": 303428880,
+      "heapAfter": 303428880,
+      "fixtureReadBytes": 0,
+      "storedReadBytes": 0,
+      "storedWriteBytes": 0,
+      "trackedIoEvents": 0,
+      "requestedRollback": false,
+      "failureClass": "com.zencas.edhr.common.exception.BusinessException",
+      "data": {
+        "state": "FORMALIZED"
+      },
+      "selectStatements": 1
+    },
+    {
+      "name": "reject_verify_IN_PROGRESS",
+      "applicationName": "audit_write_reject_verify_IN_PROGRESS",
+      "measuredThreadId": 1,
+      "elapsedNanos": 1001267,
+      "threadAllocatedBytes": 28888,
+      "heapBefore": 286651664,
+      "heapAfter": 286651664,
+      "fixtureReadBytes": 0,
+      "storedReadBytes": 0,
+      "storedWriteBytes": 0,
+      "trackedIoEvents": 0,
+      "requestedRollback": false,
+      "failureClass": "com.zencas.edhr.common.exception.BusinessException",
+      "data": {
+        "state": "IN_PROGRESS"
+      },
+      "selectStatements": 1
+    },
+    {
+      "name": "reject_verify_PENDING_REVIEW",
+      "applicationName": "audit_write_reject_verify_PENDING_REVIEW",
+      "measuredThreadId": 1,
+      "elapsedNanos": 1098140,
+      "threadAllocatedBytes": 28560,
+      "heapBefore": 295040272,
+      "heapAfter": 295040272,
+      "fixtureReadBytes": 0,
+      "storedReadBytes": 0,
+      "storedWriteBytes": 0,
+      "trackedIoEvents": 0,
+      "requestedRollback": false,
+      "failureClass": "com.zencas.edhr.common.exception.BusinessException",
+      "data": {
+        "state": "PENDING_REVIEW"
+      },
+      "selectStatements": 1
+    },
+    {
+      "name": "reject_verify_formalized",
+      "applicationName": "audit_write_reject_verify_formalized",
+      "measuredThreadId": 1,
+      "elapsedNanos": 1375512,
+      "threadAllocatedBytes": 28520,
+      "heapBefore": 163080592,
+      "heapAfter": 163080592,
+      "fixtureReadBytes": 0,
+      "storedReadBytes": 0,
+      "storedWriteBytes": 0,
+      "trackedIoEvents": 0,
+      "requestedRollback": false,
+      "failureClass": "com.zencas.edhr.common.exception.BusinessException",
+      "data": {
+        "reason": "formalized"
+      },
+      "selectStatements": 1
+    },
+    {
+      "name": "reject_verify_inactive",
+      "applicationName": "audit_write_reject_verify_inactive",
+      "measuredThreadId": 1,
+      "elapsedNanos": 1769457,
+      "threadAllocatedBytes": 46792,
+      "heapBefore": 148400528,
+      "heapAfter": 148400528,
+      "fixtureReadBytes": 0,
+      "storedReadBytes": 0,
+      "storedWriteBytes": 0,
+      "trackedIoEvents": 0,
+      "requestedRollback": false,
+      "failureClass": "com.zencas.edhr.common.exception.BusinessException",
+      "data": {
+        "reason": "inactive"
+      },
+      "selectStatements": 2
+    },
+    {
+      "name": "reject_verify_invalid_format",
+      "applicationName": "audit_write_reject_verify_invalid_format",
+      "measuredThreadId": 1,
+      "elapsedNanos": 2712587,
+      "threadAllocatedBytes": 60432,
+      "heapBefore": 143157648,
+      "heapAfter": 143157648,
+      "fixtureReadBytes": 0,
+      "storedReadBytes": 12,
+      "storedWriteBytes": 0,
+      "trackedIoEvents": 2,
+      "requestedRollback": false,
+      "failureClass": "com.zencas.edhr.common.exception.BusinessException",
+      "data": {
+        "reason": "invalid_format"
+      },
+      "selectStatements": 2
+    },
+    {
+      "name": "reject_verify_missing",
+      "applicationName": "audit_write_reject_verify_missing",
+      "measuredThreadId": 1,
+      "elapsedNanos": 3263074,
+      "threadAllocatedBytes": 54920,
+      "heapBefore": 133720464,
+      "heapAfter": 133720464,
+      "fixtureReadBytes": 0,
+      "storedReadBytes": 0,
+      "storedWriteBytes": 0,
+      "trackedIoEvents": 0,
+      "requestedRollback": false,
+      "failureClass": "com.zencas.edhr.common.exception.BusinessException",
+      "data": {
+        "reason": "missing"
+      },
+      "selectStatements": 2
+    },
+    {
+      "name": "reject_verify_other_dhr",
+      "applicationName": "audit_write_reject_verify_other_dhr",
+      "measuredThreadId": 1,
+      "elapsedNanos": 1837037,
+      "threadAllocatedBytes": 39344,
+      "heapBefore": 153643408,
+      "heapAfter": 153643408,
+      "fixtureReadBytes": 0,
+      "storedReadBytes": 0,
+      "storedWriteBytes": 0,
+      "trackedIoEvents": 0,
+      "requestedRollback": false,
+      "failureClass": "com.zencas.edhr.common.exception.BusinessException",
+      "data": {
+        "reason": "other_dhr"
+      },
+      "selectStatements": 2
+    },
+    {
+      "name": "reject_verify_other_tenant",
+      "applicationName": "audit_write_reject_verify_other_tenant",
+      "measuredThreadId": 1,
+      "elapsedNanos": 1720144,
+      "threadAllocatedBytes": 39536,
+      "heapBefore": 157837712,
+      "heapAfter": 157837712,
+      "fixtureReadBytes": 0,
+      "storedReadBytes": 0,
+      "storedWriteBytes": 0,
+      "trackedIoEvents": 0,
+      "requestedRollback": false,
+      "failureClass": "com.zencas.edhr.common.exception.BusinessException",
+      "data": {
+        "reason": "other_tenant"
+      },
+      "selectStatements": 2
+    },
+    {
+      "name": "reject_verify_tampered",
+      "applicationName": "audit_write_reject_verify_tampered",
+      "measuredThreadId": 1,
+      "elapsedNanos": 2130192,
+      "threadAllocatedBytes": 47928,
+      "heapBefore": 137914768,
+      "heapAfter": 137914768,
+      "fixtureReadBytes": 0,
+      "storedReadBytes": 8,
+      "storedWriteBytes": 0,
+      "trackedIoEvents": 2,
+      "requestedRollback": false,
+      "failureClass": "com.zencas.edhr.common.exception.BusinessException",
+      "data": {
+        "reason": "tampered"
+      },
+      "selectStatements": 2
+    },
+    {
+      "name": "upload_format_doc",
+      "applicationName": "audit_write_upload_format_doc",
+      "measuredThreadId": 1,
+      "elapsedNanos": 23110108,
+      "threadAllocatedBytes": 2315408,
+      "heapBefore": 231077136,
+      "heapAfter": 233174288,
+      "fixtureReadBytes": 99840,
+      "storedReadBytes": 0,
+      "storedWriteBytes": 99840,
+      "trackedIoEvents": 15,
+      "requestedRollback": false,
+      "failureClass": null,
+      "data": {
+        "bytes": 99840,
+        "multipartClass": "org.springframework.web.multipart.support.StandardMultipartHttpServletRequest$StandardMultipartFile",
+        "partInput": "ChannelInputStream"
+      },
+      "selectStatements": 2
+    },
+    {
+      "name": "upload_format_docx",
+      "applicationName": "audit_write_upload_format_docx",
+      "measuredThreadId": 1,
+      "elapsedNanos": 17610010,
+      "threadAllocatedBytes": 759488,
+      "heapBefore": 246805776,
+      "heapAfter": 246805776,
+      "fixtureReadBytes": 2281,
+      "storedReadBytes": 0,
+      "storedWriteBytes": 2281,
+      "trackedIoEvents": 3,
+      "requestedRollback": false,
+      "failureClass": null,
+      "data": {
+        "bytes": 2281,
+        "multipartClass": "org.springframework.web.multipart.support.StandardMultipartHttpServletRequest$StandardMultipartFile",
+        "partInput": "ChannelInputStream"
+      },
+      "selectStatements": 2
+    },
+    {
+      "name": "upload_format_jpg",
+      "applicationName": "audit_write_upload_format_jpg",
+      "measuredThreadId": 1,
+      "elapsedNanos": 5144620,
+      "threadAllocatedBytes": 112680,
+      "heapBefore": 220591376,
+      "heapAfter": 220591376,
+      "fixtureReadBytes": 631,
+      "storedReadBytes": 0,
+      "storedWriteBytes": 631,
+      "trackedIoEvents": 3,
+      "requestedRollback": false,
+      "failureClass": null,
+      "data": {
+        "bytes": 631,
+        "multipartClass": "org.springframework.web.multipart.support.StandardMultipartHttpServletRequest$StandardMultipartFile",
+        "partInput": "ChannelInputStream"
+      },
+      "selectStatements": 2
+    },
+    {
+      "name": "upload_format_pdf",
+      "applicationName": "audit_write_upload_format_pdf",
+      "measuredThreadId": 1,
+      "elapsedNanos": 13932193,
+      "threadAllocatedBytes": 158240,
+      "heapBefore": 198571280,
+      "heapAfter": 199619856,
+      "fixtureReadBytes": 522,
+      "storedReadBytes": 0,
+      "storedWriteBytes": 522,
+      "trackedIoEvents": 3,
+      "requestedRollback": false,
+      "failureClass": null,
+      "data": {
+        "bytes": 522,
+        "multipartClass": "org.springframework.web.multipart.support.StandardMultipartHttpServletRequest$StandardMultipartFile",
+        "partInput": "ChannelInputStream"
+      },
+      "selectStatements": 2
+    },
+    {
+      "name": "upload_format_png",
+      "applicationName": "audit_write_upload_format_png",
+      "measuredThreadId": 1,
+      "elapsedNanos": 6124024,
+      "threadAllocatedBytes": 109560,
+      "heapBefore": 210105616,
+      "heapAfter": 210105616,
+      "fixtureReadBytes": 68,
+      "storedReadBytes": 0,
+      "storedWriteBytes": 68,
+      "trackedIoEvents": 3,
+      "requestedRollback": false,
+      "failureClass": null,
+      "data": {
+        "bytes": 68,
+        "multipartClass": "org.springframework.web.multipart.support.StandardMultipartHttpServletRequest$StandardMultipartFile",
+        "partInput": "ChannelInputStream"
+      },
+      "selectStatements": 2
+    },
+    {
+      "name": "upload_format_xls",
+      "applicationName": "audit_write_upload_format_xls",
+      "measuredThreadId": 1,
+      "elapsedNanos": 8492256,
+      "threadAllocatedBytes": 372176,
+      "heapBefore": 258340112,
+      "heapAfter": 258340112,
+      "fixtureReadBytes": 4096,
+      "storedReadBytes": 0,
+      "storedWriteBytes": 4096,
+      "trackedIoEvents": 3,
+      "requestedRollback": false,
+      "failureClass": null,
+      "data": {
+        "bytes": 4096,
+        "multipartClass": "org.springframework.web.multipart.support.StandardMultipartHttpServletRequest$StandardMultipartFile",
+        "partInput": "ChannelInputStream"
+      },
+      "selectStatements": 2
+    },
+    {
+      "name": "upload_format_xlsx",
+      "applicationName": "audit_write_upload_format_xlsx",
+      "measuredThreadId": 1,
+      "elapsedNanos": 20885539,
+      "threadAllocatedBytes": 1114792,
+      "heapBefore": 270923024,
+      "heapAfter": 271971600,
+      "fixtureReadBytes": 3302,
+      "storedReadBytes": 0,
+      "storedWriteBytes": 3302,
+      "trackedIoEvents": 3,
+      "requestedRollback": false,
+      "failureClass": null,
+      "data": {
+        "bytes": 3302,
+        "multipartClass": "org.springframework.web.multipart.support.StandardMultipartHttpServletRequest$StandardMultipartFile",
+        "partInput": "ChannelInputStream"
+      },
+      "selectStatements": 2
+    },
+    {
+      "name": "upload_size_10mib_channel",
+      "applicationName": "audit_write_upload_size_10mib_channel",
+      "measuredThreadId": 1,
+      "elapsedNanos": 31946975,
+      "threadAllocatedBytes": 10595224,
+      "heapBefore": 143981312,
+      "heapAfter": 155515648,
+      "fixtureReadBytes": 10485760,
+      "storedReadBytes": 0,
+      "storedWriteBytes": 10485760,
+      "trackedIoEvents": 1282,
+      "requestedRollback": false,
+      "failureClass": null,
+      "data": {
+        "bytes": 10485760,
+        "multipartClass": "org.springframework.web.multipart.support.StandardMultipartHttpServletRequest$StandardMultipartFile",
+        "partInput": "ChannelInputStream"
+      },
+      "selectStatements": 2
+    },
+    {
+      "name": "upload_size_1mib_channel",
+      "applicationName": "audit_write_upload_size_1mib_channel",
+      "measuredThreadId": 1,
+      "elapsedNanos": 24060018,
+      "threadAllocatedBytes": 1158504,
+      "heapBefore": 187197840,
+      "heapAfter": 131398400,
+      "fixtureReadBytes": 1048576,
+      "storedReadBytes": 0,
+      "storedWriteBytes": 1048576,
+      "trackedIoEvents": 130,
+      "requestedRollback": false,
+      "failureClass": null,
+      "data": {
+        "bytes": 1048576,
+        "multipartClass": "org.springframework.web.multipart.support.StandardMultipartHttpServletRequest$StandardMultipartFile",
+        "partInput": "ChannelInputStream"
+      },
+      "selectStatements": 2
+    },
+    {
+      "name": "upload_size_50mib_channel",
+      "applicationName": "audit_write_upload_size_50mib_channel",
+      "measuredThreadId": 1,
+      "elapsedNanos": 160260845,
+      "threadAllocatedBytes": 52538856,
+      "heapBefore": 179632896,
+      "heapAfter": 233110272,
+      "fixtureReadBytes": 52428800,
+      "storedReadBytes": 0,
+      "storedWriteBytes": 52428800,
+      "trackedIoEvents": 6402,
+      "requestedRollback": false,
+      "failureClass": null,
+      "data": {
+        "bytes": 52428800,
+        "multipartClass": "org.springframework.web.multipart.support.StandardMultipartHttpServletRequest$StandardMultipartFile",
+        "partInput": "ChannelInputStream"
+      },
+      "selectStatements": 2
+    },
+    {
+      "name": "upload_size_50mib_generic",
+      "applicationName": "audit_write_upload_size_50mib_generic",
+      "measuredThreadId": 1,
+      "elapsedNanos": 90356255,
+      "threadAllocatedBytes": 105495184,
+      "heapBefore": 304413440,
+      "heapAfter": 410319616,
+      "fixtureReadBytes": 52428800,
+      "storedReadBytes": 0,
+      "storedWriteBytes": 52428800,
+      "trackedIoEvents": 9601,
+      "requestedRollback": false,
+      "failureClass": null,
+      "data": {
+        "bytes": 52428800,
+        "multipartClass": "org.springframework.web.multipart.support.StandardMultipartHttpServletRequest$StandardMultipartFile",
+        "partInput": "synthetic generic InputStream"
+      },
+      "selectStatements": 2
+    },
+    {
+      "name": "verify_format_doc",
+      "applicationName": "audit_write_verify_format_doc",
+      "measuredThreadId": 1,
+      "elapsedNanos": 14830802,
+      "threadAllocatedBytes": 2177648,
+      "heapBefore": 236320016,
+      "heapAfter": 238417168,
+      "fixtureReadBytes": 0,
+      "storedReadBytes": 99840,
+      "storedWriteBytes": 0,
+      "trackedIoEvents": 2,
+      "requestedRollback": false,
+      "failureClass": null,
+      "data": {
+        "bytes": 99840
+      },
+      "selectStatements": 3
+    },
+    {
+      "name": "verify_format_docx",
+      "applicationName": "audit_write_verify_format_docx",
+      "measuredThreadId": 1,
+      "elapsedNanos": 20992222,
+      "threadAllocatedBytes": 764792,
+      "heapBefore": 249951504,
+      "heapAfter": 251000080,
+      "fixtureReadBytes": 0,
+      "storedReadBytes": 2281,
+      "storedWriteBytes": 0,
+      "trackedIoEvents": 2,
+      "requestedRollback": false,
+      "failureClass": null,
+      "data": {
+        "bytes": 2281
+      },
+      "selectStatements": 3
+    },
+    {
+      "name": "verify_format_jpg",
+      "applicationName": "audit_write_verify_format_jpg",
+      "measuredThreadId": 1,
+      "elapsedNanos": 4760039,
+      "threadAllocatedBytes": 132568,
+      "heapBefore": 223737104,
+      "heapAfter": 223737104,
+      "fixtureReadBytes": 0,
+      "storedReadBytes": 631,
+      "storedWriteBytes": 0,
+      "trackedIoEvents": 2,
+      "requestedRollback": false,
+      "failureClass": null,
+      "data": {
+        "bytes": 631
+      },
+      "selectStatements": 3
+    },
+    {
+      "name": "verify_format_pdf",
+      "applicationName": "audit_write_verify_format_pdf",
+      "measuredThreadId": 1,
+      "elapsedNanos": 6360683,
+      "threadAllocatedBytes": 164968,
+      "heapBefore": 202765584,
+      "heapAfter": 202765584,
+      "fixtureReadBytes": 0,
+      "storedReadBytes": 522,
+      "storedWriteBytes": 0,
+      "trackedIoEvents": 2,
+      "requestedRollback": false,
+      "failureClass": null,
+      "data": {
+        "bytes": 522
+      },
+      "selectStatements": 3
+    },
+    {
+      "name": "verify_format_png",
+      "applicationName": "audit_write_verify_format_png",
+      "measuredThreadId": 1,
+      "elapsedNanos": 4624618,
+      "threadAllocatedBytes": 116168,
+      "heapBefore": 213251344,
+      "heapAfter": 213251344,
+      "fixtureReadBytes": 0,
+      "storedReadBytes": 68,
+      "storedWriteBytes": 0,
+      "trackedIoEvents": 2,
+      "requestedRollback": false,
+      "failureClass": null,
+      "data": {
+        "bytes": 68
+      },
+      "selectStatements": 3
+    },
+    {
+      "name": "verify_format_xls",
+      "applicationName": "audit_write_verify_format_xls",
+      "measuredThreadId": 1,
+      "elapsedNanos": 6770003,
+      "threadAllocatedBytes": 379960,
+      "heapBefore": 261485840,
+      "heapAfter": 262534416,
+      "fixtureReadBytes": 0,
+      "storedReadBytes": 4096,
+      "storedWriteBytes": 0,
+      "trackedIoEvents": 2,
+      "requestedRollback": false,
+      "failureClass": null,
+      "data": {
+        "bytes": 4096
+      },
+      "selectStatements": 3
+    },
+    {
+      "name": "verify_format_xlsx",
+      "applicationName": "audit_write_verify_format_xlsx",
+      "measuredThreadId": 1,
+      "elapsedNanos": 16640420,
+      "threadAllocatedBytes": 1118480,
+      "heapBefore": 275117328,
+      "heapAfter": 276165904,
+      "fixtureReadBytes": 0,
+      "storedReadBytes": 3302,
+      "storedWriteBytes": 0,
+      "trackedIoEvents": 2,
+      "requestedRollback": false,
+      "failureClass": null,
+      "data": {
+        "bytes": 3302
+      },
+      "selectStatements": 3
+    },
+    {
+      "name": "verify_size_10mib_channel",
+      "applicationName": "audit_write_verify_size_10mib_channel",
+      "measuredThreadId": 1,
+      "elapsedNanos": 14743817,
+      "threadAllocatedBytes": 10602520,
+      "heapBefore": 159709952,
+      "heapAfter": 171244288,
+      "fixtureReadBytes": 0,
+      "storedReadBytes": 10485760,
+      "storedWriteBytes": 0,
+      "trackedIoEvents": 2,
+      "requestedRollback": false,
+      "failureClass": null,
+      "data": {
+        "bytes": 10485760
+      },
+      "selectStatements": 3
+    },
+    {
+      "name": "verify_size_1mib_channel",
+      "applicationName": "audit_write_verify_size_1mib_channel",
+      "measuredThreadId": 1,
+      "elapsedNanos": 14590250,
+      "threadAllocatedBytes": 1165416,
+      "heapBefore": 133495552,
+      "heapAfter": 136641280,
+      "fixtureReadBytes": 0,
+      "storedReadBytes": 1048576,
+      "storedWriteBytes": 0,
+      "trackedIoEvents": 2,
+      "requestedRollback": false,
+      "failureClass": null,
+      "data": {
+        "bytes": 1048576
+      },
+      "selectStatements": 3
+    },
+    {
+      "name": "verify_size_50mib_channel",
+      "applicationName": "audit_write_verify_size_50mib_channel",
+      "measuredThreadId": 1,
+      "elapsedNanos": 59209087,
+      "threadAllocatedBytes": 52545864,
+      "heapBefore": 239401728,
+      "heapAfter": 293927680,
+      "fixtureReadBytes": 0,
+      "storedReadBytes": 52428800,
+      "storedWriteBytes": 0,
+      "trackedIoEvents": 2,
+      "requestedRollback": false,
+      "failureClass": null,
+      "data": {
+        "bytes": 52428800
+      },
+      "selectStatements": 3
+    },
+    {
+      "name": "verify_size_50mib_generic",
+      "applicationName": "audit_write_verify_size_50mib_generic",
+      "measuredThreadId": 1,
+      "elapsedNanos": 48247564,
+      "threadAllocatedBytes": 52545736,
+      "heapBefore": 135656720,
+      "heapAfter": 189134096,
+      "fixtureReadBytes": 0,
+      "storedReadBytes": 52428800,
+      "storedWriteBytes": 0,
+      "trackedIoEvents": 2,
+      "requestedRollback": false,
+      "failureClass": null,
+      "data": {
+        "bytes": 52428800
+      },
+      "selectStatements": 3
+    }
+  ],
+  "source": "native-full raw JSON/JFR/PG/source snapshots",
+  "proposal": "PNG/JPEG verification temporary snapshot with small buffers proposed, awaiting actual user reply; no product changes",
+  "measurementLimits": [
+    "real Spring StandardMultipartHttpServletRequest with disk Part fixture; not container multipart parsing/network/JWT/HTTP/RBAC",
+    "ChannelInputStream override readAllBytes and synthetic generic InputStream measured separately, not a universal copy factor",
+    "ThreadMXBean calling-thread cumulative allocated bytes, not retained heap/peak/RSS/production concurrency or SLA",
+    "JFR logical read/write bytes only owned fixture/store paths and current Java thread, not physical IO or all ImageIO temporary IO",
+    "seven small valid formats + large padded PNG; no full pixel decoding/large PDF/Office resource claim",
+    "verify metadata seeded for negative cases; state guards not full lifecycle/START proof",
+    "SQL failures are added named check constraints in isolated DB; not real disk full/network/crash",
+    "audit hash presence/identity/action/atomicity only; old W5-AUDIT-HASH-001 PG hash roundtrip stays open"
+  ]
+}

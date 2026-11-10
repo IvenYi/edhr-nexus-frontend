@@ -147,11 +147,11 @@ public class ExecutionAccess {
         return false;
     }
 
-    public List<Map<String, String>> transferTargets(JsonNode form, JsonNode node, JsonNode state, String operator, String keyword) {
+    public TenantTransferTargets.Page transferTargets(JsonNode form, JsonNode node, JsonNode state, String operator, String keyword, int page, int size) {
         if (!"APPROVAL".equals(node.path("data").path("kind").asText()) || !canAct(form, node, state, operator))
             throw invalid("当前用户无权转办此表单节点");
         try {
-            return new TenantTransferTargets(users).search(transferTenantId(operator), operator, keyword);
+            return new TenantTransferTargets(users).search(transferTenantId(operator), operator, keyword, page, size);
         } catch (IllegalArgumentException error) { throw invalid(error.getMessage()); }
     }
 

@@ -1,0 +1,46 @@
+{
+  "observedAtUtc": "2026-11-05T07:04:52.876475+00:00",
+  "observationKind": "GitHub pull metadata and git remote refs; no CI/Actions query",
+  "pullRequest": {
+    "base": {
+      "ref": "edhr-dev",
+      "sha": "ea5c57e63cb4980961498c4c192705ef91a37170"
+    },
+    "draft": false,
+    "head": {
+      "ref": "audit/edhr-dev-form-detail-read-20261105",
+      "sha": "a707079541651f49913213121ee701825d541ce0"
+    },
+    "html_url": "https://github.com/IvenYi/edhr-nexus-frontend/pull/60",
+    "mergeable": true,
+    "mergeable_state": "clean",
+    "number": 60,
+    "state": "open"
+  },
+  "localHeadAtObservation": "a707079541651f49913213121ee701825d541ce0",
+  "remoteRefsAtObservation": {
+    "refs/heads/audit/edhr-dev-form-detail-read-20261105": "a707079541651f49913213121ee701825d541ce0",
+    "refs/heads/edhr-dev": "ea5c57e63cb4980961498c4c192705ef91a37170"
+  },
+  "testedCandidate": "04fc893f3df9de8d345fa32a7699f61f7cbc53ae",
+  "qualityResult": "passed",
+  "ontologyResult": "not-applicable",
+  "requiredChecksPassed": 13,
+  "testedCandidatePathDelta": [
+    "M\tdocs/development/branch-review-20261015/NEXT.md",
+    "A\tdocs/development/branch-review-20261105-form-detail/acceptance.json",
+    "A\tdocs/development/branch-review-20261105-form-detail/evidence/final-independent.tar.gz",
+    "A\tdocs/development/branch-review-20261105-form-detail/evidence/tested-candidate-preservation.json",
+    "A\tdocs/development/branch-review-20261105-form-detail/final-quality-manifest.json",
+    "A\tdocs/development/branch-review-20261105-form-detail/quality-result.yaml",
+    "A\tdocs/development/branch-review-20261105-form-detail/scope-review.md"
+  ],
+  "existingCandidatePathsModified": [
+    "docs/development/branch-review-20261015/NEXT.md"
+  ],
+  "allOtherExistingCandidatePathsUnchanged": true,
+  "performanceFindingsRemainOpen": true,
+  "postObservationWork": "New L0 delivery record and NEXT update receive a separate skip-ci commit; final local/remote/PR head equality checked after push. Observed head intentionally precedes this record.",
+  "automaticMergeDeployRestoreOrCi": false,
+  "recommendation": "Manual merge PR60 for test/evidence only; whole audit and three performance findings remain open"
+}

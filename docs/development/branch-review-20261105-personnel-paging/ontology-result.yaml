@@ -1,0 +1,220 @@
+ontologyResult:
+  result: updated
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: f8638f5400356c4820d59bf26be50a79b453ca12
+    targetBranch: edhr-dev
+    targetCommit: f8638f5400356c4820d59bf26be50a79b453ca12
+    contractReadCommit: f8638f5400356c4820d59bf26be50a79b453ca12
+    uncommittedContractPaths: []
+  reason: 用户明确要求全部原资格人员可分页/分批到达，已同步新DEC0095和正式规则及证据、锚点、README/架构投影；不把旧100工程截断伪造为历史业务政策。既有资格、写入保护及知识阶段保持，无未决业务问题。产品/前端仍由主审实现与独立质量另验。
+  changedArtifacts:
+  - path: docs/knowledge/decisions/DEC-0095-qualified-personnel-selection-completeness.yaml
+    changeType: create
+    ids:
+    - DEC-0095
+    - DEC-0095-01
+    - DEC-0095-02
+    - DEC-0095-03
+    - scenario.qualified-personnel-selection-beyond-first-batch
+    - scenario.qualified-personnel-selection-preserves-domain-actions
+  - path: docs/knowledge/rules/personnel-target-selection.yaml
+    changeType: create
+    ids:
+    - rule.personnel-targets-complete-qualified-navigation
+  - path: docs/knowledge/evidence/qualified-personnel-selection-20261105.yaml
+    changeType: create
+    ids:
+    - evidence.qualified-personnel-selection-user-confirmed
+    - evidence.qualified-personnel-directory-source
+    - evidence.qualified-personnel-domain-target-source
+    - evidence.qualified-personnel-selector-source
+  - path: docs/knowledge/evidence/qualified-personnel-selection-20261105.md
+    changeType: create
+    ids: []
+  - path: docs/knowledge/implementation-anchors/personnel-target-selection.yaml
+    changeType: create
+    ids:
+    - anchor.personnel-targets.complete-qualified-navigation
+  - path: docs/knowledge/README.md
+    changeType: update
+    ids: []
+  - path: docs/architecture/business-knowledge-model.md
+    changeType: update
+    ids: []
+  knowledgeSync:
+  - id: DEC-0095
+    disposition: updated
+    scope: 本轮DEC0095完整合法可选集合规范及来源/验收映射；specified/internal，不宣称产品运行已完成。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0095-qualified-personnel-selection-completeness.yaml
+    - docs/knowledge/evidence/qualified-personnel-selection-20261105.md
+  - id: DEC-0095-01
+    disposition: updated
+    scope: 本轮DEC0095完整合法可选集合规范及来源/验收映射；specified/internal，不宣称产品运行已完成。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0095-qualified-personnel-selection-completeness.yaml
+    - docs/knowledge/evidence/qualified-personnel-selection-20261105.md
+  - id: DEC-0095-02
+    disposition: updated
+    scope: 本轮DEC0095完整合法可选集合规范及来源/验收映射；specified/internal，不宣称产品运行已完成。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0095-qualified-personnel-selection-completeness.yaml
+    - docs/knowledge/evidence/qualified-personnel-selection-20261105.md
+  - id: DEC-0095-03
+    disposition: updated
+    scope: 本轮DEC0095完整合法可选集合规范及来源/验收映射；specified/internal，不宣称产品运行已完成。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0095-qualified-personnel-selection-completeness.yaml
+    - docs/knowledge/evidence/qualified-personnel-selection-20261105.md
+  - id: scenario.qualified-personnel-selection-beyond-first-batch
+    disposition: updated
+    scope: 本轮DEC0095完整合法可选集合规范及来源/验收映射；specified/internal，不宣称产品运行已完成。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0095-qualified-personnel-selection-completeness.yaml
+    - docs/knowledge/evidence/qualified-personnel-selection-20261105.md
+  - id: scenario.qualified-personnel-selection-preserves-domain-actions
+    disposition: updated
+    scope: 本轮DEC0095完整合法可选集合规范及来源/验收映射；specified/internal，不宣称产品运行已完成。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0095-qualified-personnel-selection-completeness.yaml
+    - docs/knowledge/evidence/qualified-personnel-selection-20261105.md
+  - id: rule.personnel-targets-complete-qualified-navigation
+    disposition: updated
+    scope: 本轮DEC0095完整合法可选集合规范及来源/验收映射；specified/internal，不宣称产品运行已完成。
+    sourceReferences:
+    - docs/knowledge/rules/personnel-target-selection.yaml
+    - docs/knowledge/evidence/qualified-personnel-selection-20261105.md
+  - id: evidence.qualified-personnel-selection-user-confirmed
+    disposition: updated
+    scope: 本轮DEC0095完整合法可选集合规范及来源/验收映射；specified/internal，不宣称产品运行已完成。
+    sourceReferences:
+    - docs/knowledge/evidence/qualified-personnel-selection-20261105.yaml
+    - docs/knowledge/evidence/qualified-personnel-selection-20261105.md
+  - id: evidence.qualified-personnel-directory-source
+    disposition: updated
+    scope: 本轮DEC0095完整合法可选集合规范及来源/验收映射；specified/internal，不宣称产品运行已完成。
+    sourceReferences:
+    - docs/knowledge/evidence/qualified-personnel-selection-20261105.yaml
+    - docs/knowledge/evidence/qualified-personnel-selection-20261105.md
+  - id: evidence.qualified-personnel-domain-target-source
+    disposition: updated
+    scope: 本轮DEC0095完整合法可选集合规范及来源/验收映射；specified/internal，不宣称产品运行已完成。
+    sourceReferences:
+    - docs/knowledge/evidence/qualified-personnel-selection-20261105.yaml
+    - docs/knowledge/evidence/qualified-personnel-selection-20261105.md
+  - id: evidence.qualified-personnel-selector-source
+    disposition: updated
+    scope: 本轮DEC0095完整合法可选集合规范及来源/验收映射；specified/internal，不宣称产品运行已完成。
+    sourceReferences:
+    - docs/knowledge/evidence/qualified-personnel-selection-20261105.yaml
+    - docs/knowledge/evidence/qualified-personnel-selection-20261105.md
+  - id: anchor.personnel-targets.complete-qualified-navigation
+    disposition: updated
+    scope: 本轮DEC0095完整合法可选集合规范及来源/验收映射；specified/internal，不宣称产品运行已完成。
+    sourceReferences:
+    - docs/knowledge/implementation-anchors/personnel-target-selection.yaml
+    - docs/knowledge/evidence/qualified-personnel-selection-20261105.md
+  - id: DEC-0081-01
+    disposition: retained
+    scope: 同租户有效未锁定其他用户、可集合外委托的原范围保留；分页只补可到达性。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0081-tenant-scoped-task-delegation.yaml
+  - id: DEC-0081-02
+    disposition: retained
+    scope: 原候选来源与当前责任分开，后续加载不重算或覆盖原快照。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0081-tenant-scoped-task-delegation.yaml
+  - id: DEC-0081-03
+    disposition: retained
+    scope: 原因和责任历史、节点/表单/结果不变；读取批量不改变写入动作。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0081-tenant-scoped-task-delegation.yaml
+  - id: DEC-0081-04
+    disposition: retained
+    scope: 仅复核仍有效的DHR本人转办及通用绕过禁止；管理员局部开放按DEC0093，旧未开放表述不作当前全面禁令。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0081-tenant-scoped-task-delegation.yaml
+  - id: DEC-0092-02
+    disposition: retained
+    scope: 记录控制仍限自身候选且禁止申请人自审，不外推同租户集合外委托。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0092-workflow-operations-entry-and-actions.yaml
+  - id: DEC-0092-03
+    disposition: retained
+    scope: 管理重新分配仍强制实际签署及专门权限和原因。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0092-workflow-operations-entry-and-actions.yaml
+  - id: DEC-0093-01
+    disposition: retained
+    scope: 集中投影不另建运行任务或扩大业务读取/填报范围。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0093-central-form-dhr-workflow-responsibility.yaml
+  - id: DEC-0093-02
+    disposition: retained
+    scope: 普通表单及DHR管理员签名改派原资格、DHR本人转办/撤回/绕过仍禁止。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0093-central-form-dhr-workflow-responsibility.yaml
+  - id: DEC-0093-03
+    disposition: retained
+    scope: 集中历史和各领域审计同事务、原签名/内容/冻结及责任证据不变。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0093-central-form-dhr-workflow-responsibility.yaml
+  - id: DEC-0093-04
+    disposition: retained
+    scope: 普通表单使用原生执行/历史，工程分页和具体权限码不冒充用户逐字段确认。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0093-central-form-dhr-workflow-responsibility.yaml
+  - id: fact.catalog.intervention-type
+    disposition: retained
+    scope: 复用现有两动作语义映射，不改持久化枚举或新增通用事实提供器。
+    sourceReferences:
+    - docs/knowledge/facts/core-business.yaml
+  - id: rule.workflow.task-creation-freezes-candidate-resolution
+    disposition: retained
+    scope: 任务创建时原候选解析证据继续冻结，数组匹配不改变其精确文本身份。
+    sourceReferences:
+    - docs/knowledge/rules/identity.yaml
+  - id: question.multi-tenant-workflow-isolation
+    disposition: retained
+    scope: 保留既有完整多租户证据与业务契约缺口，不把同租户目录修复当整体隔离完成。
+    sourceReferences:
+    - docs/knowledge/open-questions.yaml
+  conflicts: []
+  questions: []
+  validationEvidence:
+  - id: validation.personnel-knowledge-formal-89
+    checkType: schema
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr --no-transfer-progress -f
+      tools/knowledge-model/pom.xml clean test
+    outcome: passed
+    evidence:
+    - knowledge-run.json
+    - knowledge-maven.log
+    - TEST-com.zencas.edhr.knowledge.BusinessKnowledgeModelTest.xml
+  - id: validation.personnel-rule-reference-and-maturity
+    checkType: reference
+    command: python3 /tmp/edhr-personnel-paging-ontology-20261105/build-artifacts.py
+    outcome: passed
+    evidence:
+    - semantic-validation.json
+    - knowledge-delta.json
+    - input-fingerprints.json
+  - id: validation.personnel-retained-scope-and-guards
+    checkType: projection
+    command: read current DEC0081/0092/0093/0094, source guards and user confirmation;
+      compare protected source regions against f8638f54
+    outcome: passed
+    evidence:
+    - retained-semantic-audit.json
+    - protected-source-checks.json
+    - contract-baseline.json
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages:
+    - P1
+    - P2
+    - P3

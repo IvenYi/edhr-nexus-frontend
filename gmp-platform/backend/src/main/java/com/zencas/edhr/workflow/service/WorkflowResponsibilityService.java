@@ -19,6 +19,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.LockModeType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -75,22 +76,22 @@ public class WorkflowResponsibilityService {
     }
 
     @Transactional(readOnly = true)
-    public List<Map<String, String>> transferTargets(Long taskId, String keyword) {
+    public TenantTransferTargets.Page transferTargets(Long taskId, String keyword, int page, int size) {
         WorkflowTask task = task(taskId);
         WorkflowInstance instance = instance(task.getInstanceId());
         requireActive(instance, task);
         requireOperator(task, AuditContext.getOperatorId());
         if (!transferVisible(task)) throw invalid("当前节点未开放转办");
-        return targets(instance, task, keyword, false);
+        return targets(instance, task, keyword, false, page, size);
     }
 
     @PreAuthorize("hasAuthority('workflow.intervene')")
     @Transactional(readOnly = true)
-    public List<Map<String, String>> reassignmentTargets(Long taskId, String keyword) {
+    public TenantTransferTargets.Page reassignmentTargets(Long taskId, String keyword, int page, int size) {
         WorkflowTask task = task(taskId);
         WorkflowInstance instance = instance(task.getInstanceId());
         requireActive(instance, task, true);
-        return targets(instance, task, keyword, true);
+        return targets(instance, task, keyword, true, page, size);
     }
 
     @PreAuthorize("hasAuthority('workflow.intervene')")
@@ -193,10 +194,30 @@ public class WorkflowResponsibilityService {
                 .reason(command.reason().strip()).createdAt(now).build());
     }
 
-    private List<Map<String, String>> targets(WorkflowInstance instance, WorkflowTask task, String keyword, boolean reassignment) {
-        return new TenantTransferTargets(users).search(tenant(instance), task.getAssigneeId(), keyword).stream()
-                .filter(user -> reassignment || !Objects.equals(user.get("id"), AuditContext.getOperatorId()))
-                .filter(user -> eligible(instance, task, user.get("id"), reassignment)).toList();
+    private TenantTransferTargets.Page targets(WorkflowInstance instance, WorkflowTask task, String keyword, boolean reassignment, int page, int size) {
+        if ("DHR_SUMMARY".equals(instance.getBusinessType()) && reassignment)
+            return new TenantTransferTargets(users).search(tenant(instance), task.getAssigneeId(), keyword,
+                    Set.of("records.dhr-review", "dhr.reviews.act"), page, size);
+        Specification<UserAccount> scope = (root, query, cb) -> cb.conjunction();
+        String operator = AuditContext.getOperatorId();
+        if (!reassignment && operator != null)
+            scope = scope.and((root, query, cb) -> cb.notEqual(root.get("id").as(String.class), operator));
+        if (recordControl(instance) || reassignment) {
+            JsonNode origin = json(task.getCandidateSnapshot());
+            if (origin.has("originSnapshot")) origin = json(origin.path("originSnapshot").asText());
+            if (!origin.path("unrestricted").asBoolean(false)) {
+                List<String> candidates = new ArrayList<>();
+                for (JsonNode user : origin.path("userIds")) candidates.add(user.asText());
+                scope = scope.and((root, query, cb) -> {
+                    var criteria = (org.hibernate.query.criteria.HibernateCriteriaBuilder) cb;
+                    return criteria.isTrue(criteria.sql("? in (select jsonb_array_elements_text(cast(? as jsonb)))", Boolean.class,
+                            root.get("id").as(String.class), criteria.value(mapper.valueToTree(candidates).toString())));
+                });
+            }
+            if (recordControl(instance))
+                scope = scope.and((root, query, cb) -> cb.notEqual(root.get("id").as(String.class), instance.getInitiatorId()));
+        }
+        return new TenantTransferTargets(users).search(tenant(instance), task.getAssigneeId(), keyword, scope, page, size);
     }
 
     private boolean eligible(WorkflowInstance instance, WorkflowTask task, String target, boolean reassignment) {

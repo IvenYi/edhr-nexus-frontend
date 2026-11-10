@@ -71,8 +71,8 @@ export const getProductionExecution = async (id: string): Promise<ExecutionView>
 export const executeProduction = async (id: string, command: ExecutionCommand): Promise<ExecutionView> => (await client.post(`/production/execution/${id}/actions`, command)).data.data;
 export const getExecutionReferences = async (id: string, operationId: string, formId: string, fieldId: string, keyword: string, values: Record<string, unknown> = {}, paging?: ReferencePageRequest): Promise<ReferenceValue[]> =>
   (await client.post(`/production/execution/${id}/references`, { operationId, formId, fieldId, keyword, values, ...paging })).data.data;
-export const getExecutionTransferTargets = async (id: string, operationId: string, formId: string, instanceId: string, keyword: string): Promise<ExecutionTransferTarget[]> =>
-  (await client.get(`/production/execution/${id}/transfer-targets`, { params: { operationId, formId, instanceId, keyword } })).data.data;
+export const getExecutionTransferTargets = async (id: string, operationId: string, formId: string, instanceId: string, keyword: string, page: number, signal: AbortSignal): Promise<import('@/types/personnel').PersonnelTargetPage> =>
+  (await client.get(`/production/execution/${id}/transfer-targets`, { params: { operationId, formId, instanceId, keyword, page, size: 50 }, signal })).data.data;
 export const uploadExecutionFile = async (id: string, file: File): Promise<{ fileId: string; originalName: string }> => {
   const body = new FormData(); body.append('file', file); body.append('targetType', 'PRODUCTION_EXECUTION'); body.append('targetId', id);
   return (await client.post('/files/upload', body, { headers: { 'Content-Type': 'multipart/form-data' } })).data.data;
