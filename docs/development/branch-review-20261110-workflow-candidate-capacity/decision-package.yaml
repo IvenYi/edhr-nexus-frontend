@@ -1,0 +1,45 @@
+decisionPackage:
+  id: DEC-PACKAGE-WORKFLOW-CANDIDATE-CAPACITY-20261110
+  scope: Isolated native PostgreSQL observation of published record-control workflow candidate reads
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: 68861c2ab0291fc8f20271c2d2cae37d1eca66fd
+    targetBranch: edhr-dev
+    targetCommit: 68861c2ab0291fc8f20271c2d2cae37d1eca66fd
+    contractReadCommit: 68861c2ab0291fc8f20271c2d2cae37d1eca66fd
+    uncommittedContractPaths: []
+  summary: PR77已合入且整树同773fa942，无额外产品/知识/契约增量。继续原W3/W7及W6性能/健壮性/A23，将前两批RecordControlWorkflowService逐定义当前版本读取的源码信号量化。只加现有严格隔离PG测试类的可选目录观察，不修改产品SQL/API/索引/UI/政策或为了绿灯构造功能bug；性能建议等实际用户答复后再实施。
+  confirmed: {concepts: [], relationships: [], rules: [], executionContracts: []}
+  inferred:
+    - id: inference.record-workflow-candidate-current-version-reads
+      statement: 定义列表之后逐项current版本查询可能产生1+D次SELECT，并可能加载投影未使用的版本JSON；查询频次与模板目录规模而非员工数相关
+      rationale: 当前service.stream.map(toPublishedCandidate)每项调用Optional版本repository，必须原生PG测量才确认实际查询次数与计划
+      relatedIds: [DEC-0094-02, DEC-0087-04]
+  unresolved: []
+  replacementScopes: []
+  impactAnalysis:
+    level: L2
+    directImpacts: [{area: candidate-read-probe, change: 0/1/10/100/1000返回候选双业务目录及缺失/未发布当前版对照，两次事务读取捕获原SQL计数/计划/载荷/线程分配, evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/RecordControlWorkflowService.java]}]
+    transitiveImpacts: [{area: selection-and-auth, change: 验证明确匹配当前PUBLISHED具体版本、完整返回/排序及普通认证无创建权限可读和匿名拒绝；当前候选可读不授予业务操作, evidenceReferences: [docs/knowledge/decisions/DEC-0094-record-control-authenticated-candidate-read.yaml]}]
+    potentialImpacts: [{area: future-optimization, concern: 批读/投影须保留current含义、类型/状态/排序和所有候选可达；多current既有异常不能静默变成自动选最新；索引需真实计划证明, evidenceReferences: []}]
+    unaffectedAreas: [{area: product-and-paused, change: 不改业务读写/签署/快照/幂等/事务/UI，已修PR77反馈和用户暂停通用签名页/生产弹窗保持；其他性能方案仍未答, evidenceReferences: []}]
+    compatibilityAndMigration: [{area: canonical-schema, change: 原迁移至0092及严格edhr_record_control_test命名guard保持；只在自有一次性数据库造元数据，无schema迁移, evidenceReferences: []}]
+    snapshotImpacts: [{area: evidence, change: 目录元数据不代表新签署/完整已发布流程；不访问恢复真实数据或冻结历史, evidenceReferences: []}]
+    auditImpacts: [{area: readonly, change: 观察事务只读，10表前后摘要及HTTP读取无业务/审计写入；SQL原件保留, evidenceReferences: []}]
+    permissionImpacts: [{area: retained, change: DEC0094认证读取、原申请/审批/签署及DEC0096只读例外保持；不同人员规则不混用, evidenceReferences: []}]
+    testImpacts: [{scope: native-read-and-adjacent, scenarios: [双类型多规模目录, 缺失current和current未发布不回退历史版, 错类型/草稿定义排除, 超100全量可达, 普通JWT及匿名MockMvc, 多current实际异常/无写, 原记录控制和授权回归], evidenceReferences: []}]
+    evidenceGaps: [本机热缓存带采集开销非生产SLA/峰值/并发或真实签署, UI与产品无改不重跑前轮92或声称本轮浏览器通过, 全知识语义/W2-W7/A12/高风险/完整矩阵/A23含已审/容量UNKNOWN和静态86/lint队列继续]
+  extensionStrategy:
+    selectedPaths: [transaction-orchestration]
+    rationale: 在既有隔离PG测试中调用原事务service和HTTP读取，测量与产品所有权分开，不为量化重构或优化实现
+    ownershipBoundaries:
+      - {owner: RecordControlWorkflowService, responsibility: 当前候选查询和业务流程端口不变}
+      - {owner: RecordControlPostgresIntegrationTest, responsibility: 合成目录、原查询计划/完整结果/只读和资格取证}
+  affectedFiles:
+    - {path: gmp-platform/backend/src/test/java/com/zencas/edhr/recordcontrol/service/RecordControlPostgresIntegrationTest.java, changeType: update, reason: 原生PG有限候选目录容量观察及模糊current边界}
+  acceptanceScenarios:
+    - id: scenario.record-workflow-candidate-capacity
+      given: 原严格隔离canonical PG内存在匹配及应排除的合成目录，不修改产品实现
+      when: 多规模调用原双业务候选服务和认证读取并观察原SQL
+      then: 完整结果/明确current语义及资格/只读证据可核查，真实性能问题先量化讨论；不存在未测却标绿或自动优化
+      evidenceRequirements: [当前源码与知识范围映射, 实际PG参数/SQL/计划/XML/返回/前后摘要及资源清理, 本体范围核对与全新独立质量, 全部FINAL后实际PR前漂移和阶段复核]

@@ -54,6 +54,7 @@ class RecordControlPostgresIntegrationTest {
     @Autowired PasswordEncoder passwords;
     @Autowired FormInstanceRecordService records;
     @Autowired RecordControlService requests;
+    @Autowired com.zencas.edhr.workflow.contract.RecordControlWorkflowPort workflowCandidates;
     @Autowired com.zencas.edhr.workflow.service.WorkflowResponsibilityService responsibility;
     @Autowired com.zencas.edhr.workflow.service.WorkflowOperationsQuery operations;
     @Autowired com.zencas.edhr.production.service.FormWorkflowOperations formOperations;
@@ -119,6 +120,96 @@ class RecordControlPostgresIntegrationTest {
     }
 
     @AfterEach void clearActor() { AuditContext.clear(); org.springframework.security.core.context.SecurityContextHolder.clearContext(); }
+
+    @ParameterizedTest @ValueSource(ints = {0, 1, 10, 100, 1000})
+    @org.junit.jupiter.api.condition.EnabledIfSystemProperty(named="edhr.audit.workflowCandidateCapacity",matches="true")
+    void publishedCandidateCapacityPreservesCompleteCurrentVersionSelection(int catalogSize) throws Exception {
+        jdbc.update("UPDATE workflow_definition SET status='DRAFT'");
+        for (BusinessType type : BusinessType.values()) {
+            long first = type == BusinessType.CHANGE ? 10000000L : 20000000L;
+            jdbc.execute("""
+                INSERT INTO workflow_definition(id,name,code,type,business_type,status)
+                SELECT %d+i,'容量流程-'||lpad(i::text,6,'0'),'CAP-%s-'||i,'RECORD_CONTROL','%s','PUBLISHED'
+                FROM generate_series(1,%d) i
+                """.formatted(first, type, type, catalogSize));
+            jdbc.execute("""
+                INSERT INTO workflow_definition_version(id,definition_id,version_number,status,is_current,nodes_json,edges_json)
+                SELECT %d+i,%d+i,3,'PUBLISHED',true,'[]'::jsonb,'[]'::jsonb FROM generate_series(1,%d) i
+                """.formatted(first + 1000000, first, catalogSize));
+            // Catalog metadata only, not newly signed/published executable business flows.
+            jdbc.update("INSERT INTO workflow_definition(id,name,type,business_type,status) VALUES (?,?,'RECORD_CONTROL',?,'PUBLISHED'),(?,?,'RECORD_CONTROL',?,'PUBLISHED'),(?,?,'RECORD_CONTROL',?,'DRAFT'),(?,?,'WORK',?,'PUBLISHED')",
+                    first+catalogSize+1,"无当前版本",type.name(),first+catalogSize+2,"当前草稿且有旧发布版",type.name(),
+                    first+catalogSize+3,"草稿定义",type.name(),first+catalogSize+4,"其他流程类型",type.name());
+            for (int offset : List.of(2,3,4)) jdbc.update("INSERT INTO workflow_definition_version(id,definition_id,version_number,status,is_current,nodes_json,edges_json) VALUES (?,?,3,?,true,'[]','[]')",
+                    first+1000000+catalogSize+offset,first+catalogSize+offset,offset==2?"DRAFT":"PUBLISHED");
+            jdbc.update("INSERT INTO workflow_definition_version(id,definition_id,version_number,status,is_current,nodes_json,edges_json) VALUES (?,?,2,'PUBLISHED',false,'[]','[]')",
+                    first+2000000+catalogSize+2,first+catalogSize+2);
+        }
+        assertThat(count("workflow_definition")).isEqualTo(2L*catalogSize+10);
+        assertThat(count("workflow_definition_version")).isEqualTo(2L*catalogSize+10);
+        assertThat(jdbc.queryForObject("SELECT count(*) FROM workflow_definition_version v JOIN workflow_definition d ON d.id=v.definition_id WHERE d.code LIKE 'CAP-%' AND v.is_current AND v.status='PUBLISHED'",Long.class)).isEqualTo(2L*catalogSize);
+        jdbc.execute("ANALYZE workflow_definition; ANALYZE workflow_definition_version");
+        String before = candidateCatalogDigest();
+        var observations = mapper.createArrayNode();
+        for (BusinessType type : BusinessType.values()) {
+            long first = type == BusinessType.CHANGE ? 10000000L : 20000000L;
+            assertThat(jdbc.queryForObject("SELECT count(*) FROM workflow_definition WHERE type='RECORD_CONTROL' AND business_type=? AND status='PUBLISHED'",Long.class,type.name())).isEqualTo(catalogSize+2L);
+            for (int iteration=1; iteration<=2; iteration++) {
+                String label="wf-candidates-"+catalogSize+"-"+type.name().toLowerCase(java.util.Locale.ROOT)+"-"+iteration;
+                var tx = new org.springframework.transaction.support.TransactionTemplate(transactionManager); tx.setReadOnly(true);
+                long[] measurements = new long[2];
+                var actual = tx.execute(status -> {
+                    jdbc.execute("SET LOCAL application_name='"+label+"'; SET LOCAL auto_explain.log_min_duration=0; SET LOCAL auto_explain.log_analyze=true; SET LOCAL auto_explain.log_buffers=true; SET LOCAL auto_explain.log_format='json'");
+                    var memory=(com.sun.management.ThreadMXBean)java.lang.management.ManagementFactory.getThreadMXBean();
+                    long started=System.nanoTime(),allocated=memory.getThreadAllocatedBytes(Thread.currentThread().threadId());
+                    var result=workflowCandidates.listPublishedCandidates(type);
+                    measurements[0]=System.nanoTime()-started; measurements[1]=memory.getThreadAllocatedBytes(Thread.currentThread().threadId())-allocated;
+                    return result;
+                });
+                assertThat(actual).hasSize(catalogSize);
+                for (int i=0; i<catalogSize; i++) {
+                    var row=actual.get(i); long index=i+1L;
+                    assertThat(row.workflowDefinitionId()).isEqualTo(Long.toString(first+index));
+                    assertThat(row.workflowVersionId()).isEqualTo(Long.toString(first+1000000+index));
+                    assertThat(row.templateName()).isEqualTo("容量流程-"+String.format(java.util.Locale.ROOT,"%06d",index));
+                    assertThat(row.templateCode()).isEqualTo("CAP-"+type+"-"+index);
+                    assertThat(row.versionNumber()).isEqualTo(3); assertThat(row.businessType()).isEqualTo(type);
+                    assertThat(row.status()).isEqualTo("PUBLISHED");
+                }
+                var observation=mapper.createObjectNode().put("label",label).put("businessType",type.name()).put("iteration",iteration)
+                        .put("returned",actual.size()).put("matchedDefinitions",catalogSize+2)
+                        .put("elapsedNanos",measurements[0]).put("threadAllocatedBytes",measurements[1]);
+                observation.set("rows",mapper.valueToTree(actual)); observations.add(observation);
+            }
+            String token=tokens.generateToken("41","ordinary-reader","普通认证读取",5,List.of());
+            var response=http("candidate-"+catalogSize+"-"+type,"GET","/api/v1/workflow/record-control/candidates?businessType="+type,token,null,200);
+            assertThat(response.path("data")).isEqualTo(observations.get(observations.size()-1).path("rows"));
+            http("candidate-anonymous-"+catalogSize+"-"+type,"GET","/api/v1/workflow/record-control/candidates?businessType="+type,null,null,401);
+        }
+        String after=candidateCatalogDigest(); assertThat(after).isEqualTo(before);
+        var report=mapper.createObjectNode().put("catalogSizePerType",catalogSize).put("beforeStateDigest",before).put("afterStateDigest",after)
+                .put("scope","Synthetic catalog metadata;original service/SQL;calling-thread cumulative allocation,not peak or production SLA;JWT+MockMvc,not socket/signing");
+        report.set("observations",observations);
+        Path output=Path.of(System.getProperty("edhr.audit.workflowCandidateOutput")); Files.createDirectories(output);
+        mapper.writerWithDefaultPrettyPrinter().writeValue(output.resolve("catalog-"+catalogSize+".json").toFile(),report);
+    }
+
+    @Test
+    @org.junit.jupiter.api.condition.EnabledIfSystemProperty(named="edhr.audit.workflowCandidateCapacity",matches="true")
+    void candidateReadKeepsExistingAmbiguousCurrentFailureWithoutChangingEvidence() {
+        jdbc.update("INSERT INTO workflow_definition_version(id,definition_id,version_number,status,is_current,nodes_json,edges_json) VALUES(991,201,2,'PUBLISHED',true,'[]','[]')");
+        String before=candidateCatalogDigest();
+        assertThatThrownBy(() -> workflowCandidates.listPublishedCandidates(BusinessType.CHANGE))
+                .isInstanceOf(org.springframework.dao.IncorrectResultSizeDataAccessException.class);
+        assertThat(candidateCatalogDigest()).isEqualTo(before);
+    }
+
+    private String candidateCatalogDigest() {
+        StringBuilder result=new StringBuilder(readCapacityDigest());
+        for (String table : List.of("workflow_definition","workflow_definition_version"))
+            result.append(table).append(':').append(scalar("SELECT md5(coalesce(jsonb_agg(to_jsonb(r) ORDER BY id)::text,'[]')) FROM "+table+" r")).append(';');
+        return result.toString();
+    }
 
     @ParameterizedTest @ValueSource(ints = {0, 5000, 20000})
     @org.junit.jupiter.api.condition.EnabledIfSystemProperty(named="edhr.audit.recordReadCapacity",matches="true")
