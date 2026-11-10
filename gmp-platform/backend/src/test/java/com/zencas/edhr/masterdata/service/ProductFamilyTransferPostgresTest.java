@@ -30,6 +30,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import java.nio.file.*;
+import java.lang.management.ManagementFactory;
 import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.*;
@@ -45,6 +46,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @Import(ProductFamilyTransferPostgresTest.ObservationConfig.class)
 class ProductFamilyTransferPostgresTest {
     private static final ThreadLocal<Observation> CURRENT=new ThreadLocal<>();
+    private static final ThreadLocal<MembershipReadGate> READ_GATE=new ThreadLocal<>();
     private static final String TRANSFER="/api/v1/master-data/process-modeling/product-families/12/members/101/transfer";
     @Autowired ProductFamilyMembershipService service;
     @Autowired ProductFamilyMemberRepository members;
@@ -71,7 +73,7 @@ class ProductFamilyTransferPostgresTest {
         jdbc.update("INSERT INTO product_family_member(id,tenant_id,product_family_id,product_id,created_by,created_at,updated_by,updated_at) VALUES(201,'default',11,101,'旧记录人','2020-01-01','旧记录人','2020-01-01')");
         operator();
     }
-    @AfterEach void cleanup(){CURRENT.remove();AuditContext.clear();dropFailureFixtures();}
+    @AfterEach void cleanup(){CURRENT.remove();READ_GATE.remove();AuditContext.clear();dropFailureFixtures();}
     private void operator(){AuditContext.setOperator("901","簇成员审查员","family-transfer-qa");AuditContext.setIpAddress("127.0.0.1");}
 
     @Test void committedTransferPreservesNewIdentityAndThreeAccurateAudits()throws Exception{
@@ -143,14 +145,83 @@ class ProductFamilyTransferPostgresTest {
             release.countDown();result.get(6,TimeUnit.SECONDS);assertTransferred(members.findByTenantIdAndProductId("default",101L).orElseThrow().getId());
         }finally{release.countDown();pool.shutdown();assertThat(pool.awaitTermination(10,TimeUnit.SECONDS)).isTrue();}
     }
-    @ParameterizedTest @ValueSource(ints={1,10,100})
-    void bulkAddReadsAreObservedWithoutChangingTheExistingAlgorithm(int count)throws Exception{
+    @ParameterizedTest @ValueSource(ints={1,10,100,513,1025})
+    void bulkAddPreservesAllSelectedProductsWithReducedPrevalidationReads(int count)throws Exception{
         for(int i=0;i<count;i++)jdbc.update("INSERT INTO material(id,tenant_id,code,name,material_type_id) VALUES(?,'default',?,'批量产品',(SELECT id FROM material_type WHERE code='MT-FINISHED' AND tenant_id='default'))",1000L+i,"BULK-"+i);
         var ids=java.util.stream.LongStream.range(1000,1000+count).boxed().toList();
         var added=observe("bulk-"+count,()->service.addMembers(12L,ids));
         assertThat(added).hasSize(count);assertThat(members.countByTenantIdAndProductFamilyId("default",12L)).isEqualTo(count);
         assertThat(jdbc.queryForObject("SELECT count(*) FROM audit_event",Integer.class)).isEqualTo(2*count);
         for(var event:audits.findAll())assertThat(event.getSnapshotHash()).isEqualTo(event.computeSnapshotHash());
+        var measured=mapper.readTree(Files.readString(Path.of(System.getProperty("edhr.audit.familyTransferOutput"),"bulk-"+count+".json")));
+        assertThat(measured.path("selectCalls").asInt()).as("bounded prevalidation; realtime and merge reads remain").isLessThanOrEqualTo(4*count+Math.max(8,count/10));
+    }
+    @Test void bulkInputValidationPreservesMessagesAndNeverWrites()throws Exception{
+        String before=membershipSnapshot();
+        assertThatThrownBy(()->observe("bulk-null",()->service.addMembers(12L,null))).hasMessage("请至少选择一个产品");
+        assertThatThrownBy(()->observe("bulk-empty",()->service.addMembers(12L,List.of()))).hasMessage("请至少选择一个产品");
+        assertThatThrownBy(()->observe("bulk-null-id",()->service.addMembers(12L,Arrays.asList(103L,null)))).hasMessage("产品标识不能为空");assertUnchanged(before);
+    }
+    @Test void bulkQualificationErrorsKeepInputOrderBeforeMembershipConflicts()throws Exception{
+        String before=membershipSnapshot();
+        assertThatThrownBy(()->observe("bulk-first-ineligible",()->service.addMembers(12L,List.of(102L,999999L)))).hasMessage("产品簇成员只能添加半成品或产成品物料");
+        assertThatThrownBy(()->observe("bulk-first-missing",()->service.addMembers(12L,List.of(999999L,102L)))).isInstanceOfSatisfying(com.zencas.edhr.common.exception.BusinessException.class,e->assertThat(e.getCode()).isEqualTo("MD-002"));
+        assertThatThrownBy(()->observe("bulk-qualification-before-conflict",()->service.addMembers(12L,List.of(101L,102L)))).hasMessage("产品簇成员只能添加半成品或产成品物料");
+        assertThatThrownBy(()->observe("bulk-conflict",()->service.addMembers(12L,List.of(103L,101L)))).hasMessageContaining("原产品簇").hasMessageContaining("转移");assertUnchanged(before);
+        jdbc.update("UPDATE material SET material_type_id=(SELECT id FROM material_type WHERE code='MT-RAW' AND tenant_id='default') WHERE id=102");
+        assertThatThrownBy(()->observe("bulk-raw-type",()->service.addMembers(12L,List.of(102L)))).hasMessage("产品簇成员只能添加半成品或产成品物料");assertUnchanged(before);
+    }
+    @Test void bulkDeduplicatesAndKeepsOrderAndExistingSameFamilyIdentity()throws Exception{
+        jdbc.update("INSERT INTO material(id,tenant_id,code,name,material_type_id) SELECT 104,'default','PRODUCT-104','另一产品',id FROM material_type WHERE code='MT-SEMI' AND tenant_id='default'");
+        var added=observe("bulk-ordered-duplicates",()->service.addMembers(11L,List.of(104L,101L,103L,104L)));
+        assertThat(added).extracting(ProductFamilyMember::getProductId).containsExactly(104L,103L);
+        assertThat(members.findById(201L)).get().extracting(ProductFamilyMember::getCreatedBy).isEqualTo("旧记录人");assertThat(audits.count()).isEqualTo(4);
+        var again=observe("bulk-existing-noop",()->service.addMembers(11L,List.of(103L,101L,104L)));
+        assertThat(again).isEmpty();assertThat(audits.count()).isEqualTo(4);
+    }
+    @Test void bulkConflictChoosesFirstProductInInputOrder()throws Exception{
+        jdbc.update("INSERT INTO product_family(id,tenant_id,code,name) VALUES(13,'default','PF-OTHER','另一个簇')");
+        jdbc.update("INSERT INTO product_family_member(id,tenant_id,product_family_id,product_id) VALUES(202,'default',13,103)");
+        String before=membershipSnapshot();
+        assertThatThrownBy(()->observe("bulk-conflict-order",()->service.addMembers(12L,List.of(103L,101L)))).hasMessageContaining("另一个簇");assertUnchanged(before);
+    }
+    @Test void bulkTenantFilterDoesNotTreatAnotherTenantMembershipAsCurrent()throws Exception{
+        jdbc.update("INSERT INTO product_family_member(id,tenant_id,product_family_id,product_id) VALUES(202,'another-tenant',11,103)");
+        var added=observe("bulk-tenant",()->service.addMembers(12L,List.of(103L)));
+        assertThat(added).hasSize(1);assertThat(members.findByTenantIdAndProductId("default",103L)).get().extracting(ProductFamilyMember::getProductFamilyId).isEqualTo(12L);
+        assertThat(members.findByTenantIdAndProductId("another-tenant",103L)).isPresent();assertThat(audits.count()).isEqualTo(2);
+    }
+    @Test void bulkTypeReadsHandleMoreThanOneInternalBatch()throws Exception{
+        jdbc.execute("INSERT INTO material_type(id,tenant_id,code,name) SELECT 5000+i,'default','TEST-MT-'||i,'产成品' FROM generate_series(0,512) i");
+        jdbc.execute("INSERT INTO material(id,tenant_id,code,name,material_type_id) SELECT 5000+i,'default','TEST-P-'||i,'批量类型产品',5000+i FROM generate_series(0,512) i");
+        var ids=java.util.stream.LongStream.range(5000,5513).boxed().toList();
+        var added=observe("bulk-many-types",()->service.addMembers(12L,ids));
+        assertThat(added).extracting(ProductFamilyMember::getProductId).containsExactlyElementsOf(ids);assertThat(audits.count()).isEqualTo(1026);
+        for(var event:audits.findAll())assertThat(event.getSnapshotHash()).isEqualTo(event.computeSnapshotHash());
+    }
+    @Test void bulkThirdAuditFailureRollsBackAllNewMembersAndEarlierAudits()throws Exception{
+        jdbc.update("INSERT INTO material(id,tenant_id,code,name,material_type_id) SELECT 104,'default','PRODUCT-104','另一产品',material_type_id FROM material WHERE id=103");
+        String before=membershipSnapshot();
+        jdbc.execute("CREATE SEQUENCE edhr_test_family_audit_attempts");
+        jdbc.execute("CREATE FUNCTION edhr_test_family_audit_failure() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN IF NEW.function_name='新增产品簇成员' AND nextval('edhr_test_family_audit_attempts')=3 THEN RAISE EXCEPTION 'edhr_test_family_audit_failure' USING ERRCODE='23514'; END IF; RETURN NEW; END $$");
+        jdbc.execute("CREATE TRIGGER edhr_test_family_audit_failure BEFORE INSERT ON audit_event FOR EACH ROW EXECUTE FUNCTION edhr_test_family_audit_failure()");
+        assertThatThrownBy(()->observe("bulk-audit-failure",()->service.addMembers(12L,List.of(103L,104L)))).hasStackTraceContaining("edhr_test_family_audit_failure");
+        assertThat(jdbc.queryForObject("SELECT last_value FROM edhr_test_family_audit_attempts",Long.class)).isEqualTo(3L);assertUnchanged(before);
+    }
+    @Test void bulkRealtimeReadStillSeesMembershipCommittedAfterPrevalidation()throws Exception{
+        var gate=new MembershipReadGate();var pool=Executors.newSingleThreadExecutor();
+        var result=pool.submit(()->{
+            operator();READ_GATE.set(gate);
+            try{return observe("bulk-concurrent-membership",()->service.addMembers(12L,List.of(103L)));}
+            finally{READ_GATE.remove();AuditContext.clear();}
+        });
+        try{
+            org.awaitility.Awaitility.await().atMost(Duration.ofSeconds(6)).until(()->gate.ready.getCount()==0||result.isDone());
+            assertThat(gate.ready.getCount()).as("must reach the realtime read after prevalidation").isZero();
+            jdbc.update("INSERT INTO product_family_member(id,tenant_id,product_family_id,product_id) VALUES(202,'default',11,103)");
+            gate.release.countDown();assertThat(result.get(6,TimeUnit.SECONDS)).isEmpty();
+            assertThat(members.findById(202L)).get().extracting(ProductFamilyMember::getProductFamilyId).isEqualTo(11L);assertThat(audits.count()).isZero();
+        }finally{gate.release.countDown();pool.shutdown();assertThat(pool.awaitTermination(10,TimeUnit.SECONDS)).isTrue();}
     }
     private void assertTransferred(Long id)throws Exception{
         var saved=members.findByTenantIdAndProductId("default",101L).orElseThrow();
@@ -177,9 +248,11 @@ class ProductFamilyTransferPostgresTest {
     }
     private <T>T observe(String name,Callable<T> body)throws Exception{
         var observation=new Observation(name);CURRENT.set(observation);long start=System.nanoTime();
+        var memory=(com.sun.management.ThreadMXBean)ManagementFactory.getThreadMXBean();long allocatedBefore=memory.getThreadAllocatedBytes(Thread.currentThread().threadId());
         try{return body.call();}catch(Exception|Error ex){observation.failure=ex.getClass().getName();throw ex;}
         finally{
             CURRENT.remove();observation.elapsedNanos=System.nanoTime()-start;
+            observation.threadAllocatedBytes=memory.getThreadAllocatedBytes(Thread.currentThread().threadId())-allocatedBefore;
             observation.committedMembers=membershipSnapshot();
             observation.committedAudits=jdbc.queryForObject("SELECT coalesce(jsonb_agg(to_jsonb(a) ORDER BY id),'[]'::jsonb)::text FROM audit_event a",String.class);
             Path output=Path.of(System.getProperty("edhr.audit.familyTransferOutput"));Files.createDirectories(output);
@@ -187,14 +260,27 @@ class ProductFamilyTransferPostgresTest {
         }
     }
     static final class Observation{
-        public final String name;public int selectCalls;public final Map<String,Integer> preparedSql=new LinkedHashMap<>();public String failure;public long elapsedNanos;public String committedMembers;public String committedAudits;
+        public final String name;public int selectCalls;public final Map<String,Integer> preparedSql=new LinkedHashMap<>();public String failure;public long elapsedNanos;public long threadAllocatedBytes;public String committedMembers;public String committedAudits;
         public final String scope="calling-thread Hibernate statements with server tags; JDBC fixtures/assertions excluded, not all-network SQL or production latency";
         Observation(String name){this.name=name;}
+    }
+    static final class MembershipReadGate{
+        final CountDownLatch ready=new CountDownLatch(1),release=new CountDownLatch(1);boolean bulkSeen;int singleReads;
+        void inspect(String sql){
+            if(!sql.startsWith("select")||!sql.contains("from product_family_member"))return;
+            if(sql.contains(".product_id in ("))bulkSeen=true;
+            if(!sql.contains(".tenant_id=? and ")||!sql.contains(".product_id=?"))return;
+            if(!bulkSeen&&++singleReads<2)return; // Old algorithm's first single read is prevalidation.
+            ready.countDown();
+            try{if(!release.await(8,TimeUnit.SECONDS))throw new IllegalStateException("realtime read release timeout");}
+            catch(InterruptedException ex){Thread.currentThread().interrupt();throw new IllegalStateException(ex);}
+        }
     }
     @TestConfiguration static class ObservationConfig{
         @Bean HibernatePropertiesCustomizer familyTransferSql(){return properties->properties.put("hibernate.session_factory.statement_inspector",(org.hibernate.resource.jdbc.spi.StatementInspector)sql->{
             var observation=CURRENT.get();if(observation==null)return sql;
             String shape=sql.strip().replaceAll("\\s+"," ");observation.preparedSql.merge(shape,1,Integer::sum);
+            var gate=READ_GATE.get();if(gate!=null)gate.inspect(shape);
             if(shape.toLowerCase(Locale.ROOT).startsWith("select"))observation.selectCalls++;
             return "/* family-transfer:"+observation.name+" */ "+sql;
         });}

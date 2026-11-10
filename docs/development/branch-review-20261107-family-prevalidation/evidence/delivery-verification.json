@@ -1,0 +1,24 @@
+{
+  "observedAt": "2026-11-08T00:28:32.049031+08:00",
+  "headBeforeMetadata": "cbd075c3f3f5c4ff356e30fb22659a93d2bddbdc",
+  "actualRemoteRefs": {
+    "refs/heads/audit/edhr-dev-family-prevalidation-20261107": "cbd075c3f3f5c4ff356e30fb22659a93d2bddbdc",
+    "refs/heads/edhr-dev": "5e8edb47ae91af83555f4b67a87598c3c2a9a664"
+  },
+  "pullRequest": {
+    "baseRefName": "edhr-dev",
+    "headRefName": "audit/edhr-dev-family-prevalidation-20261107",
+    "headRefOid": "cbd075c3f3f5c4ff356e30fb22659a93d2bddbdc",
+    "mergeStateStatus": "CLEAN",
+    "mergeable": "MERGEABLE",
+    "number": 74,
+    "state": "OPEN",
+    "url": "https://github.com/IvenYi/edhr-nexus-frontend/pull/74"
+  },
+  "testedCandidate": "4ee3efba39c5ff44972561ae25956c33a0c14357",
+  "protectedInputsVerified": 29,
+  "workingTreeBeforeMetadata": "clean",
+  "afterTestChanges": "L0 audit reports/evidence only",
+  "postMetadataRequirement": "After metadata commit/push recheck actual local=remote=PRhead, clean tree and29 protected bytes; this record cannot self-reference its own future commit",
+  "noMergeDeployRestoreOrCiCalls": true
+}

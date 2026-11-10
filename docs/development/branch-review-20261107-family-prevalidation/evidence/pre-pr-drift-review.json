@@ -1,0 +1,76 @@
+{
+  "performedAt": "2026-11-08T00:26:35.150305+08:00",
+  "executionLevel": "L2",
+  "allRolesAndChildrenFinal": true,
+  "roleStatuses": {
+    "family_prevalidation_ontology": "NA/FINAL/nochildren",
+    "family_prevalidation_final_qa": "passed/FINAL/nochildren"
+  },
+  "baseCommit": "5e8edb47ae91af83555f4b67a87598c3c2a9a664",
+  "testedCandidate": "4ee3efba39c5ff44972561ae25956c33a0c14357",
+  "targetIncrement": "none; PR73 merge tree equals ffc8e443 delivery",
+  "contractIncrement": "none",
+  "scopePaths": [
+    "docs/development/branch-review-20261015/NEXT.md",
+    "docs/development/branch-review-20261107-family-prevalidation/README.md",
+    "docs/development/branch-review-20261107-family-prevalidation/decision-package.yaml",
+    "docs/development/branch-review-20261107-family-prevalidation/evidence/independent-manifest.json",
+    "docs/development/branch-review-20261107-family-prevalidation/evidence/independent.zip",
+    "docs/development/branch-review-20261107-family-prevalidation/evidence/main-manifest.json",
+    "docs/development/branch-review-20261107-family-prevalidation/evidence/main.zip",
+    "docs/development/branch-review-20261107-family-prevalidation/evidence/ontology-manifest.json",
+    "docs/development/branch-review-20261107-family-prevalidation/evidence/ontology.zip",
+    "docs/development/branch-review-20261107-family-prevalidation/findings.md",
+    "docs/development/branch-review-20261107-family-prevalidation/independent-review.md",
+    "docs/development/branch-review-20261107-family-prevalidation/index-boundary.md",
+    "docs/development/branch-review-20261107-family-prevalidation/main-analysis.json",
+    "docs/development/branch-review-20261107-family-prevalidation/ontology-result.yaml",
+    "docs/development/branch-review-20261107-family-prevalidation/ontology-review.md",
+    "docs/development/branch-review-20261107-family-prevalidation/quality-result.yaml",
+    "docs/development/branch-review-20261107-family-prevalidation/review-notes.md",
+    "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductFamilyMembershipService.java",
+    "gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/service/ProductFamilyMembershipServiceTest.java",
+    "gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/service/ProductFamilyTransferPostgresTest.java"
+  ],
+  "quality": "passed;11 required checks;PERF prevalidation scope resolved",
+  "ontology": "not-applicable;350 knowledge unchanged;28 finite records=27 scoped consistency/1 existing P1 coarse locator/provider gap;actual89 not full semantic completion",
+  "protectedInputsVerified": 29,
+  "archiveVerification": [
+    {
+      "archive": "independent.zip",
+      "archiveSha256": "db4c10d7b54ea8e261e24d42e8d18154d587aacc3d275cf1780df53406b84c05",
+      "archiveBytes": 2437042,
+      "memberCount": 112
+    },
+    {
+      "archive": "main.zip",
+      "archiveSha256": "8a3d4c19e956184ab36f72a3a9fb8e68d1995b7494433d6d910224a9001fd557",
+      "archiveBytes": 3625142,
+      "memberCount": 154
+    },
+    {
+      "archive": "ontology.zip",
+      "archiveSha256": "81afaa6df970751583856c2d38bcc75d3fe73fee4bb582066454bd569b56991c",
+      "archiveBytes": 794352,
+      "memberCount": 101
+    }
+  ],
+  "archiveMembersVerified": 367,
+  "independentManifestFilesVerified": 111,
+  "drift": "none within declared slice",
+  "productScope": "Selected material/type/member prevalidation only;private512 read groups,not total cap;original order/errors/realtime read/write/audit/transaction preserved;no index/schema/UI/policy changes",
+  "stage": "W3/W4/W5 cross-chain with W6;whole audit incomplete",
+  "remaining": [
+    "Original realtime/member-audit merge4N reads",
+    "listMemberOptions full-load pending quantification",
+    "Large-data/cold-cache/concurrency/index-plan capacity,other performance queues",
+    "W2 remainder/W7 incremental,931 knowledge86UI/A12/highrisk/complete matrices",
+    "A23 including already-reviewed code;user-paused generic signature page/production dialog",
+    "P1 exact fact provider/coarse locator evidence gap",
+    "Audit-event DB paging decision still unanswered"
+  ],
+  "wholeFileCompleted": 0,
+  "historicalUnique": "unknown",
+  "postReviewRule": "Only L0 audit reports/evidence/ledger/delivery metadata after actual review;protect29 bytes;verify local=actualremote=PRhead after push",
+  "noMergeDeployRestoreOrCiCalls": true
+}
