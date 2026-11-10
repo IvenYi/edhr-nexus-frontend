@@ -1,0 +1,68 @@
+ontologyResult:
+  result: not-applicable
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: a19067350f5e5870d8ed1013abac302702ba9d29
+    targetBranch: edhr-dev
+    targetCommit: 5db90bd643f4ebba8a1a56c275775d017b8371d1
+    contractReadCommit: a19067350f5e5870d8ed1013abac302702ba9d29
+    uncommittedContractPaths: []
+  reason: 推送前远端PR74的增量只把产品簇新增成员的预校验读取改为分批读取，没有新的业务概念、关系、基数、确认、资格、错误优先级、写动作或审计政策。实际候选a1906735保留上一已验证候选0be80abf及最新目标5db90bd6的双亲历史；知识树和业务模型说明与上一候选的blob完全一致，项目和角色契约无增量，无须再改知识资产或重写前一候选的本体结果。本结果仅是此次增量静态语义核对，不沿用旧目标冒称最终运行或质量验收。
+  changedArtifacts: []
+  knowledgeSync:
+    - id: rule.product-family.membership-cardinality
+      disposition: retained
+      scope: 一个产品最多属于一个产品簇。批量预读仍先按输入首次出现顺序逐产品验证资格，再检查已有归属冲突；已属本簇跳过、已属其他簇要求转移，实际写入前保留逐产品当前归属复核及原事务/审计。
+      sourceReferences:
+        - docs/knowledge/rules/product-process.yaml
+        - gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductFamilyMembershipService.java
+    - id: fact.catalog.productfamilytransfer-confirmation
+      disposition: retained
+      scope: 成员转移确认的控制器来源不变；本次增量未改transferMember或其确认输入，不能从新增成员预读推导新的转移资格或确认规则。
+      sourceReferences:
+        - docs/knowledge/facts/core-business.yaml
+        - gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java
+        - gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductFamilyMembershipService.java
+    - id: DEC-0095
+      disposition: retained
+      scope: 人员目标完整可达及原领域资格边界保持，新增512预校验批量只控制家族成员读取单批大小，不是人员或产品总可选人数政策，不新增总量截断。
+      sourceReferences:
+        - docs/knowledge/decisions/DEC-0095-qualified-personnel-selection-completeness.yaml
+        - gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductFamilyMembershipService.java
+    - id: DEC-0096
+      disposition: retained
+      scope: 真正系统超管只读例外、普通申请参与人范围及全部动作资格与上一候选相同；本次远端增量未触及记录控制或签署实现。
+      sourceReferences:
+        - docs/knowledge/decisions/DEC-0096-record-control-system-admin-detail-read.yaml
+        - docs/knowledge/rules/record-change.yaml
+  conflicts: []
+  questions: []
+  validationEvidence:
+    - id: validation.record-access-latest-parent-and-tree
+      checkType: evidence-path
+      command: git show/rev-parse/diff对照a1906735、0be80abf、5db90bd6的双亲、知识/业务模型树、四个契约及全部gmp-platform文件增量。
+      outcome: passed
+      evidence:
+        - docs/development/record-history-detail-access-20261109/integration-20261110/ontology-latest-validation.json
+        - 双亲与交接一致；知识树及业务模型未变；四个契约在两亲和候选一致；仅一个产品簇服务与两个测试变化且各自blob等于最新远端原件，未改写上游文件。
+    - id: validation.record-access-latest-knowledge-structure
+      checkType: schema
+      command: Ruby YAML.safe_load解析产品制程规则、DEC0095、DEC0096及核心事实，并核对knowledgeModelVersion。
+      outcome: passed
+      evidence:
+        - docs/development/record-history-detail-access-20261109/integration-20261110/ontology-latest-validation.json
+        - 四份受影响说明依赖的知识仍为0.3.25；未运行正式Java知识校验器，也未执行Maven、浏览器或数据库操作。
+    - id: validation.record-access-latest-semantic-delta
+      checkType: projection
+      command: 逐段比较ProductFamilyMembershipService的新增批量预校验与上一候选原实现，核对原输入顺序、去重/空值、物料存在和类型、归属冲突、写前复核、事务、转移和审计范围。
+      outcome: passed
+      evidence:
+        - gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductFamilyMembershipService.java
+        - docs/knowledge/rules/product-process.yaml
+        - LinkedHashSet仍保留首次输入顺序；批量结果按ID映射后重新按原顺序检查缺失/非法类型，半成品和产成品白名单不变。已有归属仅批量预读，实际写前逐ID查询仍在。512只限制每次预读参数规模，循环覆盖全部ID。transferMember、removeMember及审计写入逻辑未改，不把旧候选的运行报告当作新候选的执行证据。
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages: [P1, P2, P3]

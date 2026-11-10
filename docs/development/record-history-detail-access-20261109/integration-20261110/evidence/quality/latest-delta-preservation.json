@@ -1,0 +1,20 @@
+{
+  "oldValidatedCandidate": "0be80abfa99fdcbe2baa17d7e13c9393bb54efa3",
+  "newCandidate": "a19067350f5e5870d8ed1013abac302702ba9d29",
+  "targetCommit": "5db90bd643f4ebba8a1a56c275775d017b8371d1",
+  "changedFiles": {
+    "gmp-platform/backend/src/main": [
+      "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductFamilyMembershipService.java"
+    ],
+    "gmp-platform/backend/src/test": [
+      "gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/service/ProductFamilyMembershipServiceTest.java",
+      "gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/service/ProductFamilyTransferPostgresTest.java"
+    ],
+    "gmp-platform/frontend": [],
+    "docs/knowledge": [],
+    "docs/agents": []
+  },
+  "incomingRuntimeAndTestsPreserved": true,
+  "contractsUnchanged": true,
+  "frontendAndKnowledgeUnchanged": true
+}

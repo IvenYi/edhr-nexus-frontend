@@ -20,6 +20,13 @@ decisionPackage:
       uncommittedContractPaths: []
     featureCommit: 35e761d62d1b505c174dc050f7b5cb363b2beb14
     mergeCandidate: df344ded01679ad6a32d42636f8f4f088317eb3d
+    finalTargetCheckpoint:
+      targetCommit: 5db90bd643f4ebba8a1a56c275775d017b8371d1
+      candidateCommit: a19067350f5e5870d8ed1013abac302702ba9d29
+      previousValidatedCandidate: 0be80abfa99fdcbe2baa17d7e13c9393bb54efa3
+      change: 推送前新增PR74四提交，仅家族成员批量预校验服务及两测试和交付证据，已正常合并保留双方历史。
+      validation: 保留上一候选完整后端/页面通过原件；新增家族unit和受保护PG专项，独立复核增量及其余树保持，再重启主后端和核对数据。
+      contractAndKnowledgeDelta: 无契约或知识政策增量；本体追加实际新候选核对，不沿用旧target冒充最终通过。
     mergeMethod: 非快进普通合并，双方历史保留，无文本冲突；不新建工作树。
     impactAnalysis:
       level: L2

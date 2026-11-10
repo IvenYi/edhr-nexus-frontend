@@ -1,0 +1,27 @@
+{
+  "candidate": "a19067350f5e5870d8ed1013abac302702ba9d29",
+  "exitCode": 0,
+  "database": "edhr_family_transfer_test_record_access_quality_20261110",
+  "totals": {
+    "tests": 28,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "suites": [
+    {
+      "className": "com.zencas.edhr.masterdata.service.ProductFamilyMembershipServiceTest",
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "className": "com.zencas.edhr.masterdata.service.ProductFamilyTransferPostgresTest",
+      "tests": 23,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  ]
+}

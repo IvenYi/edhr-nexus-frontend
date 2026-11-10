@@ -1,0 +1,41 @@
+{
+  "qualification": "Static latest-target delta review only; no Maven/browser/database execution",
+  "previousCandidate": "0be80abfa99fdcbe2baa17d7e13c9393bb54efa3",
+  "target": "5db90bd643f4ebba8a1a56c275775d017b8371d1",
+  "candidate": "a19067350f5e5870d8ed1013abac302702ba9d29",
+  "parents": [
+    "0be80abfa99fdcbe2baa17d7e13c9393bb54efa3",
+    "5db90bd643f4ebba8a1a56c275775d017b8371d1"
+  ],
+  "knowledgeModelVersion": "0.3.25",
+  "unchangedKnowledgeTree": "05afce03971ad523fa2b06c7081a9bb16e571d84",
+  "contractsPreserved": [
+    "AGENTS.md",
+    "codeplzreadme.md",
+    "docs/agents/agent-handoff-contract.md",
+    "docs/agents/business-knowledge-modeler.md"
+  ],
+  "runtimeDelta": [
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductFamilyMembershipService.java",
+      "blob": "3d6fee5b884939f92ad62909a74d125d5a3f58fc",
+      "parent": "5db90bd643f4ebba8a1a56c275775d017b8371d1"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/service/ProductFamilyMembershipServiceTest.java",
+      "blob": "e6d9978868a8dd8585b81eb296eb2ffc5a9ee4f3",
+      "parent": "5db90bd643f4ebba8a1a56c275775d017b8371d1"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/service/ProductFamilyTransferPostgresTest.java",
+      "blob": "0fa3e15e673f08c3f7b3d3ce44abb33348e0ba30",
+      "parent": "5db90bd643f4ebba8a1a56c275775d017b8371d1"
+    }
+  ],
+  "parsedPaths": [
+    "docs/knowledge/rules/product-process.yaml",
+    "docs/knowledge/decisions/DEC-0095-qualified-personnel-selection-completeness.yaml",
+    "docs/knowledge/decisions/DEC-0096-record-control-system-admin-detail-read.yaml",
+    "docs/knowledge/facts/core-business.yaml"
+  ]
+}

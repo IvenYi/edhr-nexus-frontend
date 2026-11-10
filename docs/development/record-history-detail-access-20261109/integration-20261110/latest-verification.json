@@ -1,0 +1,28 @@
+{
+  "candidateCommit": "a19067350f5e5870d8ed1013abac302702ba9d29",
+  "targetCommit": "5db90bd643f4ebba8a1a56c275775d017b8371d1",
+  "verifiedAt": "2026-11-10T11:03:07.181277+08:00",
+  "legacyAuditRowsPreserved": 664,
+  "legacyAuditValuesUnchanged": true,
+  "coreBusinessTablesUnchanged": true,
+  "sourceCommitHistoriesPreserved": true,
+  "remoteRuntimeFilesRetainedExceptConfirmedPermissionFix": [
+    "gmp-platform/backend/src/main/java/com/zencas/edhr/recordcontrol/service/RecordControlService.java",
+    "gmp-platform/frontend/src/api/record-control.ts",
+    "gmp-platform/frontend/src/pages/record-control/RecordApprovalDetailPage.tsx",
+    "gmp-platform/frontend/src/pages/record-control/RecordChangePage.tsx",
+    "gmp-platform/frontend/src/pages/record-control/RecordRequestDetailPage.tsx",
+    "gmp-platform/frontend/src/pages/record-control/RecordRequestListPage.tsx"
+  ],
+  "primaryLatestFamilyTests": {
+    "unitPassed": 5,
+    "postgresPassed": 23,
+    "failures": 0,
+    "errors": 0,
+    "freshDatabase": true
+  },
+  "latestMainReadsPassed": 94,
+  "mainBackendPid": 25944,
+  "frontendPort": 3000,
+  "backendPort": 8081
+}

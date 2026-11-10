@@ -1,0 +1,126 @@
+qualityResult:
+  result: passed
+  baseCommit: 5db90bd643f4ebba8a1a56c275775d017b8371d1
+  headCommit: a19067350f5e5870d8ed1013abac302702ba9d29
+  contractBaseline:
+    sourceCommit: a19067350f5e5870d8ed1013abac302702ba9d29
+    targetBranch: edhr-dev
+    targetCommit: 5db90bd643f4ebba8a1a56c275775d017b8371d1
+    contractReadCommit: a19067350f5e5870d8ed1013abac302702ba9d29
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: dirty
+    includedPaths:
+      - docs/development/record-history-detail-access-20261109/decision-package.yaml
+      - docs/development/record-history-detail-access-20261109/integration-20261110/
+    excludedPaths:
+      - output/
+      - gmp-platform/frontend/output/
+      - premium-audit.json
+    untrackedPaths:
+      - docs/development/record-history-detail-access-20261109/integration-20261110/README.md
+      - docs/development/record-history-detail-access-20261109/integration-20261110/check-live-management.mjs
+      - docs/development/record-history-detail-access-20261109/integration-20261110/evidence/quality/
+      - docs/development/record-history-detail-access-20261109/integration-20261110/quality-result.yaml
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+    - id: check.record-access-merge-history-and-contracts
+      required: true
+      category: integration
+      description: 独立核对最新候选双亲历史、功能提交与远端保留，以及契约无增量。
+      method: command-and-source-review
+      command: git show --no-patch --format='%H %P' a19067350f5e5870d8ed1013abac302702ba9d29; git merge-base --is-ancestor 35e761d62d1b505c174dc050f7b5cb363b2beb14 HEAD; git merge-base --is-ancestor 5db90bd643f4ebba8a1a56c275775d017b8371d1 HEAD
+      outcome: passed
+      evidence:
+        - docs/development/record-history-detail-access-20261109/integration-20261110/evidence/quality/latest-delta-preservation.json
+        - a190的双亲为已验0be80abf和最新5db90bd6；项目、编码、角色、交接契约与前一已验候选相同，不把旧目标报告冒认为新目标验证。
+    - id: check.record-access-merge-policy-and-implementation
+      required: true
+      category: authorization
+      description: 复核DEC0095/0096、DEC0087-09局部替代与真实签署/本人任务边界，以及实际读取投影和详情授权一致。
+      method: source-and-knowledge-review
+      command: git diff 5db90bd643f4ebba8a1a56c275775d017b8371d1..a19067350f5e5870d8ed1013abac302702ba9d29 -- gmp-platform/backend/src/main gmp-platform/frontend/src docs/knowledge
+      outcome: passed
+      evidence:
+        - docs/development/record-history-detail-access-20261109/integration-20261110/ontology-result.yaml
+        - docs/development/record-history-detail-access-20261109/integration-20261110/ontology-latest-result.yaml
+        - ACTIVE保留admin由认证ID反查，不按显示名、普通ADMIN角色或前端标志；列表与来源仅投影，详情仍独立检查。申请、生效、审批、转办、改派、签署和撤回动作资格保持。
+        - 成功入口使用提交后重新查询的同一申请资格；两种详情显示真实接口错误。DEC0095合法候选完整可达没有扩大授权集合；当前规则、原决策及历史原件保留。
+    - id: check.record-access-merge-regression-fixtures
+      required: true
+      category: test-review
+      description: 独立审查五个后端夹具和前端Page模拟响应适配，不以放宽产品规则或跳过断言消除失败。
+      method: diff-review
+      command: git diff df344ded01679ad6a32d42636f8f4f088317eb3d..0be80abfa99fdcbe2baa17d7e13c9393bb54efa3 -- gmp-platform/backend/src/test gmp-platform/frontend/scripts/test-workflow-list-ui-browser.mjs
+      outcome: passed
+      evidence:
+        - Page适配保留相同身份、名称和候选数量断言；迁移文件清单继续精确匹配，仅补既有0091及远端0092。
+        - 空附件mock实现当前forSubmission接口，工单关闭只补既有执行仓库依赖；状态、签名、冻结、原候选、审计及事务断言保留。
+        - 工单详情与其他操作分别严格断言既有权限表达式，没有改变运行控制器授权或接受任意表达式。
+    - id: check.record-access-merge-complete-backend
+      required: true
+      category: backend-regression
+      description: 独立在0be候选运行完整后端套件，并显式配置四个受保护隔离库及审计输出目录。
+      method: command
+      command: mvn -q -Dedhr.audit.hash=true -Dedhr.audit.hashOutput=/tmp/edhr-record-access-merge-qa-hash -Dedhr.audit.readObservation=true -Dedhr.audit.readOutput=/tmp/edhr-record-access-merge-qa-read test
+      outcome: passed
+      evidence:
+        - docs/development/record-history-detail-access-20261109/integration-20261110/evidence/quality/backend-results.json
+        - docs/development/record-history-detail-access-20261109/integration-20261110/evidence/quality/RecordControlPostgresIntegrationTest.txt
+        - docs/development/record-history-detail-access-20261109/integration-20261110/evidence/quality/AuditHashMigrationPostgresTest.txt
+        - 实际旧候选0be80abf共2144项，1794通过、350按专用条件跳过，0失败0错误；含66项真实PG记录控制与2项真实审计升级兼容测试。记录控制、审计散列、审计读取和审计迁移均使用各自明确命名的隔离库，未指向主库。
+    - id: check.record-access-latest-family-delta
+      required: true
+      category: backend-increment-regression
+      description: 最新远端PR74合并后，独立复核唯一运行增量和两测试，使用全新专用PG库验证批量预校验及原事务/审计边界。
+      method: command-and-tree-review
+      command: mvn -q '-Dtest=ProductFamilyMembershipServiceTest,ProductFamilyTransferPostgresTest' -Dedhr.audit.familyTransfer=true -Dedhr.audit.familyTransferOutput=/tmp/edhr-record-access-merge-qa-family test
+      outcome: passed
+      evidence:
+        - docs/development/record-history-detail-access-20261109/integration-20261110/evidence/quality/latest-family-results.json
+        - docs/development/record-history-detail-access-20261109/integration-20261110/evidence/quality/latest-delta-preservation.json
+        - a190候选独立5项单元及23项真实PG共28项通过，0失败0错误0跳过；库为edhr_family_transfer_test_record_access_quality_20261110，不复用已有失败运行留下类型的库。
+        - 相较0be仅家族预校验运行文件与2测试改变，三者均与最新target原blob一致；其余已验运行/测试树、完整前端、知识与契约保持，因此没有重复2144项无关测试或将旧完整结果直接套到新家族代码。
+    - id: check.record-access-merge-ui-and-build
+      required: true
+      category: frontend-regression
+      description: 独立运行维护页面、分页人员选择、构建、列表规范及菜单路由，真实组件配合合成API，不操作主库业务。
+      method: command
+      command: node scripts/test-workflow-list-ui-browser.mjs; node scripts/test-personnel-targets-browser.mjs; npm run build; npm run verify:list-table-style; node --test scripts/test-records-menu.mjs scripts/test-report-menu-navigation.mjs
+      outcome: passed
+      evidence:
+        - docs/development/record-history-detail-access-20261109/integration-20261110/evidence/quality/ui-result.json
+        - docs/development/record-history-detail-access-20261109/integration-20261110/evidence/quality/personnel-result.json
+        - docs/development/record-history-detail-access-20261109/integration-20261110/evidence/quality/build.txt
+        - docs/development/record-history-detail-access-20261109/integration-20261110/evidence/quality/list-style.txt
+        - docs/development/record-history-detail-access-20261109/integration-20261110/evidence/quality/routes.txt
+        - 0be实际独立58个维护页面场景、11个人员选择场景、20菜单/路由及构建/规范全部通过；a190前端blob与该候选完全一致。浏览器使用项目匹配的缓存Chromium1208。
+    - id: check.record-access-merge-live-reads-and-data
+      required: true
+      category: runtime-and-data-preservation
+      description: 新候选后端重启后独立核对94次已有账号读取，以及核心表和旧审计逐行摘要。
+      method: command-and-read-only-sql
+      command: node docs/development/record-history-detail-access-20261109/integration-20261110/evidence/quality/check-live-management.mjs
+      outcome: passed
+      evidence:
+        - docs/development/record-history-detail-access-20261109/integration-20261110/evidence/quality/live-management-results.json
+        - docs/development/record-history-detail-access-20261109/integration-20261110/evidence/quality/candidate-and-data.json
+        - docs/development/record-history-detail-access-20261109/integration-20261110/evidence/quality/latest-data-preservation.json
+        - 实际新后端PID25944启动后独立3账号94次读取通过，含列表/来源/详情一致、本人队列、修订、候选及分页重新分配目标；POST仅为任务摘要查询。未提交任何主库业务动作或操作真实Chrome。
+        - 0092列可空且无默认值，变更集只执行一次；五张核心业务表完整行摘要与集成前相同，664条旧审计逐ID排除新增列后的摘要全部保留，新增审计0行。正常登录认证元数据不在不变声明内。
+    - id: check.record-access-merge-final-diff
+      required: true
+      category: delivery
+      description: 运行/测试/知识定义相对实际候选无未提交修改，最终待提交内容限集成文档和证据。
+      method: command
+      command: git diff --check; git diff HEAD -- gmp-platform/backend/src gmp-platform/frontend/src gmp-platform/frontend/scripts docs/knowledge
+      outcome: passed
+      evidence:
+        - 退出码0且后一个差异为空；当前HEAD为a19067350f5e5870d8ed1013abac302702ba9d29，远端引用为5db90bd643f4ebba8a1a56c275775d017b8371d1。
+  findings: []
+  residualRisks:
+    - 350项专用条件测试未执行，未将其计作通过；本次不声称覆盖全部生产、性能、历史迁移和多租户组合或CSV验收。
+    - 最新a190采用已验0be的未变树加28项家族增量验证，不声称在a190重新运行完整2144项；证据分别保留真实候选和时点。
+    - 当前本地质量通过不证明托管CI必需检查或分支保护已启用，未核验这些仓库设置；本报告不包含后续Git推送结果或生产部署。
+    - 今日未使用真实超管浏览器登录验收；真正超管和伪装/停用负例由真实PG矩阵覆盖，当前普通账号由实际API读取覆盖。
+  blockingConditions: []
