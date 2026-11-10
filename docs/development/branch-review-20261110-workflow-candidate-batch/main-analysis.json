@@ -1,0 +1,51 @@
+{
+  "observedAt": "2026-11-10T12:02:54.352433+00:00",
+  "target": "3b7e4d9a35503020e0baef2a91bb3e9a663fcb05",
+  "testedCandidate": "c2691bf711ceb8f7033dae23e28dfaa8104344a5",
+  "protectedInputsMatch": 30,
+  "nativeTestBytesMatchOldServiceProbe": true,
+  "mainTotals": {
+    "tests": 103,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "nativePostgres": 83,
+  "otherUnitMethodSecurityStatic": 20,
+  "knowledgeActual": {
+    "tests": 89,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "oldServiceSameNativeTestBytes": {
+    "tests": 14,
+    "passed": 8,
+    "failures": 6,
+    "errors": 0,
+    "skipped": 0
+  },
+  "initialFixtureFailurePreserved": {
+    "tests": 14,
+    "failures": 6,
+    "errors": 2,
+    "skipped": 0
+  },
+  "all7FieldsEqualPriorFor20Observations": true,
+  "readOnlyTenTableDigestsUnchanged": 5,
+  "candidateMockMvcRequests": 20,
+  "actualBusinessSelects": 20,
+  "actualPlans": 20,
+  "originalParameterDetailLines": 40,
+  "allRelationScanLoops": 1,
+  "allPlansTempBlocks": 0,
+  "knowledgeFilesUnchanged": 353,
+  "indexConclusion": "No additional index justified by observed0..1000 single-pass hash join/sort; no migration",
+  "userApproval": "Explicit next-batch bulk current-version+necessary field projection; not a policy change",
+  "limitations": [
+    "Local warm instrumented timings and cumulative calling-thread allocation are not SLA or peak",
+    "Full candidate response still O(M); larger UI catalog rendering and concurrency not measured",
+    "No browser/strict/lint rerun; existing86/missinglint and whole audit queues remain",
+    "Old-service probe retains newly added unused repository query; executed listing service is exact target bytes"
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "sealedAt": "2026-11-10T12:07:22.791174+00:00",
+  "testedCandidate": "c2691bf711ceb8f7033dae23e28dfaa8104344a5",
+  "packages": [
+    {
+      "name": "main",
+      "path": "evidence/main.zip",
+      "bytes": 2350419,
+      "sha256": "6b56672c7071a2e2a07ce9781af700fe8e6e8c48271aeec12a0a1090c4031d3e",
+      "members": 158,
+      "manifest": "evidence/main-manifest.json",
+      "manifestSha256": "cc79c1a07ed0f45d1ff5c5a8320e9987eb543aa6c28a0dd43a558acf931d6de3"
+    },
+    {
+      "name": "ontology",
+      "path": "evidence/ontology.zip",
+      "bytes": 507147,
+      "sha256": "64049c5556f8e18d8dd9a926d592a96045b11c77b0cf3820a60987764e5a391c",
+      "members": 79,
+      "manifest": "evidence/ontology-manifest.json",
+      "manifestSha256": "b41fe89f90a1802033bc23dd7443ee5ad256d923b48a2904f3fd30215f1133b2"
+    },
+    {
+      "name": "independent",
+      "path": "evidence/independent.zip",
+      "bytes": 2894809,
+      "sha256": "d3436e12d1ae79f893ba2e7bc160f1187b3c4b2ade2df96118e53b1e00d0b99c",
+      "members": 470,
+      "manifest": "evidence/independent-manifest.json",
+      "manifestSha256": "05d77c9d80b205f2df54deedfc7f4ea5f07864c45624d10c8a2fe5f926e95260"
+    }
+  ],
+  "allArchiveMemberHashesVerified": true,
+  "originalRoleManifestsAndSha256SumsVerified": true,
+  "scope": "Immutable point-in-time original evidence including initial fixture failure and tooling correction receipt"
+}

@@ -1,0 +1,59 @@
+ontologyResult:
+  result: not-applicable
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: c2691bf711ceb8f7033dae23e28dfaa8104344a5
+    targetBranch: edhr-dev
+    targetCommit: 3b7e4d9a35503020e0baef2a91bb3e9a663fcb05
+    contractReadCommit: 3b7e4d9a35503020e0baef2a91bb3e9a663fcb05
+    uncommittedContractPaths: []
+  reason: 用户只授权候选current批读及必要字段精简；实际联合投影与service保持全部结果、名称排序、类型/发布/current、原多current失败及普通认证边界，原start/submit/签名/快照/审计/公开契约/UI/schema均未改。没有新的概念/政策/替代或客户解释，不因工程优化新建重复本体资产或改历史provenance。
+  changedArtifacts: []
+  knowledgeSync: []
+  conflicts: []
+  questions: []
+  validationEvidence:
+  - id: validation.source-contract-candidate
+    checkType: evidence-path
+    command: 'python3 finalize.py: independent target fetch,candidate source byte/Git
+      binding and unchanged command/contract/UI/schema proof'
+    outcome: passed
+    evidence:
+    - source-binding.json
+    - candidate.diff
+    - source
+  - id: validation.finite-semantics
+    checkType: projection
+    command: Read same10 current original records plus exact historical permission
+      replacement and existing nonMVP question;inspect candidate joint query/duplicate-before-status/start
+      boundaries
+    outcome: passed
+    evidence:
+    - finite-review-records.json
+    - engineering-boundaries.json
+    - REVIEW.md
+  - id: validation.knowledge-input-byte-identity
+    checkType: reference
+    command: Compare353 knowledge and6 validator/POM inputs against base/candidate
+      and original6f trees
+    outcome: passed
+    evidence:
+    - knowledge-inventory.json
+    - knowledge-validation-reuse.json
+  - id: validation.reused-original-knowledge89
+    checkType: schema
+    command: REUSED ONLY original6f actual89;not executed by this role
+    outcome: passed
+    evidence:
+    - reused-knowledge-6f/knowledge/run.json
+    - reused-knowledge-6f/knowledge/maven.log
+    - reused-knowledge-6f/knowledge/TEST-com.zencas.edhr.knowledge.BusinessKnowledgeModelTest.xml
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages:
+    - P1
+    - P2
+    - P3
