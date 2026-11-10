@@ -1,5 +1,7 @@
 # PR77 合入后的候选流程目录性能取证
 
+已交付 [PR78](https://github.com/IvenYi/edhr-nexus-frontend/pull/78)，`audit/edhr-dev-workflow-candidate-capacity-20261110` → `edhr-dev`。登记前实际观察OPEN/MERGEABLE/CLEAN，本地/真实远端/PR head均为验收提交 `57ed42003a74fe48c169824ec0bb684c00b76455`，30输入仍与受测字节一致，见 [交付核验](evidence/delivery-verification.json)。其后仅L0登记，推送后再次核对。建议按本批测试/取证范围人工合入；下一批批读＋必要字段投影已授权，当前风险尚未修复。
+
 L2，基线 `edhr-dev@68861c2ab0291fc8f20271c2d2cae37d1eca66fd`。PR77已合入且整树同773fa942，无新增产品/知识/契约。沿原W3/W7与W6性能/健壮性/A23队列，回到原始service、repository、canonical schema和隔离PG量化前两批的候选当前版本读取信号。
 
 **确认1+D次读取的性能风险，未确认新的正常数据功能缺陷。** 100个可选流程和2个过滤对照需要103条SQL，1000个需要1003条；全部选项返回，没有100个总量限制。风险编号 `PERF-WORKFLOW-CANDIDATE-CURRENT-VERSION-001`，与人员候选数组、文档版本及记录列表资格查询为不同消费者，未重复计修复。
