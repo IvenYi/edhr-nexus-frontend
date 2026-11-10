@@ -1,0 +1,70 @@
+decisionPackage:
+  id: DEC-PACKAGE-RECORD-SUBTABLE-SIGNATURE-20261110
+  scope: W3/W5 record-control proposed revision signature ownership; W6 robustness/A23 and W7 incremental audit
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: 0701b3d5d99787195e9d4c33935ae36da370839d
+    targetBranch: edhr-dev
+    targetCommit: 0701b3d5d99787195e9d4c33935ae36da370839d
+    contractReadCommit: 0701b3d5d99787195e9d4c33935ae36da370839d
+    uncommittedContractPaths: []
+  summary: PR79真实合入，整树同42872814，无额外代码/知识/契约。继续原整体审计，不重开已关闭候选性能项。RecordControlDiff的父子表readOnly/disabled早返回跳过历史签名清除，拟修订可能携带Rev1签名；按既有DEC0087-06及原用户证据修复，不新增重签政策或回写历史。
+  confirmed: {concepts: [], relationships: [], rules: [], executionContracts: []}
+  inferred: []
+  unresolved: []
+  replacementScopes: []
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - area: proposed-revision-signature-ownership
+        change: 保留原输入权限校验和差异计算，在拟修订副本统一按冻结字段结构清除历史签名，覆盖父子表只读/停用及输入有无该子表；签名清除不作为内容差异
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/recordcontrol/service/RecordControlDiff.java, docs/knowledge/decisions/DEC-0087-record-control-v1-closure.yaml, docs/knowledge/evidence/record-control-v1-user-confirmed.md]
+    transitiveImpacts:
+      - area: approval-live-and-history
+        change: 拟值进入申请签署载荷、审批后Rev2/当前记录/执行值均不继承旧签名；Rev1及原signature行/摘要/旧快照保留
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/recordcontrol/service/RecordControlService.java]
+    potentialImpacts:
+      - area: frozen-field-structure
+        concern: 递归只消费当前冻结字段结构，不将签名样式对象或其他同名业务键当成签名；不扩大公式/嵌套设计支持或擅改只读规则
+        evidenceReferences: []
+    unaffectedAreas:
+      - area: existing-behavior
+        change: 提交/审批权限、真实密码/签署、申请及审批签名、业务字段锁、rowId、差异类型、作废、事务锁/审计、UI、候选批读及全部暂停项保持
+        evidenceReferences: []
+    compatibilityAndMigration:
+      - area: retained-history
+        change: 只影响未来prepare的新拟修订，不清理旧申请或历史数据，无schema/索引/迁移
+        evidenceReferences: []
+    snapshotImpacts:
+      - area: frozen-form-and-source
+        change: 源值和模板快照不变，清除只在deepCopy拟值执行；保留原业务签名在旧修订解释，不自动要求对Rev2重签
+        evidenceReferences: []
+    auditImpacts:
+      - area: actual-new-actions
+        change: 原申请/审批证据继续各归其动作，既有摘要算法和事件/原子回滚保持；真实PG核旧签名整行和原修订值/hash不变
+        evidenceReferences: []
+    permissionImpacts:
+      - area: locked-input
+        change: 原只读/停用父表或签名值的篡改仍拒绝，不因清除签名允许改其他内容
+        evidenceReferences: []
+    testImpacts:
+      - scope: unit-and-native-postgres
+        scenarios: [只读/停用父表与输入有无子表四组合, 源值/快照不可变及行身份, 无内容差异不因清除签名生成差异, 只读内容篡改拒绝, 实际signField与JWT提交/审批/历史链, 旧signature行及Rev1值/hash不变, 全记录控制及候选回归, 同字节旧源反证]
+        evidenceReferences: []
+    evidenceGaps: [合成独立来源和测试认证图片不代表生产签署发布或浏览器验收, 全知识语义/W2余项/W3-W5跨链/W6健壮性性能具体抽取及已审A23/W7/A12/高风险/完整矩阵/容量UNKNOWN/strict86及lint/用户暂停继续, 引用上下文及另一路摘要全数组读取为待去重和复现的源码信号，本批不优化或关闭]
+  extensionStrategy:
+    selectedPaths: [product-core]
+    rationale: 既有RecordControlDiff所有的拟值规范化；统一清除职责而不复制工作流/签署引擎，不引入插件/缓存/配置或新政策
+    ownershipBoundaries:
+      - {owner: RecordControlDiff, responsibility: 输入约束/差异及新拟值不继承历史签名}
+      - {owner: RecordControlService, responsibility: 原事务签署/审批生效/历史保留，运行代码不改}
+  affectedFiles:
+    - {path: gmp-platform/backend/src/main/java/com/zencas/edhr/recordcontrol/service/RecordControlDiff.java, changeType: update, reason: 统一按冻结结构清除拟值历史签名}
+    - {path: gmp-platform/backend/src/test/java/com/zencas/edhr/recordcontrol/service/RecordControlDiffTest.java, changeType: update, reason: 四组合及不变/无差异/锁保护}
+    - {path: gmp-platform/backend/src/test/java/com/zencas/edhr/recordcontrol/service/RecordControlPostgresIntegrationTest.java, changeType: update, reason: 四组合真实PG签署到历史回归及旧源反证}
+  acceptanceScenarios:
+    - id: scenario.locked-subtable-signature-ownership
+      given: 已完成来源包含只读或停用子表的真实签名，新申请只变更可编辑主字段
+      when: 提交申请并审批生效
+      then: 拟值与新修订/当前/执行值不携带旧签名，Rev1与旧signature/摘要保留，来源快照/其他业务值/行身份/原权限不变
+      evidenceRequirements: [同字节旧源真实红及当前XML, 原生PG+signField+JWT-MockMvc提交/审批/历史与原件不变, 本体有限核对及全新独立quality, 全部FINAL后实际PR前任务漂移及阶段复核]
