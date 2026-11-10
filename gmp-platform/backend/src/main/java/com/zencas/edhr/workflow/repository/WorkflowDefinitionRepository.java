@@ -19,6 +19,32 @@ public interface WorkflowDefinitionRepository extends JpaRepository<WorkflowDefi
     List<WorkflowDefinition> findByTypeAndBusinessTypeAndStatusOrderByNameAsc(
             String type, String businessType, String status);
 
+    interface CandidateVersion {
+        Long getDefinitionId();
+        Long getVersionId();
+        String getName();
+        String getCode();
+        Integer getVersionNumber();
+        String getBusinessType();
+        String getVersionStatus();
+    }
+
+    @Query("""
+            select definition.id as definitionId, version.id as versionId,
+                   definition.name as name, definition.code as code,
+                   version.versionNumber as versionNumber,
+                   definition.businessType as businessType, version.status as versionStatus
+            from WorkflowDefinition definition
+            join WorkflowDefinitionVersion version
+              on version.definitionId = definition.id and version.isCurrent = true
+            where definition.type = :type and definition.businessType = :businessType
+              and definition.status = :status
+            order by definition.name asc
+            """)
+    List<CandidateVersion> findCandidateVersions(@Param("type") String type,
+                                                @Param("businessType") String businessType,
+                                                @Param("status") String status);
+
     @Query("""
             select definition from WorkflowDefinition definition
             where definition.type = :type

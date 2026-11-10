@@ -8,16 +8,16 @@ import com.zencas.edhr.workflow.contract.RecordControlWorkflowContracts.StartCom
 import com.zencas.edhr.workflow.contract.RecordControlWorkflowContracts.StartResult;
 import com.zencas.edhr.workflow.contract.RecordControlWorkflowPort;
 import com.zencas.edhr.workflow.engine.WorkflowEngine;
-import com.zencas.edhr.workflow.entity.WorkflowDefinition;
-import com.zencas.edhr.workflow.entity.WorkflowDefinitionVersion;
 import com.zencas.edhr.workflow.entity.WorkflowInstance;
 import com.zencas.edhr.workflow.repository.WorkflowDefinitionRepository;
-import com.zencas.edhr.workflow.repository.WorkflowDefinitionVersionRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 /** Workflow-side implementation of the record-control integration boundary. */
@@ -29,7 +29,6 @@ public class RecordControlWorkflowService implements RecordControlWorkflowPort {
     private static final String PUBLISHED = "PUBLISHED";
 
     private final WorkflowDefinitionRepository definitionRepository;
-    private final WorkflowDefinitionVersionRepository versionRepository;
     private final WorkflowEngine workflowEngine;
 
     @Override
@@ -38,12 +37,22 @@ public class RecordControlWorkflowService implements RecordControlWorkflowPort {
         if (businessType == null) {
             throw new BusinessException(ErrorCode.WF_013);
         }
-        return definitionRepository
-                .findByTypeAndBusinessTypeAndStatusOrderByNameAsc(DEFINITION_TYPE, businessType.name(), PUBLISHED)
-                .stream()
-                .map(this::toPublishedCandidate)
-                .flatMap(java.util.Optional::stream)
-                .toList();
+        var versions = definitionRepository.findCandidateVersions(DEFINITION_TYPE, businessType.name(), PUBLISHED);
+        var seen = new HashSet<Long>();
+        var candidates = new ArrayList<PublishedCandidate>();
+        for (var version : versions) {
+            // The previous Optional lookup rejected multiple current versions before filtering status.
+            if (!seen.add(version.getDefinitionId())) {
+                throw new IncorrectResultSizeDataAccessException(1);
+            }
+            if (PUBLISHED.equals(version.getVersionStatus())) {
+                candidates.add(new PublishedCandidate(
+                        version.getDefinitionId().toString(), version.getVersionId().toString(),
+                        version.getName(), version.getCode(), version.getVersionNumber(),
+                        BusinessType.valueOf(version.getBusinessType()), version.getVersionStatus()));
+            }
+        }
+        return candidates;
     }
 
     @Override
@@ -69,19 +78,6 @@ public class RecordControlWorkflowService implements RecordControlWorkflowPort {
                 instance.getStartedAt(),
                 instance.getAuditCorrelationId(),
                 instance.getWorkflowSnapshotHash());
-    }
-
-    private java.util.Optional<PublishedCandidate> toPublishedCandidate(WorkflowDefinition definition) {
-        return versionRepository.findByDefinitionIdAndIsCurrentTrue(definition.getId())
-                .filter(version -> PUBLISHED.equals(version.getStatus()))
-                .map(version -> new PublishedCandidate(
-                        definition.getId().toString(),
-                        version.getId().toString(),
-                        definition.getName(),
-                        definition.getCode(),
-                        version.getVersionNumber(),
-                        BusinessType.valueOf(definition.getBusinessType()),
-                        version.getStatus()));
     }
 
     private void validateStartCommand(StartCommand command) {

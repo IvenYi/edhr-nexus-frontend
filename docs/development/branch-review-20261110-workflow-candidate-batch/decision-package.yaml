@@ -1,0 +1,71 @@
+decisionPackage:
+  id: DEC-PACKAGE-WORKFLOW-CANDIDATE-BATCH-20261110
+  scope: edhr-dev record-control candidate current-version read optimization; W3/W7 and W6 performance/robustness/A23
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: 3b7e4d9a35503020e0baef2a91bb3e9a663fcb05
+    targetBranch: edhr-dev
+    targetCommit: 3b7e4d9a35503020e0baef2a91bb3e9a663fcb05
+    contractReadCommit: 3b7e4d9a35503020e0baef2a91bb3e9a663fcb05
+    uncommittedContractPaths: []
+  summary: PR78已真实合入且整树同99fa3fd7，无外部代码/知识/契约增量。用户已明确批准下一批批量读取current并精简字段；用一次标量联合查询消除逐定义读取，不改变全部候选、排序、过滤或既有多current失败。工程优化不是新增业务政策，原全审余项继续。
+  confirmed: {concepts: [], relationships: [], rules: [], executionContracts: []}
+  inferred: []
+  unresolved: []
+  replacementScopes: []
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - area: workflow-candidate-read
+        change: 当前版本与已发布且业务类型匹配的定义联合投影7字段，保留数据库名称排序；current的状态在唯一性核对后过滤，无IN参数列表或总量截断
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/RecordControlWorkflowService.java, docs/development/branch-review-20261110-workflow-candidate-capacity/performance-next.md, docs/development/branch-review-20261110-workflow-candidate-capacity/next-batch-authorization.json]
+    transitiveImpacts:
+      - area: record-change-options
+        change: 同一GET及PublishedCandidate契约，CHANGE/OBSOLETE均完整可达；不新增默认选择或自动重试
+        evidenceReferences: [docs/knowledge/decisions/DEC-0094-record-control-authenticated-candidate-read.yaml]
+    potentialImpacts:
+      - area: catalog-scale
+        concern: 联合查询仍完整返回全部选项，超本次1000合成目录及前端全量渲染不宣称容量闭环；按实际计划判断索引，不预设新索引
+        evidenceReferences: []
+    unaffectedAreas:
+      - area: commands-and-paused
+        change: 发起时实际版本/资格/签名复核、审批、快照、业务事务、UI及通用签名页/生产弹窗暂停不变；其他未答性能方案不实施
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java]
+    compatibilityAndMigration:
+      - area: current-version-errors
+        change: 无current或current未发布不回退历史版；多个current在过滤发布状态前仍抛IncorrectResultSizeDataAccessException，不取最新/首个；无schema/数据迁移
+        evidenceReferences: [docs/development/branch-review-20261110-workflow-candidate-capacity/review.md]
+    snapshotImpacts:
+      - area: read-view
+        change: 一条SELECT读取配置一致视图；候选不是执行承诺，后续命令继续原实时复核，历史冻结不重写
+        evidenceReferences: []
+    auditImpacts:
+      - area: read-only
+        change: 真实PG十表前后摘要及SQL无写核对，不新增或删除业务审计
+        evidenceReferences: []
+    permissionImpacts:
+      - area: retained
+        change: DEC0094普通认证无创建权限可读、匿名拒绝，读取不授予申请/审批/菜单权限；MVP完整多租户原未决保持
+        evidenceReferences: [docs/knowledge/decisions/DEC-0094-record-control-authenticated-candidate-read.yaml, docs/knowledge/open-questions.yaml]
+    testImpacts:
+      - scope: native-postgres-and-adjacent
+        scenarios: [0/1/10/100/1000两类完整7字段及排序, 每次1条SQL且不读JSON实体列, 多current发布/草稿混合矩阵, 缺current/错类型/草稿定义/历史版排除, 宽JSON投影, 普通JWT/匿名MockMvc, 十表无写, 原发起及记录控制回归, 同字节旧服务预算反证]
+        evidenceReferences: []
+    evidenceGaps: [合成热缓存及带采集计时不是生产SLA/峰值/并发, 无UI修改不将旧浏览器当本轮新跑, 全知识语义/静态86/lint配置/W2余项/W3-W5跨链/W6及已审A23/W7/A12/完整矩阵/容量UNKNOWN/暂停项继续]
+  extensionStrategy:
+    selectedPaths: [product-core]
+    rationale: 读取投影属于既有workflow仓储及service；命令编排保留，不引入通用查询框架/缓存/配置或客户分支
+    ownershipBoundaries:
+      - {owner: WorkflowDefinitionRepository, responsibility: 联合查询与必要标量投影}
+      - {owner: RecordControlWorkflowService, responsibility: 候选映射及原唯一性/发布过滤边界；start原样保留}
+  affectedFiles:
+    - {path: gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/repository/WorkflowDefinitionRepository.java, changeType: update, reason: 批读及窄字段投影}
+    - {path: gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/RecordControlWorkflowService.java, changeType: update, reason: 消费批读且保持现有异常}
+    - {path: gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/service/RecordControlWorkflowServiceTest.java, changeType: update, reason: 原映射/空类型及命令回归}
+    - {path: gmp-platform/backend/src/test/java/com/zencas/edhr/recordcontrol/service/RecordControlPostgresIntegrationTest.java, changeType: update, reason: 原真实PG容量观察补查询预算/混合异常/窄字段}
+  acceptanceScenarios:
+    - id: scenario.workflow-candidate-batch-compatible
+      given: 两业务类型的有效及过滤目录、缺失/草稿/历史版本与多current坏数据
+      when: 原候选接口在真实PG读取
+      then: 全部7字段结果/排序/权限及异常保持，规模增长不增加SQL次数或读取图JSON，十表保持且命令原回归通过
+      evidenceRequirements: [旧服务预算真实失败及当前实际XML, 原SQL参数/auto_explain计划/HTTP与摘要, 独立本体范围与质量结果, 全部专业FINAL后实际PR前漂移及阶段复核]
