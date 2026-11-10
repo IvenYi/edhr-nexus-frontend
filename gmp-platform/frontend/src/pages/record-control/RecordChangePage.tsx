@@ -35,6 +35,7 @@ export default function RecordChangePage() {
   const [activeRequestNoticeOpen, setActiveRequestNoticeOpen] = useState(false);
   const [pendingSearch, setPendingSearch] = useState('');
   const [candidatesLoading, setCandidatesLoading] = useState(false);
+  const [candidatesError, setCandidatesError] = useState('');
   const lookupSequence = useRef(0);
   const recordId = record?.id;
 
@@ -47,7 +48,7 @@ export default function RecordChangePage() {
     listPublishedRecordControlWorkflowCandidates(mode).then((result) => {
       if (active) setCandidates(result);
     }).catch((cause) => {
-      if (active) setError(cause instanceof Error ? cause.message : '可用审批流程加载失败');
+      if (active) setCandidatesError(cause instanceof Error ? cause.message : '可用审批流程加载失败');
     }).finally(() => { if (active) setCandidatesLoading(false); });
     return () => { active = false; };
   }, [mode, recordId]);
@@ -71,7 +72,7 @@ export default function RecordChangePage() {
   const loadRecord = useCallback(async (instanceNo: string) => {
     const request = ++lookupSequence.current;
     setLoading(true); setError(''); setRequestId(null); setMode('READ'); setActiveRequestNoticeOpen(false);
-    setRecord(null); setValues({}); setDialog(false); setPassword(''); setCandidates([]); setWorkflowVersionId('');
+    setRecord(null); setValues({}); setDialog(false); setPassword(''); setCandidates([]); setWorkflowVersionId(''); setCandidatesError('');
     try {
       const found = await findRecordByNumber(instanceNo);
       if (request !== lookupSequence.current) return;
@@ -93,7 +94,7 @@ export default function RecordChangePage() {
   const chooseMode = (next: RecordControlBusinessType) => {
     if (!record || !eligible) return;
     setMode(next); setValues(structuredClone(record.fieldValues)); setReason(''); setPassword('');
-    setWorkflowVersionId(''); setCandidates([]); setError('');
+    setWorkflowVersionId(''); setCandidates([]); setError(''); setCandidatesError('');
   };
 
   const openConfirmation = () => {
@@ -138,7 +139,8 @@ export default function RecordChangePage() {
   } : undefined;
 
   return <Box sx={{ height: { xs: 'auto', lg: 'calc(100vh - 150px)' }, minHeight: 0, display: 'flex', flexDirection: 'column', overflow: { xs: 'visible', lg: 'hidden' } }}>
-    {error && <Alert severity="error" sx={{ mb: 1.5 }} onClose={() => setError('')}>{error}</Alert>}
+    {!dialog && error && <Alert severity="error" sx={{ mb: 1.5 }} onClose={() => setError('')}>{error}</Alert>}
+    {!dialog && mode !== 'READ' && candidatesError && <Alert severity="error" sx={{ mb: 1.5 }}>{candidatesError}</Alert>}
     {requestId && <Alert severity="success" sx={{ mb: 1.5 }} action={<Tooltip title={canViewSubmittedRequest ? '查看申请' : record?.active_request_id === requestId ? '当前账号无权查看此在审申请' : '请重新查询表单后查看申请'} arrow>
       <span tabIndex={canViewSubmittedRequest ? undefined : 0}><Button disabled={!canViewSubmittedRequest} onClick={() => navigate(`/records/requests/${requestId}`)}>查看申请</Button></span>
     </Tooltip>}>
@@ -229,9 +231,11 @@ export default function RecordChangePage() {
           </MenuItem>)}
         </TextField>
         {candidatesLoading ? <Alert severity="info">正在加载可用审批流程…</Alert>
-          : !candidates.length && <Alert severity="warning">暂无可用的已发布审批流程。</Alert>}
+          : candidatesError ? <Alert severity="error">{candidatesError}</Alert>
+            : !candidates.length && <Alert severity="warning">暂无可用的已发布审批流程。</Alert>}
         <ButtonSignatureCredentials account={account} password={password} disabled={loading}
           onAccountChange={setAccount} onPasswordChange={setPassword} />
+        {error && <Alert severity="error">{error}</Alert>}
       </Stack></DialogContent>
       <DialogActions><Button disabled={loading} onClick={() => setDialog(false)}>取消</Button>
         <Button variant="contained" disabled={loading || !reason.trim() || !selectedCandidate || !account.trim() || !password}

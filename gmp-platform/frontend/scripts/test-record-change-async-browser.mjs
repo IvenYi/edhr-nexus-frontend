@@ -13,7 +13,8 @@ const artifacts = process.env.RECORD_CHANGE_ARTIFACTS;
 const selected = process.env.RECORD_CHANGE_CASES?.split(',');
 const cases = ['lookup-success', 'lookup-error', 'lookup-loading', 'candidate-success', 'candidate-error',
   'candidate-source', 'candidate-empty', 'candidate-current-error', 'refresh-success', 'refresh-error',
-  'discard-cancel', 'discard-confirm', 'ime'];
+  'discard-cancel', 'discard-confirm', 'ime', 'candidate-error-before-dialog', 'candidate-error-reopen',
+  'candidate-error-rechoose', 'submit-current-error'];
 const results = [];
 let browser, server;
 
@@ -85,7 +86,9 @@ try {
         type: url.searchParams.get('businessType') };
       calls.push(call);
       if (call.method === 'POST' && call.path === '/api/v1/record-control/requests') {
-        writes.push(request.postDataJSON()); submitted = true;
+        writes.push(request.postDataJSON());
+        if (scenario === 'submit-current-error') return route.fulfill({ status: 503, json: { code: 503, data: null, message: '合成提交请求失败' } });
+        submitted = true;
         return route.fulfill({ json: { code: 200, data: { id: 'request-A' } } });
       }
       assert.equal(call.method, 'GET', 'all writes are intercepted synthetic requests');
@@ -129,10 +132,13 @@ try {
       assert.deepEqual(options, ['OBSOLETE审批 · V1'], 'only current business type candidates are selectable');
       await page.getByRole('option', { name: 'OBSOLETE审批 · V1', exact: true }).click();
     };
-    const sign = async () => {
+    const submit = async () => {
       await page.getByRole('textbox', { name: '签署人用户名', exact: true }).fill('synthetic-signer');
       await page.getByRole('textbox', { name: '电子签名密码', exact: true }).fill('synthetic-only');
       await page.getByRole('button', { name: '签署并确认提交', exact: true }).click();
+    };
+    const sign = async () => {
+      await submit();
       const fresh = await waitPending('record', 'FR-A');
       assert.equal(writes.length, 1); assert.equal(writes[0].requestType, 'OBSOLETE');
       assert.equal(writes[0].instanceNo, 'FR-A'); assert.equal(writes[0].sourceRevisionId, 'revision-FR-A');
@@ -155,12 +161,37 @@ try {
         assert.equal(await page.getByText('合成当前请求失败', { exact: true }).count(), 0, 'superseded errors must not replace current state');
       } else if (scenario.startsWith('candidate-')) {
         await lookup('FR-A');
-        if (['candidate-empty', 'candidate-current-error'].includes(scenario)) {
+        const modal = page.getByRole('dialog');
+        const assertFailure = async () => {
+          assert.equal(await modal.getByRole('alert').filter({ hasText: '合成当前请求失败' }).count(), 1, 'candidate error must belong to the accessible dialog');
+          assert.equal(await modal.getByText('暂无可用的已发布审批流程。', { exact: true }).count(), 0, 'failure is not a real empty result');
+          assert.ok(await modal.getByRole('button', { name: '签署并确认提交', exact: true }).isDisabled());
+        };
+        if (['candidate-error-before-dialog', 'candidate-error-reopen', 'candidate-error-rechoose'].includes(scenario)) {
+          const current = await startMode('OBSOLETE');
+          await respond(current, null, 503);
+          assert.equal(await page.getByRole('alert').filter({ hasText: '合成当前请求失败' }).count(), 1, 'failure is accessible before dialog opens');
+          await openSubmit(); await assertFailure();
+          if (scenario === 'candidate-error-reopen') {
+            await modal.getByRole('button', { name: '取消', exact: true }).click();
+            await page.getByRole('button', { name: '提交作废审批', exact: true }).waitFor();
+            await openSubmit(); await assertFailure();
+            assert.equal(calls.filter(call => call.type === 'OBSOLETE').length, 1, 'reopening does not silently retry');
+          } else if (scenario === 'candidate-error-rechoose') {
+            await modal.getByRole('button', { name: '取消', exact: true }).click();
+            await page.getByRole('button', { name: '提交作废审批', exact: true }).waitFor();
+            await cancelMode();
+            const retry = await startMode('OBSOLETE'); await openSubmit();
+            assert.equal(await page.getByText('合成当前请求失败', { exact: true }).count(), 0, 'new mode clears old failure');
+            assert.equal(await modal.getByText('暂无可用的已发布审批流程。', { exact: true }).count(), 0, 'new request is pending, not empty');
+            await respond(retry, candidates('OBSOLETE')); await selectObsolete();
+          }
+        } else if (['candidate-empty', 'candidate-current-error'].includes(scenario)) {
           const current = await startMode('OBSOLETE'); await openSubmit();
           assert.equal(await page.getByText('暂无可用的已发布审批流程。', { exact: true }).count(), 0, 'pending is not empty');
           await respond(current, scenario === 'candidate-empty' ? [] : null, scenario === 'candidate-empty' ? 200 : 503);
-          if (scenario === 'candidate-current-error') await page.getByText('合成当前请求失败', { exact: true }).waitFor();
-          else await page.getByText('暂无可用的已发布审批流程。', { exact: true }).waitFor();
+          if (scenario === 'candidate-current-error') await assertFailure();
+          else await modal.getByText('暂无可用的已发布审批流程。', { exact: true }).waitFor();
           assert.ok(await page.getByRole('button', { name: '签署并确认提交', exact: true }).isDisabled());
         } else {
           const old = await startMode('CHANGE');
@@ -171,6 +202,21 @@ try {
           assert.equal(await page.getByText('合成当前请求失败', { exact: true }).count(), 0);
           await openSubmit(); await selectObsolete();
         }
+      } else if (scenario === 'submit-current-error') {
+        await lookup('FR-A'); await respond(await startMode('OBSOLETE'), candidates('OBSOLETE'));
+        await openSubmit(); await selectObsolete();
+        const response = page.waitForResponse(r => r.request().method() === 'POST');
+        await submit(); await (await response).finished();
+        const modal = page.getByRole('dialog');
+        await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
+        assert.equal(await modal.getByRole('alert').filter({ hasText: '合成提交请求失败' }).count(), 1, 'submit error must belong to the accessible dialog');
+        assert.equal(await modal.getByRole('textbox', { name: '作废原因' }).inputValue(), '合成当前上下文验证');
+        assert.equal(await modal.getByRole('textbox', { name: '签署人用户名', exact: true }).inputValue(), 'synthetic-signer');
+        assert.equal(await modal.getByRole('textbox', { name: '电子签名密码', exact: true }).inputValue(), 'synthetic-only');
+        assert.equal(await modal.getByRole('combobox', { name: '审批流程版本' }).innerText(), 'OBSOLETE审批 · V1');
+        assert.equal(writes.length, 1, 'no automatic write retry');
+        assert.equal(writes[0].instanceNo, 'FR-A'); assert.equal(writes[0].sourceRevisionId, 'revision-FR-A');
+        assert.equal(writes[0].workflowVersionId, 'version-OBSOLETE');
       } else if (scenario.startsWith('refresh-')) {
         await lookup('FR-A'); await respond(await startMode('OBSOLETE'), candidates('OBSOLETE'));
         await openSubmit(); await selectObsolete(); const refresh = await sign();
@@ -204,7 +250,7 @@ try {
         await page.getByText('合成表单 FR-B', { exact: true }).waitFor();
       }
       assert.deepEqual(errors, []); assert.deepEqual(nativeDialogs, [], 'use maintained app confirmation, not window.confirm');
-      assert.equal(writes.length, scenario.startsWith('refresh-') ? 1 : 0);
+      assert.equal(writes.length, scenario.startsWith('refresh-') || scenario === 'submit-current-error' ? 1 : 0);
       if (artifacts) await page.screenshot({ path: path.join(artifacts, `${scenario}-${width}.png`), fullPage: true });
       results.push({ scenario, width, passed: true, calls, writeCount: writes.length, submitted });
     } catch (error) {
