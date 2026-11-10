@@ -1,5 +1,7 @@
 # PR76 合入后的记录控制失败反馈审查
 
+已交付 [PR77](https://github.com/IvenYi/edhr-nexus-frontend/pull/77)，`audit/edhr-dev-record-candidate-feedback-20261110` → `edhr-dev`。登记前实际观察OPEN/MERGEABLE/CLEAN，本地/真实远端/PR head均为验收提交 `4d9c46744a1774db27a0647cc7919aa9c3da3a01`，27输入仍同受测字节，见 [交付核验](evidence/delivery-verification.json)。其后仅L0登记，推送后再次核对；建议人工合入本批局部修复，不将其他性能/静态问题或整体审计一并关闭。
+
 L2，基线 `edhr-dev@670040fb7d24abf629baa53d60f6fe922c7e7714`，PR76已合入且整树同上次交付0353210e，没有额外产品/知识/契约增量。沿原W3/W7记录控制与W6健壮性/A23队列，关闭上轮确认的候选失败提示被Dialog隐藏、误报真实空态的残余，并核查同一渲染位置造成的提交错误隐藏。
 
 受测候选 `6f03c7e565d309ed6630db7ab336a378cbadbe65`。产品仅RecordChangePage的14行diff：独立保留候选错误，显示在当前页面或确认Dialog；候选加载失败与真正空列表区分，提交错误也在Dialog内可读。既有异步归属、原因/明确版本、签署、来源及幂等规则保持。后台/API/schema/知识/共享控件/视觉token未改，无自动重试、默认选版或性能SQL。
