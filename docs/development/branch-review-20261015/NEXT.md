@@ -2,6 +2,8 @@
 
 ## PR78已合入：已授权的候选current批读及窄投影
 
+已交付[PR79](https://github.com/IvenYi/edhr-nexus-frontend/pull/79)，audit/edhr-dev-workflow-candidate-batch-20261110→edhr-dev，观察OPEN/MERGEABLE/CLEAN，建议人工合入。受测c2691bf7、验收5871019a后仅L0交付登记；登记前本地/真实远端/PR head及30输入一致，登记正常推送后再核对，不改受测字节。下一轮先fetch实际merge及新增，再回原跨链正确性/权限/事务、健壮性/性能/具体抽取及已审A23/W7增量，不擅自实施其他未答方案或自动merge/deploy/恢复。
+
 已fetch edhr-dev@3b7e4d9a35503020e0baef2a91bb3e9a663fcb05，PR78真实合入且整树同99fa3fd7，无额外产品/知识/契约。新分支audit/edhr-dev-workflow-candidate-batch-20261110；[本批](../branch-review-20261110-workflow-candidate-batch/README.md)L2按用户明确授权，仅workflow仓储联合7标量及service映射/原异常兼容，消除PERF-WORKFLOW-CANDIDATE-CURRENT-VERSION-001逐定义SQL及图列物化子项；不改UI/业务政策/权限/签名/命令/快照/审计/schema/索引。
 
 clean受测c2691bf7主侧与全新独立各103/103（83原生PG+20其他）、知识各实际89/89，均0F/E/S；30输入同Git/原件，最终同native测试字节旧服务14=8正/6真实性能预算F/0E/S。首轮双DRAFT夹具2E原件保留，改为验证原唯一约束，未当产品红；离线工具占位/字段对照修正非产品/测试修复。两类型0/1/10/100/1000全部7字段与上批原件相同、末项可达；20调用20SELECT/20原生计划、40参数DETAIL、0写，20MockMvc为10完整200/10匿名401，五档十表摘要相等，mixed-current6及DB拒绝双草稿2保持。

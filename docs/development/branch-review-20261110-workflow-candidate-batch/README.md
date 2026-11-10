@@ -1,5 +1,7 @@
 # 已授权的候选流程 current 批读与字段精简
 
+已创建 [PR79](https://github.com/IvenYi/edhr-nexus-frontend/pull/79)，`audit/edhr-dev-workflow-candidate-batch-20261110` → `edhr-dev`，观察 OPEN/MERGEABLE/CLEAN，建议人工合入。验收提交 `5871019a66440e067e29f64e702cdb180fff96a7` 后仅登记交付；登记前本地、实际远端分支、PR head 三者及30受测输入一致，见[交付观察](evidence/delivery-verification.json)。登记提交正常推送后再做一次核对，不回写这份历史时点。
+
 PR78 已实际合入 `edhr-dev@3b7e4d9a35503020e0baef2a91bb3e9a663fcb05`，整树同前批交付，无外部产品/知识/契约增量。本批按用户明确授权修复 `PERF-WORKFLOW-CANDIDATE-CURRENT-VERSION-001`，执行级别 L2。受测候选为 `c2691bf711ceb8f7033dae23e28dfaa8104344a5`。
 
 记录变更／作废页读取审批流程选项，由逐定义加载完整版本实体改成一次联合查询，只取原7字段。100／1000个有效候选的夹具原为103／1003次查询，现均1次；全部候选仍返回，原排序、类型/发布/current规则及多current异常保持。没有索引/schema/UI或业务政策变更。
