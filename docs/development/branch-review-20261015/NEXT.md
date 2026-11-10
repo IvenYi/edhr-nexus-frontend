@@ -2,6 +2,8 @@
 
 ## PR75已合入：记录变更页异步上下文健壮性
 
+已交付[PR76](https://github.com/IvenYi/edhr-nexus-frontend/pull/76)，audit/edhr-dev-record-change-async-20261110→edhr-dev，观察OPEN/MERGEABLE/CLEAN，建议人工合入本批有限异步修复。受测7e43939b、验收35c96d32后仅L0交付登记；登记前本地/真实远端/PR head和27输入一致，登记推送后再次核对。下一轮先fetch合入及新增，优先候选当前503错误/空态呈现，不把merge或继续视为未答性能优化批准。
+
 已fetch edhr-dev@8be9b78b41644693864a9429b5c5741d18d52edf，PR75真实合入且整树同a6be4f07，无额外产品/知识/契约。新分支audit/edhr-dev-record-change-async-20261110；[本批](../branch-review-20261110-record-change-async/README.md)L2按原W3/W7与W6/A23推进上批异步源码信号。确认两medium：旧来源查询/提交刷新成功、错误、finally可覆盖新查询；旧模式/来源候选可覆盖当前候选或错误。仅303行RecordChangePage局部归属修复，候选pending不冒充empty；沿用ConfirmDialog保留放弃草稿规则，IME/Enter边界修正。后台/API/schema/知识/权限/签署/共享弹窗/token不变，未做性能优化或大重构。
 
 受测字节clean7e43939b；主侧专用26P、原58P和build/list/font通过，同最终harness旧源26F（症状矩阵非26独立缺陷）；前26/build在dirty8be后以同暂存字节提交，58/static实际clean7e、27输入同Git/快照。初始harness缺CSS、22P4F默认keyup及2P2F退出动画等待历史原样保留，无降标准。strict双方86=72/14，保留重复项的身份多重集合新增0/消失0；lint缺配置exit2未关闭。本体NA/FINAL有限19=15范围一致/1精确历史替代/1既有多租户待决/2旧locator边界；353知识和359校验输入同原89证据，角色未重跑，不算全知识一致。全新独立实际26+58浏览器、知识89、build/list/font全过，正式passed/FINAL、10必需项通过，运行时自有依赖软链untracked与清理后clean分开报告。双方原件/来源已核，三包487成员及角色manifest校过；全部FINAL后于2026-11-10 15:57 Asia/Shanghai已实际[PR前漂移/阶段复核](../branch-review-20261110-record-change-async/pre-pr-drift-review.md)，目标仍8be、27输入同、无漂移，其后仅L0归档/交付。
