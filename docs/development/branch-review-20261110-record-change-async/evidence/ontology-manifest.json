@@ -1,0 +1,394 @@
+{
+  "root": "/tmp/edhr-record-change-async-ontology-20261110",
+  "files": [
+    {
+      "path": "REVIEW.PREPARED.md",
+      "bytes": 3547,
+      "sha256": "3e0a1f87da5bc9db40f9395878992749a7bf8afd2a4c242454a6b679fd533969"
+    },
+    {
+      "path": "REVIEW.md",
+      "bytes": 4396,
+      "sha256": "83a742874cd4781166be8944194dbf21a72b6027e0d3059859a81219aba3700f"
+    },
+    {
+      "path": "baseline-source/AGENTS.md",
+      "bytes": 25065,
+      "sha256": "13dc7cdacea0b1bb0aef2abb268781f9c69584acd4879b204d2b7fd81a2927fc"
+    },
+    {
+      "path": "baseline-source/codeplzreadme.md",
+      "bytes": 3035,
+      "sha256": "7a1be8efffec596b034335058dca2860346d256622f899c8dac97c5172dd6df2"
+    },
+    {
+      "path": "baseline-source/docs/agents/agent-handoff-contract.md",
+      "bytes": 31233,
+      "sha256": "3439a35dd1baa77ac723f1b5afa237a338d56e31386f06b02b4aacfd754e3a12"
+    },
+    {
+      "path": "baseline-source/docs/agents/business-knowledge-modeler.md",
+      "bytes": 15881,
+      "sha256": "9806c900f98e1cbcf4f8d68a998a07a5449369df037183c75ec08cd666bf56ae"
+    },
+    {
+      "path": "baseline-source/docs/architecture/business-knowledge-model.md",
+      "bytes": 73228,
+      "sha256": "edfbf32853ec80805acf593876c9a4c72b5144d6ac587b4c62377409e7a08740"
+    },
+    {
+      "path": "baseline-source/docs/knowledge/README.md",
+      "bytes": 114390,
+      "sha256": "04b4162253775cb6e01882bafac3621d23e85d5b9f923cd708eac0c006df732b"
+    },
+    {
+      "path": "baseline-source/docs/knowledge/decisions/DEC-0074-shared-terminal-button-signature.yaml",
+      "bytes": 7527,
+      "sha256": "09d6cb083c1350f3c64a2abb8583ca9a4eb1a7b3a837cdd67b9f6dc28d9e2d3f"
+    },
+    {
+      "path": "baseline-source/docs/knowledge/decisions/DEC-0085-shared-login-cross-tab-isolation.yaml",
+      "bytes": 7136,
+      "sha256": "b8b37eae9745eb290176cde4fb734b23510f180ebd62cf03ceba2b3706d32c40"
+    },
+    {
+      "path": "baseline-source/docs/knowledge/decisions/DEC-0087-record-control-v1-closure.yaml",
+      "bytes": 15401,
+      "sha256": "20f47f2e3e57aefb8250dcfe1ee979ce6211694b94f2220617ba83ba95579b27"
+    },
+    {
+      "path": "baseline-source/docs/knowledge/decisions/DEC-0094-record-control-authenticated-candidate-read.yaml",
+      "bytes": 3854,
+      "sha256": "589239e78319f425c052f272290e874eca2a4bf8694cbe50c8404df4915cbc43"
+    },
+    {
+      "path": "baseline-source/docs/knowledge/decisions/DEC-0096-record-control-system-admin-detail-read.yaml",
+      "bytes": 4162,
+      "sha256": "872f3f0917c668ae1dbb8895596d1df0ef7abd73d94b54792fb53d0469dcdcce"
+    },
+    {
+      "path": "baseline-source/docs/knowledge/evidence/record-change-search-scope-user-confirmed.md",
+      "bytes": 1131,
+      "sha256": "4c603f99510b0593a9e782152e09c13551c03bf40a7eb3a3a84c7ee9750d4059"
+    },
+    {
+      "path": "baseline-source/docs/knowledge/evidence/record-control-authenticated-candidate-read-confirmed.md",
+      "bytes": 1871,
+      "sha256": "2cba31a523f1a7e1a84f074de25c0c8165a5f5e7747e2dc5034e818a197620fe"
+    },
+    {
+      "path": "baseline-source/docs/knowledge/evidence/record-control-v1-user-confirmed.md",
+      "bytes": 2611,
+      "sha256": "52066a01dae9f7d1ecbb0f8de925f0bc69d843562cad02d508d02cb61466c48b"
+    },
+    {
+      "path": "baseline-source/docs/knowledge/evidence/record-history-detail-access-20261109.md",
+      "bytes": 8235,
+      "sha256": "d9a5f7ef16b32a3bace83db7f5d950ff56d619db72bbc078fff196fd2367026a"
+    },
+    {
+      "path": "baseline-source/docs/knowledge/evidence/shared-login-cross-tab-2026-10-27.md",
+      "bytes": 6921,
+      "sha256": "97db228c620e9964d45427372e12f6eaac4a3334a0fe5c6d16c95b72f722ab2f"
+    },
+    {
+      "path": "baseline-source/docs/knowledge/facts/record-control.yaml",
+      "bytes": 8005,
+      "sha256": "bb4bf169f7d6acae0c32f5092e782acf2c0da688dc1f1346646d0e1a7c1531f0"
+    },
+    {
+      "path": "baseline-source/docs/knowledge/open-questions.yaml",
+      "bytes": 22420,
+      "sha256": "c7b3bdecd1a6ac164d95ff515b5412998a556a07e9b5fcb64b3643473aa6e2bf"
+    },
+    {
+      "path": "baseline-source/docs/knowledge/rules/record-change.yaml",
+      "bytes": 11208,
+      "sha256": "00063e862c2d45e0378cee5685f7832a40eaacf5a776097f3ec2d7d0b5899d68"
+    },
+    {
+      "path": "baseline-source/gmp-platform/backend/src/main/java/com/zencas/edhr/recordcontrol/service/RecordControlService.java",
+      "bytes": 40407,
+      "sha256": "a46e3c97eb8def1010f848997a4566f7f593b43f6ac06a10ca48c5c63155305e"
+    },
+    {
+      "path": "baseline-source/gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java",
+      "bytes": 53905,
+      "sha256": "902a253d84347caf165a5988933061132d72abda29ed94f84114d3eb2b9f497e"
+    },
+    {
+      "path": "baseline-source/gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/RecordControlWorkflowService.java",
+      "bytes": 5872,
+      "sha256": "f6ee03b424e5ebee0d69787af0a02e11d69554366791abc8817218c6fb61012a"
+    },
+    {
+      "path": "baseline-source/gmp-platform/frontend/src/api/client.ts",
+      "bytes": 2678,
+      "sha256": "cb6292e987edcd52470166c71b8460c9da5695f2877ff50771ad5839db93b83a"
+    },
+    {
+      "path": "baseline-source/gmp-platform/frontend/src/api/record-control-workflow.ts",
+      "bytes": 815,
+      "sha256": "b063a7e97a862ec785633fa4ecd4062288d0783d64a8645fe893415c4a4f36dd"
+    },
+    {
+      "path": "baseline-source/gmp-platform/frontend/src/api/record-control.ts",
+      "bytes": 5900,
+      "sha256": "22e22afbb8f57f6df01d8563ee7d0afe640f9d17c4a0469a8750b9b83a800cf5"
+    },
+    {
+      "path": "baseline-source/gmp-platform/frontend/src/components/ConfirmDialog.tsx",
+      "bytes": 2252,
+      "sha256": "b2a357f8abc840bd4dafa58e770819046983a0ba81e95e6927607e28970fdcfa"
+    },
+    {
+      "path": "baseline-source/gmp-platform/frontend/src/pages/record-control/RecordChangePage.tsx",
+      "bytes": 19013,
+      "sha256": "0b0524f72b37a97de2ebbbc42b16f5a1720043591d7321c9d1280966fff872db"
+    },
+    {
+      "path": "baseline-source-inputs.json",
+      "bytes": 10553,
+      "sha256": "ecb74094eede72faabf1717bee6e3123607599b3a65a4092ffb22677959a7952"
+    },
+    {
+      "path": "collect.py",
+      "bytes": 6932,
+      "sha256": "a7feaeaca72fa4265ee15463f4d7b82b1e8842d662fdcae776aa46ad957964a5"
+    },
+    {
+      "path": "final-source/AGENTS.md",
+      "bytes": 25065,
+      "sha256": "13dc7cdacea0b1bb0aef2abb268781f9c69584acd4879b204d2b7fd81a2927fc"
+    },
+    {
+      "path": "final-source/codeplzreadme.md",
+      "bytes": 3035,
+      "sha256": "7a1be8efffec596b034335058dca2860346d256622f899c8dac97c5172dd6df2"
+    },
+    {
+      "path": "final-source/docs/agents/agent-handoff-contract.md",
+      "bytes": 31233,
+      "sha256": "3439a35dd1baa77ac723f1b5afa237a338d56e31386f06b02b4aacfd754e3a12"
+    },
+    {
+      "path": "final-source/docs/agents/business-knowledge-modeler.md",
+      "bytes": 15881,
+      "sha256": "9806c900f98e1cbcf4f8d68a998a07a5449369df037183c75ec08cd666bf56ae"
+    },
+    {
+      "path": "final-source/docs/architecture/business-knowledge-model.md",
+      "bytes": 73228,
+      "sha256": "edfbf32853ec80805acf593876c9a4c72b5144d6ac587b4c62377409e7a08740"
+    },
+    {
+      "path": "final-source/docs/development/branch-review-20261110-record-change-async/decision-package.yaml",
+      "bytes": 5416,
+      "sha256": "c9e2fa287156d78eada8fcdfc2539362314ddf37ca3a6fdbcc7738c325e9bc5c"
+    },
+    {
+      "path": "final-source/docs/knowledge/README.md",
+      "bytes": 114390,
+      "sha256": "04b4162253775cb6e01882bafac3621d23e85d5b9f923cd708eac0c006df732b"
+    },
+    {
+      "path": "final-source/docs/knowledge/decisions/DEC-0074-shared-terminal-button-signature.yaml",
+      "bytes": 7527,
+      "sha256": "09d6cb083c1350f3c64a2abb8583ca9a4eb1a7b3a837cdd67b9f6dc28d9e2d3f"
+    },
+    {
+      "path": "final-source/docs/knowledge/decisions/DEC-0085-shared-login-cross-tab-isolation.yaml",
+      "bytes": 7136,
+      "sha256": "b8b37eae9745eb290176cde4fb734b23510f180ebd62cf03ceba2b3706d32c40"
+    },
+    {
+      "path": "final-source/docs/knowledge/decisions/DEC-0087-record-control-v1-closure.yaml",
+      "bytes": 15401,
+      "sha256": "20f47f2e3e57aefb8250dcfe1ee979ce6211694b94f2220617ba83ba95579b27"
+    },
+    {
+      "path": "final-source/docs/knowledge/decisions/DEC-0094-record-control-authenticated-candidate-read.yaml",
+      "bytes": 3854,
+      "sha256": "589239e78319f425c052f272290e874eca2a4bf8694cbe50c8404df4915cbc43"
+    },
+    {
+      "path": "final-source/docs/knowledge/decisions/DEC-0096-record-control-system-admin-detail-read.yaml",
+      "bytes": 4162,
+      "sha256": "872f3f0917c668ae1dbb8895596d1df0ef7abd73d94b54792fb53d0469dcdcce"
+    },
+    {
+      "path": "final-source/docs/knowledge/evidence/record-change-search-scope-user-confirmed.md",
+      "bytes": 1131,
+      "sha256": "4c603f99510b0593a9e782152e09c13551c03bf40a7eb3a3a84c7ee9750d4059"
+    },
+    {
+      "path": "final-source/docs/knowledge/evidence/record-control-authenticated-candidate-read-confirmed.md",
+      "bytes": 1871,
+      "sha256": "2cba31a523f1a7e1a84f074de25c0c8165a5f5e7747e2dc5034e818a197620fe"
+    },
+    {
+      "path": "final-source/docs/knowledge/evidence/record-control-v1-user-confirmed.md",
+      "bytes": 2611,
+      "sha256": "52066a01dae9f7d1ecbb0f8de925f0bc69d843562cad02d508d02cb61466c48b"
+    },
+    {
+      "path": "final-source/docs/knowledge/evidence/record-history-detail-access-20261109.md",
+      "bytes": 8235,
+      "sha256": "d9a5f7ef16b32a3bace83db7f5d950ff56d619db72bbc078fff196fd2367026a"
+    },
+    {
+      "path": "final-source/docs/knowledge/evidence/shared-login-cross-tab-2026-10-27.md",
+      "bytes": 6921,
+      "sha256": "97db228c620e9964d45427372e12f6eaac4a3334a0fe5c6d16c95b72f722ab2f"
+    },
+    {
+      "path": "final-source/docs/knowledge/facts/record-control.yaml",
+      "bytes": 8005,
+      "sha256": "bb4bf169f7d6acae0c32f5092e782acf2c0da688dc1f1346646d0e1a7c1531f0"
+    },
+    {
+      "path": "final-source/docs/knowledge/open-questions.yaml",
+      "bytes": 22420,
+      "sha256": "c7b3bdecd1a6ac164d95ff515b5412998a556a07e9b5fcb64b3643473aa6e2bf"
+    },
+    {
+      "path": "final-source/docs/knowledge/rules/record-change.yaml",
+      "bytes": 11208,
+      "sha256": "00063e862c2d45e0378cee5685f7832a40eaacf5a776097f3ec2d7d0b5899d68"
+    },
+    {
+      "path": "final-source/gmp-platform/backend/src/main/java/com/zencas/edhr/recordcontrol/service/RecordControlService.java",
+      "bytes": 40407,
+      "sha256": "a46e3c97eb8def1010f848997a4566f7f593b43f6ac06a10ca48c5c63155305e"
+    },
+    {
+      "path": "final-source/gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java",
+      "bytes": 53905,
+      "sha256": "902a253d84347caf165a5988933061132d72abda29ed94f84114d3eb2b9f497e"
+    },
+    {
+      "path": "final-source/gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/RecordControlWorkflowService.java",
+      "bytes": 5872,
+      "sha256": "f6ee03b424e5ebee0d69787af0a02e11d69554366791abc8817218c6fb61012a"
+    },
+    {
+      "path": "final-source/gmp-platform/frontend/scripts/test-record-change-async-browser.mjs",
+      "bytes": 16409,
+      "sha256": "bf471cc401d6cab57ad86242ec6dc8b947791f47e671f6c1777b59a837da67d5"
+    },
+    {
+      "path": "final-source/gmp-platform/frontend/src/api/client.ts",
+      "bytes": 2678,
+      "sha256": "cb6292e987edcd52470166c71b8460c9da5695f2877ff50771ad5839db93b83a"
+    },
+    {
+      "path": "final-source/gmp-platform/frontend/src/api/record-control-workflow.ts",
+      "bytes": 815,
+      "sha256": "b063a7e97a862ec785633fa4ecd4062288d0783d64a8645fe893415c4a4f36dd"
+    },
+    {
+      "path": "final-source/gmp-platform/frontend/src/api/record-control.ts",
+      "bytes": 5900,
+      "sha256": "22e22afbb8f57f6df01d8563ee7d0afe640f9d17c4a0469a8750b9b83a800cf5"
+    },
+    {
+      "path": "final-source/gmp-platform/frontend/src/components/ConfirmDialog.tsx",
+      "bytes": 2252,
+      "sha256": "b2a357f8abc840bd4dafa58e770819046983a0ba81e95e6927607e28970fdcfa"
+    },
+    {
+      "path": "final-source/gmp-platform/frontend/src/pages/record-control/RecordChangePage.tsx",
+      "bytes": 20814,
+      "sha256": "54557d7aa1dec2f01674cfb34a65d9a6b8d8c732b9bd11e1fff1c1e623ab0980"
+    },
+    {
+      "path": "finalize.py",
+      "bytes": 13301,
+      "sha256": "b4f70e7633653c36f2c32c4084376c868e2342cf4b9cfd681207406c629fde5a"
+    },
+    {
+      "path": "finite-review-records.json",
+      "bytes": 30656,
+      "sha256": "b2c5765ad2a41cb15396956a953ee8301f8885a9b6068c8f51240650cf0e222c"
+    },
+    {
+      "path": "initial-binding.json",
+      "bytes": 791,
+      "sha256": "9172c501f79f34efa66686cba4d8661b8104cd4506c9f0b8cd87b1182b13601d"
+    },
+    {
+      "path": "knowledge-inventory.json",
+      "bytes": 111328,
+      "sha256": "0c02880bc7e09169be38c0e8670df8878920b282d98b75ffd49863e3bb2fb586"
+    },
+    {
+      "path": "knowledge-validation-reuse.json",
+      "bytes": 73093,
+      "sha256": "7c613a7bb104a3a73108a9542325d6106ff961086af44a2725b6848b062b9260"
+    },
+    {
+      "path": "manifest.json",
+      "bytes": 15303,
+      "sha256": "d7f2aae19a55244c609d326fd1a03f30f4a5fb66af1dce03c6a351d2f539e317"
+    },
+    {
+      "path": "ontology-result.yaml",
+      "bytes": 2421,
+      "sha256": "634d0bda4d44c4c12aa5b57d7e57d344fef925aff888602c0d383ee627752f7d"
+    },
+    {
+      "path": "parent-readonly/corrected/result.json",
+      "bytes": 16150,
+      "sha256": "41ae9afee51a6f1c183c5a0f9ac53ae931eb05ad6e072fdb9167d791b67e7abf"
+    },
+    {
+      "path": "parent-readonly/corrected.log",
+      "bytes": 9684,
+      "sha256": "bb0ea072fe33f8a29192c11ad44be640210ba5373faffa5653b780d885ceeabe"
+    },
+    {
+      "path": "parent-readonly/old-full/result.json",
+      "bytes": 23764,
+      "sha256": "780468b798986cb2f75e03842321eadb5b5be3065c4f3d2088011e4c9197f45f"
+    },
+    {
+      "path": "parent-readonly/old-full.log",
+      "bytes": 16950,
+      "sha256": "54a6423ec3585fd8c88aca03eab9ceb090b5381396afa72f6fbe3f34eb14a9f8"
+    },
+    {
+      "path": "reused-knowledge-0f5/knowledge/TEST-com.zencas.edhr.knowledge.BusinessKnowledgeModelTest.xml",
+      "bytes": 20574,
+      "sha256": "9251ef8f19554836871c75767cc6103172f7c4f6425f62ed2d9c5c3f70b31e60"
+    },
+    {
+      "path": "reused-knowledge-0f5/knowledge/maven.log",
+      "bytes": 2356,
+      "sha256": "76565920134bc5ecb5f5a9cf208c45bb687afc3a30f4f784622dca33b50c95ec"
+    },
+    {
+      "path": "reused-knowledge-0f5/knowledge/run.json",
+      "bytes": 648,
+      "sha256": "477997594bb117222d0c917b0549937554d2d041c3bd3ab9820447a0c963a08c"
+    },
+    {
+      "path": "reused-knowledge-0f5/source-binding.json",
+      "bytes": 84116,
+      "sha256": "a644246778367dcf12e3f838dcf7958405d8db7bed6b19261c747de3a2383856"
+    },
+    {
+      "path": "review-records.py",
+      "bytes": 7156,
+      "sha256": "6f60fda747ae1d22f1a9710cdb577f54db38ab138f56ba3a328ab8912ccfdb6e"
+    },
+    {
+      "path": "source-binding.json",
+      "bytes": 13929,
+      "sha256": "47fef3f0955f774f64c7cf50c0ba890acfbbf41791d369dfc98ea92ac567778f"
+    }
+  ],
+  "fileCount": 77,
+  "originalRoleManifestMembersVerified": 76,
+  "excluded": [],
+  "totalBytes": 1479586
+}

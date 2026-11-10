@@ -1,0 +1,24 @@
+{
+  "observedAt": "2026-11-10T08:00:09.697080+00:00",
+  "headBeforeThisRecord": "35c96d328476f83fe89deee573ef082ef89b13c0",
+  "actualRemoteBranchHead": "35c96d328476f83fe89deee573ef082ef89b13c0",
+  "pr": {
+    "baseRefName": "edhr-dev",
+    "headRefName": "audit/edhr-dev-record-change-async-20261110",
+    "headRefOid": "35c96d328476f83fe89deee573ef082ef89b13c0",
+    "mergeStateStatus": "CLEAN",
+    "mergeable": "MERGEABLE",
+    "number": 76,
+    "state": "OPEN",
+    "url": "https://github.com/IvenYi/edhr-nexus-frontend/pull/76"
+  },
+  "fetchedTarget": "8be9b78b41644693864a9429b5c5741d18d52edf",
+  "fetchOutput": "From https://github.com/IvenYi/edhr-nexus-frontend\n * branch              edhr-dev   -> FETCH_HEAD\n",
+  "testedCandidate": "7e43939b519b743e73ca993d66632b1316655fed",
+  "protectedInputsMatch": 27,
+  "workingTreeStatusAtObservation": "clean",
+  "postCandidateChanges": "L0 reports/evidence/delivery only",
+  "ciStatusOrActionsQueried": false,
+  "autoMergeDeployOrRestore": false,
+  "scope": "Point-in-time check;future delivery-record commit checked separately without rewriting this record"
+}

@@ -1,0 +1,52 @@
+decisionPackage:
+  id: DEC-PACKAGE-RECORD-CHANGE-ASYNC-20261110
+  scope: RecordChangePage asynchronous context ownership and existing draft-discard confirmation
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: 8be9b78b41644693864a9429b5c5741d18d52edf
+    targetBranch: edhr-dev
+    targetCommit: 8be9b78b41644693864a9429b5c5741d18d52edf
+    contractReadCommit: 8be9b78b41644693864a9429b5c5741d18d52edf
+    uncommittedContractPaths: []
+  summary: PR75已合入且整树同a6be4f07，无新增产品/知识/契约。继续原W3/W7记录控制页面和W6异步健壮性/A23队列。真实维护组件加延迟合成API在1440/390宽已复现12个错误：旧查询成功/失败/finally覆盖新查询、旧业务类型或旧来源候选覆盖当前列表/错误。只修页面异步归属，保留后台所有资格/版本/来源/签名/幂等/事务检查；连带使用既有ConfirmDialog保留未提交拟数据确认及IME Enter边界，不重设计UI或扩展政策。
+  confirmed: {concepts: [], relationships: [], rules: [], executionContracts: []}
+  inferred:
+    - id: inference.record-control-current-ui-context
+      statement: 旧请求的结果/错误/忙碌收尾不得改写较新的表单或业务类型选择；候选只能对应当前模式和来源上下文
+      rationale: 当前流水号及拟数据/类型和显式流程选择必须保持关联；旧响应覆盖已用实际组件重现，非新增业务政策
+      relatedIds: [DEC-0087-01, DEC-0087-03, DEC-0087-04]
+  unresolved: []
+  replacementScopes: []
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - {area: frontend-context, change: 对记录查询/提交后刷新实行最新上下文归属；候选加载与模式/来源生命周期绑定，旧成功/失败/收尾均忽略, evidenceReferences: [gmp-platform/frontend/src/pages/record-control/RecordChangePage.tsx]}
+    transitiveImpacts:
+      - {area: confirmation-and-candidates, change: 继续显式选类型匹配流程，查询新来源前清理旧草稿/密码/候选；取消放弃确认保留原草稿, evidenceReferences: [docs/knowledge/decisions/DEC-0087-record-control-v1-closure.yaml]}
+    potentialImpacts:
+      - {area: mutation-refresh, concern: 提交本身可能成功但随后刷新迟到或失败；只限制旧上下文UI回写，不伪造请求未发出或自动重试, evidenceReferences: []}
+    unaffectedAreas:
+      - {area: backend-policy, change: DEC0096只读、记录控制签署/资格/锁/修订/审计、DHR和普通生产规则保持, evidenceReferences: []}
+      - {area: pending-or-paused, change: 列表资格SQL和事件DB分页仍未答未改；通用任务签名密码页及生产弹窗样式暂停保持, evidenceReferences: []}
+    compatibilityAndMigration: [{area: api-schema, change: API参数及返回、数据库和既有知识字节保持，无迁移, evidenceReferences: []}]
+    snapshotImpacts: [{area: history, change: 不改冻结快照/历史/真实数据，仅页面显示与请求归属, evidenceReferences: []}]
+    auditImpacts: [{area: evidence, change: 合成API POST只验证payload与单次提交，不称真实签署或PG审计运行, evidenceReferences: []}]
+    permissionImpacts: [{area: retained-boundaries, change: 不依前端候选授予权限，后台仍实时验证；权限投影和跨标签认证保持, evidenceReferences: []}]
+    testImpacts: [{scope: async-ui, scenarios: [旧成功/错误/收尾, 模式取消与来源切换, 当前失败及空候选, 提交后刷新被新查询替代, 拟数据取消/放弃确认, IME, 58既有组件回归, build和静态差异], evidenceReferences: []}]
+    evidenceGaps: [组件使用延迟合成API不等于主环境端到端或真实PG签署, 全站strict86及缺lint配置待审不冒称绿, 完整W2-W7/知识语义/A12/并发矩阵/A23已审回看与容量UNKNOWN继续]
+  extensionStrategy:
+    selectedPaths: [product-core]
+    rationale: 沿用页面异步生命周期和既有ConfirmDialog，不新增通用框架/缓存/策略或模块重构
+    ownershipBoundaries:
+      - {owner: RecordChangePage, responsibility: 当前页面查询与候选响应归属、草稿显示和提交刷新}
+      - {owner: ConfirmDialog, responsibility: 已有应用内确认及焦点/取消行为，不添加页面私有弹窗实现}
+      - {owner: RecordControlService, responsibility: 原真实来源/资格/流程/签署/事务边界不变}
+  affectedFiles:
+    - {path: gmp-platform/frontend/src/pages/record-control/RecordChangePage.tsx, changeType: update, reason: 修复已复现异步归属}
+    - {path: gmp-platform/frontend/scripts/test-record-change-async-browser.mjs, changeType: create, reason: 实际维护组件的延迟/乱序请求回归}
+  acceptanceScenarios:
+    - id: scenario.record-change-current-async-context
+      given: 已查询或选择记录控制来源及业务类型，旧请求仍未完成
+      when: 用户查询新编号、切换/取消模式或提交后再查询，并按不同顺序返回旧成功/错误
+      then: 当前来源/模式/候选/错误/忙碌态仅由所属请求更新；提交仍携带明确来源和流程版本，拟数据丢弃可取消且无自动重试
+      evidenceRequirements: [旧源码同一测试的真实浏览器失败, 新源码定向浏览器/现有回归/构建/静态差异, 本体范围核对及全新独立质量, 全部FINAL后实际PR前漂移/阶段复核]

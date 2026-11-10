@@ -1,0 +1,66 @@
+{
+  "checkedAtUtc": "2026-11-10T07:57:43.726935+00:00",
+  "checkedAtAsiaShanghai": "2026-11-10T15:57:43.726935+08:00",
+  "target": "8be9b78b41644693864a9429b5c5741d18d52edf",
+  "headBeforeL0EvidenceCommit": "7e43939b519b743e73ca993d66632b1316655fed",
+  "fetchOutput": "From https://github.com/IvenYi/edhr-nexus-frontend\n * branch              edhr-dev   -> FETCH_HEAD\n",
+  "allDispatchedRolesFinalBeforeReview": true,
+  "roleStatusObservation": "Actual collaboration.list_agents after ontology and fresh QA FINAL;both completed,no children",
+  "roles": {
+    "ontology": "not-applicable/FINAL",
+    "freshIndependentQa": "passed/FINAL"
+  },
+  "requiredChecksPassed": [
+    "check.independent-source-and-contract",
+    "check.retained-policy-and-scope",
+    "check.record-change-browser26",
+    "check.workflow-browser58",
+    "check.build-list-font",
+    "check.knowledge89",
+    "check.static-multiset-delta",
+    "check.a23-and-mutation-payload",
+    "check.visual-and-keyboard-scope",
+    "check.owned-cleanup"
+  ],
+  "protectedInputFingerprints": 27,
+  "knowledgeFilesUnchanged": 353,
+  "packagesVerified": 3,
+  "packageMemberHashesVerified": 487,
+  "trackedDelta": [
+    "docs/development/branch-review-20261015/NEXT.md",
+    "docs/development/branch-review-20261110-record-change-async/decision-package.yaml",
+    "gmp-platform/frontend/scripts/test-record-change-async-browser.mjs",
+    "gmp-platform/frontend/src/pages/record-control/RecordChangePage.tsx"
+  ],
+  "untrackedReports": [
+    "docs/development/branch-review-20261110-record-change-async/README.md",
+    "docs/development/branch-review-20261110-record-change-async/evidence-packages.json",
+    "docs/development/branch-review-20261110-record-change-async/evidence/independent-manifest.json",
+    "docs/development/branch-review-20261110-record-change-async/evidence/independent.zip",
+    "docs/development/branch-review-20261110-record-change-async/evidence/main-manifest.json",
+    "docs/development/branch-review-20261110-record-change-async/evidence/main.zip",
+    "docs/development/branch-review-20261110-record-change-async/evidence/ontology-manifest.json",
+    "docs/development/branch-review-20261110-record-change-async/evidence/ontology.zip",
+    "docs/development/branch-review-20261110-record-change-async/independent-review.md",
+    "docs/development/branch-review-20261110-record-change-async/main-analysis.json",
+    "docs/development/branch-review-20261110-record-change-async/ontology-result.yaml",
+    "docs/development/branch-review-20261110-record-change-async/ontology-review.md",
+    "docs/development/branch-review-20261110-record-change-async/quality-result.yaml",
+    "docs/development/branch-review-20261110-record-change-async/review.md",
+    "docs/development/branch-review-20261110-record-change-async/verification.md"
+  ],
+  "drift": "none;one record-control page async repair and exact component regression;no backend/policy/SQL/refactor expansion",
+  "stage": "W3/W7 record-control UI and W6 async robustness/A23",
+  "completeOverallAudit": false,
+  "wholeFileCompleted": 0,
+  "historicalUnique": "unknown",
+  "remaining": [
+    "Current candidate503 error in background remains existingUI followup,next focused slice",
+    "Record-list qualificationSQL and auditDB paging unanswered/unimplemented",
+    "Candidate versionN+1 source signal only,quantify after finite historical dedup",
+    "W2-W7/fullsemantic/UI86/A12/highrisk/fullmatrices/A23 including already reviewed/capacityUNKNOWN/paused"
+  ],
+  "postReviewAllowed": "L0 reports/evidence/delivery only;reassess if target or protected source changes",
+  "ciQueriedOrTriggered": false,
+  "autoMergeDeployOrRestore": false
+}
