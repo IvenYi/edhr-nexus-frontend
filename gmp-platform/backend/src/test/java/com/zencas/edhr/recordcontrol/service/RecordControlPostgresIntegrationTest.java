@@ -139,7 +139,7 @@ class RecordControlPostgresIntegrationTest {
             FROM form_instance_revision v CROSS JOIN generate_series(1,20) i WHERE record_id=%s;
             UPDATE form_instance_record SET current_revision_id=7100000+(id-7000000) WHERE id BETWEEN 7000001 AND 7000020;
             INSERT INTO workflow_instance SELECT (jsonb_populate_record(NULL::workflow_instance,
-                to_jsonb(w)||jsonb_build_object('id',7200000+i,'business_key',(7400000+i)::text,'idempotency_key','capacity-instance-'||i))).*
+                to_jsonb(w)||jsonb_build_object('id',7200000+i,'business_id',(7400000+i)::text,'idempotency_key','capacity-instance-'||i))).*
             FROM workflow_instance w CROSS JOIN generate_series(1,20) i;
             INSERT INTO record_control_request SELECT (jsonb_populate_record(NULL::record_control_request,
                 to_jsonb(q)||jsonb_build_object('id',7400000+i,'request_no','CAP-RC-'||i,'record_id',7000000+i,
@@ -148,12 +148,14 @@ class RecordControlPostgresIntegrationTest {
             FROM record_control_request q CROSS JOIN generate_series(1,20) i;
             """.formatted(originalRecord));
         if (backgroundTasks>0) {
-            jdbc.execute("INSERT INTO workflow_instance SELECT (jsonb_populate_record(NULL::workflow_instance,to_jsonb(w)||jsonb_build_object('id',8000000+i,'business_key','BACKGROUND-'||i,'idempotency_key','background-instance-'||i))).* FROM workflow_instance w CROSS JOIN generate_series(1,"+backgroundTasks+") i WHERE id="+original.path("workflow_instance_id").asText());
+            jdbc.execute("INSERT INTO workflow_instance SELECT (jsonb_populate_record(NULL::workflow_instance,to_jsonb(w)||jsonb_build_object('id',8000000+i,'business_id','BACKGROUND-'||i,'idempotency_key','background-instance-'||i))).* FROM workflow_instance w CROSS JOIN generate_series(1,"+backgroundTasks+") i WHERE id="+original.path("workflow_instance_id").asText());
             jdbc.execute("INSERT INTO workflow_task SELECT (jsonb_populate_record(NULL::workflow_task,to_jsonb(t)||jsonb_build_object('id',9000000+i,'instance_id',8000000+i))).* FROM workflow_task t CROSS JOIN generate_series(1,"+backgroundTasks+") i WHERE id="+originalTask);
         }
         // New request tasks follow accumulated history in the heap; do not rely on early matches.
         jdbc.execute("INSERT INTO workflow_task SELECT (jsonb_populate_record(NULL::workflow_task,to_jsonb(t)||jsonb_build_object('id',7300000+i,'instance_id',7200000+i,'candidate_snapshot',jsonb_build_object('userIds',jsonb_build_array('42'))))).* FROM workflow_task t CROSS JOIN generate_series(1,20) i WHERE id="+originalTask);
         assertThat(count("workflow_task")).isEqualTo(backgroundTasks+21);
+        assertThat(jdbc.queryForObject("SELECT count(*) FROM record_control_request q JOIN workflow_instance w ON w.id::text=q.workflow_instance_id WHERE q.request_no LIKE 'CAP-RC-%' AND w.business_id=q.id::text",Long.class)).isEqualTo(20);
+        assertThat(jdbc.queryForObject("SELECT count(*) FROM workflow_instance WHERE business_id LIKE 'BACKGROUND-%'",Long.class)).isEqualTo(backgroundTasks);
         jdbc.execute("ANALYZE workflow_task; ANALYZE record_control_request; ANALYZE form_instance_record");
         String before=readCapacityDigest();
         var query=new RecordControlService.RequestListQuery("CAP-RC-",null,null,null,null,null,null,null,null);
