@@ -1,0 +1,64 @@
+{
+  "baseCommit": "670040fb7d24abf629baa53d60f6fe922c7e7714",
+  "testedCandidate": "6f03c7e565d309ed6630db7ab336a378cbadbe65",
+  "packages": [
+    {
+      "name": "main",
+      "path": "evidence/main.zip",
+      "bytes": 4221986,
+      "sha256": "adc86fe96f8274a7e2bcd3bfe48b10db2da72b53a35ac5bb9e1c0f2922118e28",
+      "manifest": "evidence/main-manifest.json",
+      "manifestSha256": "bcd1821fa8e4385e7dab582dfc443edf95dc31bbd4b33126b88fa7357116e5e5",
+      "members": 166,
+      "roleManifestMembersVerified": null
+    },
+    {
+      "name": "ontology",
+      "path": "evidence/ontology.zip",
+      "bytes": 302982,
+      "sha256": "b10f453a21d8ef73e24b266f884927833e5cca5447e5558cf597ed028e123007",
+      "manifest": "evidence/ontology-manifest.json",
+      "manifestSha256": "38059242e1dbcce14df1bfe023539f9601a592df41c5f1bf6820fb643858fd73",
+      "members": 50,
+      "roleManifestMembersVerified": 48
+    },
+    {
+      "name": "independent",
+      "path": "evidence/independent.zip",
+      "bytes": 5727329,
+      "sha256": "dddb8fea2b24b31c88eb8f17f274c5d2dcab1d3c14e1c9509b55905d694f2add",
+      "manifest": "evidence/independent-manifest.json",
+      "manifestSha256": "6ff983a56f2b95a863b838c85ea3f80c5dcc59f70701f66fd325b13b8b8fd720",
+      "members": 227,
+      "roleManifestMembersVerified": 225
+    }
+  ],
+  "copiedFormalArtifacts": [
+    {
+      "path": "main-analysis.json",
+      "source": "main/main-analysis.json",
+      "sha256": "7b4485868edb44fa97b8765d04e29f92a30e717009984c2bbdc7ef2fb3f8fe70"
+    },
+    {
+      "path": "ontology-result.yaml",
+      "source": "ontology/ontology-result.yaml",
+      "sha256": "6f8cb85b1dbbda7b1ea89baceed936ddc969fa97e7ef37b08222efaa40b96c62"
+    },
+    {
+      "path": "ontology-review.md",
+      "source": "ontology/REVIEW.md",
+      "sha256": "59ab79d820ecb9bdb985b6158985b5e30901b9b142ed429536a183b6d2e23633"
+    },
+    {
+      "path": "quality-result.yaml",
+      "source": "independent/quality-result.yaml",
+      "sha256": "271809c88fb48828f94f7529b571001a69c1c87affae407f5ad10611e00160ef"
+    },
+    {
+      "path": "independent-review.md",
+      "source": "independent/independent-review.md",
+      "sha256": "bd96def68aa0f213d9011bfa81c24c2a4c4a1d2aa900632fe6b3d3afc5b90762"
+    }
+  ],
+  "scope": "Separate complete owned raw histories, including initial tool and intermediate failures; no result rewriting"
+}
