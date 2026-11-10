@@ -2,6 +2,8 @@
 
 ## PR79已合入：记录变更新拟修订不继承只读子表历史签名
 
+已交付[PR80](https://github.com/IvenYi/edhr-nexus-frontend/pull/80)，audit/edhr-dev-record-subtable-guards-20261110→edhr-dev，观察OPEN/MERGEABLE/CLEAN，建议人工合入本批新申请修复。受测ab5b44d2、验收c1a32c3c后仅L0交付登记；登记前本地/真实远端/PR head与33输入一致，登记推送后再核对。存量在审/历史未自动改写且实际未知，不以本批认证存量安全；下一轮先fetch真实合入及新增，再优先复现引用上下文信号及继续原跨链/健壮性/A23队列，不merge/deploy/恢复或查触发CI。
+
 已fetch edhr-dev@0701b3d5d99787195e9d4c33935ae36da370839d，PR79真实合入且整树同42872814，无额外代码/知识/契约。新分支audit/edhr-dev-record-subtable-guards-20261110；[本批](../branch-review-20261110-record-subtable-guards/README.md)L2继续原W3/W5跨链及W6健壮性/A23、W7增量，确认W3-RECORD-LOCKED-SUBTABLE-SIGNATURE-001/high：父表只读/停用早return令旧签名进入新拟值和Rev2。按合理既有DEC0087-02/06及原用户证据，只RecordControlDiff统一清除拟值历史签名，保留源/快照/行身份/业务锁/签署/权限/事务/审计/UI/schema，非新政策或大重构。
 
 clean受测ab5b44d2主侧及全新独立各123/123（87原生PG+36其他）、知识各实际89/89，均0F/E/S；33受测输入同Git/快照。同最终2测试字节旧产品16=8正8真红/0E/S，unit4+PG4覆盖父表只读/停用×输入有无；旧PG4实际批准并携旧签名，当前新4不继承。每版新链12次真实JWT+MockMvc200，原signField密码及合成认证PNG、原saved新建独立Rev1；旧/新8观察、24份实际PG签名载荷及Rev1/Rev2摘要独立重算，旧signature整行/Rev1/冻结模板不变，原行ID/只读值/无内容变化及篡改拒绝保持。原候选20调用20SELECT/20计划仍回归，非新性能优化。

@@ -1,5 +1,7 @@
 # 记录变更：只读子表历史签名归属修复
 
+已创建[PR80](https://github.com/IvenYi/edhr-nexus-frontend/pull/80)，`audit/edhr-dev-record-subtable-guards-20261110`→`edhr-dev`，观察OPEN/MERGEABLE/CLEAN，建议人工合入本批新申请修复。验收提交`c1a32c3c0787c542ba7c87c1dad358ec6017537e`后仅L0交付登记；登记前本地/实际远端/PR head及33受测输入一致，见[交付观察](evidence/delivery-verification.json)。登记正常推送后再次核对，不回写该历史时点。
+
 PR79已真实合入`edhr-dev@0701b3d5d99787195e9d4c33935ae36da370839d`，整树同42872814，无额外代码/知识/契约增量。本批L2继续原整体审计，受测候选`ab5b44d2292a8a7a08cbeb6aba502b30f50df8f0`。
 
 确认并修复`W3-RECORD-LOCKED-SUBTABLE-SIGNATURE-001/high`：父子表只读或停用时，原早return跳过历史签名清除，另一主字段变更批准后，旧签名随拟值进入Rev2/current/execution。依据DEC0087-02/06及原用户确认，新修订不继承原业务签名、旧签名历史保留，本期不要求原业务签署人对Rev2重签；原规则合理，不新增政策。

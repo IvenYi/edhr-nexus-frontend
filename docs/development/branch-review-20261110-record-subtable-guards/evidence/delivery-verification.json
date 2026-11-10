@@ -1,0 +1,24 @@
+{
+  "observedAt": "2026-11-10T13:20:40.097473+00:00",
+  "headBeforeThisRecord": "c1a32c3c0787c542ba7c87c1dad358ec6017537e",
+  "actualRemoteBranchHead": "c1a32c3c0787c542ba7c87c1dad358ec6017537e",
+  "pr": {
+    "baseRefName": "edhr-dev",
+    "headRefName": "audit/edhr-dev-record-subtable-guards-20261110",
+    "headRefOid": "c1a32c3c0787c542ba7c87c1dad358ec6017537e",
+    "mergeStateStatus": "CLEAN",
+    "mergeable": "MERGEABLE",
+    "number": 80,
+    "state": "OPEN",
+    "url": "https://github.com/IvenYi/edhr-nexus-frontend/pull/80"
+  },
+  "fetchedTarget": "0701b3d5d99787195e9d4c33935ae36da370839d",
+  "testedCandidate": "ab5b44d2292a8a7a08cbeb6aba502b30f50df8f0",
+  "protectedInputsMatch": 33,
+  "workingTreeStatusAtObservation": "clean",
+  "postCandidateChanges": "L0 reports/evidence/ledger/delivery only",
+  "scope": "Point-in-time observation;subsequent delivery-only commit checked separately without rewriting history",
+  "compatibilityLimit": "New prepare only;oldIN_REVIEW/historical revisions not automatically modified",
+  "ciStatusOrActionsQueried": false,
+  "autoMergeDeployOrRestore": false
+}
