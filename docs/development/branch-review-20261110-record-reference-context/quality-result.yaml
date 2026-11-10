@@ -1,0 +1,269 @@
+qualityResult:
+  result: passed
+  baseCommit: 3b961a032ad4a21b2fdbd62d34bb0e26fc9e0a0d
+  headCommit: 8766a0f90cd2b34ff35e0a9a1bef719c5d997b00
+  contractBaseline:
+    sourceCommit: 8766a0f90cd2b34ff35e0a9a1bef719c5d997b00
+    targetBranch: edhr-dev
+    targetCommit: 3b961a032ad4a21b2fdbd62d34bb0e26fc9e0a0d
+    contractReadCommit: 8766a0f90cd2b34ff35e0a9a1bef719c5d997b00
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: clean
+    includedPaths: []
+    excludedPaths: []
+    untrackedPaths: []
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+  - id: check.fixed-candidate-and-contract
+    required: true
+    category: documentation
+    description: 独立固定来源/目标/受测提交，读取治理及L2决策包，8文件最小范围
+    method: inspection
+    command: git fetch origin edhr-dev; git diff base..head; git show; read contracts
+    outcome: passed
+    evidence:
+    - base=3b961a032ad4a21b2fdbd62d34bb0e26fc9e0a0d; head=tested=8766a0f90cd2b34ff35e0a9a1bef719c5d997b00;
+      contractReadCommit=8766a0f90cd2b34ff35e0a9a1bef719c5d997b00; target last fetched
+      unchanged
+    - source-binding.json
+    - candidate.diff
+    - cleanup.json
+  - id: check.existing-business-semantics
+    required: true
+    category: ontology
+    description: 既有引用、冻结修订、人员完整性和未决边界核对，不制定新政策
+    method: inspection
+    command: Read DEC-0082/0087/0094/0095, form-reference-runtime, open-questions,
+      shared validators
+    outcome: passed
+    evidence:
+    - source/
+    - reviewed-ontology/ontology-result.yaml
+    - reviewed-ontology/finite-review-records.json
+    - 353 knowledge files unchanged; finite ontology denominator 21 = 18 consistent
+      + 1 precise historical replacement + 2 existing out-of-scope questions; not
+      new unique full-audit coverage
+  - id: check.complete-proposed-context
+    required: true
+    category: integration
+    description: 最终拟值先合并，按冻结model/canvas验证根引用及依赖主字段的子表引用；字段顺序与省略不能绕过
+    method: automated-test
+    command: EDHR_CANDIDATE_ROOT=ownWT EDHR_CANDIDATE_RAW=ownRaw EDHR_CANDIDATE_CONTAINER_PREFIX=edhr-reference-qa
+      python3 run.py final_verified
+    outcome: passed
+    evidence:
+    - final_verified/run.json
+    - final_verified/TEST-com.zencas.edhr.recordcontrol.service.RecordControlPostgresIntegrationTest.xml
+    - independent-analysis.json
+    - 8 new model/canvas x root/row positive/negative parameterized cases passed
+  - id: check.historical-reason-row-identity
+    required: true
+    category: regression
+    description: 原历史原因按稳定修订行身份传previous，旧无__rowId行重排保持；不新增失效原因豁免
+    method: automated-test
+    command: Same native-PG suite; inspect RecordControlDiff and unchanged FormReferenceLookup
+    outcome: passed
+    evidence:
+    - 2 new historical-reason cases passed, including reordered legacy rows
+    - source/
+    - independent-analysis.json
+  - id: check.authenticated-reference-query
+    required: true
+    category: api
+    description: 认证只读POST携带上下文和分页；GET沿保存主值兼容；401/400边界
+    method: automated-test
+    command: Same native-PG suite JWT+MockMvc HTTP requests
+    outcome: passed
+    evidence:
+    - final_verified/http.jsonl
+    - independent-analysis.json
+    - POST frozen context returns502; GET saved context returns501; anonymous401;
+      three malformed cases400; GET does not infer a specific current subtable row
+  - id: check.complete-qualified-personnel
+    required: true
+    category: api
+    description: 全部符合原资格的人员可跨页到达，无100名总量截断
+    method: automated-test
+    command: Native recordReferenceHttpUsesFrozenContextAndAllPersonnelPages and browser
+      reference-people
+    outcome: passed
+    evidence:
+    - independent-analysis.json
+    - final_verified/http.jsonl
+    - browser/result.json
+    - native first101 includes lookahead, second52, first100+second52=152 distinct;
+      last800150 reachable; browser later-page person149 selected at both widths
+  - id: check.atomic-submit-and-history
+    required: true
+    category: audit
+    description: 非法依赖拒绝前后8表摘要相同；合法真实申请/签署审批生效并保留旧修订
+    method: automated-test
+    command: Native referenceSubmissionRejectsStaleOmittedValueAndApprovesValidReplacement
+    outcome: passed
+    evidence:
+    - final_verified/http.jsonl
+    - final_verified/TEST-com.zencas.edhr.recordcontrol.service.RecordControlPostgresIntegrationTest.xml
+    - source/gmp-platform/backend/src/test/java/com/zencas/edhr/recordcontrol/service/RecordControlPostgresIntegrationTest.java
+    - 400 invalid submit; before/after 8-table digest asserted; 200 valid submit and
+      actual HTTP approval; Rev2=502, Rev1=501
+  - id: check.native-adjacent-regression
+    required: true
+    category: regression
+    description: 原签名不继承、锁定父表、审批权限、回滚、并发/幂等、候选SQL预算相邻回归
+    method: automated-test
+    command: Own isolated PostgreSQL16 canonical0092, both capacity opt-ins true;
+      10 selected classes
+    outcome: passed
+    evidence:
+    - final_verified/test-summary.json
+    - final_verified/postgres.log
+    - final_verified/signature-observations/
+    - final_verified/candidate-observations/
+    - final_verified/record-observations/
+    - 158/158; 99 native PostgreSQL +59 other, including15 H2 supplemental and8 pure
+      config; 20 catalog reads each1SQL; four old revision/signature evidence pairs
+      unchanged
+  - id: check.knowledge-actual89
+    required: true
+    category: documentation
+    description: 本实例实际重跑知识89，353知识+5验证Java+POM共359输入绑定当前候选
+    method: automated-test
+    command: python3 knowledge-run.py (own temporary tool rooted to ownWT)
+    outcome: passed
+    evidence:
+    - knowledge/run.json
+    - knowledge/test-summary.json
+    - knowledge/TEST-com.zencas.edhr.knowledge.BusinessKnowledgeModelTest.xml
+    - 89/89, zero failures/errors/skips; not full natural-language semantic audit
+  - id: check.actual-maintained-browser
+    required: true
+    category: e2e
+    description: 实际维护页面、API客户端及共享选择器异步与错误恢复，共42场景
+    method: browser
+    command: RECORD_CHANGE_ROOT=ownWT/gmp-platform/frontend RECORD_CHANGE_ARTIFACTS=ownRaw/browser
+      node ownWT/gmp-platform/frontend/scripts/test-record-change-async-browser.mjs
+    outcome: passed
+    evidence:
+    - browser/result.json
+    - browser.log
+    - 42/42 =34 prior +8 new, widths1440/390; all APIs intercepted synthetic, no live
+      backend writes; separate from nativePG HTTP tests
+  - id: check.visual-existing-components
+    required: true
+    category: visual
+    description: 桌面/390窄屏复用既有公共选择器和设计规范，不改UI样式；后页实际可选择
+    method: browser
+    command: Inspect screenshots of reference-main, reference-row, reference-people,
+      reference-error at1440/390
+    outcome: passed
+    evidence:
+    - browser/reference-main-390-popup.png
+    - browser/reference-people-390.png
+    - browser/reference-error-1440-popup.png
+    - source/DESIGN.md
+    - source/docs/frontend/list-page-guidelines.md
+  - id: check.build-style-font
+    required: true
+    category: regression
+    description: 独立实际前端构建和仓库列表/外链字体检查
+    method: command
+    command: npm run build; npm run verify:list-table-style; npm run verify:no-external-fonts
+    outcome: passed
+    evidence:
+    - static/runs.json
+    - static/build.log
+    - static/list.log
+    - static/fonts.log
+    - All three exit0; lint exit2 missing configuration is separately preserved as
+      residual, not a passed lint result
+  - id: check.strict-same-scope-no-regression
+    required: true
+    category: visual
+    description: 官方exact脚本repo与frontend分别对比同范围基线，保留多重项，无新增或移除
+    method: command
+    command: python3 tools/audit_project.py <base/candidate root> --mode strict --output
+      ...; Counter(file/ruleId/severity/category/message)
+    outcome: passed
+    evidence:
+    - tools/audit_project.py SHA256=67fd35597c85a2f37dd3c566f0bd79768cbe059114edcf28074fc5afa3e0ce68
+      bytes37716
+    - static-exact/runs.json
+    - static-exact/deltas.json
+    - repo86=72violations+14unresolved; frontend subset28=14+14; all exit2; no global
+      static pass claimed; first extra-LF script and reports retained under tools/audit_project-initial-extra-lf.py
+      and static/
+  - id: check.robustness-and-scope-drift
+    required: true
+    category: requirements
+    description: 核源码避免按索引猜历史、整表逐行深复制、共享上下文突变、权限放宽、冗余防御和新默认
+    method: inspection
+    command: Review five production diffs against base, shared readonly leaf validators,
+      DP impact/extension strategy
+    outcome: passed
+    evidence:
+    - candidate.diff
+    - source-binding.json
+    - independent-analysis.json
+    - rowsById map per table; shallow main+row context read by unchanged validators;
+      immutable topfields skip unchanged; source deep-copied; no schema/index/shared-control
+      changes. No production capacity/SLA claim; omitted evidence validation is existing
+      validity enforcement, not a new business rule
+  - id: check.independent-environment-cleanup
+    required: true
+    category: documentation
+    description: 只读独立验证，容器和运行依赖软链清理，受测输入和最终干净状态绑定
+    method: command
+    command: docker inspect owned-container; unlink own dependency symlink; git status
+      --porcelain; source fingerprints
+    outcome: passed
+    evidence:
+    - cleanup.json
+    - final_verified/cleanup.json
+    - source-binding.json
+    - All own sessions completed; owned PG removed; own symlink removed, main dependency
+      kept; ownWT final clean; no repository product/test/config modifications
+  - id: check.old-source-negative-proof
+    required: true
+    category: integration
+    description: 独立核读同字节最终测试在固定旧产品源码的真实失败反证及新增预运行浏览器SHA收据
+    method: inspection
+    command: Verify reused main native and browser old-source originals against Git
+      base/head and before/after fingerprints
+    outcome: passed
+    evidence:
+    - old-negative-binding.json
+    - old-browser-verified-binding.json
+    - reviewed-main-evidence/focused_old_final/
+    - reviewed-main-evidence/browser_old_verified/
+    - Native12:2pass10fail0errors0skip with final test bytes; browser8:8 expected
+      failures,0pageErrors/nativeDialogs/writes; supplemental runner preserves explicit
+      old-source environment; this QA did not independently rerun old source
+  findings: []
+  residualRisks:
+  - id: risk.existing-static
+    description: Repo strict86（72violations+14unresolved）及frontend子集28仍存在，基线/候选均exit2；npm
+      lint因缺配置exit2。
+    impact: 现有全仓静态问题与lint验证缺口仍开放；本批仅证明同范围无新增。
+    mitigation: 留既有全量审计后续阶段，未为变绿扩大本批或降低门槛。
+  - id: risk.audit-not-complete
+    description: 本轮有限知识21项不是新增唯一覆盖；知识89为结构自动校验。W2-W7、已审A23整体回看、大模块具体拆分/性能其余项未由本批关闭。
+    impact: 不能宣布整体代码/本体审计完成。
+    mitigation: 沿仓库台账推进固定提交全量与新增增量审计，避免将本切片passed扩大到全系统。
+  - id: risk.separate-synthetic-environments
+    description: 浏览器42项拦截合成API；原生PG采用JWT+MockMvc与隔离fixture。
+    impact: 两组证据互补，不构成同一个真实浏览器到后端再到PG的端到端发布验收。
+    mitigation: 按实际环境口径报告；生产发布、完整多租户及全部签署组合另验。
+  - id: risk.capacity-unknown
+    description: 本批消除逐行整表深复制的新增风险，保持原逐叶子证据检查；未量化本切片大表规模SQL/内存峰值/吞吐SLA。原候选20SQL与目录容量仅相邻回归样本。
+    impact: 生产容量仍UNKNOWN；不能由正确性全绿推定性能无界。
+    mitigation: 结合实际数据规模在W6量化，重大性能取舍仍与用户讨论，不擅自改规则。
+  - id: risk.existing-records
+    description: 原存量在审申请/历史修订与签名未自动修复、回填或恢复，实际库存未知。
+    impact: 本修复保证新处理路径，不证明旧存量已净化。
+    mitigation: 有库存和授权时单独评估；保留历史证据，不回写。
+  - id: risk.unchanged-deferred-boundaries
+    description: A12历史/放行/高风险完整矩阵、默认单租户限制、用户暂停项、未答性能方案继续原状态。
+    impact: 不得将本候选验收扩大为上述范围的交付或生产批准。
+    mitigation: 保留既有未决和台账；本批不自动关闭。
+  blockingConditions: []

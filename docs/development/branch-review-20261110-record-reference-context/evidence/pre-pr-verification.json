@@ -1,0 +1,35 @@
+{
+  "observedAt": "2026-11-10T22:35:12.908928+08:00",
+  "target": "3b961a032ad4a21b2fdbd62d34bb0e26fc9e0a0d",
+  "testedCandidate": "8766a0f90cd2b34ff35e0a9a1bef719c5d997b00",
+  "targetStillCurrent": true,
+  "externalIncrement": [],
+  "allDispatchedProfessionalsFinal": "Actual collaboration.list_agents observed both current role instances completed with formal FINAL before this command;no dispatched children",
+  "quality": "passed",
+  "ontology": "not-applicable",
+  "requiredQualityChecksPassed": 16,
+  "protectedInputsMatch": 46,
+  "knowledgeValidationInputsMatch": 359,
+  "archiveMembersHashVerified": 1586,
+  "roleFinalManifestSha256": {
+    "ontology": "8727c85368fdd70a0aa4e17d121bf1beb6fb3ddf87b9094d08bcda61587d0c93",
+    "independent": "5427888d8d961bdb0f8c97932badd7b8ce92fd68af2ba69401bccea57ee285ae"
+  },
+  "scopeDrift": false,
+  "candidateChangedPaths": [
+    "docs/development/branch-review-20261110-record-reference-context/decision-package.yaml",
+    "gmp-platform/backend/src/main/java/com/zencas/edhr/recordcontrol/controller/RecordControlController.java",
+    "gmp-platform/backend/src/main/java/com/zencas/edhr/recordcontrol/service/RecordControlDiff.java",
+    "gmp-platform/backend/src/main/java/com/zencas/edhr/recordcontrol/service/RecordControlService.java",
+    "gmp-platform/backend/src/test/java/com/zencas/edhr/recordcontrol/service/RecordControlPostgresIntegrationTest.java",
+    "gmp-platform/frontend/scripts/test-record-change-async-browser.mjs",
+    "gmp-platform/frontend/src/api/record-control.ts",
+    "gmp-platform/frontend/src/pages/record-control/RecordChangePage.tsx"
+  ],
+  "workingTreeStatusAtGate": " M docs/development/branch-review-20261015/NEXT.md\n?? docs/development/branch-review-20261110-record-reference-context/README.md\n?? docs/development/branch-review-20261110-record-reference-context/evidence-packages.json\n?? docs/development/branch-review-20261110-record-reference-context/evidence/independent-manifest.json\n?? docs/development/branch-review-20261110-record-reference-context/evidence/independent.zip\n?? docs/development/branch-review-20261110-record-reference-context/evidence/main-manifest.json\n?? docs/development/branch-review-20261110-record-reference-context/evidence/main.zip\n?? docs/development/branch-review-20261110-record-reference-context/evidence/ontology-manifest.json\n?? docs/development/branch-review-20261110-record-reference-context/evidence/ontology.zip\n?? docs/development/branch-review-20261110-record-reference-context/independent-review.md\n?? docs/development/branch-review-20261110-record-reference-context/main-analysis.json\n?? docs/development/branch-review-20261110-record-reference-context/ontology-result.yaml\n?? docs/development/branch-review-20261110-record-reference-context/ontology-review.md\n?? docs/development/branch-review-20261110-record-reference-context/quality-result.yaml\n?? docs/development/branch-review-20261110-record-reference-context/review.md",
+  "remainingChangesAllowed": "L0 reports/ledger/evidence/delivery only;product/tests/DP/contracts/knowledge unchanged",
+  "stage": "W3/W5 record reference context;W6 robustness/performance risk review/concrete extraction proposals/A23;W7 increment;whole audit continues",
+  "compatibilityLimit": "Only new prepare and query bridge fixed;preexisting signed IN_REVIEW/historical payloads not rewritten or certified clean;legacy GET has saved main context only",
+  "ciStatusOrActionsQueried": false,
+  "autoMergeDeployOrRestore": false
+}

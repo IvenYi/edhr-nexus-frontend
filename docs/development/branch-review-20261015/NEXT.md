@@ -1,5 +1,15 @@
 # 持续推进台账
 
+## PR80已合入：记录变更冻结引用与完整候选上下文
+
+已fetch `edhr-dev@3b961a032ad4a21b2fdbd62d34bb0e26fc9e0a0d`，PR80真实合入且整树同f17d2fc5，无额外产品/知识/契约。新分支audit/edhr-dev-record-reference-context-20261110；[本批](../branch-review-20261110-record-reference-context/README.md)L2按原W3/W5跨链、W6健壮性/A23和W7增量，修复W3-RECORD-REFERENCE-CONTEXT-001/high与W3-RECORD-REFERENCE-QUERY-001/medium：先完整合并拟值，按记录冻结model/canvas校验证据；子表稳定修订行ID传previous；页面/认证只读POST接通主/行context和分页，GET沿保存主值兼容。原共享规则合理且保持，不改知识政策、UI视觉/共享控件、签署/审批/事务/审计/历史/schema/索引。
+
+受测clean8766a0f9，主侧与全新独立各实际158/158（99原生PG＋59其他含15H2）、知识各实际89/89、维护页面各42/42及build/list/font，均0F/E/S。新增原生12含model/canvas×主/子表、顺序/省略、历史原因/旧行重排、真实JWT+MockMvc和提交审批历史；旧同最终native字节12=2正10真红/0E/S，非法旧提交实际200并写IN_REVIEW、当前400且8表摘要不变，合法B/502批准后Rev1/Rev2为501/502。原生152人员全部跨页可达；浏览器两宽实际选中后页人员149，无100总量cap。旧UI追加预执行5源摘要/执行后复核的8项反证全红；浏览器API拦截与原生链分别报告，不称生产联通E2E。
+
+正式quality passed/FINAL、16必需项通过、无发现阻断；本体NA/FINAL有限21=18一致/1精确历史替代/2原范围外未决，不新增unique，353知识不变。46输入同Git/原件；三包1586成员及原角色manifest均核；主/独立各自PG已清，旧反证工作树clean后正常移除、主依赖保留。静态官方精确脚本按同范围原/新repo各86、frontend各28均0增量/仍exit2，lint缺配置开放，不将范围变化当变绿。早期fixture/浏览器校准失败原件保留，较早12绿非最终测试字节不外推。
+
+全部角色正式FINAL后，2026-11-10 22:35:12 Asia/Shanghai已实际[PR前漂移/阶段复核](../branch-review-20261110-record-reference-context/pre-pr-drift-review.md)：目标仍3b961、46/359输入及三包1586成员核过，无漂移；此后仅L0验收/台账/交付。只关闭新prepare与候选桥接；存量IN_REVIEW及历史不自动改写且实际未知。原W2余项/W3–W5其他跨链/W6健壮性性能具体提取及A23含已审/W7新增、全知识语义/strict86/lint缺配置/A12/高风险/完整矩阵/family剩余4N和选项全载/容量UNKNOWN/未答方案/用户暂停继续；整文件不增加完成数/historyUnique未知。具体方法与查询服务拆分方案见本批review，不做无关大重构。下一轮先fetch真实合入与新增，回原入口矩阵；逐叶SQL与附件readAllBytes先去重、量化和讨论，不默认优化，不自动merge/deploy/恢复或查询触发CI。
+
 ## PR79已合入：记录变更新拟修订不继承只读子表历史签名
 
 已交付[PR80](https://github.com/IvenYi/edhr-nexus-frontend/pull/80)，audit/edhr-dev-record-subtable-guards-20261110→edhr-dev，观察OPEN/MERGEABLE/CLEAN，建议人工合入本批新申请修复。受测ab5b44d2、验收c1a32c3c后仅L0交付登记；登记前本地/真实远端/PR head与33输入一致，登记推送后再核对。存量在审/历史未自动改写且实际未知，不以本批认证存量安全；下一轮先fetch真实合入及新增，再优先复现引用上下文信号及继续原跨链/健壮性/A23队列，不merge/deploy/恢复或查触发CI。
