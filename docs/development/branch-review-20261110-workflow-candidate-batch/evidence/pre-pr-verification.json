@@ -1,0 +1,26 @@
+{
+  "observedAt": "2026-11-10T20:08:21.492423+08:00",
+  "target": "3b7e4d9a35503020e0baef2a91bb3e9a663fcb05",
+  "testedCandidate": "c2691bf711ceb8f7033dae23e28dfaa8104344a5",
+  "targetStillCurrent": true,
+  "externalIncrement": [],
+  "quality": "passed",
+  "ontology": "not-applicable",
+  "requiredQualityChecksPassed": 12,
+  "allDispatchedProfessionalsFinal": "Confirmed from actual collaboration.list_agents before this command;no children",
+  "protectedInputsMatch": 30,
+  "archiveMembersHashVerified": 707,
+  "candidateChangedPaths": [
+    "docs/development/branch-review-20261110-workflow-candidate-batch/decision-package.yaml",
+    "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/repository/WorkflowDefinitionRepository.java",
+    "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/RecordControlWorkflowService.java",
+    "gmp-platform/backend/src/test/java/com/zencas/edhr/recordcontrol/service/RecordControlPostgresIntegrationTest.java",
+    "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/service/RecordControlWorkflowServiceTest.java"
+  ],
+  "workingTreeStatusAtGate": " M docs/development/branch-review-20261015/NEXT.md\n?? docs/development/branch-review-20261110-workflow-candidate-batch/README.md\n?? docs/development/branch-review-20261110-workflow-candidate-batch/evidence-packages.json\n?? docs/development/branch-review-20261110-workflow-candidate-batch/evidence/\n?? docs/development/branch-review-20261110-workflow-candidate-batch/independent-review.md\n?? docs/development/branch-review-20261110-workflow-candidate-batch/main-analysis.json\n?? docs/development/branch-review-20261110-workflow-candidate-batch/ontology-result.yaml\n?? docs/development/branch-review-20261110-workflow-candidate-batch/ontology-review.md\n?? docs/development/branch-review-20261110-workflow-candidate-batch/performance-results.md\n?? docs/development/branch-review-20261110-workflow-candidate-batch/quality-result.yaml\n?? docs/development/branch-review-20261110-workflow-candidate-batch/review.md",
+  "remainingChangesAllowed": "L0 audit reports/NEXT/delivery only",
+  "scopeDrift": false,
+  "stage": "W3/W7 and W6 approved candidate-read subitem;whole W2-W7 audit continues",
+  "ciActionsQueriedOrTriggered": false,
+  "autoMergeDeployRestore": false
+}

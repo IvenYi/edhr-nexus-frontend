@@ -16,6 +16,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.http.MediaType;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.jupiter.params.provider.CsvSource;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
@@ -36,7 +37,21 @@ import static org.assertj.core.api.Assertions.*;
         matches = "jdbc:postgresql://(?:localhost|127\\.0\\.0\\.1):[0-9]+/edhr_record_control_test_[a-z0-9_]+")
 @SpringBootTest(properties = {"spring.jpa.hibernate.ddl-auto=none", "spring.liquibase.enabled=true"})
 @AutoConfigureMockMvc
+@org.springframework.context.annotation.Import(RecordControlPostgresIntegrationTest.CandidateSqlCapture.class)
 class RecordControlPostgresIntegrationTest {
+    private static final ThreadLocal<List<String>> CANDIDATE_SQL = new ThreadLocal<>();
+
+    @org.springframework.boot.test.context.TestConfiguration(proxyBeanMethods = false)
+    static class CandidateSqlCapture {
+        @org.springframework.context.annotation.Bean
+        org.springframework.boot.autoconfigure.orm.jpa.HibernatePropertiesCustomizer candidateSqlInspector() {
+            return properties -> properties.put("hibernate.session_factory.statement_inspector",
+                    (org.hibernate.resource.jdbc.spi.StatementInspector) sql -> {
+                        if (CANDIDATE_SQL.get() != null) CANDIDATE_SQL.get().add(sql);
+                        return sql;
+                    });
+        }
+    }
     @Autowired MockMvc mvc;
     @Autowired com.zencas.edhr.identity.security.JwtTokenProvider tokens;
     @DynamicPropertySource static void database(DynamicPropertyRegistry properties) {
@@ -158,13 +173,17 @@ class RecordControlPostgresIntegrationTest {
                 String label="wf-candidates-"+catalogSize+"-"+type.name().toLowerCase(java.util.Locale.ROOT)+"-"+iteration;
                 var tx = new org.springframework.transaction.support.TransactionTemplate(transactionManager); tx.setReadOnly(true);
                 long[] measurements = new long[2];
+                List<String> sql = new java.util.ArrayList<>();
                 var actual = tx.execute(status -> {
                     jdbc.execute("SET LOCAL application_name='"+label+"'; SET LOCAL auto_explain.log_min_duration=0; SET LOCAL auto_explain.log_analyze=true; SET LOCAL auto_explain.log_buffers=true; SET LOCAL auto_explain.log_format='json'");
                     var memory=(com.sun.management.ThreadMXBean)java.lang.management.ManagementFactory.getThreadMXBean();
                     long started=System.nanoTime(),allocated=memory.getThreadAllocatedBytes(Thread.currentThread().threadId());
-                    var result=workflowCandidates.listPublishedCandidates(type);
-                    measurements[0]=System.nanoTime()-started; measurements[1]=memory.getThreadAllocatedBytes(Thread.currentThread().threadId())-allocated;
-                    return result;
+                    CANDIDATE_SQL.set(sql);
+                    try {
+                        var result=workflowCandidates.listPublishedCandidates(type);
+                        measurements[0]=System.nanoTime()-started; measurements[1]=memory.getThreadAllocatedBytes(Thread.currentThread().threadId())-allocated;
+                        return result;
+                    } finally { CANDIDATE_SQL.remove(); }
                 });
                 assertThat(actual).hasSize(catalogSize);
                 for (int i=0; i<catalogSize; i++) {
@@ -176,10 +195,12 @@ class RecordControlPostgresIntegrationTest {
                     assertThat(row.versionNumber()).isEqualTo(3); assertThat(row.businessType()).isEqualTo(type);
                     assertThat(row.status()).isEqualTo("PUBLISHED");
                 }
+                assertThat(sql).as("Complete candidate catalog must use one narrow SELECT").hasSize(1);
+                assertThat(sql.get(0)).doesNotContain("nodes_json", "edges_json", "description", "created_at", "updated_at");
                 var observation=mapper.createObjectNode().put("label",label).put("businessType",type.name()).put("iteration",iteration)
                         .put("returned",actual.size()).put("matchedDefinitions",catalogSize+2)
                         .put("elapsedNanos",measurements[0]).put("threadAllocatedBytes",measurements[1]);
-                observation.set("rows",mapper.valueToTree(actual)); observations.add(observation);
+                observation.set("rows",mapper.valueToTree(actual)); observation.set("sql",mapper.valueToTree(sql)); observations.add(observation);
             }
             String token=tokens.generateToken("41","ordinary-reader","普通认证读取",5,List.of());
             var response=http("candidate-"+catalogSize+"-"+type,"GET","/api/v1/workflow/record-control/candidates?businessType="+type,token,null,200);
@@ -188,19 +209,52 @@ class RecordControlPostgresIntegrationTest {
         }
         String after=candidateCatalogDigest(); assertThat(after).isEqualTo(before);
         var report=mapper.createObjectNode().put("catalogSizePerType",catalogSize).put("beforeStateDigest",before).put("afterStateDigest",after)
-                .put("scope","Synthetic catalog metadata;original service/SQL;calling-thread cumulative allocation,not peak or production SLA;JWT+MockMvc,not socket/signing");
+                .put("scope","Synthetic catalog metadata;candidate service/SQL;calling-thread cumulative allocation,not peak or production SLA;JWT+MockMvc,not socket/signing");
         report.set("observations",observations);
         Path output=Path.of(System.getProperty("edhr.audit.workflowCandidateOutput")); Files.createDirectories(output);
         mapper.writerWithDefaultPrettyPrinter().writeValue(output.resolve("catalog-"+catalogSize+".json").toFile(),report);
     }
 
+    @ParameterizedTest
+    @CsvSource({"CHANGE,PUBLISHED,PUBLISHED", "CHANGE,PUBLISHED,DRAFT", "CHANGE,DRAFT,PUBLISHED",
+                "OBSOLETE,PUBLISHED,PUBLISHED", "OBSOLETE,PUBLISHED,DRAFT", "OBSOLETE,DRAFT,PUBLISHED"})
+    @org.junit.jupiter.api.condition.EnabledIfSystemProperty(named="edhr.audit.workflowCandidateCapacity",matches="true")
+    void candidateReadKeepsExistingAmbiguousCurrentFailureWithoutChangingEvidence(BusinessType type, String firstStatus, String secondStatus) {
+        long definition = type == BusinessType.CHANGE ? 201 : 301;
+        jdbc.update("UPDATE workflow_definition_version SET status=? WHERE definition_id=?",firstStatus,definition);
+        jdbc.update("INSERT INTO workflow_definition_version(id,definition_id,version_number,status,is_current,nodes_json,edges_json) VALUES(991,?,2,?,true,'[]','[]')",definition,secondStatus);
+        String before=candidateCatalogDigest();
+        assertThatThrownBy(() -> workflowCandidates.listPublishedCandidates(type))
+                .isInstanceOf(org.springframework.dao.IncorrectResultSizeDataAccessException.class);
+        assertThat(candidateCatalogDigest()).isEqualTo(before);
+    }
+
+    @ParameterizedTest @org.junit.jupiter.params.provider.EnumSource(BusinessType.class)
+    @org.junit.jupiter.api.condition.EnabledIfSystemProperty(named="edhr.audit.workflowCandidateCapacity",matches="true")
+    void candidateDraftUniquenessRemainsDatabaseEnforced(BusinessType type) {
+        long definition = type == BusinessType.CHANGE ? 201 : 301;
+        jdbc.update("UPDATE workflow_definition_version SET status='DRAFT' WHERE definition_id=?",definition);
+        String before=candidateCatalogDigest();
+        assertThatThrownBy(() -> jdbc.update("INSERT INTO workflow_definition_version(id,definition_id,version_number,status,is_current,nodes_json,edges_json) VALUES(991,?,2,'DRAFT',true,'[]','[]')",definition))
+                .isInstanceOf(org.springframework.dao.DuplicateKeyException.class)
+                .hasMessageContaining("uk_workflow_definition_version_one_draft");
+        assertThat(candidateCatalogDigest()).isEqualTo(before);
+    }
+
     @Test
     @org.junit.jupiter.api.condition.EnabledIfSystemProperty(named="edhr.audit.workflowCandidateCapacity",matches="true")
-    void candidateReadKeepsExistingAmbiguousCurrentFailureWithoutChangingEvidence() {
-        jdbc.update("INSERT INTO workflow_definition_version(id,definition_id,version_number,status,is_current,nodes_json,edges_json) VALUES(991,201,2,'PUBLISHED',true,'[]','[]')");
+    void wideCurrentVersionDoesNotLoadWorkflowGraph() {
+        jdbc.update("UPDATE workflow_definition_version SET nodes_json=jsonb_build_array(jsonb_build_object('description',repeat('宽图内容',65536))),edges_json=jsonb_build_array(jsonb_build_object('description',repeat('宽图内容',65536))) WHERE id=202");
         String before=candidateCatalogDigest();
-        assertThatThrownBy(() -> workflowCandidates.listPublishedCandidates(BusinessType.CHANGE))
-                .isInstanceOf(org.springframework.dao.IncorrectResultSizeDataAccessException.class);
+        List<String> sql = new java.util.ArrayList<>();
+        CANDIDATE_SQL.set(sql);
+        try {
+            var actual=workflowCandidates.listPublishedCandidates(BusinessType.CHANGE);
+            assertThat(actual).hasSize(1);
+            assertThat(actual.get(0).workflowVersionId()).isEqualTo("202");
+        } finally { CANDIDATE_SQL.remove(); }
+        assertThat(sql).hasSize(1);
+        assertThat(sql.get(0)).doesNotContain("nodes_json", "edges_json");
         assertThat(candidateCatalogDigest()).isEqualTo(before);
     }
 

@@ -4,11 +4,8 @@ import com.zencas.edhr.common.exception.BusinessException;
 import com.zencas.edhr.workflow.contract.RecordControlWorkflowContracts.BusinessType;
 import com.zencas.edhr.workflow.contract.RecordControlWorkflowContracts.StartCommand;
 import com.zencas.edhr.workflow.engine.WorkflowEngine;
-import com.zencas.edhr.workflow.entity.WorkflowDefinition;
-import com.zencas.edhr.workflow.entity.WorkflowDefinitionVersion;
 import com.zencas.edhr.workflow.entity.WorkflowInstance;
 import com.zencas.edhr.workflow.repository.WorkflowDefinitionRepository;
-import com.zencas.edhr.workflow.repository.WorkflowDefinitionVersionRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -17,46 +14,54 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class RecordControlWorkflowServiceTest {
 
     @Mock private WorkflowDefinitionRepository definitionRepository;
-    @Mock private WorkflowDefinitionVersionRepository versionRepository;
+    @Mock private WorkflowDefinitionRepository.CandidateVersion available;
+    @Mock private WorkflowDefinitionRepository.CandidateVersion draft;
     @Mock private WorkflowEngine workflowEngine;
     @InjectMocks private RecordControlWorkflowService service;
 
     @Test
     void listsOnlyCurrentPublishedCandidatesForRequestedBusinessType() {
-        WorkflowDefinition available = WorkflowDefinition.builder()
-                .id(10L).name("表单变更审核").code("CHANGE-01")
-                .type("RECORD_CONTROL").businessType("CHANGE").status("PUBLISHED").build();
-        WorkflowDefinition withoutCurrentVersion = WorkflowDefinition.builder()
-                .id(11L).name("无当前版本").type("RECORD_CONTROL")
-                .businessType("CHANGE").status("PUBLISHED").build();
-        WorkflowDefinitionVersion current = WorkflowDefinitionVersion.builder()
-                .id(20L).definitionId(10L).versionNumber(3)
-                .status("PUBLISHED").isCurrent(true).build();
-        when(definitionRepository.findByTypeAndBusinessTypeAndStatusOrderByNameAsc(
+        when(available.getDefinitionId()).thenReturn(10L);
+        when(available.getVersionId()).thenReturn(20L);
+        when(available.getName()).thenReturn("表单变更审核");
+        when(available.getCode()).thenReturn("CHANGE-01");
+        when(available.getVersionNumber()).thenReturn(3);
+        when(available.getBusinessType()).thenReturn("CHANGE");
+        when(available.getVersionStatus()).thenReturn("PUBLISHED");
+        when(draft.getDefinitionId()).thenReturn(11L);
+        when(draft.getVersionStatus()).thenReturn("DRAFT");
+        when(definitionRepository.findCandidateVersions(
                 "RECORD_CONTROL", "CHANGE", "PUBLISHED"))
-                .thenReturn(List.of(available, withoutCurrentVersion));
-        when(versionRepository.findByDefinitionIdAndIsCurrentTrue(10L)).thenReturn(Optional.of(current));
-        when(versionRepository.findByDefinitionIdAndIsCurrentTrue(11L)).thenReturn(Optional.empty());
+                .thenReturn(List.of(available, draft));
 
         var candidates = service.listPublishedCandidates(BusinessType.CHANGE);
 
         assertThat(candidates).hasSize(1);
         assertThat(candidates.get(0).workflowDefinitionId()).isEqualTo("10");
         assertThat(candidates.get(0).workflowVersionId()).isEqualTo("20");
+        assertThat(candidates.get(0).templateName()).isEqualTo("表单变更审核");
+        assertThat(candidates.get(0).templateCode()).isEqualTo("CHANGE-01");
         assertThat(candidates.get(0).versionNumber()).isEqualTo(3);
         assertThat(candidates.get(0).businessType()).isEqualTo(BusinessType.CHANGE);
         assertThat(candidates.get(0).status()).isEqualTo("PUBLISHED");
+    }
+
+    @Test
+    void rejectsMissingBusinessTypeBeforeReadingCandidates() {
+        assertThatThrownBy(() -> service.listPublishedCandidates(null))
+                .isInstanceOf(BusinessException.class);
+        verifyNoInteractions(definitionRepository, workflowEngine);
     }
 
     @Test

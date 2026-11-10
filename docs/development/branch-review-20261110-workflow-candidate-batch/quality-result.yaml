@@ -1,0 +1,170 @@
+qualityResult:
+  result: passed
+  baseCommit: 3b7e4d9a35503020e0baef2a91bb3e9a663fcb05
+  headCommit: c2691bf711ceb8f7033dae23e28dfaa8104344a5
+  contractBaseline:
+    sourceCommit: c2691bf711ceb8f7033dae23e28dfaa8104344a5
+    targetBranch: edhr-dev
+    targetCommit: 3b7e4d9a35503020e0baef2a91bb3e9a663fcb05
+    contractReadCommit: c2691bf711ceb8f7033dae23e28dfaa8104344a5
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: clean
+    includedPaths: []
+    excludedPaths: []
+    untrackedPaths: []
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+  - id: check.actual-candidate-baseline
+    required: true
+    category: requirements
+    description: 实际基线、契约、授权与5文件最小范围一致
+    method: inspection
+    command: Independent fetch;git base/head diff and source byte binding
+    outcome: passed
+    evidence:
+    - source-binding.json
+    - final_verified/run.json
+  - id: check.knowledge-policy-scope
+    required: true
+    category: ontology
+    description: DEC0094/0087、有限历史权限替代及非MVP多租户边界合理；工程优化无政策漂移
+    method: inspection
+    command: Read current decisions/original evidence/open question and actual user
+      authorization
+    outcome: passed
+    evidence:
+    - read-source/docs/knowledge
+    - reviewed-ontology-result.yaml
+    - review.md
+  - id: check.native-complete-projection
+    required: true
+    category: integration
+    description: 两类0/1/10/100/1000完整7字段/排序/末项可达，无数量上限或历史版回退
+    method: automated-test
+    command: Independent full103 native subset and own JSON row oracle
+    outcome: passed
+    evidence:
+    - final_verified/test-summary.json
+    - final_verified/candidate-observations
+    - independent-sql-analysis.json
+  - id: check.native-one-narrow-query
+    required: true
+    category: database
+    description: 20实际调用=20SELECT=20原生计划，3参数/7标量，不读取图JSON或逐行查询
+    method: query
+    command: Independent parse PostgreSQL execute/bind/auto_explain and compare StatementInspector
+    outcome: passed
+    evidence:
+    - independent-analysis.py
+    - independent-sql-analysis.json
+    - actual-plans
+    - final_verified/postgres.log
+  - id: check.existing-ambiguity-and-constraint
+    required: true
+    category: regression
+    description: 6个混合current原异常及2个原双草稿唯一约束拒绝保持，宽JSON读取不物化
+    method: automated-test
+    command: Native PG test mixed-current6/draft-constraint2/wide-projection1
+    outcome: passed
+    evidence:
+    - final_verified/TEST-com.zencas.edhr.recordcontrol.service.RecordControlPostgresIntegrationTest.xml
+    - final_verified/source
+  - id: check.authenticated-http-no-expansion
+    required: true
+    category: security
+    description: 普通无创建权限JWT完整200与匿名401各10；真实方法安全3项及原写资格回归
+    method: automated-test
+    command: Independent JWT+MockMvc+nativePG response checks;real method-security
+      proxy tests
+    outcome: passed
+    evidence:
+    - final_verified/http.jsonl
+    - independent-sql-analysis.json
+    - final_verified/TEST-com.zencas.edhr.workflow.controller.RecordControlCandidateAuthorizationTest.xml
+  - id: check.readonly-evidence-and-command-retention
+    required: true
+    category: audit
+    description: 五档十表摘要原值相等、标签下0写，start及命令验证/引擎/签名/快照代码保持
+    method: inspection
+    command: Independent state digest comparison,executed SQL classification and command
+      slice byte comparison
+    outcome: passed
+    evidence:
+    - independent-sql-analysis.json
+    - source-binding.json
+    - final_verified/candidate-observations
+  - id: check.same-byte-old-budget-negative
+    required: true
+    category: regression
+    description: 最终同PG测试字节旧服务14=8正6真实预算失败/0E/S，首轮2夹具错误分列保留
+    method: inspection
+    command: Bind native test and old service to Git;inspect all old XML failures
+      and original schema
+    outcome: passed
+    evidence:
+    - old-negative-binding.json
+    - old-budget-failure-cases.json
+    - main-negative-evidence
+  - id: check.independent-current-regression
+    required: true
+    category: regression
+    description: 独立实际103/103，其中83原生PG与20其他；严格guard/canonical0092/两optin，无跳过
+    method: automated-test
+    command: EDHR_CANDIDATE_ROOT=ownWT EDHR_CANDIDATE_RAW=ownRaw EDHR_CANDIDATE_CONTAINER_PREFIX=ownedQA
+      python3 run.py final_verified
+    outcome: passed
+    evidence:
+    - final_verified/run.json
+    - final_verified/test-summary.json
+    - final_verified/maven.log
+  - id: check.actual-knowledge89
+    required: true
+    category: ontology
+    description: 本实例实际89知识校验通过，353知识/6校验输入未改，不表示全语义完成
+    method: automated-test
+    command: mvn-edhr -f gmp-platform/backend/pom.xml -Dtest=BusinessKnowledgeModelTest
+      -DargLine=-Xmx1024m test
+    outcome: passed
+    evidence:
+    - knowledge/run.json
+    - knowledge/test-summary.json
+    - knowledge/TEST-com.zencas.edhr.knowledge.BusinessKnowledgeModelTest.xml
+  - id: check.index-and-a23-boundaries
+    required: true
+    category: documentation
+    description: 实际两表各一次扫描/hash join、内存排序无临时块；无过度兜底/缓存/重试/默认值，拆分建议有职责边界
+    method: inspection
+    command: Inspect implementation and actual plans,scoped robustness/A23 and concrete
+      ownership review
+    outcome: passed
+    evidence:
+    - actual-plans
+    - independent-sql-analysis.json
+    - review.md
+  - id: check.resources-and-honest-scope
+    required: true
+    category: documentation
+    description: 自有PG和依赖软链清理，受测输入绑定；无UI新改/无旧结果冒充/原全审余项仍开放
+    method: inspection
+    command: Inspect raw source fingerprints,cleanup,unchanged trees and stage boundaries
+    outcome: passed
+    evidence:
+    - source-binding.json
+    - resources-cleanup.json
+    - review.md
+  findings: []
+  residualRisks:
+  - id: risk.synthetic-capacity-boundary
+    description: 本机热缓存带采集的合成目录最大每类1000；累计线程分配不是峰值/生产SLA/并发吞吐，宽图只验证投影不物化。
+    impact: 不能据此宣称生产容量闭环或所有大目录成本消除。
+    mitigation: 保留完整结果；真实容量与前端全量选项渲染按原W6队列另量化。
+  - id: risk.existing-audit-backlog
+    description: 原W2余项/W3-W5跨链/W6健壮性性能与已审A23/W7、全知识语义、A12/高风险/完整矩阵/family剩余4N及选项全载/容量UNKNOWN继续；全量整文件完成数/historyUnique未因本批增加。
+    impact: 本批只验证候选批读局部优化，不等于全仓审计或生产发布完成。
+    mitigation: 继续仓库NEXT原队列及增量拉取；未答方案和暂停模块不扩张。
+  - id: risk.existing-ui-static-boundary
+    description: 本批无UI改动，未重跑浏览器/全站strict/lint；既有strict86和lint缺配置不关闭。
+    impact: 没有本轮端到端页面延迟或全站静态绿灯证据。
+    mitigation: 保留旧问题台账与各轮验证范围，不冒用旧浏览器通过。
+  blockingConditions: []

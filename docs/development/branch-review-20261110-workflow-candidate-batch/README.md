@@ -1,0 +1,21 @@
+# 已授权的候选流程 current 批读与字段精简
+
+已创建 [PR79](https://github.com/IvenYi/edhr-nexus-frontend/pull/79)，`audit/edhr-dev-workflow-candidate-batch-20261110` → `edhr-dev`，观察 OPEN/MERGEABLE/CLEAN，建议人工合入。验收提交 `5871019a66440e067e29f64e702cdb180fff96a7` 后仅登记交付；登记前本地、实际远端分支、PR head 三者及30受测输入一致，见[交付观察](evidence/delivery-verification.json)。登记提交正常推送后再做一次核对，不回写这份历史时点。
+
+PR78 已实际合入 `edhr-dev@3b7e4d9a35503020e0baef2a91bb3e9a663fcb05`，整树同前批交付，无外部产品/知识/契约增量。本批按用户明确授权修复 `PERF-WORKFLOW-CANDIDATE-CURRENT-VERSION-001`，执行级别 L2。受测候选为 `c2691bf711ceb8f7033dae23e28dfaa8104344a5`。
+
+记录变更／作废页读取审批流程选项，由逐定义加载完整版本实体改成一次联合查询，只取原7字段。100／1000个有效候选的夹具原为103／1003次查询，现均1次；全部候选仍返回，原排序、类型/发布/current规则及多current异常保持。没有索引/schema/UI或业务政策变更。
+
+- 主侧与全新独立分别实际 **103/103**，均0失败/错误/跳过：83原生PostgreSQL＋20其他单元/方法安全/控制器/静态测试，不冒称全部为E2E。
+- 主侧与独立知识校验分别实际 **89/89**。353知识文件保持，不等于全库人工语义完成；本体角色有限10项复核为8范围一致/1历史权限精确替代/1原非MVP多租户待决，不重复新增unique覆盖。
+- 20次真实服务调用＝20SELECT＝20原生auto_explain计划，3固定参数/7标量，无图JSON列；20HTTP为10完整200/10匿名401，五档十表摘要保持。
+- 最终同native测试字节旧服务14=8正向/6真实预算失败、0E/S；首轮2双草稿夹具错误另存，原约束保留。两次离线分析工具字段/占位对照修正单独记录，未修产品或降低测试。
+- 正式[独立质量](quality-result.yaml) **passed / FINAL**，12必需检查通过、无发现或阻断；[本体结果](ontology-result.yaml) **not-applicable / FINAL**。所有本批专业角色已FINAL、没有孩子，主/独立自有PG已清理，独立自有依赖软链已移除。
+
+详见[源码/规则及A23审查](review.md)、[性能与索引边界](performance-results.md)、[独立报告](independent-review.md)、[本体有限审查](ontology-review.md)、[主侧实际分析](main-analysis.json)、[原件包](evidence-packages.json)。三包所有707成员SHA/尺寸及原角色manifest均已核对；原始SQL、参数、计划、XML、载荷、运行基线/源码和失败历史在包内，不能只以报告摘要代替证据。
+
+全部角色FINAL后实际执行[PR前漂移与阶段复核](pre-pr-drift-review.md)，后续仅L0验收/台账及交付记录；受测输入不变。主侧完整103运行时clean，知识运行时仅新L0 review未跟踪；独立运行时其自有依赖软链untracked、清理后clean分别记录，不能倒写为运行期间全树clean。
+
+本批只关闭候选N+1和未用图字段物化子项。完整响应仍O(M)，更大目录/历史分布/冷缓存/并发和前端选项渲染未覆盖；本机计时与线程累计分配非SLA/峰值。无UI修改未重跑浏览器/strict/lint，原86及lint缺配置、原W2–W7/全知识语义/A12/高风险/完整矩阵/family剩余4N/选项全载/容量UNKNOWN/未答方案/用户暂停项继续。整文件完成0、历史unique未知，不因本批局部通过提高全仓完成度。
+
+下一轮先fetch真实合入及新增，再继续原跨链正确性/权限/事务、健壮性/性能/具体抽取与A23含已审、W7增量。未答的记录列表资格SQL及事件数据库分页不被本次批准覆盖。不自动merge/deploy/恢复，不查询或触发CI/Actions。

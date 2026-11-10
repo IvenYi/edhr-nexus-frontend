@@ -1,0 +1,23 @@
+{
+  "observedAt": "2026-11-10T12:10:01.348935+00:00",
+  "headBeforeThisRecord": "5871019a66440e067e29f64e702cdb180fff96a7",
+  "actualRemoteBranchHead": "5871019a66440e067e29f64e702cdb180fff96a7",
+  "pr": {
+    "baseRefName": "edhr-dev",
+    "headRefName": "audit/edhr-dev-workflow-candidate-batch-20261110",
+    "headRefOid": "5871019a66440e067e29f64e702cdb180fff96a7",
+    "mergeStateStatus": "CLEAN",
+    "mergeable": "MERGEABLE",
+    "number": 79,
+    "state": "OPEN",
+    "url": "https://github.com/IvenYi/edhr-nexus-frontend/pull/79"
+  },
+  "fetchedTarget": "3b7e4d9a35503020e0baef2a91bb3e9a663fcb05",
+  "testedCandidate": "c2691bf711ceb8f7033dae23e28dfaa8104344a5",
+  "protectedInputsMatch": 30,
+  "workingTreeStatusAtObservation": "clean",
+  "postCandidateChanges": "L0 reports/evidence/ledger/delivery only",
+  "scope": "Point-in-time check;any subsequent delivery-only commit verified separately without rewriting this record",
+  "ciStatusOrActionsQueried": false,
+  "autoMergeDeployOrRestore": false
+}
