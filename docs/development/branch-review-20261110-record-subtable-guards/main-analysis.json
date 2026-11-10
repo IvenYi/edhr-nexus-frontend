@@ -1,0 +1,351 @@
+{
+  "observedAt": "2026-11-10T13:11:20.994275+00:00",
+  "target": "0701b3d5d99787195e9d4c33935ae36da370839d",
+  "testedCandidate": "ab5b44d2292a8a7a08cbeb6aba502b30f50df8f0",
+  "protectedInputsMatch": 33,
+  "mainTotals": {
+    "tests": 123,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "nativePostgres": 87,
+  "otherUnitMethodSecurityStatic": 36,
+  "oldSameTestBytes": {
+    "tests": 16,
+    "passed": 8,
+    "failures": 8,
+    "errors": 0,
+    "skipped": 0
+  },
+  "knowledgeActual": {
+    "tests": 89,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "checks": [
+    {
+      "phase": "focused_old",
+      "case": "locked-parent-disabled-false",
+      "newValuesWithoutHistoricalSignature": false,
+      "oldSignatureAndRevisionUnchanged": true,
+      "originalAndNewHashesIndependentlyRecomputed": true,
+      "actualApprovalAndHistoryRead": true,
+      "signedPayloadMatchesProposal": true
+    },
+    {
+      "phase": "focused_old",
+      "case": "locked-parent-disabled-true",
+      "newValuesWithoutHistoricalSignature": false,
+      "oldSignatureAndRevisionUnchanged": true,
+      "originalAndNewHashesIndependentlyRecomputed": true,
+      "actualApprovalAndHistoryRead": true,
+      "signedPayloadMatchesProposal": true
+    },
+    {
+      "phase": "focused_old",
+      "case": "locked-parent-readOnly-false",
+      "newValuesWithoutHistoricalSignature": false,
+      "oldSignatureAndRevisionUnchanged": true,
+      "originalAndNewHashesIndependentlyRecomputed": true,
+      "actualApprovalAndHistoryRead": true,
+      "signedPayloadMatchesProposal": true
+    },
+    {
+      "phase": "focused_old",
+      "case": "locked-parent-readOnly-true",
+      "newValuesWithoutHistoricalSignature": false,
+      "oldSignatureAndRevisionUnchanged": true,
+      "originalAndNewHashesIndependentlyRecomputed": true,
+      "actualApprovalAndHistoryRead": true,
+      "signedPayloadMatchesProposal": true
+    },
+    {
+      "phase": "final",
+      "case": "locked-parent-disabled-false",
+      "newValuesWithoutHistoricalSignature": true,
+      "oldSignatureAndRevisionUnchanged": true,
+      "originalAndNewHashesIndependentlyRecomputed": true,
+      "actualApprovalAndHistoryRead": true,
+      "signedPayloadMatchesProposal": true
+    },
+    {
+      "phase": "final",
+      "case": "locked-parent-disabled-true",
+      "newValuesWithoutHistoricalSignature": true,
+      "oldSignatureAndRevisionUnchanged": true,
+      "originalAndNewHashesIndependentlyRecomputed": true,
+      "actualApprovalAndHistoryRead": true,
+      "signedPayloadMatchesProposal": true
+    },
+    {
+      "phase": "final",
+      "case": "locked-parent-readOnly-false",
+      "newValuesWithoutHistoricalSignature": true,
+      "oldSignatureAndRevisionUnchanged": true,
+      "originalAndNewHashesIndependentlyRecomputed": true,
+      "actualApprovalAndHistoryRead": true,
+      "signedPayloadMatchesProposal": true
+    },
+    {
+      "phase": "final",
+      "case": "locked-parent-readOnly-true",
+      "newValuesWithoutHistoricalSignature": true,
+      "oldSignatureAndRevisionUnchanged": true,
+      "originalAndNewHashesIndependentlyRecomputed": true,
+      "actualApprovalAndHistoryRead": true,
+      "signedPayloadMatchesProposal": true
+    }
+  ],
+  "actualBoundSignaturePayloadsIndependentlyVerified": 24,
+  "signatureBindings": [
+    {
+      "phase": "focused_old",
+      "case": "locked-parent-disabled-false",
+      "signatureId": "395589661622775808",
+      "targetType": "PRODUCTION_EXECUTION",
+      "targetId": "109",
+      "signerId": "41",
+      "snapshotSha256": "298e21b520dd0da9da578c929a3a1c8a7f1ea717b320b5a8e386dd4f00452a65",
+      "source": "actual PostgreSQL INSERT bound parameters"
+    },
+    {
+      "phase": "focused_old",
+      "case": "locked-parent-disabled-false",
+      "signatureId": "395589662138675201",
+      "targetType": "RECORD_CONTROL_REQUEST",
+      "targetId": "395589662138675200",
+      "signerId": "41",
+      "snapshotSha256": "c60466b1e0f99c8a1f93d8cb3a1d885f818ff49f229c28e870dd0d344e7fa987",
+      "source": "actual PostgreSQL INSERT bound parameters"
+    },
+    {
+      "phase": "focused_old",
+      "case": "locked-parent-disabled-false",
+      "signatureId": "395589662721683456",
+      "targetType": "RECORD_CONTROL_REQUEST",
+      "targetId": "395589662138675200",
+      "signerId": "42",
+      "snapshotSha256": "3b07ddfea8acfc68fcecca6db0d413937f9c140a57c4d89a27179685a13e8d50",
+      "source": "actual PostgreSQL INSERT bound parameters"
+    },
+    {
+      "phase": "focused_old",
+      "case": "locked-parent-disabled-true",
+      "signatureId": "395589658477047808",
+      "targetType": "PRODUCTION_EXECUTION",
+      "targetId": "109",
+      "signerId": "41",
+      "snapshotSha256": "0ad0697a1fd7251d94754104c93361ddd61857ef205e3ec28d66d322e25af33a",
+      "source": "actual PostgreSQL INSERT bound parameters"
+    },
+    {
+      "phase": "focused_old",
+      "case": "locked-parent-disabled-true",
+      "signatureId": "395589658938421248",
+      "targetType": "RECORD_CONTROL_REQUEST",
+      "targetId": "395589658934226944",
+      "signerId": "41",
+      "snapshotSha256": "7fd2a7b969670204f54b51945be915105a8aec7c7c6335c3c9d2056fe2038928",
+      "source": "actual PostgreSQL INSERT bound parameters"
+    },
+    {
+      "phase": "focused_old",
+      "case": "locked-parent-disabled-true",
+      "signatureId": "395589659504652288",
+      "targetType": "RECORD_CONTROL_REQUEST",
+      "targetId": "395589658934226944",
+      "signerId": "42",
+      "snapshotSha256": "35b5b76c5137264fc90793dbc46517ad2e2d06effdb04eafec153c7843a78d3f",
+      "source": "actual PostgreSQL INSERT bound parameters"
+    },
+    {
+      "phase": "focused_old",
+      "case": "locked-parent-readOnly-false",
+      "signatureId": "395589655465537536",
+      "targetType": "PRODUCTION_EXECUTION",
+      "targetId": "109",
+      "signerId": "41",
+      "snapshotSha256": "e688b63c768e1c7581e8c6156241e3dc7e71830413438b0fff8ce897b1cdba69",
+      "source": "actual PostgreSQL INSERT bound parameters"
+    },
+    {
+      "phase": "focused_old",
+      "case": "locked-parent-readOnly-false",
+      "signatureId": "395589655952076800",
+      "targetType": "RECORD_CONTROL_REQUEST",
+      "targetId": "395589655943688192",
+      "signerId": "41",
+      "snapshotSha256": "3ec52a5052d889f3744f6e306110ff76b93f4c0435b37cb74aa68d6afb330dd6",
+      "source": "actual PostgreSQL INSERT bound parameters"
+    },
+    {
+      "phase": "focused_old",
+      "case": "locked-parent-readOnly-false",
+      "signatureId": "395589656497336320",
+      "targetType": "RECORD_CONTROL_REQUEST",
+      "targetId": "395589655943688192",
+      "signerId": "42",
+      "snapshotSha256": "b07793f8360d20678b6cb527442668eac0712072007b7d9ff921d9011d99e2dd",
+      "source": "actual PostgreSQL INSERT bound parameters"
+    },
+    {
+      "phase": "focused_old",
+      "case": "locked-parent-readOnly-true",
+      "signatureId": "395589650822443008",
+      "targetType": "PRODUCTION_EXECUTION",
+      "targetId": "109",
+      "signerId": "41",
+      "snapshotSha256": "ce4978e7a3ed951cf0e72791f32ac046a5afc273b1be060aa35e809130763ec4",
+      "source": "actual PostgreSQL INSERT bound parameters"
+    },
+    {
+      "phase": "focused_old",
+      "case": "locked-parent-readOnly-true",
+      "signatureId": "395589652336586752",
+      "targetType": "RECORD_CONTROL_REQUEST",
+      "targetId": "395589652332392448",
+      "signerId": "41",
+      "snapshotSha256": "0966c80873a63a7231c1560979587fc22eee551d9f7b4ac5bbe175a5ba8886e8",
+      "source": "actual PostgreSQL INSERT bound parameters"
+    },
+    {
+      "phase": "focused_old",
+      "case": "locked-parent-readOnly-true",
+      "signatureId": "395589653192224768",
+      "targetType": "RECORD_CONTROL_REQUEST",
+      "targetId": "395589652332392448",
+      "signerId": "42",
+      "snapshotSha256": "f5ff53bdc0ef0a76a7a4a06eceffc27efdccb485618557a0bcf4d704e5838ba7",
+      "source": "actual PostgreSQL INSERT bound parameters"
+    },
+    {
+      "phase": "final",
+      "case": "locked-parent-disabled-false",
+      "signatureId": "395590305553874944",
+      "targetType": "PRODUCTION_EXECUTION",
+      "targetId": "109",
+      "signerId": "41",
+      "snapshotSha256": "6c465cc51f5acf1a88f6f2561dbe870347661217af4b8e4a3bb9e2bcd3ef4ff2",
+      "source": "actual PostgreSQL INSERT bound parameters"
+    },
+    {
+      "phase": "final",
+      "case": "locked-parent-disabled-false",
+      "signatureId": "395590305969111041",
+      "targetType": "RECORD_CONTROL_REQUEST",
+      "targetId": "395590305969111040",
+      "signerId": "41",
+      "snapshotSha256": "eabfbd8de187599650ba7961fd0b68631a3fd3f16d7022228babed7ee26d84bf",
+      "source": "actual PostgreSQL INSERT bound parameters"
+    },
+    {
+      "phase": "final",
+      "case": "locked-parent-disabled-false",
+      "signatureId": "395590306434678784",
+      "targetType": "RECORD_CONTROL_REQUEST",
+      "targetId": "395590305969111040",
+      "signerId": "42",
+      "snapshotSha256": "91605bfe84a10d4cdec2091578e013b9f8c1d8a64f68bacbba62489793632aa6",
+      "source": "actual PostgreSQL INSERT bound parameters"
+    },
+    {
+      "phase": "final",
+      "case": "locked-parent-disabled-true",
+      "signatureId": "395590302819188736",
+      "targetType": "PRODUCTION_EXECUTION",
+      "targetId": "109",
+      "signerId": "41",
+      "snapshotSha256": "8551cd609a7fa226b75a755131aca05d3045764d3c9ab2ae0d9b50584c8b6618",
+      "source": "actual PostgreSQL INSERT bound parameters"
+    },
+    {
+      "phase": "final",
+      "case": "locked-parent-disabled-true",
+      "signatureId": "395590303209259009",
+      "targetType": "RECORD_CONTROL_REQUEST",
+      "targetId": "395590303209259008",
+      "signerId": "41",
+      "snapshotSha256": "91ef4e140291e56477b18463c434975f1d493af03249026ffe808bad201820d2",
+      "source": "actual PostgreSQL INSERT bound parameters"
+    },
+    {
+      "phase": "final",
+      "case": "locked-parent-disabled-true",
+      "signatureId": "395590303653855232",
+      "targetType": "RECORD_CONTROL_REQUEST",
+      "targetId": "395590303209259008",
+      "signerId": "42",
+      "snapshotSha256": "e10d6d1af840b9f33775b186416a4ce9d22c99c9cf93502e1de97359552f0152",
+      "source": "actual PostgreSQL INSERT bound parameters"
+    },
+    {
+      "phase": "final",
+      "case": "locked-parent-readOnly-false",
+      "signatureId": "395590300021587968",
+      "targetType": "PRODUCTION_EXECUTION",
+      "targetId": "109",
+      "signerId": "41",
+      "snapshotSha256": "6f6d9b8d09d1294ead8606002e9f326f2521be5031435b87bbf5c59acf07d400",
+      "source": "actual PostgreSQL INSERT bound parameters"
+    },
+    {
+      "phase": "final",
+      "case": "locked-parent-readOnly-false",
+      "signatureId": "395590300495544321",
+      "targetType": "RECORD_CONTROL_REQUEST",
+      "targetId": "395590300495544320",
+      "signerId": "41",
+      "snapshotSha256": "82a61046baa5f278db1c5dad067d3d3799657658d24c7111396aa3b87cc628fa",
+      "source": "actual PostgreSQL INSERT bound parameters"
+    },
+    {
+      "phase": "final",
+      "case": "locked-parent-readOnly-false",
+      "signatureId": "395590300935946240",
+      "targetType": "RECORD_CONTROL_REQUEST",
+      "targetId": "395590300495544320",
+      "signerId": "42",
+      "snapshotSha256": "8b1e843c4ac4af814ce4df871dd97d85bc66eb48861817cd0536403b9fab6f51",
+      "source": "actual PostgreSQL INSERT bound parameters"
+    },
+    {
+      "phase": "final",
+      "case": "locked-parent-readOnly-true",
+      "signatureId": "395590296750030848",
+      "targetType": "PRODUCTION_EXECUTION",
+      "targetId": "109",
+      "signerId": "41",
+      "snapshotSha256": "0041670760dde0d008a499c6209fad9126e1d559a466927fc2020e21f3506c87",
+      "source": "actual PostgreSQL INSERT bound parameters"
+    },
+    {
+      "phase": "final",
+      "case": "locked-parent-readOnly-true",
+      "signatureId": "395590297324650497",
+      "targetType": "RECORD_CONTROL_REQUEST",
+      "targetId": "395590297324650496",
+      "signerId": "41",
+      "snapshotSha256": "c0e43697b219a437c0b194845a4e6117e37f3389d19ed70fb795eeb0722b4aba",
+      "source": "actual PostgreSQL INSERT bound parameters"
+    },
+    {
+      "phase": "final",
+      "case": "locked-parent-readOnly-true",
+      "signatureId": "395590297848938496",
+      "targetType": "RECORD_CONTROL_REQUEST",
+      "targetId": "395590297324650496",
+      "signerId": "42",
+      "snapshotSha256": "285e689a32486edf8a443448c3333e6532f1abbc240d4da5be2fbe88991a4b65",
+      "source": "actual PostgreSQL INSERT bound parameters"
+    }
+  ],
+  "knownUnaffectedCurrentBehavior": "Original field locks,IDs,diffs,void,action signatures/transactions/API/UI/schema retained",
+  "compatibilityLimit": "Only newly prepared applications;preexisting IN_REVIEW proposals or historical revisions are not automatically cleaned or migrated",
+  "pendingSignals": [
+    "Reference validation/selector context needs separate focused reproduction;not fixed here",
+    "DhrEvidenceImpact attachment array digest remains existing capacity-scope source signal;not quantified or optimized here"
+  ],
+  "scope": "Synthetic sources;actual signature-password signField andJWT+MockMvc/nativePG chain;not browser or production signing rollout"
+}

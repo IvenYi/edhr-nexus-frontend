@@ -63,10 +63,6 @@ public class RecordControlDiff {
             if (immutable) {
                 if (!next.isMissingNode() && !Objects.equals(next, old))
                     throw invalid("字段「" + field.path("name").asText(fieldId) + "」不可修改");
-                if (signature) {
-                    // A Rev.1 business signature is historical evidence, not a signature on Rev.2.
-                    proposed.remove(fieldId);
-                }
                 continue;
             }
             if (next.isMissingNode()) {
@@ -82,6 +78,8 @@ public class RecordControlDiff {
         }
         for (Iterator<String> keys = incoming.fieldNames(); keys.hasNext();) if (!known.contains(keys.next()))
             throw invalid("拟变更数据包含未知字段");
+        // Rev.1 signatures remain historical even when their parent table is immutable.
+        clearHistoricalSignatures(snapshot.path("fields"), proposed);
         List<String> issues = engine.validateValues(validationForm, stripRowIds(proposed));
         if (!issues.isEmpty()) throw invalid(String.join("；", issues));
         return new Proposal(proposed, differences);
@@ -136,8 +134,7 @@ public class RecordControlDiff {
                     throw invalid("子表字段「" + column.path("name").asText(key) + "」不可修改");
                 if (locked && previous != null && row.has(key) && !Objects.equals(row.path(key), previous.path(key)))
                     throw invalid("子表字段「" + column.path("name").asText(key) + "」不可修改");
-                if ("signature".equals(column.path("type").asText())) row.remove(key);
-                else if (locked && previous != null && !row.has(key) && previous.has(key)) row.set(key, previous.get(key).deepCopy());
+                if (locked && previous != null && !row.has(key) && previous.has(key)) row.set(key, previous.get(key).deepCopy());
             }
             rows.add(row);
         }
@@ -226,6 +223,16 @@ public class RecordControlDiff {
         ObjectNode result = ((ObjectNode) row).deepCopy();
         keys.forEach(result::remove);
         return result;
+    }
+
+    private void clearHistoricalSignatures(JsonNode fields, ObjectNode values) {
+        for (JsonNode field : fields) {
+            String id = field.path("id").asText();
+            if ("signature".equals(field.path("type").asText())) values.remove(id);
+            if ("subTable".equals(field.path("type").asText()) && values.path(id).isArray())
+                for (JsonNode row : values.path(id)) if (row instanceof ObjectNode object)
+                    clearHistoricalSignatures(field.path("typeConfig").path("columns"), object);
+        }
     }
 
     private void clearSignatureRequirements(JsonNode fields) {

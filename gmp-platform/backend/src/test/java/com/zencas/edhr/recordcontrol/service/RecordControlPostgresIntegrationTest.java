@@ -1183,6 +1183,85 @@ class RecordControlPostgresIntegrationTest {
         assertThat(count("record_control_result_event")).isEqualTo(1);
     }
 
+    @ParameterizedTest @CsvSource({"readOnly,true", "readOnly,false", "disabled,true", "disabled,false"})
+    void lockedParentSignatureIsHistoricalAfterApprovedChange(String guard, boolean supplied,
+            @org.junit.jupiter.api.io.TempDir Path directory) throws Exception {
+        // A distinct synthetic completed source is created through the original saved service.
+        // Do not rewrite the base form's existing revision or any historical production data.
+        ObjectNode form=((ObjectNode)snapshot.path("operations").get(0).path("forms").get(0)).deepCopy();
+        form.put("id","guarded-form");
+        ObjectNode table=(ObjectNode)form.path("fields").get(3);
+        if ("readOnly".equals(guard)) table.put("readOnly",true); else table.put("status","disabled");
+        ((com.fasterxml.jackson.databind.node.ArrayNode)table.path("typeConfig").path("columns"))
+                .addObject().put("id","signed").put("type","signature").put("required",true);
+        ((com.fasterxml.jackson.databind.node.ArrayNode)snapshot.path("operations").get(0).path("forms")).add(form);
+        ObjectNode saved=((ObjectNode)state.path("operations").path("op").path("forms").path("form")).deepCopy();
+        ((ObjectNode)state.path("operations").path("op").path("forms")).set("guarded-form",saved);
+        byte[] png=java.util.Base64.getDecoder().decode("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=");
+        Path image=directory.resolve("certification.png"); Files.write(image,png); long fileId=ids.nextId();
+        jdbc.update("INSERT INTO file_object(id,original_name,stored_path,mime_type,file_size,target_type,target_id) VALUES(?,'certification.png',?,'image/png',?,'SIGNATURE_EVIDENCE','41')",
+                fileId,image.toString(),png.length);
+        jdbc.update("UPDATE signature SET snapshot_data=? WHERE id=-41",
+                mapper.createObjectNode().set("signatureImage",mapper.createObjectNode().put("fileId",Long.toString(fileId))).toString());
+        ObjectNode fieldEvidence=mapper.createObjectNode().put("objectId","109").put("formId","guarded-form")
+                .put("fieldId","signed").put("rowId","11111111-1111-4111-8111-111111111111");
+        ObjectNode originalSignature=executionAccess.signField(fieldEvidence,"test-signature-password");
+        long fieldSignatureId=Long.parseLong(originalSignature.path("signatureId").asText());
+        String signatureBefore=jdbc.queryForObject("SELECT to_jsonb(s)::text FROM signature s WHERE id=?",String.class,fieldSignatureId);
+        ((ObjectNode)saved.path("values").path("rows").get(0)).set("signed",originalSignature);
+        jdbc.update("UPDATE production_execution SET snapshot_json=?,state_json=? WHERE object_id=109",snapshot.toString(),state.toString());
+        records.saved(109L,"default",snapshot,state,"op","guarded-form","guarded-form");
+        long recordId=jdbc.queryForObject("SELECT id FROM form_instance_record WHERE form_id='guarded-form'",Long.class);
+        String number=jdbc.queryForObject("SELECT instance_no FROM form_instance_record WHERE id=?",String.class,recordId);
+        String revision=jdbc.queryForObject("SELECT current_revision_id FROM form_instance_record WHERE id=?",String.class,recordId);
+        String oldValues=jdbc.queryForObject("SELECT values_json FROM form_instance_revision WHERE id=?",String.class,Long.parseLong(revision));
+        String oldHash=jdbc.queryForObject("SELECT content_hash FROM form_instance_revision WHERE id=?",String.class,Long.parseLong(revision));
+        ObjectNode proposed=(ObjectNode)requests.findRecord(number).path("fieldValues").deepCopy(); proposed.put("value","new");
+        if (!supplied) proposed.remove("rows");
+        var command=new RecordControlService.SubmitCommand(BusinessType.CHANGE,number,revision,proposed,
+                "只变更主字段","201","202","rc-applicant","test-signature-password",UUID.randomUUID().toString());
+        String token=tokens.generateToken("41","rc-applicant","申请人",5,List.of());
+        String label="locked-parent-"+guard+"-"+supplied;
+        var request=http(label+"-submit","POST","/api/v1/record-control/requests",token,mapper.valueToTree(command),200).path("data");
+        String requestId=request.path("id").asText(); long task=taskId();
+        assertThat(jdbc.queryForObject("SELECT current_revision_id FROM form_instance_record WHERE id=?",String.class,recordId)).isEqualTo(revision);
+        http(label+"-approve","POST","/api/v1/record-control/workflow-tasks/"+task+"/APPROVE",token,
+                mapper.valueToTree(new RecordControlTaskActionService.TaskActionCommand("复核意见","rc-reviewer","test-signature-password")),200);
+        var history=http(label+"-history","GET","/api/v1/record-control/records/"+recordId+"/revisions",token,null,200).path("data");
+        var current=records.detail(110L,recordId);
+        String execution=scalar("SELECT state_json FROM production_execution WHERE object_id=109");
+        String signatureAfter=jdbc.queryForObject("SELECT to_jsonb(s)::text FROM signature s WHERE id=?",String.class,fieldSignatureId);
+        String originalValuesAfter=jdbc.queryForObject("SELECT values_json FROM form_instance_revision WHERE id=?",String.class,Long.parseLong(revision));
+        String originalHashAfter=jdbc.queryForObject("SELECT content_hash FROM form_instance_revision WHERE id=?",String.class,Long.parseLong(revision));
+        String output=System.getProperty("edhr.audit.recordSignatureOutput");
+        if (output!=null) {
+            Path folder=Path.of(output); Files.createDirectories(folder);
+            var report=mapper.createObjectNode().put("case",label).put("recordId",recordId).put("requestId",requestId)
+                    .put("sourceRevisionId",revision).put("fieldSignatureId",fieldSignatureId).put("signatureBefore",signatureBefore)
+                    .put("signatureAfter",signatureAfter).put("oldValuesBefore",oldValues).put("oldValuesAfter",originalValuesAfter)
+                    .put("oldHashBefore",oldHash).put("oldHashAfter",originalHashAfter).put("executionStateAfter",execution)
+                    .put("scope","Synthetic distinct completed source;actual signature-password signField and JWT+MockMvc submit/approve/history;not browser or production signing rollout");
+            report.set("request",request); report.set("current",current); report.set("history",history);
+            mapper.writerWithDefaultPrettyPrinter().writeValue(folder.resolve(label+".json").toFile(),report);
+        }
+        assertThat(request.path("proposedValues").path("rows").get(0).has("signed")).isFalse();
+        assertThat(current.path("fieldValues").path("rows").get(0).has("signed")).isFalse();
+        assertThat(mapper.readTree(execution).path("operations").path("op").path("forms").path("guarded-form")
+                .path("values").path("rows").get(0).has("signed")).isFalse();
+        assertThat(history).hasSize(2);
+        assertThat(history.get(0).path("revision_no").asText()).isEqualTo("2");
+        assertThat(history.get(0).path("fieldValues").path("rows").get(0).has("signed")).isFalse();
+        assertThat(history.get(1).path("fieldValues").path("rows").get(0).path("signed")).isEqualTo(originalSignature);
+        assertThat(current.path("snapshot")).isEqualTo(form);
+        assertThat(current.path("fieldValues").path("rows").get(0).path("__rowId").asText()).isEqualTo("11111111-1111-4111-8111-111111111111");
+        assertThat(current.path("fieldValues").path("rows").get(0).path("note").asText()).isEqualTo("original");
+        assertThat(current.path("fieldValues").path("rows").get(0).has("__recordRowId")).isFalse();
+        assertThat(signatureAfter).isEqualTo(signatureBefore); assertThat(originalValuesAfter).isEqualTo(oldValues);
+        assertThat(originalHashAfter).isEqualTo(oldHash);
+        assertThat(jdbc.queryForObject("SELECT status FROM record_control_request WHERE id=?",String.class,Long.parseLong(requestId))).isEqualTo("APPROVED");
+        assertThat(count("record_control_result_event")).isEqualTo(1);
+    }
+
     @Test void approvedVoidPreservesValuesAndHistoricalRevision() {
         requests.submit(command(BusinessType.OBSOLETE));
         complete(taskId(), "APPROVE");

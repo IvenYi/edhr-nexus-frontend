@@ -7,6 +7,8 @@ import com.zencas.edhr.production.service.ExecutionAccess;
 import com.zencas.edhr.production.service.ProductionExecutionEngine;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 import java.util.List;
 
@@ -155,5 +157,34 @@ class RecordControlDiffTest {
         assertThat(service.prepare(form, source, proposal, "44").values().path("rows").get(0).path("__rowId").asText()).isEqualTo("row-a");
         ((ObjectNode) proposal.path("rows").get(0)).put("unknown", "not a column");
         assertThatThrownBy(() -> service.prepare(form, source, proposal, "44")).hasMessageContaining("未知字段");
+    }
+
+    @ParameterizedTest @CsvSource({"readOnly,true", "readOnly,false", "disabled,true", "disabled,false"})
+    void lockedParentDoesNotCarryHistoricalSignaturesIntoProposal(String guard, boolean supplied) throws Exception {
+        ObjectNode form = (ObjectNode) mapper.readTree("""
+            {"fields":[{"id":"body","type":"text"},{"id":"rows","type":"subTable","typeConfig":{
+              "columns":[{"id":"note","type":"text"},{"id":"signed","type":"signature","required":true}]}}]}
+            """);
+        ObjectNode table = (ObjectNode) form.path("fields").get(1);
+        if ("readOnly".equals(guard)) table.put("readOnly",true); else table.put("status","disabled");
+        ObjectNode source = (ObjectNode) service.identifyRows(mapper.readTree("""
+            {"body":"old","rows":[{"__rowId":"production-row-1","note":"original","signed":"Rev.1 signature"}]}
+            """),form,"123");
+        ObjectNode sourceBefore=source.deepCopy(),formBefore=form.deepCopy();
+        ObjectNode proposal=source.deepCopy().put("body","new");
+        if (!supplied) proposal.remove("rows");
+        var prepared=service.prepare(form,source,proposal,"44");
+        assertThat(prepared.values().path("rows").get(0).has("signed")).isFalse();
+        assertThat(prepared.values().path("rows").get(0).path("note").asText()).isEqualTo("original");
+        assertThat(prepared.values().path("rows").get(0).path("__rowId").asText()).isEqualTo("production-row-1");
+        assertThat(prepared.values().path("rows").get(0).path("__recordRowId"))
+                .isEqualTo(source.path("rows").get(0).path("__recordRowId"));
+        assertThat(prepared.differences()).hasSize(1);
+        assertThat(prepared.differences().get(0).path("fieldId").asText()).isEqualTo("body");
+        assertThat(service.prepare(form,source,source,"44").differences()).isEmpty();
+        assertThat(source).isEqualTo(sourceBefore); assertThat(form).isEqualTo(formBefore);
+        ObjectNode forged=source.deepCopy().put("body","new");
+        ((ObjectNode)forged.path("rows").get(0)).put("note","forged");
+        assertThatThrownBy(() -> service.prepare(form,source,forged,"44")).hasMessageContaining("不可修改");
     }
 }
