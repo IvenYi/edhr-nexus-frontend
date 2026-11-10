@@ -8,6 +8,7 @@ import com.zencas.edhr.common.exception.BusinessException;
 import com.zencas.edhr.common.exception.ErrorCode;
 import com.zencas.edhr.production.service.ExecutionAccess;
 import com.zencas.edhr.production.service.ProductionExecutionEngine;
+import com.zencas.edhr.template.service.FormReferenceConfig;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -53,14 +54,12 @@ public class RecordControlDiff {
         ObjectNode validationForm = ((ObjectNode) snapshot).deepCopy();
         clearSignatureRequirements(validationForm.path("fields"));
         ArrayNode differences = mapper.createArrayNode();
+        JsonNode fields = FormReferenceConfig.fields(snapshot, mapper);
         Set<String> known = new HashSet<>();
-        for (JsonNode field : snapshot.path("fields")) {
+        for (JsonNode field : fields) {
             String fieldId = field.path("id").asText(); known.add(fieldId);
             JsonNode old = source.path(fieldId), next = incoming.path(fieldId);
-            boolean signature = "signature".equals(field.path("type").asText());
-            boolean immutable = signature || field.path("readOnly").asBoolean()
-                    || "disabled".equals(field.path("status").asText()) || "formula".equals(field.path("type").asText());
-            if (immutable) {
+            if (immutable(field)) {
                 if (!next.isMissingNode() && !Objects.equals(next, old))
                     throw invalid("字段「" + field.path("name").asText(fieldId) + "」不可修改");
                 continue;
@@ -72,7 +71,6 @@ public class RecordControlDiff {
             }
             JsonNode value = "subTable".equals(field.path("type").asText())
                     ? normalizeSubtable(field, old, next) : next.deepCopy();
-            evidence.validateEvidence(field, stripRowIds(value), objectId);
             if (!equivalent(field, old, value)) addDifferences(differences, field, old, value);
             proposed.set(fieldId, value);
         }
@@ -80,9 +78,33 @@ public class RecordControlDiff {
             throw invalid("拟变更数据包含未知字段");
         // Rev.1 signatures remain historical even when their parent table is immutable.
         clearHistoricalSignatures(snapshot.path("fields"), proposed);
+        for (JsonNode field : fields) if (!immutable(field))
+            validateProposedEvidence(field, proposed.path(field.path("id").asText()),
+                    source.path(field.path("id").asText()), proposed, objectId);
         List<String> issues = engine.validateValues(validationForm, stripRowIds(proposed));
         if (!issues.isEmpty()) throw invalid(String.join("；", issues));
         return new Proposal(proposed, differences);
+    }
+
+    private boolean immutable(JsonNode field) {
+        return "signature".equals(field.path("type").asText()) || field.path("readOnly").asBoolean()
+                || "disabled".equals(field.path("status").asText()) || "formula".equals(field.path("type").asText());
+    }
+
+    private void validateProposedEvidence(JsonNode field, JsonNode value, JsonNode previous, JsonNode context, String objectId) {
+        if ("subTable".equals(field.path("type").asText()) && value.isArray()) {
+            Map<String, JsonNode> oldRows = rowsById(previous);
+            for (JsonNode row : value) {
+                // Validators only read context. Reuse nodes rather than copying every table for each row.
+                ObjectNode rowContext = mapper.createObjectNode().setAll((ObjectNode) context);
+                rowContext.setAll((ObjectNode) row);
+                JsonNode old = oldRows.getOrDefault(row.path(ROW_ID).asText(), mapper.missingNode());
+                for (JsonNode column : field.path("typeConfig").path("columns")) {
+                    String id = column.path("id").asText();
+                    validateProposedEvidence(column, row.path(id), old.path(id), rowContext, objectId);
+                }
+            }
+        } else evidence.validateEvidence(field, stripRowIds(value), objectId, context, previous);
     }
 
     private JsonNode normalizeSubtable(JsonNode field, JsonNode old, JsonNode next) {

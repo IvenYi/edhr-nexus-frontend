@@ -1,6 +1,7 @@
 import client from './client';
 import type { ExecutionForm } from './production-execution';
 import type { RecordControlBusinessType } from './record-control-workflow';
+import type { ReferencePageRequest, ReferenceValue } from '@/components/form-renderer/referenceConfig';
 
 export interface RecordControlRecord {
   id: string;
@@ -116,8 +117,9 @@ export const withdrawRecordControlRequest = async (requestId: string, reason: st
 export const listRecordRevisions = async (recordId: string): Promise<RecordControlRevision[]> =>
   (await client.get(`/record-control/records/${recordId}/revisions`)).data.data;
 
-export const getRecordControlReferences = async (recordId: string, fieldId: string, keyword: string): Promise<Array<{ id: string; name: string }>> =>
-  (await client.get(`/record-control/records/${recordId}/references`, { params: { fieldId, keyword } })).data.data;
+export const getRecordControlReferences = async (recordId: string, fieldId: string, keyword: string,
+  values: Record<string, unknown>, paging?: ReferencePageRequest): Promise<ReferenceValue[]> =>
+  (await client.post(`/record-control/records/${recordId}/references`, { fieldId, keyword, values, ...paging })).data.data;
 
 export interface RecordControlWorkflowTask {
   id: string;

@@ -114,11 +114,22 @@ public class RecordControlService implements RecordControlWorkflowResultHandler,
 
     @Transactional(readOnly = true)
     public List<Map<String, String>> references(String recordId, String fieldId, String keyword) {
-        var records = jdbc.queryForList("SELECT snapshot_json FROM form_instance_record WHERE tenant_id=? AND id=?", TENANT, id(recordId));
+        return references(recordId, fieldId, keyword, null, null, null);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Map<String, String>> references(String recordId, String fieldId, String keyword,
+                                               JsonNode values, Integer page, Integer size) {
+        if (fieldId == null || fieldId.isBlank()) throw invalid("请选择引用字段");
+        var records = jdbc.queryForList("SELECT snapshot_json,values_json FROM form_instance_record WHERE tenant_id=? AND id=?", TENANT, id(recordId));
         if (records.isEmpty()) throw invalid("表单记录不存在");
-        JsonNode field = findField(json(records.getFirst().get("snapshot_json")).path("fields"), fieldId);
+        var record = records.getFirst();
+        JsonNode fields = com.zencas.edhr.template.service.FormReferenceConfig.fields(json(record.get("snapshot_json")), mapper);
+        JsonNode field = findField(fields, fieldId);
         if (field == null || !"reference".equals(field.path("type").asText())) throw invalid("引用字段不存在");
-        return executionAccess.references(field, keyword);
+        JsonNode context = values == null || values.isNull() ? json(record.get("values_json")) : values;
+        if (!context.isObject()) throw invalid("引用查询上下文格式不正确");
+        return executionAccess.references(field, keyword, context, page, size);
     }
 
     @Transactional(readOnly = true)

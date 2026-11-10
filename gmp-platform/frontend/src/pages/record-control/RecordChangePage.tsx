@@ -5,6 +5,7 @@ import { Alert, Box, Button, Chip, CircularProgress, Dialog, DialogActions, Dial
 import { DescriptionOutlined, FactCheckOutlined, RateReviewOutlined, SearchRounded } from '@mui/icons-material';
 import ButtonSignatureCredentials from '@/components/workflow/ButtonSignatureCredentials';
 import ConfirmDialog from '@/components/ConfirmDialog';
+import type { ReferencePageRequest } from '@/components/form-renderer/referenceConfig';
 import { executionFormValues } from '@/pages/production/executionFormValues';
 import { FormCanvasPreview } from '@/pages/master-data/DhrTemplateWorkspaceDialog';
 import { parseReactTemplateDesignerDocument } from '@/pages/master-data/template-designer-react/utils/document';
@@ -135,7 +136,8 @@ export default function RecordChangePage() {
     rowIdentity: true,
     onChange: (fieldId: string, value: unknown) => setValues((current) => ({ ...current, [fieldId]: value })),
     upload: (file: File) => uploadExecutionFile(record.object_id, file),
-    references: (fieldId: string, keyword: string) => getRecordControlReferences(record.id, fieldId, keyword),
+    references: (fieldId: string, keyword: string, context: Record<string, unknown>, paging?: ReferencePageRequest) =>
+      getRecordControlReferences(record.id, fieldId, keyword, context, paging),
   } : undefined;
 
   return <Box sx={{ height: { xs: 'auto', lg: 'calc(100vh - 150px)' }, minHeight: 0, display: 'flex', flexDirection: 'column', overflow: { xs: 'visible', lg: 'hidden' } }}>
