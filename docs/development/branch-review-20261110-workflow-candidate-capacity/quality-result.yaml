@@ -1,0 +1,161 @@
+qualityResult:
+  result: passed
+  baseCommit: 68861c2ab0291fc8f20271c2d2cae37d1eca66fd
+  headCommit: e173d4022079cb77b3eb53cd44d26c09935bbd27
+  contractBaseline:
+    sourceCommit: e173d4022079cb77b3eb53cd44d26c09935bbd27
+    targetBranch: edhr-dev
+    targetCommit: 68861c2ab0291fc8f20271c2d2cae37d1eca66fd
+    contractReadCommit: e173d4022079cb77b3eb53cd44d26c09935bbd27
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: clean
+    includedPaths: []
+    excludedPaths: []
+    untrackedPaths: []
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+    - id: check.fixed-source-and-contract
+      required: true
+      category: documentation
+      description: 独立detached候选、目标实时提交、契约和受保护输入绑定
+      method: command
+      command: git fetch origin edhr-dev; git rev-parse HEAD; python3 verify-evidence.py; python3 final-cleanup.py
+      outcome: passed
+      evidence:
+        - 'Base/target=68861c2ab0291fc8f20271c2d2cae37d1eca66fd; feature/head/tested candidate=e173d4022079cb77b3eb53cd44d26c09935bbd27; final fetch still base.'
+        - source-binding.json
+        - final-cleanup.json
+        - 原94执行时仅自有node_modules依赖软链untracked；运行后已移除，最终clean，所有产品/测试/POM原件与Git一致。
+    - id: check.scope-and-policy
+      required: true
+      category: requirements
+      description: 测试取证范围与DEC0094-01/02及DEC0087-03/04一致
+      method: inspection
+      command: Inspect candidate diff, decision package, knowledge decisions, service/controller/repository/schema original sources
+      outcome: passed
+      evidence:
+        - independent-review.md
+        - 两文件136行新增，仅现有PG测试及决策包；无产品/UI/SQL/schema/索引/政策/知识修改。
+        - 读取可达不授予创建或办理；签署、来源复核、具体版本、事务及历史证据边界保持。
+    - id: check.backend-actual94
+      required: true
+      category: regression
+      description: 独立实例原94项实际执行，无条件跳过
+      method: automated-test
+      command: EDHR_CANDIDATE_ROOT=/tmp/edhr-workflow-candidate-qa-worktree-20261110 EDHR_CANDIDATE_RAW=/tmp/edhr-workflow-candidate-capacity-final-qa-20261110 EDHR_CANDIDATE_CONTAINER_PREFIX=edhr-wf-candidate-qa python3 run-independent.py final_verified
+      outcome: passed
+      evidence:
+        - final_verified/run.json
+        - final_verified/test-summary.json
+        - final_verified/maven.log
+        - 94/0 failures/0 errors/0 skips；75 nativePG+19 mock/method-security/static，不能称94项均原生PG。
+        - 首次final因缺Vite在测试前退出，0测试，不计通过；原失败log/摘要/PG清理保留，补依赖后原命令真实重跑。
+    - id: check.knowledge-actual89
+      required: true
+      category: ontology
+      description: 本实例独立运行正式知识校验
+      method: automated-test
+      command: bash /workspace/.edhr-cloud-tools/mvn-edhr --batch-mode --no-transfer-progress -f tools/knowledge-model/pom.xml clean test
+      outcome: passed
+      evidence:
+        - knowledge/run.json
+        - knowledge/maven.log
+        - knowledge/TEST-com.zencas.edhr.knowledge.BusinessKnowledgeModelTest.xml
+        - 89/0 failures/0 errors/0 skips；354知识/POM输入运行前指纹及5个validator源码运行后固定Git快照；不宣称全量语义审计完成。
+    - id: check.complete-candidate-results
+      required: true
+      category: integration
+      description: 双类型五档目录及排除对照，完整具体版本/排序/七字段
+      method: automated-test
+      command: python3 verify-evidence.py
+      outcome: passed
+      evidence:
+        - final_verified/candidate-observations/
+        - source-binding.json
+        - 每类M=0/1/10/100/1000，匹配定义M+2、返回M；全部七字段及1000末项逐条验证。100非上限、非人员数。
+        - 合成目录元数据，不代表通过发布/签署产生的完整新业务流程。
+    - id: check.actual-query-plans
+      required: true
+      category: database
+      description: 原服务真实SQL与auto_explain计划，严格区分其他列表观察
+      method: query
+      command: python3 analyze-plans.py final_verified
+      outcome: passed
+      evidence:
+        - final_verified/postgres.log
+        - plan-analysis-final_verified.json
+        - plans-final_verified/
+        - 20次读取、4504实际SELECT及4504实际计划；每次3/4/13/103/1003，保留60代表计划；原列表12次观察未混入。
+    - id: check.readonly-and-auth
+      required: true
+      category: security
+      description: 只读事务、完整10表行摘要、普通JWT和匿名读取
+      method: automated-test
+      command: python3 verify-evidence.py
+      outcome: passed
+      evidence:
+        - final_verified/http.jsonl
+        - source-binding.json
+        - 5档10表前后完整行摘要实际相等；20标签SELECT无DML，HTTP读取也包含在前后比较内。
+        - 普通无create权限JWT+MockMvc读取200十次且完整JSON相同，匿名401十次；非生产socket/浏览器/签署。
+    - id: check.ambiguous-current-boundary
+      required: true
+      category: integration
+      description: 既有Optional多current异常保持，未升级为新业务政策
+      method: automated-test
+      command: Original candidateReadKeepsExistingAmbiguousCurrentFailureWithoutChangingEvidence in actual94
+      outcome: passed
+      evidence:
+        - final_verified/TEST-com.zencas.edhr.recordcontrol.service.RecordControlPostgresIntegrationTest.xml
+        - 两个PUBLISHED current触发现有IncorrectResultSizeDataAccessException且摘要不变；未声称混合状态损坏矩阵全覆盖。
+    - id: check.robustness-and-extraction
+      required: true
+      category: documentation
+      description: 性能、索引、必要防御与具体抽取边界复核
+      method: inspection
+      command: Inspect original service/repository/schema and actual auto_explain plans
+      outcome: passed
+      evidence:
+        - independent-review.md
+        - 服务127行；建议按候选读取职责抽取批量current与必要字段投影，start及其校验/写事务保留；不因行数引入大重构。
+        - 1000档版本查询使用现有uk_wf_def_version；小表顺扫不构成新增索引依据；未新增兜底/重试/异常吞没。
+    - id: check.owned-resource-cleanup
+      required: true
+      category: documentation
+      description: 自有数据库容器与依赖软链按所有权清理
+      method: command
+      command: python3 final-cleanup.py
+      outcome: passed
+      evidence:
+        - final/cleanup.json
+        - final_verified/cleanup.json
+        - final-cleanup.json
+        - 两个自有PG容器已删除并独立docker inspect复核；仅自建软链移除，未清理其他实例资源。
+  findings: []
+  residualRisks:
+    - id: risk.current-candidate-n-plus-one
+      description: 当前产品仍逐定义查current且加载未使用的JSON实体字段；本次仅确认风险，没有优化产品。
+      impact: 目录扩大时查询和线程累计分配线性增长；本机样本不是生产SLA或峰值结论。
+      mitigation: 用户已明确授权下一批批量读取并精简字段；保留全部候选、原状态/类型/排序与异常边界，再独立验收。
+    - id: risk.future-current-corruption-matrix
+      description: 两PUBLISHED current的既有错误已观察；混合状态重复current等损坏组合未全测。
+      impact: 后续批读不能仅筛PUBLISHED后静默选择first/latest，从而改变既有含义。
+      mitigation: 下一批依据原Optional先查current再判断发布的顺序扩充所需错误边界；不新增全域政策。
+    - id: risk.instrumented-synthetic-data
+      description: 合成目录JSON为小数组；本地热缓存、采集SQL/计划、调用线程累计分配，不是宽JSON/并发/真实签署或生产容量测试。
+      impact: 实测不能推断实际租户最大容量、峰值内存或生产响应承诺。
+      mitigation: 保留UNKNOWN容量项和其他高风险矩阵，按真实产品规模后续量化。
+    - id: risk.audit-stage-not-complete
+      description: 当前为W3/W7增量及W6性能/A23观察；W2-W7、A12、高风险/完整矩阵、已审模块A23及全知识语义未全部结束。
+      impact: 不能据当前94/89宣称整体代码审计或全量本体一致性完成。
+      mitigation: 继续仓库台账逐批推进；353文件/旧2848ID仅清单，旧931分母不直接比较。
+    - id: risk.other-pending-or-paused-work
+      description: 原记录列表资格SQL与事件DB分页仍待用户取舍；通用签名页和生产弹窗仍按用户要求暂停。
+      impact: 不属于本次测试取证修复范围，不能计入已解决。
+      mitigation: 保留原消费者/问题身份和暂停范围，继续无依赖审查，不重复计已修复性能项。
+    - id: risk.no-ui-ci-claim
+      description: 产品和UI无改；本实例未跑浏览器/前轮92，也未重跑全量前端strict86或lint，未查询CI/必需检查设置。
+      impact: 当前passed只适用于固定候选的测试取证切片，不表示全局前端静态门禁或生产发布验收已绿。
+      mitigation: 精确披露未执行范围；目标变化时复核增量，由主审在所有角色FINAL后做实际PR前漂移检查。
+  blockingConditions: []

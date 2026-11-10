@@ -1,0 +1,69 @@
+{
+  "baseCommit": "68861c2ab0291fc8f20271c2d2cae37d1eca66fd",
+  "testedCandidate": "e173d4022079cb77b3eb53cd44d26c09935bbd27",
+  "packages": [
+    {
+      "name": "main",
+      "path": "evidence/main.zip",
+      "bytes": 2643577,
+      "sha256": "099ba945244d206bd119733bbccb2a03f5256b1f6b900ce4c2fa6705a9c54b1e",
+      "manifest": "evidence/main-manifest.json",
+      "manifestSha256": "4e46be384c17ec1f511845453c5c928150f149da5cdab48fb1457f394cbb2249",
+      "members": 226,
+      "roleManifestMembersVerified": null
+    },
+    {
+      "name": "ontology",
+      "path": "evidence/ontology.zip",
+      "bytes": 509496,
+      "sha256": "af3395f65a2cc876144e159ebc09509283a18a67022786241faa970a4452f6b6",
+      "manifest": "evidence/ontology-manifest.json",
+      "manifestSha256": "56e845e6cb323cf87bd8855869a82b029de426799b9d11b9941cb05f06530e1c",
+      "members": 55,
+      "roleManifestMembersVerified": 53
+    },
+    {
+      "name": "independent",
+      "path": "evidence/independent.zip",
+      "bytes": 2210561,
+      "sha256": "21b6f4e29f03cb2da170f994f8170ee620d1a19d241ca615b5df1e867549bafb",
+      "manifest": "evidence/independent-manifest.json",
+      "manifestSha256": "c851d357c9213c82aa0234de4c972db34a98ffff4b4368437754ce818a1f866b",
+      "members": 181,
+      "roleManifestMembersVerified": 179
+    }
+  ],
+  "copiedFormalArtifacts": [
+    {
+      "path": "main-analysis.json",
+      "source": "main/main-analysis.json",
+      "sha256": "8438d3b461bc195b49a0ab24b3220186a9f1a87b44ef455e40994ef8fddb7cda"
+    },
+    {
+      "path": "next-batch-authorization.json",
+      "source": "main/user-decision.json",
+      "sha256": "cc288fd960088f9c5ea0977dd4418512a760459cac3fe605c9e3a6cb42632087"
+    },
+    {
+      "path": "ontology-result.yaml",
+      "source": "ontology/ontology-result.yaml",
+      "sha256": "69ba9ea10c707f0f92c5d1828f5502b4d589659fdad6a5637b088252ffd7c508"
+    },
+    {
+      "path": "ontology-review.md",
+      "source": "ontology/REVIEW.md",
+      "sha256": "92798b14bf8444925b64b5b67254071d2d277bc5562d2183cbe614bb7a442020"
+    },
+    {
+      "path": "quality-result.yaml",
+      "source": "independent/quality-result.yaml",
+      "sha256": "6c5c48d9adbe86d136fa5707b5ad38c521d86deb565fe719e2958cd0b48cd4c1"
+    },
+    {
+      "path": "independent-review.md",
+      "source": "independent/independent-review.md",
+      "sha256": "614fb4eaf0d1154727690cb0901c869abb40e167f2d9ff68bc9c1749059d0bba"
+    }
+  ],
+  "scope": "Separate complete owned raw histories, including initial tool and intermediate failures; no result rewriting"
+}

@@ -1,0 +1,9 @@
+{
+  "recordedAt": "2026-11-10T10:29:32.321989+00:00",
+  "source": "Actual current user reply to request_user_input_async call_84451e820b654e04a987e1173747241a",
+  "question": "记录变更／作废页面加载审批流程选项时，已实测100个可选流程需103次查询、1000个需1003次（均完整返回，非数量上限）。是否同意下一批改为批量读取当前版本、只取选项所需字段，保留全部候选、原筛选及异常处理？当前只读取证和审计继续完成。",
+  "answer": "下一批批量读取并精简字段（推荐）",
+  "authorization": "Next batch only: batch current versions and necessary candidate fields;all candidates/filtering/existing failure behavior retained",
+  "implementedInCurrentCandidate": false,
+  "otherPerformanceQuestions": "Original request-list qualificationSQL and audit-eventDB paging remain unanswered,not covered by this approval"
+}

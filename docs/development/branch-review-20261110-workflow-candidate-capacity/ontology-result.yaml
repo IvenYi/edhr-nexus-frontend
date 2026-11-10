@@ -1,0 +1,60 @@
+ontologyResult:
+  result: not-applicable
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: e173d4022079cb77b3eb53cd44d26c09935bbd27
+    targetBranch: edhr-dev
+    targetCommit: 68861c2ab0291fc8f20271c2d2cae37d1eca66fd
+    contractReadCommit: 68861c2ab0291fc8f20271c2d2cae37d1eca66fd
+    uncommittedContractPaths: []
+  reason: 本批只增加隔离PG候选目录读取观察及当前异常的工程边界，不修改产品SQL/API/schema/索引/UI或候选资格/明确版本/来源/签署/幂等/快照/审计政策；不把多current目录异常升级为业务新规则，不因测量新建重复知识或改历史provenance。
+  changedArtifacts: []
+  knowledgeSync: []
+  conflicts: []
+  questions: []
+  validationEvidence:
+  - id: validation.source-and-contract
+    checkType: evidence-path
+    command: python3 finalize.py:independent fetch,candidate diff and source byte/Git
+      binding
+    outcome: passed
+    evidence:
+    - source-binding.json
+    - candidate.diff
+    - source
+  - id: validation.finite-semantics
+    checkType: projection
+    command: Inspect finite10 records and engineering current-version boundary,retain
+      prior8/19 originals
+    outcome: passed
+    evidence:
+    - finite-review-records.json
+    - engineering-boundaries.json
+    - prior8-original.json
+    - prior19-original.json
+    - REVIEW.md
+  - id: validation.knowledge-byte-identity
+    checkType: reference
+    command: Compare353 knowledge plus6 validator/POM inputs and three Git trees against
+      prior actual6f
+    outcome: passed
+    evidence:
+    - knowledge-inventory.json
+    - knowledge-validation-reuse.json
+  - id: validation.reused-knowledge89
+    checkType: schema
+    command: REUSED ONLY:prior6f actual Maven knowledge89;not executed by this role
+    outcome: passed
+    evidence:
+    - reused-knowledge-6f/knowledge/run.json
+    - reused-knowledge-6f/knowledge/maven.log
+    - reused-knowledge-6f/knowledge/TEST-com.zencas.edhr.knowledge.BusinessKnowledgeModelTest.xml
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages:
+    - P1
+    - P2
+    - P3
