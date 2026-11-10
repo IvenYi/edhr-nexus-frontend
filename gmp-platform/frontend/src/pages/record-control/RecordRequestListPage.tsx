@@ -114,7 +114,7 @@ export default function RecordRequestListPage({ scope }: { scope: 'mine' | 'all'
                     <TableCell>{item.applicant_name || item.applicant_id}</TableCell>
                     <TableCell>{formatTime(item.submitted_at)}</TableCell>
                     <TableCell><StatusBadge label={STATUS[item.status]?.label || item.status} color={STATUS[item.status]?.color || 'default'} /></TableCell>
-                    <TableCell align="center" sx={actionBodyCellSx}><Tooltip title="查看详情" arrow><IconButton size="small" aria-label="查看详情" onClick={() => navigate(`/records/requests/${item.id}`)}><VisibilityOutlined fontSize="small" /></IconButton></Tooltip></TableCell>
+                    <TableCell align="center" sx={actionBodyCellSx}><Tooltip title={item.canViewDetail === false ? '当前账号无权查看此在审申请' : '查看详情'} arrow><span tabIndex={item.canViewDetail === false ? 0 : undefined}><IconButton size="small" aria-label="查看详情" disabled={item.canViewDetail === false} onClick={() => navigate(`/records/requests/${item.id}`)}><VisibilityOutlined fontSize="small" /></IconButton></span></Tooltip></TableCell>
                   </TableRow>)}
           </TableBody>
         </Table>

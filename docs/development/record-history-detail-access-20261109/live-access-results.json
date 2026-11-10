@@ -1,0 +1,125 @@
+{
+  "scope": "Existing UAT login and read-only list/detail requests; no business writes",
+  "results": [
+    {
+      "username": "uat_applicant",
+      "checks": [
+        {
+          "requestNo": "RC-20261030-000007",
+          "canViewDetail": true,
+          "status": 200
+        },
+        {
+          "requestNo": "RC-20261030-000006",
+          "canViewDetail": true,
+          "status": 200
+        },
+        {
+          "requestNo": "RC-20261030-000005",
+          "canViewDetail": true,
+          "status": 200
+        },
+        {
+          "requestNo": "RC-20261030-000004",
+          "canViewDetail": true,
+          "status": 200
+        },
+        {
+          "requestNo": "RC-20261030-000003",
+          "canViewDetail": true,
+          "status": 200
+        },
+        {
+          "requestNo": "RC-20261030-000002",
+          "canViewDetail": true,
+          "status": 200
+        },
+        {
+          "requestNo": "RC-20261030-000001",
+          "canViewDetail": true,
+          "status": 200
+        }
+      ]
+    },
+    {
+      "username": "uat_reviewer",
+      "checks": [
+        {
+          "requestNo": "RC-20261030-000007",
+          "canViewDetail": true,
+          "status": 200
+        },
+        {
+          "requestNo": "RC-20261030-000006",
+          "canViewDetail": true,
+          "status": 200
+        },
+        {
+          "requestNo": "RC-20261030-000005",
+          "canViewDetail": true,
+          "status": 200
+        },
+        {
+          "requestNo": "RC-20261030-000004",
+          "canViewDetail": true,
+          "status": 200
+        },
+        {
+          "requestNo": "RC-20261030-000003",
+          "canViewDetail": true,
+          "status": 200
+        },
+        {
+          "requestNo": "RC-20261030-000002",
+          "canViewDetail": false,
+          "status": 403
+        },
+        {
+          "requestNo": "RC-20261030-000001",
+          "canViewDetail": false,
+          "status": 403
+        }
+      ]
+    },
+    {
+      "username": "uat_manager",
+      "checks": [
+        {
+          "requestNo": "RC-20261030-000007",
+          "canViewDetail": false,
+          "status": 403
+        },
+        {
+          "requestNo": "RC-20261030-000006",
+          "canViewDetail": false,
+          "status": 403
+        },
+        {
+          "requestNo": "RC-20261030-000005",
+          "canViewDetail": false,
+          "status": 403
+        },
+        {
+          "requestNo": "RC-20261030-000004",
+          "canViewDetail": false,
+          "status": 403
+        },
+        {
+          "requestNo": "RC-20261030-000003",
+          "canViewDetail": true,
+          "status": 200
+        },
+        {
+          "requestNo": "RC-20261030-000002",
+          "canViewDetail": false,
+          "status": 403
+        },
+        {
+          "requestNo": "RC-20261030-000001",
+          "canViewDetail": false,
+          "status": 403
+        }
+      ]
+    }
+  ]
+}

@@ -39,7 +39,7 @@ decisions:
         status: specified
         visibility: internal
       - id: DEC-0087-09
-        statement: "provenance: original-and-test-evidence；RECORD_CONTROL_REQUEST 签名属于受控业务证据，必须从通用签名列表排除并拒绝通用单条读取、创建、覆盖、更新和删除。IN_REVIEW 申请详情仅申请人、当前候选或处理人及本人已处理任务相关人员可见；已结束历史详情继续对当前租户认证用户开放。"
+        statement: "provenance: original-and-test-evidence；RECORD_CONTROL_REQUEST 签名属于受控业务证据，必须从通用签名列表排除并拒绝通用单条读取、创建、覆盖、更新和删除。IN_REVIEW 申请详情仅申请人、当前候选或处理人及本人已处理任务相关人员可见；已结束历史详情继续对当前租户认证用户开放。 historical-scope；前述读取范围保留为原始记录，2026-11-09由DEC-0096-01仅增加真正系统超管的在审详情只读例外；普通参与人、结束历史及签名隔离范围保持。"
         status: implemented
         visibility: internal
       - id: DEC-0087-10
@@ -88,7 +88,7 @@ decisions:
       - id: scenario.record-control-active-detail-boundary
         given: 记录控制申请处于 IN_REVIEW
         when: 申请人、相关审批处理人或无关用户查看详情
-        then: 申请人和相关审批处理人允许查看，无关用户被拒绝；申请结束后当前租户认证用户仍可查看历史详情
+        then: 按本决策原范围申请人和相关审批处理人允许查看、无关用户被拒绝；DEC-0096仅追加真正系统超管只读例外，普通无关用户仍拒绝；申请结束后当前租户认证用户仍可查看历史详情
         evidenceIds: [evidence.record-control-v1-service, evidence.record-control-active-detail-access-tests]
         evidenceRequirements: [申请人详情测试, 审批人详情测试, 无关用户拒绝测试, 已结束历史开放测试]
       - id: scenario.record-control-approval-task-dedicated-pagination

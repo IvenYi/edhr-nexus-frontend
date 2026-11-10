@@ -1,0 +1,105 @@
+- button "收起菜单":
+- generic "当前位置":
+  - generic: 记录
+  - generic: 变更管理
+  - generic: 记录变更
+- button "锁屏":
+- button "搜索":
+- button "通知，0 条未读":
+  - generic: "0"
+- button "全屏":
+- button "语言":
+- button "主题":
+- button "刷新":
+- button "打开用户菜单":
+  - generic: 验
+  - generic: 验收·流程管理员
+- button "首页":
+  - generic: 首页
+- button "记录变更 关闭当前标签":
+  - generic: 记录变更
+  - button "关闭当前标签":
+- button "标签操作":
+- button "生产":
+  - paragraph: 生产
+- button "记录":
+  - paragraph: 记录
+- paragraph: v2.1
+- generic: eDHR 系统
+- paragraph: 记录
+- list:
+  - paragraph: 表单管理
+  - button "表单列表":
+    - generic "表单管理 / 表单列表": 表单列表
+  - paragraph: DHR管理
+  - button "DHR列表":
+    - generic "DHR管理 / DHR列表": DHR列表
+  - button "DHR汇总":
+    - generic "DHR管理 / DHR汇总": DHR汇总
+  - button "DHR审批":
+    - generic "DHR管理 / DHR审批": DHR审批
+  - paragraph: 变更管理
+  - button "记录变更":
+    - generic "变更管理 / 记录变更": 记录变更
+  - button "我的变更":
+    - generic "变更管理 / 我的变更": 我的变更
+  - button "变更审批":
+    - generic "变更管理 / 变更审批": 变更审批
+  - button "变更记录":
+    - generic "变更管理 / 变更记录": 变更记录
+  - paragraph: 报表
+  - button "表单追溯":
+    - generic "报表 / 表单追溯": 表单追溯
+  - button "DHR追溯":
+    - generic "报表 / DHR追溯": DHR追溯
+  - button "报工记录":
+    - generic "报表 / 报工记录": 报工记录
+  - button "不良明细":
+    - generic "报表 / 不良明细": 不良明细
+  - button "报废记录":
+    - generic "报表 / 报废记录": 报废记录
+  - button "消耗记录":
+    - generic "报表 / 消耗记录": 消耗记录
+- main:
+  - alert:
+    - text: 该表单存在正在进行中的作废申请，申请编号：
+    - generic "当前账号无权查看此在审申请":
+      - button "查看申请 RC-20261030-000007" [disabled]: RC-20261030-000007
+    - text: 。请先完成当前申请后再发起新申请。
+    - button "Close":
+  - paragraph: 查询表单
+  - generic: 表单实例编号
+  - textbox "表单实例编号": FR-UAT-1030-DHR-VOID
+  - generic: 表单实例编号
+  - button "查询": 查询
+  - separator
+  - paragraph: 表单名称
+  - paragraph: 验收·作废生效及隐藏
+  - paragraph: 表单编码
+  - paragraph: UAT-1030-FORM
+  - paragraph: 表单实例编号
+  - paragraph: FR-UAT-1030-DHR-VOID
+  - paragraph: 模板版本
+  - paragraph: V1
+  - paragraph: 当前修订
+  - paragraph: Rev.1
+  - paragraph: 创建人
+  - paragraph: 验收初始化
+  - paragraph: 创建时间
+  - paragraph: 2026-10-30 15:15:00
+  - paragraph: 更新人
+  - paragraph: 验收初始化
+  - paragraph: 更新时间
+  - paragraph: 2026-10-30 15:15:00
+  - paragraph: 表单状态
+  - generic: 已完成
+  - paragraph: 物料批号
+  - textbox "物料批号" [disabled]: UAT-LOT-OLD
+  - paragraph: 报工数量
+  - spinbutton "报工数量" [disabled]: "100"
+  - paragraph: 单位
+  - textbox "单位" [disabled]: 件
+  - paragraph: 备注
+  - textbox "备注" [disabled]: 合成验收资料：作废生效及隐藏
+  - button "表单变更" [disabled]
+  - button "表单作废" [disabled]

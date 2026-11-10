@@ -39,6 +39,16 @@ import java.util.*;
 @RequiredArgsConstructor
 public class RecordControlService implements RecordControlWorkflowResultHandler, RecordControlBusinessProjectionPort {
     private static final String TENANT = "default";
+    private static final String SYSTEM_SUPER_ADMIN = """
+        EXISTS (SELECT 1 FROM user_account viewer WHERE viewer.id=?
+            AND LOWER(BTRIM(viewer.username))='admin' AND viewer.status='ACTIVE')
+        """;
+    private static final String RELATED_TASK_ACCESS = """
+        ((task.status IN ('PENDING','PROCESSING') AND (task.assignee_id=?
+            OR (task.candidate_snapshot -> 'userIds') @> CAST(? AS jsonb)
+            OR task.candidate_snapshot ->> 'unrestricted'='true'))
+         OR (task.assignee_id=? AND task.status IN ('COMPLETED','REJECTED','TRANSFERRED')))
+        """;
     private final JdbcTemplate jdbc;
     private final ObjectMapper mapper;
     private final SnowflakeIdGenerator ids;
@@ -79,7 +89,8 @@ public class RecordControlService implements RecordControlWorkflowResultHandler,
         var rows = jdbc.queryForList("""
             SELECT r.*, t.code AS template_code, t.name AS template_name, v.version_number,
                    rev.revision_no, rev.values_json AS revision_values,
-                   q.id AS active_request_id, q.request_no AS active_request_no, q.request_type AS active_request_type
+                   q.id AS active_request_id, q.request_no AS active_request_no, q.request_type AS active_request_type,
+                   q.applicant_id AS active_applicant_id, q.workflow_instance_id AS active_workflow_instance_id
             FROM form_instance_record r JOIN form_template t ON t.id=r.template_id
             JOIN form_template_version v ON v.id=r.version_id
             LEFT JOIN form_instance_revision rev ON rev.id=r.current_revision_id
@@ -92,6 +103,8 @@ public class RecordControlService implements RecordControlWorkflowResultHandler,
         for (String key : List.of("id", "instance_no", "object_id", "status", "template_code", "template_name", "version_number",
                 "current_revision_id", "revision_no", "created_by", "created_at", "updated_by", "updated_at",
                 "active_request_id", "active_request_no", "active_request_type")) put(result, key, row.get(key));
+        if (row.get("active_request_id") != null) result.put("canViewActiveRequest", canViewRequestDetail("IN_REVIEW",
+                str(row.get("active_applicant_id")), str(row.get("active_workflow_instance_id"))));
         JsonNode snapshot = json(row.get("snapshot_json"));
         result.set("snapshot", snapshot);
         result.set("fieldValues", differences.identifyRows(json(row.get("revision_values") == null
@@ -166,13 +179,26 @@ public class RecordControlService implements RecordControlWorkflowResultHandler,
         Long count = jdbc.queryForObject("SELECT count(*) FROM record_control_request q JOIN form_instance_record r ON r.id=q.record_id" + where,
                 Long.class, args.toArray());
         args.add(size); args.add((long) page * size);
+        List<Object> selectArgs = new ArrayList<>(List.of(id(currentUser), currentUser, currentUser, "[\"" + currentUser + "\"]", currentUser));
+        selectArgs.addAll(args);
         var rows = jdbc.queryForList("""
             SELECT q.id,q.request_no,q.request_type,q.status,q.reason_text,q.applicant_id,q.applicant_name,
                    q.submitted_at,q.resolved_at,q.workflow_instance_id,r.instance_no,r.template_name,r.template_code,
-                   r.status AS record_status
+                   r.status AS record_status,
+            """ + "(" + SYSTEM_SUPER_ADMIN + """
+                   OR q.status<>'IN_REVIEW' OR q.applicant_id=? OR EXISTS (
+                       SELECT 1 FROM workflow_task task
+                       WHERE CAST(task.instance_id AS VARCHAR)=q.workflow_instance_id AND
+            """ + RELATED_TASK_ACCESS + """
+                   )) AS can_view_detail
             FROM record_control_request q JOIN form_instance_record r ON r.id=q.record_id
-            """ + where + " ORDER BY q.submitted_at DESC,q.id DESC LIMIT ? OFFSET ?", args.toArray());
-        return PageResult.of(rows.stream().map(this::requestSummary).toList(), page, size, count == null ? 0 : count);
+            """ + where + " ORDER BY q.submitted_at DESC,q.id DESC LIMIT ? OFFSET ?",
+                selectArgs.toArray());
+        return PageResult.of(rows.stream().map(row -> {
+            ObjectNode result = requestSummary(row);
+            result.put("canViewDetail", Boolean.TRUE.equals(row.get("can_view_detail")));
+            return result;
+        }).toList(), page, size, count == null ? 0 : count);
     }
 
     @Transactional(readOnly = true)
@@ -257,22 +283,23 @@ public class RecordControlService implements RecordControlWorkflowResultHandler,
     }
 
     private void requireRequestDetailAccess(Map<String, Object> request) {
+        if (!canViewRequestDetail(str(request.get("status")), str(request.get("applicant_id")), str(request.get("workflow_instance_id"))))
+            throw new BusinessException(ErrorCode.AUTH_003, "当前用户无权查看该变更申请");
+    }
+
+    private boolean canViewRequestDetail(String status, String applicantId, String workflowInstanceId) {
         String currentUser = actor();
-        if (!"IN_REVIEW".equals(str(request.get("status")))
-                || currentUser.equals(str(request.get("applicant_id")))) return;
-        String workflowInstanceId = str(request.get("workflow_instance_id"));
+        if (!"IN_REVIEW".equals(status) || currentUser.equals(applicantId)) return true;
+        if (Boolean.TRUE.equals(jdbc.queryForObject("SELECT " + SYSTEM_SUPER_ADMIN, Boolean.class, id(currentUser)))) return true;
         if (!workflowInstanceId.isBlank()) {
             Long relatedTaskCount = jdbc.queryForObject("""
                     SELECT count(*) FROM workflow_task task
                     WHERE CAST(task.instance_id AS VARCHAR)=?
-                      AND ((task.status IN ('PENDING','PROCESSING') AND (task.assignee_id=?
-                           OR (task.candidate_snapshot -> 'userIds') @> CAST(? AS jsonb)
-                           OR task.candidate_snapshot ->> 'unrestricted'='true'))
-                        OR (task.assignee_id=? AND task.status IN ('COMPLETED','REJECTED','TRANSFERRED')))
-                    """, Long.class, workflowInstanceId, currentUser, "[\"" + currentUser + "\"]", currentUser);
-            if (relatedTaskCount != null && relatedTaskCount > 0) return;
+                      AND
+                    """ + RELATED_TASK_ACCESS, Long.class, workflowInstanceId, currentUser, "[\"" + currentUser + "\"]", currentUser);
+            if (relatedTaskCount != null && relatedTaskCount > 0) return true;
         }
-        throw new BusinessException(ErrorCode.AUTH_003, "当前用户无权查看该变更申请");
+        return false;
     }
 
     @Transactional

@@ -1,0 +1,43 @@
+Captured 2026-11-09; original source, not runtime proof.
+Source HEAD: 7c2c74d0a9f6b30c6e2dfbd9ad1620d5d29f9a37
+Target origin/edhr-dev: 5e8edb47ae91af83555f4b67a87598c3c2a9a664
+Source excerpts include uncommitted feature implementation; hashes identify this working snapshot.
+
+gmp-platform/backend/src/main/java/com/zencas/edhr/recordcontrol/service/RecordControlService.java
+SHA256 35b26eafda4dc3420b94381fd2e1e88b04c5e27af1761429215447f519662a13
+42:     private static final String SYSTEM_SUPER_ADMIN = """
+43:         EXISTS (SELECT 1 FROM user_account viewer WHERE viewer.id=?
+44:             AND LOWER(BTRIM(viewer.username))='admin' AND viewer.status='ACTIVE')
+46:     private static final String RELATED_TASK_ACCESS = """
+185:             """ + "(" + SYSTEM_SUPER_ADMIN + """
+189:             """ + RELATED_TASK_ACCESS + """
+190:                    )) AS can_view_detail
+196:             result.put("canViewDetail", Boolean.TRUE.equals(row.get("can_view_detail")));
+255:         if (enforceAccess) requireRequestDetailAccess(row);
+282:     private void requireRequestDetailAccess(Map<String, Object> request) {
+286:         if (Boolean.TRUE.equals(jdbc.queryForObject("SELECT " + SYSTEM_SUPER_ADMIN, Boolean.class, id(currentUser)))) return;
+293:                     """ + RELATED_TASK_ACCESS, Long.class, workflowInstanceId, currentUser, "[\"" + currentUser + "\"]", currentUser);
+
+gmp-platform/backend/src/main/java/com/zencas/edhr/identity/controller/UserController.java
+SHA256 1cb0e2570d12193b522c49cbe373603293002a50c4a6a4741c95422afb8c62b9
+55:     private static final String SYSTEM_SUPER_ADMIN_USERNAME = "admin";
+76:         Sort.Direction direction = "asc".equalsIgnoreCase(order) ? Sort.Direction.ASC : Sort.Direction.DESC;
+194:         if (isSystemSuperAdminUser(user)) {
+199:     private boolean isSystemSuperAdminUser(UserAccount user) {
+202:                 && SYSTEM_SUPER_ADMIN_USERNAME.equalsIgnoreCase(user.getUsername().trim());
+
+gmp-platform/frontend/src/pages/record-control/RecordRequestListPage.tsx
+SHA256 0aa7f1506267fbb2708067437380b0637d0f2aa98eb056100d79c3be2aaf350e
+5:   TableCell, TableHead, TableRow, TextField, Tooltip, Typography,
+117:                     <TableCell align="center" sx={actionBodyCellSx}><Tooltip title={item.canViewDetail === false ? '当前账号无权查看此在审申请' : '查看详情'} arrow><span tabIndex={item.canViewDetail === false ? 0 : undefined}><IconButton size="small" aria-label="查看详情" disabled={item.canViewDetail === false} onClick={() => navigate(`/records/requests/${item.id}`)}><VisibilityOutlined fontSize="small" /></IconButton></span></Tooltip></TableCell>
+125:           <Pagination page={page + 1} count={Math.max(totalPages, 1)} onChange={(_, nextPage) => setPage(nextPage - 1)} disabled={busy} size="small" color="primary" />
+
+gmp-platform/frontend/src/pages/record-control/RecordRequestDetailPage.tsx
+SHA256 ba98de2685b54aa583d10bf4d1ea7d76f120d4654cee2fb6911d59b01d5728e0
+134:   if (request.isError || !detail) return <Alert severity="error" action={<Button color="inherit" onClick={() => navigate(-1)}>返回</Button>}>{request.error instanceof Error ? request.error.message : '申请详情加载失败，请稍后重试。'}</Alert>;
+
+before-manager.json
+SHA256 ac1a2f4b80f0e4ede273901cde1439e107afd232d3d1fd26a3682487fdf1bbad
+
+before-manager.png
+SHA256 e873c36500ab40679f70bf036dfa747d921c5180fbc9524c3d7d09d58f72b6ff

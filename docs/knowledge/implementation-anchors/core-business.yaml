@@ -248,17 +248,22 @@ implementationAnchors:
     codeReferences:
       - gmp-platform/backend/src/main/java/com/zencas/edhr/recordcontrol/service/RecordControlService.java
       - gmp-platform/backend/src/main/java/com/zencas/edhr/recordcontrol/controller/RecordControlController.java
-    apiReferences: ['GET /api/v1/record-control/requests/{requestId}']
-    databaseReferences: []
-    uiReferences: []
+    apiReferences: ['GET /api/v1/record-control/requests', 'GET /api/v1/record-control/requests/{requestId}', 'GET /api/v1/record-control/records/by-number']
+    databaseReferences: [user_account, workflow_task, record_control_request]
+    uiReferences:
+      - gmp-platform/frontend/src/pages/record-control/RecordRequestListPage.tsx
+      - gmp-platform/frontend/src/pages/record-control/RecordRequestDetailPage.tsx
+      - gmp-platform/frontend/src/pages/record-control/RecordChangePage.tsx
+      - gmp-platform/frontend/src/pages/record-control/RecordApprovalDetailPage.tsx
     testReferences:
       - gmp-platform/backend/src/test/java/com/zencas/edhr/recordcontrol/service/RecordControlAccessTest.java
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/recordcontrol/service/RecordControlPostgresIntegrationTest.java
     status: implemented
     visibility: internal
-    evidenceIds: [evidence.record-control-v1-service, evidence.record-control-active-detail-access-tests]
-    sourceRevision: aef427c524bd7270b3775fbd7c599c72a545e21b
-    sourceLocator: RecordControlService.requestDetail / requireRequestDetailAccess
-    capturedAt: '2026-10-28'
+    evidenceIds: [evidence.record-control-v1-service, evidence.record-control-active-detail-access-tests, evidence.record-history-detail-access-confirmed, evidence.record-history-detail-access-service, evidence.record-history-detail-access-system-account, evidence.record-history-detail-access-ui, evidence.record-history-detail-access-tests]
+    sourceRevision: 7c2c74d0a9f6b30c6e2dfbd9ad1620d5d29f9a37
+    sourceLocator: RecordControlService.listRequests / requireRequestDetailAccess / canViewRequestDetail / findRecord / SYSTEM_SUPER_ADMIN / RELATED_TASK_ACCESS；包含此基线上尚未提交的DEC-0096修复及2026-11-10入口跟进，非该提交已含实现；成功入口取提交后原有来源查询的资格投影，不改提交响应或授予登录人新资格
+    capturedAt: '2026-11-10'
     reviewStatus: reviewed
   - id: anchor.core.record-control-workflow-task-projection
     targetId: rule.record-control-workflow-task-projection

@@ -77,7 +77,7 @@ class RecordControlPostgresIntegrationTest {
         jdbc.execute("DROP FUNCTION IF EXISTS reject_record_control_result() CASCADE");
         jdbc.execute("DROP FUNCTION IF EXISTS reject_dhr_notification() CASCADE");
         jdbc.execute("DROP FUNCTION IF EXISTS reject_workflow_action() CASCADE");
-        jdbc.execute("TRUNCATE workflow_intervention,audit_event");
+        jdbc.execute("TRUNCATE workflow_intervention,audit_event,user_role");
         jdbc.execute("TRUNCATE material,form_template,route,dhr_template,workflow_definition,user_account,signature,workflow_task,workflow_instance,workflow_node,workflow_edge,workflow_action_log,form_instance_record,production_execution,production_object,work_order,product_process_version,product_process CASCADE");
         String password = passwords.encode("test-signature-password");
         jdbc.update("INSERT INTO user_account(id,tenant_id,username,display_name,password_hash,status) VALUES (41,0,'rc-applicant','申请人',?,'ACTIVE'),(42,0,'rc-reviewer','审批人',?,'ACTIVE')", password, password);
@@ -119,6 +119,64 @@ class RecordControlPostgresIntegrationTest {
 
     @AfterEach void clearActor() { AuditContext.clear(); org.springframework.security.core.context.SecurityContextHolder.clearContext(); }
     private void actor() { AuditContext.setOperator("41", "申请人"); }
+    @ParameterizedTest
+    @ValueSource(strings = {"applicant", "candidate", "manager", "super-admin", "fake-display-name", "fake-role", "disabled-admin", "history", "reassigned-old", "reassigned-new"})
+    void historyDetailAvailabilityMatchesAuthorizedActor(String scenario) {
+        var request = requests.submit(command(BusinessType.CHANGE));
+        String requestId = request.path("id").asText();
+        personnel();
+        boolean allowed = !List.of("manager", "fake-display-name", "fake-role", "disabled-admin", "reassigned-old").contains(scenario);
+        switch (scenario) {
+            case "applicant" -> actor();
+            case "candidate" -> AuditContext.setOperator("42", "审批人");
+            case "super-admin", "disabled-admin" -> {
+                jdbc.update("INSERT INTO user_account(id,tenant_id,username,display_name,password_hash,status) VALUES (1,1,'admin','系统管理员','unused',?)",
+                        scenario.equals("super-admin") ? "ACTIVE" : "DISABLED");
+                AuditContext.setOperator("1", "系统管理员", "admin");
+            }
+            case "fake-display-name" -> AuditContext.setOperator("44", "admin", "admin");
+            case "fake-role" -> {
+                jdbc.update("INSERT INTO user_role(id,user_id,role_id) VALUES (4499,44,1)");
+                manager();
+            }
+            case "history" -> {
+                actor(); requests.withdraw(requestId, new RecordControlService.WithdrawRequest("结束后查历史")); manager();
+            }
+            case "reassigned-old", "reassigned-new" -> {
+                manager(); long task = taskId();
+                responsibility.reassign(task, reassignment(task, "43", "test-signature-password"));
+                AuditContext.setOperator(scenario.equals("reassigned-old") ? "42" : "43", "审批人");
+            }
+            default -> manager();
+        }
+        var row = requests.listRequests(false, 0, 20).getContent().stream()
+                .filter(item -> item.path("id").asText().equals(requestId)).findFirst().orElseThrow();
+        assertThat(row.path("canViewDetail").asBoolean()).as(scenario).isEqualTo(allowed);
+        var source = requests.findRecord(scalar("SELECT instance_no FROM form_instance_record"));
+        if (scenario.equals("history")) assertThat(source.has("canViewActiveRequest")).isFalse();
+        else assertThat(source.path("canViewActiveRequest").asBoolean()).as(scenario).isEqualTo(allowed);
+        if (allowed) assertThat(requests.requestDetail(requestId).path("id").asText()).isEqualTo(requestId);
+        else assertThatThrownBy(() -> requests.requestDetail(requestId)).hasMessageContaining("无权查看");
+        if (scenario.equals("super-admin")) {
+            assertThat(requests.requestDetail(requestId).path("canWithdraw").asBoolean()).isFalse();
+            assertThatThrownBy(() -> requests.withdraw(requestId, new RecordControlService.WithdrawRequest("超管不可代撤回")))
+                    .hasMessageContaining("仅申请人");
+            assertThat(scalar("SELECT status FROM record_control_request WHERE id=" + requestId)).isEqualTo("IN_REVIEW");
+        }
+    }
+    @Test void submissionViewQualificationBelongsToLoggedInReaderRatherThanButtonSigner() {
+        AuditContext.setOperator("42", "审批人");
+        var request = requests.submit(command(BusinessType.CHANGE));
+        assertThat(request.path("applicant_id").asText()).isEqualTo("41");
+        assertThat(requests.findRecord(scalar("SELECT instance_no FROM form_instance_record")).path("canViewActiveRequest").asBoolean()).isTrue();
+        actor(); requests.withdraw(request.path("id").asText(), new RecordControlService.WithdrawRequest("结束首轮"));
+        personnel(); manager();
+        var second = requests.submit(command(BusinessType.CHANGE));
+        assertThat(second.path("applicant_id").asText()).isEqualTo("41");
+        assertThat(requests.findRecord(scalar("SELECT instance_no FROM form_instance_record")).path("canViewActiveRequest").asBoolean()).isFalse();
+        assertThatThrownBy(() -> requests.requestDetail(second.path("id").asText())).hasMessageContaining("无权查看");
+        assertThat(AuditContext.getOperatorId()).isEqualTo("44");
+    }
     private long count(String table) { return jdbc.queryForObject("SELECT count(*) FROM " + table, Long.class); }
     private String scalar(String sql) { return jdbc.queryForObject(sql, String.class); }
     private long taskId() { return jdbc.queryForObject("SELECT t.id FROM workflow_task t JOIN workflow_instance w ON w.id=t.instance_id WHERE t.status='PENDING' AND w.business_type IN ('CHANGE','OBSOLETE')", Long.class); }

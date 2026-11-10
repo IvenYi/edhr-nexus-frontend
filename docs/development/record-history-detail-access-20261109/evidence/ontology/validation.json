@@ -1,0 +1,15 @@
+{
+  "result": "passed",
+  "scope": "incremental ontology only; not full semantic audit or runtime verification",
+  "yamlFiles": 6,
+  "topLevelRecordsChecked": 46,
+  "affectedIdsUnique": 72,
+  "checks": [
+    "required-fields-and-status-enums",
+    "evidence-and-decision-references",
+    "evidence-path-existence",
+    "internal-projection-and-retained-maturity",
+    "statement-level-replacement-and-history",
+    "read-only-scope-and-server-authority"
+  ]
+}

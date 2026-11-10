@@ -1,0 +1,127 @@
+qualityResult:
+  result: passed
+  baseCommit: 7c2c74d0a9f6b30c6e2dfbd9ad1620d5d29f9a37
+  headCommit: 7c2c74d0a9f6b30c6e2dfbd9ad1620d5d29f9a37
+  contractBaseline:
+    sourceCommit: 7c2c74d0a9f6b30c6e2dfbd9ad1620d5d29f9a37
+    targetBranch: edhr-dev
+    targetCommit: 5e8edb47ae91af83555f4b67a87598c3c2a9a664
+    contractReadCommit: 7c2c74d0a9f6b30c6e2dfbd9ad1620d5d29f9a37
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: dirty
+    includedPaths:
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/recordcontrol/service/RecordControlService.java
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/recordcontrol/service/RecordControlAccessTest.java
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/recordcontrol/service/RecordControlPostgresIntegrationTest.java
+      - gmp-platform/frontend/src/api/record-control.ts
+      - gmp-platform/frontend/src/pages/record-control/RecordRequestListPage.tsx
+      - gmp-platform/frontend/src/pages/record-control/RecordRequestDetailPage.tsx
+      - gmp-platform/frontend/scripts/test-workflow-list-ui-browser.mjs
+      - docs/knowledge/decisions/DEC-0087-record-control-v1-closure.yaml
+      - docs/knowledge/rules/record-change.yaml
+      - docs/knowledge/evidence/record-control-v1.yaml
+      - docs/knowledge/implementation-anchors/core-business.yaml
+      - docs/knowledge/README.md
+      - docs/architecture/business-knowledge-model.md
+    excludedPaths:
+      - output/**
+      - gmp-platform/frontend/output/**
+      - premium-audit.json
+    untrackedPaths:
+      - docs/knowledge/decisions/DEC-0096-record-control-system-admin-detail-read.yaml
+      - docs/knowledge/evidence/record-history-detail-access-20261109.yaml
+      - docs/knowledge/evidence/record-history-detail-access-20261109.md
+      - docs/development/record-history-detail-access-20261109/**
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+    - id: check.detail-access-contract-and-scope
+      required: true
+      category: requirements
+      description: 独立读取项目、编码、质量与交接契约，核对本地未提交L2详情权限切片和目标契约增量。
+      method: inspection
+      command: git rev-parse HEAD origin/edhr-dev; git diff HEAD origin/edhr-dev -- AGENTS.md codeplzreadme.md docs/agents
+      outcome: passed
+      evidence:
+        - 本地base/head为7c2c74d0a9f6b30c6e2dfbd9ad1620d5d29f9a37，测试对象为其上的本次工作树差异；目标5e8edb47ae91af83555f4b67a87598c3c2a9a664未合并，契约差异为空。
+        - 决策包impactAnalysis覆盖直接、相邻、兼容、快照、审计、权限及测试边界；product-core扩展限于既有记录控制服务和页面。
+    - id: check.detail-access-authentication-and-action-boundary
+      required: true
+      category: security
+      description: 核对认证ID来源、数据库受保护账号条件、列表和详情的一致性，以及只读例外不授予写动作资格。
+      method: inspection
+      command: git diff -- gmp-platform/backend/src/main/java/com/zencas/edhr/recordcontrol/service/RecordControlService.java
+      outcome: passed
+      evidence:
+        - JwtAuthenticationFilter从已验证JWT设置AuditContext用户ID；详情以该ID查询ACTIVE且LOWER(BTRIM(username))为admin的数据库账号，不读取显示名、普通ADMIN角色或客户端超管标志。
+        - listRequests和requireRequestDetailAccess共用SYSTEM_SUPER_ADMIN及RELATED_TASK_ACCESS；单次列表查询投影，不改变原过滤、分页、计数或元数据范围。
+        - requireRequestDetailAccess仅用于公共详情读取，写动作、审批任务投影、签名通用隔离及DHR规则未修改；新增真实PG断言确认超管不能代申请人撤回，申请状态不变。
+    - id: check.detail-access-knowledge-consistency
+      required: true
+      category: ontology
+      description: 核对用户确认、DEC0096局部替代、当前规则、历史来源及本体结果。
+      method: inspection
+      command: 阅读DEC-0096、DEC-0087-09、record-change规则、实现锚点及ontology-result.yaml
+      outcome: passed
+      evidence:
+        - ontologyResult.result为updated，知识基线保持0.3.25，P0及verified/runtime边界没有提升。
+        - DEC-0087-09原句及签名隔离保留；DEC-0096仅追加真正超管在审详情只读例外，普通用户、结束历史和所有动作资格范围保留。
+        - 当前两条访问规则、README、架构说明、实现锚点和原件索引一致；本轮不覆盖远端DEC-0095。
+    - id: check.detail-access-independent-backend
+      required: true
+      category: integration
+      description: 独立重跑身份访问矩阵、记录控制相邻集成与知识校验。
+      method: automated-test
+      command: RECORD_CONTROL_TEST_DATABASE_URL=jdbc:postgresql://127.0.0.1:5432/edhr_record_control_test_detail_20261109 PGUSER=ivenwang JAVA_HOME=/opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home mvn -q '-Dtest=RecordControlAccessTest,RecordControlPostgresIntegrationTest,BusinessKnowledgeModelTest' test
+      outcome: passed
+      evidence:
+        - /tmp/edhr-detail-independent-backend-20261109.log
+        - RecordControlAccessTest为10项，RecordControlPostgresIntegrationTest为52项，BusinessKnowledgeModelTest为89项；合计151项，失败0、错误0、跳过0，退出码0。
+        - PG测试仅使用带保护前缀的隔离测试库；新增10场景涵盖申请人、候选、无关经理、真正超管、显示名/角色伪装、停用admin、终态历史和改派前后。user_role无外键导致的测试残留由fixture清理，既有断言未降低。
+        - 相邻集成覆盖审批生效/回滚、转办/改派、受限撤回、签名隔离及表单/DHR联动；这不是全系统回归。
+    - id: check.detail-access-independent-ui
+      required: true
+      category: e2e
+      description: 独立运行维护组件与真实APIclient的合成接口浏览器回归，核对交互和响应式呈现。
+      method: automated-test
+      command: CHROME_PATH='/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' NODE_PATH=/Users/ivenwang/.npm/_npx/31e32ef8478fbf80/node_modules WORKFLOW_LIST_ARTIFACTS=/tmp/edhr-detail-independent-ui-20261109 node scripts/test-workflow-list-ui-browser.mjs
+      outcome: passed
+      evidence:
+        - /tmp/edhr-detail-independent-ui-20261109.log
+        - 1440和390宽度共44场景全部通过，包括无权按钮禁用、悬停及键盘焦点原因、Enter不导航、旧链接403实际错误和返回，及原流程干预/审计/图标相邻回归。
+        - 组件测试拦截合成API，没有据此宣称完整真实后端E2E；另有本轮实际主环境读取证据。
+        - 人工查看独立390px列表截图及主方admin-detail-after.png，原图标、固定操作列、页面布局和只读表单呈现正常。
+    - id: check.detail-access-independent-live-reads
+      required: true
+      category: api
+      description: 使用现有三个UAT账号独立核对主环境列表资格与实际详情响应。
+      method: automated-test
+      command: Node fetch登录现有uat_applicant、uat_reviewer、uat_manager，依次GET列表与详情，仅输出非敏感断言结果。
+      outcome: passed
+      evidence:
+        - /tmp/edhr-detail-independent-live-20261109.log
+        - 三账号各7条，共21次实际详情读取与canViewDetail一致；无权403保留准确错误，终态历史允许读取。
+        - admin-identity-permissions.json确认真实admin为ACTIVE保留账号且相关菜单权限不缺失；主方真实Chrome会话截图和AX证明原报错申请已打开，主方记录7个列表按钮均可用。独立质量没有接管真实Chrome或重置凭据。
+    - id: check.detail-access-style-build-and-data-evidence
+      required: true
+      category: regression
+      description: 独立核对列表规范、差异卫生、构建及主库业务数据保护证据。
+      method: command
+      command: npm run verify:list-table-style; git diff --check; cmp integrity-before.txt integrity-after.txt
+      outcome: passed
+      evidence:
+        - /tmp/edhr-detail-independent-style-20261109.log
+        - 列表规范与git diff --check独立执行通过；主方npm run build日志为构建成功，本实例未重复构建。
+        - 任务目录integrity-before.txt和integrity-after.txt逐字一致；记录控制申请7、表单修订38、DHR汇总版本8、流程任务11、签名27的全行摘要一致。本实例只比对原件，没有伪称自行生成前后快照。
+        - 产品无数据库迁移，主库未执行测试fixture或业务写命令；UAT正常登录可能更新认证元数据，不将五表一致扩大为全库零变化。
+  findings: []
+  residualRisks:
+    - id: risk.detail-access-local-candidate-only
+      description: 这是本地主目录未提交差异的验收，远端最新edhr-dev尚未合入。
+      impact: 本轮passed不能替代未来合并候选或发布的集成验收。
+      mitigation: 集成时重新核对实际候选及受影响检查，不复用本结果覆盖新增远端变更。
+    - id: risk.detail-access-scope-only
+      description: 只读超管例外和普通参与人详情范围已验收，未实施跨模块超管全动作豁免或全系统权限审计。
+      impact: 不应从可看详情推定具备审批、签署、代撤回或其他业务资格。
+      mitigation: 保留原业务动作资格和签名隔离；新增跨模块政策需单独确认及验证。
+  blockingConditions: []

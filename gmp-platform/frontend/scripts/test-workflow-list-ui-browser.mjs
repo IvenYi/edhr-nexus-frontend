@@ -25,6 +25,9 @@ try {
     import { SnackbarProvider } from './src/components/SnackbarProvider';
     import InstanceList from './src/pages/workflow-center/InstanceList';
     import RecordRequestListPage from './src/pages/record-control/RecordRequestListPage';
+    import RecordRequestDetailPage from './src/pages/record-control/RecordRequestDetailPage';
+    import RecordChangePage from './src/pages/record-control/RecordChangePage';
+    import RecordApprovalDetailPage from './src/pages/record-control/RecordApprovalDetailPage';
     import RecordApprovalPage from './src/pages/record-control/RecordApprovalPage';
     import DhrAuditTrail from './src/pages/dhr-management/DhrAuditTrail';
     import { isAuditForForm, toProductionAuditFields } from './src/utils/productionAudit';
@@ -34,16 +37,19 @@ try {
       <Route path='/workflow/interventions' element={<InstanceList intervention />} />
       <Route path='/workflow/instances' element={<InstanceList />} />
       <Route path='/records/mine' element={<RecordRequestListPage scope='mine' />} />
+      <Route path='/records/change' element={<RecordChangePage />} />
       <Route path='/records/history' element={<RecordRequestListPage scope='all' />} />
       <Route path='/records/approvals' element={<RecordApprovalPage />} />
       <Route path='/records/requests/:id' element={<Destination />} />
+      <Route path='/detail-proof/:requestId' element={<RecordRequestDetailPage />} />
+      <Route path='/approval-proof/:taskId/:requestId' element={<RecordApprovalDetailPage />} />
       <Route path='/records/approvals/:taskId/:requestId' element={<Destination />} />
       <Route path='/audit-proof' element={<><DhrAuditTrail source='summary' id='1' /><div data-testid='form-audit-proof'>{toProductionAuditFields(JSON.stringify({previousAssigneeName:'原审批甲',assigneeName:'新审批乙',signatureId:'sig-proof',signerName:'签署管理员',reason:'合成审计原因'})).map(field => <p key={field.key}>{field.label}：{field.value}</p>)}</div></>} />
     </Routes>; }
     window.__auditIdentityProof = [isAuditForForm({action:'REASSIGN',contentAfter:'{"formId":"f","copyId":"copy-1"}'},{formId:'f',copyId:'copy-1'}),isAuditForForm({action:'REASSIGN',contentAfter:'{"formId":"f","copyId":"copy-2"}'},{formId:'f',copyId:'copy-1'}),isAuditForForm({action:'UPDATE',contentAfter:'{}'},{formId:'f',copyId:'copy-1'})];
     createRoot(document.getElementById('root')).render(<ThemeProvider theme={theme}><CssBaseline />
       <QueryClientProvider client={new QueryClient({ defaultOptions: { queries: { staleTime: 30000, retry: false, refetchOnWindowFocus: false } } })}>
-      <SnackbarProvider><MemoryRouter initialEntries={[new URLSearchParams(location.search).get('route') || '/workflow/interventions']}><Pages /></MemoryRouter></SnackbarProvider>
+      <SnackbarProvider><MemoryRouter initialEntries={['/records/history', new URLSearchParams(location.search).get('route') || '/workflow/interventions']}><Pages /></MemoryRouter></SnackbarProvider>
       </QueryClientProvider></ThemeProvider>);
   ` }, bundle: true, platform: 'browser', format: 'esm', outfile: path.join(temporary, 'bundle.js'),
     alias: { '@': path.join(root, 'src'), '@mui/icons-material': path.join(root, 'node_modules/@mui/icons-material/esm') },
@@ -63,7 +69,7 @@ try {
   await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
   browser = await chromium.launch({ headless: true, executablePath: process.env.CHROME_PATH || '/usr/bin/chromium' });
   if (artifacts) await mkdir(artifacts, { recursive: true });
-  for (const width of [1440, 390]) for (const scenario of ['single', 'parallel', 'none', 'ended', 'load-error', 'settings', 'unauthorized', 'unknown', 'empty', 'list-error', 'loading', 'history', 'reopen', 'record-mine', 'record-history', 'record-todo', 'record-done', 'form', 'dhr', 'domain-audit']) {
+  for (const width of [1440, 390]) for (const scenario of ['single', 'parallel', 'none', 'ended', 'load-error', 'settings', 'unauthorized', 'unknown', 'empty', 'list-error', 'loading', 'history', 'reopen', 'record-mine', 'record-history', 'record-denied', 'record-detail-forbidden', 'record-source-allowed', 'record-source-denied', 'record-submit-allowed', 'record-submit-denied', 'record-approval-request-forbidden', 'record-approval-task-forbidden', 'record-approval-task-missing', 'record-todo', 'record-done', 'form', 'dhr', 'domain-audit']) {
     const domain = scenario === 'form' || scenario === 'dhr';
     const currentId = scenario === 'form' ? 'form-900000000000000001' : instanceId;
     const currentTask = scenario === 'form' ? currentId + ':review' : taskA;
@@ -77,14 +83,29 @@ try {
     }, { permitted: scenario !== 'unauthorized' });
     const page = await context.newPage(); page.setDefaultTimeout(6000);
     const errors = [], writes = [];
-    let attempts = 0, release;
+    let attempts = 0, release, submitted = false;
     const delayed = new Promise(resolve => { release = resolve; });
     page.on('pageerror', error => errors.push(error.message));
     await context.route('**/api/v1/**', async route => {
       const request = route.request(), url = new URL(request.url()), endpoint = url.pathname;
       const send = (data, status = 200) => route.fulfill({ status, json: { code: status, data, message: status === 200 ? '' : '合成读取错误' } });
       if (endpoint === '/api/v1/dhr-instances/1/summary/audit') return send({events:[{id:'audit-proof',entityType:'DHR_SUMMARY_REVIEW',action:'REASSIGN',functionName:'重新分配',operator:'签署管理员',at:'2026-11-02T10:00:00',reason:'合成审计原因',before:JSON.stringify({assigneeName:'原审批甲'}),after:JSON.stringify({previousAssigneeName:'原审批甲',assigneeName:'新审批乙',signatureId:'sig-proof',signerName:'签署管理员'})}],total:1,page:0});
-      const record = { id: 'record-request', request_no: 'RC-ICON-001', request_type: 'CHANGE', status: 'IN_REVIEW', workflow_instance_id: instanceId, instance_no: 'FR-ICON-001', template_name: '图标验收表单', template_code: 'ICON-001', applicant_name: '合成申请人', submitted_at: '2026-11-02T10:00:00' };
+      const source = { id: 'record', instance_no: 'FR-ICON-001', object_id: 'object', status: 'COMPLETED', current_revision_id: 'revision', revision_no: '1', template_name: '入口验收表单', template_code: 'ICON-001', version_number: '1', fieldValues: {}, snapshot: { id: 'form', versionId: 'version', name: '入口验收表单', fields: [] }, active_request_id: scenario.startsWith('record-source-') || submitted ? 'record-request' : null, active_request_no: 'RC-ICON-001', active_request_type: 'OBSOLETE', canViewActiveRequest: !scenario.endsWith('-denied') };
+      if (endpoint === '/api/v1/record-control/records/by-number') return send(source);
+      if (endpoint === '/api/v1/workflow/record-control/candidates') return send([{ workflowDefinitionId: 'definition', workflowVersionId: 'version', versionNumber: 1, templateName: '验收审批' }]);
+      if (endpoint === '/api/v1/record-control/requests' && request.method() === 'POST') {
+        writes.push({ endpoint, body: request.postDataJSON() }); submitted = true;
+        return send({ id: 'record-request', canViewDetail: !scenario.endsWith('-denied') });
+      }
+      if (endpoint === '/api/v1/record-control/requests/record-request') {
+        if (scenario.startsWith('record-approval-task-')) return send({ id: 'record-request', record_id: 'record', snapshot: source.snapshot, status: 'IN_REVIEW' });
+        return route.fulfill({ status: 403, json: { code: 403, data: null, message: '当前用户无权查看该变更申请' } });
+      }
+      if (endpoint === `/api/v1/workflow/tasks/${taskA}`) {
+        const missing = scenario.endsWith('-missing');
+        return route.fulfill({ status: missing ? 404 : 403, json: { code: missing ? 404 : 403, data: null, message: missing ? '审批任务不存在' : '当前用户无权查看该审批任务' } });
+      }
+      const record = { id: 'record-request', request_no: 'RC-ICON-001', request_type: 'CHANGE', status: 'IN_REVIEW', workflow_instance_id: instanceId, instance_no: 'FR-ICON-001', template_name: '图标验收表单', template_code: 'ICON-001', applicant_name: '合成申请人', submitted_at: '2026-11-02T10:00:00', canViewDetail: scenario !== 'record-denied' };
       if (endpoint === '/api/v1/record-control/requests/for-my-workflow-tasks') return send([record]);
       if (endpoint === '/api/v1/record-control/requests') return send({ content: [record], totalElements: 1, totalPages: 1 });
       if (endpoint === '/api/v1/record-control/workflow-tasks') return send({ content: [{ id: taskA, instanceId, status: url.searchParams.get('scope') === 'todo' ? 'PENDING' : 'COMPLETED', createdAt: '2026-11-02T10:00:00', completedAt: '2026-11-02T11:00:00' }], totalElements: 1, totalPages: 1 });
@@ -116,7 +137,7 @@ try {
     const outcome = { scenario, width, passed: false };
     try {
       const recordScenario = scenario.startsWith('record-');
-      const recordRoute = scenario === 'record-mine' ? '/records/mine' : scenario === 'record-history' ? '/records/history' : '/records/approvals';
+      const recordRoute = scenario.startsWith('record-approval-') ? `/approval-proof/${taskA}/record-request` : scenario.startsWith('record-source-') || scenario.startsWith('record-submit-') ? '/records/change' : scenario === 'record-detail-forbidden' ? '/detail-proof/record-request' : scenario === 'record-mine' ? '/records/mine' : ['record-history', 'record-denied'].includes(scenario) ? '/records/history' : '/records/approvals';
       await page.goto(`http://127.0.0.1:${server.address().port}/${recordScenario ? '?route=' + encodeURIComponent(recordRoute) : scenario === 'domain-audit' ? '?route=%2Faudit-proof' : ''}`);
       if (scenario === 'domain-audit') {
         await page.getByText('重新分配', { exact: true }).waitFor();
@@ -125,10 +146,50 @@ try {
         await page.getByText('新审批乙', { exact: true }).waitFor();
         assert.deepEqual(await page.evaluate(() => window.__auditIdentityProof), [true,false,true]);
         for (const text of ['原处理人：原审批甲','处理人：新审批乙','签名标识：sig-proof','签署人：签署管理员','原因：合成审计原因']) await page.getByTestId('form-audit-proof').getByText(text,{exact:true}).waitFor();
+      } else if (scenario.startsWith('record-source-') || scenario.startsWith('record-submit-')) {
+        await page.getByRole('textbox', { name: '表单实例编号', exact: true }).fill('FR-ICON-001');
+        await page.getByRole('button', { name: '查询', exact: true }).click();
+        let view;
+        if (scenario.startsWith('record-submit-')) {
+          await page.getByRole('button', { name: '表单作废', exact: true }).click();
+          await page.getByRole('button', { name: '提交作废审批', exact: true }).click();
+          await page.getByRole('textbox', { name: '作废原因' }).fill('合成入口权限验收');
+          await page.getByRole('combobox', { name: '审批流程版本' }).click();
+          await page.getByRole('option', { name: '验收审批 · V1', exact: true }).click();
+          await page.getByRole('textbox', { name: '签署人用户名', exact: true }).fill('other-signer');
+          await page.getByRole('textbox', { name: '电子签名密码', exact: true }).fill('synthetic-signature');
+          await page.getByRole('button', { name: '签署并确认提交', exact: true }).click();
+          view = page.getByRole('alert').filter({ hasText: '申请已提交' }).getByRole('button', { name: '查看申请', exact: true });
+          assert.equal(writes.length, 1);
+        } else view = page.getByRole('button', { name: '查看申请 RC-ICON-001', exact: true });
+        await view.waitFor();
+        if (scenario.endsWith('-denied')) {
+          assert.ok(await view.isDisabled());
+          await page.keyboard.press('Tab');
+          await view.locator('..').focus();
+          await page.getByRole('tooltip', { name: '当前账号无权查看此在审申请', exact: true }).waitFor();
+          await page.keyboard.press('Enter'); assert.equal(await page.getByTestId('destination').count(), 0);
+        } else {
+          await view.click(); assert.equal(await page.getByTestId('destination').innerText(), '/records/requests/record-request');
+        }
+      } else if (scenario.startsWith('record-approval-')) {
+        const message = scenario === 'record-approval-request-forbidden' ? '当前用户无权查看该变更申请' : scenario.endsWith('-missing') ? '审批任务不存在' : '当前用户无权查看该审批任务';
+        await page.getByRole('alert').getByText(message, { exact: true }).waitFor();
+        assert.equal(await page.getByText('审批详情加载失败，请确认任务和申请仍然存在。', { exact: true }).count(), 0);
+        await page.getByRole('button', { name: '返回列表', exact: true }).click();
+        await page.getByRole('tab', { name: '待办任务', exact: true }).waitFor();
+        assert.equal(writes.length, 0);
+      } else if (scenario === 'record-detail-forbidden') {
+        await page.getByRole('alert').getByText('当前用户无权查看该变更申请', { exact: true }).waitFor();
+        assert.equal(await page.getByText('申请详情加载失败，请稍后重试。', { exact: true }).count(), 0);
+        await page.getByRole('button', { name: '返回', exact: true }).click();
+        await page.getByRole('cell', { name: 'RC-ICON-001', exact: true }).waitFor();
+        assert.equal(writes.length, 0);
       } else if (recordScenario) {
         if (scenario === 'record-done') await page.getByRole('tab', { name: '已办任务', exact: true }).click();
         const recordRow = page.locator('tbody tr').filter({ has: page.getByRole('cell', { name: 'RC-ICON-001', exact: true }) });
         await recordRow.waitFor();
+        if (scenario === 'record-done') await recordRow.getByRole('cell', { name: '已处理', exact: true }).waitFor();
         const approval = scenario === 'record-todo' || scenario === 'record-done';
         const actionCell = recordRow.locator('td').last();
         assert.equal(await header('操作').evaluate(el => Math.round(el.getBoundingClientRect().width)), approval ? 96 : 64);
@@ -139,6 +200,17 @@ try {
         assert.equal(await actionCell.getByRole('button').count(), scenario === 'record-todo' ? 2 : 1);
         const view = actionCell.getByRole('button', { name: approval ? '查看申请' : '查看详情', exact: true });
         await view.getByTestId('VisibilityOutlinedIcon').waitFor();
+        if (scenario === 'record-denied') {
+          assert.ok(await view.isDisabled());
+          const reason = '当前账号无权查看此在审申请';
+          const trigger = view.locator('..');
+          await trigger.hover(); await page.getByRole('tooltip', { name: reason, exact: true }).waitFor();
+          await page.mouse.move(0, 0);
+          await page.getByRole('tooltip', { name: reason, exact: true }).waitFor({ state: 'hidden' });
+          await trigger.focus(); await page.getByRole('tooltip', { name: reason, exact: true }).waitFor();
+          await page.keyboard.press('Enter');
+          assert.equal(await page.getByTestId('destination').count(), 0);
+        } else {
         await view.hover(); await page.getByRole('tooltip', { name: approval ? '查看申请' : '查看详情', exact: true }).waitFor();
         if (scenario === 'record-todo') await actionCell.getByRole('button', { name: '审批处理', exact: true }).getByTestId('RateReviewOutlinedIcon').waitFor();
         if (artifacts) await page.screenshot({ path: path.join(artifacts, `${scenario}-${width}-icons.png`), fullPage: true, animations: 'disabled' });
@@ -147,6 +219,7 @@ try {
           await navigate(recordRoute); await recordRow.waitFor();
           await recordRow.getByRole('button', { name: '审批处理', exact: true }).focus(); await page.keyboard.press('Enter');
           assert.equal(await page.getByTestId('destination').innerText(), `/records/approvals/${taskA}/record-request`);
+        }
         }
         assert.equal(writes.length, 0, 'icon navigation must not submit a business action');
       } else {

@@ -1,0 +1,396 @@
+{
+  "scope": "Existing UAT accounts; authenticated read-only queries including POST task metadata projection. No business actions.",
+  "results": [
+    {
+      "username": "uat_applicant",
+      "queues": {
+        "todo": 0,
+        "done": 0
+      },
+      "checks": [
+        {
+          "path": "/workflow/record-control/candidates?businessType=CHANGE",
+          "status": 200
+        },
+        {
+          "path": "/workflow/record-control/candidates?businessType=OBSOLETE",
+          "status": 200
+        },
+        {
+          "path": "/record-control/requests?scope=all&size=200",
+          "status": 200
+        },
+        {
+          "path": "/record-control/requests?scope=mine&size=200",
+          "status": 200
+        },
+        {
+          "path": "/record-control/records/by-number?instanceNo=FR-UAT-1030-DHR-VOID",
+          "status": 200
+        },
+        {
+          "path": "/record-control/records/883010002007/revisions",
+          "status": 200
+        },
+        {
+          "path": "/record-control/requests/391515366144282624",
+          "status": 200
+        },
+        {
+          "path": "/record-control/records/by-number?instanceNo=FR-UAT-1030-DHR-CHANGE",
+          "status": 200
+        },
+        {
+          "path": "/record-control/records/883010002006/revisions",
+          "status": 200
+        },
+        {
+          "path": "/record-control/requests/391515365217341440",
+          "status": 200
+        },
+        {
+          "path": "/record-control/records/by-number?instanceNo=FR-UAT-1030-DHR-PENDING",
+          "status": 200
+        },
+        {
+          "path": "/record-control/records/883010002005/revisions",
+          "status": 200
+        },
+        {
+          "path": "/record-control/requests/391515364231680000",
+          "status": 200
+        },
+        {
+          "path": "/record-control/records/by-number?instanceNo=FR-UAT-1030-DECIDED",
+          "status": 200
+        },
+        {
+          "path": "/record-control/records/883010002003/revisions",
+          "status": 200
+        },
+        {
+          "path": "/record-control/requests/391515363027914752",
+          "status": 200
+        },
+        {
+          "path": "/record-control/records/by-number?instanceNo=FR-UAT-1030-WITHDRAW",
+          "status": 200
+        },
+        {
+          "path": "/record-control/records/883010002002/revisions",
+          "status": 200
+        },
+        {
+          "path": "/record-control/requests/391515362579124224",
+          "status": 200
+        },
+        {
+          "path": "/record-control/records/by-number?instanceNo=FR-UAT-1030-TRANSFER",
+          "status": 200
+        },
+        {
+          "path": "/record-control/records/883010002001/revisions",
+          "status": 200
+        },
+        {
+          "path": "/record-control/requests/391515362138722304",
+          "status": 200
+        },
+        {
+          "path": "/record-control/records/by-number?instanceNo=FR-UAT-1030-REASSIGN",
+          "status": 200
+        },
+        {
+          "path": "/record-control/records/883010002000/revisions",
+          "status": 200
+        },
+        {
+          "path": "/record-control/requests/391515361576685568",
+          "status": 200
+        },
+        {
+          "path": "/record-control/workflow-tasks?scope=todo&size=200",
+          "status": 200
+        },
+        {
+          "path": "/record-control/requests/for-my-workflow-tasks",
+          "status": 200
+        },
+        {
+          "path": "/record-control/workflow-tasks?scope=done&size=200",
+          "status": 200
+        },
+        {
+          "path": "/record-control/requests/for-my-workflow-tasks",
+          "status": 200
+        }
+      ]
+    },
+    {
+      "username": "uat_reviewer",
+      "queues": {
+        "todo": 3,
+        "done": 1
+      },
+      "checks": [
+        {
+          "path": "/workflow/record-control/candidates?businessType=CHANGE",
+          "status": 200
+        },
+        {
+          "path": "/workflow/record-control/candidates?businessType=OBSOLETE",
+          "status": 200
+        },
+        {
+          "path": "/record-control/requests?scope=all&size=200",
+          "status": 200
+        },
+        {
+          "path": "/record-control/requests?scope=mine&size=200",
+          "status": 200
+        },
+        {
+          "path": "/record-control/records/by-number?instanceNo=FR-UAT-1030-DHR-VOID",
+          "status": 200
+        },
+        {
+          "path": "/record-control/records/883010002007/revisions",
+          "status": 200
+        },
+        {
+          "path": "/record-control/requests/391515366144282624",
+          "status": 200
+        },
+        {
+          "path": "/record-control/records/by-number?instanceNo=FR-UAT-1030-DHR-CHANGE",
+          "status": 200
+        },
+        {
+          "path": "/record-control/records/883010002006/revisions",
+          "status": 200
+        },
+        {
+          "path": "/record-control/requests/391515365217341440",
+          "status": 200
+        },
+        {
+          "path": "/record-control/records/by-number?instanceNo=FR-UAT-1030-DHR-PENDING",
+          "status": 200
+        },
+        {
+          "path": "/record-control/records/883010002005/revisions",
+          "status": 200
+        },
+        {
+          "path": "/record-control/requests/391515364231680000",
+          "status": 200
+        },
+        {
+          "path": "/record-control/records/by-number?instanceNo=FR-UAT-1030-DECIDED",
+          "status": 200
+        },
+        {
+          "path": "/record-control/records/883010002003/revisions",
+          "status": 200
+        },
+        {
+          "path": "/record-control/requests/391515363027914752",
+          "status": 200
+        },
+        {
+          "path": "/record-control/records/by-number?instanceNo=FR-UAT-1030-WITHDRAW",
+          "status": 200
+        },
+        {
+          "path": "/record-control/records/883010002002/revisions",
+          "status": 200
+        },
+        {
+          "path": "/record-control/requests/391515362579124224",
+          "status": 200
+        },
+        {
+          "path": "/record-control/records/by-number?instanceNo=FR-UAT-1030-TRANSFER",
+          "status": 200
+        },
+        {
+          "path": "/record-control/records/883010002001/revisions",
+          "status": 200
+        },
+        {
+          "path": "/record-control/requests/391515362138722304",
+          "status": 403
+        },
+        {
+          "path": "/record-control/records/by-number?instanceNo=FR-UAT-1030-REASSIGN",
+          "status": 200
+        },
+        {
+          "path": "/record-control/records/883010002000/revisions",
+          "status": 200
+        },
+        {
+          "path": "/record-control/requests/391515361576685568",
+          "status": 403
+        },
+        {
+          "path": "/record-control/workflow-tasks?scope=todo&size=200",
+          "status": 200
+        },
+        {
+          "path": "/record-control/requests/for-my-workflow-tasks",
+          "status": 200
+        },
+        {
+          "path": "/workflow/tasks/391515366169448448",
+          "status": 200
+        },
+        {
+          "path": "/workflow/tasks/391515365255090176",
+          "status": 200
+        },
+        {
+          "path": "/workflow/tasks/391515364265234432",
+          "status": 200
+        },
+        {
+          "path": "/record-control/workflow-tasks?scope=done&size=200",
+          "status": 200
+        },
+        {
+          "path": "/record-control/requests/for-my-workflow-tasks",
+          "status": 200
+        },
+        {
+          "path": "/workflow/tasks/391515363069857792",
+          "status": 200
+        }
+      ]
+    },
+    {
+      "username": "uat_manager",
+      "queues": {
+        "todo": 0,
+        "done": 0
+      },
+      "checks": [
+        {
+          "path": "/workflow/record-control/candidates?businessType=CHANGE",
+          "status": 200
+        },
+        {
+          "path": "/workflow/record-control/candidates?businessType=OBSOLETE",
+          "status": 200
+        },
+        {
+          "path": "/record-control/requests?scope=all&size=200",
+          "status": 200
+        },
+        {
+          "path": "/record-control/requests?scope=mine&size=200",
+          "status": 200
+        },
+        {
+          "path": "/record-control/records/by-number?instanceNo=FR-UAT-1030-DHR-VOID",
+          "status": 200
+        },
+        {
+          "path": "/record-control/records/883010002007/revisions",
+          "status": 200
+        },
+        {
+          "path": "/record-control/requests/391515366144282624",
+          "status": 403
+        },
+        {
+          "path": "/record-control/records/by-number?instanceNo=FR-UAT-1030-DHR-CHANGE",
+          "status": 200
+        },
+        {
+          "path": "/record-control/records/883010002006/revisions",
+          "status": 200
+        },
+        {
+          "path": "/record-control/requests/391515365217341440",
+          "status": 403
+        },
+        {
+          "path": "/record-control/records/by-number?instanceNo=FR-UAT-1030-DHR-PENDING",
+          "status": 200
+        },
+        {
+          "path": "/record-control/records/883010002005/revisions",
+          "status": 200
+        },
+        {
+          "path": "/record-control/requests/391515364231680000",
+          "status": 403
+        },
+        {
+          "path": "/record-control/records/by-number?instanceNo=FR-UAT-1030-DECIDED",
+          "status": 200
+        },
+        {
+          "path": "/record-control/records/883010002003/revisions",
+          "status": 200
+        },
+        {
+          "path": "/record-control/requests/391515363027914752",
+          "status": 403
+        },
+        {
+          "path": "/record-control/records/by-number?instanceNo=FR-UAT-1030-WITHDRAW",
+          "status": 200
+        },
+        {
+          "path": "/record-control/records/883010002002/revisions",
+          "status": 200
+        },
+        {
+          "path": "/record-control/requests/391515362579124224",
+          "status": 200
+        },
+        {
+          "path": "/record-control/records/by-number?instanceNo=FR-UAT-1030-TRANSFER",
+          "status": 200
+        },
+        {
+          "path": "/record-control/records/883010002001/revisions",
+          "status": 200
+        },
+        {
+          "path": "/record-control/requests/391515362138722304",
+          "status": 403
+        },
+        {
+          "path": "/record-control/records/by-number?instanceNo=FR-UAT-1030-REASSIGN",
+          "status": 200
+        },
+        {
+          "path": "/record-control/records/883010002000/revisions",
+          "status": 200
+        },
+        {
+          "path": "/record-control/requests/391515361576685568",
+          "status": 403
+        },
+        {
+          "path": "/record-control/workflow-tasks?scope=todo&size=200",
+          "status": 200
+        },
+        {
+          "path": "/record-control/requests/for-my-workflow-tasks",
+          "status": 200
+        },
+        {
+          "path": "/record-control/workflow-tasks?scope=done&size=200",
+          "status": 200
+        },
+        {
+          "path": "/record-control/requests/for-my-workflow-tasks",
+          "status": 200
+        }
+      ]
+    }
+  ]
+}

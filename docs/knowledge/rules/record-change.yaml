@@ -50,12 +50,12 @@ rules:
       changeRecordHistory: all-authenticated-users-in-current-tenant
       myChanges: current-applicant-only
       approvalTasks: current-candidate-or-processor-and-own-processed-only
-      activeRequestDetail: applicant-or-current-candidate-or-assignee-or-own-processed-task
+      activeRequestDetail: applicant-or-current-candidate-or-assignee-or-own-processed-task-or-system-super-admin-read-only
       resolvedRequestDetail: all-authenticated-users-in-current-tenant
       actorSource: backend-authentication-context
       forbidClientActorOverride: true
-    explanation: user-confirmed-and-original-evidence；本期不新增岗位、角色或模板级功能授权，但“我的变更”、变更审批及活动申请详情的数据范围仍由后端认证上下文强制执行；已结束历史继续对当前租户认证用户开放。
-    evidenceIds: [evidence.record-control-v1-user-confirmed, evidence.record-control-v1-service, evidence.record-control-active-detail-access-tests, evidence.record-control-authenticated-candidate-read-user-confirmed]
+    explanation: user-confirmed-and-original-evidence；本期不新增岗位、角色或模板级功能授权，但“我的变更”、变更审批及活动申请详情的数据范围仍由后端认证上下文强制执行；DEC-0096仅为真正系统超管增加在审详情只读例外，不扩大普通ADMIN角色或业务动作资格；已结束历史继续对当前租户认证用户开放。
+    evidenceIds: [evidence.record-control-v1-user-confirmed, evidence.record-control-v1-service, evidence.record-control-active-detail-access-tests, evidence.record-control-authenticated-candidate-read-user-confirmed, evidence.record-history-detail-access-confirmed, evidence.record-history-detail-access-service]
   - id: rule.record-control-signature-immutable-generic-boundary
     name: 记录控制签名证据通用接口隔离
     status: implemented
@@ -85,14 +85,18 @@ rules:
         - {fact: fact.record-control-request-status, operator: equals, value: IN_REVIEW}
     result:
       type: allow-with-governance
-      action: authorize-related-actor-only
+      action: authorize-related-actor-or-system-super-admin-read-only
       target: recordControlRequest.detail
-      allowedActors: [applicant, current-candidate, current-assignee, own-processed-task-actor]
+      allowedActors: [applicant, current-candidate, current-assignee, own-processed-task-actor, system-super-admin-read-only]
+      systemSuperAdminIdentity: authenticated-actor-id-database-active-admin-username
+      listProjection: canViewDetail
+      listProjectionGrantsAuthority: false
+      actionEligibilityUnchanged: true
       unrelatedActorBehavior: reject
       resolvedHistoryBehavior: allow-authenticated-current-tenant-user
       actorSource: backend-authentication-context
-    explanation: original-and-test-evidence；活动申请详情仅允许申请人、当前候选或处理人及本人已处理任务的相关人员查看，无关用户被拒绝；申请进入已批准、已退回或已撤回等终态后，历史详情继续按当前租户认证范围开放。
-    evidenceIds: [evidence.record-control-v1-service, evidence.record-control-active-detail-access-tests]
+    explanation: user-confirmed-and-original-evidence；按DEC-0096活动申请详情允许申请人、当前候选或处理人及本人已处理任务相关人员，以及真正系统超管只读查看。超管由认证用户ID反查数据库ACTIVE且去空白、忽略大小写后username为admin的受保护账号，不按显示名或普通ADMIN角色；普通无关用户仍拒绝。canViewDetail与详情共用条件，不能代替后端授权或授予处理、签署权；终态历史仍按当前租户认证范围开放。仅局部替代DEC-0087-09原无超管例外的读取范围，原签名隔离保持，规则不提升为verified或运行时知识投影。
+    evidenceIds: [evidence.record-control-v1-service, evidence.record-control-active-detail-access-tests, evidence.record-history-detail-access-confirmed, evidence.record-history-detail-access-service, evidence.record-history-detail-access-system-account, evidence.record-history-detail-access-ui, evidence.record-history-detail-access-tests]
   - id: rule.record-control-workflow-task-projection
     name: 记录控制审批任务专用分页投影
     status: implemented

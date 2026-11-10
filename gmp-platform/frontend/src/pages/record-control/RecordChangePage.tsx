@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Alert, Box, Button, Chip, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle,
-  Divider, MenuItem, Paper, Snackbar, Stack, TextField, Typography } from '@mui/material';
+  Divider, MenuItem, Paper, Snackbar, Stack, TextField, Tooltip, Typography } from '@mui/material';
 import { DescriptionOutlined, FactCheckOutlined, RateReviewOutlined, SearchRounded } from '@mui/icons-material';
 import ButtonSignatureCredentials from '@/components/workflow/ButtonSignatureCredentials';
 import { executionFormValues } from '@/pages/production/executionFormValues';
@@ -47,6 +47,7 @@ export default function RecordChangePage() {
   const eligible = record?.status === 'COMPLETED' && Boolean(record.current_revision_id) && !record.active_request_id;
   const modified = record && JSON.stringify(values) !== JSON.stringify(record.fieldValues);
   const selectedCandidate = candidates.find((item) => item.workflowVersionId === workflowVersionId);
+  const canViewSubmittedRequest = record?.active_request_id === requestId && record.canViewActiveRequest !== false;
 
   const search = useCallback(async () => {
     if (!number.trim()) { setError('请输入表单实例编号'); return; }
@@ -109,7 +110,9 @@ export default function RecordChangePage() {
 
   return <Box sx={{ height: { xs: 'auto', lg: 'calc(100vh - 150px)' }, minHeight: 0, display: 'flex', flexDirection: 'column', overflow: { xs: 'visible', lg: 'hidden' } }}>
     {error && <Alert severity="error" sx={{ mb: 1.5 }} onClose={() => setError('')}>{error}</Alert>}
-    {requestId && <Alert severity="success" sx={{ mb: 1.5 }} action={<Button onClick={() => navigate(`/records/requests/${requestId}`)}>查看申请</Button>}>
+    {requestId && <Alert severity="success" sx={{ mb: 1.5 }} action={<Tooltip title={canViewSubmittedRequest ? '查看申请' : record?.active_request_id === requestId ? '当前账号无权查看此在审申请' : '请重新查询表单后查看申请'} arrow>
+      <span tabIndex={canViewSubmittedRequest ? undefined : 0}><Button disabled={!canViewSubmittedRequest} onClick={() => navigate(`/records/requests/${requestId}`)}>查看申请</Button></span>
+    </Tooltip>}>
       申请已提交，原表单仍保持已完成状态，等待审批。
     </Alert>}
     <Snackbar open={!requestId && activeRequestNoticeOpen && Boolean(record?.active_request_id && record.active_request_no)}
@@ -119,9 +122,11 @@ export default function RecordChangePage() {
       <Alert severity="warning" variant="standard" onClose={() => setActiveRequestNoticeOpen(false)}
         sx={{ width: '100%', border: '1px solid', borderColor: 'warning.light', boxShadow: 4 }}>
         该表单存在正在进行中的{record?.active_request_type === 'OBSOLETE' ? '作废' : '变更'}申请，申请编号：
-        <Button size="small" variant="text" aria-label={`查看申请 ${record?.active_request_no ?? ''}`}
+        <Tooltip title={record?.canViewActiveRequest === false ? '当前账号无权查看此在审申请' : '查看申请'} arrow>
+        <span tabIndex={record?.canViewActiveRequest === false ? 0 : undefined}><Button size="small" variant="text" aria-label={`查看申请 ${record?.active_request_no ?? ''}`}
+          disabled={record?.canViewActiveRequest === false}
           sx={{ minWidth: 0, p: 0, mx: 0.5, verticalAlign: 'baseline' }}
-          onClick={() => { if (record?.active_request_id) navigate(`/records/requests/${record.active_request_id}`); }}>{record?.active_request_no}</Button>
+          onClick={() => { if (record?.active_request_id) navigate(`/records/requests/${record.active_request_id}`); }}>{record?.active_request_no}</Button></span></Tooltip>
         。请先完成当前申请后再发起新申请。
       </Alert>
     </Snackbar>
@@ -194,7 +199,7 @@ export default function RecordChangePage() {
             {candidate.templateName} · V{candidate.versionNumber}
           </MenuItem>)}
         </TextField>
-        {!candidates.length && <Alert severity="warning">暂无可用审批流程。若账号无权读取候选流程，请联系公共流程负责人处理接口开放范围。</Alert>}
+        {!candidates.length && <Alert severity="warning">暂无可用的已发布审批流程。</Alert>}
         <ButtonSignatureCredentials account={account} password={password} disabled={loading}
           onAccountChange={setAccount} onPasswordChange={setPassword} />
       </Stack></DialogContent>

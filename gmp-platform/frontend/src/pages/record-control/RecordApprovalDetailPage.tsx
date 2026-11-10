@@ -165,7 +165,7 @@ export default function RecordApprovalDetailPage() {
   };
 
   if (loading) return <Box sx={{ height: 'calc(100vh - 150px)', display: 'grid', placeItems: 'center' }}><Stack alignItems="center" spacing={1.5}><CircularProgress size={30} /><Typography variant="body2" color="text.secondary">正在加载审批详情…</Typography></Stack></Box>;
-  if (loadError || !detail || !task) return <Alert severity="error" action={<Button color="inherit" onClick={() => navigate('/records/approvals')}>返回列表</Button>}>审批详情加载失败，请确认任务和申请仍然存在。</Alert>;
+  if (loadError || !detail || !task) return <Alert severity="error" action={<Button color="inherit" onClick={() => navigate('/records/approvals')}>返回列表</Button>}>{requestQuery.error instanceof Error ? requestQuery.error.message : taskQuery.error instanceof Error ? taskQuery.error.message : '审批详情加载失败，请确认任务和申请仍然存在。'}</Alert>;
 
   return <Box sx={{ height: { xs: 'auto', lg: 'calc(100vh - 150px)' }, minHeight: 0, display: 'flex', flexDirection: 'column', gap: 1, overflow: { xs: 'visible', lg: 'hidden' } }}>
     {instanceMismatch && <Alert severity="error">当前任务与申请的流程实例不一致，已禁止审批操作。</Alert>}

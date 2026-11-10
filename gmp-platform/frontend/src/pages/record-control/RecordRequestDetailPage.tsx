@@ -131,7 +131,7 @@ export default function RecordRequestDetailPage() {
   };
 
   if (request.isLoading) return <Box sx={{ height: 'calc(100vh - 150px)', display: 'grid', placeItems: 'center' }}><Stack alignItems="center" spacing={1.5}><CircularProgress size={30} /><Typography variant="body2" color="text.secondary">正在加载申请详情…</Typography></Stack></Box>;
-  if (request.isError || !detail) return <Alert severity="error" action={<Button color="inherit" onClick={() => navigate(-1)}>返回</Button>}>申请详情加载失败，请稍后重试。</Alert>;
+  if (request.isError || !detail) return <Alert severity="error" action={<Button color="inherit" onClick={() => navigate(-1)}>返回</Button>}>{request.error instanceof Error ? request.error.message : '申请详情加载失败，请稍后重试。'}</Alert>;
 
   const status = requestStatus(detail);
   return <Box sx={{ height: { xs: 'auto', lg: 'calc(100vh - 150px)' }, minHeight: 0, display: 'flex', flexDirection: 'column', gap: 1, overflow: { xs: 'visible', lg: 'hidden' } }}>

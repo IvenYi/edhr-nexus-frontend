@@ -1,0 +1,104 @@
+ontologyResult:
+  result: updated
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: 7c2c74d0a9f6b30c6e2dfbd9ad1620d5d29f9a37
+    targetBranch: edhr-dev
+    targetCommit: 5e8edb47ae91af83555f4b67a87598c3c2a9a664
+    contractReadCommit: 7c2c74d0a9f6b30c6e2dfbd9ad1620d5d29f9a37
+    uncommittedContractPaths: []
+  reason: 用户确认真正系统超管应能查看，本轮用DEC-0096-01仅替代DEC-0087-09在审详情读取的无超管例外范围；当前规则和人员说明已同步，普通参与人、结束历史、签名隔离及全部写动作资格保留。列表资格仅为后端授权的交互投影。原决策和原件保留，当前源码为基线上的未提交修复，不冒认目标远端已合并。知识0.3.25、schema1.2.0及P0成熟度保持。
+  changedArtifacts:
+    - path: docs/knowledge/decisions/DEC-0096-record-control-system-admin-detail-read.yaml
+      changeType: create
+      ids: [DEC-0096, DEC-0096-01, DEC-0096-02, DEC-0096-03, DEC-0096-04, scenario.record-control-system-admin-detail-read, scenario.record-control-detail-projection-consistency]
+    - path: docs/knowledge/decisions/DEC-0087-record-control-v1-closure.yaml
+      changeType: update
+      ids: [DEC-0087-09, scenario.record-control-active-detail-boundary]
+    - path: docs/knowledge/rules/record-change.yaml
+      changeType: update
+      ids: [rule.record-control-authenticated-access-v1, rule.record-control-active-detail-access]
+    - path: docs/knowledge/implementation-anchors/core-business.yaml
+      changeType: update
+      ids: [anchor.core.record-control-active-detail-access]
+    - path: docs/knowledge/evidence/record-history-detail-access-20261109.yaml
+      changeType: create
+      ids: [evidence.record-history-detail-access-confirmed, evidence.record-history-detail-access-service, evidence.record-history-detail-access-system-account, evidence.record-history-detail-access-ui, evidence.record-history-detail-access-tests]
+    - path: docs/knowledge/evidence/record-history-detail-access-20261109.md
+      changeType: create
+      ids: []
+    - path: docs/knowledge/evidence/record-control-v1.yaml
+      changeType: update
+      ids: [evidence.record-control-v1-service, evidence.record-control-active-detail-access-tests]
+    - path: docs/architecture/business-knowledge-model.md
+      changeType: update
+      ids: []
+    - path: docs/knowledge/README.md
+      changeType: update
+      ids: []
+  knowledgeSync:
+    - id: DEC-0096-01
+      disposition: updated
+      scope: 仅在审记录控制申请详情新增真正系统超管只读例外，不作跨模块或业务动作全权限解释。
+      sourceReferences: [docs/development/record-history-detail-access-20261109/decision-package.yaml, docs/knowledge/evidence/record-history-detail-access-20261109.md]
+    - id: DEC-0096-02
+      disposition: updated
+      scope: 身份沿受保护admin账号，以认证actor ID反查数据库ACTIVE账号及规范化username，不按显示名、普通ADMIN角色或前端标志。
+      sourceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/identity/controller/UserController.java, gmp-platform/backend/src/main/java/com/zencas/edhr/recordcontrol/service/RecordControlService.java, docs/development/record-history-detail-access-20261109/admin-identity-permissions.json]
+    - id: DEC-0096-03
+      disposition: updated
+      scope: canViewDetail与实际详情共享条件，仅为入口投影；每次详情继续服务端授权，无权图标按规范禁用并提供可聚焦tooltip，旧链接显示真实错误。
+      sourceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/recordcontrol/service/RecordControlService.java, gmp-platform/frontend/src/pages/record-control/RecordRequestListPage.tsx, gmp-platform/frontend/src/pages/record-control/RecordRequestDetailPage.tsx]
+    - id: DEC-0087-09
+      disposition: historical
+      scope: 原声明及来源原句保留；仅原在审详情无超管例外部分由DEC-0096-01替代，普通参与人、终态历史和签名隔离仍有效。
+      sourceReferences: [docs/knowledge/decisions/DEC-0087-record-control-v1-closure.yaml, docs/knowledge/decisions/DEC-0096-record-control-system-admin-detail-read.yaml]
+    - id: rule.record-control-authenticated-access-v1
+      disposition: updated
+      scope: 汇总访问定义补真正系统超管只读例外，我的变更和审批任务范围保持，specified/internal不变。
+      sourceReferences: [docs/knowledge/decisions/DEC-0096-record-control-system-admin-detail-read.yaml]
+    - id: rule.record-control-active-detail-access
+      disposition: updated
+      scope: 当前允许主体补受保护系统超管及认证ID数据库来源，声明列表非授权、动作资格不变，implemented/internal不提升。
+      sourceReferences: [docs/knowledge/decisions/DEC-0096-record-control-system-admin-detail-read.yaml, gmp-platform/backend/src/main/java/com/zencas/edhr/recordcontrol/service/RecordControlService.java]
+    - id: anchor.core.record-control-active-detail-access
+      disposition: updated
+      scope: 追加列表API、数据库身份来源、图标与错误页面和PG身份矩阵源码；明确本地基线上未提交修复，不将旧提交或旧报告冒认为本轮候选。
+      sourceReferences: [docs/development/record-history-detail-access-20261109/evidence/ontology/source-proof.txt, docs/knowledge/evidence/record-history-detail-access-20261109.md]
+    - id: rule.record-control-signature-immutable-generic-boundary
+      disposition: retained
+      scope: 通用签名单条读取及写删隔离不受只读详情例外影响。
+      sourceReferences: [docs/knowledge/decisions/DEC-0096-record-control-system-admin-detail-read.yaml, docs/knowledge/rules/record-change.yaml]
+    - id: DEC-0074
+      disposition: retained
+      scope: 既有admin签署凭证方式例外及任务/状态/权限资格边界保持，不由可读详情推定可以签署处理。
+      sourceReferences: [docs/knowledge/decisions/DEC-0096-record-control-system-admin-detail-read.yaml]
+  conflicts: []
+  questions: []
+  validationEvidence:
+    - id: validation.record-history-detail-ontology-structure
+      checkType: schema
+      command: ruby docs/development/record-history-detail-access-20261109/evidence/ontology/validate.rb
+      outcome: passed
+      evidence: [docs/development/record-history-detail-access-20261109/evidence/ontology/validation.json, 六个受影响YAML解析及必要字段/枚举检查通过；不是正式Java校验器或全库语义审计。]
+    - id: validation.record-history-detail-ontology-reference
+      checkType: reference
+      command: ruby docs/development/record-history-detail-access-20261109/evidence/ontology/validate.rb
+      outcome: passed
+      evidence: [受影响72个ID无重号，证据/替代/锚点引用可解析，DEC0095不覆盖不合并。]
+    - id: validation.record-history-detail-ontology-projection
+      checkType: projection
+      command: ruby docs/development/record-history-detail-access-20261109/evidence/ontology/validate.rb
+      outcome: passed
+      evidence: [新决策specified/internal，既有规则及锚点成熟度保持，仅只读资格投影且不授予动作权，DEC0087原文及局部替代保留。]
+    - id: validation.record-history-detail-original-evidence
+      checkType: evidence-path
+      command: ruby docs/development/record-history-detail-access-20261109/evidence/ontology/validate.rb
+      outcome: passed
+      evidence: [docs/development/record-history-detail-access-20261109/evidence/ontology/source-proof.txt, docs/development/record-history-detail-access-20261109/evidence/ontology/before-manager.json, docs/development/record-history-detail-access-20261109/evidence/ontology/before-manager.png, docs/development/record-history-detail-access-20261109/admin-identity-permissions.json, docs/development/record-history-detail-access-20261109/evidence/ontology/RecordControlPostgresIntegrationTest.txt, docs/development/record-history-detail-access-20261109/evidence/ontology/RecordControlAccessTest.txt]
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages: [P1, P2, P3]

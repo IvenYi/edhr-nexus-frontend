@@ -13,7 +13,7 @@ evidence:
   - id: evidence.record-control-v1-service
     type: code
     path: gmp-platform/backend/src/main/java/com/zencas/edhr/recordcontrol/service/RecordControlService.java
-    description: original-evidence；记录控制申请确认、来源资格与活动锁复核、申请签名、流程启动回写、申请详情和最终结果落地的业务服务实现；活动申请详情由认证身份和流程任务关系强制限制，已结束历史继续按当前租户认证范围开放。
+    description: original-evidence；记录控制申请确认、来源资格与活动锁复核、申请签名、流程启动回写、申请详情和最终结果落地的业务服务实现；活动申请详情由认证身份和流程任务关系强制限制，DEC-0096仅增加真正系统超管只读例外，已结束历史继续按当前租户认证范围开放。
     visibility: internal
   - id: evidence.record-control-signature-generic-controller-boundary
     type: code
@@ -38,7 +38,7 @@ evidence:
   - id: evidence.record-control-active-detail-access-tests
     type: test
     path: gmp-platform/backend/src/test/java/com/zencas/edhr/recordcontrol/service/RecordControlAccessTest.java
-    description: test-evidence；聚焦验证活动申请详情允许申请人及当前相关审批处理人，拒绝无关用户；已结束历史详情仍允许当前租户认证用户查看，并覆盖我的申请和审批投影按认证身份过滤。
+    description: test-evidence；原聚焦测试验证活动申请详情允许申请人及当前相关审批处理人，拒绝普通无关用户；已结束历史详情仍允许当前租户认证用户查看，并覆盖我的申请和审批投影按认证身份过滤。DEC-0096新增真正系统超管只读例外另见本轮源码与实际执行证据，不以历史报告代替本轮验证。
     visibility: internal
   - id: evidence.record-control-workflow-task-projection-repository
     type: code

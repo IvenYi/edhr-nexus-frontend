@@ -1,0 +1,27 @@
+knowledgeModelVersion: 0.3.25
+evidence:
+  - id: evidence.record-history-detail-access-confirmed
+    type: document
+    path: docs/knowledge/evidence/record-history-detail-access-20261109.md
+    description: user-confirmed-and-original-evidence；保留本轮超管应能查看的用户原话、DEC-0087-09声明级只读替代、普通经理403原件及源码核对边界；实现与运行验收分列，不把uat_manager当作真正超管。
+    visibility: internal
+  - id: evidence.record-history-detail-access-service
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/recordcontrol/service/RecordControlService.java
+    description: original-evidence；listRequests和requireRequestDetailAccess共用SYSTEM_SUPER_ADMIN及RELATED_TASK_ACCESS；前者在单次分页查询投影canViewDetail，后者独立复核详情，超管以认证actor ID反查ACTIVE的admin数据库账号，普通参与人及终态历史规则保持。2026-11-10跟进中findRecord的canViewActiveRequest复用canViewRequestDetail资格，记录变更页既有申请链接及提交后重新查询成功入口均取此投影；不在提交事务内提前判断新任务资格，不授予新资格。本体仅核对源码，运行结果取本轮实际验证。
+    visibility: internal
+  - id: evidence.record-history-detail-access-system-account
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/identity/controller/UserController.java
+    description: original-evidence；SYSTEM_SUPER_ADMIN_USERNAME及isSystemSuperAdminUser以去空白、忽略大小写的username识别受保护admin账号，区别于显示名或一般ADMIN角色；记录控制只读例外另要求数据库账号ACTIVE。
+    visibility: internal
+  - id: evidence.record-history-detail-access-ui
+    type: code
+    path: gmp-platform/frontend/src/pages/record-control/RecordRequestListPage.tsx
+    description: original-evidence；列表按服务器canViewDetail显式false禁用原查看图标，原因放tooltip并支持键盘焦点；详情页继续使用APIclient提取的服务器错误message。2026-11-10跟进的RecordChangePage复用相同规则禁用无权的活动及提交后申请链接，RecordApprovalDetailPage展示请求或任务接口的真实错误。申请可读不等于任务可读；该字段是交互投影，不能代替后端授权。
+    visibility: internal
+  - id: evidence.record-history-detail-access-tests
+    type: test
+    path: gmp-platform/backend/src/test/java/com/zencas/edhr/recordcontrol/service/RecordControlPostgresIntegrationTest.java
+    description: original-and-test-evidence；historyDetailAvailabilityMatchesAuthorizedActor的10场景逐项比较列表canViewDetail与真实详情结果，覆盖申请人、候选、普通经理、真正超管、伪装显示名/角色、停用admin、终态历史及签名改派前后。本体读取本轮原始surefire报告52项/0失败/0错误及相邻AccessTest的10项/0失败/0错误，本体未亲自执行Maven；不替代实际浏览器或最终独立质量。
+    visibility: internal

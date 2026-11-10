@@ -1,0 +1,39 @@
+knowledgeModelVersion: 0.3.25
+decisions:
+  - id: DEC-0096
+    title: 系统超管查看在审记录控制申请详情的只读例外
+    status: specified
+    visibility: internal
+    context: user-confirmed-and-original-evidence；用户在变更记录详情报错排查中明确系统超管应能查看。本决策仅在本次记录控制详情读取范围替代DEC-0087-09的无例外参与人限制，普通ADMIN角色不等于受保护系统超管。原签名隔离、普通参与人数据范围、结束历史读取及全部业务动作资格保持；不将本次确认扩展为其他领域授权或审批签署豁免。
+    decisionStatements:
+      - id: DEC-0096-01
+        statement: user-confirmed；处于IN_REVIEW的记录控制申请详情，除申请人、当前候选或处理人及本人已处理任务相关人员外，真正系统超管也可只读查看。仅此详情读取范围替代DEC-0087-09原有的无例外参与人限制；普通无关人员继续拒绝，已结束历史继续向当前租户认证用户开放。
+        status: specified
+        visibility: internal
+      - id: DEC-0096-02
+        statement: original-evidence-and-confirmed-scope；系统超管沿UserController受保护admin账号定义，在记录控制服务中以认证用户ID反查user_account，只有状态ACTIVE且去除首尾空白、忽略大小写后username为admin的账号符合只读例外。显示名、普通ADMIN角色、前端标志或客户端传入身份均不授予该例外。
+        status: specified
+        visibility: internal
+      - id: DEC-0096-03
+        statement: confirmed-engineering-boundary；变更记录列表服务器投影canViewDetail，与详情实际授权共用系统超管身份和任务关系条件。投影只控制入口展示，不扩大列表元数据范围，也不替代每次详情服务端复核；普通无权人员入口保留图标规范并禁用，通过tooltip及键盘焦点提供原因，旧链接展示实际服务器错误。
+        status: specified
+        visibility: internal
+      - id: DEC-0096-04
+        statement: retained-policy；本次只读例外不授予审批、退回、转办、重新分配、受限撤回、申请确认或电子签署资格，不改变我的变更及审批待办/已办的数据范围，不解除RECORD_CONTROL_REQUEST签名的通用接口隔离，不改DHR、修订、冻结证据或审计语义。DEC-0074的签名身份与资格边界保持，不因可查看详情推定可以处理任务。
+        status: specified
+        visibility: internal
+    supersedes: [DEC-0087]
+    evidenceIds: [evidence.record-history-detail-access-confirmed, evidence.record-history-detail-access-service, evidence.record-history-detail-access-system-account, evidence.record-history-detail-access-ui, evidence.record-history-detail-access-tests]
+    acceptanceScenarios:
+      - id: scenario.record-control-system-admin-detail-read
+        given: 当前认证用户ID对应数据库中ACTIVE的受保护admin账号且不是申请或任务参与人
+        when: 查看IN_REVIEW申请的列表与详情
+        then: canViewDetail为true且详情可只读加载，不能由此推定有审批或签署资格
+        evidenceIds: [evidence.record-history-detail-access-confirmed, evidence.record-history-detail-access-service, evidence.record-history-detail-access-tests]
+        evidenceRequirements: [真实系统超管详情读取, 普通ADMIN角色及显示名伪装负例, 动作资格回归]
+      - id: scenario.record-control-detail-projection-consistency
+        given: 存在申请人、当前及历史任务相关人员、无关普通用户与已结束申请
+        when: 查询列表资格并直接访问详情
+        then: 列表资格与详情读取一致；无权图标禁用且原因可聚焦，旧链接显示服务器拒绝原因，结束历史仍按原租户范围可读
+        evidenceIds: [evidence.record-history-detail-access-service, evidence.record-history-detail-access-ui, evidence.record-history-detail-access-tests]
+        evidenceRequirements: [真实数据库资格矩阵, 重新分配前后读取, 悬停与键盘原因, 403旧链接反馈]

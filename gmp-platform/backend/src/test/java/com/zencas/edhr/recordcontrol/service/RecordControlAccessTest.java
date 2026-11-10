@@ -45,14 +45,14 @@ class RecordControlAccessTest {
         AuditContext.setOperator("42", "申请人");
         when(jdbc.queryForList(anyString(), any(Object[].class))).thenReturn(List.of());
         service.listRequests(true, 0, 20);
-        verify(jdbc).queryForList(contains("q.applicant_id=?"), eq("default"), eq("42"), eq(20), eq(0L));
+        verify(jdbc).queryForList(contains("q.applicant_id=?"), eq(42L), eq("42"), eq("42"), eq("[\"42\"]"), eq("42"), eq("default"), eq("42"), eq(20), eq(0L));
     }
 
     @Test void tenantHistoryIsOpenToAuthenticatedActorButNotAnonymous() {
         AuditContext.setOperator("42", "申请人");
         when(jdbc.queryForList(anyString(), any(Object[].class))).thenReturn(List.of());
         service.listRequests(false, 0, 20);
-        verify(jdbc).queryForList(contains("q.tenant_id=?"), eq("default"), eq(20), eq(0L));
+        verify(jdbc).queryForList(contains("q.tenant_id=?"), eq(42L), eq("42"), eq("42"), eq("[\"42\"]"), eq("42"), eq("default"), eq(20), eq(0L));
         AuditContext.clear();
         assertThatThrownBy(() -> service.listRequests(false, 0, 20)).hasMessageContaining("重新登录");
     }
@@ -66,7 +66,7 @@ class RecordControlAccessTest {
         service.listRequests(true, 2, 50, new RecordControlService.RequestListQuery(
                 "RC-01", "CHANGE", "FR-01", "点检表", "FORM-01", "张三", "IN_REVIEW", from, to));
 
-        verify(jdbc).queryForList(contains("r.template_name"), eq("default"), eq("42"), eq("%RC-01%"),
+        verify(jdbc).queryForList(contains("r.template_name"), eq(42L), eq("42"), eq("42"), eq("[\"42\"]"), eq("42"), eq("default"), eq("42"), eq("%RC-01%"),
                 eq("CHANGE"), eq("%FR-01%"), eq("%点检表%"), eq("%FORM-01%"), eq("%张三%"), eq("%张三%"),
                 eq("IN_REVIEW"), eq(from), eq(to), eq(50), eq(100L));
     }

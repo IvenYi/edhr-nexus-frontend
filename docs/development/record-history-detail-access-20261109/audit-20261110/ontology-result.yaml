@@ -1,0 +1,86 @@
+ontologyResult:
+  result: updated
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: 7c2c74d0a9f6b30c6e2dfbd9ad1620d5d29f9a37
+    targetBranch: edhr-dev
+    targetCommit: 5e8edb47ae91af83555f4b67a87598c3c2a9a664
+    contractReadCommit: 7c2c74d0a9f6b30c6e2dfbd9ad1620d5d29f9a37
+    uncommittedContractPaths: []
+  reason: 同一权限修复切片的四入口跟进，既有DEC-0096及DEC-0087/0094/0074足以解释超管只读、本人任务及跨账号签署边界，无新政策或本体概念。仅追加既有证据和读取资格锚点，记录活动申请/提交成功链接投影及审批页真实错误反馈；不扩张任何动作资格，不提升成熟度。实际检查为当前主目录未提交候选，远端已获取未合并且契约无增量。
+  changedArtifacts:
+    - path: docs/knowledge/evidence/record-history-detail-access-20261109.yaml
+      changeType: update
+      ids: [evidence.record-history-detail-access-service, evidence.record-history-detail-access-ui]
+    - path: docs/knowledge/evidence/record-history-detail-access-20261109.md
+      changeType: update
+      ids: []
+    - path: docs/knowledge/implementation-anchors/core-business.yaml
+      changeType: update
+      ids: [anchor.core.record-control-active-detail-access]
+  knowledgeSync:
+    - id: DEC-0096-01
+      disposition: retained
+      scope: 真正ACTIVE保留admin账号只读查看在审申请，普通无关人员仍拒绝；保留对DEC-0087-09的原声明级替代范围。
+      sourceReferences: [docs/knowledge/decisions/DEC-0096-record-control-system-admin-detail-read.yaml, docs/knowledge/decisions/DEC-0087-record-control-v1-closure.yaml]
+    - id: DEC-0096-03
+      disposition: retained
+      scope: 入口资格投影不能代替服务端授权；跟进到记录变更已有申请和提交成功链接属于既有含义的技术实现，不新增政策。
+      sourceReferences: [docs/knowledge/decisions/DEC-0096-record-control-system-admin-detail-read.yaml, gmp-platform/backend/src/main/java/com/zencas/edhr/recordcontrol/service/RecordControlService.java, gmp-platform/frontend/src/pages/record-control/RecordChangePage.tsx]
+    - id: DEC-0096-04
+      disposition: retained
+      scope: 超管可读申请不等于取得本人待办、任务详情、审批、转办、签名改派或申请人撤回资格；未改任务集合和全部动作边界。
+      sourceReferences: [docs/knowledge/decisions/DEC-0096-record-control-system-admin-detail-read.yaml, gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java, gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/repository/WorkflowTaskRepository.java]
+    - id: DEC-0094-01
+      disposition: retained
+      scope: CHANGE及OBSOLETE候选读取仅需认证，既有控制器无额外创建权限；来源、签署、状态和审批资格不由候选可读推定。
+      sourceReferences: [docs/knowledge/decisions/DEC-0094-record-control-authenticated-candidate-read.yaml, gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/RecordControlWorkflowController.java]
+    - id: DEC-0074
+      disposition: retained
+      scope: A登录及B本人按钮签署保持双身份；实际申请人归B，提交成功不产生A的在审详情新权限，也不切换A会话。
+      sourceReferences: [docs/knowledge/decisions/DEC-0074-shared-terminal-button-signature.yaml, gmp-platform/backend/src/main/java/com/zencas/edhr/recordcontrol/service/RecordControlService.java]
+    - id: evidence.record-history-detail-access-service
+      disposition: updated
+      scope: 追加findRecord的canViewActiveRequest共用canViewRequestDetail的原始源码索引；成功入口取提交后原有来源查询且匹配新申请ID，查询失败提示重新查询，不在提交事务内提前判断任务资格。保留提交响应、原单次列表SQL及每次详情复核。
+      sourceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/recordcontrol/service/RecordControlService.java, docs/knowledge/evidence/record-history-detail-access-20261109.md]
+    - id: evidence.record-history-detail-access-ui
+      disposition: updated
+      scope: 追加两个申请链接禁用及键盘原因、审批详情准确反馈403；明确申请详情读取与审批任务读取的区别。
+      sourceReferences: [gmp-platform/frontend/src/pages/record-control/RecordChangePage.tsx, gmp-platform/frontend/src/pages/record-control/RecordApprovalDetailPage.tsx, docs/knowledge/evidence/record-history-detail-access-20261109.md]
+    - id: anchor.core.record-control-active-detail-access
+      disposition: updated
+      scope: 当前锚点补来源查询API、记录变更及审批页路径、共用读取方法；成功入口取提交后来源查询，不改提交响应。保留基线上的未提交修复标注，不冒认该Git提交已含实现。
+      sourceReferences: [docs/knowledge/implementation-anchors/core-business.yaml, gmp-platform/backend/src/main/java/com/zencas/edhr/recordcontrol/service/RecordControlService.java]
+  conflicts: []
+  questions: []
+  validationEvidence:
+    - id: validation.record-management-access-ontology-yaml
+      checkType: schema
+      command: ruby -e 'require "yaml"; YAML.load_file("docs/knowledge/evidence/record-history-detail-access-20261109.yaml"); YAML.load_file("docs/knowledge/implementation-anchors/core-business.yaml")'
+      outcome: passed
+      evidence: [两处受影响YAML解析通过；本角色未运行正式Java知识校验器。]
+    - id: validation.record-management-access-ontology-references
+      checkType: reference
+      command: Ruby定向读取证据及详情锚点，对照docs/knowledge/**/*.yaml中现存ID，并核对来源文件存在性。
+      outcome: passed
+      evidence: [Scoped YAML, IDs and source paths passed, 详情锚点目标规则及全部证据ID可解析，代码/UI/测试/证据路径存在。]
+    - id: validation.record-management-access-policy-boundary
+      checkType: projection
+      command: 原始源码及现行DEC-0087/0094/0096/0074逐项比对。
+      outcome: passed
+      evidence:
+        - original-evidence；RecordControlController及RecordControlWorkflowController的认证读取边界、本人申请列表和本人任务SQL已核对。
+        - original-evidence；canViewRequestDetail、findRecord、requestDetail、两个前端链接及审批错误反馈已读取；SOURCE投影与原申请详情资格一致，不开放任务或业务动作。
+        - user-confirmed；仅按当前四入口检查与原DEC-0096确认处理；没有新的跨模块全权限决定。
+        - 本体未运行Maven、浏览器或数据库；运行通过和最终独立质量需取本轮主方及质量实例的实际结果，前轮报告不替代。
+    - id: validation.record-management-access-whitespace
+      checkType: evidence-path
+      command: git diff --check -- docs/knowledge/evidence/record-history-detail-access-20261109.md docs/knowledge/evidence/record-history-detail-access-20261109.yaml docs/knowledge/implementation-anchors/core-business.yaml
+      outcome: passed
+      evidence: [命令无错误输出。]
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages: [P1, P2, P3]

@@ -1,0 +1,81 @@
+decisionPackage:
+  id: DEC-PACKAGE-20261109-RECORD-HISTORY-DETAIL-ACCESS
+  scope: 变更记录详情入口权限状态和真实错误反馈修复
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: 7c2c74d0a9f6b30c6e2dfbd9ad1620d5d29f9a37
+    targetBranch: edhr-dev
+    targetCommit: 5e8edb47ae91af83555f4b67a87598c3c2a9a664
+    contractReadCommit: 7c2c74d0a9f6b30c6e2dfbd9ad1620d5d29f9a37
+    uncommittedContractPaths: []
+  summary: 实际403权限拒绝被页面显示为通用加载失败，列表仍向无权人员提供可点击详情；用户补充确认系统超管应能查看，补真正超管只读例外并对齐普通账号入口。
+  followupAudit:
+    date: 2026-11-10
+    request: 检查变更管理是否仍有同类权限、入口和错误反馈问题。
+    scope: [记录变更, 我的变更, 变更审批待办与已办, 变更记录, 关联详情和流程读取]
+    baseline: 同一功能切片沿用DEC-0096，当前主目录未提交差异，远端5e8edb47已重新获取、契约无增量、未合并。
+    retainedBoundaries: 超管只读例外不扩张为审批、转办、撤回、签名或申请资格豁免；主库只读检查，业务写动作测试仅在隔离测试库。
+    successCriteria: 有权查询和详情正常，无权入口及旧链接准确反馈；确认正常的本人任务范围和业务阻断不被当作权限缺陷。
+    gatePlan: 本体复核现行政策及必要证据，主完成排查与基础验证后新质量实例独立复核。
+    findingsAndFixes:
+      - 记录变更已有在审申请链接缺少资格投影；findRecord以原详情判断提供canViewActiveRequest，无权禁用并可聚焦提示。
+      - 共享登录A由B本人签署后，提交成功链接也必须按A的资格判断；沿原提交后刷新取得已提交任务的资格，刷新失败保持禁用并提示重新查询，不读取事务内尚未提交任务。
+      - 审批详情加载错误显示实际申请或任务拒绝/不存在原因，不改变任务读取或审批动作资格。
+    adjacentRisks: [不得将超管只读例外用于本人任务查询和审批动作, source投影与列表和详情条件保持一致, 提交后权限仅据已提交事务的读取判断]
+    migrationAndAudit: 无迁移，无申请/任务/修订/签名/冻结证据或审计语义变更。
+    extensionStrategy: 继续product-core，复用原服务权限判断、API客户端错误提取和MUI Tooltip/Alert/Button，不引入新权限框架或页面样式。
+  confirmed:
+    concepts: []
+    relationships: []
+    rules: []
+    executionContracts: []
+  confirmedBusinessDecisions:
+    - 用户2026-11-09确认系统超管应能查看；按当前详情上下文新增受保护admin账号的只读在审详情例外，保留普通人员DEC0087-09范围和全部动作资格。
+    - 超管身份沿UserController受保护账号定义，通过认证用户ID反查数据库中ACTIVE的admin账号，不依赖显示名、普通ADMIN角色或前端标志；结束历史仍向同租户认证人员开放。
+    - 列表服务器投影canViewDetail与详情复用相同任务关系和系统超管谓词，新增真正超管只读例外，不改变列表元数据范围或动作资格。
+    - 沿原MUI图标与tooltip呈现，不可查看时禁用图标并通过悬停和键盘焦点显示原因；旧链接准确显示服务器错误。
+  inferred: []
+  unresolved: []
+  replacementScopes:
+    - decisionStatementId: DEC-0096-01
+      supersededStatementIds: [DEC-0087-09]
+      scope: 仅在审详情读取新增真正系统超管例外
+      retainedScope: 普通人员详情资格、记录控制签名隔离、审批/转办/改派/撤回/签署动作及其他领域权限全部保持
+      sourceReferences: [用户2026-11-09本轮补充确认, gmp-platform/backend/src/main/java/com/zencas/edhr/identity/controller/UserController.java]
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - {area: request-list-access-projection, change: 单条列表SQL投影详情资格，保持计数/筛选/分页，避免逐行请求, evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/recordcontrol/service/RecordControlService.java]}
+      - {area: list-detail-feedback, change: 禁用无权图标并保持可访问原因，旧链接显示真实错误, evidenceReferences: [gmp-platform/frontend/src/pages/record-control/RecordRequestListPage.tsx, gmp-platform/frontend/src/pages/record-control/RecordRequestDetailPage.tsx]}
+    transitiveImpacts:
+      - {area: workflow-responsibility, change: 转办和改派后普通人员列表资格随当前任务读取，普通ADMIN角色不产生例外，真正系统超管可只读查看, evidenceReferences: [docs/knowledge/decisions/DEC-0087-record-control-v1-closure.yaml]}
+    potentialImpacts: []
+    unaffectedAreas:
+      - {area: business-write, reason: 不改申请、生效、撤回、审批、签署和DHR状态转换。}
+    compatibilityAndMigration:
+      - concern: 列表新增投影字段；其他摘要投影不要求该字段，前端仅显式false禁用，保持旧载荷读取兼容；无数据库迁移。
+    snapshotImpacts:
+      - concern: 现有申请、修订、冻结DHR、签名和验收数据不改写。
+    auditImpacts:
+      - concern: 不新增业务写入或更改审计语义。
+    permissionImpacts:
+      - concern: 服务端详情新增严格认证ID识别的超管只读例外；普通参与人规则保持，按钮提示不能替代每次实际详情授权。
+    testImpacts:
+      - {scope: record-history-detail, scenarios: [申请人, 当前候选, 无关管理员, 结束历史, 改派前后, 禁用悬停与键盘, 旧链接403, 真实有权详情], evidenceReferences: []}
+    evidenceGaps:
+      - 远端新提交已fetch，契约无增量；本轮在当前本地主目录修复，不代表未合并远端的集成验收。
+  extensionStrategy:
+    selectedPaths: [product-core]
+    rationale: 复用现有记录控制服务、MUI及API错误处理，最小对齐已有策略。
+    ownershipBoundaries:
+      - {owner: primary-agent, responsibility: 修复、测试、主环境只读验证和最终交付}
+      - {owner: ontology-agent, responsibility: 核对既有政策与投影含义，必要知识证据同步}
+      - {owner: quality-agent, responsibility: 收尾独立复验，仅报告发现}
+  affectedFiles:
+    - {path: gmp-platform/backend/src/main/java/com/zencas/edhr/recordcontrol/service/RecordControlService.java, changeType: update, reason: 列表与详情共用既有关系资格}
+    - {path: gmp-platform/frontend/src/api/record-control.ts, changeType: update, reason: 列表资格字段类型}
+    - {path: gmp-platform/frontend/src/pages/record-control/RecordRequestListPage.tsx, changeType: update, reason: 资格驱动图标和tooltip}
+    - {path: gmp-platform/frontend/src/pages/record-control/RecordRequestDetailPage.tsx, changeType: update, reason: 准确拒绝或加载错误}
+  acceptanceScenarios:
+    - {id: scenario.record-history-action-access, given: 非参与人在列表看到在审记录元数据, when: 访问详情入口, then: 图标禁用且可悬停/焦点了解原因；有权与结束历史可打开, evidenceRequirements: [真实PG资格矩阵, 实际页面检查]}
+    - {id: scenario.record-history-stale-link, given: 旧链接或查询后资格变化, when: 服务端返回拒绝, then: 原授权继续生效，页面准确显示原因和返回操作, evidenceRequirements: [403拒绝回归, 页面错误状态]}

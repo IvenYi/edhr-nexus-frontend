@@ -1,0 +1,24 @@
+{
+  "url": "http://localhost:3000/records/requests/391515366144282624",
+  "responses": [
+    {
+      "path": "/api/v1/record-control/requests",
+      "status": 200,
+      "code": 200,
+      "message": "success"
+    },
+    {
+      "path": "/api/v1/record-control/requests",
+      "status": 200,
+      "code": 200,
+      "message": "success"
+    },
+    {
+      "path": "/api/v1/record-control/requests/391515366144282624",
+      "status": 403,
+      "code": 403,
+      "message": "当前用户无权查看该变更申请"
+    }
+  ],
+  "visibleText": "申请详情加载失败，请稍后重试。\n返回"
+}

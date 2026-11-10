@@ -19,12 +19,14 @@ export interface RecordControlRecord {
   active_request_id: string | null;
   active_request_no: string | null;
   active_request_type: RecordControlBusinessType | null;
+  canViewActiveRequest?: boolean;
   snapshot: ExecutionForm;
   fieldValues: Record<string, unknown>;
 }
 
 export interface RecordControlRequest {
   id: string;
+  canViewDetail?: boolean;
   request_no: string;
   request_type: RecordControlBusinessType;
   status: 'IN_REVIEW' | 'APPROVED' | 'RETURNED' | 'WITHDRAWN';
