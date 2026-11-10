@@ -1,5 +1,7 @@
 # PR74 合入后的记录控制增量审计
 
+已交付 [PR75](https://github.com/IvenYi/edhr-nexus-frontend/pull/75)，`audit/edhr-dev-record-access-increment-20261110` → `edhr-dev`。交付登记前实际观察 OPEN / MERGEABLE / CLEAN，本地、真实远端及 PR head 均为验收提交 `e459e55b217970ae5a5f2979129ee858a506124f`，40 输入仍与受测字节一致，见 [交付时点原件](evidence/delivery-verification.json)。其后仅 L0 登记提交，推送后再次核对。建议按本批测试和证据范围人工合入；性能及全审残余不随此关闭。
+
 本批 L2 审查目标 `edhr-dev@07d6d4168a00a265afea8105db9a1a0e2554f683`。PR74 已于 `5db90bd6` 合入，目标另含记录控制详情读取与入口反馈、测试夹具对齐和集成记录。相对上次交付 `2dc6941e`，共 101 文件：6 产品文件、7 后端测试、1 前端测试脚本、8 知识、1 架构、78 证据/报告。完整路径见主原件包 `increment-paths.json`。
 
 本轮没有确认新的正常路径产品正确性缺陷。只增加一个现有 PostgreSQL 测试类中的三档只读容量观察及审计记录；**产品、UI、知识、schema、权限和业务政策均未修改**。确认一项数据库内部重复扫描风险，优化等待用户实际答复，详见 [性能讨论](performance-next.md)。

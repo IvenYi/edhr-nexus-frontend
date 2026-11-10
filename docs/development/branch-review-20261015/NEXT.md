@@ -2,6 +2,8 @@
 
 ## PR74已合入：记录控制新增代码与读取容量增量审计
 
+已交付[PR75](https://github.com/IvenYi/edhr-nexus-frontend/pull/75)，audit/edhr-dev-record-access-increment-20261110→edhr-dev，观察OPEN/MERGEABLE/CLEAN，建议按有限测试/证据范围人工合入。受测字节0f5d4354、验收提交e459e55b后仅L0交付登记；登记前本地/真实远端/PR head及40输入一致，登记推送后再次核对。下轮先fetch真实合入与新增，不把合入/继续当作尚未答复的性能方案批准。
+
 已 fetch 实时 edhr-dev@07d6d4168a00a265afea8105db9a1a0e2554f683，核 PR74 merge=5db90bd6；另有35e761d6记录控制只读资格/UI反馈、0be80abf旧测试夹具对齐和集成提交。相对上次2dc6941e共101文件，6产品/7后端测试/1前端脚本/8知识/1架构/78报告。新分支audit/edhr-dev-record-access-increment-20261110。[本批](../branch-review-20261110-record-access-increment/README.md)L2做W3/W7增量、W6健壮性性能及A23；未确认新增正常路径产品bug，产品/UI/知识/schema/权限均未改，仅现有PG类增加3档容量观察。
 
 DEC0096只替代0087-09在审申请详情只读限制，认证ID反查ACTIVE受保护admin；不扩大任务、审批/撤回/签署或其他域。有限32项=30范围一致/1精确部分替代/1既有非阻断多租户待决，非全量知识一致通过。353知识文件/2848同口径资产ID是清单，不与旧931直接比率；原始89已跑，最终本体NA/FINAL仅按相同知识与夹具差异重绑，不冒称重跑。知识0.3.25/schema1.2/P0保持。
