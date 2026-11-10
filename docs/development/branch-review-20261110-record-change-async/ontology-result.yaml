@@ -1,0 +1,62 @@
+ontologyResult:
+  result: not-applicable
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: 7e43939b519b743e73ca993d66632b1316655fed
+    targetBranch: edhr-dev
+    targetCommit: 8be9b78b41644693864a9429b5c5741d18d52edf
+    contractReadCommit: 8be9b78b41644693864a9429b5c5741d18d52edf
+    uncommittedContractPaths: []
+  reason: 本轮仅修复记录控制页面异步响应归属、加载反馈和既有草稿丢弃确认/IME边界。没有新增或替代业务概念、事实、资格、流程类型/版本、签署、审计或历史语义；既有DEC0087/0094/0096及0074/0085适用范围保持，不为前端工程选择建立重复规则或回写历史。
+  changedArtifacts: []
+  knowledgeSync: []
+  conflicts: []
+  questions: []
+  validationEvidence:
+  - id: validation.current-source-binding
+    checkType: evidence-path
+    command: 'python3 finalize.py: independent fetch and29 captured current input
+      hashes/Git comparison'
+    outcome: passed
+    evidence:
+    - source-binding.json
+    - final-source
+    - baseline-source-inputs.json
+  - id: validation.same-knowledge-validator-inputs
+    checkType: reference
+    command: Compare353 knowledge files and359 canonical knowledge/validator/POM inputs
+      to8be/7e and prior actual0f5
+    outcome: passed
+    evidence:
+    - knowledge-inventory.json
+    - knowledge-validation-reuse.json
+  - id: validation.reused-knowledge-89
+    checkType: schema
+    command: 'REUSED ONLY: prior actual bash /workspace/.edhr-cloud-tools/mvn-edhr
+      --batch-mode --no-transfer-progress --file tools/knowledge-model/pom.xml clean
+      test at0f5; not rerun by this role'
+    outcome: passed
+    evidence:
+    - reused-knowledge-0f5/knowledge/run.json
+    - reused-knowledge-0f5/knowledge/maven.log
+    - reused-knowledge-0f5/knowledge/TEST-com.zencas.edhr.knowledge.BusinessKnowledgeModelTest.xml
+    - knowledge-validation-reuse.json
+  - id: validation.finite-policy-review
+    checkType: projection
+    command: Finite19 statements:15 scoped consistent/1 precise partial historical
+      supersession/1 existing nonblocking tenant question/2 historical coarse-locator
+      evidence gaps
+    outcome: passed
+    evidence:
+    - finite-review-records.json
+    - REVIEW.md
+    - source-binding.json
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages:
+    - P1
+    - P2
+    - P3

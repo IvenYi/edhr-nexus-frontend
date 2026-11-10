@@ -1,0 +1,202 @@
+{
+  "baseCommit": "8be9b78b41644693864a9429b5c5741d18d52edf",
+  "candidate": "7e43939b519b743e73ca993d66632b1316655fed",
+  "sourceFingerprints": [
+    {
+      "path": "AGENTS.md",
+      "bytes": 25065,
+      "sha256": "13dc7cdacea0b1bb0aef2abb268781f9c69584acd4879b204d2b7fd81a2927fc"
+    },
+    {
+      "path": "codeplzreadme.md",
+      "bytes": 3035,
+      "sha256": "7a1be8efffec596b034335058dca2860346d256622f899c8dac97c5172dd6df2"
+    },
+    {
+      "path": "DESIGN.md",
+      "bytes": 12592,
+      "sha256": "23bcefdb3989761c940aab8cd6b15cce6f69107be6c94e304c61308096b49d7d"
+    },
+    {
+      "path": "docs/agents/agent-handoff-contract.md",
+      "bytes": 31233,
+      "sha256": "3439a35dd1baa77ac723f1b5afa237a338d56e31386f06b02b4aacfd754e3a12"
+    },
+    {
+      "path": "docs/agents/quality-verifier.md",
+      "bytes": 7519,
+      "sha256": "6b3de9323924fb4ba5ae87be76c5136d28e754810c46b22b8e3d1cdd6c2f826f"
+    },
+    {
+      "path": "docs/agents/business-knowledge-modeler.md",
+      "bytes": 15881,
+      "sha256": "9806c900f98e1cbcf4f8d68a998a07a5449369df037183c75ec08cd666bf56ae"
+    },
+    {
+      "path": "docs/knowledge/README.md",
+      "bytes": 114390,
+      "sha256": "04b4162253775cb6e01882bafac3621d23e85d5b9f923cd708eac0c006df732b"
+    },
+    {
+      "path": "docs/knowledge/open-questions.yaml",
+      "bytes": 22420,
+      "sha256": "c7b3bdecd1a6ac164d95ff515b5412998a556a07e9b5fcb64b3643473aa6e2bf"
+    },
+    {
+      "path": "docs/knowledge/rules/record-change.yaml",
+      "bytes": 11208,
+      "sha256": "00063e862c2d45e0378cee5685f7832a40eaacf5a776097f3ec2d7d0b5899d68"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0087-record-control-v1-closure.yaml",
+      "bytes": 15401,
+      "sha256": "20f47f2e3e57aefb8250dcfe1ee979ce6211694b94f2220617ba83ba95579b27"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0096-record-control-system-admin-detail-read.yaml",
+      "bytes": 4162,
+      "sha256": "872f3f0917c668ae1dbb8895596d1df0ef7abd73d94b54792fb53d0469dcdcce"
+    },
+    {
+      "path": "gmp-platform/frontend/package.json",
+      "bytes": 3495,
+      "sha256": "a29cb1b9d0c51bf619fc499eae05444f13ff23f17dd9ab2abdb83ab3c691e853"
+    },
+    {
+      "path": "gmp-platform/frontend/package-lock.json",
+      "bytes": 234890,
+      "sha256": "50cf42f5305912dc2247f153857eb66323a3110106dbb371cca9dfcc42881bf4"
+    },
+    {
+      "path": "gmp-platform/frontend/src/App.tsx",
+      "bytes": 6504,
+      "sha256": "5b50c00af7add2ca2d391f7750c0968d4236e8cc70fd37ca4f6d89d55a25bdbe"
+    },
+    {
+      "path": "gmp-platform/frontend/src/index.css",
+      "bytes": 968,
+      "sha256": "4d19c8cad6f14c13556b530c224ba8cd04daea0815702dac2610a6de65ff0ae3"
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/record-control/RecordChangePage.tsx",
+      "bytes": 20814,
+      "sha256": "54557d7aa1dec2f01674cfb34a65d9a6b8d8c732b9bd11e1fff1c1e623ab0980"
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/record-control/RecordRequestListPage.tsx",
+      "bytes": 10446,
+      "sha256": "0aa7f1506267fbb2708067437380b0637d0f2aa98eb056100d79c3be2aaf350e"
+    },
+    {
+      "path": "gmp-platform/frontend/src/components/AppDialog.tsx",
+      "bytes": 5079,
+      "sha256": "e0a0b6a22f8cb33f8659eaf3810f20a06fed5338bb8c0980a6e9d871a28a7fac"
+    },
+    {
+      "path": "gmp-platform/frontend/src/components/ConfirmDialog.tsx",
+      "bytes": 2252,
+      "sha256": "b2a357f8abc840bd4dafa58e770819046983a0ba81e95e6927607e28970fdcfa"
+    },
+    {
+      "path": "gmp-platform/frontend/src/components/workflow/ButtonSignatureCredentials.tsx",
+      "bytes": 838,
+      "sha256": "d9e78c2fc7db18024cbb21f88c8cf6990fc1e67931b2fd1ac21115ddab161967"
+    },
+    {
+      "path": "gmp-platform/frontend/src/api/client.ts",
+      "bytes": 2678,
+      "sha256": "cb6292e987edcd52470166c71b8460c9da5695f2877ff50771ad5839db93b83a"
+    },
+    {
+      "path": "gmp-platform/frontend/src/api/record-control.ts",
+      "bytes": 5900,
+      "sha256": "22e22afbb8f57f6df01d8563ee7d0afe640f9d17c4a0469a8750b9b83a800cf5"
+    },
+    {
+      "path": "gmp-platform/frontend/src/api/record-control-workflow.ts",
+      "bytes": 815,
+      "sha256": "b063a7e97a862ec785633fa4ecd4062288d0783d64a8645fe893415c4a4f36dd"
+    },
+    {
+      "path": "gmp-platform/frontend/scripts/test-record-change-async-browser.mjs",
+      "bytes": 16409,
+      "sha256": "bf471cc401d6cab57ad86242ec6dc8b947791f47e671f6c1777b59a837da67d5"
+    },
+    {
+      "path": "gmp-platform/frontend/scripts/test-workflow-list-ui-browser.mjs",
+      "bytes": 31029,
+      "sha256": "4c39fed2b05579e6040c06d1495152051ba08f1cdb32f9a4cf6a3a3c5971702a"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/recordcontrol/service/RecordControlService.java",
+      "bytes": 40407,
+      "sha256": "a46e3c97eb8def1010f848997a4566f7f593b43f6ac06a10ca48c5c63155305e"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/RecordControlWorkflowService.java",
+      "bytes": 5872,
+      "sha256": "f6ee03b424e5ebee0d69787af0a02e11d69554366791abc8817218c6fb61012a"
+    }
+  ],
+  "actualMainBrowserChecks": {
+    "new": "26/26",
+    "adjacent": "58/58",
+    "total": 84,
+    "qualification": "Maintained React components and API client with synthetic intercepted API, not live backend/signature E2E"
+  },
+  "new26AndBuildRuntimeBinding": "Ran at dirty8be before commit; same staged changed files committed to7e. No retroactive claim of clean7e execution; independent QA actually validates fixed clean candidate.",
+  "adjacent58AndStaticRuntimeBinding": "Actually ran at clean7e,27 captured inputs match Git/current/source snapshots",
+  "oldControl": {
+    "tests": 26,
+    "passed": 0,
+    "failed": 26,
+    "sourceCommit": "8be9b78b41644693864a9429b5c5741d18d52edf",
+    "qualification": "Same final harness points to own untouched8be worktree; failures are assertion matrix/confirmation-contract mismatches,not26 independent defects;no pageErrors"
+  },
+  "build": "Actual exit0 from exec session31821,TypeScript+Vite;log retained",
+  "static": {
+    "strictExitCode": 2,
+    "findings": 86,
+    "violations": 72,
+    "unresolved": 14,
+    "comparison": "Exact multiset ignoring line relocation; multiplicity preserved",
+    "added": 0,
+    "removed": 0,
+    "lint": "exit2;existing missingESLint configuration;not passed"
+  },
+  "scopedStatic": {
+    "listStyle": "passed",
+    "noExternalFonts": "passed"
+  },
+  "history": {
+    "initial": "Tool0 checks: missing bundle.css from no stylesheet import,log preserved;harness corrected to import actual index.css",
+    "baseline": "Core12 actual failing assertions at old source",
+    "focused": "22pass4fail: keyboard opened confirmation then default keyup cancelled;subsequently preventDefault",
+    "confirmation": "0pass4fail:waiting showed dialog gone,not fixed by waiting",
+    "confirmation-keyboard": "2pass2fail:correct cancel focus/Escape;confirm assertion preceded dialog closing transition,added waitFor unchanged final control assertion",
+    "corrected": "26pass;unchanged expectations",
+    "old-full": "same final harness26fail"
+  },
+  "readOnlyScope": "No shared database,real business write,CI query/trigger,merge,deploy or restore",
+  "unchanged": [
+    "backend",
+    "API",
+    "schema",
+    "knowledge353",
+    "policy",
+    "sharedConfirmDialog/AppDialog",
+    "DESIGN",
+    "contracts"
+  ],
+  "a23": "Request generation protects actual out-of-order completions;effect cleanup protects actual mode/source lifecycle.No generic cache,retry,sharedframework or fallback authorization added.",
+  "wholeFileCompleted": 0,
+  "historicalUnique": "unknown",
+  "completeOverallAudit": false,
+  "remaining": [
+    "W2-W7 cross-chain/fullsemantic/UI86/A12/high-risk/fullmatrices",
+    "A23 including already reviewed and user-paused modules",
+    "Record-list qualificationSQL and audit-eventDB paging proposals remain unanswered/unimplemented",
+    "Candidate-version N+1 is source signal only,not yet measured;deduplicate and quantify later",
+    "Existing capacity/fault/UNKNOWN/family4N and option-full-load queue"
+  ]
+}
