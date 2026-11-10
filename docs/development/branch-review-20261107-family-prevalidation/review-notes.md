@@ -1,0 +1,17 @@
+# 健壮性、A23与续接范围
+
+本轮方法级核对为addMembers、resolveEligibleProducts/requireEligibleProduct、三类批读、原审计helper及相邻transfer/唯一约束/Controller入口；不是整个主数据或Controller审完。原单产品transfer继续requireEligibleProduct，flush/新ID/三方审计未改；bulk使用相同isEligibleMaterialType谓词，不引入“状态正常”等新资格。
+
+先资格后归属的首错优先级、去重顺序及返回顺序由输入列表显式恢复，不能依数据库IN返回顺序。空集合及nullID仍原消息，产品缺失仍MD-002。预校验映射只含请求选中ID，成员谓词保留tenant；没有findAll或跨请求缓存。真实多type513及1025选择证明确切参数边界与完整输出。
+
+A23：私有批读helper实际供物料、类型、归属三类读取复用，避免复制三份相同循环，没有公共框架/工厂/配置开关/重试。end以剩余数量计算、start=end是普通安全批次推进，512非业务上限。原空/null校验保护真实输入，不删除；原第二轮重复形状也不是无意义防御，JDBC并发fixture证明它能看到预校验之后的新归属。N1小分配增加不值得本轮再加快路径分支。
+
+写入及两方审计源码保持原事务。失败注入确到第三audit，之前两成员/两audit已执行仍全部回滚，旧成员完整；成功写入和失败STATEMENT分列。并发gate是测试ThreadLocal，在发送第二轮查询前暂停，由独立JDBC事务提交一条成员后释放；没有替换产品仓储、锁、隔离级别或返回值。它只验当前第二轮可见性，不冒称完整真实用户API并发/START/多租户验收。worker、ThreadLocal、测试触发器和PG清理分别验证。
+
+存在循环读并不一律等于缺陷：本轮是每512ID一次的SQL批次；第二轮单项即时读和新ID merge/audit merge仍是线性余项。预校验已具产品及类型上下文后直接复用，不再逐项读同对象。线程累计分配测量不含夹具/观察快照序列化，不是峰值/RSS；剩余大量持久对象及写入阶段容量尚未专项，不以查询下降替代全部性能验收。
+
+同文件listMemberOptions仍findAll类型与物料后筛选，为上批保留的全载候选；本轮没有新量化或优化该路径，不把它与已授权预校验混同。事件DB分页选择仍未答。后续先fetch真实合并与新增，按原优先级继续无依赖链/性能取证；需要业务取舍或新性能方案时再讨论。
+
+具体维护边界：成员Service继续拥有资格、当前归属及写入审计编排，现有私有helper足以容纳这三类查询，不再拆成不同事务。较大ProcessModelingController仍可另批先整体移产品簇CRUD/成员/选项路由到专用Controller，保留现有prefix、authority、无batch确认/有transfer确认、响应与事务，规则继续在Service、错误继续原Advice，再按产品与制程/工序绑定职责分拆；不能只按行数切类或在本次性能补丁实施大重构。
+
+W3-W5交叉/W6仍在进行，W2余项/W7增量、931知识/86UI、A12/高风险/完整矩阵、text-ID/上传PDFOffice/导出容量/UNKNOWN、A23含已审及暂停项保留；本批整文件完成0、历史unique未知。本体有限28是重新核对的范围记录，不累加成全盘一致；既有coarse-locator/provider gap继续P1。

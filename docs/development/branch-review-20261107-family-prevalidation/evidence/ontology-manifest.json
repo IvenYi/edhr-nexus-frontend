@@ -1,0 +1,514 @@
+{
+  "sourceDirectory": "/tmp/edhr-family-prevalidation-ontology-20261107",
+  "archive": "ontology.zip",
+  "archiveSha256": "81afaa6df970751583856c2d38bcc75d3fe73fee4bb582066454bd569b56991c",
+  "archiveBytes": 794352,
+  "memberCount": 101,
+  "members": [
+    {
+      "path": "REVIEW.PREPARED.md",
+      "bytes": 4915,
+      "sha256": "15a34d9b0299e6f94441e74b2a3a62f758b11d789378f4b4c6535299c65e0674"
+    },
+    {
+      "path": "REVIEW.md",
+      "bytes": 9058,
+      "sha256": "bd9f2dd45a289ac4d3fb8947fb001b5da591df293158e34af9b34893b21802e8"
+    },
+    {
+      "path": "TEST-com.zencas.edhr.knowledge.BusinessKnowledgeModelTest.xml",
+      "bytes": 20416,
+      "sha256": "35141d33484d522f3dd9491ef3dc4a101020a0ea110e43bc3164623555f5fc51"
+    },
+    {
+      "path": "build-evidence-initial-source.py",
+      "bytes": 10638,
+      "sha256": "ba6b882caa44016d4a31c324bcd9ec6e6b1d1b8ac0fd5b1d60debf732bca9f92"
+    },
+    {
+      "path": "build-evidence.py",
+      "bytes": 10854,
+      "sha256": "4e3c9d1e89c0ba39b4fff88513b46f49493053f89ee3a72661b3cef2215a2221"
+    },
+    {
+      "path": "final-source/AGENTS.md",
+      "bytes": 25065,
+      "sha256": "13dc7cdacea0b1bb0aef2abb268781f9c69584acd4879b204d2b7fd81a2927fc"
+    },
+    {
+      "path": "final-source/codeplzreadme.md",
+      "bytes": 3035,
+      "sha256": "7a1be8efffec596b034335058dca2860346d256622f899c8dac97c5172dd6df2"
+    },
+    {
+      "path": "final-source/docs/agents/agent-handoff-contract.md",
+      "bytes": 31233,
+      "sha256": "3439a35dd1baa77ac723f1b5afa237a338d56e31386f06b02b4aacfd754e3a12"
+    },
+    {
+      "path": "final-source/docs/agents/quality-verifier.md",
+      "bytes": 7519,
+      "sha256": "6b3de9323924fb4ba5ae87be76c5136d28e754810c46b22b8e3d1cdd6c2f826f"
+    },
+    {
+      "path": "final-source/docs/development/branch-review-20261107-family-prevalidation/decision-package.yaml",
+      "bytes": 5465,
+      "sha256": "573ec38387dad003d42195bd502275812c3190986c1fdfbd327311e153f426c6"
+    },
+    {
+      "path": "final-source/docs/knowledge/facts/core-business.yaml",
+      "bytes": 142094,
+      "sha256": "168e4a16c1880fd6044816e09693ad9e5f98e246eb7a8ec97d08f877d00523d0"
+    },
+    {
+      "path": "final-source/gmp-platform/backend/pom.xml",
+      "bytes": 8805,
+      "sha256": "b98fcc84b57f57f1a8a7fd01ed2e7ab66a0c32c15c62980646a13d378a5669e5"
+    },
+    {
+      "path": "final-source/gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/entity/AuditEvent.java",
+      "bytes": 4697,
+      "sha256": "34a236e63d78eed77cfd67094b4ced89f99614fa09b206546189e7e2907480aa"
+    },
+    {
+      "path": "final-source/gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/entity/AuditEventHash.java",
+      "bytes": 7419,
+      "sha256": "9ed9137b4d216699fc9f3374edbab6cbe8ae8b4862e9b7b2bcf562511b293ce2"
+    },
+    {
+      "path": "final-source/gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java",
+      "bytes": 95507,
+      "sha256": "87e717d595fdbd03139b5fb62b65b266ebfdfe1cc4178a80dd30b517e6675dab"
+    },
+    {
+      "path": "final-source/gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/entity/Material.java",
+      "bytes": 2480,
+      "sha256": "102a685f8978419c300bbfd45bcea07ba66cb1e92dcd4e9446aab25ef2574eb0"
+    },
+    {
+      "path": "final-source/gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/entity/MaterialType.java",
+      "bytes": 1582,
+      "sha256": "6d0d2b190b61d6e8ddbe29bf7eb5a6c95673df72c974e3b6744379e48171b5fe"
+    },
+    {
+      "path": "final-source/gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/entity/ProductFamilyMember.java",
+      "bytes": 2143,
+      "sha256": "f356a91fc0d88d6d543544bfa2bef9a3c6e33b1ef0f14aa1fb70b494b958bfa0"
+    },
+    {
+      "path": "final-source/gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/repository/MaterialRepository.java",
+      "bytes": 614,
+      "sha256": "605934a096b07174d7088df4be4293ee31a7c73e562da03dc2fa052e2f40b2a7"
+    },
+    {
+      "path": "final-source/gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/repository/MaterialTypeRepository.java",
+      "bytes": 427,
+      "sha256": "103bc7e2479ee7d0bd13d1998f38107cedc1343de4c5660f93fa627cc7521c36"
+    },
+    {
+      "path": "final-source/gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/repository/ProductFamilyMemberRepository.java",
+      "bytes": 1014,
+      "sha256": "bd3ae2444a82fd2cd1c67b9985fb11d4f30be9bc2d32dee798403e74a172c137"
+    },
+    {
+      "path": "final-source/gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductFamilyMembershipService.java",
+      "bytes": 15680,
+      "sha256": "e5a776831dd4959155bde501c655fe66dd07f08554558d7e76260c05f9ab1f11"
+    },
+    {
+      "path": "final-source/gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql",
+      "bytes": 106718,
+      "sha256": "61560f972ef9eeeb8f69620c947b54b2326ad9341d929b19385653bec81cf99b"
+    },
+    {
+      "path": "final-source/gmp-platform/backend/src/main/resources/db/changelog/baseline/0002-current-seed.sql",
+      "bytes": 58311,
+      "sha256": "7007b3d4d47fd9d9eca097d1c23125afad64c4cce272dea3bf62323d25911eeb"
+    },
+    {
+      "path": "final-source/gmp-platform/backend/src/main/resources/db/changelog/db.changelog-master.yaml",
+      "bytes": 584,
+      "sha256": "c6aee09872f78a36a7207348519d203dd6e8c21bff2f893540ef214fc6d5f964"
+    },
+    {
+      "path": "final-source/gmp-platform/backend/src/test/java/com/zencas/edhr/common/audit/AuditAspectTest.java",
+      "bytes": 4214,
+      "sha256": "dfad0cbf514f5c207543d4c598b5997d69c8dafe08ff375ba6e3133306313adb"
+    },
+    {
+      "path": "final-source/gmp-platform/backend/src/test/java/com/zencas/edhr/compliance/entity/AuditEventHashTest.java",
+      "bytes": 9525,
+      "sha256": "6621e06bd4eb190062e363dccbfac17092547844072dea12206b9242c748e731"
+    },
+    {
+      "path": "final-source/gmp-platform/backend/src/test/java/com/zencas/edhr/compliance/entity/AuditEventTest.java",
+      "bytes": 1724,
+      "sha256": "a9dee9a5c3a7b0fa04a2cee5044b1ded733beb9b10755944d49bcf2862cbd1aa"
+    },
+    {
+      "path": "final-source/gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/ProcessModelingControllerTest.java",
+      "bytes": 84914,
+      "sha256": "3d66178ff6a832fcdc6d6c52cdadf3f0680dbf00bde282cb38c1bd3f416118d6"
+    },
+    {
+      "path": "final-source/gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/repository/ProductFamilyMemberRepositoryTest.java",
+      "bytes": 8348,
+      "sha256": "da02c9e6dab612da3ee97958632e4227f18b1e70ce698392115aedf6fa6fc57d"
+    },
+    {
+      "path": "final-source/gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/service/ProductFamilyMembershipServiceTest.java",
+      "bytes": 8860,
+      "sha256": "08c2bdf94036ebfde15594c1ce958e7dcfc581dcf63d0e8511845212c2aac8ab"
+    },
+    {
+      "path": "final-source/gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/service/ProductFamilyTransferPostgresTest.java",
+      "bytes": 26048,
+      "sha256": "fb0ff6f022470a1b1a6a1dd21d97a09180eb3ac075497721dafc9ea6f5d5f94a"
+    },
+    {
+      "path": "final-source/gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/service/ProductProcessResolutionServiceTest.java",
+      "bytes": 5548,
+      "sha256": "7cff9b79fe20dc58c54342cf957599e780cb63eb9fbf5f234d01563bcfa84ae6"
+    },
+    {
+      "path": "final-source/gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/BatchProcessIntegrationTest.java",
+      "bytes": 28046,
+      "sha256": "e3b874297ba362318a558d24bdfc9909de7f6d25e47774c88976ff10fd955b03"
+    },
+    {
+      "path": "finalize-evidence-initial-source.py",
+      "bytes": 12980,
+      "sha256": "b2a9218d1e0e56ebf6540511e335418f08038232344026d9465b4f2ac4f9750f"
+    },
+    {
+      "path": "finalize-evidence.py",
+      "bytes": 13602,
+      "sha256": "66a801307798cb83394ba66364477d4361640e1dfd834830f516aa3f5b331adf"
+    },
+    {
+      "path": "finite-review-records.json",
+      "bytes": 66712,
+      "sha256": "bc9d65167c7f19ba2c6c4e921415ad411875b444e7c320f1699f4e53f230fe57"
+    },
+    {
+      "path": "initial-source-inputs.json",
+      "bytes": 9751,
+      "sha256": "7e71687975b25a269a21f5e0b120b1ff21d76636d835fc2760525a2e2da453c4"
+    },
+    {
+      "path": "knowledge-after.json",
+      "bytes": 90048,
+      "sha256": "3b836a168276cf9326e7cb5cd0dc90f5b34afe81e98888888391bc074cf8a326"
+    },
+    {
+      "path": "knowledge-before.json",
+      "bytes": 90014,
+      "sha256": "4a8fc93f99f9cf9477d5a85db900e46ea25c88924e4e6faa105e062f0ccb93b4"
+    },
+    {
+      "path": "knowledge-result.json",
+      "bytes": 640,
+      "sha256": "59bb34176c7ffa94308fdcb284977af7f49e741a9b7275b7beab4e81e34e76e2"
+    },
+    {
+      "path": "knowledge89.log",
+      "bytes": 2381,
+      "sha256": "521259e6f6c02356196e1e82c7ba0e7158d4b635987bc03803b795bcc1abbe98"
+    },
+    {
+      "path": "manifest.json",
+      "bytes": 31374,
+      "sha256": "24a7f633ea1c796ac9d65a70e7b796d4f2f8e70e51641c0d03bcef0dc1dc4a56"
+    },
+    {
+      "path": "ontology-result.yaml",
+      "bytes": 3200,
+      "sha256": "2b6b6bbda125433212f26a99b3a8634ae89f0ceddd6cfa59171e971e13ed13a7"
+    },
+    {
+      "path": "parent-index-analysis.json",
+      "bytes": 22941,
+      "sha256": "e2681ba58898dda8ae480c02e77e6026f7ffe14bc4e97d80d1c3260a7120f17f"
+    },
+    {
+      "path": "parent-run.json",
+      "bytes": 7843,
+      "sha256": "d18d5f2b66d6134198f070e290a9abaef76e388e0bfeeb66534c28e0f3f3a6be"
+    },
+    {
+      "path": "parent-test-summary.json",
+      "bytes": 1680,
+      "sha256": "98f005daa4b1e7ff3206539cb6f953f4bc50e4a2e658bb2dcaa6eeadffc7db4f"
+    },
+    {
+      "path": "result.json",
+      "bytes": 756,
+      "sha256": "2c92b7c3bd4c52125fb9ae8f1b586fb1e8bea105502218409765348fbe24266f"
+    },
+    {
+      "path": "source/AGENTS.md",
+      "bytes": 25065,
+      "sha256": "13dc7cdacea0b1bb0aef2abb268781f9c69584acd4879b204d2b7fd81a2927fc"
+    },
+    {
+      "path": "source/codeplzreadme.md",
+      "bytes": 3035,
+      "sha256": "7a1be8efffec596b034335058dca2860346d256622f899c8dac97c5172dd6df2"
+    },
+    {
+      "path": "source/docs/agents/agent-handoff-contract.md",
+      "bytes": 31233,
+      "sha256": "3439a35dd1baa77ac723f1b5afa237a338d56e31386f06b02b4aacfd754e3a12"
+    },
+    {
+      "path": "source/docs/agents/business-knowledge-modeler.md",
+      "bytes": 15881,
+      "sha256": "9806c900f98e1cbcf4f8d68a998a07a5449369df037183c75ec08cd666bf56ae"
+    },
+    {
+      "path": "source/docs/architecture/business-knowledge-model.md",
+      "bytes": 72976,
+      "sha256": "5fc7640ffecbf5ea8191c7242f86dd0a700ae50db307adecb2bacacf7ffeb095"
+    },
+    {
+      "path": "source/docs/development/branch-review-20261107-family-prevalidation/decision-package.yaml",
+      "bytes": 5465,
+      "sha256": "573ec38387dad003d42195bd502275812c3190986c1fdfbd327311e153f426c6"
+    },
+    {
+      "path": "source/docs/knowledge/README.md",
+      "bytes": 114117,
+      "sha256": "709c3d40dbd39e6e1cfc6a09bdcd1766775e04e153bff26871f5a6f1bdfa4f42"
+    },
+    {
+      "path": "source/docs/knowledge/decisions/DEC-0002-product-family-process-modeling.yaml",
+      "bytes": 11336,
+      "sha256": "feb3eacbe7c68b3e263b9f60679c5f5f6acf51987d0845d274ec34f96087faaa"
+    },
+    {
+      "path": "source/docs/knowledge/decisions/DEC-0007-production-work-applicability-and-runtime-snapshot.yaml",
+      "bytes": 10199,
+      "sha256": "f76bdff7f85e487d9a00883ac44c281e5779094d22b57b5d4303218e4ca0a30f"
+    },
+    {
+      "path": "source/docs/knowledge/decisions/DEC-0038-ontology-p0-foundation.yaml",
+      "bytes": 5664,
+      "sha256": "0a04102541d874bb390e1694f171865bee1dcf3dccc3bc1b89b76401d3be9a64"
+    },
+    {
+      "path": "source/docs/knowledge/facts/core-business.yaml",
+      "bytes": 142094,
+      "sha256": "168e4a16c1880fd6044816e09693ad9e5f98e246eb7a8ec97d08f877d00523d0"
+    },
+    {
+      "path": "source/docs/knowledge/glossary.yaml",
+      "bytes": 72304,
+      "sha256": "a4a9568a25b6698cb1a09c92ae0e9811edf90f0f849cb422c64c0a4b508f1302"
+    },
+    {
+      "path": "source/docs/knowledge/ontology.yaml",
+      "bytes": 96091,
+      "sha256": "2d26c6941665829990fcf48c04e3b7954620e1091896bba38c1e712a21815362"
+    },
+    {
+      "path": "source/docs/knowledge/open-questions.yaml",
+      "bytes": 22420,
+      "sha256": "c7b3bdecd1a6ac164d95ff515b5412998a556a07e9b5fcb64b3643473aa6e2bf"
+    },
+    {
+      "path": "source/docs/knowledge/rules/product-process.yaml",
+      "bytes": 36075,
+      "sha256": "7c732995bd82f0c9c65645f212a0baa99f1174f497a8070eb7f6b3a9cbcdfcdf"
+    },
+    {
+      "path": "source/docs/knowledge/rules/production.yaml",
+      "bytes": 68363,
+      "sha256": "175ef7b65961bb5e72b39dceaaf919fb277b3107fcd0fdaf0f3d5fb2d7ba32d8"
+    },
+    {
+      "path": "source/docs/knowledge/rules/transaction-runtime.yaml",
+      "bytes": 81896,
+      "sha256": "b1e5d8910e10a42f466135f097a651bab7657b7e29de18a6a5dd200793b11ae5"
+    },
+    {
+      "path": "source/docs/knowledge/schema.yaml",
+      "bytes": 13171,
+      "sha256": "e21dcf0b3cf15b540dc528b574e53202fe26b092017e00451afa326b59cfba84"
+    },
+    {
+      "path": "source/gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java",
+      "bytes": 95507,
+      "sha256": "87e717d595fdbd03139b5fb62b65b266ebfdfe1cc4178a80dd30b517e6675dab"
+    },
+    {
+      "path": "source/gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProductProcessController.java",
+      "bytes": 64475,
+      "sha256": "5a606ead1dead7a10d57514dbe4663f4a1a3054ea022fe86180bb7ca3a020925"
+    },
+    {
+      "path": "source/gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/entity/ProductFamilyMember.java",
+      "bytes": 2143,
+      "sha256": "f356a91fc0d88d6d543544bfa2bef9a3c6e33b1ef0f14aa1fb70b494b958bfa0"
+    },
+    {
+      "path": "source/gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/repository/ProductFamilyMemberRepository.java",
+      "bytes": 1014,
+      "sha256": "bd3ae2444a82fd2cd1c67b9985fb11d4f30be9bc2d32dee798403e74a172c137"
+    },
+    {
+      "path": "source/gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductFamilyMembershipService.java",
+      "bytes": 13759,
+      "sha256": "c990a1b99e0afea7487e57df2eb8d8f9ee40890b6d098e19765af24c4eb90bd0"
+    },
+    {
+      "path": "source/gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductProcessResolutionService.java",
+      "bytes": 4778,
+      "sha256": "797c83be795e8fe33ea31a3ec44c4fda04dc7430dae2c5663720d36dcd64224d"
+    },
+    {
+      "path": "source/gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql",
+      "bytes": 106718,
+      "sha256": "61560f972ef9eeeb8f69620c947b54b2326ad9341d929b19385653bec81cf99b"
+    },
+    {
+      "path": "source-binding.json",
+      "bytes": 15427,
+      "sha256": "1cfef2127ad45d22333c85913d1d0c9aa3925429aac90d12d9e8a950df3bccdb"
+    },
+    {
+      "path": "source-inputs.json",
+      "bytes": 9885,
+      "sha256": "1e91ef5ce2068c8604f5054e55ffb04c41f0ee69af4aae0121414de3c0b3046a"
+    },
+    {
+      "path": "tool-calibration.json",
+      "bytes": 771,
+      "sha256": "90eacb4ca11dfc0e3887a7f0fe99b67d2a83d498e6c0ff2ebef97eebac979b1a"
+    },
+    {
+      "path": "tool-initial-trimmed-source/AGENTS.md",
+      "bytes": 25064,
+      "sha256": "09d93b33692843a6ca21735f25dc5590dff2e4736a26c9a8c0df4da95efc09db"
+    },
+    {
+      "path": "tool-initial-trimmed-source/codeplzreadme.md",
+      "bytes": 3033,
+      "sha256": "48fe8fb184694a16355b7e04313783103855c771aaa7a976374f29cca0b3cd37"
+    },
+    {
+      "path": "tool-initial-trimmed-source/docs/agents/agent-handoff-contract.md",
+      "bytes": 31232,
+      "sha256": "1ac86db7e8b79ba57df2d289d225ca8d4395662cc77472ff578898f1bb53c60f"
+    },
+    {
+      "path": "tool-initial-trimmed-source/docs/agents/business-knowledge-modeler.md",
+      "bytes": 15880,
+      "sha256": "75f08810fd82d2544d8d7f620fbd377e85ccf4240b6eaeafaf1608aac4311a14"
+    },
+    {
+      "path": "tool-initial-trimmed-source/docs/architecture/business-knowledge-model.md",
+      "bytes": 72975,
+      "sha256": "91cfed4c789927085c4e1ab942b8a198183eec8b14bedf680b9f1ec1b4635493"
+    },
+    {
+      "path": "tool-initial-trimmed-source/docs/development/branch-review-20261107-family-prevalidation/decision-package.yaml",
+      "bytes": 5465,
+      "sha256": "573ec38387dad003d42195bd502275812c3190986c1fdfbd327311e153f426c6"
+    },
+    {
+      "path": "tool-initial-trimmed-source/docs/knowledge/README.md",
+      "bytes": 114116,
+      "sha256": "6e2ca07e48e7eb083972677ddb694c8d2573ef29d52a55d9571ac13ca7920366"
+    },
+    {
+      "path": "tool-initial-trimmed-source/docs/knowledge/decisions/DEC-0002-product-family-process-modeling.yaml",
+      "bytes": 11335,
+      "sha256": "7983b857188081f03e849a88b4969ee12fe658fa46e85b1e215366d9f02295d4"
+    },
+    {
+      "path": "tool-initial-trimmed-source/docs/knowledge/decisions/DEC-0007-production-work-applicability-and-runtime-snapshot.yaml",
+      "bytes": 10198,
+      "sha256": "c8ae02a3c94caa98b7705f31e3a30878e5b585c27ee61f85ff9bc36bc2bb8ba9"
+    },
+    {
+      "path": "tool-initial-trimmed-source/docs/knowledge/decisions/DEC-0038-ontology-p0-foundation.yaml",
+      "bytes": 5663,
+      "sha256": "cc8c27ca3bc0bc552f5fe4ccf0798bcdf33729d7f400ef1c8e055b5e619e41a0"
+    },
+    {
+      "path": "tool-initial-trimmed-source/docs/knowledge/facts/core-business.yaml",
+      "bytes": 142093,
+      "sha256": "bf8dbfffe872384e1e585639665f2206f8748e4c1780e0f33ff6fae4ee46bbf3"
+    },
+    {
+      "path": "tool-initial-trimmed-source/docs/knowledge/glossary.yaml",
+      "bytes": 72303,
+      "sha256": "2e32b5ed7308e83fbb6a22484187816c5fa1cc0d541f6d8057c76eb3395c4dbb"
+    },
+    {
+      "path": "tool-initial-trimmed-source/docs/knowledge/ontology.yaml",
+      "bytes": 96090,
+      "sha256": "1c322860f14c82f76fe765105cb9f2231cda2ea2d0fcb3a7499f1f6f194113b8"
+    },
+    {
+      "path": "tool-initial-trimmed-source/docs/knowledge/open-questions.yaml",
+      "bytes": 22419,
+      "sha256": "04333bd06280acc4c795789090e89fe54b313536846c92511d8c22fbeba8636a"
+    },
+    {
+      "path": "tool-initial-trimmed-source/docs/knowledge/rules/product-process.yaml",
+      "bytes": 36074,
+      "sha256": "fa16e77b055c9bcdabb903fc7f294acba2f70d714dbabca95245a6cad2166e90"
+    },
+    {
+      "path": "tool-initial-trimmed-source/docs/knowledge/rules/production.yaml",
+      "bytes": 68362,
+      "sha256": "a3f2a6d2ec771aaee32732707ea63a406fb8b4a38636f26cc3044f2fd31446fd"
+    },
+    {
+      "path": "tool-initial-trimmed-source/docs/knowledge/rules/transaction-runtime.yaml",
+      "bytes": 81895,
+      "sha256": "b3920cd9fe03372479cc48d4465ffe8edc51f7ebaef109ad029919c460e46aaf"
+    },
+    {
+      "path": "tool-initial-trimmed-source/docs/knowledge/schema.yaml",
+      "bytes": 13170,
+      "sha256": "181de6988eff8abb16cd9f4a25467eb347b868cb335f235cd10a0a54d360f42a"
+    },
+    {
+      "path": "tool-initial-trimmed-source/gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java",
+      "bytes": 95506,
+      "sha256": "7b89854e33df7cedf1889a73d15005a9a80026542de32442410837c3320606f7"
+    },
+    {
+      "path": "tool-initial-trimmed-source/gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProductProcessController.java",
+      "bytes": 64474,
+      "sha256": "f0400fa99033953c57b167b482db8f87f82dafc4893c41e15fcc95466a3d3549"
+    },
+    {
+      "path": "tool-initial-trimmed-source/gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/entity/ProductFamilyMember.java",
+      "bytes": 2142,
+      "sha256": "33fba139318c361795474afacf0d16c24f11b7c77b75c58fa1d407ae1b98d08a"
+    },
+    {
+      "path": "tool-initial-trimmed-source/gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/repository/ProductFamilyMemberRepository.java",
+      "bytes": 1013,
+      "sha256": "c7a7ce72f05bfac181218732d6116aea8d9fab8bf6e44db848ac477131fb48b2"
+    },
+    {
+      "path": "tool-initial-trimmed-source/gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductFamilyMembershipService.java",
+      "bytes": 13758,
+      "sha256": "040e3f1dfc79b96850150746f3d5e077ff2f9976a2a6531283cc0683348aa901"
+    },
+    {
+      "path": "tool-initial-trimmed-source/gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductProcessResolutionService.java",
+      "bytes": 4777,
+      "sha256": "ce6399e66f52fcc6df486f9c12d753ad4d6f964c9dbdef1084cdd80e02f54c39"
+    },
+    {
+      "path": "tool-initial-trimmed-source/gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql",
+      "bytes": 106717,
+      "sha256": "01e0aabe008d4de944789712efc030f56246475097479b5f0d8382341c90e2ec"
+    }
+  ]
+}
