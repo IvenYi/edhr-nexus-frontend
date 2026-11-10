@@ -1,5 +1,17 @@
 # 持续推进台账
 
+## PR77已合入：候选流程当前版本目录性能取证
+
+已交付[PR78](https://github.com/IvenYi/edhr-nexus-frontend/pull/78)，audit/edhr-dev-workflow-candidate-capacity-20261110→edhr-dev，观察OPEN/MERGEABLE/CLEAN，建议人工合入本批测试及证据。受测e173d402、验收57ed4200后仅L0登记；登记前本地/真实远端/PR head及30输入一致，登记推送后再次核对。**下一批候选current批读＋精简字段已获明确授权，不再问**；先fetch实际合入/新增，保留全结果/原筛选/异常并对照验证，不扩张到其他未答性能项。
+
+已fetch edhr-dev@68861c2ab0291fc8f20271c2d2cae37d1eca66fd，PR77人工合入、整树同773fa942，无额外代码/知识/契约。新分支audit/edhr-dev-workflow-candidate-capacity-20261110；[本批](../branch-review-20261110-workflow-candidate-capacity/README.md)L2按W3/W7及W6性能/A23将旧候选版本源码信号量化，仅现PG测试加6场景，不改产品/SQL/API/schema/索引/UI/知识/政策。
+
+clean受测e173d402主94/94、0F/E/skip（75真实PG+19单元/方法安全/静态），focused6为dirty688同字节，30输入同Git/快照。两类每类0/1/10/100/1000全返回，另2匹配过滤对照；20原service只读观察4504 SELECT/4504 actual auto_explain，查询3/4/13/103/1003，100非总量cap/人数。普通无create权限JWT+MockMvc完整200/匿名401各10次；10表摘要原值保留且相等，多current只保持原列表异常，不升级全start业务政策。1000档现有uk_wf_def_version已用于版本读，小档顺扫不自动加索引；耗时/线程分配非生产SLA/峰值，宽JSON未量化。
+
+确认PERF-WORKFLOW-CANDIDATE-CURRENT-VERSION-001，**用户已明确同意下一批批量读取当前版本并精简必要字段**，完整返回/过滤/原异常保持；[授权及边界](../branch-review-20261110-workflow-candidate-capacity/performance-next.md)持续有效，不再重复问。当前未优化，其他记录列表资格SQL/事件DB分页仍未答、不被此覆盖。本体NA/FINAL有限10=8一致/1旧权限精确部分替代/1原多租户待决，353知识/359输入复用原89未重跑，不重复前8/19或全语义。全新独立实际94/89、20观察4504计划全过，正式passed/FINAL、10必需项通过；首次缺Vite的0测试失败原件保留，补自有软链后的untracked与清理后clean分开报告，双方PG已清。三包462成员、角色manifest及30受测输入核过；全部FINAL后2026-11-10 18:37 Asia/Shanghai已实际[PR前漂移/阶段复核](../branch-review-20261110-workflow-candidate-capacity/pre-pr-drift-review.md)，目标仍688、无漂移，此后仅L0归档/交付。
+
+整体W2余项/W3-W5跨链/W6健壮性性能/具体拆分及A23含已审/W7新增、全知识语义/UI86/lint缺配置/A12/高风险/完整矩阵/family4N和选项全载/容量UNKNOWN/用户暂停项继续；整文件0/historyUnique未知。每轮先fetch；不自动merge/deploy/恢复或查触发CI。
+
 ## PR76已合入：记录控制候选与提交失败反馈
 
 已交付[PR77](https://github.com/IvenYi/edhr-nexus-frontend/pull/77)，audit/edhr-dev-record-candidate-feedback-20261110→edhr-dev，观察OPEN/MERGEABLE/CLEAN，建议人工合入本批局部反馈修复。受测6f03c7e5、验收4d9c4674后仅L0登记；登记前本地/真实远端/PR head及27输入一致，登记推送后再次核对。下一轮先fetch合入和新增，继续原队列及候选版本查询的去重/量化，不把merge或继续视为未答性能方案批准。

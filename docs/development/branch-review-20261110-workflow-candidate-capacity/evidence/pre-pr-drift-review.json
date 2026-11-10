@@ -1,0 +1,66 @@
+{
+  "checkedAtUtc": "2026-11-10T10:37:19.741727+00:00",
+  "checkedAtAsiaShanghai": "2026-11-10T18:37:19.741727+08:00",
+  "target": "68861c2ab0291fc8f20271c2d2cae37d1eca66fd",
+  "headBeforeL0EvidenceCommit": "e173d4022079cb77b3eb53cd44d26c09935bbd27",
+  "fetchOutput": "From https://github.com/IvenYi/edhr-nexus-frontend\n * branch              edhr-dev   -> FETCH_HEAD\n",
+  "allDispatchedRolesFinalBeforeReview": true,
+  "roleObservation": "Actual collaboration.list_agents after ontology and freshQA FINAL,both completed,no children",
+  "roles": {
+    "ontology": "not-applicable/FINAL",
+    "freshIndependentQa": "passed/FINAL"
+  },
+  "requiredChecksPassed": [
+    "check.fixed-source-and-contract",
+    "check.scope-and-policy",
+    "check.backend-actual94",
+    "check.knowledge-actual89",
+    "check.complete-candidate-results",
+    "check.actual-query-plans",
+    "check.readonly-and-auth",
+    "check.ambiguous-current-boundary",
+    "check.robustness-and-extraction",
+    "check.owned-resource-cleanup"
+  ],
+  "protectedInputFingerprints": 30,
+  "knowledgeFilesUnchanged": 353,
+  "packagesVerified": 3,
+  "packageMemberHashesVerified": 462,
+  "trackedDelta": [
+    "docs/development/branch-review-20261015/NEXT.md",
+    "docs/development/branch-review-20261110-workflow-candidate-capacity/decision-package.yaml",
+    "gmp-platform/backend/src/test/java/com/zencas/edhr/recordcontrol/service/RecordControlPostgresIntegrationTest.java"
+  ],
+  "untrackedReports": [
+    "docs/development/branch-review-20261110-workflow-candidate-capacity/README.md",
+    "docs/development/branch-review-20261110-workflow-candidate-capacity/evidence-packages.json",
+    "docs/development/branch-review-20261110-workflow-candidate-capacity/evidence/independent-manifest.json",
+    "docs/development/branch-review-20261110-workflow-candidate-capacity/evidence/independent.zip",
+    "docs/development/branch-review-20261110-workflow-candidate-capacity/evidence/main-manifest.json",
+    "docs/development/branch-review-20261110-workflow-candidate-capacity/evidence/main.zip",
+    "docs/development/branch-review-20261110-workflow-candidate-capacity/evidence/ontology-manifest.json",
+    "docs/development/branch-review-20261110-workflow-candidate-capacity/evidence/ontology.zip",
+    "docs/development/branch-review-20261110-workflow-candidate-capacity/independent-review.md",
+    "docs/development/branch-review-20261110-workflow-candidate-capacity/main-analysis.json",
+    "docs/development/branch-review-20261110-workflow-candidate-capacity/next-batch-authorization.json",
+    "docs/development/branch-review-20261110-workflow-candidate-capacity/ontology-result.yaml",
+    "docs/development/branch-review-20261110-workflow-candidate-capacity/ontology-review.md",
+    "docs/development/branch-review-20261110-workflow-candidate-capacity/performance-next.md",
+    "docs/development/branch-review-20261110-workflow-candidate-capacity/quality-result.yaml",
+    "docs/development/branch-review-20261110-workflow-candidate-capacity/review.md"
+  ],
+  "drift": "none;test-only candidate read capacity observation,no product/SQL/index/policy/UI changes",
+  "stage": "W3/W7 current workflow read and W6 performance/robustness/A23",
+  "nextBatch": "User explicitly approved candidate batch-current/projection,not implemented in current candidate;no repeat question",
+  "completeOverallAudit": false,
+  "wholeFileCompleted": 0,
+  "historicalUnique": "unknown",
+  "remaining": [
+    "Next approved candidate optimization",
+    "Other list-qualificationSQL/eventDBpaging unanswered",
+    "W2-W7/semantic/UI86/lint/A12/highrisk/fullmatrices/A23 including already reviewed/family4N/options/capacityUNKNOWN/paused"
+  ],
+  "postReviewAllowed": "L0 evidence/delivery only;reassess if target or measured input changes",
+  "ciQueriedOrTriggered": false,
+  "autoMergeDeployOrRestore": false
+}
