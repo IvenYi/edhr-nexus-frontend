@@ -113,7 +113,7 @@ try {
         writes.push({ endpoint, body: request.postDataJSON() });
         return send(null);
       }
-      if (endpoint.endsWith('/reassignment-targets')) return send([{ id: 'target', name: '验收乙', username: 'target' }]);
+      if (endpoint.endsWith('/reassignment-targets')) return send({ content: [{ id: 'target', name: '验收乙', username: 'target' }], page: 0, size: 50, hasNext: false });
       if (endpoint === '/api/v1/workflow/operations/instances') {
         if (scenario === 'list-error') return send(null, 503);
         const row = { id: currentId, templateName: '同名审批模板', businessKey, businessType: scenario === 'unknown' ? 'LEGACY_TYPE' : businessType, status: 'RUNNING', startUserName: '合成申请人', startTime: '2026-11-02T10:00:00', endTime: null };

@@ -1,0 +1,109 @@
+ontologyResult:
+  result: not-applicable
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: df344ded01679ad6a32d42636f8f4f088317eb3d
+    targetBranch: edhr-dev
+    targetCommit: 5e8edb47ae91af83555f4b67a87598c3c2a9a664
+    contractReadCommit: df344ded01679ad6a32d42636f8f4f088317eb3d
+    uncommittedContractPaths: []
+  reason: 本轮是已确认政策及两轮已完成知识同步的集成，不新增概念、关系、状态、权限或动作政策。实际合并候选df344ded同时保留功能提交35e761d6和远端5e8edb47；DEC-0095的合法人员完整可达与DEC-0096的真正超管申请详情只读例外作用于不同阶段，互不扩大动作资格。当前定义、局部替代、来源及双方原始历史已经完整共存，无须再次修改知识资产或提升成熟度。本结果完成集成语义复核，但不将旧质量报告、源码或静态检查当作本轮运行通过；本轮Maven、浏览器、数据库及最终质量另取主方和独立质量结果。
+  changedArtifacts: []
+  knowledgeSync:
+    - id: DEC-0095-01
+      disposition: retained
+      scope: 全部符合入口原资格的人员须可经分页或分批加载到达，单批大小不构成总人数上限；不能据此使无资格用户成为候选。
+      sourceReferences:
+        - docs/knowledge/decisions/DEC-0095-qualified-personnel-selection-completeness.yaml
+        - docs/knowledge/rules/personnel-target-selection.yaml
+        - gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/WorkflowResponsibilityService.java
+    - id: DEC-0095-02
+      disposition: retained
+      scope: 记录控制原候选和申请人回避、管理员领域资格、DHR专属批准及禁止本人转办撤回仍适用；选择完整性与提交时资格复核分别保留。
+      sourceReferences:
+        - docs/knowledge/decisions/DEC-0095-qualified-personnel-selection-completeness.yaml
+        - gmp-platform/backend/src/main/java/com/zencas/edhr/identity/service/TenantTransferTargets.java
+        - gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/WorkflowResponsibilityService.java
+    - id: DEC-0096-01
+      disposition: retained
+      scope: 仅为真正ACTIVE保留admin账号新增在审记录控制申请详情只读例外；身份由认证ID查询数据库，不由显示名、普通ADMIN角色或前端标志授予。
+      sourceReferences:
+        - docs/knowledge/decisions/DEC-0096-record-control-system-admin-detail-read.yaml
+        - docs/knowledge/rules/record-change.yaml
+        - gmp-platform/backend/src/main/java/com/zencas/edhr/recordcontrol/service/RecordControlService.java
+    - id: DEC-0087-09
+      disposition: historical
+      scope: 保留原始声明及证据；仅原在审详情无超管例外部分由DEC-0096-01替代，普通参与人、终态历史及RECORD_CONTROL_REQUEST签名隔离继续有效，不将决策级supersedes解释为整项作废。
+      sourceReferences:
+        - docs/knowledge/decisions/DEC-0087-record-control-v1-closure.yaml
+        - docs/knowledge/decisions/DEC-0096-record-control-system-admin-detail-read.yaml
+    - id: DEC-0096-03
+      disposition: retained
+      scope: 列表canViewDetail、来源canViewActiveRequest和提交后刷新仅投影读取资格，不代替详情服务端复核；审批详情显示真实错误不改变任务读取或批准资格。
+      sourceReferences:
+        - docs/knowledge/evidence/record-history-detail-access-20261109.md
+        - gmp-platform/frontend/src/pages/record-control/RecordChangePage.tsx
+        - gmp-platform/frontend/src/pages/record-control/RecordApprovalDetailPage.tsx
+    - id: DEC-0074-01
+      disposition: retained
+      scope: A登录、B本人签署仍不切换A会话；按钮处理资格与签名和动作归属取实际签署人，A的查看资格不能补足B的业务资格。
+      sourceReferences:
+        - docs/knowledge/decisions/DEC-0074-shared-terminal-button-signature.yaml
+        - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionAccess.java
+        - gmp-platform/backend/src/main/java/com/zencas/edhr/identity/security/JwtAuthenticationFilter.java
+    - id: DEC-0074-02
+      disposition: retained
+      scope: 已有admin按钮凭证方式例外继续不豁免节点、账号、业务状态、字段权限或审计约束；详情可读不推定有审批、转办、改派、撤回或签署资格。
+      sourceReferences:
+        - docs/knowledge/decisions/DEC-0074-shared-terminal-button-signature.yaml
+        - docs/knowledge/decisions/DEC-0096-record-control-system-admin-detail-read.yaml
+    - id: fact.catalog.productfamilytransfer-confirmation
+      disposition: retained
+      scope: 远端已修正的确认事实来源及定位保持；成员转移增加删除后flush以满足唯一约束，不新增确认字段或改变业务确认含义。
+      sourceReferences:
+        - docs/knowledge/facts/core-business.yaml
+        - gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductFamilyMembershipService.java
+  conflicts: []
+  questions: []
+  validationEvidence:
+    - id: validation.record-access-merge-ontology-structure
+      checkType: schema
+      command: Ruby YAML.safe_load解析九个相关知识文件并比较schema中的knowledgeModelVersion。
+      outcome: passed
+      evidence:
+        - docs/development/record-history-detail-access-20261109/integration-20261110/ontology-validation.json
+        - 九个相关YAML均为0.3.25；未运行正式Java知识校验器，不能以本检查替代它。
+    - id: validation.record-access-merge-ontology-references
+      checkType: reference
+      command: Ruby按decisions/rules/evidence/facts/implementationAnchors目录建立ID注册表，检查对应集合无重复ID及九个相关文件的evidenceIds可解析。
+      outcome: passed
+      evidence:
+        - docs/development/record-history-detail-access-20261109/integration-20261110/ontology-validation.json
+        - 这是ID与引用的静态完整性检查，不是全库逐声明语义审计。
+    - id: validation.record-access-merge-parent-preservation
+      checkType: evidence-path
+      command: git rev-parse比较候选df344ded与原功能/目标提交中的九个关键文件blob，另比较四个项目和角色契约blob。
+      outcome: passed
+      evidence:
+        - docs/development/record-history-detail-access-20261109/integration-20261110/ontology-validation.json
+        - DEC0095及人员规则/事实/责任服务/JWT/0092迁移与远端原件一致，DEC0096/记录变更规则/详情服务与功能提交一致；四个契约在双方及候选相同。
+    - id: validation.record-access-merge-semantic-boundary
+      checkType: projection
+      command: 逐项对照DEC0095/0096、DEC0087-09、DEC0074、记录控制读取与人员选择原始源码，以及0092和远端审计/JWT/DHR导出与汇总/成员转移增量。
+      outcome: passed
+      evidence:
+        - docs/knowledge/decisions/DEC-0095-qualified-personnel-selection-completeness.yaml
+        - docs/knowledge/decisions/DEC-0096-record-control-system-admin-detail-read.yaml
+        - gmp-platform/backend/src/main/java/com/zencas/edhr/recordcontrol/service/RecordControlService.java
+        - gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/WorkflowResponsibilityService.java
+        - gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/entity/AuditEvent.java
+        - gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrArchiveController.java
+        - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrSummaryService.java
+        - gmp-platform/backend/src/main/resources/db/changelog/0092-audit-event-hash-version.sql
+        - 0092只增加可空snapshot_hash_version，不回填或改写旧散列；新事件版本化与本轮只读权限兼容。JWT异步重新认证保留认证ID来源。DHR导出仍由原双权限控制，新增清理针对临时导出文件，不是归档状态或冻结证据删除；汇总附件复用读取保持校验调用。前端旧数组fixture适配新Page是工程协议对齐，不是新的候选或授权政策。本人未运行Maven、浏览器或数据库。
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages: [P1, P2, P3]

@@ -1,0 +1,63 @@
+{
+  "qualification": "Static YAML/reference/blob checks only; no Maven, browser or database execution",
+  "candidate": "df344ded01679ad6a32d42636f8f4f088317eb3d",
+  "knowledgeModelVersion": "0.3.25",
+  "parsedPaths": [
+    "docs/knowledge/decisions/DEC-0095-qualified-personnel-selection-completeness.yaml",
+    "docs/knowledge/decisions/DEC-0096-record-control-system-admin-detail-read.yaml",
+    "docs/knowledge/rules/personnel-target-selection.yaml",
+    "docs/knowledge/rules/record-change.yaml",
+    "docs/knowledge/facts/core-business.yaml",
+    "docs/knowledge/implementation-anchors/personnel-target-selection.yaml",
+    "docs/knowledge/implementation-anchors/core-business.yaml",
+    "docs/knowledge/evidence/qualified-personnel-selection-20261105.yaml",
+    "docs/knowledge/evidence/record-history-detail-access-20261109.yaml"
+  ],
+  "globalRegistryCounts": {
+    "decisions": 95,
+    "rules": 253,
+    "evidence": 582,
+    "facts": 279,
+    "implementationAnchors": 72
+  },
+  "evidenceReferences": "passed",
+  "contractPreservation": "passed",
+  "parentBlobPreservation": {
+    "docs/knowledge/decisions/DEC-0095-qualified-personnel-selection-completeness.yaml": {
+      "parent": "5e8edb47ae91af83555f4b67a87598c3c2a9a664",
+      "blob": "4225ab9ea35c78aa4772f60b0ee4ec7b43626e95"
+    },
+    "docs/knowledge/rules/personnel-target-selection.yaml": {
+      "parent": "5e8edb47ae91af83555f4b67a87598c3c2a9a664",
+      "blob": "aa6eec115f79d6c9ac408ffbd304b833e1d59107"
+    },
+    "docs/knowledge/facts/core-business.yaml": {
+      "parent": "5e8edb47ae91af83555f4b67a87598c3c2a9a664",
+      "blob": "6b91c4a31b029a72705ce1ea2c7ab477affdb52c"
+    },
+    "gmp-platform/backend/src/main/resources/db/changelog/0092-audit-event-hash-version.sql": {
+      "parent": "5e8edb47ae91af83555f4b67a87598c3c2a9a664",
+      "blob": "0a37a218af133ec35cb87ad383dbf4afcafa362b"
+    },
+    "gmp-platform/backend/src/main/java/com/zencas/edhr/identity/security/JwtAuthenticationFilter.java": {
+      "parent": "5e8edb47ae91af83555f4b67a87598c3c2a9a664",
+      "blob": "36f407c394b98fc2c749850b0fa0d7fc389a9ddd"
+    },
+    "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/WorkflowResponsibilityService.java": {
+      "parent": "5e8edb47ae91af83555f4b67a87598c3c2a9a664",
+      "blob": "08995040f3695fa0920dd5d08c2c533aca17f076"
+    },
+    "docs/knowledge/decisions/DEC-0096-record-control-system-admin-detail-read.yaml": {
+      "parent": "35e761d62d1b505c174dc050f7b5cb363b2beb14",
+      "blob": "c64f5d2ce7ee4b3d3fae4b8b3d8fcf9915006479"
+    },
+    "docs/knowledge/rules/record-change.yaml": {
+      "parent": "35e761d62d1b505c174dc050f7b5cb363b2beb14",
+      "blob": "4635a75ed9de6d0fcf9b3c57415efc240a197021"
+    },
+    "gmp-platform/backend/src/main/java/com/zencas/edhr/recordcontrol/service/RecordControlService.java": {
+      "parent": "35e761d62d1b505c174dc050f7b5cb363b2beb14",
+      "blob": "dfc89ef814494e26d16cfa40c53eeb197d9945f5"
+    }
+  }
+}

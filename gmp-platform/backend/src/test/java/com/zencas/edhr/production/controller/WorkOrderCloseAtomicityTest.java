@@ -187,6 +187,7 @@ class WorkOrderCloseAtomicityTest {
                     .getRepository(WorkOrderRepository.class);
         }
         @Bean ProductionObjectRepository objects() { return mock(ProductionObjectRepository.class); }
+        @Bean com.zencas.edhr.production.repository.ProductionExecutionRepository executions() { return mock(com.zencas.edhr.production.repository.ProductionExecutionRepository.class); }
         @Bean MaterialRepository materials() { return mock(MaterialRepository.class); }
         @Bean ProductProcessVersionRepository processVersions() { return mock(ProductProcessVersionRepository.class); }
         @Bean ProductProcessResolutionService resolution() { return mock(ProductProcessResolutionService.class); }

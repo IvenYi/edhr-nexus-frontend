@@ -2115,7 +2115,7 @@ action(object, "SAVE", 1, "a", Map.of("formId", object == 101 ? "form-51" : "for
             .andExpect(jsonPath("$.data.content[0].transferStyle").value("DEFAULT"));
         mvc.perform(personal(get("/api/v1/production/execution/101/transfer-targets")
                 .param("operationId", "a").param("formId", "work-7-f").param("instanceId", "work-7-f"), "1"))
-            .andExpect(status().isOk()).andExpect(jsonPath("$.data[0].id").value("2")).andExpect(jsonPath("$.data[0].name").value("复核员2"));
+            .andExpect(status().isOk()).andExpect(jsonPath("$.data.content[0].id").value("2")).andExpect(jsonPath("$.data.content[0].name").value("复核员2"));
         mvc.perform(personal(post("/api/v1/production/execution/101/actions").contentType("application/json")
                 .content("{\"action\":\"TRANSFER\",\"revision\":2,\"operationId\":\"a\",\"formId\":\"work-7-f\",\"instanceId\":\"work-7-f\",\"targetUserId\":\"2\",\"reason\":\"交由当班复核员\"}"), "1"))
             .andExpect(status().isOk()).andExpect(jsonPath("$.data.revision").value(3))
@@ -2145,8 +2145,8 @@ action(object, "SAVE", 1, "a", Map.of("formId", object == 101 ? "form-51" : "for
         assertThat(stateBefore.at("/operations/a/forms/work-7-f/approvers/review")).hasSize(1);
         mvc.perform(personal(get("/api/v1/production/execution/101/transfer-targets")
                 .param("operationId", "a").param("formId", "work-7-f").param("instanceId", "work-7-f"), "1"))
-            .andExpect(status().isOk()).andExpect(jsonPath("$.data.length()").value(2))
-            .andExpect(jsonPath("$.data[*].id").value(org.hamcrest.Matchers.containsInAnyOrder("2", "3")));
+            .andExpect(status().isOk()).andExpect(jsonPath("$.data.content.length()").value(2))
+            .andExpect(jsonPath("$.data.content[*].id").value(org.hamcrest.Matchers.containsInAnyOrder("2", "3")));
         for (String invalid : List.of("1", "4", "5", "6", "missing")) {
             mvc.perform(personal(post("/api/v1/production/execution/101/actions").contentType("application/json")
                     .content(mapper.writeValueAsString(Map.of("action", "TRANSFER", "revision", 2, "operationId", "a",
@@ -2187,7 +2187,7 @@ action(object, "SAVE", 1, "a", Map.of("formId", object == 101 ? "form-51" : "for
         seedTenantDelegationApproval();
         mvc.perform(personal(get("/api/v1/production/execution/101/transfer-targets")
                 .param("operationId", "a").param("formId", "work-7-f").param("instanceId", "work-7-f").param("keyword", "reviewer2"), "1"))
-            .andExpect(status().isOk()).andExpect(jsonPath("$.data[0].id").value("2"));
+            .andExpect(status().isOk()).andExpect(jsonPath("$.data.content[0].id").value("2"));
         jdbc.update("UPDATE user_account SET locked_until=? WHERE id=2", java.time.LocalDateTime.now().plusHours(1));
         String before = jdbc.queryForObject("SELECT state_json FROM production_execution WHERE object_id=101", String.class);
         mvc.perform(personal(post("/api/v1/production/execution/101/actions").contentType("application/json")

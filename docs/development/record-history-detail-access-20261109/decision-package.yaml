@@ -9,6 +9,37 @@ decisionPackage:
     contractReadCommit: 7c2c74d0a9f6b30c6e2dfbd9ad1620d5d29f9a37
     uncommittedContractPaths: []
   summary: 实际403权限拒绝被页面显示为通用加载失败，列表仍向无权人员提供可点击详情；用户补充确认系统超管应能查看，补真正超管只读例外并对齐普通账号入口。
+  integrationRun:
+    date: 2026-11-10
+    authorization: 用户明确要求提交两轮修复、拉取合并最新代码并推送edhr-dev，保留现有功能和数据。
+    contractBaseline:
+      sourceCommit: df344ded01679ad6a32d42636f8f4f088317eb3d
+      targetBranch: edhr-dev
+      targetCommit: 5e8edb47ae91af83555f4b67a87598c3c2a9a664
+      contractReadCommit: df344ded01679ad6a32d42636f8f4f088317eb3d
+      uncommittedContractPaths: []
+    featureCommit: 35e761d62d1b505c174dc050f7b5cb363b2beb14
+    mergeCandidate: df344ded01679ad6a32d42636f8f4f088317eb3d
+    mergeMethod: 非快进普通合并，双方历史保留，无文本冲突；不新建工作树。
+    impactAnalysis:
+      level: L2
+      directImpacts: [两轮变更管理权限修复与DEC0096, 远端88个提交原样保留]
+      transitiveImpacts: [人员候选分页与签名改派, 审计散列与分页, DHR导出及JWT异步响应, 产品家族转移]
+      potentialImpacts: []
+      unaffectedAreas: [不调整任务与签署业务资格, 不重造或清理现有验收数据]
+      compatibilityAndMigration: [远端0092只增加可空snapshot_hash_version列，不回填、不改旧散列，无删除更新旧业务行]
+      snapshotImpacts: [保留表单修订和DHR冻结证据，主库核心业务表前后全行摘要核对]
+      auditImpacts: [保留远端新事件散列版本策略，本轮无新的审计语义政策]
+      permissionImpacts: [保留真正超管只读例外与DEC0095候选资格边界]
+      testImpacts: [实际合并候选后端默认全套与真实PG记录控制测试, 两轮58页面回归, 人员选择相邻回归, 前端构建和规范, 合并后91次主环境只读核对, 新本体与独立质量实例]
+      evidenceGaps: [默认套件未启用的专用PG观察库按跳过如实报告，不把远端旧报告计作本轮运行]
+    extensionStrategy: product-core；本轮只集成已实现产品代码，不引入新的框架或客户分支。
+    dataProtection: 开发库已在仓库外完成全库pg_dump备份，迁移先在隔离库验证，运行环境仍为主目录edhr_dev。
+    regressionFixtureAlignment:
+      - 旧候选数组断言和模拟响应改为远端既有分页协议，保留候选身份与数量断言。
+      - DHR生命周期的空附件mock改为远端forSubmission接口，保留全部冻结和签署断言。
+      - 工单关闭测试补ProductionService已有执行仓库依赖；工单权限测试按既有详情/其他操作分别严格核对，不改变产品权限。
+      - 当前迁移清单断言补既有0091与远端0092；审计持久化/读取测试显式使用各自受保护的隔离库与输出目录。
   followupAudit:
     date: 2026-11-10
     request: 检查变更管理是否仍有同类权限、入口和错误反馈问题。

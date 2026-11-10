@@ -13,11 +13,11 @@ class CurrentDatabaseBaselineTest {
                 .containsExactlyInAnyOrder("db.changelog-master.yaml",
                     "baseline/0001-current-schema.sql", "baseline/0002-current-seed.sql",
                     "0087-record-control.sql", "0088-record-change-menu-permissions.sql", "0089-record-control-dhr-linkage.sql",
-                    "0090-workflow-operations.sql");
+                    "0090-workflow-operations.sql", "0091-dhr-review-query-indexes.sql", "0092-audit-event-hash-version.sql");
         }
         String master = Files.readString(root.resolve("db.changelog-master.yaml"));
         assertThat(master).contains("0087-record-control.sql", "0088-record-change-menu-permissions.sql", "0089-record-control-dhr-linkage.sql",
-                "0090-workflow-operations.sql");
+                "0090-workflow-operations.sql", "0091-dhr-review-query-indexes.sql", "0092-audit-event-hash-version.sql");
         String schema = Files.readString(root.resolve("baseline/0001-current-schema.sql"));
         assertThat(schema).contains("CREATE TABLE public.signature", "snapshot_data text",
                 "ck_signature_snapshot_data_json", "CREATE FUNCTION public.sync_deletion_form_references")

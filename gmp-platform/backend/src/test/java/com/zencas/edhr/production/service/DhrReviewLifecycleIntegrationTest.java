@@ -238,6 +238,7 @@ class DhrReviewLifecycleIntegrationTest {
         @Bean DhrAttachmentService attachments(ObjectMapper mapper) {
             DhrAttachmentService service = mock(DhrAttachmentService.class);
             when(service.snapshot(anyLong())).thenAnswer(ignored -> mapper.createArrayNode());
+            when(service.forSubmission(anyLong())).thenAnswer(ignored -> new DhrAttachmentService.SubmissionAttachments(mapper.createArrayNode(), java.util.List.of()));
             return service;
         }
         @Bean SnowflakeIdGenerator ids() { return new SnowflakeIdGenerator(4); }

@@ -18,7 +18,15 @@ class ProductionControllerAuthorizationTest {
 
     @Test
     void everyWorkOrderApiMethodRequiresProductionPermission() {
-        assertProductionApiMethodsAreProtected(WorkOrderController.class);
+        for (Method method : WorkOrderController.class.getDeclaredMethods()) {
+            if (!isApiMethod(method)) continue;
+            PreAuthorize authorization = method.getAnnotation(PreAuthorize.class);
+            assertThat(authorization).as("authorization on WorkOrderController.%s", method.getName()).isNotNull();
+            GetMapping get = method.getAnnotation(GetMapping.class);
+            boolean detail = get != null && java.util.Arrays.asList(get.value()).contains("/{id}");
+            assertThat(authorization.value()).isEqualTo(detail
+                    ? "hasAnyAuthority('production.work-orders', 'production.batches')" : REQUIRED_AUTHORITY);
+        }
     }
 
     @Test
