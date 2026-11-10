@@ -2,6 +2,8 @@
 
 ## PR80已合入：记录变更冻结引用与完整候选上下文
 
+已交付[PR81](https://github.com/IvenYi/edhr-nexus-frontend/pull/81)，audit/edhr-dev-record-reference-context-20261110→edhr-dev，观察OPEN/MERGEABLE/CLEAN，建议人工合入本批。受测8766a0f9、验收bd37ce65后仅L0交付登记；登记前本地/实际远端/PR head及46/359输入一致，登记正常推送后再核对。下一轮先fetch核实真实合入与全部新增，再回原整体审计队列；不自动merge/deploy/恢复或查触发CI。
+
 已fetch `edhr-dev@3b961a032ad4a21b2fdbd62d34bb0e26fc9e0a0d`，PR80真实合入且整树同f17d2fc5，无额外产品/知识/契约。新分支audit/edhr-dev-record-reference-context-20261110；[本批](../branch-review-20261110-record-reference-context/README.md)L2按原W3/W5跨链、W6健壮性/A23和W7增量，修复W3-RECORD-REFERENCE-CONTEXT-001/high与W3-RECORD-REFERENCE-QUERY-001/medium：先完整合并拟值，按记录冻结model/canvas校验证据；子表稳定修订行ID传previous；页面/认证只读POST接通主/行context和分页，GET沿保存主值兼容。原共享规则合理且保持，不改知识政策、UI视觉/共享控件、签署/审批/事务/审计/历史/schema/索引。
 
 受测clean8766a0f9，主侧与全新独立各实际158/158（99原生PG＋59其他含15H2）、知识各实际89/89、维护页面各42/42及build/list/font，均0F/E/S。新增原生12含model/canvas×主/子表、顺序/省略、历史原因/旧行重排、真实JWT+MockMvc和提交审批历史；旧同最终native字节12=2正10真红/0E/S，非法旧提交实际200并写IN_REVIEW、当前400且8表摘要不变，合法B/502批准后Rev1/Rev2为501/502。原生152人员全部跨页可达；浏览器两宽实际选中后页人员149，无100总量cap。旧UI追加预执行5源摘要/执行后复核的8项反证全红；浏览器API拦截与原生链分别报告，不称生产联通E2E。

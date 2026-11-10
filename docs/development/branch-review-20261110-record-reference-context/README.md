@@ -2,6 +2,8 @@
 
 L2；目标`edhr-dev@3b961a03`，PR80真实合入且无额外产品/知识/契约增量。实际受测候选`8766a0f90cd2b34ff35e0a9a1bef719c5d997b00`。
 
+已交付[PR81](https://github.com/IvenYi/edhr-nexus-frontend/pull/81)，来源`audit/edhr-dev-record-reference-context-20261110`、目标`edhr-dev`，观察OPEN/MERGEABLE/CLEAN，建议人工合入本批新路径修复。验收提交`bd37ce65cd725ae19f022607189fe1befb716e2b`；受测提交之后仅L0报告/台账，当前仅追加交付登记。登记前本地HEAD、实际远端HEAD和PR head一致，46受保护输入与359知识校验输入未变；登记正常推送后再次核对，不把报告提交改称重新运行测试。见[交付前实际核对](evidence/delivery-verification.json)。
+
 本批修复两项确定问题：完整新值先合并、按记录自身冻结model/canvas规则校验证据，省略旧引用不能绕过依赖；页面/认证只读API完整转发上下文与分页，全部合资格人员可分页到达。子表按稳定修订行ID传原值，沿用合法历史原因规则。保留GET兼容、原权限/签署/审批/事务/审计/历史和UI视觉，不做schema或知识政策变更。
 
 主侧与全新独立实例分别实际通过158/158后端、42/42维护页面浏览器、89/89知识结构校验及build/list/font。后端各99原生PG＋59其他；浏览器为实际页面与共享控件、受控API合成数据，不是联通生产E2E。旧源同最终测试12=2正/10真失败，旧浏览器追加带执行前源摘要的8项反证全红。质量`passed/FINAL`，16项检查通过，无发现/阻断；本体`not-applicable/FINAL`，有限21项，不增加全库unique覆盖。
