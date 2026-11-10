@@ -1,0 +1,54 @@
+decisionPackage:
+  id: DEC-PACKAGE-RECORD-ACCESS-INCREMENT-20261110
+  scope: Incremental audit of merged record-control detail access and read capacity
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: 07d6d4168a00a265afea8105db9a1a0e2554f683
+    targetBranch: edhr-dev
+    targetCommit: 07d6d4168a00a265afea8105db9a1a0e2554f683
+    contractReadCommit: 07d6d4168a00a265afea8105db9a1a0e2554f683
+    uncommittedContractPaths: []
+  summary: PR74已合入；目标另有记录控制详情只读例外/入口反馈及集成测试夹具增量，按DEC0096和原保留政策增量审查，不拿旧166覆盖新组合。核清当前产品差异和既有声明级替代，执行相关真实PG/测试/页面回归；对详情资格SQL可能的数据库内逐行任务扫描增加只读容量观察和真实计划，先量化讨论而不自动优化。本轮不预设新功能bug，不改业务政策/真实数据或暂停模块。
+  confirmed: {concepts: [], relationships: [], rules: [], executionContracts: []}
+  inferred:
+    - id: inference.record-control-list-correlated-read-cost
+      statement: 单次分页SELECT的资格EXISTS含CAST(task.instance_id AS VARCHAR)，可能在任务规模增大时反复扫描；接口查询次数少不证明数据库内工作有界
+      rationale: 当前源码有按申请行关联的权限子查询，需真实EXPLAIN与多规模fixture而非凭源码定性
+      relatedIds: [DEC-0096-03]
+  unresolved: []
+  replacementScopes: []
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - {area: merged-increment-audit, change: 复核一后端服务/API类型/四页面及既有夹具调整；当前规则是DEC0096超管只读例外，普通资格与所有写动作保持, evidenceReferences: [docs/knowledge/decisions/DEC-0096-record-control-system-admin-detail-read.yaml]}
+    transitiveImpacts:
+      - {area: projection-detail-consistency, change: 列表/来源投影与详情真实资格、任务独立资格和实际签署人/登录人边界核对, evidenceReferences: [docs/knowledge/evidence/record-history-detail-access-20261109.md]}
+    potentialImpacts:
+      - {area: read-capacity, concern: 页内相关子查询可能随任务数量和申请行数放大；只加自有canonical测试数据及auto_explain，不改SQL/索引/资格, evidenceReferences: []}
+    unaffectedAreas:
+      - {area: production-and-paused, change: PR74预校验512/即时复核/审计、生产管理弹窗样式与朋友负责通用任务签名页保持, evidenceReferences: []}
+    compatibilityAndMigration:
+      - {area: fixtures-and-schema, change: 原夹具与现有Page/forSubmission/权限/0091和0092对齐是否保留断言；不新增迁移或修改已有断言, evidenceReferences: []}
+    snapshotImpacts:
+      - {area: actual-history, change: 仅隔离库合成fixture；不恢复/修改主环境、冻结、修订或历史, evidenceReferences: []}
+    auditImpacts:
+      - {area: readonly-probe, change: 原业务回归保留；容量读取前后证据和审计表摘要不变，不把合成克隆当已签署真实流程, evidenceReferences: []}
+    permissionImpacts:
+      - {area: access, change: ACTIVE受保护admin由认证ID查库确认、普通ADMIN不等于超管；仅只读例外，不授予其他人的任务或动作, evidenceReferences: []}
+    testImpacts:
+      - {scope: increment-and-capacity, scenarios: [当前PG资格/签名与流程回归, 修改夹具的聚焦回归, 保留PR74成员回归, 58页面/11人员场景, 多规模任务与20申请分页真实计划/只读摘要], evidenceReferences: []}
+    evidenceGaps: [不重跑或声称所有2144测试及全部专用环境均覆盖, 浏览器为实际组件加合成API非主环境, 更大真实分布/完整多租户/完整并发矩阵仍待审, W2-W7/931知识86UI候选/A12/高风险/完整矩阵/A23含已审与暂停项继续]
+  extensionStrategy:
+    selectedPaths: [transaction-orchestration]
+    rationale: 复用现有真实PG测试fixture增加只读容量场景，原产品实现暂不改动；权限与投影仍由原记录控制Service拥有
+    ownershipBoundaries:
+      - {owner: RecordControlService, responsibility: 当前只读授权与查询，不在本批先行重写}
+      - {owner: audit-tests, responsibility: 隔离fixture/实际查询计划/只读与资格证据}
+  affectedFiles:
+    - {path: gmp-platform/backend/src/test/java/com/zencas/edhr/recordcontrol/service/RecordControlPostgresIntegrationTest.java, changeType: update, reason: 有限容量读观察，不降低既有业务断言}
+  acceptanceScenarios:
+    - id: scenario.incremental-record-control-audit
+      given: 目标含PR74与DEC0096当前记录控制增量
+      when: 在隔离环境执行实际相关回归及容量观察
+      then: 新增政策/资格/旧规则边界核清，真实问题按证据处理；性能风险量化后讨论，不扩大实现
+      evidenceRequirements: [当前源码/知识/测试映射, 真实PG及组件浏览器, 实际执行计划/参数/只读摘要, 全新独立质量, 全部FINAL后PR前漂移/阶段复核]

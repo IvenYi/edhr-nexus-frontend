@@ -1,0 +1,216 @@
+qualityResult:
+  result: passed
+  baseCommit: 07d6d4168a00a265afea8105db9a1a0e2554f683
+  headCommit: 0f5d4354ed381adb07650548a2ec417969d2416d
+  contractBaseline:
+    sourceCommit: 0f5d4354ed381adb07650548a2ec417969d2416d
+    targetBranch: edhr-dev
+    targetCommit: 07d6d4168a00a265afea8105db9a1a0e2554f683
+    contractReadCommit: 0f5d4354ed381adb07650548a2ec417969d2416d
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: clean
+    includedPaths: []
+    excludedPaths: []
+    untrackedPaths: []
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+  - id: check.independent-final-binding
+    required: true
+    category: documentation
+    description: Independent target fetch, fixed clean candidate and actual source/contract binding
+    method: command
+    command: git fetch origin edhr-dev; python3 analyze.py
+    outcome: passed
+    evidence:
+    - start-binding.json
+    - source-binding.json
+    - final-fetch.log
+    - cleanup.json
+  - id: check.policy-and-retained-boundaries
+    required: true
+    category: ontology
+    description: DEC0096 precise replacement and retained signature/task/DHR/personnel policy; finite coverage honestly
+      scoped
+    method: inspection
+    command: Inspect fixed candidate source and DEC0096/0087/0074/0093/0095
+    outcome: passed
+    evidence:
+    - independent-review.md
+    - additional-reviewed-source
+    - ontology-result-referenced.yaml
+    - knowledge-inventory-recheck.json
+  - id: check.fixture-medium-resolution
+    required: true
+    category: database
+    description: Correct business_id,20 target/M background association assertions and original schema proof
+    method: query
+    command: Owned PG16 READ ONLY fixture-proof-v2.sql; actual full127 regression
+    outcome: passed
+    evidence:
+    - fixture-proof-v2.sql
+    - fixture-proof-v2.log
+    - fixture-proof-v2-run.json
+    - diff-594a1944-to-0f5d4354.patch
+    - final/test-summary.json
+  - id: check.backend-127
+    required: true
+    category: regression
+    description: Actually execute nine selected suites/127 with strict isolated native database guards, no skip/standard
+      reduction
+    method: automated-test
+    command: EDHR_RECORD_ROOT=<own-worktree> EDHR_RECORD_RAW=<own-raw> python3 run-independent.py final
+    outcome: passed
+    evidence:
+    - final/run.json
+    - final/test-summary.json
+    - final/maven.log
+    - final/TEST-*.xml
+  - id: check.knowledge-89
+    required: true
+    category: ontology
+    description: Actually execute current knowledge89 on candidate; schema/reference result is not whole semantic
+      completion
+    method: automated-test
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr --batch-mode --no-transfer-progress --file tools/knowledge-model/pom.xml
+      clean test
+    outcome: passed
+    evidence:
+    - knowledge/run.json
+    - knowledge/maven.log
+    - knowledge/TEST-com.zencas.edhr.knowledge.BusinessKnowledgeModelTest.xml
+  - id: check.readonly-permission-capacity
+    required: true
+    category: audit
+    description: Twelve real service calls and real original-detail probes;8-table before/after digest assertions
+      unchanged
+    method: automated-test
+    command: RecordControlPostgresIntegrationTest#requestListCapacityKeepsReadPolicyAndEvidence with capacity flag=true
+    outcome: passed
+    evidence:
+    - final/source/gmp-platform/backend/src/test/java/com/zencas/edhr/recordcontrol/service/RecordControlPostgresIntegrationTest.java
+    - final/read-observations
+    - final/test-summary.json
+    - actual-plan-analysis.json
+  - id: check.actual-sql-plans
+    required: true
+    category: database
+    description: Actual24 auto_explain plans and executed statement counts; scaling risk retained without unsolicited
+      optimization
+    method: query
+    command: python3 analyze.py over own original service PG log
+    outcome: passed
+    evidence:
+    - actual-plan-analysis.json
+    - actual-plans
+    - final/postgres.log
+    - fixture-proof-v2.log
+  - id: check.ui-reuse-binding
+    required: true
+    category: visual
+    description: Independently bind and inspect unaffected original58/11 browser/build/list/font evidence; not v2
+      reruns
+    method: inspection
+    command: Compare complete Git tree objects07/594a/0f5; verify original input SHA and original artifacts/screenshots
+    outcome: passed
+    evidence:
+    - ui-reuse-binding.json
+    - ui-evidence-reused/ui/result.json
+    - ui-evidence-reused/personnel-ui/result.json
+    - ui-evidence-reused/frontend-build-run.json
+    - independent-review.md
+  - id: check.static-delta
+    required: true
+    category: regression
+    description: Same86 finding identities at2dc/current; no added whole-project static finding, exact official
+      cloud auditor rerun
+    method: command
+    command: python3 audit_project_official.py <own-worktree> --mode strict --output premium-audit-official.json;
+      compare baseline identities
+    outcome: passed
+    evidence:
+    - premium-official-run.json
+    - premium-audit-official.json
+    - official-tool-binding.json
+    - whole-project-debt.json
+  - id: check.whole-ui-static
+    required: false
+    category: visual
+    description: Whole-project strict compliance remains failed; this candidate changes only test fixture and decision
+      package
+    method: command
+    command: python3 audit_project_official.py <own-worktree> --mode strict --output premium-audit-official.json
+    outcome: failed
+    evidence:
+    - premium-official-run.json
+    - premium-audit-official.json
+    - whole-project-debt.json
+  - id: check.whole-ui-lint
+    required: false
+    category: regression
+    description: Whole-project lint cannot run to completion because existing ESLint configuration is missing
+    method: command
+    command: npm run lint
+    outcome: blocked
+    evidence:
+    - lint-run.json
+    - lint.log
+  - id: check.owned-cleanup
+    required: true
+    category: documentation
+    description: All own verification processes finished, own container/link removed and worktree clean
+    method: command
+    command: docker inspect owned-PG; unlink own dependency link; git status --porcelain
+    outcome: passed
+    evidence:
+    - final/cleanup.json
+    - cleanup.json
+  findings:
+  - id: QF-RECORD-ACCESS-001
+    severity: medium
+    scope: RecordControlPostgresIntegrationTest capacity metadata fixture only
+    summary: jsonb_populate_record使用不存在的business_key键，克隆workflow_instance业务身份仍指向原申请，不能称业务关联元数据完全一致
+    reproductionSteps:
+    - 在594a新增容量测试两处INSERT中核对workflow_instance的business_key键。
+    - 核对实体及baseline schema均使用business_id，未定义business_key。
+    - 在独立PG执行fixture-proof.sql；输入原business_id及新business_key，返回仍为original-request。
+    expectedResult: 20个目标及背景实例正确使用business_id并验证目标申请与实例对应，背景关系也可核对。
+    actualResult: 未知business_key被忽略，克隆保留原实例business_id；当前任务总数断言不会检测该元数据不一致。
+    evidence:
+    - ui-evidence-reused/quality-result.yaml
+    - ui-evidence-reused/fixture-proof.log
+    - fixture-proof-v2.log
+    - diff-594a1944-to-0f5d4354.patch
+    resolutionStatus: resolved
+    resolutionEvidence:
+    - type: commit
+      reference: 0f5d4354ed381adb07650548a2ec417969d2416d
+    - type: test
+      reference: final/test-summary.json
+    - type: query
+      reference: fixture-proof-v2.log
+  residualRisks:
+  - id: risk.record-access-scale
+    description: Reviewer42 page at20k background uses20 task SeqScans filtering20010 per loop; actor44 once, applicant/admin0
+      loops
+    impact: Growing history can increase read CPU/latency despite only2 interface queries; synthetic warm timings
+      are not SLA
+    mitigation: Preserve current evidence and discuss page-scoped qualification optimization/index boundary separately;
+      no productSQL/index changed or assumed approval
+  - id: risk.global-ui-debt
+    description: Strict86 existing errors and missing ESLint configuration remain; same baseline finding identities,
+      zero new
+    impact: No whole-site premium/lint pass claim; global review queue remains open
+    mitigation: Keep existing overall-audit queue; no unrelated redesign or rule relaxation in fixture correction
+  - id: risk.finite-validation
+    description: 127 selected backend tests/89 knowledge;58/11 unaffected UI evidence reused, no complete2144 or
+      all native/network matrix
+    impact: Overall W2-W7/A12/full concurrency/production capacity/UNKNOWN/A23 and paused items remain
+    mitigation: Continue fixed-baseline incremental audit and state exact evidence boundaries
+  - id: risk.knowledge-denominator
+    description: 353 files/2848 asset IDs are inventory; finite32 is30 consistent,1 local superseded,1 nonblocking
+      existing tenant question
+    impact: No global semantic audit percentage or whole-file completion implied
+    mitigation: Keep per-ID pending inventory, whole-file0 and historical unique unknown; default-tenantMVP does
+      not establish multi-tenant production isolation
+  blockingConditions: []

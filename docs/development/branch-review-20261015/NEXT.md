@@ -1,5 +1,19 @@
 # 持续推进台账
 
+## PR74已合入：记录控制新增代码与读取容量增量审计
+
+已交付[PR75](https://github.com/IvenYi/edhr-nexus-frontend/pull/75)，audit/edhr-dev-record-access-increment-20261110→edhr-dev，观察OPEN/MERGEABLE/CLEAN，建议按有限测试/证据范围人工合入。受测字节0f5d4354、验收提交e459e55b后仅L0交付登记；登记前本地/真实远端/PR head及40输入一致，登记推送后再次核对。下轮先fetch真实合入与新增，不把合入/继续当作尚未答复的性能方案批准。
+
+已 fetch 实时 edhr-dev@07d6d4168a00a265afea8105db9a1a0e2554f683，核 PR74 merge=5db90bd6；另有35e761d6记录控制只读资格/UI反馈、0be80abf旧测试夹具对齐和集成提交。相对上次2dc6941e共101文件，6产品/7后端测试/1前端脚本/8知识/1架构/78报告。新分支audit/edhr-dev-record-access-increment-20261110。[本批](../branch-review-20261110-record-access-increment/README.md)L2做W3/W7增量、W6健壮性性能及A23；未确认新增正常路径产品bug，产品/UI/知识/schema/权限均未改，仅现有PG类增加3档容量观察。
+
+DEC0096只替代0087-09在审申请详情只读限制，认证ID反查ACTIVE受保护admin；不扩大任务、审批/撤回/签署或其他域。有限32项=30范围一致/1精确部分替代/1既有非阻断多租户待决，非全量知识一致通过。353知识文件/2848同口径资产ID是清单，不与旧931直接比率；原始89已跑，最终本体NA/FINAL仅按相同知识与夹具差异重绑，不冒称重跑。知识0.3.25/schema1.2/P0保持。
+
+当前受测字节0f5d4354：主侧final127/127（运行时dirty594a与40输入逐字绑定），全新独立v2固定clean候选实际127/89全过、quality passed/FINAL、10必需项通过。v1虽127/89和UI绿仍正式failed，因我方容量克隆使用不存在business_key保留原business_id；0f5改两键并加20目标/M背景关联断言，旧medium独立resolved，失败原件保留。focused3E幂等键夹具问题及早/晚命中中间运行也保留。主侧58workflow/11人员浏览器、build/list/font通过；v2按全frontend/runtime/knowledge同字节复用UI，未重跑。strict86=72/14且旧新集合相同、新增0；lint缺配置exit2均未关闭，官方工具末尾LF差异及exact字节重跑记录保留。
+
+确认[PERF-RECORD-DETAIL-PROJECTION-001](../branch-review-20261110-record-access-increment/performance-next.md)：20行页的2条SQL内，审批人2万背景task顺扫20次/每次过滤20010，主侧70.223ms、独立61.344ms；无关用户hash一次、申请人/超管短路。热缓存合成非生产SLA，不是20次接口调用。建议本页流程批量资格核对、保留文本ID精确语义及详情实时复核，当前实际提问未答，未做SQL/索引优化，不把继续或merge视为同意。
+
+全部角色及孩子FINAL，主侧自有PG/worker/Playwright软链已按所有权清理；四分包1223成员及角色manifest已核。2026-11-10 13:09 Asia/Shanghai已实际[PR前漂移/阶段复核](../branch-review-20261110-record-access-increment/pre-pr-drift-review.md)，目标仍07d6、40输入同字节、无漂移，之后仅L0证据/交付登记。整体W2余项/W3-W5跨链/W6性能健壮性具体抽取与A23含已审/W7新增、931知识原子集/86UI/A12/高风险/完整矩阵、family剩余4N与选项全载、事件DB分页未答、容量/UNKNOWN及用户暂停项继续；整文件完成0/historyUnique未知。下一轮先fetch真实合入/新增，不自动merge/deploy/恢复或查触发CI。
+
 ## PR73已合入：已授权的产品簇预校验批读
 
 已交付[PR74](https://github.com/IvenYi/edhr-nexus-frontend/pull/74)，audit/edhr-dev-family-prevalidation-20261107→edhr-dev，观察OPEN/MERGEABLE/CLEAN，建议人工合入。受测4ee3efba、验收cbd075c3后仅L0交付登记，登记前核本地/真实远端/PR head和29输入一致，登记提交推送后再次核对；下一轮先fetch实际合入/新增，再继续原无依赖审查与性能取证，不将预校验批准扩大为后续merge读取、选项全载、事件分页或索引自动优化。

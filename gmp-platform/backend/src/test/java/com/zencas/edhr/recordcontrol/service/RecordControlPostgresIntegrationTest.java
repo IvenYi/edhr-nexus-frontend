@@ -62,6 +62,7 @@ class RecordControlPostgresIntegrationTest {
     @Autowired com.zencas.edhr.compliance.controller.AuditController auditController;
     @Autowired com.zencas.edhr.common.util.SnowflakeIdGenerator ids;
     @Autowired com.zencas.edhr.workflow.repository.WorkflowTaskRepository taskRepository;
+    @Autowired org.springframework.transaction.PlatformTransactionManager transactionManager;
     @Autowired RecordControlTaskActionService actions;
     @Autowired com.zencas.edhr.production.service.DhrSummaryService summaries;
     @Autowired com.zencas.edhr.production.service.DhrReviewService reviews;
@@ -118,6 +119,79 @@ class RecordControlPostgresIntegrationTest {
     }
 
     @AfterEach void clearActor() { AuditContext.clear(); org.springframework.security.core.context.SecurityContextHolder.clearContext(); }
+
+    @ParameterizedTest @ValueSource(ints = {0, 5000, 20000})
+    @org.junit.jupiter.api.condition.EnabledIfSystemProperty(named="edhr.audit.recordReadCapacity",matches="true")
+    void requestListCapacityKeepsReadPolicyAndEvidence(int backgroundTasks) throws Exception {
+        var original = requests.submit(command(BusinessType.CHANGE));
+        long originalTask=taskId();
+        String originalRecord=scalar("SELECT id FROM form_instance_record");
+        personnel();
+        jdbc.update("INSERT INTO user_account(id,tenant_id,username,display_name,password_hash,status) VALUES(1,0,'admin','系统管理员','unused-readonly-fixture','ACTIVE')");
+        // Synthetic metadata copies obey database constraints; they do not assert newly signed business flows.
+        jdbc.execute("""
+            INSERT INTO form_instance_record SELECT (jsonb_populate_record(NULL::form_instance_record,
+                to_jsonb(r)||jsonb_build_object('id',7000000+i,'instance_no','CAP-FR-'||i,
+                    'copy_id','capacity-'||i,'current_revision_id',NULL))).*
+            FROM form_instance_record r CROSS JOIN generate_series(1,20) i;
+            INSERT INTO form_instance_revision SELECT (jsonb_populate_record(NULL::form_instance_revision,
+                to_jsonb(v)||jsonb_build_object('id',7100000+i,'record_id',7000000+i))).*
+            FROM form_instance_revision v CROSS JOIN generate_series(1,20) i WHERE record_id=%s;
+            UPDATE form_instance_record SET current_revision_id=7100000+(id-7000000) WHERE id BETWEEN 7000001 AND 7000020;
+            INSERT INTO workflow_instance SELECT (jsonb_populate_record(NULL::workflow_instance,
+                to_jsonb(w)||jsonb_build_object('id',7200000+i,'business_id',(7400000+i)::text,'idempotency_key','capacity-instance-'||i))).*
+            FROM workflow_instance w CROSS JOIN generate_series(1,20) i;
+            INSERT INTO record_control_request SELECT (jsonb_populate_record(NULL::record_control_request,
+                to_jsonb(q)||jsonb_build_object('id',7400000+i,'request_no','CAP-RC-'||i,'record_id',7000000+i,
+                    'source_revision_id',7100000+i,'workflow_instance_id',(7200000+i)::text,
+                    'idempotency_key','capacity-'||i))).*
+            FROM record_control_request q CROSS JOIN generate_series(1,20) i;
+            """.formatted(originalRecord));
+        if (backgroundTasks>0) {
+            jdbc.execute("INSERT INTO workflow_instance SELECT (jsonb_populate_record(NULL::workflow_instance,to_jsonb(w)||jsonb_build_object('id',8000000+i,'business_id','BACKGROUND-'||i,'idempotency_key','background-instance-'||i))).* FROM workflow_instance w CROSS JOIN generate_series(1,"+backgroundTasks+") i WHERE id="+original.path("workflow_instance_id").asText());
+            jdbc.execute("INSERT INTO workflow_task SELECT (jsonb_populate_record(NULL::workflow_task,to_jsonb(t)||jsonb_build_object('id',9000000+i,'instance_id',8000000+i))).* FROM workflow_task t CROSS JOIN generate_series(1,"+backgroundTasks+") i WHERE id="+originalTask);
+        }
+        // New request tasks follow accumulated history in the heap; do not rely on early matches.
+        jdbc.execute("INSERT INTO workflow_task SELECT (jsonb_populate_record(NULL::workflow_task,to_jsonb(t)||jsonb_build_object('id',7300000+i,'instance_id',7200000+i,'candidate_snapshot',jsonb_build_object('userIds',jsonb_build_array('42'))))).* FROM workflow_task t CROSS JOIN generate_series(1,20) i WHERE id="+originalTask);
+        assertThat(count("workflow_task")).isEqualTo(backgroundTasks+21);
+        assertThat(jdbc.queryForObject("SELECT count(*) FROM record_control_request q JOIN workflow_instance w ON w.id::text=q.workflow_instance_id WHERE q.request_no LIKE 'CAP-RC-%' AND w.business_id=q.id::text",Long.class)).isEqualTo(20);
+        assertThat(jdbc.queryForObject("SELECT count(*) FROM workflow_instance WHERE business_id LIKE 'BACKGROUND-%'",Long.class)).isEqualTo(backgroundTasks);
+        jdbc.execute("ANALYZE workflow_task; ANALYZE record_control_request; ANALYZE form_instance_record");
+        String before=readCapacityDigest();
+        var query=new RecordControlService.RequestListQuery("CAP-RC-",null,null,null,null,null,null,null,null);
+        for (String actorId:List.of("44","41","42","1")) {
+            AuditContext.setOperator(actorId,"容量读取者");
+            String label="audit-record-access-"+backgroundTasks+"-"+actorId;
+            var tx=new org.springframework.transaction.support.TransactionTemplate(transactionManager);tx.setReadOnly(true);
+            var memory=(com.sun.management.ThreadMXBean)java.lang.management.ManagementFactory.getThreadMXBean();
+            long[] measurements=new long[2];
+            var page=tx.execute(status->{
+                jdbc.execute("SET LOCAL application_name='"+label+"'; SET LOCAL auto_explain.log_min_duration=0; SET LOCAL auto_explain.log_analyze=true; SET LOCAL auto_explain.log_buffers=true; SET LOCAL auto_explain.log_format='json'");
+                long start=System.nanoTime(),allocated=memory.getThreadAllocatedBytes(Thread.currentThread().threadId());
+                var result=requests.listRequests(false,0,20,query);
+                measurements[0]=System.nanoTime()-start;measurements[1]=memory.getThreadAllocatedBytes(Thread.currentThread().threadId())-allocated;
+                return result;
+            });
+            boolean allowed=!actorId.equals("44");
+            assertThat(page.getTotalElements()).isEqualTo(20);assertThat(page.getContent()).hasSize(20);
+            assertThat(page.getContent()).allSatisfy(row->assertThat(row.path("canViewDetail").asBoolean()).isEqualTo(allowed));
+            if (allowed) assertThat(requests.requestDetail(original.path("id").asText()).path("id").asText()).isEqualTo(original.path("id").asText());
+            else assertThatThrownBy(()->requests.requestDetail(original.path("id").asText())).hasMessageContaining("无权查看");
+            Path output=Path.of(System.getProperty("edhr.audit.recordReadOutput"));Files.createDirectories(output);
+            var report=mapper.createObjectNode().put("label",label).put("backgroundTasks",backgroundTasks).put("actorId",actorId)
+                .put("canViewExpected",allowed).put("taskHeapLayout","background-before-target").put("elapsedNanos",measurements[0]).put("threadAllocatedBytes",measurements[1])
+                .put("scope","20 synthetic metadata requests plus real original detail; calling-thread cumulative allocation, not peak/SLA; actual plans in owned PG auto_explain log");
+            report.set("rows",mapper.valueToTree(page.getContent()));mapper.writerWithDefaultPrettyPrinter().writeValue(output.resolve(label+".json").toFile(),report);
+        }
+        assertThat(readCapacityDigest()).isEqualTo(before);
+    }
+
+    private String readCapacityDigest() {
+        StringBuilder result=new StringBuilder();
+        for (String table:List.of("form_instance_record","form_instance_revision","record_control_request","workflow_instance","workflow_task","signature","audit_event","dhr_summary_version"))
+            result.append(table).append(':').append(scalar("SELECT md5(coalesce(jsonb_agg(to_jsonb(r) ORDER BY id)::text,'[]')) FROM "+table+" r")).append(';');
+        return result.toString();
+    }
     private void actor() { AuditContext.setOperator("41", "申请人"); }
     @ParameterizedTest
     @ValueSource(strings = {"applicant", "candidate", "manager", "super-admin", "fake-display-name", "fake-role", "disabled-admin", "history", "reassigned-old", "reassigned-new"})
