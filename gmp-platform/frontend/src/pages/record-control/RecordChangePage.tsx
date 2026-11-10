@@ -1,9 +1,10 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Alert, Box, Button, Chip, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle,
   Divider, MenuItem, Paper, Snackbar, Stack, TextField, Tooltip, Typography } from '@mui/material';
 import { DescriptionOutlined, FactCheckOutlined, RateReviewOutlined, SearchRounded } from '@mui/icons-material';
 import ButtonSignatureCredentials from '@/components/workflow/ButtonSignatureCredentials';
+import ConfirmDialog from '@/components/ConfirmDialog';
 import { executionFormValues } from '@/pages/production/executionFormValues';
 import { FormCanvasPreview } from '@/pages/master-data/DhrTemplateWorkspaceDialog';
 import { parseReactTemplateDesignerDocument } from '@/pages/master-data/template-designer-react/utils/document';
@@ -32,6 +33,24 @@ export default function RecordChangePage() {
   const [requestId, setRequestId] = useState<string | null>(null);
   const [idempotencyKey, setIdempotencyKey] = useState('');
   const [activeRequestNoticeOpen, setActiveRequestNoticeOpen] = useState(false);
+  const [pendingSearch, setPendingSearch] = useState('');
+  const [candidatesLoading, setCandidatesLoading] = useState(false);
+  const lookupSequence = useRef(0);
+  const recordId = record?.id;
+
+  useEffect(() => () => { lookupSequence.current++; }, []);
+
+  useEffect(() => {
+    if (mode === 'READ' || !recordId) { setCandidatesLoading(false); return; }
+    let active = true;
+    setCandidatesLoading(true);
+    listPublishedRecordControlWorkflowCandidates(mode).then((result) => {
+      if (active) setCandidates(result);
+    }).catch((cause) => {
+      if (active) setError(cause instanceof Error ? cause.message : '可用审批流程加载失败');
+    }).finally(() => { if (active) setCandidatesLoading(false); });
+    return () => { active = false; };
+  }, [mode, recordId]);
 
   const document = useMemo(() => {
     if (!record) return null;
@@ -49,25 +68,32 @@ export default function RecordChangePage() {
   const selectedCandidate = candidates.find((item) => item.workflowVersionId === workflowVersionId);
   const canViewSubmittedRequest = record?.active_request_id === requestId && record.canViewActiveRequest !== false;
 
-  const search = useCallback(async () => {
-    if (!number.trim()) { setError('请输入表单实例编号'); return; }
-    if (mode === 'CHANGE' && modified && !window.confirm('当前拟变更内容尚未提交，重新查询将丢弃修改。确定继续吗？')) return;
+  const loadRecord = useCallback(async (instanceNo: string) => {
+    const request = ++lookupSequence.current;
     setLoading(true); setError(''); setRequestId(null); setMode('READ'); setActiveRequestNoticeOpen(false);
+    setRecord(null); setValues({}); setDialog(false); setPassword(''); setCandidates([]); setWorkflowVersionId('');
     try {
-      const found = await findRecordByNumber(number.trim());
+      const found = await findRecordByNumber(instanceNo);
+      if (request !== lookupSequence.current) return;
       setRecord(found); setValues(structuredClone(found.fieldValues));
       setActiveRequestNoticeOpen(Boolean(found.active_request_id && found.active_request_no));
     } catch (cause) {
+      if (request !== lookupSequence.current) return;
       setRecord(null); setActiveRequestNoticeOpen(false); setError(cause instanceof Error ? cause.message : '查询失败');
-    } finally { setLoading(false); }
-  }, [number, mode, modified]);
+    } finally { if (request === lookupSequence.current) setLoading(false); }
+  }, []);
 
-  const chooseMode = async (next: RecordControlBusinessType) => {
+  const search = () => {
+    const instanceNo = number.trim();
+    if (!instanceNo) { setError('请输入表单实例编号'); return; }
+    if (mode === 'CHANGE' && modified) { setPendingSearch(instanceNo); return; }
+    void loadRecord(instanceNo);
+  };
+
+  const chooseMode = (next: RecordControlBusinessType) => {
     if (!record || !eligible) return;
     setMode(next); setValues(structuredClone(record.fieldValues)); setReason(''); setPassword('');
     setWorkflowVersionId(''); setCandidates([]); setError('');
-    try { setCandidates(await listPublishedRecordControlWorkflowCandidates(next)); }
-    catch (cause) { setError(cause instanceof Error ? cause.message : '可用审批流程加载失败'); }
   };
 
   const openConfirmation = () => {
@@ -77,6 +103,7 @@ export default function RecordChangePage() {
 
   const confirm = async () => {
     if (!record?.current_revision_id || mode === 'READ' || !selectedCandidate) return;
+    const request = ++lookupSequence.current;
     setLoading(true); setError('');
     try {
       const submitted = await submitRecordControlRequest({
@@ -85,11 +112,13 @@ export default function RecordChangePage() {
         workflowDefinitionId: selectedCandidate.workflowDefinitionId,
         workflowVersionId: selectedCandidate.workflowVersionId, account, password, idempotencyKey,
       });
+      if (request !== lookupSequence.current) return;
       setRequestId(submitted.id); setDialog(false); setPassword(''); setMode('READ');
       const fresh = await findRecordByNumber(record.instance_no);
+      if (request !== lookupSequence.current) return;
       setRecord(fresh); setValues(structuredClone(fresh.fieldValues));
-    } catch (cause) { setError(cause instanceof Error ? cause.message : '申请提交失败'); }
-    finally { setLoading(false); }
+    } catch (cause) { if (request === lookupSequence.current) setError(cause instanceof Error ? cause.message : '申请提交失败'); }
+    finally { if (request === lookupSequence.current) setLoading(false); }
   };
 
   useEffect(() => {
@@ -135,7 +164,7 @@ export default function RecordChangePage() {
         <Typography fontWeight={600} sx={{ mb: 2 }}>查询表单</Typography>
         <Stack direction="row" spacing={1.5}>
           <TextField size="small" fullWidth label="表单实例编号" value={number} onChange={(event) => setNumber(event.target.value)}
-            onKeyDown={(event) => { if (event.key === 'Enter') void search(); }} />
+            onKeyDown={(event) => { if (event.key === 'Enter' && !event.nativeEvent.isComposing) { event.preventDefault(); search(); } }} />
           <Button variant="contained" disabled={loading} onClick={() => void search()}>查询</Button>
         </Stack>
         {!record && <Box sx={{ mt: 3, pt: 2.5, borderTop: '1px solid #ebeef5' }}>
@@ -193,13 +222,14 @@ export default function RecordChangePage() {
       <DialogContent><Stack spacing={2} sx={{ pt: 1 }}>
         <TextField multiline minRows={3} fullWidth required label={mode === 'CHANGE' ? '变更原因' : '作废原因'} value={reason}
           onChange={(event) => setReason(event.target.value)} inputProps={{ maxLength: 2000 }} />
-        <TextField select fullWidth required label="审批流程版本" value={workflowVersionId}
+        <TextField select fullWidth required label="审批流程版本" value={workflowVersionId} disabled={candidatesLoading}
           onChange={(event) => setWorkflowVersionId(event.target.value)} helperText="必须显式选择匹配类型的已发布流程版本">
           {candidates.map((candidate) => <MenuItem key={candidate.workflowVersionId} value={candidate.workflowVersionId}>
             {candidate.templateName} · V{candidate.versionNumber}
           </MenuItem>)}
         </TextField>
-        {!candidates.length && <Alert severity="warning">暂无可用的已发布审批流程。</Alert>}
+        {candidatesLoading ? <Alert severity="info">正在加载可用审批流程…</Alert>
+          : !candidates.length && <Alert severity="warning">暂无可用的已发布审批流程。</Alert>}
         <ButtonSignatureCredentials account={account} password={password} disabled={loading}
           onAccountChange={setAccount} onPasswordChange={setPassword} />
       </Stack></DialogContent>
@@ -208,6 +238,9 @@ export default function RecordChangePage() {
           onClick={() => void confirm()}>{loading ? '提交中…' : '签署并确认提交'}</Button>
       </DialogActions>
     </Dialog>
+    <ConfirmDialog open={Boolean(pendingSearch)} title="重新查询表单" confirmText="放弃修改并查询"
+      message="当前拟变更内容尚未提交，重新查询将丢弃修改。确定继续吗？" destructive initialFocus="cancel"
+      onCancel={() => setPendingSearch('')} onConfirm={() => { const instanceNo = pendingSearch; setPendingSearch(''); void loadRecord(instanceNo); }} />
   </Box>;
 }
 
