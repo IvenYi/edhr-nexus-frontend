@@ -1,0 +1,26 @@
+{
+  "observedAt": "2026-11-10T21:19:21.073426+08:00",
+  "target": "0701b3d5d99787195e9d4c33935ae36da370839d",
+  "testedCandidate": "ab5b44d2292a8a7a08cbeb6aba502b30f50df8f0",
+  "targetStillCurrent": true,
+  "externalIncrement": [],
+  "allDispatchedProfessionalsFinal": "Actual collaboration.list_agents checked before command;no children",
+  "quality": "passed",
+  "ontology": "not-applicable",
+  "requiredQualityChecksPassed": 12,
+  "protectedInputsMatch": 33,
+  "archiveMembersHashVerified": 669,
+  "scopeDrift": false,
+  "candidateChangedPaths": [
+    "docs/development/branch-review-20261110-record-subtable-guards/decision-package.yaml",
+    "gmp-platform/backend/src/main/java/com/zencas/edhr/recordcontrol/service/RecordControlDiff.java",
+    "gmp-platform/backend/src/test/java/com/zencas/edhr/recordcontrol/service/RecordControlDiffTest.java",
+    "gmp-platform/backend/src/test/java/com/zencas/edhr/recordcontrol/service/RecordControlPostgresIntegrationTest.java"
+  ],
+  "workingTreeStatusAtGate": " M docs/development/branch-review-20261015/NEXT.md\n?? docs/development/branch-review-20261110-record-subtable-guards/README.md\n?? docs/development/branch-review-20261110-record-subtable-guards/evidence-packages.json\n?? docs/development/branch-review-20261110-record-subtable-guards/evidence/\n?? docs/development/branch-review-20261110-record-subtable-guards/independent-review.md\n?? docs/development/branch-review-20261110-record-subtable-guards/main-analysis.json\n?? docs/development/branch-review-20261110-record-subtable-guards/ontology-result.yaml\n?? docs/development/branch-review-20261110-record-subtable-guards/ontology-review.md\n?? docs/development/branch-review-20261110-record-subtable-guards/quality-result.yaml\n?? docs/development/branch-review-20261110-record-subtable-guards/review.md",
+  "remainingChangesAllowed": "L0 reports/ledger/evidence/delivery only",
+  "stage": "W3/W5 record-control signature subitem plus W6 robustness/A23 and W7;whole audit continues",
+  "compatibilityLimit": "New prepare only;preexisting IN_REVIEW/old revisions not automatically modified or certified clean",
+  "ciStatusOrActionsQueried": false,
+  "autoMergeDeployOrRestore": false
+}

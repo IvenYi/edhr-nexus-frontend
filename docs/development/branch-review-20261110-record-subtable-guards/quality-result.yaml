@@ -1,0 +1,128 @@
+qualityResult:
+  result: passed
+  baseCommit: 0701b3d5d99787195e9d4c33935ae36da370839d
+  headCommit: ab5b44d2292a8a7a08cbeb6aba502b30f50df8f0
+  contractBaseline:
+    sourceCommit: ab5b44d2292a8a7a08cbeb6aba502b30f50df8f0
+    targetBranch: edhr-dev
+    targetCommit: 0701b3d5d99787195e9d4c33935ae36da370839d
+    contractReadCommit: ab5b44d2292a8a7a08cbeb6aba502b30f50df8f0
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: clean
+    includedPaths: []
+    excludedPaths: []
+    untrackedPaths: []
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+    - id: check.actual-candidate-and-contracts
+      required: true
+      category: requirements
+      description: 独立fetch目标0701、固定ab5候选，4文件差异与L2交接一致，33运行输入同Git
+      method: inspection
+      command: Independent git fetch/diff and source snapshot byte binding
+      outcome: passed
+      evidence: [source-binding.json, final_verified/run.json, final_verified/source]
+    - id: check.existing-signature-policy
+      required: true
+      category: ontology
+      description: DEC0087-02/04/06及原用户证据明确新修订不继承原签名；只读/停用父表无例外，未新增重签政策
+      method: inspection
+      command: Read DP/current policy/original evidence/shared-terminal signing and scoped ontology result
+      outcome: passed
+      evidence: [read-source/docs/knowledge, reviewed-ontology-result.yaml, review.md]
+    - id: check.unit-immutable-and-difference-boundaries
+      required: true
+      category: unit
+      description: 12单元包含新四组合；只读篡改拒绝、源和快照不变、行身份及非签名内容保持，清签名不形成内容差异
+      method: automated-test
+      command: Independent RecordControlDiffTest12 in full123 command
+      outcome: passed
+      evidence: [final_verified/TEST-com.zencas.edhr.recordcontrol.service.RecordControlDiffTest.xml, final_verified/source]
+    - id: check.native-new-application-chain
+      required: true
+      category: integration
+      description: 四组合由signField及saved创建独立来源，JWT+MockMvc提交/审批/历史实际200；新申请/Rev2/current/execution均无旧签名
+      method: automated-test
+      command: Independent nativePG87 including lockedParentSignatureIsHistoricalAfterApprovedChange4
+      outcome: passed
+      evidence: [final_verified/signature-observations, final_verified/http.jsonl, independent-analysis.json]
+    - id: check.original-history-and-hashes
+      required: true
+      category: audit
+      description: 独立重算8观察的原签名及Rev1/Rev2摘要，旧signature整行和Rev1原值/摘要不变，冻结模板和业务行身份保持
+      method: query
+      command: Independent raw payload/hash/current/history comparison across old4 and QA4 observations
+      outcome: passed
+      evidence: [independent-analysis.py, independent-analysis.json, final_verified/signature-observations, main-negative-evidence/signature-observations]
+    - id: check.actual-signature-ownership-and-identities
+      required: true
+      category: security
+      description: 24份实际JPA INSERT签名参数重算SHA，field/submit/approve目标及真实ID正确，提交41/审批42且登录41原共享终端语义保持
+      method: query
+      command: Parse actual PostgreSQL fully parameterized signature INSERTs and bind payloads to source/request/action
+      outcome: passed
+      evidence: [independent-analysis.py, independent-analysis.json, final_verified/postgres.log, main-negative-evidence/postgres.log]
+    - id: check.same-byte-old-source-red
+      required: true
+      category: regression
+      description: 同最终2测试字节旧产品16=8正8真实签名继承失败/0E/S，旧4原生实际批准后携旧签名；本实例未重跑旧版本
+      method: inspection
+      command: Git-bind old product and both tests;inspect original XML and native request/current/history artifacts
+      outcome: passed
+      evidence: [old-negative-binding.json, main-negative-evidence/run.json, main-negative-evidence/signature-observations]
+    - id: check.independent-full-regression
+      required: true
+      category: regression
+      description: 实际123/123，87原生PG+36其他，canonical0092和严格数据库guard/两容量optin，无跳过
+      method: automated-test
+      command: EDHR_CANDIDATE_ROOT=ownWT EDHR_CANDIDATE_RAW=ownRaw EDHR_CANDIDATE_CONTAINER_PREFIX=ownedQA python3 run.py final_verified
+      outcome: passed
+      evidence: [final_verified/run.json, final_verified/test-summary.json, final_verified/maven.log]
+    - id: check.retained-candidate-regression
+      required: true
+      category: database
+      description: 原已修候选0..1000完整返回及查询预算仍通过，独立数20调用=20SELECT=20auto_explain计划，无图JSON
+      method: query
+      command: Independent parse server executed statements/plans and retained candidate reports
+      outcome: passed
+      evidence: [independent-analysis.py, independent-analysis.json, final_verified/candidate-observations, final_verified/postgres.log]
+    - id: check.actual-knowledge89
+      required: true
+      category: ontology
+      description: 本实例实际89知识校验通过，353知识与6校验输入均同base/candidate，不代表全人工语义通过
+      method: automated-test
+      command: mvn-edhr -f gmp-platform/backend/pom.xml -Dtest=BusinessKnowledgeModelTest -DargLine=-Xmx1024m test
+      outcome: passed
+      evidence: [knowledge/run.json, knowledge/test-summary.json, knowledge/TEST-com.zencas.edhr.knowledge.BusinessKnowledgeModelTest.xml]
+    - id: check.minimal-fix-robustness-and-a23
+      required: true
+      category: documentation
+      description: 清除职责统一而非增加兜底；按冻结类型不按同名键/外观清理，无新SQL/缓存/重试/业务字段默认，原权限/事务/签署/schema/UI保持
+      method: inspection
+      command: Inspect sole product diff,unchanged neighboring owners and concrete extraction/compatibility boundaries
+      outcome: passed
+      evidence: [source-binding.json, final_verified/source, review.md]
+    - id: check.resources-and-honest-scope
+      required: true
+      category: documentation
+      description: 自有PG及依赖软链清理、最终WTclean；运行时untracked单列；仅新prepare，无存量净化或全审/生产发布冒称
+      method: inspection
+      command: Inspect actual cleanup,own worktree/source bindings and finite acceptance limits
+      outcome: passed
+      evidence: [resources-cleanup.json, source-binding.json, review.md]
+  findings: []
+  residualRisks:
+    - id: risk.preexisting-signed-proposals-and-history
+      description: 修复只处理新的prepare；修复前已持久化的在审拟值与历史Rev2不会被自动修改，真实存量数量本实例未查询。
+      impact: 不能宣称所有存量或所有后续审批都已消除历史签名继承；本次代码验收不等于存量处置或生产发布许可。
+      mitigation: 如存在受影响在审申请，另做只读盘点并按原流程人工退回后重新发起；不在本批自动恢复、清理或回写受控历史。
+    - id: risk.synthetic-native-scope
+      description: 自有合成来源/认证PNG及真实密码、signField、JWT+MockMvc+PG覆盖本切片，不是浏览器/网络容器/完整生产签署发布。
+      impact: 不以这些测试替代UI或生产发布验收；未修改UI不重跑本轮browser/strict/lint。
+      mitigation: 保留原高风险/完整矩阵及真实部署验证队列，按各自授权推进。
+    - id: risk.existing-whole-audit-backlog
+      description: 原W2余项/W3-W5跨链/W6健壮性性能具体拆分及已审A23/W7新增、全知识语义/strict86/lint缺配置/A12/高风险/完整矩阵/容量UNKNOWN/未答方案及用户暂停项继续。
+      impact: 局部签名继承修复不等于全仓审计完成；引用上下文和另一路摘要数组仍仅是待复现源码信号。
+      mitigation: 后续先fetch增量，按台账继续，无依据项不包装成已确认问题或擅自优化。
+  blockingConditions: []

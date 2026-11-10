@@ -1,0 +1,66 @@
+ontologyResult:
+  result: not-applicable
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: ab5b44d2292a8a7a08cbeb6aba502b30f50df8f0
+    targetBranch: edhr-dev
+    targetCommit: 0701b3d5d99787195e9d4c33935ae36da370839d
+    contractReadCommit: 0701b3d5d99787195e9d4c33935ae36da370839d
+    uncommittedContractPaths: []
+  reason: 本批依据既有DEC0087-02/04/06及原用户证据修复新拟修订签名继承遗漏；父表只读/停用不构成继承例外。统一清除仅消费冻结字段结构及deepCopy拟值，原签名/修订/快照、真实签署/权限/事务/UI/schema保持，无新概念、政策、替代或成熟度变化，故不新建重复本体资产。
+  changedArtifacts: []
+  knowledgeSync: []
+  conflicts: []
+  questions: []
+  validationEvidence:
+  - id: validation.actual-source-contract
+    checkType: evidence-path
+    command: Read required contracts/DP and bind candidate/target/source bytes;independently
+      fetch target0701
+    outcome: passed
+    evidence:
+    - source-binding.json
+    - candidate.diff
+    - source
+  - id: validation.finite-signature-semantics
+    checkType: projection
+    command: Review17 existing original records;preserve14 current-scope meanings,1
+      exact historical replacement,2 existing out-of-scope questions
+    outcome: passed
+    evidence:
+    - finite-review-records.json
+    - engineering-boundaries.json
+    - REVIEW.md
+  - id: validation.unchanged-knowledge-inputs
+    checkType: reference
+    command: Compare353 knowledge and6 validator/POM inputs against base/candidate
+      and original actual89 fingerprints
+    outcome: passed
+    evidence:
+    - knowledge-inventory.json
+    - knowledge-validation-reuse.json
+  - id: validation.reused-actual-knowledge89
+    checkType: schema
+    command: REUSED originalPR79 main actual89 only;this role did not execute Maven
+      or tests
+    outcome: passed
+    evidence:
+    - reused-pr79-main/knowledge/run.json
+    - reused-pr79-main/knowledge/TEST-com.zencas.edhr.knowledge.BusinessKnowledgeModelTest.xml
+  - id: validation.review-original-negative
+    checkType: evidence-path
+    command: Inspect main16=8P8F/0E/S and4 native persisted-signature original JSON;no
+      role test execution
+    outcome: passed
+    evidence:
+    - reviewed-negative-evidence.json
+    - reviewed-main-negative
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages:
+    - P1
+    - P2
+    - P3
