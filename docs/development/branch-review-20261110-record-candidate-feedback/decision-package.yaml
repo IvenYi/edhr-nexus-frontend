@@ -1,0 +1,52 @@
+decisionPackage:
+  id: DEC-PACKAGE-RECORD-CANDIDATE-FEEDBACK-20261110
+  scope: Existing record-control candidate and submit errors within the active confirmation dialog
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: 670040fb7d24abf629baa53d60f6fe922c7e7714
+    targetBranch: edhr-dev
+    targetCommit: 670040fb7d24abf629baa53d60f6fe922c7e7714
+    contractReadCommit: 670040fb7d24abf629baa53d60f6fe922c7e7714
+    uncommittedContractPaths: []
+  summary: PR76已合入且整树同0353210e，无额外产品/知识/契约增量。沿原W3/W7与W6健壮性/A23队列修复已确认的候选失败隐藏在Dialog背景且被误报为空，以及同一错误渲染位置导致提交失败不可在Dialog内读取。只分离候选失败状态并把错误放入当前交互层；后台规则/来源/签署/幂等/事务/API/schema/知识及既有异步归属保持。不新增自动重试或大模块重构，不实施待答性能方案。
+  confirmed: {concepts: [], relationships: [], rules: [], executionContracts: []}
+  inferred:
+    - id: inference.record-control-error-owner
+      statement: 候选加载失败不等于真实空列表；确认Dialog打开时，其当前错误应在Dialog可访问树内显示，并保留取消和已输入内容
+      rationale: 现有错误在背景层被aria-hidden，候选错误还会被openConfirmation清除；与原明确选流程/真实签署前提下的失败恢复不一致，是工程呈现修复而非新业务政策
+      relatedIds: [DEC-0087-03, DEC-0087-04]
+  unresolved: []
+  replacementScopes: []
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - {area: candidate-error-state, change: 独立保留候选失败并在当前页面或确认Dialog显示；不再同时显示真实空态, evidenceReferences: [gmp-platform/frontend/src/pages/record-control/RecordChangePage.tsx]}
+      - {area: submit-feedback, change: 已有提交错误在Dialog内可读，不丢弃原因/版本/凭证，不自动重复提交, evidenceReferences: []}
+    transitiveImpacts:
+      - {area: async-ownership, change: 模式/来源改变清理旧候选错误，仍遵守PR76 active清理与请求归属, evidenceReferences: [docs/development/branch-review-20261110-record-change-async/review.md]}
+    potentialImpacts:
+      - {area: uncertain-write, concern: 显示原服务错误不证明真实网络失败后未写入；不得自动重试或改变原幂等键/签署政策, evidenceReferences: []}
+    unaffectedAreas:
+      - {area: policy-and-paused, change: 权限/签署/流程选版/修订/快照/DHR规则及用户暂停通用任务页和生产弹窗样式保持, evidenceReferences: []}
+      - {area: performance, change: 列表资格SQL/事件分页仍未答；候选版本N+1仍源码信号，未量化未优化, evidenceReferences: []}
+    compatibilityAndMigration: [{area: contracts, change: API/后台/schema与共享控件不变，无迁移, evidenceReferences: []}]
+    snapshotImpacts: [{area: history, change: 不读取修改生产历史/冻结数据，仅合成API组件测试, evidenceReferences: []}]
+    auditImpacts: [{area: evidence, change: 合成POST只验证请求payload和次数，不冒称真实签署/PG审计验收, evidenceReferences: []}]
+    permissionImpacts: [{area: retained, change: 服务端认证与实时来源/流程/签署校验不变，客户端提示不授予资格, evidenceReferences: []}]
+    testImpacts: [{scope: component-feedback, scenarios: [候选失败在打开前/后和重开Dialog, 失败与空态区分, 换模式清理与过期错误, 提交错误在Dialog保留输入且不自动重试, 26原乱序回归及58相邻, 构建与静态差异], evidenceReferences: []}]
+    evidenceGaps: [合成API不等于真实PG/主环境签署, 全站strict86和lint缺配置保持未通过, 全量知识语义/完整W2-W7/A12/高风险/并发矩阵/A23已审回看/容量UNKNOWN继续]
+  extensionStrategy:
+    selectedPaths: [product-core]
+    rationale: 一个现有页面复用MUI Alert与既有Dialog，仅修改状态所有权/呈现，不新增抽象框架、缓存或自动重试
+    ownershipBoundaries:
+      - {owner: RecordChangePage, responsibility: 候选失败和当前Dialog的错误反馈}
+      - {owner: RecordControlService, responsibility: 原业务来源/资格/签署/事务及幂等规则保持}
+  affectedFiles:
+    - {path: gmp-platform/frontend/src/pages/record-control/RecordChangePage.tsx, changeType: update, reason: 修复当前交互层错误反馈}
+    - {path: gmp-platform/frontend/scripts/test-record-change-async-browser.mjs, changeType: update, reason: 加强Dialog内可访问错误/空态与恢复断言，不降低既有标准}
+  acceptanceScenarios:
+    - id: scenario.record-control-failure-feedback
+      given: 用户按原规则选择来源与变更/作废，候选读取或最终确认返回错误
+      when: 打开/重开确认Dialog或显式取消后重新选择模式
+      then: 真实错误在当前交互层可读，不误报空结果、不丢失已输入内容、不自动重试；换来源/模式与迟到结果仍按当前上下文处理
+      evidenceRequirements: [旧源同测试失败和正例, 新源实际组件浏览器/相邻回归/构建, 当前规则范围核对及全新独立质量, 全部FINAL后PR前任务漂移和阶段复核]

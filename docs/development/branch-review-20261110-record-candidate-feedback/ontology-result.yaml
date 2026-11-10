@@ -1,0 +1,61 @@
+ontologyResult:
+  result: not-applicable
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: 6f03c7e565d309ed6630db7ab336a378cbadbe65
+    targetBranch: edhr-dev
+    targetCommit: 670040fb7d24abf629baa53d60f6fe922c7e7714
+    contractReadCommit: 670040fb7d24abf629baa53d60f6fe922c7e7714
+    uncommittedContractPaths: []
+  reason: 候选读取失败与真实空态区分、按当前页面/Dialog显示已有错误属于工程反馈修正；不新增或替代来源资格、流程版本、签署/权限/幂等/事务/快照/审计政策。知识及后端/API/schema/共享组件不变，保持既有DEC0087/0094/0074/0085/0096范围，不为本轮创建重复知识或改写历史。
+  changedArtifacts: []
+  knowledgeSync: []
+  conflicts: []
+  questions: []
+  validationEvidence:
+  - id: validation.source-and-contract
+    checkType: evidence-path
+    command: 'python3 finalize.py: independent fetch,current29 source hashes/Git snapshots
+      and exact3 changed paths'
+    outcome: passed
+    evidence:
+    - source-binding.json
+    - final-source
+    - candidate.diff
+  - id: validation.finite-scope
+    checkType: projection
+    command: Inspect current8 scoped statements and preserve prior19 unchanged original
+      records with outstanding boundaries
+    outcome: passed
+    evidence:
+    - finite-review-records.json
+    - historical-finite19-original.json
+    - historical-finite19-reuse.json
+    - REVIEW.md
+  - id: validation.same-knowledge-inputs
+    checkType: reference
+    command: Compare353 knowledge files and359 validator/POM inputs,three Git trees
+      against prior actual7e
+    outcome: passed
+    evidence:
+    - knowledge-inventory.json
+    - knowledge-validation-reuse.json
+  - id: validation.reused-knowledge89
+    checkType: schema
+    command: 'REUSED ONLY: original independent Maven knowledge clean test at7e;not
+      executed by this role'
+    outcome: passed
+    evidence:
+    - reused-knowledge-7e/knowledge-run.json
+    - reused-knowledge-7e/knowledge.log
+    - reused-knowledge-7e/TEST-com.zencas.edhr.knowledge.BusinessKnowledgeModelTest.xml
+    - knowledge-validation-reuse.json
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages:
+    - P1
+    - P2
+    - P3

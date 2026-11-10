@@ -1,5 +1,15 @@
 # 持续推进台账
 
+## PR76已合入：记录控制候选与提交失败反馈
+
+已交付[PR77](https://github.com/IvenYi/edhr-nexus-frontend/pull/77)，audit/edhr-dev-record-candidate-feedback-20261110→edhr-dev，观察OPEN/MERGEABLE/CLEAN，建议人工合入本批局部反馈修复。受测6f03c7e5、验收4d9c4674后仅L0登记；登记前本地/真实远端/PR head及27输入一致，登记推送后再次核对。下一轮先fetch合入和新增，继续原队列及候选版本查询的去重/量化，不把merge或继续视为未答性能方案批准。
+
+已fetch edhr-dev@670040fb7d24abf629baa53d60f6fe922c7e7714，PR76真实合入、整树同0353210e，无额外增量。新分支audit/edhr-dev-record-candidate-feedback-20261110；[本批](../branch-review-20261110-record-candidate-feedback/README.md)L2按原W3/W7及W6/A23关闭上轮候选503误报empty/藏Dialog背后残余，同根渲染位置还覆盖POST错误。产品只RecordChangePage14行diff：独立候选error、当前页面/Dialog层切换，显式失败与空态区分；后台/API/schema/知识/共享组件/规则/token无改，不自动retry、不默认选版，不实施待答性能SQL。
+
+受测字节6f03c7e5，主34P+58P/build/list/font过，旧源定向12=2正10F/无pageError；34在dirty670同暂存字节提交，其他实际clean6f、27输入匹配。当前strict86=72/14；基线复用原7e实际扫描（670完整frontend树相同），Counter保重复0delta；lint缺配置exit2未关闭。本体NA/FINAL有限8项一致；前19历史替代/多租户待决/两locator原样保留、不重复算覆盖。353知识/359校验输入复用旧7e实际89，本体未跑；密码断言只保持旧页面内存行为、非新凭证保留政策。全新独立实际34+58浏览器、89知识及build/list/font通过，正式passed/FINAL、10必需项通过，临时依赖untracked与清理后clean分开报告。三包443成员、角色manifest及双方27输入已核；全部FINAL后2026-11-10 16:36 Asia/Shanghai已实际[PR前漂移/阶段复核](../branch-review-20261110-record-candidate-feedback/pre-pr-drift-review.md)，目标仍670、无漂移，其后仅L0证据/交付登记。
+
+整体W2余项/W3-W5跨链/W6规模性能/健壮性具体抽取及A23含已审/W7新增、知识全量语义/UI86/A12/高风险/完整矩阵/family剩余4N和选项全载/容量UNKNOWN/用户暂停项继续；整文件0/historyUnique未知。原列表资格SQL和事件DB分页未答未改；候选版本N+1仍源码信号，下一步先去重量化并讨论，不自动优化。每轮先fetch，不自动merge/deploy/恢复或查触发CI。
+
 ## PR75已合入：记录变更页异步上下文健壮性
 
 已交付[PR76](https://github.com/IvenYi/edhr-nexus-frontend/pull/76)，audit/edhr-dev-record-change-async-20261110→edhr-dev，观察OPEN/MERGEABLE/CLEAN，建议人工合入本批有限异步修复。受测7e43939b、验收35c96d32后仅L0交付登记；登记前本地/真实远端/PR head和27输入一致，登记推送后再次核对。下一轮先fetch合入及新增，优先候选当前503错误/空态呈现，不把merge或继续视为未答性能优化批准。

@@ -1,0 +1,65 @@
+{
+  "checkedAtUtc": "2026-11-10T08:36:45.129066+00:00",
+  "checkedAtAsiaShanghai": "2026-11-10T16:36:45.129066+08:00",
+  "target": "670040fb7d24abf629baa53d60f6fe922c7e7714",
+  "headBeforeL0EvidenceCommit": "6f03c7e565d309ed6630db7ab336a378cbadbe65",
+  "fetchOutput": "From https://github.com/IvenYi/edhr-nexus-frontend\n * branch              edhr-dev   -> FETCH_HEAD\n",
+  "allDispatchedRolesFinalBeforeReview": true,
+  "roleObservation": "Actual collaboration.list_agents after both ontology/freshQA FINAL;both completed,no children",
+  "roles": {
+    "ontology": "not-applicable/FINAL",
+    "freshIndependentQa": "passed/FINAL"
+  },
+  "requiredChecksPassed": [
+    "check.independent-binding-and-contract",
+    "check.retained-policy-and-scope",
+    "check.record-feedback-browser34",
+    "check.workflow-browser58",
+    "check.build-list-font",
+    "check.knowledge89",
+    "check.static-multiset-delta",
+    "check.error-visual-and-accessible-scope",
+    "check.a23-and-payload-boundaries",
+    "check.owned-cleanup"
+  ],
+  "protectedInputFingerprints": 27,
+  "knowledgeFilesUnchanged": 353,
+  "packagesVerified": 3,
+  "packageMemberHashesVerified": 443,
+  "trackedDelta": [
+    "docs/development/branch-review-20261015/NEXT.md",
+    "docs/development/branch-review-20261110-record-candidate-feedback/decision-package.yaml",
+    "gmp-platform/frontend/scripts/test-record-change-async-browser.mjs",
+    "gmp-platform/frontend/src/pages/record-control/RecordChangePage.tsx"
+  ],
+  "untrackedReports": [
+    "docs/development/branch-review-20261110-record-candidate-feedback/README.md",
+    "docs/development/branch-review-20261110-record-candidate-feedback/evidence-packages.json",
+    "docs/development/branch-review-20261110-record-candidate-feedback/evidence/independent-manifest.json",
+    "docs/development/branch-review-20261110-record-candidate-feedback/evidence/independent.zip",
+    "docs/development/branch-review-20261110-record-candidate-feedback/evidence/main-manifest.json",
+    "docs/development/branch-review-20261110-record-candidate-feedback/evidence/main.zip",
+    "docs/development/branch-review-20261110-record-candidate-feedback/evidence/ontology-manifest.json",
+    "docs/development/branch-review-20261110-record-candidate-feedback/evidence/ontology.zip",
+    "docs/development/branch-review-20261110-record-candidate-feedback/independent-review.md",
+    "docs/development/branch-review-20261110-record-candidate-feedback/main-analysis.json",
+    "docs/development/branch-review-20261110-record-candidate-feedback/ontology-result.yaml",
+    "docs/development/branch-review-20261110-record-candidate-feedback/ontology-review.md",
+    "docs/development/branch-review-20261110-record-candidate-feedback/quality-result.yaml",
+    "docs/development/branch-review-20261110-record-candidate-feedback/review.md"
+  ],
+  "drift": "none;one page error-state/presentation repair and its tests;no policy/backend/schema/SQL/refactor expansion",
+  "stage": "W3/W7 record-control and W6 failure recovery/robustness/A23",
+  "passwordScope": "Existing in-memory behavior unchanged,not credential-retention policy",
+  "completeOverallAudit": false,
+  "wholeFileCompleted": 0,
+  "historicalUnique": "unknown",
+  "remaining": [
+    "W2-W7/semantic/UI86/A12/highrisk/fullmatrices/A23 including already reviewed/capacityUNKNOWN/paused",
+    "Request-listSQL and audit-eventDB paging proposals unanswered/unimplemented",
+    "Candidate-versionN+1 still source signal;deduplicate,quantify,discuss before optimizing"
+  ],
+  "postReviewAllowed": "L0 reports/evidence/delivery only;reassess if target or tested inputs change",
+  "ciQueriedOrTriggered": false,
+  "autoMergeDeployOrRestore": false
+}

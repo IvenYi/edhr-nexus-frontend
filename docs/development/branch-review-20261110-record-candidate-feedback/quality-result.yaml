@@ -1,0 +1,132 @@
+qualityResult:
+  result: passed
+  baseCommit: 670040fb7d24abf629baa53d60f6fe922c7e7714
+  headCommit: 6f03c7e565d309ed6630db7ab336a378cbadbe65
+  contractBaseline:
+    sourceCommit: 6f03c7e565d309ed6630db7ab336a378cbadbe65
+    targetBranch: edhr-dev
+    targetCommit: 670040fb7d24abf629baa53d60f6fe922c7e7714
+    contractReadCommit: 6f03c7e565d309ed6630db7ab336a378cbadbe65
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: clean
+    includedPaths: []
+    excludedPaths: []
+    untrackedPaths: []
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+    - id: check.independent-binding-and-contract
+      required: true
+      category: documentation
+      description: Fixed candidate and independently fetched target;27 actual inputs match Git and source snapshots;runtime own dependency link disclosed
+      method: command
+      command: git fetch origin edhr-dev; python3 analyze.py
+      outcome: passed
+      evidence: [start-binding.json, source-binding.json, final-fetch.log, cleanup.json]
+    - id: check.retained-policy-and-scope
+      required: true
+      category: requirements
+      description: Existing source/signature/version/permission and session boundaries retained;no business policy or schema change
+      method: inspection
+      command: Inspect fixed candidate diff and DEC0087/0094/0096/0074/0085
+      outcome: passed
+      evidence: [independent-review.md, additional-reviewed-source, knowledge-inventory.json, source-binding.json]
+    - id: check.record-feedback-browser34
+      required: true
+      category: e2e
+      description: Actual maintained component34 cases;current candidate/submit errors in accessible Dialog,empty distinct,preserved inputs,no auto retry,prior async guards
+      method: browser
+      command: EDHR_ASYNC_REPO=own-worktree EDHR_ASYNC_RAW=own-raw python3 run-independent.py record-ui
+      outcome: passed
+      evidence: [record-ui-run.json, record-ui.log, record-ui/result.json, record-ui]
+    - id: check.workflow-browser58
+      required: true
+      category: regression
+      description: Actually run existing58 maintained workflow/record-control component browser cases
+      method: browser
+      command: EDHR_ASYNC_REPO=own-worktree EDHR_ASYNC_RAW=own-raw python3 run-independent.py workflow-ui
+      outcome: passed
+      evidence: [workflow-ui-run.json, workflow-ui.log, workflow-ui/result.json]
+    - id: check.build-list-font
+      required: true
+      category: regression
+      description: Actual frontend production build including TypeScript and scoped list/font checks
+      method: automated-test
+      command: npm run build; npm run verify:list-table-style; npm run verify:no-external-fonts
+      outcome: passed
+      evidence: [build-run.json, build.log, list-style-run.json, list-style.log, fonts-run.json, fonts.log]
+    - id: check.knowledge89
+      required: true
+      category: ontology
+      description: Actual candidate knowledge89 validation,not full semantic audit
+      method: automated-test
+      command: bash /workspace/.edhr-cloud-tools/mvn-edhr --batch-mode --no-transfer-progress --file tools/knowledge-model/pom.xml clean test
+      outcome: passed
+      evidence: [knowledge/run.json, knowledge/maven.log, knowledge/TEST-com.zencas.edhr.knowledge.BusinessKnowledgeModelTest.xml]
+    - id: check.static-multiset-delta
+      required: true
+      category: documentation
+      description: Exact official tool actual current scan;original baseline reused after complete frontend-tree identity;Counter86 occurrences0 additions/removals
+      method: command
+      command: python3 analyze.py
+      outcome: passed
+      evidence: [premium-run.json, premium-final.json, official-tool-binding.json, baseline-reuse-binding.json, premium-baseline-original-run.json, static-delta.json]
+    - id: check.error-visual-and-accessible-scope
+      required: true
+      category: visual
+      description: Actual390 candidate-error and1440 submit-error screenshots plus Dialog-role assertions;finite evidence,not full WCAG
+      method: inspection
+      command: View actual record-ui candidate-current-error-390.png and submit-current-error-1440.png
+      outcome: passed
+      evidence: [record-ui/candidate-current-error-390.png, record-ui/submit-current-error-1440.png, record-ui/result.json, independent-review.md]
+    - id: check.a23-and-payload-boundaries
+      required: true
+      category: security
+      description: Necessary scoped error ownership;no added cache/auto retry,original payload/real backend safeguards and current-memory credential behavior retained
+      method: inspection
+      command: Inspect fixed page/API/service diff and actual intercepted POST checks
+      outcome: passed
+      evidence: [source-binding.json, source, record-ui/result.json, independent-review.md]
+    - id: check.owned-cleanup
+      required: true
+      category: documentation
+      description: Own dependency symlink removed,retained review worktree clean,all command/browser processes complete,no shared runtime or CI access
+      method: command
+      command: Verify owned symlink target then unlink;git status --porcelain=v1;final target fetch
+      outcome: passed
+      evidence: [cleanup.json, final-fetch.log, start-binding.json]
+    - id: check.whole-project-strict-debt
+      required: false
+      category: documentation
+      description: Global strict86 inherited findings remain open;not whole-project compliance
+      method: command
+      command: python3 audit_project.py own-worktree --mode strict
+      outcome: failed
+      evidence: [premium-run.json, premium.log, premium-final.json, static-delta.json]
+    - id: check.whole-project-lint-debt
+      required: false
+      category: regression
+      description: Existing missing ESLint configuration yields exit2,not passed
+      method: command
+      command: npm run lint
+      outcome: failed
+      evidence: [lint-run.json, lint.log]
+  findings: []
+  residualRisks:
+    - id: residual.runtime-and-uncertain-write
+      description: Browser92 uses synthetic intercepted API;no nativePG/backend127 or production signing/uncertain-write reconciliation rerun
+      impact: UI error visibility and one mocked POST do not establish real503/timeout never committed server state
+      mitigation: Preserve original backend/idempotency and no automatic retry;retain full network/DB matrices in original queue
+    - id: residual.credential-scope
+      description: Password input preservation is pre-existing component-memory behavior,not a new storage/long-retention policy or general failure-clearing rule
+      impact: No inference to other pages,real signing success or persistent credential storage
+      mitigation: Backend and credential handling unchanged;report exact current-state test scope
+    - id: residual.whole-project-audit
+      description: Whole strict86/lint debt,W2-W7 semantic/A12/high-risk/full matrices,A23 including already reviewed,capacityUNKNOWN and user-paused modules remain
+      impact: Scoped pass is not complete overall audit or full accessibility certification
+      mitigation: Maintain original queue and latest-code incremental checks;whole-file0/historyUnique unknown
+    - id: residual.performance-decisions
+      description: Record-list qualificationSQL and eventDB paging remain unanswered/unimplemented;candidate versionN+1 only source signal
+      impact: No production capacity or index guarantee from this UI fix
+      mitigation: Quantify/deduplicate and discuss separately,without unauthorized SQL/index/policy changes
+  blockingConditions: []
