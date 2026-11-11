@@ -2,6 +2,8 @@
 
 ## PR82已合入：已授权的DHR比较复用与流式摘要
 
+已交付[PR83](https://github.com/IvenYi/edhr-nexus-frontend/pull/83)，audit/edhr-dev-dhr-impact-reuse-20261111→edhr-dev，观察OPEN/MERGEABLE/CLEAN，建议人工合入已授权两项优化。受测ff93b459、验收8fa9dea6后仅L0登记；登记前本地/真实远端/PR head及50/359输入一致，登记正常推送后再次核对。下一轮先fetch真实合入及新增，回原跨链/健壮性/A23队列，其他未答方案不因本批默认授权；不自动merge/deploy/恢复。
+
 已fetch `edhr-dev@b12a29f053184220ce88c086fb763f4318ea3c71`，PR82真实合入且整树同6975f647，无外部代码/知识/契约。新分支audit/edhr-dev-dhr-impact-reuse-20261111；[本批](../branch-review-20261111-dhr-impact-reuse/README.md)L2落实用户已明确授权的结果复用＋流式摘要，不再询问、不新增功能或政策。仅2产品＋2维护测试＋DP：detail删1行第二次changes；changes本次局部8KiB buffer复用、逐文件新digest和完整读至EOF，输入流自动关闭。act及其他review代码字节相同；权限/签署/锁/事务/审计/历史/UI/API/schema/索引/知识不改。
 
 clean受测ff93b459主侧实际76/76（38原生PG＋30H2＋8mock）、知识89/89，0F/E/S；同最终两测试字节旧产品6=4正2真预算F/0E/S，新6全过。单50MiB版本12SELECT/读50MiB/累计286160B，详情19→13SELECT、读100→50MiB/累计320256B；批准仍29SELECT/完整50MiB/累计952664B，先陈旧原件拒绝无写再按原配置正常批准且冻结附件保持。完整DTO等价、跨缓冲/末字节篡改、独立请求再核及原状态/范围/资格/陈旧hash保持，不把原生无签署事件fixture当完整原生签署验收；旧H2签署/退回/并发为补充。

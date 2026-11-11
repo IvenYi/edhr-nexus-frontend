@@ -2,6 +2,8 @@
 
 L2；PR82已合入`edhr-dev@b12a29f0`，整树同6975f647，无外部增量。受测候选`ff93b4598d91413b96c3b79d958c4d4c61cf10d5`，仅两产品、两测试和DP。
 
+已交付[PR83](https://github.com/IvenYi/edhr-nexus-frontend/pull/83)，来源`audit/edhr-dev-dhr-impact-reuse-20261111`、目标`edhr-dev`，观察OPEN/MERGEABLE/CLEAN，建议人工合入两项已授权优化。验收提交`8fa9dea652296d268c08103a3d9122946108da29`；受测后仅L0归档/台账，当前仅交付登记。登记前本地/真实远端/PR head一致、50/359输入及包摘要未变，见[实际交付核对](evidence/delivery-verification.json)；登记正常推送后再次核对，不改称重新运行测试。
+
 落实用户明确授权：detail复用version已有完整比较结果；changes使用本次局部8KiB缓冲完整SHA。权限/签署/审批锁/独立请求新鲜度/事务/审计/历史保持，UI/API/schema/索引/知识政策不改。
 
 单50MiB原件的审批详情从19→13 SELECT、读100→50MiB；当前线程累计分配约0.31MiB（原约100MiB），不是峰值/RSS/物理IO/SLA。审批命令仍29SELECT、完整读50MiB，仍拒绝页面读取后篡改的原件；正常批准保留冻结附件。
