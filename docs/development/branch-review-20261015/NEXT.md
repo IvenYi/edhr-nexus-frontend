@@ -2,6 +2,8 @@
 
 ## PR83已合入：来源生效通知组合证据收敛
 
+已交付[PR84](https://github.com/IvenYi/edhr-nexus-frontend/pull/84)，audit/edhr-dev-dhr-impact-notifications-20261111→edhr-dev，观察OPEN／MERGEABLE／CLEAN，建议人工合入本批。受测7b63b4c5、验收归档c5d07d24后仅L0登记；登记前本地／真实远端／PR head、52／359输入和包摘要一致，登记正常推送后再核对。下一轮先fetch实际合入及新增，再回原W2保存／完成／序列化剩余链；本批性能线索不自动变整改授权，不merge／部署／恢复或查触发CI。
+
 已fetch `edhr-dev@ea46c826f821ab2496a56df13fbcb0bd47e25eff`，PR83真实合入且整树同62ba94a9，无外部代码／知识／契约。新分支audit/edhr-dev-dhr-impact-notifications-20261111；[本批审查](../branch-review-20261111-dhr-impact-notifications/README.md)L2继续sourceEffective→个人通知／已读、W6健壮性／性能／A23及W7增量。未确认新的正常路径正确性缺陷，8受测文件仅维护原生测试＋DP＋6知识，产品／API／UI／schema／索引／规则不改。
 
 clean统一受测7b63b4c5，主侧与全新独立各实际177/177（118原生PG＋59其他含15H2）、知识各89/89，0F/E/S。CHANGE/OBSOLETE各自签名改派后新旧收件、多／无限制候选、旧review／唯一审计身份恢复及歧义／缺失不猜共16组合通过，关闭既有discrepancy.dhr-review-effective-source-integration的精确剩余证据high；原32／12步及初轮failed历史保留，不把当前双在审旧fixture当新合法入口。另1/10/100真实冻结版本，100条提醒20／页全部可达，本人／他人／匿名、重复已读和事件重放保持，收到通知不授予DHR资格。

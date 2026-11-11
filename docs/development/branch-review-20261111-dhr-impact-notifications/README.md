@@ -2,6 +2,8 @@
 
 L2，PR83已真实合入`edhr-dev@ea46c826`，整树同62ba94a9，无外部增量。受测候选`7b63b4c545490489e3e7df1d2009957e7e34cf63`。
 
+已交付[PR84](https://github.com/IvenYi/edhr-nexus-frontend/pull/84)，audit/edhr-dev-dhr-impact-notifications-20261111→edhr-dev，观察OPEN／MERGEABLE／CLEAN，建议人工合入本批证据收敛。验收归档c5d07d24后仅L0交付登记，登记前本地／真实远端／PR head一致、目标ea46及52／359输入和包摘要未变，见[交付核对](evidence/delivery-verification.json)；登记正常推送后再次核对，不改称重新运行测试。
+
 本批没有需要修改业务逻辑的新缺陷。维护原生测试和6份知识证据，补齐真实签名改派后接收人、多／无限制候选、旧提交人身份不唯一三类组合，将既有`discrepancy.dhr-review-effective-source-integration`标为resolved；业务规则、产品、API、UI、schema和索引保持。不是宣称整个DHR或整体审计完成。
 
 主侧与全新独立实例各实际177/177（118原生PG＋59其他含15H2）、各知识89/89，0失败／错误／跳过。16个接收人／身份组合、1/10/100真实冻结版本、100条通知完整翻页及本人已读隔离／重放均通过；20份观察、28条新增HTTP和336条source SQL／计划已核。早期测试对照排序失败、独立缺依赖零测试失败原件均保留，不冒称产品修复。
