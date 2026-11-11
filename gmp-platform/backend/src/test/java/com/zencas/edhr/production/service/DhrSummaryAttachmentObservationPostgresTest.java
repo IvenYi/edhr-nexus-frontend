@@ -52,6 +52,8 @@ class DhrSummaryAttachmentObservationPostgresTest {
     @Autowired ObjectMapper mapper;
     @Autowired DhrSummaryService summaries;
     @Autowired DhrAttachmentService attachments;
+    @Autowired DhrEvidenceImpactService impacts;
+    @Autowired DhrReviewService reviews;
     @Autowired DhrFrozenEvidenceIntegrity integrity;
     @Autowired PlatformTransactionManager manager;
     @MockBean FormProjectionWorker worker;
@@ -68,7 +70,7 @@ class DhrSummaryAttachmentObservationPostgresTest {
 
     @BeforeEach void setup() {
         jdbc.gate.set(null); originals.clear();
-        jdbc.execute("TRUNCATE audit_event,dhr_attachment,dhr_summary_review,dhr_summary_evidence,dhr_summary_version,dhr_summary_draft,dhr_instance,form_instance_record,production_execution,production_object,work_order,product_process_version,product_process,material,form_template,route,dhr_template CASCADE");
+        jdbc.execute("TRUNCATE workflow_action_log,workflow_task,workflow_instance,workflow_edge,workflow_node,workflow_definition_version,workflow_definition,audit_event,dhr_attachment,dhr_summary_review,dhr_summary_evidence,dhr_summary_version,dhr_summary_draft,dhr_instance,form_instance_record,production_execution,production_object,work_order,product_process_version,product_process,material,form_template,route,dhr_template CASCADE");
         jdbc.update("INSERT INTO material(id,code,name) VALUES(910101,'SUMMARY-PRODUCT','汇总产品')");
         jdbc.update("INSERT INTO route(id,code,name) VALUES(910102,'SUMMARY-ROUTE','汇总路线')");
         jdbc.update("INSERT INTO route_version(id,route_id,version,code) VALUES(910103,910102,'1','SUMMARY-RV')");
@@ -189,6 +191,126 @@ class DhrSummaryAttachmentObservationPostgresTest {
         write("existing-index-plans.json", Map.of("unrelatedOrInactive", 10000, "activeInScope", 300, "indexes", definitions, "activePlan", mapper.readTree(active), "identityPlan", mapper.readTree(identity), "limits", "Synthetic complete-schema distribution; not production SLA. Plans are not service request SQL."));
     }
 
+    @ParameterizedTest @ValueSource(ints = {0, 1, 100, 300})
+    void frozenAttachmentComparisonObservesAllOriginalsWithoutWriting(int count) throws Exception {
+        seedAttachments(count, 0); long version = summaries.submit(1L, saveDraft()).path("id").asLong();
+        var before = contentDigests();
+        for (boolean lock : new boolean[]{false, true}) {
+            String name = "impact_count_" + count + "_" + lock;
+            var result = observe(name, Map.of("attachments", count, "lock", lock, "entry", "changes"), null,
+                    () -> mapper.createObjectNode().set("evidenceChanges", impacts.changes(version, lock)));
+            assertThat(result.path("evidenceChanges")).isEmpty();
+            var data = mapper.readTree(Files.readString(output().resolve(name + ".json")));
+            assertThat(data.path("trackedLogicalReadBytes").asLong()).isEqualTo(count == 0 ? 0 : (long) count * Files.size(directory.resolve("original-0.png")));
+            assertThat(data.path("selectStatements").asInt()).isEqualTo(6);
+            assertReadState(name, before);
+        }
+    }
+
+    @ParameterizedTest @ValueSource(strings = {"tampered", "missing", "pending", "new", "unlinked", "metadata", "outside", "source_changed"})
+    void frozenComparisonReportsChangesWithoutRepairingEvidence(String change) throws Exception {
+        seedAttachments(2, 0); long version = summaries.submit(1L, saveDraft()).path("id").asLong();
+        String changedId = "1000";
+        switch (change) {
+            case "tampered" -> Files.write(originals.get(1000L), new byte[]{1, 2, 3});
+            case "missing" -> Files.delete(originals.get(1000L));
+            case "pending" -> jdbc.update("UPDATE dhr_attachment SET verification_status='PENDING' WHERE id=1000");
+            case "unlinked" -> jdbc.update("UPDATE dhr_attachment SET active=FALSE WHERE id=1000");
+            case "metadata" -> jdbc.update("UPDATE dhr_attachment SET sha256=repeat('0',64) WHERE id=1000");
+            case "new" -> {
+                jdbc.update("INSERT INTO dhr_attachment(id,tenant_id,dhr_instance_id,original_name,stored_path,mime_type,file_size,sha256,source_kind,purpose,active,verification_status,linked_at) VALUES(1002,'default',1,'new.png','/not-read/new.png','image/png',1,repeat('0',64),'OTHER','new member',TRUE,'VERIFIED',CURRENT_TIMESTAMP)");
+                changedId = "1002";
+            }
+            case "outside" -> jdbc.update("INSERT INTO dhr_attachment(id,tenant_id,dhr_instance_id,original_name,stored_path,mime_type,file_size,sha256,source_kind,purpose,active,verification_status,linked_at) VALUES(2000,'default',2,'foreign-dhr.png','/not-read/dhr.png','image/png',1,repeat('0',64),'OTHER','excluded',TRUE,'VERIFIED',CURRENT_TIMESTAMP),(2001,'other',1,'foreign-tenant.png','/not-read/tenant.png','image/png',1,repeat('0',64),'OTHER','excluded',TRUE,'VERIFIED',CURRENT_TIMESTAMP),(2002,'default',1,'inactive.png','/not-read/inactive.png','image/png',1,repeat('0',64),'OTHER','excluded',FALSE,'VERIFIED',CURRENT_TIMESTAMP)");
+            case "source_changed" -> jdbc.update("UPDATE form_instance_record SET values_json='{\"changed\":true}' WHERE id=500001");
+            default -> throw new IllegalArgumentException(change);
+        }
+        var before = contentDigests();
+        for (boolean lock : new boolean[]{false, true}) {
+            String name = "impact_change_" + change + "_" + lock;
+            var result = observe(name, Map.of("change", change, "lock", lock), null,
+                    () -> mapper.createObjectNode().set("evidenceChanges", impacts.changes(version, lock)));
+            var changes = result.path("evidenceChanges");
+            if (change.equals("outside")) assertThat(changes).isEmpty();
+            else {
+                assertThat(changes).hasSize(1);
+                assertThat(changes.get(0).path(change.equals("source_changed") ? "recordId" : "attachmentId").asText())
+                        .isEqualTo(change.equals("source_changed") ? "500001" : changedId);
+            }
+            assertReadState(name, before);
+        }
+    }
+
+    @Test void largeOriginalReadCostsAreObservedThroughRealFrozenReviewTask() throws Exception {
+        seedReview(); seedAttachments(1, 50 * 1024 * 1024);
+        var submitted = summaries.submit(1L, saveDraft()); long version = submitted.path("id").asLong();
+        assertThat(submitted.path("status").asText()).isEqualTo("PENDING_REVIEW");
+        long task = jdbc.queryForObject("SELECT id FROM workflow_task", Long.class);
+        String frozenAttachments = jdbc.queryForObject("SELECT attachment_snapshot::text FROM dhr_summary_version WHERE id=?", String.class, version);
+        var before = contentDigests();
+        var versionRead = observe("impact_50mib_version", Map.of("entry", "version", "fileBytes", 50 * 1024 * 1024), null, () -> summaries.version(1L, version));
+        var detail = observe("impact_50mib_review", Map.of("entry", "reviewDetail", "fileBytes", 50 * 1024 * 1024), null, () -> reviews.detail(task));
+        assertThat(versionRead.path("evidenceChanges")).isEmpty(); assertThat(detail.path("evidenceChanges")).isEmpty();
+        assertThat(detail.path("canAct").asBoolean()).isTrue();
+        assertReadState("impact_50mib_read", before);
+        for (String name : List.of("impact_50mib_version", "impact_50mib_review")) {
+            var data = mapper.readTree(Files.readString(output().resolve(name + ".json")));
+            assertThat(data.path("trackedLogicalReadBytes").asLong()).isGreaterThanOrEqualTo(50L * 1024 * 1024);
+        }
+        // Approval uses its own locked comparison; a read response never authorizes stale evidence.
+        Files.copy(originals.get(1000L), directory.resolve("replacement.png"));
+        Files.write(originals.get(1000L), new byte[]{1, 2, 3});
+        var command = mapper.createObjectNode().put("expectedSnapshotHash", submitted.path("snapshotHash").asText()).put("action", "APPROVE").put("opinion", "isolated stale-file observation");
+        var afterFileChange = contentDigests();
+        observe("impact_stale_approve", Map.of("entry", "approve", "fileChangedAfterRead", true), "不能按过时证据批准", () -> reviews.act(task, command));
+        assertReadState("impact_stale_approve", afterFileChange);
+        Files.copy(directory.resolve("replacement.png"), originals.get(1000L), StandardCopyOption.REPLACE_EXISTING);
+        var approved = observe("impact_50mib_approve", Map.of("entry", "approve", "originalRestored", true), null, () -> reviews.act(task, command));
+        assertThat(approved.path("outcome").asText()).isEqualTo("APPROVED");
+        assertThat(jdbc.queryForObject("SELECT status FROM workflow_task WHERE id=?", String.class, task)).isEqualTo("COMPLETED");
+        assertThat(jdbc.queryForObject("SELECT attachment_snapshot::text FROM dhr_summary_version WHERE id=?", String.class, version))
+                .isEqualTo(frozenAttachments);
+        write("impact-frozen-review.json", Map.of("submitted", submitted, "taskId", task, "configuredSignatureRequired", false,
+                "frozenAttachmentsBefore", mapper.readTree(frozenAttachments), "frozenAttachmentsAfter", mapper.readTree(jdbc.queryForObject("SELECT attachment_snapshot::text FROM dhr_summary_version WHERE id=?", String.class, version)), "approved", approved));
+    }
+
+    @ParameterizedTest @ValueSource(strings = {"detail", "approve", "stale_hash"})
+    void rejectedReviewReadsDoNotReadOriginalsOrWriteBusinessState(String entry) throws Exception {
+        seedReview(); seedAttachments(1, 0);
+        var submitted = summaries.submit(1L, saveDraft()); long task = jdbc.queryForObject("SELECT id FROM workflow_task", Long.class);
+        var command = mapper.createObjectNode().put("expectedSnapshotHash", entry.equals("stale_hash") ? "wrong-hash" : submitted.path("snapshotHash").asText()).put("action", "APPROVE");
+        if (!entry.equals("stale_hash")) AuditContext.setOperator("910142", "其他人员");
+        var before = contentDigests(); String name = "impact_denied_" + entry;
+        String message = entry.equals("detail") ? "无此 DHR 审批任务权限" : entry.equals("approve") ? "当前用户不是审批处理人" : "审批版本已变化";
+        observe(name, Map.of("entry", entry), message, () -> entry.equals("detail") ? reviews.detail(task) : reviews.act(task, command));
+        assertThat(mapper.readTree(Files.readString(output().resolve(name + ".json"))).path("trackedLogicalReadBytes").asLong()).isZero();
+        assertReadState(name, before);
+    }
+
+    private void seedReview() {
+        jdbc.update("DELETE FROM user_account WHERE id IN (910141,910142)");
+        jdbc.update("INSERT INTO user_account(id,tenant_id,username,display_name,password_hash,status) VALUES(910141,0,'impact-reviewer','证据审核员','unused-test-password-hash','ACTIVE'),(910142,0,'impact-other','其他人员','unused-test-password-hash','ACTIVE')");
+        AuditContext.setOperator("910141", "证据审核员");
+        jdbc.update("INSERT INTO workflow_definition(id,type,business_type,name,code,status) VALUES(910120,'RECORD_CONTROL','DHR_SUMMARY','证据观察审批','IMPACT-REVIEW','ACTIVE')");
+        jdbc.update("INSERT INTO workflow_definition_version(id,definition_id,version_number,status,is_current,nodes_json,edges_json) VALUES(910121,910120,1,'PUBLISHED',true,'[]','[]')");
+        jdbc.update("INSERT INTO workflow_node(id,version_id,node_type,name,properties) VALUES(910122,910121,'START','开始','{}'),(910123,910121,'APPROVAL','审批','{\"approverSubjects\":[{\"type\":\"USER\",\"id\":\"910141\"}]}'),(910124,910121,'END','结束','{}')");
+        jdbc.update("INSERT INTO workflow_edge(id,version_id,source_node_id,target_node_id) VALUES(910125,910121,910122,910123),(910126,910121,910123,910124)");
+        jdbc.update("UPDATE dhr_instance SET dhr_review_mode='REQUIRED',dhr_review_workflow_definition_id=910120,dhr_review_workflow_version_id=910121 WHERE id=1");
+    }
+
+    private Map<String, String> contentDigests() {
+        Map<String, String> result = new LinkedHashMap<>();
+        for (String table : List.of("dhr_instance", "dhr_summary_version", "dhr_summary_evidence", "dhr_summary_review", "dhr_attachment", "form_instance_record", "workflow_instance", "workflow_task", "workflow_action_log", "audit_event", "signature"))
+            result.put(table, jdbc.queryForObject("SELECT md5(COALESCE(string_agg(row_json,E'\\n' ORDER BY row_json),'')) FROM (SELECT to_jsonb(t)::text AS row_json FROM " + table + " t) rows", String.class));
+        return result;
+    }
+
+    private void assertReadState(String name, Map<String, String> before) throws Exception {
+        var after = contentDigests();
+        write(name + "-state.json", Map.of("before", before, "after", after, "identical", before.equals(after)));
+        assertThat(after).isEqualTo(before);
+    }
+
     private void seedAttachments(int count, int paddedBytes) throws Exception {
         byte[] png;
         try (var out = new ByteArrayOutputStream()) { assertThat(ImageIO.write(new BufferedImage(2, 2, BufferedImage.TYPE_INT_RGB), "png", out)).isTrue(); png = out.toByteArray(); }
@@ -231,14 +353,14 @@ class DhrSummaryAttachmentObservationPostgresTest {
     }
 
     private ObjectNode observe(String name, Map<String, Object> data, String expectedRejection, Supplier<ObjectNode> action) throws Exception {
-        var read = new Reads(); ObjectNode result = null; BusinessException rejection = null;
+        var read = new Reads(); ObjectNode result = null; RuntimeException rejection = null;
         var allocation = (com.sun.management.ThreadMXBean) ManagementFactory.getThreadMXBean(); assertThat(allocation.isThreadAllocatedMemorySupported()).isTrue(); allocation.setThreadAllocatedMemoryEnabled(true);
         long allocated; long elapsed; long heapBefore; long heapAfter; long threadId = Thread.currentThread().threadId(); Path jfrPath = output().resolve(name + ".jfr");
         try (var jfr = new Recording()) {
             jfr.enable("jdk.FileRead").withThreshold(Duration.ZERO); jfr.start();
             heapBefore = ManagementFactory.getMemoryMXBean().getHeapMemoryUsage().getUsed(); long before = allocation.getThreadAllocatedBytes(Thread.currentThread().threadId()); long start = System.nanoTime(); CURRENT.set(read);
             try { result = new TransactionTemplate(manager).execute(status -> { jdbc.execute("SET LOCAL application_name='audit_summary_" + name + "'"); return action.get(); }); }
-            catch (BusinessException ex) { rejection = ex; }
+            catch (BusinessException | org.springframework.security.access.AccessDeniedException ex) { rejection = ex; }
             finally { CURRENT.remove(); }
             allocated = allocation.getThreadAllocatedBytes(Thread.currentThread().threadId()) - before; elapsed = System.nanoTime() - start;
             heapAfter = ManagementFactory.getMemoryMXBean().getHeapMemoryUsage().getUsed(); jfr.stop(); jfr.dump(jfrPath);
@@ -248,6 +370,7 @@ class DhrSummaryAttachmentObservationPostgresTest {
         var event = mapper.createObjectNode().put("name", name).put("applicationName", "audit_summary_" + name).put("measuredThreadId", threadId).put("elapsedNanos", elapsed).put("threadAllocatedBytes", allocated)
                 .put("heapBefore", heapBefore).put("heapAfter", heapAfter).put("trackedLogicalReadBytes", bytes).put("trackedReadEvents", events).put("rejection", rejection == null ? null : rejection.getMessage());
         event.set("data", mapper.valueToTree(data)); event.set("jdbcSql", mapper.valueToTree(read.jdbc)); event.set("hibernateSql", mapper.valueToTree(read.hibernate));
+        event.set("result", result == null ? mapper.nullNode() : result);
         event.put("selectStatements", java.util.stream.Stream.concat(read.jdbc.stream(), read.hibernate.stream()).filter(sql -> sql.stripLeading().toLowerCase(Locale.ROOT).startsWith("select")).count());
         write(name + ".json", event);
         if (expectedRejection == null) assertThat(rejection).isNull(); else assertThat(rejection).isNotNull().hasMessageContaining(expectedRejection);
