@@ -1,0 +1,166 @@
+ontologyResult:
+  result: updated
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: 7b63b4c545490489e3e7df1d2009957e7e34cf63
+    targetBranch: edhr-dev
+    targetCommit: ea46c826f821ab2496a56df13fbcb0bd47e25eff
+    contractReadCommit: ea46c826f821ab2496a56df13fbcb0bd47e25eff
+    uncommittedContractPaths: []
+  reason: >-
+    按原始用户确认、现行领域源码及最终7b63 clean候选实际177项回归和89项正式知识校验原件，精确更新六份知识资产。
+    只将既有effective-source-integration差异的签名改派后收件人、多候选/无限制及旧提交身份不唯一三类组合证据缺口收敛为resolved。
+    产品、UI、迁移、治理、规则政策、知识/schema版本、成熟度及P0阶段均未改变；历史failed/blocked及中间失败不回写。
+    本体只读取主侧原件并执行静态与字节核查，没有执行Maven、数据库业务或浏览器，也不代替独立质量角色。
+  changedArtifacts:
+    - path: docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml
+      changeType: update
+      ids: [DEC-0068, discrepancy.dhr-review-effective-source-integration, scenario.dhr-effective-form-impact-in-app-recipients]
+    - path: docs/knowledge/decisions/DEC-0087-record-control-v1-closure.yaml
+      changeType: update
+      ids: [DEC-0087, DEC-0087-08]
+    - path: docs/knowledge/evidence/record-control-dhr-linkage.yaml
+      changeType: update
+      ids: [evidence.dhr-impact-notification-matrix-20261111]
+    - path: docs/knowledge/README.md
+      changeType: update
+      ids: []
+    - path: docs/knowledge/evidence/dhr-filling-review-implementation.md
+      changeType: update
+      ids: []
+    - path: docs/knowledge/evidence/workflow-record-dhr-closure-20261102.md
+      changeType: update
+      ids: []
+  knowledgeSync:
+    - id: discrepancy.dhr-review-effective-source-integration
+      disposition: updated
+      scope: >-
+        仅关闭原三类组合证据缺口；CHANGE/OBSOLETE各自真实签名改派后只新目标和提交人收件、多候选/无限制当前正常合资格集合、旧review或唯一原SUBMIT审计恢复及歧义/缺失不猜均有实际原生PG断言。
+        最终177项内118项为该原生集成类，含16项组合及3项真实冻结版本规模/分页；不将早期16项、19项中间oracle失败或88中间177项当最终候选结果。
+      sourceReferences:
+        - docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml
+        - docs/knowledge/evidence/dhr-filling-review-implementation.md#2026-11-11生效提醒剩余组合证据接续
+        - /tmp/edhr-dhr-notifications-ontology-20261111/read-evidence/final_candidate/TEST-com.zencas.edhr.recordcontrol.service.RecordControlPostgresIntegrationTest.xml
+        - /tmp/edhr-dhr-notifications-ontology-20261111/final-evidence-review.json
+    - id: scenario.dhr-effective-form-impact-in-app-recipients
+      disposition: updated
+      scope: 场景语义不变，只追加本次原生组合证据引用；20为单页大小，实际100条本人提醒全部可翻页找到，不能解释为总数上限。
+      sourceReferences:
+        - docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml
+        - /tmp/edhr-dhr-notifications-ontology-20261111/read-evidence/final_candidate/notification-observations/pages-and-read.json
+    - id: evidence.dhr-impact-notification-matrix-20261111
+      disposition: updated
+      scope: 新增一项本轮原生测试源码证据索引，不新增同义规则、事实或运行执行契约；运行来源、首次与最终提交分开。
+      sourceReferences:
+        - docs/knowledge/evidence/record-control-dhr-linkage.yaml
+        - gmp-platform/backend/src/test/java/com/zencas/edhr/recordcontrol/service/RecordControlPostgresIntegrationTest.java
+        - /tmp/edhr-dhr-notifications-ontology-20261111/final-source-knowledge-binding.json
+    - id: DEC-0087-08
+      disposition: updated
+      scope: 当前跨域说明按日期接续已补齐的精确通知组合，保留原暂缓历史、另一自动判读high、放行及完整A12边界；状态specified/internal保持。
+      sourceReferences:
+        - docs/knowledge/decisions/DEC-0087-record-control-v1-closure.yaml
+        - docs/knowledge/evidence/workflow-record-dhr-closure-20261102.md
+    - id: DEC-0068-12
+      disposition: retained
+      scope: 原确认仍为真实生效后站内提醒当前审批人及受影响冻结版提交人；不按姓名猜身份，不增加历史审批人或外部渠道。冻结候选停用样本不授权编造所有账号状态政策，收到提醒不授予DHR或任务访问资格。
+      sourceReferences:
+        - docs/reference-assets/research/crown-dhr-change-downstream-20261029/handoff.yaml#confirmedNotificationReply
+        - docs/knowledge/evidence/dhr-filling-review-confirmed.md
+        - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrEvidenceImpactService.java
+        - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrImpactNotificationService.java
+    - id: DEC-0068-13
+      disposition: retained
+      scope: 当前在审记录控制申请继续阻断DHR汇总提交和批准；测试双在审只明确建模旧存量，不恢复正常入口共存，不自动退回或批准。
+      sourceReferences:
+        - docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml
+        - gmp-platform/backend/src/test/java/com/zencas/edhr/recordcontrol/service/RecordControlPostgresIntegrationTest.java
+    - id: DEC-0068-14
+      disposition: retained
+      scope: 当前DHR在审继续禁止新发起相关来源变更/作废，原入口与回归保持，手工改fixture状态不是产品入口或新业务政策。
+      sourceReferences:
+        - docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml
+        - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrEvidenceImpactService.java
+    - id: DEC-0093-02
+      disposition: retained
+      scope: 管理员有效签名重新分配只改变当前未处理责任，原候选单独保留，DHR本人转办/撤回和通用批准绕过不开放。
+      sourceReferences:
+        - docs/knowledge/decisions/DEC-0093-central-form-dhr-workflow-responsibility.yaml
+        - gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/WorkflowResponsibilityService.java
+    - id: discrepancy.dhr-review-complete-evidence-impact-gap
+      disposition: retained
+      scope: open/high保持；通用适用质量结果、异常处置及源签署有效性在内容不变时的自动判读/变化比较不在本批关闭。
+      sourceReferences:
+        - docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml
+        - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrEvidenceImpactService.java
+    - id: rule.dhr-summary-block-stale-approval
+      disposition: retained
+      scope: 完整规则仍specified/internal，不由有限通知矩阵提升verified、注册通用执行契约或宣称生产知识运行发布。
+      sourceReferences: [docs/knowledge/rules/dhr-summary.yaml, docs/knowledge/execution-contracts.yaml]
+    - id: fact.dhr-summary.effective-evidence-change
+      disposition: retained
+      scope: 完整事实仍specified/not-available，局部通知证明不代替质量/异常/源签署完整语义。
+      sourceReferences: [docs/knowledge/facts/dhr-summary.yaml]
+    - id: evidence.dhr-linkage-initial-quality-result
+      disposition: historical
+      scope: 初轮failed以及旧blocked与32项/12步原件保留当时范围；本次接续不反填旧结果。
+      sourceReferences:
+        - docs/knowledge/evidence/record-control-dhr-linkage.yaml
+        - docs/knowledge/evidence/dhr-filling-review-implementation.md
+        - /tmp/edhr-dhr-notifications-ontology-20261111/intermediate-runs-observed.json
+    - id: question.form-projection-trace-index-effective-scope
+      disposition: deferred
+      scope: 完整A12失效/修订历史视图及规则重建未决保持，只阻塞依赖该选择的后续范围，不阻塞本次明确通知组合证据收敛。
+      sourceReferences: [docs/knowledge/open-questions.yaml]
+    - id: question.multi-tenant-workflow-isolation
+      disposition: deferred
+      scope: 当前同租户正常合资格及异租户对照样本不代表完整非MVP多租户契约已完成；完整浏览器、账号切换、通知错误和权限矩阵也未新作。
+      sourceReferences: [docs/knowledge/open-questions.yaml, docs/development/branch-review-20261111-dhr-impact-notifications/decision-package.yaml]
+  conflicts: []
+  questions: []
+  validationEvidence:
+    - id: validation.knowledge-native-junit-7b63
+      checkType: schema
+      command: bash /workspace/.edhr-cloud-tools/mvn-edhr --batch-mode --no-transfer-progress -f gmp-platform/backend/pom.xml -Dtest=BusinessKnowledgeModelTest test
+      outcome: passed
+      evidence:
+        - 主侧实际7b63 clean运行89项，0失败/错误/跳过，exitCode=0；本体读取原JUnit及命令，不声称本体执行。
+        - /tmp/edhr-dhr-notifications-ontology-20261111/read-evidence/knowledge/run.json
+        - /tmp/edhr-dhr-notifications-ontology-20261111/read-evidence/knowledge/TEST-com.zencas.edhr.knowledge.BusinessKnowledgeModelTest.xml
+    - id: validation.finite-reference-and-source-binding-7b63
+      checkType: reference
+      command: python /tmp/edhr-dhr-notifications-ontology-20261111/bind-final-inputs.py
+      outcome: passed
+      evidence:
+        - /tmp/edhr-dhr-notifications-ontology-20261111/final-source-knowledge-binding.json
+        - 353知识文件、5正式校验Java及实际backend POM共359输入逐字节等于7b63；正式运行359指纹集合及SHA与本体绑定一致。另52个原生回归输入指纹均匹配当前提交字节。
+        - /tmp/edhr-dhr-notifications-ontology-20261111/finite-review-summary.json
+    - id: validation.exact-state-transition-7b63
+      checkType: status-transition
+      command: python /tmp/edhr-dhr-notifications-ontology-20261111/bind-final-inputs.py
+      outcome: passed
+      evidence:
+        - 唯一既有记录status变化为effective-source-integration的open到resolved；其他规则/事实/决策成熟度保持，原severity=high保留历史归类。
+        - /tmp/edhr-dhr-notifications-ontology-20261111/final-source-knowledge-binding.json
+    - id: validation.projection-and-phase-preserved-7b63
+      checkType: projection
+      command: python /tmp/edhr-dhr-notifications-ontology-20261111/bind-final-inputs.py
+      outcome: passed
+      evidence:
+        - 所有既有visibility无变化，产品/UI/迁移/治理/架构差异为空；0.3.25/schema1.2.0/P0 in-progress保持，未新增运行执行契约。
+        - /tmp/edhr-dhr-notifications-ontology-20261111/final-source-knowledge-binding.json
+    - id: validation.final-original-runtime-evidence-7b63
+      checkType: evidence-path
+      command: python /tmp/edhr-dhr-notifications-ontology-20261111/review-final-proof.py
+      outcome: passed
+      evidence:
+        - 最终主侧177项回归为118原生PG和59相关检查（含15项H2），0失败/错误/跳过；10份原JUnit、20份通知观察及110条HTTP原响应已实际读取并逐项核对。100条提醒跨页顺序/唯一性、本人已读幂等、他人不能代读、匿名401及重投已读保持有原件。
+        - /tmp/edhr-dhr-notifications-ontology-20261111/final-evidence-review.json
+        - /tmp/edhr-dhr-notifications-ontology-20261111/read-evidence/final_candidate/run.json
+        - /tmp/edhr-dhr-notifications-ontology-20261111/read-evidence/final_candidate/test-summary.json
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages: [P1, P2, P3]

@@ -108,7 +108,7 @@ decisions:
         given: 受影响冻结汇总版本具有真实汇总提交人，DHR 可能有当前审批人或已无当前审批任务
         when: 记录控制模块的表单变更或作废正式生效并影响该 DHR
         then: 使用站内渠道提醒当前审批人和该版本汇总提交人，无当前审批任务时不虚构审批人；不据本次范围增加历史批准人或邮件提醒，通知不自动退回、不改写旧冻结与批准或生产及放行状态；申请待审不冒充本次生效触发
-        evidenceIds: [evidence.dhr-filling-review-confirmed]
+        evidenceIds: [evidence.dhr-filling-review-confirmed, evidence.dhr-impact-notification-matrix-20261111]
         evidenceRequirements: [后续真实生效站内通知接收人矩阵测试, 待审申请不发送生效通知对照测试, 无当前审批任务场景, 历史冻结与批准及生产放行无副作用回归]
       - id: scenario.dhr-pending-record-control-blocks-finalization
         given: DHR 引用的表单原修订仍有效，提交前已有在审变更或作废申请，或并发及历史数据造成 DHR 审批中仍存在活动申请
@@ -138,10 +138,10 @@ decisions:
         summary: original-evidence；e0b416a合并候选的固定压缩原件支持两向在审检查、修订影响、账号ID通知、人工退回、并发阻断及旧冻结不变，已有真实PG迁移/升级/重复与容量证据。当前来源变化提示、草稿作废默认隐藏及全量计数、低频查看和V1冻结状态也有部分真实UI原件。2026-11-03原始源码复核进一步界定：changes已比较表单身份、模板版本、当前修订、快照、值和状态，检测新增或缺失来源，并比较附件身份、摘要、核验和原件；本项high/open只保留通用适用质量结果、异常处置和源签署有效性在表单内容未变化时的自动判读及变化比较缺口，不再用笼统全面矩阵重复保留已覆盖来源变化。本轮不扩建该通用判读能力，也不自动退回或改旧冻结批准；旧切片最终结论与本轮整链分别取各自原件。
         evidenceIds: [evidence.dhr-review-service, evidence.dhr-evidence-impact-service, evidence.dhr-summary-service, evidence.record-control-v1-service, evidence.record-control-dhr-effective-orchestration, evidence.dhr-record-control-linkage-source, evidence.dhr-linkage-backend-verification, evidence.dhr-linkage-browser-verification, evidence.workflow-record-dhr-closure-source-review]
       - id: discrepancy.dhr-review-effective-source-integration
-        status: open
+        status: resolved
         severity: high
         visibility: internal
         path: docs/knowledge/evidence/dhr-filling-review-implementation.md
         lineHint: 1
-        summary: original-evidence与secondary-reference分列，旧报告及初轮failed保留当时范围。2026-11-03本轮真实浏览器到隔离PG的all链12步骤通过，补齐普通账号变更/作废、本人提醒/已读及无关账号不可见、双向在审阻断、人工退回后重汇总V2、签名改派后原审批人拒绝和新处理人原生批准、DHR/表单双域审计、旧V1正文及冻结行不变。本轮PG32项另覆盖当前审批人与版本提交人、无当前审批任务仅提交人、无关账号不能代标已读、唯一原提交审计身份恢复、重名隔离、重投去重和通知失败全事务回滚；这些具体子范围已完成，不再列为无普通权限UI或无生效链路证据。本项high/open仅保留尚未组合验证的改派后当前审批人收件人集合、多候选/无限制候选收件人集合及无法唯一恢复旧提交身份时不猜测的边界；基本链通过不冒充这些组合已测。账号停用/锁定不自动推导无提醒政策，收到提醒不授予登录或业务资格；本项不覆盖A12历史界面或规则重建。
-        evidenceIds: [evidence.dhr-filling-review-confirmed, evidence.dhr-evidence-impact-service, evidence.record-control-dhr-effective-orchestration, evidence.dhr-record-control-linkage-source, evidence.dhr-impact-notification-personal-source, evidence.dhr-impact-linkage-migration, evidence.dhr-linkage-backend-verification, evidence.dhr-linkage-browser-verification, evidence.dhr-linkage-initial-quality-result, evidence.workflow-record-dhr-closure-source-review, evidence.workflow-record-dhr-closure-postgres-verification, evidence.workflow-record-dhr-closure-live-verification]
+        summary: original-evidence与secondary-reference分列，旧报告及初轮failed保留当时范围。2026-11-03真实浏览器到隔离PG的all链12步骤通过，补齐普通账号变更/作废、本人提醒/已读及无关账号不可见、双向在审阻断、人工退回后重汇总V2、签名改派后原审批人拒绝和新处理人原生批准、DHR/表单双域审计、旧V1正文及冻结行不变；当轮PG32项另覆盖当前审批人与版本提交人、无当前审批任务仅提交人、无关账号不能代标已读、唯一原提交审计身份恢复、重名隔离、重投去重和通知失败全事务回滚。当时仅余改派后收件人、多候选/无限制候选及旧提交身份不可唯一恢复的组合证据。2026-11-11真实canonical PG聚焦16项逐一补齐CHANGE/OBSOLETE两类的管理员真实签名改派、多候选、无限制当前同租户正常合资格集合、冻结候选停用不自行取消提醒，以及原review身份/唯一SUBMIT审计恢复、歧义或缺失不猜姓名；真实批准后按账号投递、重投幂等和冻结行不变均通过，该既有实现证据缺口据此resolved。双在审仅旧存量fixture，当前双向入口禁令仍保留；不把fixture当新正常业务路径，不由账号样本定义全部停用/锁定政策。收到提醒不授予DHR或任务资格；本项收敛不代表完整浏览器/账号切换/错误/权限矩阵、另一质量/异常/源签署变化high、A12历史界面或规则重建已完成，不替代本批最终候选的正式知识及独立质量门禁。
+        evidenceIds: [evidence.dhr-filling-review-confirmed, evidence.dhr-evidence-impact-service, evidence.record-control-dhr-effective-orchestration, evidence.dhr-record-control-linkage-source, evidence.dhr-impact-notification-personal-source, evidence.dhr-impact-linkage-migration, evidence.dhr-linkage-backend-verification, evidence.dhr-linkage-browser-verification, evidence.dhr-linkage-initial-quality-result, evidence.workflow-record-dhr-closure-source-review, evidence.workflow-record-dhr-closure-postgres-verification, evidence.workflow-record-dhr-closure-live-verification, evidence.dhr-impact-notification-matrix-20261111]

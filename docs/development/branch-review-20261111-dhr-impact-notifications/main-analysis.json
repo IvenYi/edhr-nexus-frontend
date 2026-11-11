@@ -1,0 +1,811 @@
+{
+  "observedAt": "2026-11-11T16:25:32.690029+00:00",
+  "candidate": "7b63b4c545490489e3e7df1d2009957e7e34cf63",
+  "target": "ea46c826f821ab2496a56df13fbcb0bd47e25eff",
+  "mainTests": {
+    "totals": {
+      "tests": 177,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "classes": [
+      {
+        "name": "com.zencas.edhr.recordcontrol.service.RecordControlPostgresIntegrationTest",
+        "tests": 118,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.zencas.edhr.recordcontrol.service.RecordControlDiffTest",
+        "tests": 12,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.zencas.edhr.recordcontrol.service.RecordControlTaskActionServiceTest",
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.zencas.edhr.recordcontrol.service.RecordControlAccessTest",
+        "tests": 10,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.zencas.edhr.common.config.CurrentDatabaseBaselineTest",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.zencas.edhr.workflow.service.RecordControlWorkflowServiceTest",
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.zencas.edhr.workflow.controller.RecordControlWorkflowControllerTest",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.zencas.edhr.workflow.controller.RecordControlCandidateAuthorizationTest",
+        "tests": 3,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.zencas.edhr.template.service.FormReferenceConfigTest",
+        "tests": 8,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.zencas.edhr.template.service.FormReferenceLookupTest",
+        "tests": 15,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    ],
+    "missingFreshReports": []
+  },
+  "knowledgeTests": {
+    "tests": 89,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "protectedInputs": [
+    {
+      "path": "AGENTS.md",
+      "sha256": "13dc7cdacea0b1bb0aef2abb268781f9c69584acd4879b204d2b7fd81a2927fc"
+    },
+    {
+      "path": "codeplzreadme.md",
+      "sha256": "7a1be8efffec596b034335058dca2860346d256622f899c8dac97c5172dd6df2"
+    },
+    {
+      "path": "docs/agents/agent-handoff-contract.md",
+      "sha256": "3439a35dd1baa77ac723f1b5afa237a338d56e31386f06b02b4aacfd754e3a12"
+    },
+    {
+      "path": "docs/agents/quality-verifier.md",
+      "sha256": "6b3de9323924fb4ba5ae87be76c5136d28e754810c46b22b8e3d1cdd6c2f826f"
+    },
+    {
+      "path": "docs/agents/business-knowledge-modeler.md",
+      "sha256": "9806c900f98e1cbcf4f8d68a998a07a5449369df037183c75ec08cd666bf56ae"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/recordcontrol/service/RecordControlDiff.java",
+      "sha256": "42b0a3adfd532a2482ec45ba514b801e9fea28be9491afd89c4e3bc834fffdfd"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionAccess.java",
+      "sha256": "8666e955a875b72118da9a8a10bcf9e13d47f18d2b135a9817570ace3ef2c5ef"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/recordcontrol/controller/RecordControlController.java",
+      "sha256": "1b4e2b65250eb3786e2c317891a7da5daf11bd8116656b2f4caf10c67cacb30f"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/FormReferenceConfig.java",
+      "sha256": "84b5f599b315fb2e393672968ca8f6b29776f0440dc6fdf67db3653b8af809fd"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/FormReferenceLookup.java",
+      "sha256": "a948ffb74213574ec1e714bc079bb1db7427fa99bf7b585d84c616e6193b4c39"
+    },
+    {
+      "path": "docs/development/branch-review-20261111-dhr-impact-notifications/decision-package.yaml",
+      "sha256": "fc32efb22d72e1abe5a3e8e801a87379534cefeab838e6f270301391436905fb"
+    },
+    {
+      "path": "DESIGN.md",
+      "sha256": "23bcefdb3989761c940aab8cd6b15cce6f69107be6c94e304c61308096b49d7d"
+    },
+    {
+      "path": "docs/frontend/list-page-guidelines.md",
+      "sha256": "21f0c88adda6c5c2b57118df505866ba960d70f5e801053b6cba689699a05252"
+    },
+    {
+      "path": "gmp-platform/frontend/src/api/record-control.ts",
+      "sha256": "1fb1eeb138dd6fea0eb44bfe9716a393b41cc7bbab0f787f8a603aeed7acdda7"
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/record-control/RecordChangePage.tsx",
+      "sha256": "1b3e775eeb7e4d8440117e37359c0b30bc33f24ec063ebe215ea937e742d4fb1"
+    },
+    {
+      "path": "gmp-platform/frontend/scripts/test-record-change-async-browser.mjs",
+      "sha256": "e2ab4a5a2c4a1c323aa946ccc87f06a9a27d566837ae8fcf2f535af208809b78"
+    },
+    {
+      "path": "gmp-platform/frontend/src/components/form-renderer/ReferencePickerDialog.tsx",
+      "sha256": "42351c0ea07da97754a56f8866bd560d71e991c6b48afefa4cc25cea4b50962f"
+    },
+    {
+      "path": "gmp-platform/frontend/src/components/form-renderer/referenceConfig.ts",
+      "sha256": "cb26b3522a1c7827920dfb0a76109a99adaa1c6e547d09a22bdfbca71719cf5e"
+    },
+    {
+      "path": "gmp-platform/backend/pom.xml",
+      "sha256": "b98fcc84b57f57f1a8a7fd01ed2e7ab66a0c32c15c62980646a13d378a5669e5"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/RecordControlWorkflowService.java",
+      "sha256": "66b6f3bc778b8ec4e2f41ce7c20290fc9948908a04df83c6d500c834d319c1a9"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/RecordControlWorkflowController.java",
+      "sha256": "53a71fdc5a0271883577bbb588defd8a4b645d3265da8cece3392fcf025c96f1"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/contract/RecordControlWorkflowContracts.java",
+      "sha256": "bec9c6e946e3ff66d3872a8dc1758f6e79c3be840cec16fed30cc297a5fb0f67"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/repository/WorkflowDefinitionRepository.java",
+      "sha256": "52279a81468065423fdc74a8490e1569f1c89917980a6c5ac3dcf0c58bb6f329"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/repository/WorkflowDefinitionVersionRepository.java",
+      "sha256": "99a94b294deb0c548de616c4cbafb9eb37843ad13e22b9f073ee691b810938e5"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/entity/WorkflowDefinition.java",
+      "sha256": "2b536a77f6a7dc1719ea1929fdac4c42e54ec69b7bce209a3447facd3bef441c"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/entity/WorkflowDefinitionVersion.java",
+      "sha256": "4d12dfbf78d760f839d2f8961fdd072742f69569a2b8162bf37c816aacadb412"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/recordcontrol/service/RecordControlService.java",
+      "sha256": "33f05db08da72b977862f68dfd7a9c26b19bcfecdc4be7194b1a0e452d294a4c"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/resources/db/changelog/db.changelog-master.yaml",
+      "sha256": "c6aee09872f78a36a7207348519d203dd6e8c21bff2f893540ef214fc6d5f964"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql",
+      "sha256": "61560f972ef9eeeb8f69620c947b54b2326ad9341d929b19385653bec81cf99b"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/resources/db/changelog/baseline/0002-current-seed.sql",
+      "sha256": "7007b3d4d47fd9d9eca097d1c23125afad64c4cce272dea3bf62323d25911eeb"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/resources/db/changelog/0092-audit-event-hash-version.sql",
+      "sha256": "f9c6fff1f4676deaf55781d7632087d61f7bdeecd5cfa0be46fde9606024601b"
+    },
+    {
+      "path": "docs/knowledge/README.md",
+      "sha256": "507fb473f847ed470324238561be4c62f66053c6a5c5815bbc3978a47c348155"
+    },
+    {
+      "path": "docs/knowledge/open-questions.yaml",
+      "sha256": "c7b3bdecd1a6ac164d95ff515b5412998a556a07e9b5fcb64b3643473aa6e2bf"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0094-record-control-authenticated-candidate-read.yaml",
+      "sha256": "589239e78319f425c052f272290e874eca2a4bf8694cbe50c8404df4915cbc43"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0087-record-control-v1-closure.yaml",
+      "sha256": "492f61ac5cf53bc573c555fb030b61b0bd0db668752efb712392555fe5805c69"
+    },
+    {
+      "path": "docs/knowledge/rules/record-change.yaml",
+      "sha256": "00063e862c2d45e0378cee5685f7832a40eaacf5a776097f3ec2d7d0b5899d68"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrEvidenceImpactService.java",
+      "sha256": "636386037793a7f1c886615728182fccc547dd5b0f74f66bbeed3e70eeeff8fa"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrImpactNotificationService.java",
+      "sha256": "2ec8ab10285cb55892fbf71ae8a3c7bab2bac9a73510c0d6f855d2102a9c38ce"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrImpactNotificationController.java",
+      "sha256": "637b3d89e50452bddf364a08f4bebde29494ecd91b0fa7833323caedff8a93d7"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/WorkflowResponsibilityService.java",
+      "sha256": "6882e97ac8e68fec78ad71e456bc04d81cf64268f55af9bbb799f19ce34e246f"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml",
+      "sha256": "7db137985ee43379b498a64d4e9a964ae3359d222c78530fbbaddd0b43380a2e"
+    },
+    {
+      "path": "docs/knowledge/evidence/record-control-dhr-linkage.yaml",
+      "sha256": "29aaef61ecb30da417b5bd3052028ce86eca773b668776c1e44f9dbf0716b9ba"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/recordcontrol/service/RecordControlPostgresIntegrationTest.java",
+      "sha256": "a7a36509345a88b999ee3b70abb84c25fcede83360d2ea8705fc8216f634dcee"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/recordcontrol/service/RecordControlDiffTest.java",
+      "sha256": "b17400d9f55d4555e63959638459fb12e1450b2f25135027d29647a01eabab56"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/recordcontrol/service/RecordControlTaskActionServiceTest.java",
+      "sha256": "d8941e3b2f38d0d316d119f463fdff0a4d39c7c7be4a4c87b47204732e68097a"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/recordcontrol/service/RecordControlAccessTest.java",
+      "sha256": "27dd79bab56fb7de562cda8a4622619a6a9236f3445d6dd3eac503210e4bedca"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/common/config/CurrentDatabaseBaselineTest.java",
+      "sha256": "49a9fc595a97e2558c3f347d209ce1191f872064dc6650823b151aa3a5b86e4e"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/service/RecordControlWorkflowServiceTest.java",
+      "sha256": "c9e5271c8fc7db2d97b65a655a707cc9c13c307e00277d3ddf83852024bea56f"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/RecordControlWorkflowControllerTest.java",
+      "sha256": "4a706570fcb1c0babb0b3a74c661f7ff43fc389dd8af0736d2471c93a0971bcf"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/RecordControlCandidateAuthorizationTest.java",
+      "sha256": "cde3f93514e8f08c6ab63324799d52f8c90d7e7baa0e5342f9dbecc316d6442f"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/template/service/FormReferenceConfigTest.java",
+      "sha256": "48c74bfc3f093f816143ca221053cf7a900aab413610feee4e2146f42046cbf4"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/template/service/FormReferenceLookupTest.java",
+      "sha256": "e3ee36b3ea4e0adb6565317c527bd2c0abacb1aa921dc4b38c75ce45633ad141"
+    }
+  ],
+  "knowledgeInputs": 359,
+  "changedFiles": [
+    "docs/development/branch-review-20261111-dhr-impact-notifications/decision-package.yaml",
+    "docs/knowledge/README.md",
+    "docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml",
+    "docs/knowledge/decisions/DEC-0087-record-control-v1-closure.yaml",
+    "docs/knowledge/evidence/dhr-filling-review-implementation.md",
+    "docs/knowledge/evidence/record-control-dhr-linkage.yaml",
+    "docs/knowledge/evidence/workflow-record-dhr-closure-20261102.md",
+    "gmp-platform/backend/src/test/java/com/zencas/edhr/recordcontrol/service/RecordControlPostgresIntegrationTest.java"
+  ],
+  "notificationObservations": [
+    {
+      "file": "capacity-1.json",
+      "sha256": "3327ff9964fed5d1cf912196c2b3c38633915eee37e59a335160522ace532874",
+      "label": "notification-source-1",
+      "versions": 1,
+      "impacts": 1,
+      "notifications": 1,
+      "elapsedNanos": 3826231,
+      "threadAllocatedBytes": 11040,
+      "realSourceMethodCalls": 1,
+      "frozenBeforeSha256": "bd034bc95ce8640bf292810bdb566a03d9e306c3d344cab3f4ed176dc38ca7a0",
+      "frozenAfterSha256": "bd034bc95ce8640bf292810bdb566a03d9e306c3d344cab3f4ed176dc38ca7a0",
+      "replayBeforeSha256": "5dc30765cc82129d787f2d4809dabc687811c5c0142527786a07ad5da00c1b62",
+      "replayAfterSha256": "5dc30765cc82129d787f2d4809dabc687811c5c0142527786a07ad5da00c1b62"
+    },
+    {
+      "file": "capacity-10.json",
+      "sha256": "96db4f0718e8e43aac26c60a1bb31e419f681972717a26bd747bf49308c8e16c",
+      "label": "notification-source-10",
+      "versions": 10,
+      "impacts": 10,
+      "notifications": 10,
+      "elapsedNanos": 14574419,
+      "threadAllocatedBytes": 66824,
+      "realSourceMethodCalls": 1,
+      "frozenBeforeSha256": "c47b98b8c98e9ab03517b025a6be14bba4961f9cc9baada7698cd065952e1b7f",
+      "frozenAfterSha256": "c47b98b8c98e9ab03517b025a6be14bba4961f9cc9baada7698cd065952e1b7f",
+      "replayBeforeSha256": "345a3cd96bd4c663878070d65a4be372f780ccd5c8a680e6ccf0e1fc02172ea6",
+      "replayAfterSha256": "345a3cd96bd4c663878070d65a4be372f780ccd5c8a680e6ccf0e1fc02172ea6"
+    },
+    {
+      "file": "capacity-100.json",
+      "sha256": "dcdeddce3dd27901c629b42b076c7b454f6b8b706471fe824e03d8cb58e55643",
+      "label": "notification-source-100",
+      "versions": 100,
+      "impacts": 100,
+      "notifications": 100,
+      "elapsedNanos": 122999048,
+      "threadAllocatedBytes": 622664,
+      "realSourceMethodCalls": 1,
+      "frozenBeforeSha256": "0dbc632cf232886c76da41d6c58c2c78a2e6fe7d53e1cad17613761226a2b8f4",
+      "frozenAfterSha256": "0dbc632cf232886c76da41d6c58c2c78a2e6fe7d53e1cad17613761226a2b8f4",
+      "replayBeforeSha256": "6759d3a11f3ff27b763dccc05e22e63b14670a893f9a43f97758e28b77fbb954",
+      "replayAfterSha256": "6759d3a11f3ff27b763dccc05e22e63b14670a893f9a43f97758e28b77fbb954"
+    },
+    {
+      "file": "identity-CHANGE-AUDIT_AMBIGUOUS.json",
+      "sha256": "42240c97a17e6fc05fb2d37a57a8c9e8ecbd7195203b54ac803c565f748e1812",
+      "businessType": "CHANGE",
+      "recovery": "AUDIT_AMBIGUOUS",
+      "versionId": "396001780271222784",
+      "requestId": "396001780665487360",
+      "frozenUnchanged": true,
+      "replayUnchanged": true,
+      "frozenBeforeSha256": "43f20c03641fd8b9c6c9ddf5768106c04b89b2483f9557b9a98c256126036a92",
+      "frozenAfterSha256": "43f20c03641fd8b9c6c9ddf5768106c04b89b2483f9557b9a98c256126036a92",
+      "replayBeforeSha256": "d8b58d1162f1926ce183543c99ac04e7f3d40f79400b195a7a5d2ec1a859d234",
+      "replayAfterSha256": "d8b58d1162f1926ce183543c99ac04e7f3d40f79400b195a7a5d2ec1a859d234",
+      "recipients": []
+    },
+    {
+      "file": "identity-CHANGE-AUDIT_MISSING.json",
+      "sha256": "3a2fa7593e44638075552638c85c8b60307bb8a79d6a4319fefea8ee3cb61df2",
+      "businessType": "CHANGE",
+      "recovery": "AUDIT_MISSING",
+      "versionId": "396001785577017344",
+      "requestId": "396001785946116096",
+      "frozenUnchanged": true,
+      "replayUnchanged": true,
+      "frozenBeforeSha256": "85652c946f9046cfda169a6e58255c2d5d5d4e43015632b867c4f11842390b3d",
+      "frozenAfterSha256": "85652c946f9046cfda169a6e58255c2d5d5d4e43015632b867c4f11842390b3d",
+      "replayBeforeSha256": "8ea752061cdf2e17c6b683b8f03a93b58b0c1e57d61a8bf33ca848b1d7a64d86",
+      "replayAfterSha256": "8ea752061cdf2e17c6b683b8f03a93b58b0c1e57d61a8bf33ca848b1d7a64d86",
+      "recipients": []
+    },
+    {
+      "file": "identity-CHANGE-AUDIT_UNIQUE.json",
+      "sha256": "19d11748042dd5b3ffe253007cf8dfdaf41206018abefb4c7dec2743783c5d81",
+      "businessType": "CHANGE",
+      "recovery": "AUDIT_UNIQUE",
+      "versionId": "396001774814433280",
+      "requestId": "396001775217086464",
+      "frozenUnchanged": true,
+      "replayUnchanged": true,
+      "frozenBeforeSha256": "6aac6fd305915222bb3a31a7cea531e88fec50e7d3d160d4c7ee8ca5498118a1",
+      "frozenAfterSha256": "6aac6fd305915222bb3a31a7cea531e88fec50e7d3d160d4c7ee8ca5498118a1",
+      "replayBeforeSha256": "62a7a590c2ebb20ce24d14d0904ec1a9430bb7ac05a7c505cf790c47ade28020",
+      "replayAfterSha256": "62a7a590c2ebb20ce24d14d0904ec1a9430bb7ac05a7c505cf790c47ade28020",
+      "recipients": [
+        "41"
+      ]
+    },
+    {
+      "file": "identity-CHANGE-REVIEW_FALLBACK.json",
+      "sha256": "d8d8cde7b5f5326dfc5da30fc6753082dedf230f852b804ace5c6bf83f3f0efd",
+      "businessType": "CHANGE",
+      "recovery": "REVIEW_FALLBACK",
+      "versionId": "396001769202454528",
+      "requestId": "396001768707526656",
+      "frozenUnchanged": true,
+      "replayUnchanged": true,
+      "frozenBeforeSha256": "b73b50ca5b44d94d0517b8b846eb133f87817b3a3ed84b4467e1526afa3835e3",
+      "frozenAfterSha256": "b73b50ca5b44d94d0517b8b846eb133f87817b3a3ed84b4467e1526afa3835e3",
+      "replayBeforeSha256": "061eab146dcfd24f933105d7fbbfd24452d236fb1c596c81f6b987f43339f6d8",
+      "replayAfterSha256": "061eab146dcfd24f933105d7fbbfd24452d236fb1c596c81f6b987f43339f6d8",
+      "recipients": [
+        "41",
+        "42"
+      ]
+    },
+    {
+      "file": "identity-OBSOLETE-AUDIT_AMBIGUOUS.json",
+      "sha256": "4455debfb4c471923962317d7dba6f882cba0c3172041b8ac77f89a61c45903f",
+      "businessType": "OBSOLETE",
+      "recovery": "AUDIT_AMBIGUOUS",
+      "versionId": "396001782888468480",
+      "requestId": "396001783253372928",
+      "frozenUnchanged": true,
+      "replayUnchanged": true,
+      "frozenBeforeSha256": "13d64fbef83d96d509e4a18b4ecfcd8df405edf79fbc30808b08e309f6bca506",
+      "frozenAfterSha256": "13d64fbef83d96d509e4a18b4ecfcd8df405edf79fbc30808b08e309f6bca506",
+      "replayBeforeSha256": "86733d186cc61675e57fca203409dc9e99e34016d56d1becc29afaee391d96d7",
+      "replayAfterSha256": "86733d186cc61675e57fca203409dc9e99e34016d56d1becc29afaee391d96d7",
+      "recipients": []
+    },
+    {
+      "file": "identity-OBSOLETE-AUDIT_MISSING.json",
+      "sha256": "3ad3a631bb5aad5121af08419922828a0df1caeab224f2f93f7c35ac7c030d06",
+      "businessType": "OBSOLETE",
+      "recovery": "AUDIT_MISSING",
+      "versionId": "396001787980353536",
+      "requestId": "396001788391395328",
+      "frozenUnchanged": true,
+      "replayUnchanged": true,
+      "frozenBeforeSha256": "b101837db4f4117dc0d19a4802c85a93c60fd291bc57b955277b771e0123aec6",
+      "frozenAfterSha256": "b101837db4f4117dc0d19a4802c85a93c60fd291bc57b955277b771e0123aec6",
+      "replayBeforeSha256": "00142d2fd71cdfb673eca1f037997a8a3635ea220b45d22017c4e0144f7d86c7",
+      "replayAfterSha256": "00142d2fd71cdfb673eca1f037997a8a3635ea220b45d22017c4e0144f7d86c7",
+      "recipients": []
+    },
+    {
+      "file": "identity-OBSOLETE-AUDIT_UNIQUE.json",
+      "sha256": "07ed8d378e223c2936063494c6db7e21c90e123ecb73f2e99628cf599db6fb38",
+      "businessType": "OBSOLETE",
+      "recovery": "AUDIT_UNIQUE",
+      "versionId": "396001777582673920",
+      "requestId": "396001777955966976",
+      "frozenUnchanged": true,
+      "replayUnchanged": true,
+      "frozenBeforeSha256": "977f88c8ee3b853dc9a7f3db027d3093b7e20a643410de687d19f6e242ccb00f",
+      "frozenAfterSha256": "977f88c8ee3b853dc9a7f3db027d3093b7e20a643410de687d19f6e242ccb00f",
+      "replayBeforeSha256": "185d24a079247d4e82697012fda771817075d48940a2d4c004ba957306c3885a",
+      "replayAfterSha256": "185d24a079247d4e82697012fda771817075d48940a2d4c004ba957306c3885a",
+      "recipients": [
+        "41"
+      ]
+    },
+    {
+      "file": "identity-OBSOLETE-REVIEW_FALLBACK.json",
+      "sha256": "66d6a41cf92d623ef18dfccece77ebda1e89dd8b7fd5ad6946045fe667b20f69",
+      "businessType": "OBSOLETE",
+      "recovery": "REVIEW_FALLBACK",
+      "versionId": "396001772373348352",
+      "requestId": "396001772062969856",
+      "frozenUnchanged": true,
+      "replayUnchanged": true,
+      "frozenBeforeSha256": "7c99b1c955ab9300d20996ba591a8c47c2fa23f9c6183d84d194c41efb7023fd",
+      "frozenAfterSha256": "7c99b1c955ab9300d20996ba591a8c47c2fa23f9c6183d84d194c41efb7023fd",
+      "replayBeforeSha256": "c4df7be2df7f31006667c3b27d81d025a1b1a826acd51679bcb0c5bf0266a539",
+      "replayAfterSha256": "c4df7be2df7f31006667c3b27d81d025a1b1a826acd51679bcb0c5bf0266a539",
+      "recipients": [
+        "41",
+        "42"
+      ]
+    },
+    {
+      "file": "pages-and-read.json",
+      "sha256": "cfbf328591eca866c16501eddb72af3f9e969d38a710d48d91d379546c022e51",
+      "total": 100,
+      "uniqueReachable": 100,
+      "unreadAfterRead": 99,
+      "readAtUnchanged": true,
+      "readAt": "2026-11-11 16:24:12.336903",
+      "orderedIds": [
+        "133",
+        "132",
+        "131",
+        "130",
+        "129",
+        "128",
+        "127",
+        "126",
+        "125",
+        "124",
+        "123",
+        "122",
+        "121",
+        "120",
+        "119",
+        "118",
+        "117",
+        "116",
+        "115",
+        "114",
+        "113",
+        "112",
+        "111",
+        "110",
+        "109",
+        "108",
+        "107",
+        "106",
+        "105",
+        "104",
+        "103",
+        "102",
+        "101",
+        "100",
+        "99",
+        "98",
+        "97",
+        "96",
+        "95",
+        "94",
+        "93",
+        "92",
+        "91",
+        "90",
+        "89",
+        "88",
+        "87",
+        "86",
+        "85",
+        "84",
+        "83",
+        "82",
+        "81",
+        "80",
+        "79",
+        "78",
+        "77",
+        "76",
+        "75",
+        "74",
+        "73",
+        "72",
+        "71",
+        "70",
+        "69",
+        "68",
+        "67",
+        "66",
+        "65",
+        "64",
+        "63",
+        "62",
+        "61",
+        "60",
+        "59",
+        "58",
+        "57",
+        "56",
+        "55",
+        "54",
+        "53",
+        "52",
+        "51",
+        "50",
+        "49",
+        "48",
+        "47",
+        "46",
+        "45",
+        "44",
+        "43",
+        "42",
+        "41",
+        "40",
+        "39",
+        "38",
+        "37",
+        "36",
+        "35",
+        "34"
+      ]
+    },
+    {
+      "file": "recipients-CHANGE-DISABLED_CANDIDATE.json",
+      "sha256": "a2b751a55c010f40a01aaa044bd7c3f4c1f05c1e3b0d720704b150fcea652fee",
+      "fixtureKind": "legacy concurrent reviews",
+      "businessType": "CHANGE",
+      "mode": "DISABLED_CANDIDATE",
+      "requestId": "396001870402621440",
+      "versionId": "396001870629113856",
+      "frozenUnchanged": true,
+      "replayUnchanged": true,
+      "frozenBeforeSha256": "8c0f612d413eb0914ae86453be4081c0d490dd9719c3247817fa87fc71ae5b8e",
+      "frozenAfterSha256": "8c0f612d413eb0914ae86453be4081c0d490dd9719c3247817fa87fc71ae5b8e",
+      "replayBeforeSha256": "fcba5bea1020b231b405fe178ae08165ff25244dd836db48e57d5386fc53aa54",
+      "replayAfterSha256": "fcba5bea1020b231b405fe178ae08165ff25244dd836db48e57d5386fc53aa54",
+      "recipients": [
+        "41",
+        "42",
+        "43"
+      ]
+    },
+    {
+      "file": "recipients-CHANGE-MULTIPLE.json",
+      "sha256": "601b9f519ed4b1a969fc8e10deec211dd2943c1ba28555903ef9033052941fc8",
+      "fixtureKind": "legacy concurrent reviews",
+      "businessType": "CHANGE",
+      "mode": "MULTIPLE",
+      "requestId": "396001852002209792",
+      "versionId": "396001852211924992",
+      "frozenUnchanged": true,
+      "replayUnchanged": true,
+      "frozenBeforeSha256": "cf732e6ac291b5cc3ffbe3fc1e328767e4a1b43bbbaed542de55817c835e66a4",
+      "frozenAfterSha256": "cf732e6ac291b5cc3ffbe3fc1e328767e4a1b43bbbaed542de55817c835e66a4",
+      "replayBeforeSha256": "016f442108f940c3302792f1c0d2608c92729ed71281787ee7a3cae6f5df4646",
+      "replayAfterSha256": "016f442108f940c3302792f1c0d2608c92729ed71281787ee7a3cae6f5df4646",
+      "recipients": [
+        "41",
+        "42",
+        "43"
+      ]
+    },
+    {
+      "file": "recipients-CHANGE-REASSIGNED.json",
+      "sha256": "c81e040c2ff9b05d9569efaa2f286737c1d20955e285a25403fd4f23485537b9",
+      "fixtureKind": "legacy concurrent reviews",
+      "businessType": "CHANGE",
+      "mode": "REASSIGNED",
+      "requestId": "396001863750455296",
+      "versionId": "396001864002113536",
+      "frozenUnchanged": true,
+      "replayUnchanged": true,
+      "frozenBeforeSha256": "aa0c3730afff71e8e4b43139a6f713689d5a13bf605d31ee56739bf1c43890dd",
+      "frozenAfterSha256": "aa0c3730afff71e8e4b43139a6f713689d5a13bf605d31ee56739bf1c43890dd",
+      "replayBeforeSha256": "ad5065bfbfe4fb9fef25862b4d506f63c10ab4816999d71fd429dc41c284710e",
+      "replayAfterSha256": "ad5065bfbfe4fb9fef25862b4d506f63c10ab4816999d71fd429dc41c284710e",
+      "recipients": [
+        "41",
+        "43"
+      ]
+    },
+    {
+      "file": "recipients-CHANGE-UNRESTRICTED.json",
+      "sha256": "304dca80078bb2ea49e8a59f4faf28126b291568f02672352e6c4a02550adc0f",
+      "fixtureKind": "legacy concurrent reviews",
+      "businessType": "CHANGE",
+      "mode": "UNRESTRICTED",
+      "requestId": "396001857811320832",
+      "versionId": "396001858025230336",
+      "frozenUnchanged": true,
+      "replayUnchanged": true,
+      "frozenBeforeSha256": "c2a50c8c75a386390188c2dbfb99e7fd46b5a4ddbcb0a463178e34b9a89ac3fa",
+      "frozenAfterSha256": "c2a50c8c75a386390188c2dbfb99e7fd46b5a4ddbcb0a463178e34b9a89ac3fa",
+      "replayBeforeSha256": "cb8f8bc192a6eff619d99f474c7753a57daac6ef5e4768f2faec823535dccefb",
+      "replayAfterSha256": "cb8f8bc192a6eff619d99f474c7753a57daac6ef5e4768f2faec823535dccefb",
+      "recipients": [
+        "41",
+        "42",
+        "43"
+      ]
+    },
+    {
+      "file": "recipients-OBSOLETE-DISABLED_CANDIDATE.json",
+      "sha256": "7f276adfa23a2678f342fe531fee2df660f6a29f4122944a00553d0603482551",
+      "fixtureKind": "legacy concurrent reviews",
+      "businessType": "OBSOLETE",
+      "mode": "DISABLED_CANDIDATE",
+      "requestId": "396001873372188672",
+      "versionId": "396001873560932352",
+      "frozenUnchanged": true,
+      "replayUnchanged": true,
+      "frozenBeforeSha256": "8623a12fa682dfad55f28b96900ffe1b9d7d187ce6d5a34573d5a769215e4b3a",
+      "frozenAfterSha256": "8623a12fa682dfad55f28b96900ffe1b9d7d187ce6d5a34573d5a769215e4b3a",
+      "replayBeforeSha256": "796bc9af4036ad62571b25cac2b7f8e24b580dea58fed3da6b2a66d25042811e",
+      "replayAfterSha256": "796bc9af4036ad62571b25cac2b7f8e24b580dea58fed3da6b2a66d25042811e",
+      "recipients": [
+        "41",
+        "42",
+        "43"
+      ]
+    },
+    {
+      "file": "recipients-OBSOLETE-MULTIPLE.json",
+      "sha256": "b710e1859244045bd39577460551d5a3d1727761cf26788953b68bbadf1a3836",
+      "fixtureKind": "legacy concurrent reviews",
+      "businessType": "OBSOLETE",
+      "mode": "MULTIPLE",
+      "requestId": "396001854934028288",
+      "versionId": "396001855131160576",
+      "frozenUnchanged": true,
+      "replayUnchanged": true,
+      "frozenBeforeSha256": "9ff980d4dce3285bcfd40c9cf656898fc1b0b1a3c244a53cf3649c86dadde36e",
+      "frozenAfterSha256": "9ff980d4dce3285bcfd40c9cf656898fc1b0b1a3c244a53cf3649c86dadde36e",
+      "replayBeforeSha256": "843aa242ef3c72fcdfed1100b9c8ad791af2aa50917911920036359250bccb66",
+      "replayAfterSha256": "843aa242ef3c72fcdfed1100b9c8ad791af2aa50917911920036359250bccb66",
+      "recipients": [
+        "41",
+        "42",
+        "43"
+      ]
+    },
+    {
+      "file": "recipients-OBSOLETE-REASSIGNED.json",
+      "sha256": "c6edaa865795c1b8b2bff1ad57bc8523bca144b3e1f9e5037dae2b061a115ed8",
+      "fixtureKind": "legacy concurrent reviews",
+      "businessType": "OBSOLETE",
+      "mode": "REASSIGNED",
+      "requestId": "396001867164618752",
+      "versionId": "396001867357556736",
+      "frozenUnchanged": true,
+      "replayUnchanged": true,
+      "frozenBeforeSha256": "5766907e794ddfa73aeb8c2d96b57d33a35e5eaeaad0e346bc42ffda7a6d8c18",
+      "frozenAfterSha256": "5766907e794ddfa73aeb8c2d96b57d33a35e5eaeaad0e346bc42ffda7a6d8c18",
+      "replayBeforeSha256": "eaf91f63f3f2ac169f8ef85be48105f6b6d6b2dbfb7a012b55587da10da4b1f9",
+      "replayAfterSha256": "eaf91f63f3f2ac169f8ef85be48105f6b6d6b2dbfb7a012b55587da10da4b1f9",
+      "recipients": [
+        "41",
+        "43"
+      ]
+    },
+    {
+      "file": "recipients-OBSOLETE-UNRESTRICTED.json",
+      "sha256": "87f23271e81a13b1601ea889969be0b2e19c419003ac0d434ad05d875eb6cb49",
+      "fixtureKind": "legacy concurrent reviews",
+      "businessType": "OBSOLETE",
+      "mode": "UNRESTRICTED",
+      "requestId": "396001860843802624",
+      "versionId": "396001861040934912",
+      "frozenUnchanged": true,
+      "replayUnchanged": true,
+      "frozenBeforeSha256": "d18b94727aa73aef193466844d5bf86c8468c7c7497c13142c280ab1a70716dd",
+      "frozenAfterSha256": "d18b94727aa73aef193466844d5bf86c8468c7c7497c13142c280ab1a70716dd",
+      "replayBeforeSha256": "8b460a5ee8e787354f73c04841444e0d837edad7aef832c1f04b6b3ba7faef7d",
+      "replayAfterSha256": "8b460a5ee8e787354f73c04841444e0d837edad7aef832c1f04b6b3ba7faef7d",
+      "recipients": [
+        "41",
+        "42",
+        "43"
+      ]
+    }
+  ],
+  "notificationHttpCount": 28,
+  "allNativeHttpCount": 110,
+  "sourceCosts": [
+    {
+      "versions": 1,
+      "SELECT": 2,
+      "IMPACT_UPSERT_RETURNING": 1,
+      "NOTICE_INSERT": 1,
+      "totalSourceCommands": 4,
+      "elapsedNanos": 3826231,
+      "threadAllocatedBytes": 11040,
+      "planCount": 4
+    },
+    {
+      "versions": 10,
+      "SELECT": 11,
+      "IMPACT_UPSERT_RETURNING": 10,
+      "NOTICE_INSERT": 10,
+      "totalSourceCommands": 31,
+      "elapsedNanos": 14574419,
+      "threadAllocatedBytes": 66824,
+      "planCount": 31
+    },
+    {
+      "versions": 100,
+      "SELECT": 101,
+      "IMPACT_UPSERT_RETURNING": 100,
+      "NOTICE_INSERT": 100,
+      "totalSourceCommands": 301,
+      "elapsedNanos": 122999048,
+      "threadAllocatedBytes": 622664,
+      "planCount": 301
+    }
+  ],
+  "fixtureFailurePreserved": {
+    "phase": "focused_complete",
+    "tests": 19,
+    "failures": 1,
+    "cause": "test oracle ORDER BY projected text alias;product numeric order correct;qualified column retained exact order and unique-100 assertions"
+  },
+  "intermediateFullRun": {
+    "phase": "final",
+    "actualHead": "88debca40e7023245e578f3be942b6d83475a1cf",
+    "tests": {
+      "tests": 177,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "qualification": "intermediate only;subsequent one-line knowledge clarification separately committed and clean final_candidate repeated"
+  },
+  "qualification": "Real source method in actual approval transaction;cost covers sourceEffective only, not entire approval/lock duration. Version samples are not caps or personnel counts. Allocated bytes are cumulative on invoking thread, not RSS/peak. No runtime product/policy/index optimization."
+}
