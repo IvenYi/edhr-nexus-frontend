@@ -1,5 +1,10 @@
 knowledgeModelVersion: 0.3.25
 evidence:
+  - id: evidence.dhr-impact-notification-matrix-20261111
+    type: code
+    path: gmp-platform/backend/src/test/java/com/zencas/edhr/recordcontrol/service/RecordControlPostgresIntegrationTest.java
+    description: original-evidence；2026-11-11主侧真实canonical PG聚焦16项全部通过，覆盖CHANGE/OBSOLETE各自的真实签名改派后新旧收件人、多候选/无限制当前同租户正常合资格集合、冻结候选停用不自行取消提醒，及旧版原review/唯一SUBMIT审计身份恢复、歧义或缺失不猜姓名。每项通过真实记录控制批准消费sourceEffective并核对收件账号、重投及冻结行不变；双在审明确只建旧存量fixture，不绕改现行入口禁令。本人HTTP提醒200、无DHR菜单权的任务详情403另有原始响应。早期运行/test字节绑定及剩余门禁见dhr-filling-review-implementation.md本轮接续段；原32项/12步/初轮failed保留历史，不冒充本批最终候选重跑、独立验收、全浏览器/全权限或全部账号状态政策。
+    visibility: internal
   - id: evidence.record-control-dhr-effective-orchestration
     type: code
     path: gmp-platform/backend/src/main/java/com/zencas/edhr/recordcontrol/service/RecordControlService.java

@@ -1,0 +1,57 @@
+decisionPackage:
+  id: DEC-PACKAGE-DHR-IMPACT-NOTIFICATIONS-20261111
+  scope: W1/W3/W5 real effective-source event and personal notifications;W6 robustness/performance/A23 and W7 increment
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: ea46c826f821ab2496a56df13fbcb0bd47e25eff
+    targetBranch: edhr-dev
+    targetCommit: ea46c826f821ab2496a56df13fbcb0bd47e25eff
+    contractReadCommit: ea46c826f821ab2496a56df13fbcb0bd47e25eff
+    uncommittedContractPaths: []
+  summary: PR83真实合入整树同62ba94a9，无外部代码/知识/契约。继续sourceEffective→个人通知/已读链，补既有high中改派后接收人、多/无限制候选和旧提交身份不唯一的组合证据，审事件幂等、失败原子性、分页/权限和查询规模。先只扩维护原生测试及审查记录，知识差异按实际证据精确收敛，不改业务规则或自动实施未答性能方案。
+  confirmed: {concepts: [], relationships: [], rules: [], executionContracts: []}
+  inferred: []
+  unresolved: []
+  replacementScopes: []
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - {area: effective-source-notifications, change: 通过真实记录控制申请/签署批准创建事件和个人提醒，核对当前处理人和版本提交账号，而非显示姓名或历史批准人, evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrEvidenceImpactService.java, docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml]}
+    transitiveImpacts:
+      - {area: recipient-matrices, change: 改派用原管理员签名入口，多候选/无限制由真实冻结流程生成；与双在审共存相关矩阵显式建模旧存量边界，保留当前入口禁令回归, evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/WorkflowResponsibilityService.java]}
+    potentialImpacts:
+      - {area: growth, concern: 版本数/收件人增长可能带来循环读写；用实际事务和PG计划量化，不从出现循环直接定bug或擅加上限/优化, evidenceReferences: []}
+    unaffectedAreas:
+      - {area: business-policy, change: 不定义新通知对象/账号状态政策、不外发消息、不改权限/签名/状态/锁/生产放行/历史或UI；两向在审门禁及独立批准重核保持, evidenceReferences: []}
+    compatibilityAndMigration:
+      - {area: legacy-fixtures, change: 只自有临时canonical PG；未知旧提交身份不按姓名猜，不迁移/恢复真实旧数据，测试fixture改动不能冒称正常入口可新建双在审, evidenceReferences: []}
+    snapshotImpacts:
+      - {area: immutable-dhr, change: 真实生效提醒不改写冻结版本、批准、流程或生产完成；跨版本影响逐份按真实来源身份, evidenceReferences: []}
+    auditImpacts:
+      - {area: atomic-idempotent-consumption, change: 重投事件只消费一次，通知失败原事务回滚；个人已读单独按认证身份幂等更新且不授予DHR/任务权利, evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/recordcontrol/service/RecordControlService.java]}
+    permissionImpacts:
+      - {area: personal-inbox, change: 普通认证账号及匿名/他人已读/源任务无权对照，页面20为每页大小非总量限制；全部合资格提醒可翻页, evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrImpactNotificationController.java]}
+    testImpacts:
+      - {scope: native-postgres-and-http, scenarios: [CHANGE及OBSOLETE, 签名改派后新旧收件人, 多候选/无限制候选/既有候选停用不自动撤销提醒, 原审批身份或唯一SUBMIT审计恢复/不唯一或缺失不猜, 事件重投及已读保持, 跨页完整性和HTTP隔离, 版本增长真实冻结/通知及源事务SQL], evidenceReferences: []}
+    evidenceGaps: [未新做完整浏览器/账号切换/通知错误UI矩阵, 不关闭通用质量/异常/源签署变化自动判读high或完整A12/非MVP多租户, 不将样本/累计分配当生产SLA/峰值, 全知识语义/全W2-W7/已审A23/strict86/lint缺配置及其他暂停/未答方案继续]
+  extensionStrategy:
+    selectedPaths: [product-core]
+    rationale: 复用现有记录控制原生测试、真实冻结/审批/改派和通知所有者；仅取证及必要确定性整改，不建新的消息系统或通用框架。
+    ownershipBoundaries:
+      - {owner: record-control, responsibility: 实际生效/同事务结果消费和幂等}
+      - {owner: production-dhr, responsibility: 冻结引用影响及个人提醒}
+      - {owner: workflow, responsibility: 当前任务身份/改派权限与签署}
+  affectedFiles:
+    - {path: gmp-platform/backend/src/test/java/com/zencas/edhr/recordcontrol/service/RecordControlPostgresIntegrationTest.java, changeType: update, reason: 真实接收人/身份/幂等/权限/规模组合矩阵}
+    - {path: docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml, changeType: update, reason: 仅在证据补齐时精确收敛既有实现差异，原规范及其他未决不改}
+    - {path: docs/knowledge/decisions/DEC-0087-record-control-v1-closure.yaml, changeType: update, reason: 同步该缺口的当前跨域引用并保留历史时点}
+    - {path: docs/knowledge/README.md, changeType: update, reason: 当前索引接续实际组合证据及未覆盖边界}
+    - {path: docs/knowledge/evidence/dhr-filling-review-implementation.md, changeType: update, reason: 记录真实原件及原规范映射，不替代最终独立验收}
+    - {path: docs/knowledge/evidence/record-control-dhr-linkage.yaml, changeType: update, reason: 为组合验收原件登记一个证据ID}
+    - {path: docs/knowledge/evidence/workflow-record-dhr-closure-20261102.md, changeType: update, reason: 接续旧验收时点，保留原32项及12步历史}
+  acceptanceScenarios:
+    - id: scenario.dhr-effective-source-notification-matrix
+      given: 自有canonical PG、真实冻结版本和记录控制申请；旧双在审及旧提交身份情况明确限定为存量fixture
+      when: 变更/作废真实批准、事件重投或个人读取/已读
+      then: 只投给原规则定义的账号集合，未知身份不猜，事件幂等且原件/历史保留，越权不写；性能证据可重算，不擅自改变业务或优化
+      evidenceRequirements: [真实原生运行/HTTP/SQL与候选字节绑定, 原冻结和状态前后摘要, 原规则及历史去重, 本体/知识精确同步, 全新独立验收, 全部FINAL后实际PR前漂移复核]

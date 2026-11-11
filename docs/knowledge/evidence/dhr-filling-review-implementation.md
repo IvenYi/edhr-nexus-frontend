@@ -129,3 +129,22 @@
 - `original-evidence`（同一工作树）：`gmp-platform/frontend/src/api/dhr-instances.ts:3-4,16-17,70-92` 保留 `DhrStatus` 的 `IN_PROGRESS/COMPLETED`，仅把 `EARLY_TERMINATED` 加入列表展示筛选，并映射为原 DHR `IN_PROGRESS` 加生产 `EARLY_TERMINATED`；普通“收集中”筛选同时要求生产 `IN_PROGRESS`。`gmp-platform/frontend/src/pages/dhr-management/DhrManagementPage.tsx:83,127-130,250-255,489-493,641` 在列表和详情显示“生产提前结束”警示，并提示 DHR 实例未自动作废或完成。
 - `inference`：这里的“生产提前结束”是关联生产状态驱动的展示投影，不是新增的 `dhr_instance.status` 枚举、状态迁移或 DHR 作废结论。DHR 查询投影属于 `product-core`；筛选与详情的原始状态应分别核验。
 - `original-evidence`（测试源码，未由本角色运行）：`gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionExecutionIntegrationTest.java:254-273` 覆盖提前结束与普通进行中的两个筛选、详情的双状态，以及非法生产状态参数。测试直接设置生产对象状态，可证明查询投影预期，不能证明提前结束动作本身的端到端过程。该 L1 的测试运行及独立质量结果由主开发另行汇总；本角色不据此宣称发布或审核通过。
+
+## 2026-11-11生效提醒剩余组合证据接续
+
+决策包为 `DEC-PACKAGE-DHR-IMPACT-NOTIFICATIONS-20261111`，契约、来源和目标初始基点均为 `ea46c826f821ab2496a56df13fbcb0bd47e25eff`（PR83已合入 `edhr-dev`）。知识 `0.3.25 / schema 1.2.0 / P0 in-progress` 保持。本节接续上文及2026-11-03闭环核查的历史证据，不将旧 failed/blocked、旧32项或12步重写为本次通过。
+
+`user-confirmed` 依据仍为2026-10-29原 `confirmedNotificationReply` 及 `DEC-0068-12`：表单变更／作废真实生效后，站内提醒当前审批人和受影响冻结汇总版本提交人，不增加历史审批人或外部渠道。`DEC-0093-02/03` 已确认管理员有效签名重新分配后只由新目标处理，并保留原候选、冻结证据及两域审计。此轮只补上述规范的组合验收，没有新业务政策或产品实现变更。
+
+`original-evidence`：本体回到 `RecordControlService.applyResult`、`DhrEvidenceImpactService.sourceEffective`、`DhrImpactNotificationService.list/read`、原controller及0089约束核对真实生效时点、账号身份、当前责任、去重和本人隔离，并读取主侧实际 `/tmp/edhr-dhr-impact-notifications-20261111/focused_matrix/` 下 `run.json`、JUnit XML、`test-summary.json`、16份 `notification-observations/*.json` 和16条 `http.jsonl` 原响应，逐项核对相应原生测试断言。主侧运行 `RecordControlPostgresIntegrationTest#effectiveNotificationRecipientsFollowActualCurrentResponsibility+legacyNotificationIdentityUsesOnlyRecoverableAccounts`，真实自有canonical PostgreSQL，16项通过、0失败／错误／跳过；本体未运行该业务测试。
+
+| 此次实际组合 | 已支持的有限结论 | 不能据此推出 |
+| --- | --- | --- |
+| CHANGE、OBSOLETE各4种当前责任：MULTIPLE、UNRESTRICTED、REASSIGNED、DISABLED_CANDIDATE，共8项 | 通过真实记录控制申请及签署批准消费生效事件；真实冻结审批流程／签名改派后，原候选42不再收件，新目标43与提交人41收件；多候选及无限制正常合资格集合为41/42/43，历史已办44和异租户45不混入；冻结候选43停用不自动取消其提醒。实际GET提交人本人提醒200，无DHR菜单权限的审批详情403。 | 不凭候选停用样本发明所有锁定／停用／未来账号政策；接收提醒不授予登录、DHR或任务权；不代表全部普通人员UI与账号切换矩阵。 |
+| CHANGE、OBSOLETE各4种旧身份：REVIEW_FALLBACK、AUDIT_UNIQUE、AUDIT_AMBIGUOUS、AUDIT_MISSING，共8项 | 显式提交ID置空后，删除原SUBMIT审计的review回退仍按原账号41及当前审批人42投递；独立唯一原SUBMIT审计仅投41；无review且审计歧义或缺失时保留影响记录但不猜提交人，重名43不被投递。全部组合的真实冻结行及生效事件重投前后状态相同。 | 不迁移或恢复真实旧业务数据，不按显示名补造身份；歧义／缺失用例无当前任务，不能据此取消其他任务收件人。 |
+
+双在审组合明确仅模拟旧存量：先真实提交记录控制申请，fixture暂标RETURNED以便真实 `DhrSummaryService.submit` 冻结并生成DHR任务，再恢复IN_REVIEW。该fixture不是当前入口允许的新业务路径；`DEC-0068-13/14` 双向在审禁令及原回归保持。无审批策略和旧审计字段的fixture仅定位身份恢复边界，不回写既有用户数据或历史证据。
+
+首次16项运行绑定的是上述基点dirty测试字节（`run.json` 记录测试SHA-256 `ff40009c0af0e7975bd0fe2cac7828aecf1aeb58bdcf789ea255733f80b04035`），不是后续扩充分页／规模断言后的最终提交。由这些实际组合证据将 `discrepancy.dhr-review-effective-source-integration` 的既有精确缺口标为resolved；最终候选重跑、正式知识校验及全新独立质量必须另取本批正式原件，不能复用本节早期结果代替。更大冻结版本规模／分页和SQL取证仍由主侧接续，不在此预写通过或擅自优化。
+
+`secondary-reference` 是先前闭环摘要和历史报告，本节没有用其代替新增组合的原件。`inference` 仅解释现有规则如何映射到当前责任与可靠身份，不扩张通知对象。完整DEC、来源变化fact和阻断rule保持specified/internal；另一通用质量／异常处置／源签署有效性变化high、完整A12、浏览器／错误／账号切换／权限矩阵、多租户及其他审计余项均保留，不由该缺口收敛提升知识运行或法规发布资格。

@@ -84,6 +84,7 @@ class RecordControlPostgresIntegrationTest {
     @Autowired com.zencas.edhr.production.service.DhrSummaryService summaries;
     @Autowired com.zencas.edhr.production.service.DhrReviewService reviews;
     @Autowired com.zencas.edhr.production.service.DhrImpactNotificationService notifications;
+    @org.springframework.boot.test.mock.mockito.SpyBean com.zencas.edhr.production.service.DhrEvidenceImpactService impactEvents;
     @Autowired com.zencas.edhr.production.service.FormProjectionService projection;
     @Autowired com.zencas.edhr.production.controller.FormProjectionController reports;
     @Autowired com.zencas.edhr.production.service.ProductionOutputService outputs;
@@ -1155,6 +1156,163 @@ class RecordControlPostgresIntegrationTest {
         assertThat(jdbc.queryForList("SELECT recipient_id FROM dhr_impact_notification", String.class)).containsExactly("41");
         assertThat(scalar("SELECT submitted_by FROM dhr_summary_version")).isEqualTo("申请人");
         assertThat(scalar("SELECT status FROM dhr_summary_version")).isEqualTo("FORMALIZED");
+    }
+
+    @ParameterizedTest @CsvSource({"CHANGE,MULTIPLE", "OBSOLETE,MULTIPLE", "CHANGE,UNRESTRICTED", "OBSOLETE,UNRESTRICTED",
+            "CHANGE,REASSIGNED", "OBSOLETE,REASSIGNED", "CHANGE,DISABLED_CANDIDATE", "OBSOLETE,DISABLED_CANDIDATE"})
+    void effectiveNotificationRecipientsFollowActualCurrentResponsibility(String type, String mode) throws Exception {
+        personnel(); dhr(true);
+        if (mode.equals("MULTIPLE") || mode.equals("DISABLED_CANDIDATE"))
+            jdbc.update("UPDATE workflow_node SET properties='{\"config\":{\"approverSubjects\":[{\"type\":\"USER\",\"id\":42},{\"type\":\"USER\",\"id\":43}]}}' WHERE id=504");
+        if (mode.equals("UNRESTRICTED")) {
+            jdbc.update("UPDATE workflow_node SET properties='{}' WHERE id=504");
+            grant(42,"records.dhr-review","dhr.reviews.act"); grant(43,"records.dhr-review","dhr.reviews.act");
+            grant(45,"records.dhr-review","dhr.reviews.act");
+        }
+        var request = requests.submit(command(BusinessType.valueOf(type)));
+        // Only a legacy inconsistent pair: current submission guards prohibit creating both reviews together.
+        jdbc.update("UPDATE record_control_request SET status='RETURNED'");
+        var version = summaries.submit(1000L, summaryCommand());
+        jdbc.update("UPDATE record_control_request SET status='IN_REVIEW'");
+        long sourceTask = taskId(), currentTask = dhrTask();
+        if (mode.equals("REASSIGNED")) {
+            grant(43,"records.dhr-review","dhr.reviews.act"); manager();
+            responsibility.reassign(currentTask, reassignment(currentTask,"43","test-signature-password"));
+            assertThat(scalar("SELECT candidate_snapshot->>'originSnapshot' FROM workflow_task WHERE id="+currentTask)).contains("42");
+            clearActor(); actor();
+        }
+        if (mode.equals("DISABLED_CANDIDATE")) jdbc.update("UPDATE user_account SET status='DISABLED' WHERE id=43");
+        jdbc.update("INSERT INTO workflow_task(id,instance_id,node_id,status,assignee_id,candidate_snapshot,created_at) SELECT 999,instance_id,node_id,'COMPLETED','44','{}',CURRENT_TIMESTAMP FROM workflow_task WHERE id=?", currentTask);
+        String frozen = notificationFrozenRows();
+        assertThat(count("dhr_evidence_impact")).isZero(); assertThat(count("dhr_impact_notification")).isZero();
+        complete(sourceTask,"APPROVE");
+        List<String> expected = mode.equals("REASSIGNED") ? List.of("41","43") : List.of("41","42","43");
+        assertThat(jdbc.queryForList("SELECT recipient_id FROM dhr_impact_notification ORDER BY recipient_id",String.class)).isEqualTo(expected);
+        assertThat(notificationFrozenRows()).isEqualTo(frozen);
+        assertThat(scalar("SELECT action FROM dhr_evidence_impact")).isEqualTo(type);
+        String beforeReplay = notificationStateRows(); replayNotificationResult(request.path("id").asText());
+        assertThat(notificationStateRows()).isEqualTo(beforeReplay);
+        String token=tokens.generateToken("41","rc-applicant","申请人",5,List.of());
+        var inbox=http("notification-recipient-"+type+"-"+mode,"GET","/api/v1/dhr-impact-notifications",token,null,200).path("data");
+        assertThat(inbox.path("total").asInt()).isEqualTo(1);
+        http("notification-does-not-grant-review-"+type+"-"+mode,"GET","/api/v1/dhr-reviews/"+currentTask,token,null,403);
+        notificationObservation("recipients-"+type+"-"+mode,mapper.createObjectNode().put("fixtureKind","legacy concurrent reviews")
+                .put("businessType",type).put("mode",mode).put("requestId",request.path("id").asText()).put("versionId",version.path("id").asText())
+                .put("frozenUnchanged",true).put("replayUnchanged",true).put("frozenBeforeSha256",notificationHash(frozen)).put("frozenAfterSha256",notificationHash(notificationFrozenRows()))
+                .put("replayBeforeSha256",notificationHash(beforeReplay)).put("replayAfterSha256",notificationHash(notificationStateRows())).set("recipients",mapper.valueToTree(expected)));
+    }
+
+    @ParameterizedTest @CsvSource({"CHANGE,REVIEW_FALLBACK", "OBSOLETE,REVIEW_FALLBACK", "CHANGE,AUDIT_UNIQUE", "OBSOLETE,AUDIT_UNIQUE",
+            "CHANGE,AUDIT_AMBIGUOUS", "OBSOLETE,AUDIT_AMBIGUOUS", "CHANGE,AUDIT_MISSING", "OBSOLETE,AUDIT_MISSING"})
+    void legacyNotificationIdentityUsesOnlyRecoverableAccounts(String type, String recovery) throws Exception {
+        boolean reviewed = recovery.equals("REVIEW_FALLBACK"); dhr(reviewed);
+        jdbc.update("INSERT INTO user_account(id,tenant_id,username,display_name,password_hash,status) VALUES(43,0,'same-name','申请人','unused','ACTIVE')");
+        ObjectNode request;
+        if (reviewed) { request=requests.submit(command(BusinessType.valueOf(type))); jdbc.update("UPDATE record_control_request SET status='RETURNED'"); }
+        else request=null;
+        var version=summaries.submit(1000L,summaryCommand());
+        jdbc.update("UPDATE dhr_summary_version SET submitted_by_id=NULL");
+        if (reviewed) jdbc.update("UPDATE record_control_request SET status='IN_REVIEW'");
+        if (reviewed || recovery.equals("AUDIT_MISSING")) jdbc.update("DELETE FROM audit_event WHERE entity_type='DHR_SUMMARY_VERSION' AND action='SUBMIT'");
+        if (recovery.equals("AUDIT_AMBIGUOUS")) jdbc.update("INSERT INTO audit_event(id,tenant_id,entity_type,entity_id,action,operator_id,operator_name,created_at) SELECT 700000,tenant_id,entity_type,entity_id,action,'43','申请人',CURRENT_TIMESTAMP FROM audit_event WHERE entity_type='DHR_SUMMARY_VERSION' AND action='SUBMIT' LIMIT 1");
+        String frozen=notificationFrozenRows();
+        if (!reviewed) request=requests.submit(command(BusinessType.valueOf(type)));
+        complete(taskId(),"APPROVE");
+        List<String> expected=reviewed?List.of("41","42"):recovery.equals("AUDIT_UNIQUE")?List.of("41"):List.of();
+        assertThat(jdbc.queryForList("SELECT recipient_id FROM dhr_impact_notification ORDER BY recipient_id",String.class)).isEqualTo(expected);
+        assertThat(count("dhr_evidence_impact")).isEqualTo(1); assertThat(notificationFrozenRows()).isEqualTo(frozen);
+        String beforeReplay=notificationStateRows(); replayNotificationResult(request.path("id").asText()); assertThat(notificationStateRows()).isEqualTo(beforeReplay);
+        notificationObservation("identity-"+type+"-"+recovery,mapper.createObjectNode().put("businessType",type).put("recovery",recovery)
+                .put("versionId",version.path("id").asText()).put("requestId",request.path("id").asText()).put("frozenUnchanged",true)
+                .put("replayUnchanged",true).put("frozenBeforeSha256",notificationHash(frozen)).put("frozenAfterSha256",notificationHash(notificationFrozenRows()))
+                .put("replayBeforeSha256",notificationHash(beforeReplay)).put("replayAfterSha256",notificationHash(notificationStateRows())).set("recipients",mapper.valueToTree(expected)));
+    }
+
+    @ParameterizedTest @ValueSource(ints={1,10,100})
+    @org.junit.jupiter.api.condition.EnabledIfSystemProperty(named="edhr.audit.notifications",matches="true")
+    void effectiveNotificationCostAndAllPersonalPagesUseRealFrozenVersions(int versions) throws Exception {
+        dhr(false); ObjectNode latest=null;
+        for(int i=0;i<versions;i++) {
+            if(latest!=null) summaries.reorganize(1000L,mapper.createObjectNode().put("expectedVersionId",latest.path("id").asText()).put("reason","隔离历史版本规模观察"));
+            latest=summaries.submit(1000L,summaryCommand());
+        }
+        assertThat(count("dhr_summary_version")).isEqualTo(versions);
+        var request=requests.submit(command(BusinessType.CHANGE));long task=taskId();String frozen=notificationFrozenRows();
+        var memory=(com.sun.management.ThreadMXBean)java.lang.management.ManagementFactory.getThreadMXBean();
+        assertThat(memory.isThreadAllocatedMemorySupported()).isTrue();memory.setThreadAllocatedMemoryEnabled(true);long[] costs=new long[2];
+        String label="notification-source-"+versions;
+        org.mockito.Mockito.doAnswer(invocation->{
+            jdbc.execute("SET LOCAL application_name='"+label+"'");
+            long started=System.nanoTime(),allocated=memory.getThreadAllocatedBytes(Thread.currentThread().threadId());
+            try{return invocation.callRealMethod();}
+            finally{costs[0]=System.nanoTime()-started;costs[1]=memory.getThreadAllocatedBytes(Thread.currentThread().threadId())-allocated;
+                jdbc.execute("SET LOCAL application_name='notification-complete-"+versions+"'");}
+        }).when(impactEvents).sourceEffective(org.mockito.ArgumentMatchers.anyString(),org.mockito.ArgumentMatchers.anyLong(),org.mockito.ArgumentMatchers.anyLong(),
+                org.mockito.ArgumentMatchers.anyLong(),org.mockito.ArgumentMatchers.anyLong(),org.mockito.ArgumentMatchers.anyString(),org.mockito.ArgumentMatchers.any(java.time.LocalDateTime.class));
+        new org.springframework.transaction.support.TransactionTemplate(transactionManager).execute(status->{
+            jdbc.execute("SET LOCAL application_name='notification-call-"+versions+"'; SET LOCAL auto_explain.log_min_duration=0; SET LOCAL auto_explain.log_analyze=true; SET LOCAL auto_explain.log_buffers=true; SET LOCAL auto_explain.log_format='json'");
+            complete(task,"APPROVE");return null;
+        });
+        org.mockito.Mockito.verify(impactEvents,org.mockito.Mockito.times(1)).sourceEffective(org.mockito.ArgumentMatchers.anyString(),org.mockito.ArgumentMatchers.anyLong(),
+                org.mockito.ArgumentMatchers.anyLong(),org.mockito.ArgumentMatchers.anyLong(),org.mockito.ArgumentMatchers.anyLong(),org.mockito.ArgumentMatchers.eq("CHANGE"),org.mockito.ArgumentMatchers.any(java.time.LocalDateTime.class));
+        assertThat(count("dhr_evidence_impact")).isEqualTo(versions);assertThat(count("dhr_impact_notification")).isEqualTo(versions);
+        assertThat(notificationFrozenRows()).isEqualTo(frozen);
+        String beforeReplay=notificationStateRows();replayNotificationResult(request.path("id").asText());assertThat(notificationStateRows()).isEqualTo(beforeReplay);
+        notificationObservation("capacity-"+versions,mapper.createObjectNode().put("label",label).put("versions",versions).put("impacts",count("dhr_evidence_impact"))
+                .put("notifications",count("dhr_impact_notification")).put("elapsedNanos",costs[0]).put("threadAllocatedBytes",costs[1])
+                .put("realSourceMethodCalls",1).put("frozenBeforeSha256",notificationHash(frozen)).put("frozenAfterSha256",notificationHash(notificationFrozenRows()))
+                .put("replayBeforeSha256",notificationHash(beforeReplay)).put("replayAfterSha256",notificationHash(notificationStateRows())));
+        if(versions==100) notificationAllPagesAndReadIsolation(request.path("id").asText());
+    }
+
+    private void notificationAllPagesAndReadIsolation(String requestId) throws Exception {
+        String own=tokens.generateToken("41","rc-applicant","申请人",5,List.of());
+        String other=tokens.generateToken("42","rc-reviewer","审批人",5,List.of());String path="/api/v1/dhr-impact-notifications";
+        var expected=jdbc.queryForList("SELECT n.impact_id::text FROM dhr_impact_notification n ORDER BY n.impact_id DESC",String.class);
+        var actual=new java.util.ArrayList<String>();
+        for(int page=0;page<=5;page++) {
+            var data=http("notification-page-"+page,"GET",path+"?page="+page,own,null,200).path("data");
+            assertThat(data.path("total").asInt()).isEqualTo(100);assertThat(data.path("unreadCount").asInt()).isEqualTo(100);
+            assertThat(data.path("content")).hasSize(page==5?0:20);data.path("content").forEach(row->actual.add(row.path("id").asText()));
+        }
+        assertThat(actual).isEqualTo(expected);assertThat(new java.util.HashSet<>(actual)).hasSize(100);
+        assertThat(http("notification-other-account","GET",path,other,null,200).at("/data/total").asInt()).isZero();
+        http("notification-anonymous","GET",path,null,null,401);String impact=expected.getFirst(),before=notificationStateRows();
+        http("notification-other-read","POST",path+"/"+impact+"/read",other,null,200);assertThat(notificationStateRows()).isEqualTo(before);
+        http("notification-own-read","POST",path+"/"+impact+"/read",own,null,200);
+        String readAt=scalar("SELECT read_at FROM dhr_impact_notification WHERE impact_id="+impact);
+        http("notification-own-read-again","POST",path+"/"+impact+"/read",own,null,200);
+        assertThat(scalar("SELECT read_at FROM dhr_impact_notification WHERE impact_id="+impact)).isEqualTo(readAt);
+        assertThat(http("notification-after-read","GET",path,own,null,200).at("/data/unreadCount").asInt()).isEqualTo(99);
+        before=notificationStateRows();replayNotificationResult(requestId);assertThat(notificationStateRows()).isEqualTo(before);
+        notificationObservation("pages-and-read",mapper.createObjectNode().put("total",100).put("uniqueReachable",100).put("unreadAfterRead",99)
+                .put("readAtUnchanged",true).put("readAt",readAt).set("orderedIds",mapper.valueToTree(actual)));
+    }
+
+    private void replayNotificationResult(String requestId) {
+        actor();
+        var q=jdbc.queryForMap("SELECT * FROM record_control_request WHERE id=?",Long.parseLong(requestId));
+        var e=jdbc.queryForMap("SELECT * FROM record_control_result_event WHERE request_id=?",Long.parseLong(requestId));
+        requests.handle(new com.zencas.edhr.workflow.contract.RecordControlWorkflowContracts.WorkflowResultEvent(
+                e.get("event_id").toString(),q.get("workflow_instance_id").toString(),q.get("workflow_definition_id").toString(),q.get("workflow_version_id").toString(),
+                BusinessType.valueOf(q.get("request_type").toString()),requestId,com.zencas.edhr.workflow.contract.RecordControlWorkflowContracts.Result.APPROVED,
+                ((java.sql.Timestamp)e.get("occurred_at")).toLocalDateTime(),"42",null,q.get("audit_correlation_id").toString(),q.get("workflow_snapshot_hash").toString()));
+    }
+    private String notificationFrozenRows() {
+        return List.of("dhr_summary_version","dhr_summary_evidence","dhr_summary_review","dhr_instance").stream().map(this::notificationTableRows).toList().toString();
+    }
+    private String notificationStateRows() {
+        return List.of("dhr_summary_version","dhr_summary_evidence","dhr_summary_review","dhr_instance","dhr_evidence_impact","dhr_impact_notification",
+                "record_control_request","record_control_result_event","form_instance_record","form_instance_revision","signature","workflow_task","workflow_instance","audit_event")
+                .stream().map(this::notificationTableRows).toList().toString();
+    }
+    private String notificationTableRows(String table) { return scalar("SELECT COALESCE(jsonb_agg(to_jsonb(t) ORDER BY to_jsonb(t)::text),'[]'::jsonb)::text FROM "+table+" t"); }
+    private String notificationHash(String value) throws Exception { return java.util.HexFormat.of().formatHex(java.security.MessageDigest.getInstance("SHA-256").digest(value.getBytes(java.nio.charset.StandardCharsets.UTF_8))); }
+    private void notificationObservation(String name,ObjectNode value) throws Exception {
+        String folder=System.getProperty("edhr.audit.notificationOutput"); if(folder==null)return;
+        value.set("actualNotificationRows",mapper.valueToTree(jdbc.queryForList("SELECT n.impact_id,n.recipient_id,n.read_at,i.summary_version_id,i.record_id,i.action FROM dhr_impact_notification n JOIN dhr_evidence_impact i ON i.id=n.impact_id ORDER BY n.impact_id,n.recipient_id")));
+        value.set("actualImpactRows",mapper.valueToTree(jdbc.queryForList("SELECT * FROM dhr_evidence_impact ORDER BY id")));
+        Path directory=Path.of(folder);Files.createDirectories(directory);mapper.writerWithDefaultPrettyPrinter().writeValue(directory.resolve(name+".json").toFile(),value);
     }
 
     @Test void firstCompletionCreatesOneImmutableInitialRevision() {
