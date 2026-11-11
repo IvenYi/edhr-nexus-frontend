@@ -1,0 +1,29 @@
+{
+  "observedAt": "2026-11-11T11:52:19.225973+08:00",
+  "target": "7629506c6a067252e4f6a7b1e3f26b9f523d2489",
+  "testedCandidate": "72d3bac42a759ceb415f4592b67c903c0cdfa49d",
+  "targetStillCurrent": true,
+  "externalIncrement": [],
+  "allDispatchedProfessionalsFinal": "Actual collaboration.list_agents observed both current roles completed with structured FINAL;no children",
+  "quality": "passed",
+  "ontology": "not-applicable",
+  "requiredQualityChecksPassed": 14,
+  "protectedInputsMatch": 49,
+  "knowledgeValidationInputsMatch": 359,
+  "archiveMembersHashVerified": 1769,
+  "roleFinalManifestSha256": {
+    "ontology": "179ca3cccbbf37c27ee351fff36cf94bccab140f3adb1fb62efef3a56e372294",
+    "independent": "a02e880999c4fe5893bffcc2d34f73652661cec62f3947d19509aa5d4d9e45c5"
+  },
+  "scopeDrift": false,
+  "candidateChangedPaths": [
+    "docs/development/branch-review-20261111-dhr-impact-evidence/decision-package.yaml",
+    "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrSummaryAttachmentObservationPostgresTest.java"
+  ],
+  "workingTreeStatusAtGate": " M docs/development/branch-review-20261015/NEXT.md\n?? docs/development/branch-review-20261111-dhr-impact-evidence/README.md\n?? docs/development/branch-review-20261111-dhr-impact-evidence/evidence-packages.json\n?? docs/development/branch-review-20261111-dhr-impact-evidence/evidence/independent-manifest.json\n?? docs/development/branch-review-20261111-dhr-impact-evidence/evidence/independent.zip\n?? docs/development/branch-review-20261111-dhr-impact-evidence/evidence/main-manifest.json\n?? docs/development/branch-review-20261111-dhr-impact-evidence/evidence/main.zip\n?? docs/development/branch-review-20261111-dhr-impact-evidence/evidence/ontology-manifest.json\n?? docs/development/branch-review-20261111-dhr-impact-evidence/evidence/ontology.zip\n?? docs/development/branch-review-20261111-dhr-impact-evidence/independent-review.md\n?? docs/development/branch-review-20261111-dhr-impact-evidence/inventory-summary.json\n?? docs/development/branch-review-20261111-dhr-impact-evidence/main-analysis.json\n?? docs/development/branch-review-20261111-dhr-impact-evidence/ontology-result.yaml\n?? docs/development/branch-review-20261111-dhr-impact-evidence/ontology-review.md\n?? docs/development/branch-review-20261111-dhr-impact-evidence/performance-next.md\n?? docs/development/branch-review-20261111-dhr-impact-evidence/quality-result.yaml\n?? docs/development/branch-review-20261111-dhr-impact-evidence/review.md\n?? docs/development/branch-review-20261111-dhr-impact-evidence/sql-multiset-verification.json",
+  "remainingChangesAllowed": "L0 reports/ledger/evidence/delivery only;product/tests/DP/contracts/knowledge unchanged",
+  "nextBatchAuthorization": "User explicitly approved same-request comparison reuse and streaming SHA;not implemented in this test-only candidate;no repeat question",
+  "stage": "W1/W3/W5 evidence cross-chain;W6 robustness/performance/concrete extraction/A23;W7 increment;whole audit remains open",
+  "ciStatusOrActionsQueried": false,
+  "autoMergeDeployOrRestore": false
+}

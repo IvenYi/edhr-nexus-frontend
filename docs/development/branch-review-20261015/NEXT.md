@@ -1,5 +1,19 @@
 # 持续推进台账
 
+## PR81已合入：DHR冻结证据读取及审批保护量化
+
+已交付[PR82](https://github.com/IvenYi/edhr-nexus-frontend/pull/82)，audit/edhr-dev-record-evidence-review-20261111→edhr-dev，观察OPEN/MERGEABLE/CLEAN，建议人工合入测试与证据。受测72d3bac4、验收72d25b8d后仅L0登记；登记前本地/真实远端/PR head及49/359输入一致，登记正常推送后再次核对。**下一批结果复用＋流式摘要已明确授权，不再问**；先fetch真实合入/新增后直接按两步最小整改验证，不扩张其他未答方案或自动merge/deploy/恢复。
+
+已fetch `edhr-dev@7629506c6a067252e4f6a7b1e3f26b9f523d2489`，PR81真实合入且整树同59253386，无额外产品/知识/契约。新分支audit/edhr-dev-record-evidence-review-20261111；[本批](../branch-review-20261111-dhr-impact-evidence/README.md)L2继续W1/W3/W5跨链及W6健壮性/性能/具体提取/A23、W7增量，仅维护native测试＋DP，不改产品/政策/知识/UI/schema/索引。未确认新的正常路径正确性缺陷；沿原PERF-DHR-REVIEW-REPEAT-001补当前PG/原件证据，不重复计unique；原表单N+1已PR27批读修复不复活。
+
+受测clean72d3bac4，主侧与全新独立各72/72（34原生PG＋30H2＋8mock）、各实际知识89/89，0F/E/S。0/1/100/300附件changes两模式均6SELECT；50MiB版本12SELECT/读50MiB，审批详情19/读100MiB、累计分配约100MiB，实际批准29/读50MiB，锁内重核可挡页面读取后篡改。50JFR外部重算，426业务SELECT＋1driver catalog分列，29组11表前后内容摘要相同；原生真实saveDraft/submit启动冻结审批任务，按原配置无签署事件，非HTTP/浏览器/首次START/七格式上传全链。两DHR旧high/A12及签署组合不由本批关闭。
+
+正式quality passed/FINAL、14必需项通过、无发现阻断；本体NA/FINAL有限18=15一致/2原证据gap/1原非MVP待决，不新增unique，353知识不变。49/359输入及三包1769成员/角色manifest核过；双方自有PG及独立软链已清。固定树8180是机械盘点，5729为历史审计证据，不给整体完成率、整文件完成数或历史unique虚假分母。具体方法范围/A23和拆分方案见本批review。
+
+**用户已明确授权下一批做同请求结果复用＋流式摘要，无需再问**；[原话及边界](../branch-review-20261111-dhr-impact-evidence/performance-next.md)。本批只取证，未优化；下一检查点先fetch真实合入和新增，保留完整SHA/权限/审批锁内fresh/历史，按两步最小整改和等价回归推进。audit/单附件download也先detail的传递范围只源码核对、未测整HTTP成本；附件IDmap/索引不顺带实施。其他列表资格SQL/事件DB分页/宽JSON分块等未答方案不被授权覆盖。
+
+全部角色正式FINAL后，2026-11-11 11:52:19 Asia/Shanghai已实际[PR前漂移/阶段复核](../branch-review-20261111-dhr-impact-evidence/pre-pr-drift-review.md)，目标仍7629506c、49/359输入及三包1769成员核过，无漂移；后续仅L0验收/台账/交付。整体W2余项/W3–W5其他跨链/W6全量健壮性性能具体提取及A23含已审/W7新增、全知识语义/strict86/lint缺配置/A12/两旧DHR high/完整矩阵/family剩余4N及选项全载/容量UNKNOWN/用户暂停继续。sourceEffective通知接收者/幂等及规模可作为后续入口，现不计已审通过。不自动merge/deploy/恢复或查询触发CI。
+
 ## PR80已合入：记录变更冻结引用与完整候选上下文
 
 已交付[PR81](https://github.com/IvenYi/edhr-nexus-frontend/pull/81)，audit/edhr-dev-record-reference-context-20261110→edhr-dev，观察OPEN/MERGEABLE/CLEAN，建议人工合入本批。受测8766a0f9、验收bd37ce65后仅L0交付登记；登记前本地/实际远端/PR head及46/359输入一致，登记正常推送后再核对。下一轮先fetch核实真实合入与全部新增，再回原整体审计队列；不自动merge/deploy/恢复或查触发CI。

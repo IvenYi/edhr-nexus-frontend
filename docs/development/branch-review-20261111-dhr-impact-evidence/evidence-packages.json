@@ -1,0 +1,40 @@
+{
+  "sealedAt": "2026-11-11T03:49:46.848162+00:00",
+  "testedCandidate": "72d3bac42a759ceb415f4592b67c903c0cdfa49d",
+  "packages": [
+    {
+      "name": "main",
+      "path": "evidence/main.zip",
+      "bytes": 5027147,
+      "sha256": "f540216479f385e4ea06d93997990056c2a8825458a6129ca661f6d7c20c8c37",
+      "members": 370,
+      "manifest": "evidence/main-manifest.json",
+      "manifestSha256": "ebe68f3cf21e2ba46b9244e0fd1c387935c625c716356ebb600759661b311c98"
+    },
+    {
+      "name": "ontology",
+      "path": "evidence/ontology.zip",
+      "bytes": 2635846,
+      "sha256": "66e14a9583c3a5b59c9f6e545926a1c5d528fcce2a0d1275ae509a1f6a01bb43",
+      "members": 768,
+      "manifest": "evidence/ontology-manifest.json",
+      "manifestSha256": "b2e184a2531cee6c0fe1c2385c4b490aea7e21bfca88303a4b2b2d93793ffe36"
+    },
+    {
+      "name": "independent",
+      "path": "evidence/independent.zip",
+      "bytes": 4385054,
+      "sha256": "1a0ea0298f879882f91041a09153fa548458a655e27bf5fbbf1e38c2c58dc674",
+      "members": 631,
+      "manifest": "evidence/independent-manifest.json",
+      "manifestSha256": "388898aa2a74b71bb1f31d92b58bbab45f45eb5d2ed7a411170d0fc26a82edf9"
+    }
+  ],
+  "roleFinalManifestSha256": {
+    "ontology": "179ca3cccbbf37c27ee351fff36cf94bccab140f3adb1fb62efef3a56e372294",
+    "independent": "a02e880999c4fe5893bffcc2d34f73652661cec62f3947d19509aa5d4d9e45c5"
+  },
+  "allArchiveMemberHashesVerified": true,
+  "originalRoleManifestsAndSha256SumsVerified": true,
+  "scope": "Test-only candidate;actual canonical native34+H2/mock38 and knowledge89;50 JFR/SQL observations and29x11 content digests;no performance implementation;next-batch user authorization is an L0 overlay in performance-next.md"
+}

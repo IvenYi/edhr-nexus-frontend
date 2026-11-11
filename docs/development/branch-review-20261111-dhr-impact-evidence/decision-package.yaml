@@ -1,0 +1,57 @@
+decisionPackage:
+  id: DEC-PACKAGE-DHR-IMPACT-EVIDENCE-20261111
+  scope: W1/W3/W5 frozen DHR evidence comparison and attachment IO;W6 robustness/A23 and W7 increment
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: 7629506c6a067252e4f6a7b1e3f26b9f523d2489
+    targetBranch: edhr-dev
+    targetCommit: 7629506c6a067252e4f6a7b1e3f26b9f523d2489
+    contractReadCommit: 7629506c6a067252e4f6a7b1e3f26b9f523d2489
+    uncommittedContractPaths: []
+  summary: PR81真实合入整树同59253386，无外部产品/契约/知识增量。继续原DHR来源变化和审批读取链，承接PERF-DHR-REVIEW-REPEAT-001及附件容量队列，补实际canonical冻结版本、授权审批详情、文件IO/线程分配/SQL证据与失败原子性。只测试和审查，不自动实施未答性能方案，不改校验/权限/锁/历史/业务政策。
+  confirmed: {concepts: [], relationships: [], rules: [], executionContracts: []}
+  inferred:
+    - id: inference.dhr-impact-attachment-read-cost
+      statement: changes仍整数组摘要且review.detail重复调用，可放大单请求附件IO和分配；具体规模待实际测量。
+      rationale: 原始源码与已有PERF-DHR-REVIEW-REPEAT-001；旧H2双调用不是当前PG/大文件容量结论。
+      relatedIds: [DEC-0063-06, DEC-0063-10, DEC-0063-14]
+  unresolved: []
+  replacementScopes: []
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - {area: native-evidence-observation, change: 在维护的canonical附件测试中增加冻结后changes/version/review读取观察及失败对照，产品字节不改, evidenceReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrSummaryAttachmentObservationPostgresTest.java]}
+    transitiveImpacts:
+      - {area: review-and-files, change: 核对summary.version到review.detail和act的复用/锁内新鲜度边界，当前合法审批任务用真实冻结流程产生, evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrEvidenceImpactService.java, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrReviewService.java]}
+    potentialImpacts:
+      - {area: capacity, concern: 附件数量/大小及并发会放大内存和IO；线程累计分配不等于峰值/堆/RSS，JFR逻辑读取不等于物理磁盘IO或生产SLA, evidenceReferences: []}
+    unaffectedAreas:
+      - {area: implementation, change: 不改产品/UI/SQL/schema/索引/知识/配置；不删除来源或摘要检查、不跨请求缓存、不跳过锁内重核, evidenceReferences: []}
+    compatibilityAndMigration:
+      - {area: isolated-fixtures, change: 只用自身临时PG与原生canonical迁移，不连接或恢复共享/历史业务库；旧在审/历史不自动净化, evidenceReferences: []}
+    snapshotImpacts:
+      - {area: immutable-evidence, change: 原始版本通过真实saveDraft/submit创建；读取及失败不应重写冻结快照或签名，元数据/文件变化分开观察, evidenceReferences: [docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml]}
+    auditImpacts:
+      - {area: no-write-reads, change: 读调用前后业务表内容摘要核对；审批命令保留既有审计和事务边界，不把只读详情代替写时再核, evidenceReferences: []}
+    permissionImpacts:
+      - {area: original-eligibility, change: 资格先于文件读取；实际任务由冻结流程创建，越权拒绝不能被性能取证绕过, evidenceReferences: []}
+    testImpacts:
+      - {scope: native-and-adjacent, scenarios: [0/1/100/300附件, 50MiB完整逻辑读与累计分配, 元数据未变但原件篡改或缺失, pending/新增/解除及范围外附件, 冻结快照无写, 真实冻结审批任务详情与版本读取, 授权拒绝及相邻审批回归], evidenceReferences: []}
+    evidenceGaps: [尚无生产数据规模/并发峰值/SLA, 前端未改不运行新浏览器/视觉验收, 全审/W2-W7/A23已审复看/知识全语义/strict86/lint缺配置/A12高风险/完整矩阵/其他未答方案和暂停继续]
+  extensionStrategy:
+    selectedPaths: [product-core]
+    rationale: 测量贴近现有DHR冻结和附件所有者，复用维护测试；未来若获授权可在同请求复用比较、提取有界摘要/冻结附件索引，不能用提取方法冒称已优化。
+    ownershipBoundaries:
+      - {owner: production-dhr, responsibility: 冻结来源比对、附件校验、审批资格/锁/审计}
+      - {owner: audit-test, responsibility: 自有fixture、原始SQL/IO/分配/快照证据与有限范围结论}
+  affectedFiles:
+    - {path: gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrSummaryAttachmentObservationPostgresTest.java, changeType: update, reason: 真实冻结后读取容量与保护对照}
+    - {path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrEvidenceImpactService.java, changeType: read-only, reason: 原件/成员/来源核对与A23}
+    - {path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrReviewService.java, changeType: read-only, reason: detail及act资格/锁和重复比较}
+    - {path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrSummaryService.java, changeType: read-only, reason: 冻结提交及历史版本读取}
+  acceptanceScenarios:
+    - id: scenario.dhr-impact-read-observation
+      given: 自有原生canonical库中真实冻结的完整DHR/附件及真实待审任务
+      when: 读取changes/版本/授权审批详情或出现原件及资格失败
+      then: 完整证据比较与缺失变化提示保持，资格失败不读文件，业务内容/冻结历史无写；性能量化可重算且旧风险去重，不擅改产品
+      evidenceRequirements: [真实命令/提交与运行输入绑定, 原始SQL与PG日志, JFR逻辑文件读取与分配口径, 正反快照摘要, 本体有限语义核对, 全新独立验收, 全部FINAL后实际PR前漂移复核]
