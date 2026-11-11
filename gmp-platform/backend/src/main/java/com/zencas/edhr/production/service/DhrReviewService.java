@@ -117,7 +117,6 @@ public class DhrReviewService {
         if (!(pending(row) && eligible(row, actor())) && !handled(row, actor())) throw new AccessDeniedException("无此 DHR 审批任务权限");
         ObjectNode result = summaries.version(number(row, "dhr_instance_id"), number(row, "version_id"));
         result.set("task", project(row));
-        result.set("evidenceChanges", evidenceChanges(number(row, "version_id"), false));
         result.set("buttons", buttons(row));
         result.put("canAct", pending(row) && eligible(row, actor()));
         return result;

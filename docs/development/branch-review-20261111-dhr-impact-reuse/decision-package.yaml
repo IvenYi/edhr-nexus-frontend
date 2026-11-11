@@ -1,0 +1,55 @@
+decisionPackage:
+  id: DEC-PACKAGE-DHR-IMPACT-REUSE-20261111
+  scope: Authorized PERF-DHR-REVIEW-REPEAT-001 request-local comparison reuse and streaming SHA;W1/W3/W5/W6/A23/W7
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: b12a29f053184220ce88c086fb763f4318ea3c71
+    targetBranch: edhr-dev
+    targetCommit: b12a29f053184220ce88c086fb763f4318ea3c71
+    contractReadCommit: b12a29f053184220ce88c086fb763f4318ea3c71
+    uncommittedContractPaths: []
+  summary: PR82真实合入整树同6975f647，无外部产品/知识/契约增量。用户已明确授权下一批结果复用和流式摘要，本批落实两产品文件的最小性能整改：detail保留version已有比较结果；changes完整SHA改固定缓冲。完整证据/资格/审批锁内fresh/原事务审计及历史不变，不新增政策或扩展其他未答方案。
+  confirmed: {concepts: [], relationships: [], rules: [], executionContracts: []}
+  inferred: []
+  unresolved: []
+  replacementScopes: []
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - {area: request-local-comparison, change: 去掉detail同一次读取中的第二次changes，沿用version返回的evidenceChanges，响应字段和资格保持, evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrReviewService.java]}
+      - {area: full-original-sha, change: changes逐份完整SHA用8192B缓冲且关闭输入流；元数据/冻结身份/状态/失败变化判定和顺序保持, evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrEvidenceImpactService.java]}
+    transitiveImpacts:
+      - {area: inherited-detail-consumers, change: 审批audit/download仍沿原detail资格与完整比较，仅继承减少重复的效果；未另拆授权引用或省掉下载核对, evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrReviewController.java]}
+    potentialImpacts:
+      - {area: observation-time, concern: 一次请求按已有version比较时点返回变化，不承诺连续监视其后变化；独立详情请求及审批写时须重新读取，严禁跨请求缓存, evidenceReferences: []}
+      - {area: capacity, concern: 仍完整读取原件，元数据及宽JSON仍随规模增长；累计分配/逻辑读取不是峰值/物理IO/生产SLA, evidenceReferences: []}
+    unaffectedAreas:
+      - {area: business-protection, change: act及其原workflow/对象/DHR/来源锁、资格、签名、审计、状态、来源变化及原件重核代码不改；UI/API/schema/索引/源历史和知识不改, evidenceReferences: []}
+    compatibilityAndMigration:
+      - {area: existing-data, change: 不迁移、恢复或净化历史/在审记录，不更改已有错误消息/字段/规则；只运行自有临时PG及原生canonical迁移, evidenceReferences: []}
+    snapshotImpacts:
+      - {area: immutable-evidence, change: 冻结source/attachment/candidate/hash和批准对象不改；原件范围及文件内容仍完整核对，缺失/异常仍提示变化, evidenceReferences: [docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml]}
+    auditImpacts:
+      - {area: atomic-results, change: 详情仍只读；陈旧原件批准失败无写、正常批准保留同一冻结版本；不删锁内重查或审计, evidenceReferences: []}
+    permissionImpacts:
+      - {area: unchanged-task-access, change: 原requireTask/eligible/handled及菜单/动作权限保持；越权/陈旧hash仍在原件读取前拒绝, evidenceReferences: []}
+    testImpacts:
+      - {scope: exact-old-new-native-and-h2, scenarios: [同最终测试旧源反证, 50MiB版本/详情/批准完整读取和内存预算, detail单次与独立请求重核, DTO与版本完整一致, 缓冲边界及末字节篡改, 全部原成员/状态/租户失败对照, 陈旧批准回滚及正常批准, 相邻签署/退回/并发/持久化], evidenceReferences: []}
+    evidenceGaps: [未测生产并发峰值/客户SLA或实际浏览器全链, audit/download整HTTP成本不从detail实测外推, 未孤立量化附件ID嵌套匹配CPU或新索引计划, 全审/知识语义/A23含已审/strict86/lint缺配置/两旧DHR high/A12/完整矩阵和用户暂停继续]
+  extensionStrategy:
+    selectedPaths: [product-core]
+    rationale: 沿现有DHR响应和摘要所有者做局部修改，复用现有标准库与维护测试；不引入通用缓存/规则层或共享工具重构。
+    ownershipBoundaries:
+      - {owner: production-dhr-review, responsibility: 任务资格、详情结果和审批写时新鲜度}
+      - {owner: production-dhr-impact, responsibility: 冻结来源/附件完整比较及本次原件输入流生命周期}
+  affectedFiles:
+    - {path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrReviewService.java, changeType: update, reason: 复用同请求已有比较}
+    - {path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrEvidenceImpactService.java, changeType: update, reason: 固定缓冲完整SHA}
+    - {path: gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrSummaryAttachmentObservationPostgresTest.java, changeType: update, reason: 原生等价/完整读取/资源预算及跨请求重核}
+    - {path: gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrReviewLifecycleIntegrationTest.java, changeType: update, reason: 原重复观测更新为一次，并保留写时独立重核约束}
+  acceptanceScenarios:
+    - id: scenario.authorized-dhr-impact-reuse
+      given: 自有原生canonical库中真实冻结DHR及已发布审批流程创建的任务、附件含50MiB原件
+      when: 读取version/detail或后续原件变化再读/批准
+      then: 相同字段/规则/历史；detail只完整读一遍原件且少6SELECT，摘要内存有界，独立请求和锁内批准仍完整重核并原子拒绝陈旧证据
+      evidenceRequirements: [固定提交/源字节绑定, 同最终测试旧源红绿, JFR/PG完整SQL/逻辑字节/分配与状态摘要, 本体有限核对, 全新独立验收, 全部FINAL后实际PR前任务漂移复核]

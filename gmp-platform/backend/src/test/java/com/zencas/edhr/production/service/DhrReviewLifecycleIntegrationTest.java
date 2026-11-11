@@ -107,15 +107,14 @@ class DhrReviewLifecycleIntegrationTest {
                 .put("note", "已核对质量结论、异常处置及源签署");
         return summaries.submit(1L, command);
     }
-    @Test void reviewDetailCurrentlyComparesTheSameFrozenVersionTwice() {
+    @Test void reviewDetailReusesTheFrozenVersionComparison() {
         var submitted = submit();
         Long versionId = submitted.path("id").asLong();
         Long taskId = jdbc.queryForObject("SELECT id FROM workflow_task", Long.class);
         clearInvocations(impacts);
         assertThat(reviews.detail(taskId).path("evidenceChanges")).isEmpty();
-        // Observation for the open performance finding, not approval to remove
-        // the independently locked comparison performed by an approval command.
-        verify(impacts, times(2)).changes(versionId, false);
+        // Reuse only this read response; an approval command still compares under its own locks.
+        verify(impacts, times(1)).changes(versionId, false);
         verify(impacts, never()).changes(versionId, true);
     }
 

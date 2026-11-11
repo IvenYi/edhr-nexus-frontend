@@ -1,0 +1,31 @@
+{
+  "observedAt": "2026-11-11T19:38:33.979653+08:00",
+  "target": "b12a29f053184220ce88c086fb763f4318ea3c71",
+  "testedCandidate": "ff93b4598d91413b96c3b79d958c4d4c61cf10d5",
+  "targetStillCurrent": true,
+  "externalIncrement": [],
+  "allDispatchedProfessionalsFinal": "Actual collaboration.list_agents observed both current roles completed with structured FINAL;no children",
+  "quality": "passed",
+  "ontology": "not-applicable",
+  "requiredQualityChecksPassed": 16,
+  "protectedInputsMatch": 50,
+  "knowledgeValidationInputsMatch": 359,
+  "archiveMembersHashVerified": 1912,
+  "roleFinalManifestSha256": {
+    "ontology": "a99ff4fa5da25e3510fb964ae70316cc9fed669e3941c21bf57cea0a8afbd173",
+    "independent": "c129892c5af4913c2f02fdc1d2838312819cbf5e43918dd93b25964b7c330404"
+  },
+  "scopeDrift": false,
+  "candidateChangedPaths": [
+    "docs/development/branch-review-20261111-dhr-impact-reuse/decision-package.yaml",
+    "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrEvidenceImpactService.java",
+    "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrReviewService.java",
+    "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrReviewLifecycleIntegrationTest.java",
+    "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrSummaryAttachmentObservationPostgresTest.java"
+  ],
+  "workingTreeStatusAtGate": " M docs/development/branch-review-20261015/NEXT.md\n?? docs/development/branch-review-20261111-dhr-impact-reuse/README.md\n?? docs/development/branch-review-20261111-dhr-impact-reuse/evidence-packages.json\n?? docs/development/branch-review-20261111-dhr-impact-reuse/evidence/independent-manifest.json\n?? docs/development/branch-review-20261111-dhr-impact-reuse/evidence/independent.zip\n?? docs/development/branch-review-20261111-dhr-impact-reuse/evidence/main-manifest.json\n?? docs/development/branch-review-20261111-dhr-impact-reuse/evidence/main.zip\n?? docs/development/branch-review-20261111-dhr-impact-reuse/evidence/ontology-manifest.json\n?? docs/development/branch-review-20261111-dhr-impact-reuse/evidence/ontology.zip\n?? docs/development/branch-review-20261111-dhr-impact-reuse/independent-review.md\n?? docs/development/branch-review-20261111-dhr-impact-reuse/inventory-summary.json\n?? docs/development/branch-review-20261111-dhr-impact-reuse/main-analysis.json\n?? docs/development/branch-review-20261111-dhr-impact-reuse/ontology-result.yaml\n?? docs/development/branch-review-20261111-dhr-impact-reuse/ontology-review.md\n?? docs/development/branch-review-20261111-dhr-impact-reuse/quality-result.yaml\n?? docs/development/branch-review-20261111-dhr-impact-reuse/review.md\n?? docs/development/branch-review-20261111-dhr-impact-reuse/sql-multiset-verification.json",
+  "remainingChangesAllowed": "L0 reports/ledger/evidence/delivery only;product/tests/DP/contracts/knowledge unchanged",
+  "stage": "Authorized PERF-DHR-REVIEW-REPEAT-001 two subitems within W1/W3/W5/W6/A23/W7;whole audit remains open",
+  "ciStatusOrActionsQueried": false,
+  "autoMergeDeployOrRestore": false
+}

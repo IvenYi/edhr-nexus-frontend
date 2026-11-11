@@ -1,0 +1,233 @@
+qualityResult:
+  result: passed
+  baseCommit: b12a29f053184220ce88c086fb763f4318ea3c71
+  headCommit: ff93b4598d91413b96c3b79d958c4d4c61cf10d5
+  contractBaseline:
+    sourceCommit: ff93b4598d91413b96c3b79d958c4d4c61cf10d5
+    targetBranch: edhr-dev
+    targetCommit: b12a29f053184220ce88c086fb763f4318ea3c71
+    contractReadCommit: ff93b4598d91413b96c3b79d958c4d4c61cf10d5
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: clean
+    includedPaths: []
+    excludedPaths: []
+    untrackedPaths: []
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+  - id: check.fixed-candidate-contract
+    required: true
+    category: documentation
+    description: 独立固定候选/目标及治理基线，5文件最小改动
+    method: inspection
+    command: git fetch/show/diff;read AGENTS, handoff contract, role, DP
+    outcome: passed
+    evidence:
+    - source-binding.json
+    - candidate.diff
+    - cleanup.json
+    - source/
+  - id: check.authorization-existing-semantics
+    required: true
+    category: ontology
+    description: 用户授权、既有冻结/完整SHA/权限/历史规则及有限知识核对
+    method: inspection
+    command: Read versioned user authorization, DEC0063/0068, dhr-summary and ontology originals
+    outcome: passed
+    evidence:
+    - reviewed-ontology/ontology-result.yaml
+    - reviewed-ontology/finite-review-records.json
+    - review.md
+    - 353知识文件未改；有限18不等于新增unique或全库一致
+  - id: check.detail-reuse-and-dto
+    required: true
+    category: integration
+    description: 同请求只做一次完整比较，DTO完整等价且详情查询由19降13
+    method: automated-test
+    command: Native largeOriginalReadCostsAreObservedThroughRealFrozenReviewTask;H2 reviewDetailReusesTheFrozenVersionComparison
+    outcome: passed
+    evidence:
+    - final_verified/test-summary.json
+    - final_verified/observations/impact_50mib_review.json
+    - independent-analysis.json
+    - 完整detail减task/buttons/canAct等于version；读侧从不调用锁内changes
+  - id: check.full-stream-and-resource-budget
+    required: true
+    category: integration
+    description: 原件SHA完整流式读取、每文件新digest/关闭资源与50MiB分配预算
+    method: automated-test
+    command: Native 50MiB version/detail/approve plus source inspection
+    outcome: passed
+    evidence:
+    - final_verified/observations/impact_50mib_version.json
+    - final_verified/observations/impact_50mib_review.json
+    - final_verified/observations/impact_50mib_approve.json
+    - version12/detail13/approve29SELECT，各完整读52428800B、累计分配<26214400B
+  - id: check.boundary-and-last-byte
+    required: true
+    category: regression
+    description: 缓冲前后及末字节变化均检测且读取至EOF
+    method: automated-test
+    command: Native streamedDigestReadsChangedBytesAcrossBufferBoundaries offsets8191/8192/32768,lockfalse/true
+    outcome: passed
+    evidence:
+    - final_verified/observations/
+    - independent-analysis.json
+    - 三偏移两模式均完整32769B并报告attachment1000，无写
+  - id: check.new-request-freshness
+    required: true
+    category: regression
+    description: 跨请求不缓存比较结果，之后原件变化对新请求可见
+    method: automated-test
+    command: Native reviewDetailsRecheckOriginalsOnEveryRequest
+    outcome: passed
+    evidence:
+    - final_verified/observations/impact_uncached_first.json
+    - final_verified/observations/impact_uncached_second.json
+    - final_verified/observations/impact_uncached_details-state.json
+  - id: check.locked-approval-and-frozen-history
+    required: true
+    category: audit
+    description: 页面读取不能替代批准锁内重核，陈旧原件失败无写、正常批准仍保留冻结正文
+    method: automated-test
+    command: Native stale approve then restored-own-fixture approve;compare act bytes with base
+    outcome: passed
+    evidence:
+    - final_verified/observations/impact_stale_approve-state.json
+    - final_verified/observations/impact-frozen-review.json
+    - source-binding.json
+    - act原workflow/对象/DHR锁、资格、签署和审计整块字节未改
+  - id: check.pre-read-permission-and-hash
+    required: true
+    category: security
+    description: 无资格与陈旧snapshotHash在读取原件前拒绝，业务状态无写
+    method: automated-test
+    command: Native rejectedReviewReadsDoNotReadOriginalsOrWriteBusinessState
+    outcome: passed
+    evidence:
+    - final_verified/observations/impact_denied_detail.json
+    - final_verified/observations/impact_denied_approve.json
+    - final_verified/observations/impact_denied_stale_hash.json
+    - 36组11表内容摘要的一部分；三场景逻辑原件读0
+  - id: check.scope-membership-error-behavior
+    required: true
+    category: regression
+    description: 成员/租户/active/状态/摘要/来源变化和原错误语义保持
+    method: automated-test
+    command: Native count0/1/100/300 and eight change states in both lock modes
+    outcome: passed
+    evidence:
+    - final_verified/observations/
+    - independent-analysis.json
+    - changes仍每次6SELECT；来源和冻结无写，不把样本数当总量上限
+  - id: check.native-canonical-and-adjacent
+    required: true
+    category: database
+    description: 真实canonical迁移及相关审批/持久化/签署/事务/并发回归
+    method: automated-test
+    command: Own isolatedPG16 run.py final_verified selecting4classes
+    outcome: passed
+    evidence:
+    - final_verified/run.json
+    - final_verified/test-summary.json
+    - final_verified/postgres.log
+    - 76/76=38nativePG+30H2+8mock，0F/E/S；H2签署/退回/并发不称原生全矩阵
+  - id: check.independent-jfr-sql-state
+    required: true
+    category: database
+    description: 原始JFR、SQL成功execute多重集和11表内容摘要独立重算
+    method: command
+    command: IndependentJfrRead via JDK21 RecordingFile;python verify-independent.py
+    outcome: passed
+    evidence:
+    - IndependentJfrRead.java
+    - jfr-events.tsv
+    - jfr-independent-verification.json
+    - sql-independent-verification.json
+    - 58JFR/58SQL组，482客户端=482服务器SELECT、0额外；36x11摘要相等
+  - id: check.actual-knowledge89
+    required: true
+    category: ontology
+    description: 当前359输入的知识结构校验独立实际运行
+    method: automated-test
+    command: OwnWT knowledge-run.py;BusinessKnowledgeModelTest
+    outcome: passed
+    evidence:
+    - knowledge/run.json
+    - knowledge/test-summary.json
+    - knowledge/TEST-com.zencas.edhr.knowledge.BusinessKnowledgeModelTest.xml
+    - 89/89实际通过，不等于全库语义审计
+  - id: check.old-source-negative-proof
+    required: true
+    category: regression
+    description: 同最终测试字节旧产品的真实预算及重复调用失败反证
+    method: inspection
+    command: Verify main focused_old originals against candidate/base Git bytes and XML
+    outcome: passed
+    evidence:
+    - old-negative-binding.json
+    - reviewed-main-negative/focused_old/
+    - 6=4positive+2fail,0errors/skip;oldversion52711920B超25MiB、旧detail2次；QA未重跑旧源
+  - id: check.robustness-ownership-and-drift
+    required: true
+    category: requirements
+    description: A23必要保护与可简化重复区分，影响分析和具体提取边界匹配
+    method: inspection
+    command: Review exact two production diffs, unchanged control/act paths and DP
+    outcome: passed
+    evidence:
+    - candidate.diff
+    - source-binding.json
+    - review.md
+    - 无跨请求缓存、政策/接口/索引/UI/其他性能改动或大重构；新鲜度观察时点局限单列
+  - id: check.ontology-original-seal
+    required: true
+    category: ontology
+    description: 本体正式NA及原manifest/SHA载荷绑定验证
+    method: inspection
+    command: Hash ontology original files before copying formal result
+    outcome: passed
+    evidence:
+    - reviewed-ontology/manifest.json
+    - reviewed-ontology/SHA256SUMS
+    - cleanup.json
+    - original manifest SHA a99ff4fa5da25e3510fb964ae70316cc9fed669e3941c21bf57cea0a8afbd173；771载荷逐份核
+  - id: check.independent-cleanup-source-state
+    required: true
+    category: documentation
+    description: 自有容器/依赖软链清理，运行时状态及最终clean如实绑定
+    method: command
+    command: docker inspect own container;unlink own softlink;git status;all source hashes
+    outcome: passed
+    evidence:
+    - cleanup.json
+    - final_verified/cleanup.json
+    - source-binding.json
+    - 运行时唯一untracked自有node_modules软链；最终clean且主依赖保留，未改产品/测试/配置
+  findings: []
+  residualRisks:
+  - id: risk.metrics-scope
+    description: 线程累计分配/逻辑文件读取及合成fixture，不是峰值/RSS/物理IO/生产SLA。
+    impact: 不能推定任意并发或大宽记录下的生产容量。
+    mitigation: 按原始口径报告；其余容量另量化并讨论。
+  - id: risk.runtime-matrix
+    description: 服务+nativePG，节点按原配置无签署事件；H2签署/并发为补充；未测完整HTTP/browser/首次START/原生签署全矩阵。
+    impact: 局部性能与保护通过不构成生产发布验收。
+    mitigation: 保留相应矩阵与环境边界，不把服务结果外推。
+  - id: risk.read-observation-time
+    description: 详情沿已有version比较时点返回，不连续监视后续外部变化。
+    impact: 页面响应之后文件仍可能变化。
+    mitigation: 独立请求及审批锁内完整重核保持且已回归；严禁跨请求缓存结果。
+  - id: risk.inherited-endpoints
+    description: audit/download仍先detail，收益仅由源码传递，不是它们整个HTTP请求的实测总数。
+    impact: 不能把13SELECT/50MiB直接称下载总成本。
+    mitigation: 保留原任务/版本资格与下载原件校验，其余优化另验。
+  - id: risk.remaining-audit
+    description: 全W2-W7/A23已审复看、全知识语义、两旧DHR high/A12、多租户/生产容量、未答方案和用户暂停范围仍开放。
+    impact: 本切片passed不关闭整体审计或原待决。
+    mitigation: 按固定提交与原台账继续，不重复计unique或擅改政策。
+  - id: risk.existing-static
+    description: 前端未改，本轮未新跑浏览器/全站strict；既有strict86及lint缺配置保留。
+    impact: 不能声称全站静态与lint全绿。
+    mitigation: 按实际未执行与既有残余报告，不为绿灯扩大修复或降低标准。
+  blockingConditions: []

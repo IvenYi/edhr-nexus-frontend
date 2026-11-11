@@ -128,6 +128,7 @@ public class DhrEvidenceImpactService {
             JsonNode frozenAttachments = json(text(version.getFirst(), "attachment_snapshot"));
             var currentAttachments = jdbc.queryForList("SELECT id,sha256,verification_status,stored_path FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND active=TRUE ORDER BY id" + (lock ? " FOR UPDATE" : ""), version.getFirst().get("dhr_id"));
             Set<String> seenAttachments = new HashSet<>();
+            byte[] digestBuffer = new byte[8192];
             for (var attachment : currentAttachments) {
                 String id = text(attachment, "id");
                 seenAttachments.add(id);
@@ -137,8 +138,12 @@ public class DhrEvidenceImpactService {
                         || !"VERIFIED".equals(text(attachment, "verification_status"));
                 if (!changed) try {
                     Path path = Path.of(text(attachment, "stored_path"));
-                    byte[] digest = MessageDigest.getInstance("SHA-256").digest(Files.readAllBytes(path));
-                    changed = !text(attachment, "sha256").equals(HexFormat.of().formatHex(digest));
+                    var digest = MessageDigest.getInstance("SHA-256");
+                    try (var input = Files.newInputStream(path)) {
+                        int count;
+                        while ((count = input.read(digestBuffer)) != -1) digest.update(digestBuffer, 0, count);
+                    }
+                    changed = !text(attachment, "sha256").equals(HexFormat.of().formatHex(digest.digest()));
                 } catch (Exception ex) { changed = true; }
                 if (changed) result.addObject().put("attachmentId", id).put("message", "附件范围、核验状态或文件内容与冻结版本不一致");
             }

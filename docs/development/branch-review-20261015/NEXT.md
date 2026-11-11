@@ -1,5 +1,19 @@
 # 持续推进台账
 
+## PR82已合入：已授权的DHR比较复用与流式摘要
+
+已交付[PR83](https://github.com/IvenYi/edhr-nexus-frontend/pull/83)，audit/edhr-dev-dhr-impact-reuse-20261111→edhr-dev，观察OPEN/MERGEABLE/CLEAN，建议人工合入已授权两项优化。受测ff93b459、验收8fa9dea6后仅L0登记；登记前本地/真实远端/PR head及50/359输入一致，登记正常推送后再次核对。下一轮先fetch真实合入及新增，回原跨链/健壮性/A23队列，其他未答方案不因本批默认授权；不自动merge/deploy/恢复。
+
+已fetch `edhr-dev@b12a29f053184220ce88c086fb763f4318ea3c71`，PR82真实合入且整树同6975f647，无外部代码/知识/契约。新分支audit/edhr-dev-dhr-impact-reuse-20261111；[本批](../branch-review-20261111-dhr-impact-reuse/README.md)L2落实用户已明确授权的结果复用＋流式摘要，不再询问、不新增功能或政策。仅2产品＋2维护测试＋DP：detail删1行第二次changes；changes本次局部8KiB buffer复用、逐文件新digest和完整读至EOF，输入流自动关闭。act及其他review代码字节相同；权限/签署/锁/事务/审计/历史/UI/API/schema/索引/知识不改。
+
+clean受测ff93b459主侧实际76/76（38原生PG＋30H2＋8mock）、知识89/89，0F/E/S；同最终两测试字节旧产品6=4正2真预算F/0E/S，新6全过。单50MiB版本12SELECT/读50MiB/累计286160B，详情19→13SELECT、读100→50MiB/累计320256B；批准仍29SELECT/完整50MiB/累计952664B，先陈旧原件拒绝无写再按原配置正常批准且冻结附件保持。完整DTO等价、跨缓冲/末字节篡改、独立请求再核及原状态/范围/资格/陈旧hash保持，不把原生无签署事件fixture当完整原生签署验收；旧H2签署/退回/并发为补充。
+
+58JFR外部重算、58组SQL多重集482业务SELECT=482服务器SELECT、36组11表内容摘要相同；当前50/359输入同Git/原件。8201机械路径中5750为历史审计证据，不给整体完成率或虚增整文件/unique覆盖。本体NA/FINAL有限18=15一致/2原gap/1原范围外待决，353知识不变；全新独立正式quality passed/FINAL、16必需项通过、无发现阻断，实际76/89及58JFR/SQL/36组11表独立重算吻合，双方PG及独立依赖已清、工作树clean。全部角色FINAL后再实际PR前复核，不能以主测代替。
+
+仅关闭原PERF-DHR-REVIEW-REPEAT-001的两项已授权子项，不把附件ID匹配CPU、audit/download完整装配、PDF/ZIP及生产并发容量一起关闭；没有跨请求缓存或顺带索引。其他列表资格SQL/事件DB分页/宽JSON分块等未答方案保持。下一轮先fetch真实合入及全部新增，回原入口矩阵，sourceEffective通知接收者/事件幂等/查询规模为后续候选、目前不计通过。
+
+全部角色正式FINAL后，2026-11-11 19:38:33 Asia/Shanghai已实际[PR前漂移/阶段复核](../branch-review-20261111-dhr-impact-reuse/pre-pr-drift-review.md)：目标仍b12a29f0，50/359输入及三包1912成员/角色manifest核过，无漂移，此后仅L0验收/台账/交付。整体W2余项/W3–W5其他跨链/W6全量健壮性性能具体提取及A23含已审/W7新增、全知识语义/strict86/lint缺配置/两旧DHR high/A12/完整矩阵/family剩余4N及选项全载/容量UNKNOWN/用户暂停继续。不自动merge/deploy/恢复或查询触发CI。
+
 ## PR81已合入：DHR冻结证据读取及审批保护量化
 
 已交付[PR82](https://github.com/IvenYi/edhr-nexus-frontend/pull/82)，audit/edhr-dev-record-evidence-review-20261111→edhr-dev，观察OPEN/MERGEABLE/CLEAN，建议人工合入测试与证据。受测72d3bac4、验收72d25b8d后仅L0登记；登记前本地/真实远端/PR head及49/359输入一致，登记正常推送后再次核对。**下一批结果复用＋流式摘要已明确授权，不再问**；先fetch真实合入/新增后直接按两步最小整改验证，不扩张其他未答方案或自动merge/deploy/恢复。
