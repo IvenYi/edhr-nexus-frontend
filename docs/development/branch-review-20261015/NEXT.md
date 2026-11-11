@@ -1,5 +1,21 @@
 # 持续推进台账
 
+## PR83已合入：来源生效通知组合证据收敛
+
+已fetch `edhr-dev@ea46c826f821ab2496a56df13fbcb0bd47e25eff`，PR83真实合入且整树同62ba94a9，无外部代码／知识／契约。新分支audit/edhr-dev-dhr-impact-notifications-20261111；[本批审查](../branch-review-20261111-dhr-impact-notifications/README.md)L2继续sourceEffective→个人通知／已读、W6健壮性／性能／A23及W7增量。未确认新的正常路径正确性缺陷，8受测文件仅维护原生测试＋DP＋6知识，产品／API／UI／schema／索引／规则不改。
+
+clean统一受测7b63b4c5，主侧与全新独立各实际177/177（118原生PG＋59其他含15H2）、知识各89/89，0F/E/S。CHANGE/OBSOLETE各自签名改派后新旧收件、多／无限制候选、旧review／唯一审计身份恢复及歧义／缺失不猜共16组合通过，关闭既有discrepancy.dhr-review-effective-source-integration的精确剩余证据high；原32／12步及初轮failed历史保留，不把当前双在审旧fixture当新合法入口。另1/10/100真实冻结版本，100条提醒20／页全部可达，本人／他人／匿名、重复已读和事件重放保持，收到通知不授予DHR资格。
+
+52受保护／359知识输入同候选及原件；20观察、110总体HTTP中28新增、336条source execute／计划已核。冻结4表／重放14表存摘要对并运行精确内容断言，未导出全前后JSON，不声称外部从原行重算SHA。早期19中1F是对照SQL文本别名排序，产品数值排序正确；限定n.impact_id后保留严格顺序／唯一100断言，最终重跑全过；独立首次缺依赖0测试环境失败也保留。
+
+本体updated／FINAL，有限25=19一致／4原gap／2原待决；新增1证据ID，唯一差异open→resolved，353知识及0.3.25/schema1.2.0/P0保持。全新独立quality passed／FINAL，16必需检查通过、无findings／blocking；执行期间仅依赖软链排除／未跟踪，最后clean、自有PG和软链已清。8221固定树仅机械盘点；本批5有限源码范围＋1仅fixture运行支撑范围单独登记，不增加整文件／历史unique完成数。
+
+新PERF-DHR-IMPACT-NOTIFICATION-READ-001只取证：V=1/10/100冻结版本时2/11/101 SELECT，另各V影响及V通知写命令；100版本本机source约123ms，非全部审批／锁时／SLA／人数上限。逐版本读任务可批读，必要写入不可省；索引需另用大无关背景和选择率取证。当前建议继续整体其他入口，不为每条线性风险自动开整改，未实施新优化或索引。
+
+下一轮先fetch真实合入及所有新增并审增量，再回原W2未完成保存／完成与序列化消费差异清单，先去重再选一条真实剩余链；DHR audit/versionAudit历史归属／分页在相邻队列。W2余项／W3–W7、全知识语义、A23含已审补查、另一通用质量／异常／源签署变化high、完整A12/UI／账号切换／错误／权限、strict86/lint缺配置、容量UNKNOWN、其他未答方案及用户暂停继续。不自动merge／部署／恢复或查询触发CI。全部角色FINAL后仍须实际PR前漂移／阶段复核，不能以本段代替执行。
+
+全部角色正式FINAL后，2026-11-12 00:36:14 Asia/Shanghai已实际[PR前漂移／阶段复核](../branch-review-20261111-dhr-impact-notifications/pre-pr-drift-review.md)：目标仍ea46，52/359输入及三包720成员／角色manifest核过，无任务漂移。此后仅L0验收／台账／交付。整体未完成，明确下一轮回原W2余项，不让通知性能线索无条件扩成新主线。
+
 ## PR82已合入：已授权的DHR比较复用与流式摘要
 
 已交付[PR83](https://github.com/IvenYi/edhr-nexus-frontend/pull/83)，audit/edhr-dev-dhr-impact-reuse-20261111→edhr-dev，观察OPEN/MERGEABLE/CLEAN，建议人工合入已授权两项优化。受测ff93b459、验收8fa9dea6后仅L0登记；登记前本地/真实远端/PR head及50/359输入一致，登记正常推送后再次核对。下一轮先fetch真实合入及新增，回原跨链/健壮性/A23队列，其他未答方案不因本批默认授权；不自动merge/deploy/恢复。

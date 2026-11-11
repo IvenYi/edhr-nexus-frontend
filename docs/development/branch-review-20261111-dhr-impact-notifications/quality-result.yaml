@@ -1,0 +1,168 @@
+qualityResult:
+  result: passed
+  baseCommit: ea46c826f821ab2496a56df13fbcb0bd47e25eff
+  headCommit: 7b63b4c545490489e3e7df1d2009957e7e34cf63
+  contractBaseline:
+    sourceCommit: 7b63b4c545490489e3e7df1d2009957e7e34cf63
+    targetBranch: edhr-dev
+    targetCommit: ea46c826f821ab2496a56df13fbcb0bd47e25eff
+    contractReadCommit: 7b63b4c545490489e3e7df1d2009957e7e34cf63
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: dirty
+    includedPaths: []
+    excludedPaths: [gmp-platform/frontend/node_modules]
+    untrackedPaths: [gmp-platform/frontend/node_modules]
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+    - id: check.independent-candidate-and-contracts
+      required: true
+      category: documentation
+      description: 独立fetch目标、读取契约并核对实际base/head、8文件范围和tracked字节
+      method: command
+      command: git fetch origin refs/heads/edhr-dev:refs/remotes/origin/edhr-dev; git diff ea46c826 HEAD
+      outcome: passed
+      evidence: [role-inputs.json, diff.patch, git-range.txt, independent-recheck.json]
+    - id: check.no-runtime-product-or-policy-change
+      required: true
+      category: requirements
+      description: 产品/API/UI/schema/索引/POM/协作契约无变更，仅测试、DP和六知识证据
+      method: inspection
+      command: git diff --name-only ea46c826 7b63b4c5
+      outcome: passed
+      evidence: [diff.patch, review.md, independent-recheck.json]
+    - id: check.native-postgres-regression
+      required: true
+      category: integration
+      description: 自有canonical PostgreSQL真实118项包含19新增矩阵及原签署、状态、并发、回滚
+      method: automated-test
+      command: EDHR_CANDIDATE_ROOT=/tmp/edhr-notification-qa-20261111 EDHR_CANDIDATE_RAW=/tmp/edhr-dhr-notifications-final-qa-20261111 EDHR_CANDIDATE_CONTAINER_PREFIX=edhr-dhr-notifications-qa python3 run.py final_ready
+      outcome: passed
+      evidence: [final_ready/run.json, final_ready/test-summary.json, final_ready/TEST-com.zencas.edhr.recordcontrol.service.RecordControlPostgresIntegrationTest.xml, final_ready/maven.log]
+    - id: check.adjacent-backend-regression
+      required: true
+      category: regression
+      description: 其他九类59项含15H2；合计177/177，0失败/错误/跳过且fresh XML齐全
+      method: automated-test
+      command: python3 run.py final_ready
+      outcome: passed
+      evidence: [final_ready/test-summary.json, final_ready/run.json, final_ready/maven.log]
+    - id: check.current-recipient-matrices
+      required: true
+      category: integration
+      description: CHANGE/OBSOLETE真实签名改派、多/无限制和冻结停用候选共8项，实际收件行及历史/异租户排除
+      method: query
+      command: python3 recheck.py
+      outcome: passed
+      evidence: [independent-recheck.json, final_ready/notification-observations, final_ready/postgres.log]
+    - id: check.legacy-identity-matrices
+      required: true
+      category: integration
+      description: 原review/唯一SUBMIT身份恢复、歧义/缺失不按同名猜，CHANGE/OBSOLETE共8项
+      method: query
+      command: python3 recheck.py
+      outcome: passed
+      evidence: [independent-recheck.json, final_ready/notification-observations, review.md]
+    - id: check.frozen-and-event-replay
+      required: true
+      category: audit
+      description: 19组4表冻结/14表重投摘要对相等且维护测试为全内容精确断言，不冒称外部重算全部行哈希
+      method: inspection
+      command: python3 recheck.py
+      outcome: passed
+      evidence: [independent-recheck.json, final_ready/notification-observations, diff.patch, review.md]
+    - id: check.real-failure-and-concurrency-regression
+      required: true
+      category: database
+      description: 真实审批通知失败回滚、两向在审及竞争唯一胜者仍通过；旧存量fixture不开放当前入口
+      method: automated-test
+      command: python3 run.py final_ready
+      outcome: passed
+      evidence: [final_ready/TEST-com.zencas.edhr.recordcontrol.service.RecordControlPostgresIntegrationTest.xml, final_ready/postgres.log, review.md]
+    - id: check.personal-http-and-no-privilege-grant
+      required: true
+      category: security
+      description: 总110条原响应及新增28条，普通本人通知200/无DHR权详情403/匿名401/他人标读无写
+      method: automated-test
+      command: python3 recheck.py
+      outcome: passed
+      evidence: [final_ready/http.jsonl, independent-recheck.json, review.md]
+    - id: check.complete-pagination-and-read-idempotence
+      required: true
+      category: api
+      description: 100条唯一通知全分页按数值倒序可达，重复已读和事件重投保留时间，20为页大小非上限
+      method: automated-test
+      command: python3 recheck.py
+      outcome: passed
+      evidence: [final_ready/http.jsonl, final_ready/notification-observations/pages-and-read.json, independent-recheck.json]
+    - id: check.source-sql-and-performance-qualification
+      required: true
+      category: database
+      description: 独立重算原source阶段1/10/100版本的SELECT2/11/101与两类写入，execute及计划4/31/301，不冒充全事务/锁时/生产SLA
+      method: query
+      command: python3 recheck.py
+      outcome: passed
+      evidence: [source-plans.json, independent-recheck.json, final_ready/postgres.log, review.md]
+    - id: check.a23-and-concrete-extraction-boundaries
+      required: true
+      category: requirements
+      description: 核对事件/唯一约束、可靠身份回退、本人已读no-op等防御的独立用途并提出具体有限方法/测试拆分方案
+      method: inspection
+      command: inspect sourceEffective/applyResult/list/read and updated native tests
+      outcome: passed
+      evidence: [review.md, diff.patch, final_ready/source]
+    - id: check.knowledge-formal-89
+      required: true
+      category: ontology
+      description: 本人同候选独立正式89/89且359输入固定
+      method: automated-test
+      command: python3 knowledge-run.py
+      outcome: passed
+      evidence: [knowledge/run.json, knowledge/test-summary.json, knowledge/TEST-com.zencas.edhr.knowledge.BusinessKnowledgeModelTest.xml, knowledge/maven.log]
+    - id: check.knowledge-exact-semantic-closure
+      required: true
+      category: ontology
+      description: 对照原用户来源及源码，仅既有三个组合缺口resolved；不修改业务政策、成熟度、另一high或历史原件
+      method: inspection
+      command: inspect confirmedNotificationReply/DEC0068/0087/0093 and git diff
+      outcome: passed
+      evidence: [knowledge-semantic-check.json, finite-ontology-records-observed.jsonl, ontology-final-observed.json, diff.patch, review.md]
+    - id: check.inventory-versus-semantic-coverage
+      required: true
+      category: ontology
+      description: 353文件/2849ID为盘点；有限25条19一致/4证据gap/2待决，非全盘审计完成
+      method: inspection
+      command: schema collectionTypes/nestedCollectionTypes inventory and finite record review
+      outcome: passed
+      evidence: [knowledge-semantic-check.json, finite-ontology-records-observed.jsonl, review.md]
+    - id: check.environment-cleanup-and-evidence-boundary
+      required: true
+      category: documentation
+      description: 首次依赖失败保留；仅QA依赖软链排除且已清、自有PG已清、最终WT clean，无共享库/merge/deploy/CI操作
+      method: command
+      command: git status --porcelain; docker ps --format '{{.Names}}'; python3 recheck.py
+      outcome: passed
+      evidence: [final/run.json, final/maven.log, final/cleanup.json, final_ready/cleanup.json, dependency-cleanup.json, final-state.json, review.md]
+  findings: []
+  residualRisks:
+    - id: risk.notification-source-query-growth
+      description: 当前生效生产者每受影响冻结版本查询当前任务，实测V+1 SELECT，100版本共301条含必要写入
+      impact: 版本累积或网络往返可能增加source阶段成本；样本不是生产容量或整事务锁时
+      mitigation: 先讨论批读任务并按版本归组，保留逐版本影响/通知及事务/锁/幂等，不在本批擅自优化
+    - id: risk.source-lookup-index-background
+      description: 当前样本无大量无关来源，既有tenant/version/source索引不能直接等同tenant/source检索前缀
+      impact: 无法从当前小表全匹配计划决定生产索引收益和写成本
+      mitigation: 独立大背景/选择率/ANALYZE量化后讨论具体索引；个人通知recipient/impact索引已存在
+    - id: risk.remaining-domain-high-and-a12
+      description: 通用质量/异常处置/源签署有效性变化自动判读high及完整A12历史继续
+      impact: 本批只关闭明确通知组合证据缺口，不是完整DHR证据政策实现
+      mitigation: 沿原决策/待决及台账继续无依赖审计，不擅改政策或恢复历史
+    - id: risk.full-ui-and-multitenant-not-validated
+      description: 未新增浏览器、完整账号切换/错误/权限矩阵或非MVP全租户验证
+      impact: 110条后端HTTP及局部样例不能外推这些场景
+      mitigation: 按后续实际UI/集成需求另验；本批无UI变更且旧32/12步按原时点保留
+    - id: risk.whole-audit-and-static-limitations
+      description: W2余项/W3-W7其他链/全量A23含已审/全知识语义、既有strict86及lint缺配置仍未整体完成
+      impact: 机械盘点或本切片passed不能给整体完成率或全部一致结论
+      mitigation: 继续固定基线增量与原总账，区分盘点、有限审读、整改、运行与人工合并
+  blockingConditions: []

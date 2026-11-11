@@ -1,0 +1,47 @@
+{
+  "observedAt": "2026-11-12T00:36:14.817007+08:00",
+  "rolesFinalObservation": {
+    "recordedAt": "2026-11-12T00:36:11.392648+08:00",
+    "source": "actual collaboration.list_agents after both formal FINAL deliveries",
+    "agents": [
+      {
+        "name": "/root/dhr_notification_matrix_ontology",
+        "status": "completed",
+        "result": "updated",
+        "manifestSha256": "3d7e6932a8985d8aa9ccf2e89c093dd88097cb20be65dfbe847cbd1d028d9fc5"
+      },
+      {
+        "name": "/root/dhr_notification_matrix_final_qa",
+        "status": "completed",
+        "result": "passed",
+        "manifestSha256": "429b136a5eb85936f9e4aa052e4f2ad5e7395eed7c5896bf89d7da0c380dbc04"
+      }
+    ],
+    "unfinishedProfessionalTasks": []
+  },
+  "target": "ea46c826f821ab2496a56df13fbcb0bd47e25eff",
+  "testedCandidate": "7b63b4c545490489e3e7df1d2009957e7e34cf63",
+  "mainProtectedInputCount": 52,
+  "knowledgeInputCount": 359,
+  "allCurrentAndCandidateInputHashesMatchRun": true,
+  "verifiedArchiveMembers": 720,
+  "roleManifestHashesMatchFinal": true,
+  "requiredQualityChecksPassed": 16,
+  "qualityResult": "passed",
+  "ontologyResult": "updated",
+  "candidateChangedFiles": [
+    "docs/development/branch-review-20261111-dhr-impact-notifications/decision-package.yaml",
+    "docs/knowledge/README.md",
+    "docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml",
+    "docs/knowledge/decisions/DEC-0087-record-control-v1-closure.yaml",
+    "docs/knowledge/evidence/dhr-filling-review-implementation.md",
+    "docs/knowledge/evidence/record-control-dhr-linkage.yaml",
+    "docs/knowledge/evidence/workflow-record-dhr-closure-20261102.md",
+    "gmp-platform/backend/src/test/java/com/zencas/edhr/recordcontrol/service/RecordControlPostgresIntegrationTest.java"
+  ],
+  "workingTreeStatus": " M docs/development/branch-review-20261015/NEXT.md\n?? docs/development/branch-review-20261111-dhr-impact-notifications/README.md\n?? docs/development/branch-review-20261111-dhr-impact-notifications/evidence-packages.json\n?? docs/development/branch-review-20261111-dhr-impact-notifications/evidence/\n?? docs/development/branch-review-20261111-dhr-impact-notifications/independent-review.md\n?? docs/development/branch-review-20261111-dhr-impact-notifications/inventory-summary.json\n?? docs/development/branch-review-20261111-dhr-impact-notifications/main-analysis.json\n?? docs/development/branch-review-20261111-dhr-impact-notifications/method-review-records.jsonl\n?? docs/development/branch-review-20261111-dhr-impact-notifications/ontology-result.yaml\n?? docs/development/branch-review-20261111-dhr-impact-notifications/ontology-review.md\n?? docs/development/branch-review-20261111-dhr-impact-notifications/performance-next.md\n?? docs/development/branch-review-20261111-dhr-impact-notifications/quality-result.yaml\n?? docs/development/branch-review-20261111-dhr-impact-notifications/review.md",
+  "postTestChanges": "Only uncommitted L0 evidence/report/ledger;no protected input change",
+  "taskDrift": "none",
+  "scope": "Only existing exact notification evidence gap resolved;no runtime/UI/API/policy/schema/index;performance measured only;overall audit remains incomplete",
+  "remaining": "Other general quality/exception/source-signature high,A12,full browser/account/error/permission matrices,W2-W7,A23 including earlier reviewed areas,full knowledge semantics,strict86/lint config,capacity UNKNOWN,unanswered performance and paused scopes"
+}
