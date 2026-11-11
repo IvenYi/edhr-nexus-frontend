@@ -1,0 +1,60 @@
+ontologyResult:
+  result: not-applicable
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: ff93b4598d91413b96c3b79d958c4d4c61cf10d5
+    targetBranch: edhr-dev
+    targetCommit: b12a29f053184220ce88c086fb763f4318ea3c71
+    contractReadCommit: ff93b4598d91413b96c3b79d958c4d4c61cf10d5
+    uncommittedContractPaths: []
+  reason: 用户已明确授权同请求比较结果复用和流式摘要；实现只删除detail第二次changes并将同次原件完整SHA改8192B局部缓冲，仍按已有version比较时点提供提示，独立请求和审批锁内fresh保持。冻结、资格、签署、状态、事务、审计、历史与原件完整性规则不变。有限18项核对无需新增或修订知识；两既有high证据缺口和非MVP待决不由本批关闭。
+  changedArtifacts: []
+  knowledgeSync: []
+  conflicts: []
+  questions: []
+  validationEvidence:
+  - id: validation.dhr-impact-reuse-final-source-binding
+    checkType: evidence-path
+    command: Actual git fetch/show/diff and complete final source/current-byte comparison;see candidate-binding.json
+    outcome: passed
+    evidence:
+    - candidate-binding.json
+    - candidate.diff
+    - candidate-source/
+  - id: validation.dhr-impact-reuse-finite-semantics
+    checkType: reference
+    command: Read original current DEC0063/0068 and dhr-summary rules plus versioned user confirmations;finite18
+    outcome: passed
+    evidence:
+    - finite-review-records.json
+    - finite-review-summary.json
+    - authorization-scope.json
+    - REVIEW.md
+  - id: validation.dhr-impact-reuse-knowledge-structure-reuse
+    checkType: schema
+    command: REUSED_PR82_ORIGINAL_ACTUAL89;359 exact matching current/base inputs;this role did not execute Maven
+    outcome: passed
+    evidence:
+    - knowledge-validation-reuse.json
+    - knowledge-inventory.json
+    - reused-pr82-main/knowledge/test-summary.json
+    - reused-pr82-main/knowledge/run.json
+  - id: validation.dhr-impact-reuse-projection-boundary
+    checkType: projection
+    command: 353 knowledge files unchanged;finite maturity and historical/out-of-scope rules retained,not new global
+      semantic or runtime pass
+    outcome: passed
+    evidence:
+    - candidate-binding.json
+    - finite-review-records.json
+    - risk-deduplication.json
+    - REVIEW.md
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages:
+    - P1
+    - P2
+    - P3

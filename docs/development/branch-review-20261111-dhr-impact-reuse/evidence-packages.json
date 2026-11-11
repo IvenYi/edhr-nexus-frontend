@@ -1,0 +1,40 @@
+{
+  "sealedAt": "2026-11-11T11:37:51.035243+00:00",
+  "testedCandidate": "ff93b4598d91413b96c3b79d958c4d4c61cf10d5",
+  "packages": [
+    {
+      "name": "main",
+      "path": "evidence/main.zip",
+      "bytes": 5344063,
+      "sha256": "d692d82e66d250240fb07eb91117f71329f2bddca8e653f6b7b911883ccb5a85",
+      "members": 409,
+      "manifest": "evidence/main-manifest.json",
+      "manifestSha256": "acdd1eb68111f9ebc0225e6e6ab71e3308e292b2bc7d01dc3fba3ee6860e60c4"
+    },
+    {
+      "name": "ontology",
+      "path": "evidence/ontology.zip",
+      "bytes": 2657439,
+      "sha256": "92e46ca8a9557e69876833af4b7b1d3d5232ca1556f465a8d0b2a5e3ca66116b",
+      "members": 773,
+      "manifest": "evidence/ontology-manifest.json",
+      "manifestSha256": "87f05a5cfbd9503b6173f81806553df81eaba5b8cd318e14354c8342efafb1f8"
+    },
+    {
+      "name": "independent",
+      "path": "evidence/independent.zip",
+      "bytes": 5598280,
+      "sha256": "9e287187c1e5465dcd431d7e29b8238ca3453f8ca524cee0d76e6bd6653813b5",
+      "members": 730,
+      "manifest": "evidence/independent-manifest.json",
+      "manifestSha256": "73caced7f921eef7f6544c1e8ec11716b43e2458add6bffd0b9c43101ce46faf"
+    }
+  ],
+  "roleFinalManifestSha256": {
+    "ontology": "a99ff4fa5da25e3510fb964ae70316cc9fed669e3941c21bf57cea0a8afbd173",
+    "independent": "c129892c5af4913c2f02fdc1d2838312819cbf5e43918dd93b25964b7c330404"
+  },
+  "allArchiveMemberHashesVerified": true,
+  "originalRoleManifestsAndSha256SumsVerified": true,
+  "scope": "Authorized request-local reuse and streaming SHA;clean candidate76+knowledge89;58 JFR/SQL observations and36x11 content digests;old6 same final test bytes4positive2real budget failures;only two product files"
+}
