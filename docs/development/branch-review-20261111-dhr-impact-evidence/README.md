@@ -2,6 +2,8 @@
 
 L2；PR81真实合入`edhr-dev@7629506c`，整树同59253386，无外部增量。受测候选`72d3bac42a759ceb415f4592b67c903c0cdfa49d`，仅维护原生测试＋决策包，未改产品、UI、schema、知识或业务政策。
 
+已交付[PR82](https://github.com/IvenYi/edhr-nexus-frontend/pull/82)，来源`audit/edhr-dev-record-evidence-review-20261111`、目标`edhr-dev`，观察OPEN/MERGEABLE/CLEAN，建议人工合入本批测试及证据。验收提交`72d25b8de040425a50a5b2b94f401d35dce15928`；受测之后仅L0报告/台账，本次仅交付登记。登记前本地/真实远端/PR head一致，49/359输入及包摘要未变，见[实际交付核对](evidence/delivery-verification.json)；登记正常推送后再次核对，不改称重新运行了测试。
+
 本轮未确认新的正常路径正确性缺陷；沿原`PERF-DHR-REVIEW-REPEAT-001`补充当前原生证据，不重复算新unique。单份50MiB附件：版本查看12次SELECT/读50MiB，审批详情19次/读100MiB、线程累计分配约100MiB；审批命令独立锁内29次/读50MiB并能拦住读页后原件篡改。不是峰值、物理IO或SLA。**用户已明确授权下一批结果复用＋流式摘要**，本批未实施，不再重问。
 
 主侧与全新独立实例分别实际72/72（34原生PG＋30 H2补充＋8 mock）、知识89/89，0F/E/S。50次JFR外部重算、426业务SELECT＋1驱动catalog分列、29组11表前后摘要一致。独立正式quality passed/FINAL，14必需项通过、无发现或阻断，均绑定72d3；未修改产品或测试。两个角色正式FINAL，自有PG及独立依赖软链已清，工作树最终clean。
