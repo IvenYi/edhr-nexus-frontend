@@ -1,0 +1,148 @@
+qualityResult:
+  result: passed
+  baseCommit: 7629506c6a067252e4f6a7b1e3f26b9f523d2489
+  headCommit: 72d3bac42a759ceb415f4592b67c903c0cdfa49d
+  contractBaseline:
+    sourceCommit: 72d3bac42a759ceb415f4592b67c903c0cdfa49d
+    targetBranch: edhr-dev
+    targetCommit: 7629506c6a067252e4f6a7b1e3f26b9f523d2489
+    contractReadCommit: 72d3bac42a759ceb415f4592b67c903c0cdfa49d
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: clean
+    includedPaths: []
+    excludedPaths: []
+    untrackedPaths: []
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+    - id: check.fixed-source-target-and-scope
+      required: true
+      category: documentation
+      description: 独立固定目标/受测/契约提交，实际差异仅DP和维护测试
+      method: command
+      command: git fetch;git diff base..head;git show;read contracts and DP
+      outcome: passed
+      evidence: [candidate.diff, source-binding.json, cleanup.json, 49运行输入/406最终绑定输入与Git一致;产品/UI/知识/契约无改动]
+    - id: check.existing-ontology-and-original-rules
+      required: true
+      category: ontology
+      description: 冻结证据/原件SHA/人工退回与历史保留规则合理，有限语义及旧风险去重不扩大
+      method: inspection
+      command: Read DEC0063/0068/user-confirmed evidence/rules/open questions and formal ontology originals
+      outcome: passed
+      evidence: [source/, reviewed-ontology/, ontology-original-verification.json, 正式NA;有限18项15一致2旧gap1旧待决;353知识字节未改]
+    - id: check.canonical-native-freeze-and-review
+      required: true
+      category: database
+      description: 自有原生PG16 canonical真实saveDraft/submit生成冻结版本与REQUIRED任务
+      method: automated-test
+      command: EDHR_CANDIDATE_ROOT=ownWT EDHR_CANDIDATE_RAW=ownRaw EDHR_CANDIDATE_CONTAINER_PREFIX=edhr-dhr-impact-qa python3 run.py final_verified
+      outcome: passed
+      evidence: [final_verified/run.json, final_verified/test-summary.json, final_verified/observations/impact-frozen-review.json, 34原生含新16全部通过;配置未要求签署不冒称电子签名全矩阵]
+    - id: check.changed-original-members-and-source
+      required: true
+      category: integration
+      description: 原件/元数据/成员/来源变化和范围外对照提示正确，不净化冻结
+      method: automated-test
+      command: frozenComparisonReportsChangesWithoutRepairingEvidence;independent analyze.py
+      outcome: passed
+      evidence: [final_verified/observations/impact_change_*, independent-analysis.json, 8变化乘两lock模式;完整SHA/缺失/PENDING/新增/解除及tenant/DHR/active范围]
+    - id: check.eleven-table-read-and-failure-atomicity
+      required: true
+      category: audit
+      description: 读取及资格/过时原件失败前后业务和历史摘要相同
+      method: automated-test
+      command: assertReadState;independent compare before and after JSON
+      outcome: passed
+      evidence: [final_verified/observations/*-state.json, independent-analysis.json, 29组各11表前后摘要完全相同]
+    - id: check.eligibility-and-stale-hash-before-file-io
+      required: true
+      category: security
+      description: 非候选详情/批准和expected hash失配拒绝，原件0读取，无业务写
+      method: automated-test
+      command: rejectedReviewReadsDoNotReadOriginalsOrWriteBusinessState
+      outcome: passed
+      evidence: [final_verified/observations/impact_denied_*, independent-analysis.json, 两个真实同租户ACTIVE账户;服务资格非完整HTTP权限矩阵]
+    - id: check.approval-rechecks-after-legal-read
+      required: true
+      category: regression
+      description: 合法详情后篡改原件仍锁内拒绝；仅自有fixture恢复后批准成功且冻结附件保持
+      method: automated-test
+      command: largeOriginalReadCostsAreObservedThroughRealFrozenReviewTask
+      outcome: passed
+      evidence: [final_verified/observations/impact_stale_approve*, final_verified/observations/impact_50mib_approve.json, final_verified/observations/impact-frozen-review.json]
+    - id: check.external-jfr-recomputation
+      required: true
+      category: integration
+      description: 独立RecordingFile程序重算50份JFR的实际线程/原件逻辑字节与事件
+      method: command
+      command: JDK21 java VerifyJfr.java final_verified/observations;python3 analyze.py
+      outcome: passed
+      evidence: [VerifyJfr.java, jfr-recomputed.tsv, independent-analysis.json, 50/50完全吻合;50MiB版本读50MiB/详情100MiB/批准50MiB;累计分配非峰值]
+    - id: check.actual-server-sql-and-growth
+      required: true
+      category: database
+      description: 按成功execute与客户端完整SELECT形状核50组；附件规模SQL保持常数，非N+1
+      method: query
+      command: Independent analyze.py regex of postgres.log and Counter of SQL normalized whitespace/placeholders
+      outcome: passed
+      evidence: [server-sql-review.json, final_verified/postgres.log, 426业务SELECT加1驱动catalog;108其他语句分列;0/1/100/300各lock模式6次SELECT]
+    - id: check.adjacent-backend-regression
+      required: true
+      category: regression
+      description: 原提交/状态/冻结完整性/回滚和H2签署/退回/并发/历史回归
+      method: automated-test
+      command: Own final_verified selected four classes
+      outcome: passed
+      evidence: [final_verified/test-summary.json, final_verified/TEST-*.xml, 72/72零失败错误跳过;34PG加6H2生命周期加24H2持久化加8单元]
+    - id: check.actual-knowledge-validation
+      required: true
+      category: ontology
+      description: 独立实际知识89与359输入绑定，结构通过不替代全语义
+      method: automated-test
+      command: python3 knowledge-run.py;BusinessKnowledgeModelTest
+      outcome: passed
+      evidence: [knowledge/run.json, knowledge/test-summary.json, knowledge/TEST-com.zencas.edhr.knowledge.BusinessKnowledgeModelTest.xml, 89/89实际通过;353知识与目标相同]
+    - id: check.robustness-and-overdefense-scope
+      required: true
+      category: requirements
+      description: 必要失败可见/权限/冻结/锁内重核保持，重复成本不据此自动优化
+      method: inspection
+      command: Read changes/version/detail/act and controller transitive paths;review test diff and DP
+      outcome: passed
+      evidence: [review.md, candidate.diff, source/, 原件异常标为变化非默认放行;同请求重复与数组/ID扫描仅旧风险补证;具体提取边界不大重构]
+    - id: check.unchanged-ui-and-evidence-boundaries
+      required: true
+      category: documentation
+      description: 本轮无UI/产品变化，保持静态和全审/生产容量限制，不虚构浏览器或完整HTTP验收
+      method: inspection
+      command: git diff base..head;read controller callers and actual command receipts
+      outcome: passed
+      evidence: [source-binding.json, review.md, 未运行新浏览器/全站strict/lint;strict86和lint配置缺口继续;审计/下载整HTTP成本未测]
+    - id: check.own-environment-cleanup-and-source-integrity
+      required: true
+      category: documentation
+      description: 自有容器/依赖软链清理，最终WT干净且主依赖保留
+      method: command
+      command: docker owned cleanup receipt;unlink owned symlink;git status;fingerprints
+      outcome: passed
+      evidence: [final_verified/cleanup.json, cleanup.json, source-binding.json, 运行唯一untracked为依赖软链;结束clean;所有执行完成]
+  findings: []
+  residualRisks:
+    - id: risk.existing-cost-not-optimized
+      description: 同请求重复比较和整数组SHA、附件ID逐项扫描保持，承接原PERF-DHR-REVIEW-REPEAT-001。
+      impact: 大附件/多并发可放大读取和分配；未提供生产SLA或容量认证。
+      mitigation: 等既定讨论/授权后最小优化，保留完整校验和批准锁内再核，不重复计新unique。
+    - id: risk.service-fixture-not-full-release
+      description: 原生服务/隔离canonicalPG和相邻H2/mock分列，没有真实浏览器到HTTP发布验收。
+      impact: 不认证全部HTTP/签署/多租户/生产启动与部署组合；新原生审批配置无签署事件。
+      mitigation: 明确本切片实际范围，其他矩阵按原台账继续。
+    - id: risk.audit-and-download-transitive-cost
+      description: 审计和附件下载控制器源码先detail，但本轮未执行其整HTTP/响应输出容量。
+      impact: 不能把详情19SQL/100MiB当作这些入口总成本。
+      mitigation: 列传递范围和后续检查，保留原任务/冻结成员资格。
+    - id: risk.global-audit-and-static-remain-open
+      description: 全W2-W7/已审A23复看/知识全语义、既有strict86/lint缺配置、两DHR high剩余/A12历史/高风险/多租户与用户暂停项不关闭。
+      impact: 本结果不是整体代码审计完成、存量净化、归档/放行或合规批准。
+      mitigation: 固定基线持续增量，保留原始未决和有限覆盖，不升级阶段或伪造分母。
+  blockingConditions: []

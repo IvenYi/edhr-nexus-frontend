@@ -1,0 +1,58 @@
+ontologyResult:
+  result: not-applicable
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: 72d3bac42a759ceb415f4592b67c903c0cdfa49d
+    targetBranch: edhr-dev
+    targetCommit: 7629506c6a067252e4f6a7b1e3f26b9f523d2489
+    contractReadCommit: 72d3bac42a759ceb415f4592b67c903c0cdfa49d
+    uncommittedContractPaths: []
+  reason: 本批仅为既有DHR冻结来源/附件比较和审批重复读取风险补原生PG取证与保护回归，产品、知识政策、权限、签署、锁、审计及历史不改。18项有限核对15一致、2原high证据缺口、1非MVP多租户待决保留；重复比较、整数组SHA和附件ID扫描是工程成本，不从规范反推必须重复两次，也不由取证授权实施优化。353知识字节不变，无新增语义需要同步。
+  changedArtifacts: []
+  knowledgeSync: []
+  conflicts: []
+  questions: []
+  validationEvidence:
+  - id: validation.dhr-impact-candidate-binding
+    checkType: evidence-path
+    command: Actual git fetch/rev-parse/show/diff and complete candidate bytes;376 inputs including353 knowledge
+    outcome: passed
+    evidence:
+    - candidate-binding.json
+    - candidate.diff
+    - candidate-source/
+  - id: validation.dhr-impact-finite-semantics
+    checkType: reference
+    command: Read versioned user-confirmed sources/DEC0063/0068/rules and exact source methods;finite18 manual review
+    outcome: passed
+    evidence:
+    - finite-review-records.json
+    - finite-review-summary.json
+    - REVIEW.md
+    - risk-deduplication.json
+  - id: validation.dhr-impact-structure-reuse
+    checkType: schema
+    command: REUSED_PR81_ORIGINAL_ACTUAL89;not executed Maven by this role;359 exact inputs match candidate/target
+    outcome: passed
+    evidence:
+    - knowledge-validation-reuse.json
+    - reused-pr81-main/knowledge/run.json
+    - reused-pr81-main/knowledge/test-summary.json
+  - id: validation.dhr-impact-projection-and-history
+    checkType: projection
+    command: Read mature/internal and exact deferred/historical boundaries;353 unchanged files,no policy replacement or stage
+      upgrade
+    outcome: passed
+    evidence:
+    - finite-review-records.json
+    - candidate-binding.json
+    - REVIEW.md
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages:
+    - P1
+    - P2
+    - P3

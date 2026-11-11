@@ -1,0 +1,290 @@
+{
+  "observedAt": "2026-11-11T03:42:22.792343+00:00",
+  "candidate": "72d3bac42a759ceb415f4592b67c903c0cdfa49d",
+  "target": "7629506c6a067252e4f6a7b1e3f26b9f523d2489",
+  "protectedInputsMatch": 49,
+  "knowledgeInputsMatch": 359,
+  "tests": {
+    "tests": 72,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "nativePostgres": 34,
+  "h2Supplemental": 30,
+  "mockUnit": 8,
+  "knowledge": {
+    "tests": 89,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "observations": 50,
+  "externalJfrVerified": 50,
+  "readStateComparisons": 29,
+  "readStateTablesEach": 11,
+  "serverSqlShapesAndReadCountsVerified": true,
+  "extraServerSelects": 1,
+  "performance": {
+    "impact_count_300_true": {
+      "selectStatements": 6,
+      "trackedLogicalReadBytes": 20400,
+      "trackedReadEvents": 600,
+      "threadAllocatedBytes": 1756400,
+      "elapsedNanos": 19139635,
+      "rejection": null
+    },
+    "impact_count_300_false": {
+      "selectStatements": 6,
+      "trackedLogicalReadBytes": 20400,
+      "trackedReadEvents": 600,
+      "threadAllocatedBytes": 1765136,
+      "elapsedNanos": 21768033,
+      "rejection": null
+    },
+    "impact_count_100_true": {
+      "selectStatements": 6,
+      "trackedLogicalReadBytes": 6800,
+      "trackedReadEvents": 200,
+      "threadAllocatedBytes": 644552,
+      "elapsedNanos": 8249586,
+      "rejection": null
+    },
+    "impact_count_100_false": {
+      "selectStatements": 6,
+      "trackedLogicalReadBytes": 6800,
+      "trackedReadEvents": 200,
+      "threadAllocatedBytes": 647240,
+      "elapsedNanos": 8766428,
+      "rejection": null
+    },
+    "impact_count_1_true": {
+      "selectStatements": 6,
+      "trackedLogicalReadBytes": 68,
+      "trackedReadEvents": 2,
+      "threadAllocatedBytes": 95928,
+      "elapsedNanos": 3572883,
+      "rejection": null
+    },
+    "impact_count_1_false": {
+      "selectStatements": 6,
+      "trackedLogicalReadBytes": 68,
+      "trackedReadEvents": 2,
+      "threadAllocatedBytes": 96112,
+      "elapsedNanos": 5830341,
+      "rejection": null
+    },
+    "impact_count_0_true": {
+      "selectStatements": 6,
+      "trackedLogicalReadBytes": 0,
+      "trackedReadEvents": 0,
+      "threadAllocatedBytes": 90424,
+      "elapsedNanos": 5867516,
+      "rejection": null
+    },
+    "impact_count_0_false": {
+      "selectStatements": 6,
+      "trackedLogicalReadBytes": 0,
+      "trackedReadEvents": 0,
+      "threadAllocatedBytes": 93824,
+      "elapsedNanos": 5900599,
+      "rejection": null
+    },
+    "impact_50mib_approve": {
+      "selectStatements": 29,
+      "trackedLogicalReadBytes": 52428800,
+      "trackedReadEvents": 2,
+      "threadAllocatedBytes": 53380752,
+      "elapsedNanos": 142881303,
+      "rejection": null
+    },
+    "impact_stale_approve": {
+      "selectStatements": 14,
+      "trackedLogicalReadBytes": 3,
+      "trackedReadEvents": 2,
+      "threadAllocatedBytes": 256664,
+      "elapsedNanos": 12321202,
+      "rejection": "DHR 冻结证据或来源范围发生变化，不能按过时证据批准；请退回整理"
+    },
+    "impact_50mib_review": {
+      "selectStatements": 19,
+      "trackedLogicalReadBytes": 104857600,
+      "trackedReadEvents": 4,
+      "threadAllocatedBytes": 105260400,
+      "elapsedNanos": 178484114,
+      "rejection": null
+    },
+    "impact_50mib_version": {
+      "selectStatements": 12,
+      "trackedLogicalReadBytes": 52428800,
+      "trackedReadEvents": 2,
+      "threadAllocatedBytes": 52742976,
+      "elapsedNanos": 106699767,
+      "rejection": null
+    },
+    "impact_change_source_changed_true": {
+      "selectStatements": 6,
+      "trackedLogicalReadBytes": 136,
+      "trackedReadEvents": 4,
+      "threadAllocatedBytes": 104736,
+      "elapsedNanos": 8310656,
+      "rejection": null
+    },
+    "impact_change_source_changed_false": {
+      "selectStatements": 6,
+      "trackedLogicalReadBytes": 136,
+      "trackedReadEvents": 4,
+      "threadAllocatedBytes": 104808,
+      "elapsedNanos": 6480653,
+      "rejection": null
+    },
+    "impact_change_outside_true": {
+      "selectStatements": 6,
+      "trackedLogicalReadBytes": 136,
+      "trackedReadEvents": 4,
+      "threadAllocatedBytes": 103432,
+      "elapsedNanos": 5427378,
+      "rejection": null
+    },
+    "impact_change_outside_false": {
+      "selectStatements": 6,
+      "trackedLogicalReadBytes": 136,
+      "trackedReadEvents": 4,
+      "threadAllocatedBytes": 102968,
+      "elapsedNanos": 6154269,
+      "rejection": null
+    },
+    "impact_change_metadata_true": {
+      "selectStatements": 6,
+      "trackedLogicalReadBytes": 68,
+      "trackedReadEvents": 2,
+      "threadAllocatedBytes": 102576,
+      "elapsedNanos": 7855866,
+      "rejection": null
+    },
+    "impact_change_metadata_false": {
+      "selectStatements": 6,
+      "trackedLogicalReadBytes": 68,
+      "trackedReadEvents": 2,
+      "threadAllocatedBytes": 101672,
+      "elapsedNanos": 5993557,
+      "rejection": null
+    },
+    "impact_change_unlinked_true": {
+      "selectStatements": 6,
+      "trackedLogicalReadBytes": 68,
+      "trackedReadEvents": 2,
+      "threadAllocatedBytes": 104040,
+      "elapsedNanos": 8082018,
+      "rejection": null
+    },
+    "impact_change_unlinked_false": {
+      "selectStatements": 6,
+      "trackedLogicalReadBytes": 68,
+      "trackedReadEvents": 2,
+      "threadAllocatedBytes": 103216,
+      "elapsedNanos": 6338697,
+      "rejection": null
+    },
+    "impact_change_new_true": {
+      "selectStatements": 6,
+      "trackedLogicalReadBytes": 136,
+      "trackedReadEvents": 4,
+      "threadAllocatedBytes": 107088,
+      "elapsedNanos": 6003804,
+      "rejection": null
+    },
+    "impact_change_new_false": {
+      "selectStatements": 6,
+      "trackedLogicalReadBytes": 136,
+      "trackedReadEvents": 4,
+      "threadAllocatedBytes": 106232,
+      "elapsedNanos": 5882506,
+      "rejection": null
+    },
+    "impact_change_pending_true": {
+      "selectStatements": 6,
+      "trackedLogicalReadBytes": 68,
+      "trackedReadEvents": 2,
+      "threadAllocatedBytes": 104344,
+      "elapsedNanos": 7235903,
+      "rejection": null
+    },
+    "impact_change_pending_false": {
+      "selectStatements": 6,
+      "trackedLogicalReadBytes": 68,
+      "trackedReadEvents": 2,
+      "threadAllocatedBytes": 105608,
+      "elapsedNanos": 6059818,
+      "rejection": null
+    },
+    "impact_change_missing_true": {
+      "selectStatements": 6,
+      "trackedLogicalReadBytes": 68,
+      "trackedReadEvents": 2,
+      "threadAllocatedBytes": 110080,
+      "elapsedNanos": 7194976,
+      "rejection": null
+    },
+    "impact_change_missing_false": {
+      "selectStatements": 6,
+      "trackedLogicalReadBytes": 68,
+      "trackedReadEvents": 2,
+      "threadAllocatedBytes": 108808,
+      "elapsedNanos": 6327719,
+      "rejection": null
+    },
+    "impact_change_tampered_true": {
+      "selectStatements": 6,
+      "trackedLogicalReadBytes": 71,
+      "trackedReadEvents": 4,
+      "threadAllocatedBytes": 113896,
+      "elapsedNanos": 10359004,
+      "rejection": null
+    },
+    "impact_change_tampered_false": {
+      "selectStatements": 6,
+      "trackedLogicalReadBytes": 71,
+      "trackedReadEvents": 4,
+      "threadAllocatedBytes": 386528,
+      "elapsedNanos": 7528404,
+      "rejection": null
+    },
+    "impact_denied_stale_hash": {
+      "selectStatements": 6,
+      "trackedLogicalReadBytes": 0,
+      "trackedReadEvents": 0,
+      "threadAllocatedBytes": 147672,
+      "elapsedNanos": 14447152,
+      "rejection": "审批版本已变化，请重新打开"
+    },
+    "impact_denied_approve": {
+      "selectStatements": 6,
+      "trackedLogicalReadBytes": 0,
+      "trackedReadEvents": 0,
+      "threadAllocatedBytes": 208264,
+      "elapsedNanos": 10400389,
+      "rejection": "当前用户不是审批处理人"
+    },
+    "impact_denied_detail": {
+      "selectStatements": 1,
+      "trackedLogicalReadBytes": 0,
+      "trackedReadEvents": 0,
+      "threadAllocatedBytes": 81176,
+      "elapsedNanos": 7355334,
+      "rejection": "无此 DHR 审批任务权限"
+    }
+  },
+  "riskIds": [
+    "PERF-DHR-REVIEW-REPEAT-001"
+  ],
+  "limits": [
+    "No product change or performance fix",
+    "Counters are cumulative operation-thread allocation/logical file reads,not peak/RSS/physical IO/SLA",
+    "Direct service plus native PG,not HTTP/browser/initial START/signed-native approval;explicit fixture button has no signing event",
+    "Existing H2 signed/return/concurrent approval regression remains supplemental",
+    "Controller audit/download first call heavy detail:source-only transfer scope,not measured end-to-end totals",
+    "Global strict86/lint config gap and whole audit remain open",
+    "Earlier focused16 uses earlier evidence-output test bytes;final72 binds final candidate;initial missing-runner-path ran zero tests"
+  ]
+}
