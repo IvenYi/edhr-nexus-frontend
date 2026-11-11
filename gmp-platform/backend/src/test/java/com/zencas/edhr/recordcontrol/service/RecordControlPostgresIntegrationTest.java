@@ -69,6 +69,7 @@ class RecordControlPostgresIntegrationTest {
     @Autowired PasswordEncoder passwords;
     @Autowired FormInstanceRecordService records;
     @Autowired RecordControlService requests;
+    @Autowired RecordControlDiff referenceDifferences;
     @Autowired com.zencas.edhr.workflow.contract.RecordControlWorkflowPort workflowCandidates;
     @Autowired com.zencas.edhr.workflow.service.WorkflowResponsibilityService responsibility;
     @Autowired com.zencas.edhr.workflow.service.WorkflowOperationsQuery operations;
@@ -1270,6 +1271,119 @@ class RecordControlPostgresIntegrationTest {
         assertThat(scalar("SELECT values_json FROM form_instance_record")).contains("old");
         assertThat(count("form_instance_revision")).isEqualTo(1);
         assertThat(scalar("SELECT state_json FROM production_execution")).contains("OBSOLETE");
+    }
+
+    private ObjectNode referenceContextForm(boolean row, boolean canvas) {
+        ObjectNode reference=mapper.createObjectNode().put("id","part").put("name","物料").put("type","reference");
+        var config=reference.putObject("typeConfig").put("sourceType","material").put("referenceField","name");
+        var conditions=mapper.createArrayNode().add(mapper.createObjectNode().put("sourceField","specification").put("operator","eq").put("targetFieldId","driver"));
+        if (!canvas) config.set("referenceQueryConditions",conditions);
+        var form=mapper.createObjectNode().put("id","context-form").put("versionId","111");
+        var fields=form.putArray("fields"); fields.addObject().put("id","value").put("type","text");
+        if (row) fields.addObject().put("id","rows").put("type","subTable").putObject("typeConfig").putArray("columns").add(reference);
+        else fields.add(reference);
+        fields.addObject().put("id","driver").put("name","规格").put("type","text");
+        if (canvas) {
+            var binding=form.putObject("canvas").putArray("nodes").addObject().putObject("bindings");
+            binding.put(row?"subTableFieldId":"fieldId","part"); if(row) binding.put("subTableId","rows");
+            binding.putObject("widgetConfig").set("referenceQueryConditions",conditions);
+        }
+        return form;
+    }
+
+    private ObjectNode referenceContextValues(boolean row, String driver, long material) {
+        var values=mapper.createObjectNode().put("value","old").put("driver",driver);
+        var selected=mapper.createObjectNode().put("id",Long.toString(material)).put("sourceType","material")
+                .put("code",material==501?"CTX-A":"CTX-B").put("name",material==501?"物料A":"物料B");
+        if (row) values.putArray("rows").addObject().put("__rowId","11111111-1111-4111-8111-111111111111").set("part",selected);
+        else values.set("part",selected);
+        return values;
+    }
+
+    private long completedReferenceSource(ObjectNode form,ObjectNode values) {
+        ((com.fasterxml.jackson.databind.node.ArrayNode)snapshot.path("operations").get(0).path("forms")).add(form);
+        var saved=mapper.createObjectNode().put("status","COMPLETED").put("savedAt","2026-11-10T10:00:00");saved.set("values",values);
+        ((ObjectNode)state.path("operations").path("op").path("forms")).set("context-form",saved);
+        jdbc.update("UPDATE production_execution SET snapshot_json=?,state_json=? WHERE object_id=109",snapshot.toString(),state.toString());
+        records.saved(109L,"default",snapshot,state,"op","context-form","context-form");
+        return jdbc.queryForObject("SELECT id FROM form_instance_record WHERE form_id='context-form'",Long.class);
+    }
+
+    private void contextMaterials() {
+        jdbc.update("INSERT INTO material(id,code,name,specification,status) VALUES(501,'CTX-A','物料A','A','ACTIVE'),(502,'CTX-B','物料B','B','ACTIVE')");
+    }
+
+    @ParameterizedTest @CsvSource({"false,false","false,true","true,false","true,true"})
+    void referenceProposalUsesCompleteFrozenContextRegardlessOfFieldOrder(boolean row,boolean canvas) {
+        contextMaterials(); var form=referenceContextForm(row,canvas);
+        var source=referenceDifferences.identifyRows(referenceContextValues(row,"A",501),form,"rev1");
+        var proposal=(ObjectNode)source.deepCopy();proposal.put("driver","B");
+        if(row)((ObjectNode)proposal.path("rows").get(0)).set("part",referenceContextValues(false,"B",502).path("part"));
+        else proposal.set("part",referenceContextValues(false,"B",502).path("part"));
+        var result=new java.util.concurrent.atomic.AtomicReference<RecordControlDiff.Proposal>();
+        assertThatCode(() -> result.set(referenceDifferences.prepare(form,source,proposal,"109"))).doesNotThrowAnyException();
+        assertThat(result.get().values().path("driver").asText()).isEqualTo("B");
+        assertThat(result.get().differences()).hasSize(2);
+        assertThat(source.path("driver").asText()).isEqualTo("A");
+    }
+
+    @ParameterizedTest @CsvSource({"false,false","false,true","true,false","true,true"})
+    void omittedReferenceCannotBypassChangedDependency(boolean row,boolean canvas) {
+        contextMaterials();var form=referenceContextForm(row,canvas);
+        var differences=referenceDifferences;
+        var source=differences.identifyRows(referenceContextValues(row,"A",501),form,"rev1");
+        assertThatThrownBy(() -> differences.prepare(form,source,mapper.createObjectNode().put("driver","B"),"109"))
+                .isInstanceOf(com.zencas.edhr.common.exception.BusinessException.class).hasMessageContaining("不符合查询条件");
+    }
+
+    @ParameterizedTest @org.junit.jupiter.params.provider.ValueSource(booleans={false,true})
+    void unchangedHistoricalReasonsKeepTheirOriginalRowIdentity(boolean row) {
+        long reason=ids.nextId();jdbc.update("INSERT INTO quality_reason(id,reason_type,code,name,status) VALUES(?,'SCRAP',?,'旧原因','INACTIVE')",reason,"CTX-"+reason);
+        var form=referenceContextForm(row,false);var field=row?form.path("fields").get(1).path("typeConfig").path("columns").get(0):form.path("fields").get(1);
+        ((ObjectNode)field).set("typeConfig",mapper.createObjectNode().put("sourceType","scrapReason"));
+        var selected=mapper.createObjectNode().put("id",Long.toString(reason)).put("name","旧原因").put("sourceType","scrapReason").put("code","CTX-"+reason);
+        var values=mapper.createObjectNode().put("value","old");
+        if(row){var rows=values.putArray("rows");rows.addObject().set("part",selected);rows.addObject();}
+        else values.set("part",selected);
+        var differences=referenceDifferences;var source=(ObjectNode)differences.identifyRows(values,form,"rev1");
+        var proposal=source.deepCopy().put("value","new");
+        if(row)proposal.set("rows",mapper.createArrayNode().add(source.path("rows").get(1)).add(source.path("rows").get(0)));
+        assertThatCode(() -> differences.prepare(form,source,proposal,"109")).doesNotThrowAnyException();
+    }
+
+    @Test void recordReferenceHttpUsesFrozenContextAndAllPersonnelPages() throws Exception {
+        contextMaterials();var form=referenceContextForm(false,true);form.withArray("fields").addObject().put("id","person").put("type","reference").putObject("typeConfig").put("sourceType","user");
+        long record=completedReferenceSource(form,referenceContextValues(false,"A",501));
+        String token=tokens.generateToken("41","ordinary-reader","普通读取",5,List.of());String url="/api/v1/record-control/records/"+record+"/references";
+        var query=mapper.createObjectNode().put("fieldId","part").put("keyword","").put("page",0).put("size",20);query.set("values",mapper.createObjectNode().put("driver","B"));
+        var selected=http("reference-context-query","POST",url,token,query,200).path("data");assertThat(selected).hasSize(1);assertThat(selected.get(0).path("id").asText()).isEqualTo("502");
+        var legacy=http("reference-context-legacy","GET",url+"?fieldId=part",token,null,200).path("data");assertThat(legacy).hasSize(1);assertThat(legacy.get(0).path("id").asText()).isEqualTo("501");
+        http("reference-context-anonymous","POST",url,null,query,401);
+        var malformed=query.deepCopy();malformed.remove("fieldId");http("reference-context-missing-field","POST",url,token,malformed,400);
+        malformed=query.deepCopy();malformed.set("values",mapper.createArrayNode());http("reference-context-invalid-values","POST",url,token,malformed,400);
+        malformed=query.deepCopy().put("fieldId","value");http("reference-context-wrong-field-type","POST",url,token,malformed,400);
+        jdbc.execute("INSERT INTO user_account(id,tenant_id,username,display_name,password_hash,status) SELECT 800000+i,0,'ctx-person-'||i,'人员'||lpad(i::text,3,'0'),'not-used','ACTIVE' FROM generate_series(1,150) i");
+        query.put("fieldId","person").put("size",100);query.set("values",mapper.createObjectNode());
+        var first=http("reference-people-first","POST",url,token,query,200).path("data");query.put("page",1);
+        var second=http("reference-people-second","POST",url,token,query,200).path("data");
+        assertThat(first).hasSize(101);assertThat(second).hasSize(52);
+        assertThat(second.findValuesAsText("id")).contains("800150");
+    }
+
+    @Test void referenceSubmissionRejectsStaleOmittedValueAndApprovesValidReplacement() throws Exception {
+        contextMaterials();var form=referenceContextForm(false,false);long record=completedReferenceSource(form,referenceContextValues(false,"A",501));
+        String number=jdbc.queryForObject("SELECT instance_no FROM form_instance_record WHERE id=?",String.class,record);
+        String revision=jdbc.queryForObject("SELECT current_revision_id FROM form_instance_record WHERE id=?",String.class,record);
+        var invalid=new RecordControlService.SubmitCommand(BusinessType.CHANGE,number,revision,mapper.createObjectNode().put("driver","B"),"实际变更","201","202","rc-applicant","test-signature-password",UUID.randomUUID().toString());
+        String token=tokens.generateToken("41","rc-applicant","申请人",5,List.of());String before=readCapacityDigest();
+        http("reference-invalid-submit","POST","/api/v1/record-control/requests",token,mapper.valueToTree(invalid),400);assertThat(readCapacityDigest()).isEqualTo(before);
+        var valid=new RecordControlService.SubmitCommand(BusinessType.CHANGE,number,revision,referenceContextValues(false,"B",502),"实际变更","201","202","rc-applicant","test-signature-password",UUID.randomUUID().toString());
+        http("reference-valid-submit","POST","/api/v1/record-control/requests",token,mapper.valueToTree(valid),200);
+        http("reference-valid-approve","POST","/api/v1/record-control/workflow-tasks/"+taskId()+"/APPROVE",token,
+                mapper.valueToTree(new RecordControlTaskActionService.TaskActionCommand("复核意见","rc-reviewer","test-signature-password")),200);
+        var history=requests.revisions(Long.toString(record));
+        assertThat(history.get(0).path("fieldValues").path("part").path("id").asText()).isEqualTo("502");
+        assertThat(history.get(1).path("fieldValues").path("part").path("id").asText()).isEqualTo("501");
     }
 
     @Test void returnedRequestLeavesSourceUnchangedAndAllowsANewApplication() {

@@ -1,0 +1,57 @@
+ontologyResult:
+  result: not-applicable
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: 8766a0f90cd2b34ff35e0a9a1bef719c5d997b00
+    targetBranch: edhr-dev
+    targetCommit: 3b961a032ad4a21b2fdbd62d34bb0e26fc9e0a0d
+    contractReadCommit: 8766a0f90cd2b34ff35e0a9a1bef719c5d997b00
+    uncommittedContractPaths: []
+  reason: 本批把记录自身冻结model/canvas配置、完整当前拟值、当前主/子表上下文、稳定修订行原值及分页参数接回现行共享规则；不改业务概念、授权、生命周期、签署、历史或人员完整性政策。省略可编辑非引用证据继续现有完整拟值校验没有新豁免，原不可修改顶字段skip保持。有限核对21项与现行规则一致，不为形式新增知识资产。
+  changedArtifacts: []
+  knowledgeSync: []
+  conflicts: []
+  questions: []
+  validationEvidence:
+  - id: validation.record-reference-context-source-binding
+    checkType: evidence-path
+    command: 实际git fetch/rev-parse/show/diff与候选全字节读取；见candidate-binding.json
+    outcome: passed
+    evidence:
+    - candidate-binding.json
+    - candidate.diff
+    - candidate-source/
+  - id: validation.record-reference-context-finite-semantics
+    checkType: reference
+    command: 人工逐原资产核对21项；记录自身冻结配置、共享叶子和生产执行相邻规则源码对照
+    outcome: passed
+    evidence:
+    - finite-review-records.json
+    - REVIEW.md
+    - candidate-source/
+  - id: validation.knowledge-structure-reuse-actual89
+    checkType: schema
+    command: 'REUSED_PR80_ORIGINAL_ACTUAL89: 原BusinessKnowledgeModelTest；本角色未运行Maven；359输入与候选/目标字节相同'
+    outcome: passed
+    evidence:
+    - knowledge-validation-reuse.json
+    - knowledge-inventory.json
+    - reused-pr80-main/knowledge/test-summary.json
+    - reused-pr80-main/knowledge/run.json
+  - id: validation.knowledge-projection-boundary
+    checkType: projection
+    command: 353知识资产字节未改；人工核对原成熟度、规划/当前/历史边界，不升级规则或阶段
+    outcome: passed
+    evidence:
+    - finite-review-records.json
+    - candidate-binding.json
+    - REVIEW.md
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages:
+    - P1
+    - P2
+    - P3

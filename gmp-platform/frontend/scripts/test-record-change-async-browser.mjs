@@ -14,7 +14,7 @@ const selected = process.env.RECORD_CHANGE_CASES?.split(',');
 const cases = ['lookup-success', 'lookup-error', 'lookup-loading', 'candidate-success', 'candidate-error',
   'candidate-source', 'candidate-empty', 'candidate-current-error', 'refresh-success', 'refresh-error',
   'discard-cancel', 'discard-confirm', 'ime', 'candidate-error-before-dialog', 'candidate-error-reopen',
-  'candidate-error-rechoose', 'submit-current-error'];
+  'candidate-error-rechoose', 'submit-current-error', 'reference-main', 'reference-row', 'reference-people', 'reference-error'];
 const results = [];
 let browser, server;
 
@@ -27,6 +27,21 @@ const source = number => ({ id: number, instance_no: number, object_id: 'object-
   active_request_id: null, active_request_no: null, active_request_type: null });
 const candidates = type => [{ workflowDefinitionId: 'definition-' + type, workflowVersionId: 'version-' + type,
   versionNumber: 1, templateName: type + '审批', businessType: type, status: 'PUBLISHED' }];
+const referenceSource = scenario => {
+  const record = source('FR-A');
+  const reference = { id: 'part', name: '材料', type: 'reference', status: 'enabled', typeConfig: { sourceType: 'material',
+    referenceQueryConditions: [{ sourceField: 'specification', operator: 'eq', targetFieldId: 'driver' }] } };
+  record.snapshot.fields.push({ id: 'driver', name: '规格', type: 'text', status: 'enabled', typeConfig: {} });
+  record.fieldValues.driver = 'A';
+  if (scenario === 'reference-row') {
+    record.snapshot.fields.push({ id: 'rows', name: '明细', type: 'subTable', status: 'enabled', typeConfig: { columns: [reference] } });
+    record.fieldValues.rows = [{ __rowId: '11111111-1111-4111-8111-111111111111', part: null }];
+  } else if (scenario === 'reference-people') {
+    record.snapshot.fields.push({ id: 'person', name: '检验员', type: 'reference', status: 'enabled', typeConfig: { sourceType: 'user' } });
+    record.fieldValues.person = null;
+  } else { record.snapshot.fields.push(reference); record.fieldValues.part = null; }
+  return record;
+};
 
 try {
   const app = await readFile(path.join(root, 'src/App.tsx'), 'utf8');
@@ -78,13 +93,30 @@ try {
     const page = await context.newPage(); page.setDefaultTimeout(5000);
     const calls = [], pending = [], writes = [], errors = [], nativeDialogs = [];
     let submitted = false;
+    let referenceRecovered = false;
     page.on('pageerror', error => errors.push(error.message));
     page.on('dialog', async dialog => { nativeDialogs.push(dialog.message()); await dialog.dismiss(); });
-    await context.route('**/api/v1/**', route => {
+    await context.route('**/api/v1/**', async route => {
       const request = route.request(), url = new URL(request.url());
       const call = { method: request.method(), path: url.pathname, number: url.searchParams.get('instanceNo'),
         type: url.searchParams.get('businessType') };
       calls.push(call);
+      if (call.path === '/api/v1/identity/departments/tree') return route.fulfill({ json: { code: 200, data: [] } });
+      if (call.path.endsWith('/references')) {
+        call.body = request.method() === 'POST' ? request.postDataJSON() : {};
+        const data = call.body;
+        if (scenario === 'reference-people') {
+          const people = Array.from({ length: 150 }, (_, i) => ({ id: String(800000 + i), name: `人员${String(i).padStart(3, '0')}`, displayName: `人员${String(i).padStart(3, '0')}`, username: `person${i}`, code: `person${i}`, sourceType: 'user' }));
+          const offset = (data.page ?? 0) * (data.size ?? 100);
+          return route.fulfill({ json: { code: 200, data: people.slice(offset, offset + (data.size ?? 100) + (request.method() === 'POST' ? 1 : 0)) } });
+        }
+        if (scenario === 'reference-error' && !referenceRecovered) {
+          referenceRecovered = true;
+          return route.fulfill({ status: 503, json: { code: 503, message: '合成引用读取失败', data: null } });
+        }
+        await new Promise(resolve => setTimeout(resolve, 150));
+        return route.fulfill({ json: { code: 200, data: data.values?.driver === 'B' ? [{ id: '502', name: '物料B', code: 'CTX-B', specification: 'B', sourceType: 'material' }] : [] } });
+      }
       if (call.method === 'POST' && call.path === '/api/v1/record-control/requests') {
         writes.push(request.postDataJSON());
         if (scenario === 'submit-current-error') return route.fulfill({ status: 503, json: { code: 503, data: null, message: '合成提交请求失败' } });
@@ -111,10 +143,10 @@ try {
       await (await response).finished();
       await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
     };
-    const lookup = async (number, complete = true) => {
+    const lookup = async (number, complete = true, fixture = source(number)) => {
       await input.fill(number); await input.press('Enter');
       const item = await waitPending('record', number);
-      if (complete) { await respond(item, source(number)); await page.getByText('合成表单 ' + number, { exact: true }).waitFor(); }
+      if (complete) { await respond(item, fixture); await page.getByText('合成表单 ' + number, { exact: true }).waitFor(); }
       return item;
     };
     const startMode = async type => {
@@ -147,7 +179,39 @@ try {
     };
     try {
       await page.goto(`http://127.0.0.1:${server.address().port}/`);
-      if (scenario.startsWith('lookup-')) {
+      if (scenario.startsWith('reference-')) {
+        await lookup('FR-A', true, referenceSource(scenario));
+        await respond(await startMode('CHANGE'), candidates('CHANGE'));
+        if (scenario === 'reference-people') {
+          await page.getByRole('button', { name: '选择检验员', exact: true }).click();
+          const modal = page.getByRole('dialog');
+          await modal.getByRole('textbox').first().fill('人员149');
+          await modal.getByText('人员149 · person149', { exact: true }).click();
+          const confirm = modal.getByRole('button', { name: /确定/ }); if (await confirm.count()) await confirm.click();
+          await modal.waitFor({ state: 'hidden' });
+          await page.locator('#root').getByText('人员149', { exact: true }).waitFor();
+          await assertEventually(() => calls.filter(c => c.path.endsWith('/references')).length >= 2, 'person selector must load later pages');
+          const references = calls.filter(c => c.path.endsWith('/references'));
+          assert.equal(references[0].method, 'POST'); assert.equal(references[0].body.page, 0);
+          assert.equal(references[1].body.page, 1); assert.equal(references[1].body.size, 100);
+        } else {
+          await page.getByRole('textbox', { name: '规格', exact: true }).fill('B');
+          await page.getByRole('button', { name: '选择材料', exact: true }).click();
+          const modal = page.getByRole('dialog', { name: '选择材料' });
+          if (scenario === 'reference-error') {
+            await modal.getByText('合成引用读取失败', { exact: true }).waitFor();
+            assert.equal(calls.filter(c => c.path.endsWith('/references')).length, 1, 'no automatic retry');
+            await modal.getByRole('button', { name: '重试', exact: true }).click();
+          }
+          await modal.getByText('物料B', { exact: true }).click();
+          const references = calls.filter(c => c.path.endsWith('/references'));
+          assert.ok(references.every(c => c.method === 'POST' && c.body.values.driver === 'B'));
+          assert.equal(references.at(-1).body.page, 0); assert.equal(references.at(-1).body.size, 20);
+          if (artifacts) await page.screenshot({ path: path.join(artifacts, `${scenario}-${width}-popup.png`), fullPage: true });
+          await modal.getByRole('button', { name: '确定', exact: true }).click();
+          await page.getByRole('button', { name: '物料B', exact: true }).waitFor();
+        }
+      } else if (scenario.startsWith('lookup-')) {
         const old = await lookup('FR-A', false), current = await lookup('FR-B', false);
         if (scenario === 'lookup-loading') {
           await respond(old, source('FR-A'));

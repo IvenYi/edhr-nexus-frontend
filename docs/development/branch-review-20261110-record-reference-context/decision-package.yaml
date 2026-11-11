@@ -1,0 +1,74 @@
+decisionPackage:
+  id: DEC-PACKAGE-RECORD-REFERENCE-CONTEXT-20261110
+  scope: W3/W5 record-control reference query and proposed-value validation;W6 robustness/A23 and W7 increment
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: 3b961a032ad4a21b2fdbd62d34bb0e26fc9e0a0d
+    targetBranch: edhr-dev
+    targetCommit: 3b961a032ad4a21b2fdbd62d34bb0e26fc9e0a0d
+    contractReadCommit: 3b961a032ad4a21b2fdbd62d34bb0e26fc9e0a0d
+    uncommittedContractPaths: []
+  summary: PR80真实合入整树同f17d2fc5，无额外产品/知识/契约。原生PG12项旧源2正10真失败/0E/S确认上下文和完整性问题：合法引用误拒、驱动值变更时省略引用可绕过、历史原因丢失previous、引用读取丢上下文/分页。本批修复既有冻结配置、真实取值和完整人员选择契约，不改业务政策/签署/历史或UI视觉。
+  confirmed: {concepts: [], relationships: [], rules: [], executionContracts: []}
+  inferred: []
+  unresolved: []
+  replacementScopes: []
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - area: frozen-reference-context
+        change: 拟值完整合并后按同一冻结model/canvas配置校验证据；原值传给共享叶子校验以保留合法历史原因，不按模型顺序或当前模板重建配置
+        evidenceReferences: [docs/knowledge/decisions/DEC-0087-record-control-v1-closure.yaml, docs/knowledge/decisions/DEC-0082-defect-reason-detail-and-reference-ownership.yaml, gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/FormReferenceLookup.java]
+    transitiveImpacts:
+      - area: selectors-and-rows
+        change: 记录变更页面转发共享引用控件的上下文/page/size，经认证POST只读查询；GET兼容沿已存值查询。子表主字段及当前行上下文正确，原修订行ID匹配previous，不用排序后下标猜历史身份
+        evidenceReferences: [gmp-platform/frontend/src/components/form-renderer/ReferencePickerDialog.tsx, gmp-platform/backend/src/main/java/com/zencas/edhr/recordcontrol/service/RecordControlDiff.java]
+    potentialImpacts:
+      - area: validation-scale
+        concern: 只复用完整上下文及行ID映射，不把整表逐行深复制/扫描为N平方；具体SQL规模/内存容量不由本次正确性测试宣称完成
+        evidenceReferences: []
+    unaffectedAreas:
+      - area: original-protection
+        change: 原不可修改字段约束、值类型规则、签名不继承、申请和审批真实签署、状态/锁/事务/审计/作废/历史、其他未答性能方案和暂停项保持
+        evidenceReferences: []
+    compatibilityAndMigration:
+      - area: interfaces-and-legacy
+        change: 原GET和响应字段保留，新增与生产入口相同的只读POST传值/分页；不改共享Lookup/ExecutionAccess标准、不更新存量申请或修订、不新增schema/索引
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/ProductionExecutionController.java]
+    snapshotImpacts:
+      - area: source-and-proposal
+        change: 只消费当前记录冻结snapshot；源值和模板deepCopy保持，原历史原因只在与原值完全相等的共享规则下保留，不默认接受新选失效原因
+        evidenceReferences: []
+    auditImpacts:
+      - area: atomic-rejection
+        change: 非法依赖关系提交在新签名/申请/流程写入前拒绝，PG前后摘要核对；合法修订经原审批生效且保留原历史
+        evidenceReferences: []
+    permissionImpacts:
+      - area: unchanged-authenticated-reads
+        change: 原当前租户认证读取保持，匿名拒绝；100是单批参数非总量上限，分页先应用原过滤，读取不授予签署/审批/菜单资格
+        evidenceReferences: [docs/knowledge/decisions/DEC-0095-qualified-personnel-selection-completeness.yaml]
+    testImpacts:
+      - scope: native-backend-and-browser
+        scenarios: [主引用和子表依赖主字段, model及canvas冻结配置, 引用在驱动字段之前, 省略引用不得绕过依赖, 历史原因及无原生ID旧行重排, 认证POST/兼容GET及匿名拒绝, 人员后页可达, 真实提交拒绝无写与批准历史, 浏览器主/子表和人员分页及错误恢复, 现有签名/异步/权限回归]
+        evidenceReferences: []
+    evidenceGaps: [合成fixture/MockMvc与浏览器API拦截分别报告，不冒称完整生产E2E, 全知识语义/strict86及lint缺配置/W2余项/W3-W5跨链/W6性能健壮性具体抽取及已审A23/W7/A12/高风险/完整矩阵/容量UNKNOWN/用户暂停继续, 原存量在审及历史签名未自动净化，实际库存未知]
+  extensionStrategy:
+    selectedPaths: [product-core]
+    rationale: 复用FormReferenceConfig/Lookup和ExecutionAccess叶子校验、共享ReferencePicker/SubjectSelector；RecordControlDiff继续拥有修订行身份，不新增通用规则层或第二套UI
+    ownershipBoundaries:
+      - {owner: record-control, responsibility: 拟值与原值上下文、修订行身份、只读候选API桥接}
+      - {owner: shared-reference, responsibility: 已有过滤/合法原因保留/分页与控件行为，规则不改}
+  affectedFiles:
+    - {path: gmp-platform/backend/src/main/java/com/zencas/edhr/recordcontrol/service/RecordControlDiff.java, changeType: update, reason: 完整拟值/冻结配置/原值及行身份校验}
+    - {path: gmp-platform/backend/src/main/java/com/zencas/edhr/recordcontrol/service/RecordControlService.java, changeType: update, reason: 引用查询上下文和分页}
+    - {path: gmp-platform/backend/src/main/java/com/zencas/edhr/recordcontrol/controller/RecordControlController.java, changeType: update, reason: 认证只读POST桥接且保留GET}
+    - {path: gmp-platform/frontend/src/api/record-control.ts, changeType: update, reason: 转发正文上下文及分页}
+    - {path: gmp-platform/frontend/src/pages/record-control/RecordChangePage.tsx, changeType: update, reason: 接通原共享控件参数}
+    - {path: gmp-platform/backend/src/test/java/com/zencas/edhr/recordcontrol/service/RecordControlPostgresIntegrationTest.java, changeType: update, reason: 原生PG回归与旧源反证}
+    - {path: gmp-platform/frontend/scripts/test-record-change-async-browser.mjs, changeType: update, reason: 实际页面/共享引用控件的上下文、后页和错误恢复}
+  acceptanceScenarios:
+    - id: scenario.record-reference-context-consistency
+      given: 同一冻结引用规则和主/子表当前拟值，目录有超过100个符合条件人员
+      when: 查询并选择候选或确认变更
+      then: 全部候选可分页到达，合法值通过而不匹配值即使省略字段也拒绝，原历史/签名/权限/事务规则保持
+      evidenceRequirements: [同字节旧源反证, PG实际XML/HTTP/原件及无写, 实际浏览器成功/异常/后页/窄屏, 本体和全新独立质量, 全部FINAL后实际PR前漂移/阶段复核]

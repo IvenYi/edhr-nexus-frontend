@@ -52,6 +52,13 @@ public class RecordControlController {
         return ApiResponse.success(service.revisions(recordId));
     }
 
+    public record ReferenceQuery(String fieldId, String keyword, com.fasterxml.jackson.databind.JsonNode values, Integer page, Integer size) {}
+
+    @PostMapping("/records/{recordId}/references")
+    public ApiResponse<List<Map<String, String>>> references(@PathVariable String recordId, @RequestBody ReferenceQuery query) {
+        return ApiResponse.success(service.references(recordId, query.fieldId(), query.keyword(), query.values(), query.page(), query.size()));
+    }
+
     @PostMapping("/requests")
     public ApiResponse<ObjectNode> submit(@RequestBody RecordControlService.SubmitCommand command) {
         return ApiResponse.success(service.submit(command));

@@ -1,0 +1,109 @@
+{
+  "observedAt": "2026-11-10T14:30:18.155300+00:00",
+  "target": "3b961a032ad4a21b2fdbd62d34bb0e26fc9e0a0d",
+  "testedCandidate": "8766a0f90cd2b34ff35e0a9a1bef719c5d997b00",
+  "protectedInputsMatch": 46,
+  "mainTests": {
+    "tests": 158,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "nativePostgres": 99,
+  "otherTestsIncluding15H2": 59,
+  "oldFinalSameNativeBytes": {
+    "tests": 12,
+    "passed": 2,
+    "failures": 10,
+    "errors": 0,
+    "skipped": 0
+  },
+  "httpChecks": {
+    "focused_old_final": {
+      "referenceHttpCases": 2,
+      "invalidSubmitStatus": 200
+    },
+    "final": {
+      "referenceHttpCases": 11,
+      "invalidSubmitStatus": 400
+    }
+  },
+  "browser": {
+    "current": {
+      "tests": 42,
+      "passed": 42
+    },
+    "oldSameFinalHarness": {
+      "tests": 8,
+      "failed": 8
+    },
+    "qualification": "Actual page/shared selectors/client with synthetic intercepted API,not live backend E2E",
+    "oldVerifiedReceipt": {
+      "tests": 8,
+      "failed": 8,
+      "preExecutionInputs": 5,
+      "preAndPostHashesMatch": true,
+      "qualification": "Main actual rerun with pre-execution source receipt;QA read-only checked it,not an independent old-browser rerun"
+    }
+  },
+  "knowledgeActual": {
+    "tests": 89,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "staticDelta": {
+    "baselineSummary": {
+      "errors": 28,
+      "total": 28,
+      "unresolved": 14,
+      "violations": 14,
+      "warnings": 0
+    },
+    "candidateSummary": {
+      "errors": 28,
+      "total": 28,
+      "unresolved": 14,
+      "violations": 14,
+      "warnings": 0
+    },
+    "newIdentities": [],
+    "removedIdentities": [],
+    "identity": "file/ruleId/severity/category/message multiset;raw line locators retained in both reports",
+    "scope": "Existing strict findings remain open;not claimed green"
+  },
+  "staticExitCodes": {
+    "premium-base": 2,
+    "premium-current": 2,
+    "lint": 2,
+    "build": 0,
+    "list": 0,
+    "fonts": 0
+  },
+  "limitations": [
+    "Only newly prepared requests;preexisting signed IN_REVIEW/old revisions not repaired or certified clean",
+    "Legacy GET has saved main values,does not infer a current subtable row",
+    "Initial2 fixture errors and browser syntax/department/locator calibration retained;not product reds",
+    "Earlier focused_new_valid has different native bytes;only final158 covers final candidate",
+    "Global strict/lint remain open;no whole-knowledge semantic or production capacity completion"
+  ],
+  "repositoryStrictDelta": {
+    "baselineSummary": {
+      "errors": 86,
+      "total": 86,
+      "unresolved": 14,
+      "violations": 72,
+      "warnings": 0
+    },
+    "candidateSummary": {
+      "errors": 86,
+      "total": 86,
+      "unresolved": 14,
+      "violations": 72,
+      "warnings": 0
+    },
+    "added": [],
+    "removed": [],
+    "qualification": "Repository root scan;keep separate from frontend-only28;raw locators preserved"
+  }
+}
