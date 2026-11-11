@@ -252,10 +252,14 @@ class DhrSummaryAttachmentObservationPostgresTest {
         var detail = observe("impact_50mib_review", Map.of("entry", "reviewDetail", "fileBytes", 50 * 1024 * 1024), null, () -> reviews.detail(task));
         assertThat(versionRead.path("evidenceChanges")).isEmpty(); assertThat(detail.path("evidenceChanges")).isEmpty();
         assertThat(detail.path("canAct").asBoolean()).isTrue();
+        ObjectNode versionPart = detail.deepCopy(); versionPart.remove(List.of("task", "buttons", "canAct"));
+        assertThat(versionPart).isEqualTo(versionRead);
         assertReadState("impact_50mib_read", before);
         for (String name : List.of("impact_50mib_version", "impact_50mib_review")) {
             var data = mapper.readTree(Files.readString(output().resolve(name + ".json")));
-            assertThat(data.path("trackedLogicalReadBytes").asLong()).isGreaterThanOrEqualTo(50L * 1024 * 1024);
+            assertThat(data.path("trackedLogicalReadBytes").asLong()).isEqualTo(50L * 1024 * 1024);
+            assertThat(data.path("threadAllocatedBytes").asLong()).isLessThan(25L * 1024 * 1024);
+            assertThat(data.path("selectStatements").asInt()).isEqualTo(name.endsWith("version") ? 12 : 13);
         }
         // Approval uses its own locked comparison; a read response never authorizes stale evidence.
         Files.copy(originals.get(1000L), directory.resolve("replacement.png"));
@@ -267,11 +271,44 @@ class DhrSummaryAttachmentObservationPostgresTest {
         Files.copy(directory.resolve("replacement.png"), originals.get(1000L), StandardCopyOption.REPLACE_EXISTING);
         var approved = observe("impact_50mib_approve", Map.of("entry", "approve", "originalRestored", true), null, () -> reviews.act(task, command));
         assertThat(approved.path("outcome").asText()).isEqualTo("APPROVED");
+        var approvalRead = mapper.readTree(Files.readString(output().resolve("impact_50mib_approve.json")));
+        assertThat(approvalRead.path("trackedLogicalReadBytes").asLong()).isEqualTo(50L * 1024 * 1024);
+        assertThat(approvalRead.path("threadAllocatedBytes").asLong()).isLessThan(25L * 1024 * 1024);
+        assertThat(approvalRead.path("selectStatements").asInt()).isEqualTo(29);
         assertThat(jdbc.queryForObject("SELECT status FROM workflow_task WHERE id=?", String.class, task)).isEqualTo("COMPLETED");
         assertThat(jdbc.queryForObject("SELECT attachment_snapshot::text FROM dhr_summary_version WHERE id=?", String.class, version))
                 .isEqualTo(frozenAttachments);
         write("impact-frozen-review.json", Map.of("submitted", submitted, "taskId", task, "configuredSignatureRequired", false,
                 "frozenAttachmentsBefore", mapper.readTree(frozenAttachments), "frozenAttachmentsAfter", mapper.readTree(jdbc.queryForObject("SELECT attachment_snapshot::text FROM dhr_summary_version WHERE id=?", String.class, version)), "approved", approved));
+    }
+
+    @ParameterizedTest @ValueSource(ints = {8191, 8192, 32768})
+    void streamedDigestReadsChangedBytesAcrossBufferBoundaries(int offset) throws Exception {
+        seedAttachments(1, 32769); long version = summaries.submit(1L, saveDraft()).path("id").asLong();
+        try (var file = java.nio.channels.FileChannel.open(originals.get(1000L), StandardOpenOption.WRITE)) {
+            file.position(offset); assertThat(file.write(java.nio.ByteBuffer.wrap(new byte[]{1}))).isEqualTo(1);
+        }
+        var before = contentDigests();
+        for (boolean lock : new boolean[]{false, true}) {
+            String name = "impact_boundary_" + offset + "_" + lock;
+            var result = observe(name, Map.of("offset", offset, "fileBytes", 32769, "lock", lock), null,
+                    () -> mapper.createObjectNode().set("evidenceChanges", impacts.changes(version, lock)));
+            assertThat(result.path("evidenceChanges")).hasSize(1);
+            assertThat(result.at("/evidenceChanges/0/attachmentId").asText()).isEqualTo("1000");
+            assertThat(mapper.readTree(Files.readString(output().resolve(name + ".json"))).path("trackedLogicalReadBytes").asLong()).isEqualTo(32769);
+            assertReadState(name, before);
+        }
+    }
+
+    @Test void reviewDetailsRecheckOriginalsOnEveryRequest() throws Exception {
+        seedReview(); seedAttachments(1, 0); summaries.submit(1L, saveDraft());
+        long task = jdbc.queryForObject("SELECT id FROM workflow_task", Long.class); var before = contentDigests();
+        assertThat(observe("impact_uncached_first", Map.of("request", 1), null, () -> reviews.detail(task)).path("evidenceChanges")).isEmpty();
+        Files.write(originals.get(1000L), new byte[]{1, 2, 3});
+        var second = observe("impact_uncached_second", Map.of("request", 2, "originalChanged", true), null, () -> reviews.detail(task));
+        assertThat(second.path("evidenceChanges")).hasSize(1);
+        assertThat(second.at("/evidenceChanges/0/attachmentId").asText()).isEqualTo("1000");
+        assertReadState("impact_uncached_details", before);
     }
 
     @ParameterizedTest @ValueSource(strings = {"detail", "approve", "stale_hash"})
