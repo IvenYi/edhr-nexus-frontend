@@ -1,0 +1,195 @@
+qualityResult:
+  result: passed
+  baseCommit: fb68cf02b707052eb6f5bfb85192ed711fba5e30
+  headCommit: 6e878e496189c2fdd765f9ea71b5264a3e181709
+  contractBaseline:
+    sourceCommit: 6e878e496189c2fdd765f9ea71b5264a3e181709
+    targetBranch: edhr-dev
+    targetCommit: fb68cf02b707052eb6f5bfb85192ed711fba5e30
+    contractReadCommit: 6e878e496189c2fdd765f9ea71b5264a3e181709
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: dirty
+    includedPaths: []
+    excludedPaths:
+    - gmp-platform/frontend/node_modules
+    untrackedPaths:
+    - gmp-platform/frontend/node_modules
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+  - id: check.contract-and-fixed-candidate
+    required: true
+    category: documentation
+    description: 独立fetch目标、读取6e契约/DP和准确提交范围
+    method: inspection
+    command: git fetch;git diff fb68cf02 6e878e49
+    outcome: passed
+    evidence:
+    - role-inputs.json
+    - diff.patch
+  - id: check.authorization-and-l2-scope
+    required: true
+    category: requirements
+    description: 本轮用户明确两项一起优化，范围与DP和产品差异一致
+    method: inspection
+    command: read DP,user-confirmed reply and actual diff
+    outcome: passed
+    evidence:
+    - read-inputs/docs/development/branch-review-20261112-w2-form-values/decision-package.yaml
+    - diff.patch
+  - id: check.minimum-product-boundary
+    required: true
+    category: regression
+    description: 仅一个产品文件及维护测试/DP，无UI/API/schema/契约/知识差异
+    method: command
+    command: git diff --name-only fb68cf02 6e878e49
+    outcome: passed
+    evidence:
+    - independent-recheck.json
+  - id: check.new-domain-and-h2-boundaries
+    required: true
+    category: integration
+    description: 新增11项真实引擎/ExecutionAccess及自有H2夹具通过
+    method: automated-test
+    command: run.py final
+    outcome: passed
+    evidence:
+    - final/TEST-com.zencas.edhr.production.service.ProductionFormValueBoundaryTest.xml
+  - id: check.draft-json-final-completion
+    required: true
+    category: unit
+    description: 草稿、JSON重读、空/零/省略、行ID及最终完成边界保持
+    method: automated-test
+    command: ProductionFormValueBoundaryTest#draftJsonRoundTripPreservesClearsZeroAndRowIdentityUntilFinalCompletion
+    outcome: passed
+    evidence:
+    - final/TEST-com.zencas.edhr.production.service.ProductionFormValueBoundaryTest.xml
+  - id: check.per-occurrence-file-validation
+    required: true
+    category: security
+    description: 元数据复用仍逐处拒绝伪造名、外对象，多个文件各自核对
+    method: automated-test
+    command: ProductionFormValueBoundaryTest file-boundary methods
+    outcome: passed
+    evidence:
+    - final/TEST-com.zencas.edhr.production.service.ProductionFormValueBoundaryTest.xml
+    - diff.patch
+  - id: check.independent-call-freshness
+    required: true
+    category: database
+    description: 每公开校验调用新Map，删除后重新查询，DB异常继续传播
+    method: automated-test
+    command: ProductionFormValueBoundaryTest metadata/failure methods
+    outcome: passed
+    evidence:
+    - final/TEST-com.zencas.edhr.production.service.ProductionFormValueBoundaryTest.xml
+  - id: check.read-only-context-semantics
+    required: true
+    category: regression
+    description: 浅层root+row容器与递归只读子图保留上下文及原输入
+    method: inspection
+    command: inspect ExecutionAccess/FormReferenceLookup plus executed context regressions
+    outcome: passed
+    evidence:
+    - diff.patch
+    - final/TEST-com.zencas.edhr.production.controller.ProductionExecutionIntegrationTest.xml
+    - final/TEST-com.zencas.edhr.production.service.ProductionFormValueBoundaryTest.xml
+  - id: check.full-selected-regression
+    required: true
+    category: regression
+    description: 实际11类208总，205通过0F/E，精确3项原条件未执行
+    method: automated-test
+    command: run.py final
+    outcome: passed
+    evidence:
+    - final/run.json
+    - final/test-summary.json
+  - id: check.signature-permission-audit-adjacency
+    required: true
+    category: audit
+    description: 原JWT/MockMvc、H2资格/签署/审计/回滚相邻回归通过，未冒称全E2E
+    method: automated-test
+    command: run.py final selected existing suites
+    outcome: passed
+    evidence:
+    - final/TEST-com.zencas.edhr.production.controller.ProductionExecutionIntegrationTest.xml
+    - final/TEST-com.zencas.edhr.production.service.ExecutionAccessTest.xml
+    - final/TEST-com.zencas.edhr.production.service.ProductionExecutionEngineTest.xml
+  - id: check.query-and-memory-budgets
+    required: true
+    category: database
+    description: 7观察真实查询及参数重算；300行低于16MiB，文件每校验树1查询
+    method: command
+    command: python recheck.py
+    outcome: passed
+    evidence:
+    - independent-recheck.json
+    - final/observations
+  - id: check.old-same-test-byte-negative
+    required: true
+    category: regression
+    description: 核主侧旧同最终测试11原件5P6F0E/S，真实资源/查询红，非亲自运行旧源
+    method: inspection
+    command: read primary old_same_tests run,source and XML;verify test SHA
+    outcome: passed
+    evidence:
+    - observed-primary-negative
+    - independent-recheck.json
+  - id: check.formal-knowledge-89
+    required: true
+    category: ontology
+    description: 本实例实际89知识检查通过、359输入匹配6e
+    method: automated-test
+    command: python knowledge-run.py
+    outcome: passed
+    evidence:
+    - knowledge/run.json
+    - knowledge/test-summary.json
+    - independent-recheck.json
+  - id: check.finite-semantic-boundary
+    required: true
+    category: ontology
+    description: 知识353/2849未改，21有限记录16一致/1gap/4待决，不宣称全库一致
+    method: inspection
+    command: read actual selected policies/open questions and finite records
+    outcome: passed
+    evidence:
+    - knowledge-semantic-review.json
+    - finite-ontology-records-observed.jsonl
+  - id: check.a23-and-extraction-boundary
+    required: true
+    category: requirements
+    description: 删除无必要整图复制但保留有依据的安全核对；局部重载无新框架，原行扫描不顺带改
+    method: inspection
+    command: inspect ExecutionAccess and unchanged command/transaction owners
+    outcome: passed
+    evidence:
+    - review.md
+    - diff.patch
+  - id: check.environment-and-evidence-truthfulness
+    required: true
+    category: documentation
+    description: 独立运行仅依赖软链未跟踪且已清，3条件未执行/H2/局部累计指标如实列明
+    method: command
+    command: git status --porcelain;inspect fresh run metadata/cleanup
+    outcome: passed
+    evidence:
+    - dependency-cleanup.json
+    - final/run.json
+    - knowledge/run.json
+    - review.md
+  findings: []
+  residualRisks:
+  - id: risk.unchanged-three-conditional-cases
+    description: 两个长驻浏览器fixture及仅PG的START配置争用未执行，不计通过。
+    impact: 当前不证明这些可选场景；原断言和条件未改。
+    mitigation: 按实际新增风险/全链阶段提供相应环境，当前205通过与89知识分列。
+  - id: risk.h2-and-local-allocation
+    description: 领域/H2和部分JWT MockMvc，非原生PG或浏览器全E2E；累计线程分配及H2查询有记录开销。
+    impact: 不是生产峰值/RSS/全SAVE耗时/SLA或PG索引证据。
+    mitigation: 仅按当前公开字段校验树及样本报告；生产容量另取证。
+  - id: risk.remaining-overall-audit
+    description: W2其他入口/W3-W7/A23补查、另一通用质量high/A12/完整权限及UI/多租户和既有strict/lint边界保持。
+    impact: 本批通过不代表整体审计或知识全盘一致。
+    mitigation: 持续按固定提交与具体方法/ID台账推进，原暂停/未决不自动解决。
+  blockingConditions: []

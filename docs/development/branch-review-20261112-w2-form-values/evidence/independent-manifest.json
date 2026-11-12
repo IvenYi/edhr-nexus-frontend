@@ -1,0 +1,455 @@
+{
+  "package": "independent",
+  "files": [
+    {
+      "path": "SHA256SUMS",
+      "bytes": 11615,
+      "sha256": "d0324d2f91e8d9fbf3b2cd1b90c13fc56e9f920f7b9697f38d421465bdf188ff"
+    },
+    {
+      "path": "dependency-cleanup.json",
+      "bytes": 269,
+      "sha256": "b689eaf0811e1b66752a5cdf651c8a0a9772b5125cc57555b9cc69d16a695cd4"
+    },
+    {
+      "path": "diff.patch",
+      "bytes": 23019,
+      "sha256": "cd93dc3ec790b31f25a779c5444fc0c94c8d3d8db6348c00db34a3efb6270be0"
+    },
+    {
+      "path": "final/TEST-com.zencas.edhr.production.controller.ProductionExecutionIntegrationTest.xml",
+      "bytes": 5215362,
+      "sha256": "2d43ffa1bd6e11e8384a322e19f9def7727765f6dfa3266306bdacd0af272963"
+    },
+    {
+      "path": "final/TEST-com.zencas.edhr.production.service.ExecutionAccessTest.xml",
+      "bytes": 34768,
+      "sha256": "a6e1e95e13f3cd1e5f8500a606e704c54f0ce87d542dc2fb3475c4af582a3d6a"
+    },
+    {
+      "path": "final/TEST-com.zencas.edhr.production.service.FormInstanceRecordStageTest.xml",
+      "bytes": 32937,
+      "sha256": "9eed902cf9f8563e5d5aad97243f0a423aa9fcde7cb552087312599b9a7c8abd"
+    },
+    {
+      "path": "final/TEST-com.zencas.edhr.production.service.FormTraceIndexServiceTest.xml",
+      "bytes": 33430,
+      "sha256": "f9ba64d9ca4502b10c79e6034e8a42edd9b522e0c10bee26f4611c915d75bff6"
+    },
+    {
+      "path": "final/TEST-com.zencas.edhr.production.service.ProductionExecutionEngineTest.xml",
+      "bytes": 36264,
+      "sha256": "b8083a24551b7c8905b8e436c0448b4707e61cb993dd3ee87d34aa598d77fdcd"
+    },
+    {
+      "path": "final/TEST-com.zencas.edhr.production.service.ProductionExecutionFormValuesTest.xml",
+      "bytes": 34028,
+      "sha256": "1f1cea8374c8b3bdc729ac4b3eff101680ed6154e9d4256c93bce6ac8d417f75"
+    },
+    {
+      "path": "final/TEST-com.zencas.edhr.production.service.ProductionFormValueBoundaryTest.xml",
+      "bytes": 34514,
+      "sha256": "9cf7a9f8b037ddad9bc0e6c4583bf0aa0789315795972004057b98264aad5278"
+    },
+    {
+      "path": "final/TEST-com.zencas.edhr.production.service.ReferenceContextInitializationTest.xml",
+      "bytes": 34435,
+      "sha256": "16a757715dba1c69b5ba4445fc92a6481672a4de2ba4f0b61ef503a2dc3da102"
+    },
+    {
+      "path": "final/TEST-com.zencas.edhr.template.service.FormProjectionInterpreterTest.xml",
+      "bytes": 36752,
+      "sha256": "c009f9416b5860939ac2cfa3c52a9da78daf28f096157044c851398af7625493"
+    },
+    {
+      "path": "final/TEST-com.zencas.edhr.template.service.FormReferenceConfigTest.xml",
+      "bytes": 33963,
+      "sha256": "35d9d1d1cf29ff5f6d926ad39bd933c5ebafc6efb27c7aff5f1d38d45202f31c"
+    },
+    {
+      "path": "final/TEST-com.zencas.edhr.template.service.FormReferenceLookupTest.xml",
+      "bytes": 35242,
+      "sha256": "f8130323ecfb1860e23bb372e893784348988ba95d7c2b6e6a7deec6619060c0"
+    },
+    {
+      "path": "final/maven.log",
+      "bytes": 5166795,
+      "sha256": "e27ffe37cd65eabfcf8e22d6cb1bb8351fd6ccc324fe7399a42d7e18b1d0d8a2"
+    },
+    {
+      "path": "final/observations/rows-0-files-false.json",
+      "bytes": 247,
+      "sha256": "86a5c55856755e60b0361f5a340cc15af3ba82dc6b01cf213f86fbb8a97a6509"
+    },
+    {
+      "path": "final/observations/rows-10-files-false.json",
+      "bytes": 254,
+      "sha256": "c0d8b1a228928452ee9db4fc8753f52806f1f48271b009b6be5dcde4fdb9e1b9"
+    },
+    {
+      "path": "final/observations/rows-10-files-true.json",
+      "bytes": 411,
+      "sha256": "a199c04478409320420d5d4680138913893f7a8ea300763ceb64a71a382c4e85"
+    },
+    {
+      "path": "final/observations/rows-100-files-false.json",
+      "bytes": 258,
+      "sha256": "9417f9125b175801943757104e39d89bb55edc9399a5389d22949734c9ccd7a9"
+    },
+    {
+      "path": "final/observations/rows-100-files-true.json",
+      "bytes": 414,
+      "sha256": "bd0c464912c28ac6a7e0f2f1283a01643788ee946425c7bdde0965f3513ce4fc"
+    },
+    {
+      "path": "final/observations/rows-300-files-false.json",
+      "bytes": 259,
+      "sha256": "b4af02c08571dea62ddc7321de6241204369279d9b2cb6b0a736d517bf4e460a"
+    },
+    {
+      "path": "final/observations/rows-300-files-true.json",
+      "bytes": 415,
+      "sha256": "488f84ad5c5f909456ddb5d18c36c942029abbfcf3de5ba8a68a0a032260ae8c"
+    },
+    {
+      "path": "final/run.json",
+      "bytes": 8602,
+      "sha256": "aba2e6b2459c4fea3552ab6036a6a9874bea5102ca9c531b4b0c789ad1f7b1dd"
+    },
+    {
+      "path": "final/runner-source.py",
+      "bytes": 5246,
+      "sha256": "489cd4b264dcc857a91a7ca1d5beb1e4da168037f0f942b295168771c743323e"
+    },
+    {
+      "path": "final/source/AGENTS.md",
+      "bytes": 25065,
+      "sha256": "13dc7cdacea0b1bb0aef2abb268781f9c69584acd4879b204d2b7fd81a2927fc"
+    },
+    {
+      "path": "final/source/codeplzreadme.md",
+      "bytes": 3035,
+      "sha256": "7a1be8efffec596b034335058dca2860346d256622f899c8dac97c5172dd6df2"
+    },
+    {
+      "path": "final/source/docs/agents/agent-handoff-contract.md",
+      "bytes": 31233,
+      "sha256": "3439a35dd1baa77ac723f1b5afa237a338d56e31386f06b02b4aacfd754e3a12"
+    },
+    {
+      "path": "final/source/docs/agents/business-knowledge-modeler.md",
+      "bytes": 15881,
+      "sha256": "9806c900f98e1cbcf4f8d68a998a07a5449369df037183c75ec08cd666bf56ae"
+    },
+    {
+      "path": "final/source/docs/agents/quality-verifier.md",
+      "bytes": 7519,
+      "sha256": "6b3de9323924fb4ba5ae87be76c5136d28e754810c46b22b8e3d1cdd6c2f826f"
+    },
+    {
+      "path": "final/source/docs/development/branch-review-20261112-w2-form-values/decision-package.yaml",
+      "bytes": 6066,
+      "sha256": "4b646a9936d6184fea72d34c52428e26e3721a0ab6721a8bd75bc232aa4cdd56"
+    },
+    {
+      "path": "final/source/docs/knowledge/README.md",
+      "bytes": 115320,
+      "sha256": "507fb473f847ed470324238561be4c62f66053c6a5c5815bbc3978a47c348155"
+    },
+    {
+      "path": "final/source/docs/knowledge/decisions/DEC-0067-form-fill-settings.yaml",
+      "bytes": 6663,
+      "sha256": "2dd74904c246ba98b87134d9b36b455776b86028bcdb46b5e0b8f7dd2273276d"
+    },
+    {
+      "path": "final/source/docs/knowledge/decisions/DEC-0074-shared-terminal-button-signature.yaml",
+      "bytes": 7527,
+      "sha256": "09d6cb083c1350f3c64a2abb8583ca9a4eb1a7b3a837cdd67b9f6dc28d9e2d3f"
+    },
+    {
+      "path": "final/source/docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml",
+      "bytes": 74784,
+      "sha256": "324f5e292a5bcc1f7acd80066443af690045dab8fb6c78492e8b6c19ce577d2a"
+    },
+    {
+      "path": "final/source/docs/knowledge/decisions/DEC-0080-shared-choice-field-options.yaml",
+      "bytes": 3431,
+      "sha256": "9b61e114aadf7948d86baa704aae94325449fe6cca0dd825c5b921a22814bd08"
+    },
+    {
+      "path": "final/source/docs/knowledge/open-questions.yaml",
+      "bytes": 22420,
+      "sha256": "c7b3bdecd1a6ac164d95ff515b5412998a556a07e9b5fcb64b3643473aa6e2bf"
+    },
+    {
+      "path": "final/source/gmp-platform/backend/pom.xml",
+      "bytes": 8805,
+      "sha256": "b98fcc84b57f57f1a8a7fd01ed2e7ab66a0c32c15c62980646a13d378a5669e5"
+    },
+    {
+      "path": "final/source/gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionAccess.java",
+      "bytes": 20364,
+      "sha256": "7408f94f65221332ee4cad6f29fc0ceb5faff0c42bdb09192ee3dac9b5a18d6b"
+    },
+    {
+      "path": "final/source/gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionSnapshotBuilder.java",
+      "bytes": 19013,
+      "sha256": "b7609b7a75fb3ea62388cb8d49ac248fec51b2855aaed045e75d95d984092b21"
+    },
+    {
+      "path": "final/source/gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormInstanceRecordService.java",
+      "bytes": 12427,
+      "sha256": "4b8a5891b5b5a2d09972dc870e89fd7e791665cef1b5fc499efb83449dc910a4"
+    },
+    {
+      "path": "final/source/gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormProjectionService.java",
+      "bytes": 5265,
+      "sha256": "b2bab3dc76dfbd3df4928ffdb7c962048e8b4a0517ec696cd64a1e7171eed88e"
+    },
+    {
+      "path": "final/source/gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormTraceIndexService.java",
+      "bytes": 14923,
+      "sha256": "854302280036e7ae81b50f80a765c609948927fb1cf124613c5d51cfb44b4039"
+    },
+    {
+      "path": "final/source/gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionEngine.java",
+      "bytes": 68898,
+      "sha256": "b0fe0300f65dea4e8879868ef0a7d326965fa07f580466bc6c7f6a5f9ccb7f3a"
+    },
+    {
+      "path": "final/source/gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java",
+      "bytes": 35944,
+      "sha256": "b804dc2cdb34a18a6077ae2bfd1a6b2d783a316722493f97dbabf0b6d0002814"
+    },
+    {
+      "path": "final/source/gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/FormProjectionInterpreter.java",
+      "bytes": 28379,
+      "sha256": "bf28c928f96b7e6d32ba785eae460e9ca1ce36e375ca9e167f1844760c87d0da"
+    },
+    {
+      "path": "final/source/gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/FormReferenceConfig.java",
+      "bytes": 6962,
+      "sha256": "84b5f599b315fb2e393672968ca8f6b29776f0440dc6fdf67db3653b8af809fd"
+    },
+    {
+      "path": "final/source/gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/FormReferenceLookup.java",
+      "bytes": 20290,
+      "sha256": "a948ffb74213574ec1e714bc079bb1db7427fa99bf7b585d84c616e6193b4c39"
+    },
+    {
+      "path": "final/source/gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionExecutionIntegrationTest.java",
+      "bytes": 219669,
+      "sha256": "81e9c101297e172b0c32138aa4fe1120aea1a3af5d0a621727cf33d0994eb816"
+    },
+    {
+      "path": "final/source/gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/ExecutionAccessTest.java",
+      "bytes": 18291,
+      "sha256": "c7efe184b2f1e04369308f9c69a7023a6b18a4d44e38b02296c42d2c16276eb8"
+    },
+    {
+      "path": "final/source/gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/FormInstanceRecordStageTest.java",
+      "bytes": 1561,
+      "sha256": "c6787c6e291eecf1263832585c93379ec18affd29c3007c59646c07da904574e"
+    },
+    {
+      "path": "final/source/gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/FormTraceIndexServiceTest.java",
+      "bytes": 7908,
+      "sha256": "65b24413025d3c52772ce8ebb1b281a8cf3dcec6d05e5d711efa8186fc3755f5"
+    },
+    {
+      "path": "final/source/gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/ProductionExecutionEngineTest.java",
+      "bytes": 27849,
+      "sha256": "5894b1d3a3ec15890dbffcf11f921e6d8b084d6c110f4f453aa11431f1aa8e86"
+    },
+    {
+      "path": "final/source/gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/ProductionExecutionFormValuesTest.java",
+      "bytes": 13972,
+      "sha256": "b71e02d2e083e5c74ba8af2ca88e89ff1e58d244b04648a76e6dc17b2ce0e5e0"
+    },
+    {
+      "path": "final/source/gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/ProductionFormValueBoundaryTest.java",
+      "bytes": 12968,
+      "sha256": "4892be4dd5fef2df42ffec3409dffb16265059e66eeb73a5c8003a1c33515f2f"
+    },
+    {
+      "path": "final/source/gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/ReferenceContextInitializationTest.java",
+      "bytes": 20450,
+      "sha256": "36559a9c3d7fa624a24adb8ee23fe0d7a693c937b1eb8c840811a87d747a18af"
+    },
+    {
+      "path": "final/source/gmp-platform/backend/src/test/java/com/zencas/edhr/template/service/FormProjectionInterpreterTest.java",
+      "bytes": 27967,
+      "sha256": "da03ce82a1b4590fb6d8993cc26a81da19fd882b5b458f2aaf5eeb4c3276a09a"
+    },
+    {
+      "path": "final/source/gmp-platform/backend/src/test/java/com/zencas/edhr/template/service/FormReferenceConfigTest.java",
+      "bytes": 11028,
+      "sha256": "48c74bfc3f093f816143ca221053cf7a900aab413610feee4e2146f42046cbf4"
+    },
+    {
+      "path": "final/source/gmp-platform/backend/src/test/java/com/zencas/edhr/template/service/FormReferenceLookupTest.java",
+      "bytes": 24352,
+      "sha256": "e3ee36b3ea4e0adb6565317c527bd2c0abacb1aa921dc4b38c75ce45633ad141"
+    },
+    {
+      "path": "final/source/gmp-platform/frontend/src/pages/master-data/template-designer-react/utils/document.ts",
+      "bytes": 12953,
+      "sha256": "41c9d82177d0a03b0babfec20ec6b2295c4aeb9346bf65e7061f4126f30cd31a"
+    },
+    {
+      "path": "final/test-summary.json",
+      "bytes": 2758,
+      "sha256": "67f952b737a681cce732f883ec4baf15048841dc5c4a5abeafa915ca4d4a19f1"
+    },
+    {
+      "path": "finish.py",
+      "bytes": 7428,
+      "sha256": "02e35b8279660f55b9183e07e7676c22c59105bfee705bb5f1c981654eb40e1c"
+    },
+    {
+      "path": "finite-ontology-records-observed.jsonl",
+      "bytes": 21476,
+      "sha256": "e4f07beac725891672318dff9511a0f831e30c74c314e74132daf3e85aed7c4b"
+    },
+    {
+      "path": "independent-recheck.json",
+      "bytes": 68980,
+      "sha256": "60b87045264b0325a65432b9f75945bb84ef8a4d0adb642b33187e75fcc06d0e"
+    },
+    {
+      "path": "knowledge/TEST-com.zencas.edhr.knowledge.BusinessKnowledgeModelTest.xml",
+      "bytes": 46023,
+      "sha256": "2ab43577a4f616a01dcca5186e3af5ed0fb4a3089b3c4ec2d2daf298d9a2b21b"
+    },
+    {
+      "path": "knowledge/maven.log",
+      "bytes": 2248,
+      "sha256": "5f5bf959af6fedfe39ce86ee853dabf731d01df759c46b07bdfd9b0fb5f9562a"
+    },
+    {
+      "path": "knowledge/run.json",
+      "bytes": 63281,
+      "sha256": "32180917a2c758c8376318311ca9d098b271d90d0a86eadf375fa036d91b9bde"
+    },
+    {
+      "path": "knowledge/test-summary.json",
+      "bytes": 66,
+      "sha256": "0357e2f0eddc2c11e6d014540c0ff131715c903d922f2e96b8c18626f776dc09"
+    },
+    {
+      "path": "knowledge-run.py",
+      "bytes": 1900,
+      "sha256": "4e51c2ec5dd4d056f21500261671858acb12769877793ba930d00d5abb0eadc1"
+    },
+    {
+      "path": "knowledge-semantic-review.json",
+      "bytes": 525,
+      "sha256": "7cd7e7ec330b9c5e9060d27d066bd9e75488231500303ae8ff35554fc78d0322"
+    },
+    {
+      "path": "manifest.json",
+      "bytes": 17748,
+      "sha256": "7ef15c6c155475f7f06b9ca55246f6bfd77912928e014730e1a59cf8683eb864"
+    },
+    {
+      "path": "observed-primary-negative/TEST-com.zencas.edhr.production.service.ProductionFormValueBoundaryTest.xml",
+      "bytes": 188841,
+      "sha256": "cad4514e226756f94333424a1c2d540bda34bad10ad9d56169878e5527019b61"
+    },
+    {
+      "path": "observed-primary-negative/run.json",
+      "bytes": 6105,
+      "sha256": "6f0b458598941829146677bb7f799fcb4df9c5f918bcec54c56ed96439c1d486"
+    },
+    {
+      "path": "observed-primary-negative/test-summary.json",
+      "bytes": 356,
+      "sha256": "3400c88838ba190c079b2c7638e3bda8d92cb441354cea8cd75cb0883b4e8a2f"
+    },
+    {
+      "path": "quality-result.yaml",
+      "bytes": 7970,
+      "sha256": "72bc21c7bba88b009863a35b1b6f3da20c2204ee0d05528384e0bc6063c189f5"
+    },
+    {
+      "path": "read-inputs/AGENTS.md",
+      "bytes": 25065,
+      "sha256": "13dc7cdacea0b1bb0aef2abb268781f9c69584acd4879b204d2b7fd81a2927fc"
+    },
+    {
+      "path": "read-inputs/codeplzreadme.md",
+      "bytes": 3035,
+      "sha256": "7a1be8efffec596b034335058dca2860346d256622f899c8dac97c5172dd6df2"
+    },
+    {
+      "path": "read-inputs/docs/agents/agent-handoff-contract.md",
+      "bytes": 31233,
+      "sha256": "3439a35dd1baa77ac723f1b5afa237a338d56e31386f06b02b4aacfd754e3a12"
+    },
+    {
+      "path": "read-inputs/docs/agents/quality-verifier.md",
+      "bytes": 7519,
+      "sha256": "6b3de9323924fb4ba5ae87be76c5136d28e754810c46b22b8e3d1cdd6c2f826f"
+    },
+    {
+      "path": "read-inputs/docs/architecture/business-knowledge-model.md",
+      "bytes": 73228,
+      "sha256": "edfbf32853ec80805acf593876c9a4c72b5144d6ac587b4c62377409e7a08740"
+    },
+    {
+      "path": "read-inputs/docs/development/branch-review-20261112-w2-form-values/decision-package.yaml",
+      "bytes": 6066,
+      "sha256": "4b646a9936d6184fea72d34c52428e26e3721a0ab6721a8bd75bc232aa4cdd56"
+    },
+    {
+      "path": "read-inputs/docs/knowledge/README.md",
+      "bytes": 115320,
+      "sha256": "507fb473f847ed470324238561be4c62f66053c6a5c5815bbc3978a47c348155"
+    },
+    {
+      "path": "read-inputs/docs/knowledge/decisions/DEC-0067-form-fill-settings.yaml",
+      "bytes": 6663,
+      "sha256": "2dd74904c246ba98b87134d9b36b455776b86028bcdb46b5e0b8f7dd2273276d"
+    },
+    {
+      "path": "read-inputs/docs/knowledge/decisions/DEC-0074-shared-terminal-button-signature.yaml",
+      "bytes": 7527,
+      "sha256": "09d6cb083c1350f3c64a2abb8583ca9a4eb1a7b3a837cdd67b9f6dc28d9e2d3f"
+    },
+    {
+      "path": "read-inputs/docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml",
+      "bytes": 74784,
+      "sha256": "324f5e292a5bcc1f7acd80066443af690045dab8fb6c78492e8b6c19ce577d2a"
+    },
+    {
+      "path": "read-inputs/docs/knowledge/decisions/DEC-0080-shared-choice-field-options.yaml",
+      "bytes": 3431,
+      "sha256": "9b61e114aadf7948d86baa704aae94325449fe6cca0dd825c5b921a22814bd08"
+    },
+    {
+      "path": "read-inputs/docs/knowledge/open-questions.yaml",
+      "bytes": 22420,
+      "sha256": "c7b3bdecd1a6ac164d95ff515b5412998a556a07e9b5fcb64b3643473aa6e2bf"
+    },
+    {
+      "path": "recheck.py",
+      "bytes": 5547,
+      "sha256": "b29d91fb7cb42c0a72539390205715b21b0446183bb39dae8dd27942ee3ab9c3"
+    },
+    {
+      "path": "review.md",
+      "bytes": 5875,
+      "sha256": "05d0180eb10940ed0e02b341b4d5cb907a45474f5c3104d50be12dbe7f5706c9"
+    },
+    {
+      "path": "role-inputs.json",
+      "bytes": 2362,
+      "sha256": "1e966ad59495129a7f2fc7e6012c9676f31613a375ab4e359df6eca0a199575a"
+    },
+    {
+      "path": "run.py",
+      "bytes": 5246,
+      "sha256": "489cd4b264dcc857a91a7ca1d5beb1e4da168037f0f942b295168771c743323e"
+    }
+  ]
+}
