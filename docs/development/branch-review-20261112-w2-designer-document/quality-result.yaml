@@ -1,0 +1,245 @@
+qualityResult:
+  result: passed
+  baseCommit: 0dd6e8828f544aec01285e0ea140029d783ec38f
+  headCommit: 3193fc646951c0accde0fe36e494273ef4f33e06
+  contractBaseline:
+    sourceCommit: 3193fc646951c0accde0fe36e494273ef4f33e06
+    targetBranch: edhr-dev
+    targetCommit: 0dd6e8828f544aec01285e0ea140029d783ec38f
+    contractReadCommit: 3193fc646951c0accde0fe36e494273ef4f33e06
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: clean
+    includedPaths: []
+    excludedPaths: []
+    untrackedPaths: []
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+  - id: quality.baseline-and-scope
+    required: true
+    category: requirements
+    description: 独立核对五文件切片、契约和目标基线，无业务/后台/依赖/知识扩展
+    method: inspection
+    command: ''
+    outcome: passed
+    evidence:
+    - baseline.json
+    - scope-verification.json
+    - final-working-tree.json
+  - id: quality.policy-and-readonly
+    required: true
+    category: ontology
+    description: 有限业务规则、原默认只读消费者和编辑加载保护一致
+    method: inspection
+    command: ''
+    outcome: passed
+    evidence:
+    - source-review.md
+    - ontology-final/ontology-result.yaml
+    - ontology-final-inspection.json
+  - id: quality.old-runtime-counterexamples
+    required: true
+    category: regression
+    description: 复核主侧同最终脚本的旧实现反例，区分产品失败与夹具失败
+    method: inspection
+    command: ''
+    outcome: passed
+    evidence:
+    - negative-evidence-inspection.json
+    - main-negative-evidence/old-node.log
+    - main-negative-evidence/browser-1440/result.json
+    - main-negative-evidence/browser-390/result.json
+  - id: quality.parser-unit
+    required: true
+    category: unit
+    description: 实际当前协议往返、真实空白、不完整草稿、十八类不可解释来源、只读和每片一次parse
+    method: automated-test
+    command: node --test --test-reporter=tap scripts/test-designer-document-read.mjs (included in 91-case node run)
+    outcome: passed
+    evidence:
+    - final/node.log
+    - final/node-summary.json
+  - id: quality.adjacent-node
+    required: true
+    category: regression
+    description: 其余64项原保存状态、子列同步、共享选项、表单与执行预览回归
+    method: automated-test
+    command: node --test --test-reporter=tap scripts/test-designer-save-state.mjs scripts/test-designer-subfield-sync.mjs
+      scripts/test-designer-choice-options.mjs scripts/test-form-document-preview.mjs scripts/test-execution-document-viewer.mjs
+      (same recorded 91-case run)
+    outcome: passed
+    evidence:
+    - final/node.log
+    - final/node-summary.json
+  - id: quality.existing-guards
+    required: true
+    category: regression
+    description: 原设计器、列表样式、外部字体三检查原断言未改且实际通过
+    method: command
+    command: node scripts/verify-template-designer-react.mjs; node scripts/verify-list-table-style-contract.mjs; node scripts/verify-no-external-fonts.mjs
+    outcome: passed
+    evidence:
+    - scope-verification.json
+    - final/verify-template-designer-react.log
+    - final/verify-list-table-style-contract.log
+    - final/verify-no-external-fonts.log
+  - id: quality.build-typecheck
+    required: true
+    category: integration
+    description: 实际npm构建包含tsc -b与Vite
+    method: command
+    command: npm run build
+    outcome: passed
+    evidence:
+    - final/build.log
+    - final/run.json
+  - id: quality.document-browser
+    required: true
+    category: e2e
+    description: 实际组件受控宿主：正常/空白、失败无写、同身份更新、脏旧store关闭重开及旧持有回调，两宽16项
+    method: browser
+    command: node scripts/test-designer-document-read-browser.mjs (DOCUMENT_READ_WIDTH=1440 and 390)
+    outcome: passed
+    evidence:
+    - final/document-1440/result.json
+    - final/document-390/result.json
+  - id: quality.save-context-browser
+    required: true
+    category: regression
+    description: 实际原保存上下文两宽26项，保留目录失败重试、晚响应、撤销重做与确认恢复
+    method: browser
+    command: node scripts/test-designer-save-context-browser.mjs (SAVE_CONTEXT_WIDTH=1440 and 390)
+    outcome: passed
+    evidence:
+    - final/save-1440/result.json
+    - final/save-390/result.json
+  - id: quality.import-browser
+    required: true
+    category: regression
+    description: 实际原Excel/Word导入与过期结果两宽30项
+    method: browser
+    command: node scripts/test-designer-import-browser.mjs (IMPORT_WIDTH=1440 and 390)
+    outcome: passed
+    evidence:
+    - final/import-1440/result.json
+    - final/import-390/result.json
+  - id: quality.controller
+    required: true
+    category: api
+    description: 原控制器mock/direct回归41项，新鲜XML且零skip，不冒充真实PG或HTTP
+    method: automated-test
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr --batch-mode --no-transfer-progress -f gmp-platform/backend/pom.xml
+      -Dtest=TemplateModelingControllerTest,BusinessKnowledgeModelTest test
+    outcome: passed
+    evidence:
+    - final/java.log
+    - final/java-summary.json
+    - final/TEST-com.zencas.edhr.template.controller.TemplateModelingControllerTest.xml
+  - id: quality.knowledge
+    required: true
+    category: ontology
+    description: 知识89项自动校验实际独立重跑，359输入前后和Git一致，不等于全库语义通过
+    method: automated-test
+    command: same independently executed Maven command;BusinessKnowledgeModelTest=89
+    outcome: passed
+    evidence:
+    - final/java-summary.json
+    - final/TEST-com.zencas.edhr.knowledge.BusinessKnowledgeModelTest.xml
+    - inputs-verified.json
+  - id: quality.visual-keyboard
+    required: true
+    category: visual
+    description: 实际查看两宽错误及正常导入截图；中文错误不截断、关闭可达、错误不能误编辑旧画布；键盘关闭由浏览器实跑
+    method: inspection
+    command: ''
+    outcome: passed
+    evidence:
+    - visual-review.json
+    - final/document-390/workflow-syntax.png
+    - final/document-1440/workflow-syntax.png
+    - final/import-1440/normal-xlsx.png
+    - final/import-390/normal-xlsx.png
+  - id: quality.robustness-a23
+    required: true
+    category: security
+    description: 只保护不可解释来源和旧上下文；真实空白/草稿保留，无新业务完整性、跨请求缓存或全schema框架
+    method: inspection
+    command: ''
+    outcome: passed
+    evidence:
+    - source-review.md
+    - anti-pattern-scan.json
+  - id: quality.premium-increment
+    required: true
+    category: regression
+    description: 官方脚本同范围基线/候选完整finding多重集相同，仅忽略行移位，无新增
+    method: command
+    command: python3 audit_project.py <baseline/candidate repo and frontend> --mode strict --output <recorded paths>
+    outcome: passed
+    evidence:
+    - premium-commands.json
+    - premium-comparison.json
+    - baseline-repo-premium.json
+    - candidate-repo-premium.json
+    - baseline-frontend-premium.json
+    - candidate-frontend-premium.json
+  - id: quality.inputs-and-integrity
+    required: true
+    category: documentation
+    description: 受测43输入和359知识/测试输入对照当前及Git，结束清理软链且worktreeclean
+    method: inspection
+    command: ''
+    outcome: passed
+    evidence:
+    - inputs-verified.json
+    - final-working-tree.json
+    - final/run.json
+  - id: quality.premium-whole-repo
+    required: false
+    category: visual
+    description: 既有全仓86、前端28的strict债务仍未关闭；包含关系不相加
+    method: command
+    command: recorded official strict audit commands
+    outcome: blocked
+    evidence:
+    - premium-comparison.json
+    - candidate-repo-premium.json
+    - candidate-frontend-premium.json
+  - id: quality.eslint
+    required: false
+    category: regression
+    description: 基线/当前ESLint均因既有缺配置exit2，未计通过，未修改配置或标准
+    method: command
+    command: node <installed-eslint> . --ext ts,tsx --report-unused-disable-directives --max-warnings 0
+    outcome: blocked
+    evidence:
+    - lint-commands.json
+    - baseline-lint.log
+    - candidate-lint.log
+  findings: []
+  residualRisks:
+  - id: risk.controlled-component-not-db-e2e
+    description: 72浏览器用例使用真实组件和受控API/回调；控制器41为mock/direct。
+    impact: 未认证真实HTTP权限/数据库事务与生产端到端。
+    mitigation: 后续按相应链继续真实集成验收；本批不改后台或DB。
+  - id: risk.incomplete-format-coverage
+    description: 本批非全schema叶子语义、所有Excel/Word/历史格式或迁移审查；readonly保留旧兼容输出。
+    impact: 不能由本批推定全部历史正确显示或所有格式不丢信息。
+    mitigation: 继续原W2格式解码、归一化、序列化身份/信息保留链。
+  - id: risk.existing-static-lint-debt
+    description: strict仓库86/前端28原债务及ESLint缺配置保留。
+    impact: 未宣称全仓静态合规或lint通过。
+    mitigation: 本批完整finding多重集新增0；按既有后续审计队列处理，不改标准换绿。
+  - id: risk.not-overall-completion
+    description: 全W2、W3—W7、全知识语义、A23已审补查及其他原暂缓未完成。
+    impact: 局部修复与293项通过不能换算全审计完成比例。
+    mitigation: 台账分列盘点、有限方法审查、语义核对和运行证据，新增提交增量核对。
+  - id: risk.no-production-capacity-claim
+    description: 每片至多一次parse只是本地重复解析检查，未做最大格式/文档容量或生产SLA实验。
+    impact: 不能据此推定大数据量响应、CPU或峰值内存安全。
+    mitigation: 容量风险另设可复现实验并先同用户讨论。
+  - id: risk.ui-matrix-limited
+    description: 手动视觉聚焦此次错误页/头部恢复；正常窄屏复杂画布存在既有横向空间限制，未在本批改布局。
+    impact: 不是完整设计器响应式、全站无障碍、账号/离线/权限矩阵认证。
+    mitigation: 保留既有完整UI审计队列和用户暂停的生产管理弹窗范围。
+  blockingConditions: []

@@ -1,0 +1,241 @@
+{
+  "analysedAt": "2026-11-12T04:10:56.865163+00:00",
+  "testedCandidate": "3193fc646951c0accde0fe36e494273ef4f33e06",
+  "target": "0dd6e8828f544aec01285e0ea140029d783ec38f",
+  "result": "passed",
+  "protectedSourceInputs": 43,
+  "protectedSourceCurrentGitAndSnapshotEqual": true,
+  "knowledgeInputs": 359,
+  "knowledgeBeforeAfterCurrentGitEqual": true,
+  "node": {
+    "tests": 91,
+    "pass": 91,
+    "fail": 0,
+    "skipped": 0,
+    "cancelled": 0
+  },
+  "browserExecutions": [
+    {
+      "group": "document",
+      "width": 1440,
+      "passed": 8,
+      "failed": 0
+    },
+    {
+      "group": "save",
+      "width": 1440,
+      "passed": 13,
+      "failed": 0
+    },
+    {
+      "group": "import",
+      "width": 1440,
+      "passed": 15,
+      "failed": 0
+    },
+    {
+      "group": "document",
+      "width": 390,
+      "passed": 8,
+      "failed": 0
+    },
+    {
+      "group": "save",
+      "width": 390,
+      "passed": 13,
+      "failed": 0
+    },
+    {
+      "group": "import",
+      "width": 390,
+      "passed": 15,
+      "failed": 0
+    }
+  ],
+  "java": [
+    {
+      "class": "TemplateModelingControllerTest",
+      "tests": 41,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "BusinessKnowledgeModelTest",
+      "tests": 89,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  ],
+  "functionalExecutions": 204,
+  "knowledgeChecksSeparate": 89,
+  "negativeSameFinalScripts": {
+    "selectedProductCommit": "0dd6e8828f544aec01285e0ea140029d783ec38f",
+    "scriptSha256": {
+      "gmp-platform/frontend/scripts/test-designer-document-read.mjs": "4186b139aa6fed1f4b3216962fabf8fdb9ec5123d5ddba0b0713ab0825f0a155",
+      "gmp-platform/frontend/scripts/test-designer-document-read-browser.mjs": "199843825186d7e7e42d1d5d54d082821abc1f35f890c113802ec21f5ba13788"
+    },
+    "node": {
+      "tests": 27,
+      "pass": 11,
+      "fail": 16,
+      "skipped": 0,
+      "cancelled": 0
+    },
+    "browser": [
+      {
+        "width": 1440,
+        "passed": 2,
+        "failed": 6,
+        "observedFailureDetails": [
+          {
+            "case": "workflow-syntax",
+            "writes": 1,
+            "pageErrors": []
+          },
+          {
+            "case": "canvas-shape",
+            "writes": 0,
+            "pageErrors": [
+              "(canvas.pages ?? []).map is not a function"
+            ]
+          },
+          {
+            "case": "future-protocol",
+            "writes": 1,
+            "pageErrors": []
+          },
+          {
+            "case": "same-id-failure",
+            "writes": 1,
+            "pageErrors": []
+          },
+          {
+            "case": "failure-close-and-reopen",
+            "writes": 1,
+            "pageErrors": []
+          },
+          {
+            "case": "held-autosave-after-failure",
+            "writes": 2,
+            "pageErrors": []
+          }
+        ]
+      },
+      {
+        "width": 390,
+        "passed": 2,
+        "failed": 6,
+        "observedFailureDetails": [
+          {
+            "case": "workflow-syntax",
+            "writes": 1,
+            "pageErrors": []
+          },
+          {
+            "case": "canvas-shape",
+            "writes": 0,
+            "pageErrors": [
+              "(canvas.pages ?? []).map is not a function"
+            ]
+          },
+          {
+            "case": "future-protocol",
+            "writes": 1,
+            "pageErrors": []
+          },
+          {
+            "case": "same-id-failure",
+            "writes": 1,
+            "pageErrors": []
+          },
+          {
+            "case": "failure-close-and-reopen",
+            "writes": 1,
+            "pageErrors": []
+          },
+          {
+            "case": "held-autosave-after-failure",
+            "writes": 2,
+            "pageErrors": []
+          }
+        ]
+      }
+    ],
+    "scope": "Only new final scripts against selected old document/Shell modules;not all old suites. Actual callback writes demonstrate overwrite risk,not production persistence. Held callback is a stress probe,not proven current ModelTab delayed invocation."
+  },
+  "premium": [
+    {
+      "scope": "repo",
+      "command": [
+        "python3",
+        "/tmp/edhr-w2-designer-document-20261112/skill/audit_project.py",
+        "/workspace/edhr-nexus-frontend",
+        "--mode",
+        "strict",
+        "--output",
+        "/tmp/edhr-w2-designer-document-20261112/candidate-final-repo-premium.json"
+      ],
+      "startedAt": "2026-11-12T04:08:11.827871+00:00",
+      "finishedAt": "2026-11-12T04:08:25.061899+00:00",
+      "exitCode": 2,
+      "summary": {
+        "errors": 86,
+        "total": 86,
+        "unresolved": 14,
+        "violations": 72,
+        "warnings": 0
+      },
+      "fullFindingMultisetsEqualIgnoringLineOnly": true,
+      "added": [],
+      "removed": []
+    },
+    {
+      "scope": "frontend",
+      "command": [
+        "python3",
+        "/tmp/edhr-w2-designer-document-20261112/skill/audit_project.py",
+        "/workspace/edhr-nexus-frontend/gmp-platform/frontend",
+        "--mode",
+        "strict",
+        "--output",
+        "/tmp/edhr-w2-designer-document-20261112/candidate-final-frontend-premium.json"
+      ],
+      "startedAt": "2026-11-12T04:08:25.062508+00:00",
+      "finishedAt": "2026-11-12T04:08:32.813875+00:00",
+      "exitCode": 2,
+      "summary": {
+        "errors": 28,
+        "total": 28,
+        "unresolved": 14,
+        "violations": 14,
+        "warnings": 0
+      },
+      "fullFindingMultisetsEqualIgnoringLineOnly": true,
+      "added": [],
+      "removed": []
+    }
+  ],
+  "lint": {
+    "baselineExit": 2,
+    "candidateExit": 2,
+    "reason": "Existing missing ESLint configuration;not counted passed"
+  },
+  "processFailuresRetained": {
+    "final": "Original static guard only accepted literal close confirmation;91 Node passed then guard failed",
+    "candidate_final": "Same guard also required literal open expression;91 Node passed then guard failed",
+    "resolution": "Move loaded document condition to dialog rendering;retain original guard file and original dirty confirmation conditions;final_verified original guard passed"
+  },
+  "visualInspection": [
+    "final_verified/document-390/workflow-syntax.png",
+    "final_verified/document-1440/workflow-syntax.png"
+  ],
+  "limits": [
+    "Real Shell/children with controlled API and save callbacks,not backend/database E2E",
+    "Controller tests are direct mock tests,not real HTTP/PG transactions",
+    "No full historical-format certification,leaf-schema semantics,production capacity or whole W2/W0-W7 completion",
+    "Official strict86/28 unchanged and missing lint configuration retained",
+    "No policy,backend API,schema,index,history/knowledge changes or new optimization authorized by this report"
+  ]
+}

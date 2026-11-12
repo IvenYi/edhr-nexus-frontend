@@ -1,0 +1,112 @@
+ontologyResult:
+  result: not-applicable
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: 3193fc646951c0accde0fe36e494273ef4f33e06
+    targetBranch: edhr-dev
+    targetCommit: 0dd6e8828f544aec01285e0ea140029d783ec38f
+    contractReadCommit: 0dd6e8828f544aec01285e0ea140029d783ec38f
+    uncommittedContractPaths: []
+  reason: 本轮只在既有设计器编辑入口区分正常空白与无法读取的非空来源，避免空白覆盖及旧版本store误写；严格选项限编辑调用，默认历史和工作流只读解释、服务写API和序列化协议保持。没有新增业务概念、完整性或发布门禁、格式版本、迁移、权限、签署、审计或使用时冻结政策。353知识文件与目标及候选逐字节相同，无知识定义修订需求；不为工程防错新增同义规则或提升成熟度。
+  changedArtifacts: []
+  knowledgeSync:
+    - id: DEC-0077-12
+      disposition: retained
+      scope: 原模板编辑/版本规则与使用时配置冻结保持；本轮不新增模板手动发布冻结，也不回写执行、实例和DHR历史。
+      sourceReferences:
+        - docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml
+        - docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md
+        - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionSnapshotBuilder.java
+    - id: DEC-0077-22
+      disposition: retained
+      scope: 既有同画布配置、保存和撤销归属保持；加载失败不重置或确认保存其他版本，技术性失败提示不定义新业务状态。
+      sourceReferences:
+        - docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml
+        - gmp-platform/frontend/src/pages/master-data/template-designer-react/TemplateDesignerReactShell.tsx
+        - gmp-platform/frontend/src/pages/master-data/template-designer-react/store/useTemplateDesignerStore.ts
+    - id: DEC-0077-30
+      disposition: retained
+      scope: 保持草稿免阻断性字段完整性/投影业务校验。本轮有限请求形状保护不新增数值、日期、枚举或必填业务门禁；空白与未完整的当前协议内容仍可初始化。
+      sourceReferences:
+        - docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml
+        - gmp-platform/frontend/src/pages/master-data/template-designer-react/utils/document.ts
+    - id: DEC-0067-05
+      disposition: retained
+      scope: 原取消兼容只涉及填报设置切片，不外推为全设计JSON格式政策；后端仍接受的非空bare内容未被迁移、删除或宣布业务非法，当前编辑器读不出的来源仅禁止空白回写。
+      sourceReferences:
+        - docs/knowledge/decisions/DEC-0067-form-fill-settings.yaml
+        - gmp-platform/backend/src/main/java/com/zencas/edhr/template/controller/TemplateModelingController.java
+        - gmp-platform/frontend/src/pages/master-data/template-designer-react/utils/document.ts
+    - id: DEC-0080-01
+      disposition: retained
+      scope: 同字段共用选项和真实身份规则保持；本轮不按同名或画布位置合并字段，不以读取失败补造替代模型，也不宣称重新验收全部选项运行链。
+      sourceReferences:
+        - docs/knowledge/decisions/DEC-0080-shared-choice-field-options.yaml
+        - docs/knowledge/evidence/shared-choice-options-2026-10-18.md
+        - gmp-platform/frontend/src/pages/master-data/template-designer-react/utils/document.ts
+    - id: discrepancy.dhr-review-complete-evidence-impact-gap
+      disposition: deferred
+      scope: 原通用质量/异常/源签署有效性自动判读high仍开放；当前设计器读失败保护没有解决或关闭它，对本编辑器有限整改无依赖。
+      sourceReferences:
+        - docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml
+    - id: question.form-projection-trace-index-effective-scope
+      disposition: deferred
+      scope: 原A12历史失效/受控修订视图未决保留；本轮不更改只读消费者，不决定历史迁移或完整历史解释政策。
+      sourceReferences:
+        - docs/knowledge/open-questions.yaml
+    - id: question.multi-tenant-workflow-isolation
+      disposition: deferred
+      scope: 完整非MVP租户隔离问题仍未决；本轮row/version载入源保护不等于服务端鉴权或全系统租户隔离完成。
+      sourceReferences:
+        - docs/knowledge/open-questions.yaml
+  conflicts: []
+  questions: []
+  validationEvidence:
+    - id: validation.w2-designer-document-finite-references
+      checkType: reference
+      command: python3 build-finite-records.py 3193fc646951c0accde0fe36e494273ef4f33e06
+      outcome: passed
+      evidence:
+        - finite-review-records.jsonl
+        - finite-review-summary.json
+        - 20有限记录为18既有ID和2选定说明段，17 consistent、1保留evidence-gap、2保留needs-decision；不计作新增历史unique，不等于全库语义通过。
+    - id: validation.w2-designer-document-knowledge-preservation
+      checkType: status-transition
+      command: python3 bind-final-inputs.py 3193fc646951c0accde0fe36e494273ef4f33e06 /tmp/edhr-w2-designer-document-20261112/final_verified/run.json
+      outcome: passed
+      evidence:
+        - baseline-inputs.json
+        - final-source-knowledge-binding.json
+        - 353知识文件与目标及候选逐字节相同，2849资产ID无重复；0.3.25/schema1.2.0/P0 in-progress及全部成熟度和投影范围保持。机械库存不是语义完成。
+    - id: validation.w2-designer-document-main-knowledge-89
+      checkType: schema
+      command: 主侧实际Java命令见read-evidence/knowledge/run.json的java步骤，本体仅读取核对原件
+      outcome: passed
+      evidence:
+        - read-evidence/knowledge/run.json
+        - read-evidence/knowledge/java-summary.json
+        - read-evidence/knowledge/knowledge-inputs-before.json
+        - read-evidence/knowledge/knowledge-inputs.json
+        - read-evidence/knowledge/TEST-com.zencas.edhr.knowledge.BusinessKnowledgeModelTest.xml
+        - 主侧实际89项0失败/错误/跳过；359输入在运行前后、目标知识及候选一致，XML实际89个testcase且源XML时间位于2026-11-12T04:09:27.797903+00:00至04:10:01.309653+00:00的本轮Java步骤内。
+    - id: validation.w2-designer-document-final-main-runtime-binding
+      checkType: evidence-path
+      command: python3 bind-final-inputs.py，读取主侧final_verified正式原件，不执行运行测试
+      outcome: passed
+      evidence:
+        - final-source-knowledge-binding.json
+        - read-evidence/final-main/node-summary.json
+        - read-evidence/final-main/node.log
+        - read-evidence/final-main/document-1440/result.json
+        - read-evidence/final-main/document-390/result.json
+        - read-evidence/final-main/save-1440/result.json
+        - read-evidence/final-main/save-390/result.json
+        - read-evidence/final-main/import-1440/result.json
+        - read-evidence/final-main/import-390/result.json
+        - 已核对43源码/测试/契约输入及候选摘要；主侧91Node和72浏览器用例全过，每宽读取8/保存13/导入15，Controller另41项全过。受控API及组件原件不等于真实后端持久化E2E，held callback仅生命周期压力；本体未运行浏览器、Maven、DB或CI，未冒称独立质量验收或截图视觉检查。
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages: [P1, P2, P3]

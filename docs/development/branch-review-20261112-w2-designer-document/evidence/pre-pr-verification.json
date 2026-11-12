@@ -1,0 +1,36 @@
+{
+  "observedAt": "2026-11-12T12:16:30.147030+08:00",
+  "testedCandidate": "3193fc646951c0accde0fe36e494273ef4f33e06",
+  "target": "0dd6e8828f544aec01285e0ea140029d783ec38f",
+  "protectedInputsMatched": 43,
+  "knowledgeInputsMatched": 359,
+  "qualityResult": "passed",
+  "ontologyResult": "not-applicable",
+  "requiredQualityChecksPassed": 16,
+  "archiveAndManifestHashesUnchanged": true,
+  "knowledgeUnchanged": true,
+  "verifiedArchiveMembers": 490,
+  "rolesFinalObservation": {
+    "recordedAt": "2026-11-12T12:15:57.587165+08:00",
+    "source": "actual collaboration.list_agents after both formal FINAL results",
+    "professionalTasks": [
+      {
+        "name": "/root/w2_designer_document_ontology",
+        "status": "completed",
+        "result": "not-applicable",
+        "manifestSha256": "29689f3f60b4293cbd35cd6265a3e851930ce3a600bf9ec0a56648f6dfbd79fe"
+      },
+      {
+        "name": "/root/w2_designer_document_final_qa",
+        "status": "completed",
+        "result": "passed",
+        "manifestSha256": "8e8d7d5b5ac5e87556dbf8012f3ca9be2d10f70e32b02762a388fd5709bfeb31"
+      }
+    ],
+    "unfinishedTasks": []
+  },
+  "workingTreeStatus": " M docs/development/branch-review-20261015/NEXT.md\n?? docs/development/branch-review-20261112-w2-designer-document/README.md\n?? docs/development/branch-review-20261112-w2-designer-document/evidence-packages.json\n?? docs/development/branch-review-20261112-w2-designer-document/evidence/\n?? docs/development/branch-review-20261112-w2-designer-document/independent-review.md\n?? docs/development/branch-review-20261112-w2-designer-document/inventory-summary.json\n?? docs/development/branch-review-20261112-w2-designer-document/main-analysis.json\n?? docs/development/branch-review-20261112-w2-designer-document/method-review-records.jsonl\n?? docs/development/branch-review-20261112-w2-designer-document/ontology-result.yaml\n?? docs/development/branch-review-20261112-w2-designer-document/ontology-review.md\n?? docs/development/branch-review-20261112-w2-designer-document/quality-result.yaml\n?? docs/development/branch-review-20261112-w2-designer-document/review.md\n",
+  "taskDrift": "none",
+  "postTestChanges": "L0 reports/evidence/ledger only",
+  "scope": "W2 current editor source failure protection;original policies/normal drafts/read-only/default serialization/backend unchanged;overall audit incomplete"
+}
