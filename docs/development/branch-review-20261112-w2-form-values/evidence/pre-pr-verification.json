@@ -1,0 +1,36 @@
+{
+  "observedAt": "2026-11-12T10:44:12.556612+08:00",
+  "testedCandidate": "6e878e496189c2fdd765f9ea71b5264a3e181709",
+  "target": "fb68cf02b707052eb6f5bfb85192ed711fba5e30",
+  "protectedInputsMatched": 35,
+  "knowledgeInputsMatched": 359,
+  "qualityResult": "passed",
+  "ontologyResult": "not-applicable",
+  "requiredQualityChecksPassed": 16,
+  "archiveAndManifestHashesUnchanged": true,
+  "knowledgeUnchanged": true,
+  "scope": "Authorized two local optimizations;per-call metadata,per-occurrence name checks,new-call fresh;no policy/schema/index/UI;overall audit incomplete",
+  "verifiedArchiveMembers": 414,
+  "rolesFinalObservation": {
+    "recordedAt": "2026-11-12T10:41:48.691245+08:00",
+    "source": "actual collaboration.list_agents after both formal FINAL results",
+    "professionalTasks": [
+      {
+        "name": "/root/w2_form_values_ontology",
+        "status": "completed",
+        "result": "not-applicable",
+        "manifestSha256": "296f4dee2b7cdbb1c2adfa84d6ca573635d9219e6e5930ab9a7ad2d5668e20b6"
+      },
+      {
+        "name": "/root/w2_form_values_final_qa",
+        "status": "completed",
+        "result": "passed",
+        "manifestSha256": "7ef15c6c155475f7f06b9ca55246f6bfd77912928e014730e1a59cf8683eb864"
+      }
+    ],
+    "unfinishedTasks": []
+  },
+  "workingTreeStatus": " M docs/development/branch-review-20261015/NEXT.md\n?? docs/development/branch-review-20261112-w2-form-values/README.md\n?? docs/development/branch-review-20261112-w2-form-values/evidence-packages.json\n?? docs/development/branch-review-20261112-w2-form-values/evidence/\n?? docs/development/branch-review-20261112-w2-form-values/independent-review.md\n?? docs/development/branch-review-20261112-w2-form-values/inventory-summary.json\n?? docs/development/branch-review-20261112-w2-form-values/main-analysis.json\n?? docs/development/branch-review-20261112-w2-form-values/method-review-records.jsonl\n?? docs/development/branch-review-20261112-w2-form-values/ontology-result.yaml\n?? docs/development/branch-review-20261112-w2-form-values/ontology-review.md\n?? docs/development/branch-review-20261112-w2-form-values/quality-result.yaml\n?? docs/development/branch-review-20261112-w2-form-values/review.md",
+  "taskDrift": "none",
+  "postTestChanges": "L0 reports/evidence/ledger only"
+}

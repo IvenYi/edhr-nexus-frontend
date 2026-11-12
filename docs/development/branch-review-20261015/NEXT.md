@@ -1,5 +1,23 @@
 # 持续推进台账
 
+## PR84已合入：回到W2，表单值边界及两项已授权优化
+
+已交付[PR85](https://github.com/IvenYi/edhr-nexus-frontend/pull/85)，audit/edhr-dev-w2-form-serialization-20261112→edhr-dev，观察OPEN／MERGEABLE／CLEAN，建议人工合入两项优化。受测6e878e49、验收归档d4dbef25后仅L0交付登记；登记前本地／真实远端／PR head与35／359输入、包摘要一致，正常推送登记后再核对。下轮先fetch真实合入及新增，再回原W2解析／导入／序列化余项，不自动merge／部署／恢复或查触发CI。
+
+已fetch `edhr-dev@fb68cf02b707052eb6f5bfb85192ed711fba5e30`，PR84真实合入且整树同0c810883，无额外代码／知识／契约。新分支audit/edhr-dev-w2-form-serialization-20261112；[本批](../branch-review-20261112-w2-form-values/README.md)L2回原W2保存→JSON重读→最终完成及W5/W6性能／健壮性／A23、W7增量，先按旧方法／提交去重，不重开共享选项／显式模式／行ID或通知high。
+
+先测300行12说明列局部校验普通值约83MiB累计分配、同原件300次资格查询后，用户本轮明确回复“两项一起优化”。本轮已完成PERF-W2-SUBTABLE-EVIDENCE-CONTEXT-001及PERF-W2-FILE-EVIDENCE-LOOKUP-001：每行新顶层context共享只读子图；每公开字段校验调用树局部文件元数据Map、原objectId恒定，逐处originalName仍核，独立调用重查，不缓存成功结果／跨请求内容。仅1产品＋新测试＋DP，原权限／签署／事务／SQL谓词／历史／API/UI/schema/索引及353知识不改。不要误称整个SAVE所有顶层字段共用一次读取。
+
+受测clean6e878e49，主侧与全新独立各实际208总=205通过／0F/E／3原条件未执行，新11全绿；知识各89/89。3原条件为2长驻浏览器fixture与1仅PG START竞争，本批无UI／START／SQL结构变更，不假启也不计passed；未知skip仍报错，没有改旧测试或断言。真实引擎/ExecutionAccess及H2文件夹具验证草稿／清空／零／省略／稳定UUID／只读默认／补齐完成、外对象拒绝不推进、同ID伪造名／新调用删除后重核／多ID／DB异常。原H2 JWT MockMvc、冻结引用／当前行上下文／签署／审计回滚回归继续，不称原生PG／新浏览器E2E。
+
+35／359输入当前/Git/原件一致；7组实测中300普通行约80–83MiB→460928B(0.44MiB)，重复文件300→1查询、累计527072B；独立文件518192B同预算。仅局部方法线程累计分配，非峰值/RSS／SAVE全事务／生产SLA，300非上限。旧同最终11字节实际5P6真查询／16MiB预算F、0E/S；只跑11不冒称旧208。早期9 teardown errors是新增测试JdbcTemplate SHUTDOWN清理错误已修，非产品红；原件保留，与真预算红分列。
+
+本体NA／FINAL，有限21=16一致／1原gap／4原待决，知识0.3.25/schema1.2.0/P0保持；独立quality passed／FINAL，16必需项通过、无findings／blocking，依赖已清／最终clean。8244路径只是固定树机械清单，5792历史审计证据不重复计源码，四个方法范围台账不升级整文件／历史unique完成数。
+
+整体W2解析／导入／归一化及其他保存完成链、W3–W7、全知识语义、A23含已审补查、另一通用质量／异常／源签署变化high、A12、完整UI／账号切换／错误／权限矩阵、非MVP多租户、strict86/lint缺配置、生产容量UNKNOWN、其他未答／用户暂停继续。下一轮先fetch实际合入及新增，再接原W2设计文档解析／导入与序列化剩余分支；原previousRow扫描CPU等未量化／未授权的第三项不顺带改。不自动merge／部署／恢复／查询触发CI；全角色FINAL后仍须实际PR前漂移门禁。
+
+全部角色正式FINAL后，2026-11-12 10:44:12 Asia/Shanghai已实际[PR前漂移／阶段复核](../branch-review-20261112-w2-form-values/pre-pr-drift-review.md)：目标仍fb68，35／359输入和三包414成员／角色manifest核过，无任务漂移；之后仅L0验收／台账／交付，整体未完成，不重新标成新业务测试。
+
 ## PR83已合入：来源生效通知组合证据收敛
 
 已交付[PR84](https://github.com/IvenYi/edhr-nexus-frontend/pull/84)，audit/edhr-dev-dhr-impact-notifications-20261111→edhr-dev，观察OPEN／MERGEABLE／CLEAN，建议人工合入本批。受测7b63b4c5、验收归档c5d07d24后仅L0登记；登记前本地／真实远端／PR head、52／359输入和包摘要一致，登记正常推送后再核对。下一轮先fetch实际合入及新增，再回原W2保存／完成／序列化剩余链；本批性能线索不自动变整改授权，不merge／部署／恢复或查触发CI。

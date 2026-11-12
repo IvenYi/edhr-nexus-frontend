@@ -1,0 +1,193 @@
+ontologyResult:
+  result: not-applicable
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: 6e878e496189c2fdd765f9ea71b5264a3e181709
+    targetBranch: edhr-dev
+    targetCommit: fb68cf02b707052eb6f5bfb85192ed711fba5e30
+    contractReadCommit: fb68cf02b707052eb6f5bfb85192ed711fba5e30
+    uncommittedContractPaths: []
+  reason: 用户实际回复“两项一起优化”后，本批在ExecutionAccess局部优化行上下文复制和每个公开字段证据校验调用树内的文件元数据复用；不改变政策、术语、事实、规则、生命周期、接口、数据库、UI、审计或冻结契约。原字段/来源/签署保护保留，逐处仍比较原件名，不缓存验证成功结果、不跨调用复用。有限语义核对支持原规范合理；353知识文件及状态/投影/版本逐字节不变，无知识修订需求，不为工程优化新增同义知识或升级成熟度。
+  changedArtifacts: []
+  knowledgeSync:
+  - id: DEC-0067-01
+    disposition: retained
+    scope: 仅核对夹具明确DIRECT，不能由缺流程或无配置推导新的开放模式；发布/新实例全路径不由当前领域夹具证明。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0067-form-fill-settings.yaml
+    - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionEngine.java
+    - docs/knowledge/evidence/form-fill-settings-confirmed.md
+  - id: DEC-0067-04
+    disposition: retained
+    scope: 保存重读/生产运行沿原冻结设置；当前JSON状态往返不是设计三片协议或所有管理发布入口的新证明。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0067-form-fill-settings.yaml
+    - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionEngine.java
+    - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java
+    - docs/knowledge/evidence/form-fill-settings-confirmed.md
+  - id: DEC-0067-05
+    disposition: retained
+    scope: 不恢复旧模式推导/迁移，不改新快照不可变、权限和签署。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0067-form-fill-settings.yaml
+    - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java
+    - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionEngine.java
+  - id: rule.form-fill-settings.direct-configuration
+    disposition: retained
+    scope: 开放DIRECT夹具不豁免字段只读、来源、按钮或原签署，直接模式和PROCESS配置不混合。
+    sourceReferences:
+    - docs/knowledge/rules/form-fill-settings.yaml
+    - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionEngine.java
+    - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionAccess.java
+  - id: rule.form-fill-settings.snapshot-runtime-continuity
+    disposition: retained
+    scope: 只按本次传入的冻结form验证；现行模板后改不回写旧执行，当前测试不证明完整发布链。
+    sourceReferences:
+    - docs/knowledge/rules/form-fill-settings.yaml
+    - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionEngine.java
+    - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java
+    - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormInstanceRecordService.java
+  - id: DEC-0074-04
+    disposition: retained
+    scope: 字段签名仍独立于按钮；本份内容变化清除当前签名、保留历史责任，不把无签名夹具当真实签名全链验收。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0074-shared-terminal-button-signature.yaml
+    - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionEngine.java
+    - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionAccess.java
+    - docs/knowledge/evidence/production-field-signature-confirmed.md
+  - id: rule.production-inline-signature
+    disposition: retained
+    scope: 签名有效性、份内字段位置和历史保护保持，性能讨论不能跳过安全校验或改签名身份。
+    sourceReferences:
+    - docs/knowledge/rules/production-field-signature.yaml
+    - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionEngine.java
+    - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionAccess.java
+  - id: DEC-0080-01
+    disposition: retained
+    scope: 同身份字段共用冻结模型组选项，当前位置副本不另开允许值；不因当前多选asText兼容推导新策略或重新修旧PR。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0080-shared-choice-field-options.yaml
+    - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionEngine.java
+    - docs/knowledge/evidence/shared-choice-options-2026-10-18.md
+  - id: DEC-0077-12
+    disposition: retained
+    scope: 使用时配置快照与来源记录、投影各自保留；主值上下文复用建议不能改为读最新模板或回写旧记录。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml
+    - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java
+    - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormInstanceRecordService.java
+    - docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md
+  - id: DEC-0077-30
+    disposition: retained
+    scope: 草稿免阻断性字段完整性/投影业务校验；请求格式、认证、字段权限、来源/证据和签署安全保留。“请求格式”不授权新加草稿数值/枚举/日期业务门禁。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml
+    - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionEngine.java
+    - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionAccess.java
+    - docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md
+  - id: DEC-0077-31
+    disposition: retained
+    scope: 投影可空批号不取消普通字段自身required；本次空/省略实验不扩为全字段可空政策。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml
+    - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionEngine.java
+    - docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md
+  - id: DEC-0077-32
+    disposition: retained
+    scope: 投影可空单位/不换算与普通单选必填及默认值分开，不将piece默认示例推广成单位推断或全默认生命周期。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml
+    - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionEngine.java
+    - docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md
+  - id: DEC-0077-33
+    disposition: retained
+    scope: 已保存过程内容与最终完成正式统计分离；直接调用引擎后的状态断言不是持久化索引/事务或原生PG全链的证明。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml
+    - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java
+    - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormInstanceRecordService.java
+    - docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md
+  - id: rule.production-execution-completion-check
+    disposition: retained
+    scope: 完成仍要必填表单最终合法完成；SAVE不满足完工，普通0值不被当缺失。
+    sourceReferences:
+    - docs/knowledge/rules/production-execution.yaml
+    - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionEngine.java
+  - id: discrepancy.dhr-review-complete-evidence-impact-gap
+    disposition: deferred
+    scope: 旧通用质量/异常/源签署变化自动判读high保持，当前JSON/行资源实验不关闭它。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml
+    - docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml
+  - id: question.form-projection-header-shared-fields
+    disposition: deferred
+    scope: root+row查询上下文是原引用工程实现，不等于已确认业务投影表头共享/去重方案；原问题继续，仅阻塞依赖它的后续。
+    sourceReferences:
+    - docs/knowledge/open-questions.yaml
+    - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionAccess.java
+    - docs/knowledge/open-questions.yaml
+  - id: question.form-projection-free-text-identity
+    disposition: deferred
+    scope: 自由文字解析及最终错误身份处置未决；本轮数值/真实文件ID示例不为该身份问题给答案。
+    sourceReferences:
+    - docs/knowledge/open-questions.yaml
+    - docs/knowledge/open-questions.yaml
+  - id: question.form-projection-trace-index-effective-scope
+    disposition: deferred
+    scope: 保存时点已确认但A12失效历史视图/受控修订解释继续未决，不由本轮证明完整历史业务。
+    sourceReferences:
+    - docs/knowledge/open-questions.yaml
+    - docs/knowledge/open-questions.yaml
+  - id: question.multi-tenant-workflow-isolation
+    disposition: deferred
+    scope: 当前同对象文件target隔离不是全多租户契约，MVP范围内夹具不补此问题。
+    sourceReferences:
+    - docs/knowledge/open-questions.yaml
+    - docs/knowledge/open-questions.yaml
+  conflicts: []
+  questions: []
+  validationEvidence:
+  - id: validation.w2-values-finite-semantic-reference
+    checkType: reference
+    command: python3 build-finite-records.py
+    outcome: passed
+    evidence:
+    - finite-review-records.jsonl
+    - finite-review-summary.json
+    - 21有限记录=19 ID+2选定说明段，16 consistent/1既有evidence-gap/4既有needs-decision；非全库或历史unique通过。
+  - id: validation.w2-values-knowledge-bytes-and-projection
+    checkType: status-transition
+    command: python3 bind-final-evidence.py
+    outcome: passed
+    evidence:
+    - final-source-evidence-binding.json
+    - 353知识/2849资产ID与目标字节不变；schema声明不计资产ID。知识0.3.25/schema1.2.0/P0 in-progress、全部成熟度和visibility保持。
+  - id: validation.w2-values-formal-main-knowledge-89
+    checkType: schema
+    command: 主侧实际BusinessKnowledgeModelTest命令，见read-evidence/knowledge/run.json
+    outcome: passed
+    evidence:
+    - read-evidence/knowledge/run.json
+    - read-evidence/knowledge/test-summary.json
+    - read-evidence/knowledge/TEST-com.zencas.edhr.knowledge.BusinessKnowledgeModelTest.xml
+    - 主侧实际89项0失败/错误/跳过，359输入与候选相同；本体未执行Maven。
+  - id: validation.w2-values-final-main-runtime-boundary
+    checkType: evidence-path
+    command: python3 bind-final-evidence.py
+    outcome: passed
+    evidence:
+    - read-evidence/optimized_final/run.json
+    - read-evidence/optimized_final/test-summary.json
+    - final-source-evidence-binding.json
+    - 实际208项中205通过、3既有条件未执行，0失败/错误。新增11项全过；本体读取原XML、7观察及35输入，不冒称运行或独立质量。
+    - 同最终测试旧源11项为5正6真查询/资源预算失败，0错误/跳过；与read-evidence/final/test-summary.json早期9 teardown
+      errors分开，旧例不冒称208全矩阵。
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages:
+    - P1
+    - P2
+    - P3
