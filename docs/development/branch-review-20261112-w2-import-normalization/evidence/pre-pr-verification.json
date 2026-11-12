@@ -1,0 +1,36 @@
+{
+  "observedAt": "2026-11-12T13:55:59.811455+08:00",
+  "testedCandidate": "38aae69e345ca1505873bb47c7456e02ec4783ff",
+  "target": "8a415040babc1cc91ca9f5683bf0db46829eea76",
+  "protectedInputsMatched": 48,
+  "knowledgeInputsMatched": 359,
+  "qualityResult": "passed",
+  "ontologyResult": "not-applicable",
+  "requiredQualityChecksPassed": 17,
+  "archiveAndManifestHashesUnchanged": true,
+  "knowledgeUnchanged": true,
+  "verifiedArchiveMembers": 488,
+  "rolesFinalObservation": {
+    "recordedAt": "2026-11-12T13:54:28.150136+08:00",
+    "source": "actual collaboration.list_agents after both formal FINAL results",
+    "professionalTasks": [
+      {
+        "name": "/root/w2_import_normalization_ontology",
+        "status": "completed",
+        "result": "not-applicable",
+        "manifestSha256": "0f4572dc436346ea73d21451077be2d1395486ccea0780ecceeacc0f2f51c8e7"
+      },
+      {
+        "name": "/root/w2_import_normalization_final_qa",
+        "status": "completed",
+        "result": "passed",
+        "manifestSha256": "c79f3b5f022cc6450ce697f2ceb981f29bc261e1ae0c29eb302d6224afb24596"
+      }
+    ],
+    "unfinishedTasks": []
+  },
+  "workingTreeStatus": " M docs/development/branch-review-20261015/NEXT.md\n?? docs/development/branch-review-20261112-w2-import-normalization/README.md\n?? docs/development/branch-review-20261112-w2-import-normalization/evidence-packages.json\n?? docs/development/branch-review-20261112-w2-import-normalization/evidence/\n?? docs/development/branch-review-20261112-w2-import-normalization/independent-review.md\n?? docs/development/branch-review-20261112-w2-import-normalization/inventory-summary.json\n?? docs/development/branch-review-20261112-w2-import-normalization/main-analysis.json\n?? docs/development/branch-review-20261112-w2-import-normalization/method-review-records.jsonl\n?? docs/development/branch-review-20261112-w2-import-normalization/ontology-result.yaml\n?? docs/development/branch-review-20261112-w2-import-normalization/ontology-review.md\n?? docs/development/branch-review-20261112-w2-import-normalization/quality-result.yaml\n?? docs/development/branch-review-20261112-w2-import-normalization/review.md\n",
+  "taskDrift": "none",
+  "postTestChanges": "L0 reports/evidence/ledger only",
+  "scope": "W2 explicit Excel image extent interpretation only;original double-anchor/min24/media/undo/readonly/business/backend unchanged;Word performance measured but not optimized;overall audit incomplete"
+}

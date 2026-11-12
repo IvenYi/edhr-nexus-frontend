@@ -1,0 +1,40 @@
+{
+  "sealedAt": "2026-11-12T05:53:55.360523+00:00",
+  "testedCandidate": "38aae69e345ca1505873bb47c7456e02ec4783ff",
+  "packages": [
+    {
+      "name": "main",
+      "path": "evidence/main.zip",
+      "bytes": 4404202,
+      "sha256": "2db85d680a0e99b9081b4528d2eb5b068da1490d5d84be30c135527bdebf8fb1",
+      "members": 240,
+      "manifest": "evidence/main-manifest.json",
+      "manifestSha256": "c1c2f91ee74867e56a53e3e6da04587cce3736ab196a25d7c26187d7f44fc822"
+    },
+    {
+      "name": "ontology",
+      "path": "evidence/ontology.zip",
+      "bytes": 534090,
+      "sha256": "7cfd522b5b0a404aca68455a9e957c6806cfa20246d342e13d584acf1a6f2603",
+      "members": 62,
+      "manifest": "evidence/ontology-manifest.json",
+      "manifestSha256": "055d28b530d3f5979d5af488443e460828023274caa5fef8bbbbf9e88702d809"
+    },
+    {
+      "name": "independent",
+      "path": "evidence/independent.zip",
+      "bytes": 2844231,
+      "sha256": "d2eb5be1ef679ed5752270c9e8e3ec68e5bbe184ecec1e6e1117493cda8e46e9",
+      "members": 186,
+      "manifest": "evidence/independent-manifest.json",
+      "manifestSha256": "0db0432ff2472d0767ccd072f3dcbc364a8b2d2f00fe3dc870c1423884219e98"
+    }
+  ],
+  "roleFinalManifestSha256": {
+    "ontology": "0f4572dc436346ea73d21451077be2d1395486ccea0780ecceeacc0f2f51c8e7",
+    "independent": "c79f3b5f022cc6450ce697f2ceb981f29bc261e1ae0c29eb302d6224afb24596"
+  },
+  "allArchiveMemberHashesVerified": true,
+  "originalRoleManifestsAndSha256SumsVerified": true,
+  "scope": "W2 explicit Excel image extent preservation;1 product+2 maintained tests+DP,main/independent101Node+80browser+41controller,knowledge89 separate;controlledAPI browser and mockdirect controller not nativeHTTP/PG;strict86/28 and missingLintConfiguration retained;no policy/schema/index/backend/knowledge/history change"
+}

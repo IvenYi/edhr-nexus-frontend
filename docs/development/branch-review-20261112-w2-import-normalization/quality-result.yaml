@@ -1,0 +1,249 @@
+qualityResult:
+  result: passed
+  baseCommit: 8a415040babc1cc91ca9f5683bf0db46829eea76
+  headCommit: 38aae69e345ca1505873bb47c7456e02ec4783ff
+  contractBaseline:
+    sourceCommit: 38aae69e345ca1505873bb47c7456e02ec4783ff
+    targetBranch: edhr-dev
+    targetCommit: 8a415040babc1cc91ca9f5683bf0db46829eea76
+    contractReadCommit: 38aae69e345ca1505873bb47c7456e02ec4783ff
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: clean
+    includedPaths: []
+    excludedPaths: []
+    untrackedPaths: []
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+  - id: quality.baseline-scope
+    required: true
+    category: requirements
+    description: 独立核对base/head/当前远端及四文件切片，无后台/政策/依赖/知识扩展
+    method: inspection
+    command: ''
+    outcome: passed
+    evidence:
+    - baseline.json
+    - scope-verification.json
+    - target-remote-check.json
+  - id: quality.ontology
+    required: true
+    category: ontology
+    description: 有限现行规则与本体NA正式结果相符，原未决/全审计范围保持
+    method: inspection
+    command: ''
+    outcome: passed
+    evidence:
+    - source-review.md
+    - ontology-final/ontology-result.yaml
+    - ontology-final-inspection.json
+  - id: quality.old-counterexamples
+    required: true
+    category: regression
+    description: 复核主侧同最终脚本旧实现真尺寸反例，非本人重跑；原夹具错误不计产品红
+    method: inspection
+    command: ''
+    outcome: passed
+    evidence:
+    - negative-evidence-inspection.json
+    - main-negative-evidence/commands.json
+    - main-negative-evidence/node.log
+    - main-negative-evidence/browser-1440/result.json
+    - main-negative-evidence/browser-390/result.json
+  - id: quality.image-node
+    required: true
+    category: unit
+    description: 新10项真实Excel写出/重读/布局/媒体摘要/双锚点/min24/store历史及保存重读
+    method: automated-test
+    command: node --test --test-reporter=tap scripts/test-designer-excel-images.mjs (included in actual101 run)
+    outcome: passed
+    evidence:
+    - final/node.log
+    - final/node-summary.json
+  - id: quality.adjacent-node
+    required: true
+    category: regression
+    description: 原91项设计读取/保存状态/子列/共享选项和两类预览回归
+    method: automated-test
+    command: actual101 node command in final/run.json
+    outcome: passed
+    evidence:
+    - final/node.log
+    - final/node-summary.json
+  - id: quality.guards
+    required: true
+    category: regression
+    description: 原设计器/列表样式/外部字体检查真实通过，原断言未动
+    method: command
+    command: node scripts/verify-template-designer-react.mjs;node scripts/verify-list-table-style-contract.mjs;node scripts/verify-no-external-fonts.mjs
+    outcome: passed
+    evidence:
+    - final/verify-template-designer-react.log
+    - final/verify-list-table-style-contract.log
+    - final/verify-no-external-fonts.log
+    - scope-verification.json
+  - id: quality.build
+    required: true
+    category: integration
+    description: npm构建含tsc -b和Vite实际通过
+    method: command
+    command: npm run build
+    outcome: passed
+    evidence:
+    - final/build.log
+    - final/run.json
+  - id: quality.images-browser
+    required: true
+    category: e2e
+    description: 真实Shell/Canvas和xlsx两宽8项，CSS尺寸/已加载图片、撤销重做/保存重开及身份保持
+    method: browser
+    command: node scripts/test-designer-excel-images-browser.mjs (1440 and390)
+    outcome: passed
+    evidence:
+    - final/images-1440/result.json
+    - final/images-390/result.json
+  - id: quality.document-browser
+    required: true
+    category: regression
+    description: 原持久源读取失败保护两宽16项保持
+    method: browser
+    command: node scripts/test-designer-document-read-browser.mjs (1440 and390)
+    outcome: passed
+    evidence:
+    - final/document-1440/result.json
+    - final/document-390/result.json
+  - id: quality.save-browser
+    required: true
+    category: regression
+    description: 原保存上下文两宽26项保持
+    method: browser
+    command: node scripts/test-designer-save-context-browser.mjs (1440 and390)
+    outcome: passed
+    evidence:
+    - final/save-1440/result.json
+    - final/save-390/result.json
+  - id: quality.import-browser
+    required: true
+    category: regression
+    description: 原Excel/Word及过期导入两宽30项保持
+    method: browser
+    command: node scripts/test-designer-import-browser.mjs (1440 and390)
+    outcome: passed
+    evidence:
+    - final/import-1440/result.json
+    - final/import-390/result.json
+  - id: quality.controller
+    required: true
+    category: api
+    description: 原mock/directController41项实际重跑，新鲜XML，不冒称HTTP/PG
+    method: automated-test
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr --batch-mode --no-transfer-progress -f gmp-platform/backend/pom.xml
+      -Dtest=TemplateModelingControllerTest,BusinessKnowledgeModelTest test
+    outcome: passed
+    evidence:
+    - final/java.log
+    - final/java-summary.json
+    - final/TEST-com.zencas.edhr.template.controller.TemplateModelingControllerTest.xml
+  - id: quality.knowledge
+    required: true
+    category: ontology
+    description: 知识89项独立实际重跑，359输入前后及Git相同，非全部语义通过
+    method: automated-test
+    command: same actual Java command;BusinessKnowledgeModelTest=89
+    outcome: passed
+    evidence:
+    - final/java-summary.json
+    - final/TEST-com.zencas.edhr.knowledge.BusinessKnowledgeModelTest.xml
+    - inputs-verified.json
+  - id: quality.visual
+    required: true
+    category: visual
+    description: 本人实际看两屏图和窄屏重开，明确原画布/侧栏空间限制
+    method: inspection
+    command: ''
+    outcome: passed
+    evidence:
+    - visual-review.json
+    - final/images-1440/one-cell.png
+    - final/images-390/one-cell.png
+    - final/images-390/saved-reopen-reopened.png
+  - id: quality.robustness-a23
+    required: true
+    category: security
+    description: 最小原适配器修复，无新防御框架/政策/SQL/跨请求缓存或页面重复原语
+    method: inspection
+    command: ''
+    outcome: passed
+    evidence:
+    - source-review.md
+    - anti-pattern-scan.json
+    - dependency-source.json
+  - id: quality.premium-increment
+    required: true
+    category: regression
+    description: 精确官方脚本两scope基线/当前完整finding多重集相同，仅忽略行号，无新增
+    method: command
+    command: python3 audit_project.py <baseline/current repo/frontend> --mode strict --output <recorded>
+    outcome: passed
+    evidence:
+    - premium-commands.json
+    - premium-comparison.json
+  - id: quality.inputs-cleanup
+    required: true
+    category: documentation
+    description: 48源码及359知识输入对照当前/原件/Git，依赖临时软链排除且最终清理worktreeclean
+    method: inspection
+    command: ''
+    outcome: passed
+    evidence:
+    - inputs-verified.json
+    - final-working-tree.json
+    - baseline.json
+    - final/run.json
+  - id: quality.premium-whole
+    required: false
+    category: visual
+    description: strict仓库86/前端28原债务未关闭，包含关系不相加
+    method: command
+    command: recorded official strict commands
+    outcome: blocked
+    evidence:
+    - premium-comparison.json
+  - id: quality.eslint
+    required: false
+    category: regression
+    description: 基线/候选均因既有ESLint缺配置exit2，未计通过
+    method: command
+    command: recorded installed ESLint command
+    outcome: blocked
+    evidence:
+    - lint-commands.json
+    - baseline-lint.log
+    - candidate-lint.log
+  findings: []
+  residualRisks:
+  - id: risk.controlled-not-full-e2e
+    description: 浏览器真实组件使用受控API/保存回调，Controller为mock/direct
+    impact: 不能认证真实HTTP权限、PG事务或生产端到端
+    mitigation: 后续按对应链补真实集成；本批后台和DB未改
+  - id: risk.existing-static-debt
+    description: strict86/28及lint缺配置仍保留
+    impact: 不宣称全仓静态合规或lint通过
+    mitigation: 本批完整finding多重集无新增，原债务续审不降低标准
+  - id: risk.narrow-layout
+    description: 390通过关闭原侧栏及滚动可看图片；保存重开恢复默认侧栏
+    impact: 不是完整响应式/无障碍/全UI矩阵认证
+    mitigation: 原组件布局字节保持；后续UI专项继续
+  - id: risk.format-scope
+    description: 非所有Office格式/叶子语义/历史/打印PDF验证；xlsm只测试同OOXML扩展路由
+    impact: 不证明旧xls/doc、宏、全部锚点和图片变换完整保留
+    mitigation: 继续W2余项，历史问题/容量单列
+  - id: risk.capacity-pending
+    description: Office容量及主侧Word重复解析仅另行取证，未在本实例测量或优化
+    impact: 不能推定生产内存/CPU/最大文件SLA
+    mitigation: 保留用户先量化讨论要求和原PERF-DESIGNER-OFFICE-EXPANSION-001
+  - id: risk.overall-incomplete
+    description: 完整W2/W3—W7/A23已审补查、全知识语义及原high/A12等仍未完成
+    impact: 311用例执行不等于整体审计百分比
+    mitigation: 继续有限源码/语义/测试台账，新提交按基线增量审查
+  blockingConditions: []

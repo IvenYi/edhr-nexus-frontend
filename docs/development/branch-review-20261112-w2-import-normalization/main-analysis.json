@@ -1,0 +1,261 @@
+{
+  "analysedAt": "2026-11-12T05:51:41.779970+00:00",
+  "testedCandidate": "38aae69e345ca1505873bb47c7456e02ec4783ff",
+  "target": "8a415040babc1cc91ca9f5683bf0db46829eea76",
+  "result": "passed",
+  "protectedSourceInputs": 48,
+  "protectedSourceCurrentGitAndSnapshotEqual": true,
+  "knowledgeInputs": 359,
+  "knowledgeBeforeAfterCurrentGitEqual": true,
+  "node": {
+    "tests": 101,
+    "pass": 101,
+    "fail": 0,
+    "skipped": 0,
+    "cancelled": 0
+  },
+  "browserExecutions": [
+    {
+      "group": "images",
+      "width": 1440,
+      "passed": 4,
+      "failed": 0
+    },
+    {
+      "group": "document",
+      "width": 1440,
+      "passed": 8,
+      "failed": 0
+    },
+    {
+      "group": "save",
+      "width": 1440,
+      "passed": 13,
+      "failed": 0
+    },
+    {
+      "group": "import",
+      "width": 1440,
+      "passed": 15,
+      "failed": 0
+    },
+    {
+      "group": "images",
+      "width": 390,
+      "passed": 4,
+      "failed": 0
+    },
+    {
+      "group": "document",
+      "width": 390,
+      "passed": 8,
+      "failed": 0
+    },
+    {
+      "group": "save",
+      "width": 390,
+      "passed": 13,
+      "failed": 0
+    },
+    {
+      "group": "import",
+      "width": 390,
+      "passed": 15,
+      "failed": 0
+    }
+  ],
+  "java": [
+    {
+      "class": "TemplateModelingControllerTest",
+      "tests": 41,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "BusinessKnowledgeModelTest",
+      "tests": 89,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  ],
+  "functionalExecutions": 222,
+  "knowledgeChecksSeparate": 89,
+  "negativeSameFinalScripts": {
+    "node": {
+      "tests": 10,
+      "pass": 4,
+      "fail": 6,
+      "skipped": 0,
+      "cancelled": 0
+    },
+    "browserEachWidth": {
+      "passed": 1,
+      "failed": 3,
+      "pageErrors": 0
+    },
+    "scriptSha256": {
+      "test-designer-excel-images.mjs": "cc2ff3523703aa4f3d4975ada2ba44d811bf1ab7d7c396d71d6395fd20aeb41f",
+      "test-designer-excel-images-browser.mjs": "c1ae9a3be73a15e0f8060f73ad9358a6ded47f7e3b731916d78f284fa5c850b5"
+    },
+    "selectedProductCommit": "8a415040babc1cc91ca9f5683bf0db46829eea76",
+    "scope": "Only new scripts against old exact importExcel module;not all old suites"
+  },
+  "findings": [
+    {
+      "id": "W2-IMPORT-EXCEL-IMAGE-EXTENT-001",
+      "severity": "medium",
+      "resolutionStatus": "resolved",
+      "commit": "38aae69e345ca1505873bb47c7456e02ec4783ff",
+      "evidence": [
+        "initial-image-probe.json",
+        "negative/",
+        "final/images-1440/result.json",
+        "final/images-390/result.json"
+      ],
+      "scope": "One-cell explicit pixel dimensions,existing minimum and double-anchor coordinates retained"
+    }
+  ],
+  "performanceEvidence": [
+    {
+      "id": "PERF-W2-WORD-TABLE-REPARSE-001",
+      "parentId": "PERF-DESIGNER-OFFICE-EXPANSION-001",
+      "status": "pending-discussion",
+      "productChanged": false,
+      "samples": [
+        {
+          "rows": 30,
+          "images": 0,
+          "tableParseCalls": 2,
+          "compressedBytes": 2187,
+          "documentXmlBytes": 4002,
+          "durationMs": [
+            54.5999999998603,
+            7.600000000093132,
+            15.600000000093132
+          ],
+          "medianMs": 15.600000000093132
+        },
+        {
+          "rows": 300,
+          "images": 0,
+          "tableParseCalls": 2,
+          "compressedBytes": 2974,
+          "documentXmlBytes": 36332,
+          "durationMs": [
+            62.800000000046566,
+            58.300000000046566,
+            58.5
+          ],
+          "medianMs": 58.5
+        },
+        {
+          "rows": 300,
+          "images": 1,
+          "tableParseCalls": 3,
+          "compressedBytes": 3070,
+          "documentXmlBytes": 36503,
+          "durationMs": [
+            75.5999999998603,
+            95.30000000004657,
+            67.19999999995343
+          ],
+          "medianMs": 75.5999999998603
+        },
+        {
+          "rows": 300,
+          "images": 10,
+          "tableParseCalls": 12,
+          "compressedBytes": 3103,
+          "documentXmlBytes": 38042,
+          "durationMs": [
+            278.9000000001397,
+            334.70000000018626,
+            322.5
+          ],
+          "medianMs": 322.5
+        },
+        {
+          "rows": 300,
+          "images": 50,
+          "tableParseCalls": 52,
+          "compressedBytes": 3184,
+          "documentXmlBytes": 44882,
+          "durationMs": [
+            1139.6000000000931,
+            1212.3000000000466,
+            1258
+          ],
+          "medianMs": 1212.3000000000466
+        }
+      ],
+      "limits": "Synthetic XML package accepted by actual JSZip/Word parser;entry-count observer only;not production SLA,full Office conformance,UI latency or heap peak. Sample counts are not limits."
+    }
+  ],
+  "premium": [
+    {
+      "scope": "repo",
+      "baseline": {
+        "errors": 86,
+        "total": 86,
+        "unresolved": 14,
+        "violations": 72,
+        "warnings": 0
+      },
+      "candidate": {
+        "errors": 86,
+        "total": 86,
+        "unresolved": 14,
+        "violations": 72,
+        "warnings": 0
+      },
+      "fullMultisetEqualIgnoringOnlyLine": true,
+      "added": [],
+      "removed": []
+    },
+    {
+      "scope": "frontend",
+      "baseline": {
+        "errors": 28,
+        "total": 28,
+        "unresolved": 14,
+        "violations": 14,
+        "warnings": 0
+      },
+      "candidate": {
+        "errors": 28,
+        "total": 28,
+        "unresolved": 14,
+        "violations": 14,
+        "warnings": 0
+      },
+      "fullMultisetEqualIgnoringOnlyLine": true,
+      "added": [],
+      "removed": []
+    }
+  ],
+  "officialScriptSha256": "67fd35597c85a2f37dd3c566f0bd79768cbe059114edcf28074fc5afa3e0ce68",
+  "lint": {
+    "baselineExit": 2,
+    "candidateExit": 2,
+    "reason": "Existing missing configuration;not passed"
+  },
+  "processEvidence": {
+    "initialNode": "3 passed/7 failed includes five genuine extent assertion failures,one wrong test store method TypeError and one random-byte fixture accepted as text by XLSX. Not seven product failures. Correct original store methods and actual truncated PK ZIP in final tests;no product policy changed.",
+    "oldNodeBeforeFix": "Exploratory only;formal negative binds immutable selected base and exact final scripts.",
+    "firstStaticMaterialization": "One extra trailing newline;preserved under static-initial;exact native script rerun separately."
+  },
+  "visualInspected": [
+    "final/images-390/one-cell.png",
+    "final/images-1440/shared-media.png"
+  ],
+  "limits": [
+    "Actual component/controlledGETAPI and callbacks not real HTTP/PG/database E2E",
+    "Controller41 uses existing mock/direct suite",
+    "xlsm extension case does not certify real macros or legacy XLS/DOC",
+    "Original300row/75col engineeringclamp and min24 retained,not new user businesspolicy",
+    "No all-format,all-style,wholeW2/W3-W7/A23/allknowledge/productioncapacity certification",
+    "Strict86/28 debt,missinglintconfig and narrowcanvas/reopenedsidebar existing layout limitations remain"
+  ]
+}
