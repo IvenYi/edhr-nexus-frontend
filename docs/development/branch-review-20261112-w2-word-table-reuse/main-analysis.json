@@ -1,0 +1,207 @@
+{
+  "analysedAt": "2026-11-12T06:49:25.986155+00:00",
+  "testedCandidate": "de9aa396115ac326dd016235ec664a9c0c95fe15",
+  "target": "8a415040babc1cc91ca9f5683bf0db46829eea76",
+  "result": "passed",
+  "protectedSourceInputs": 49,
+  "protectedSourceCurrentGitAndSnapshotEqual": true,
+  "knowledgeInputs": 359,
+  "knowledgeBeforeAfterCurrentGitEqual": true,
+  "node": {
+    "tests": 91,
+    "pass": 91,
+    "fail": 0,
+    "skipped": 0,
+    "cancelled": 0
+  },
+  "pureParserCases": 8,
+  "completePageComparisons": 14,
+  "browserExecutions": [
+    {
+      "group": "word",
+      "width": 1440,
+      "passed": 3,
+      "failed": 0
+    },
+    {
+      "group": "document",
+      "width": 1440,
+      "passed": 8,
+      "failed": 0
+    },
+    {
+      "group": "save",
+      "width": 1440,
+      "passed": 13,
+      "failed": 0
+    },
+    {
+      "group": "import",
+      "width": 1440,
+      "passed": 15,
+      "failed": 0
+    },
+    {
+      "group": "word",
+      "width": 390,
+      "passed": 3,
+      "failed": 0
+    },
+    {
+      "group": "document",
+      "width": 390,
+      "passed": 8,
+      "failed": 0
+    },
+    {
+      "group": "save",
+      "width": 390,
+      "passed": 13,
+      "failed": 0
+    },
+    {
+      "group": "import",
+      "width": 390,
+      "passed": 15,
+      "failed": 0
+    }
+  ],
+  "componentBrowserExecutions": 78,
+  "functionalExecutions": 218,
+  "knowledgeChecksSeparate": 89,
+  "java": [
+    {
+      "class": "TemplateModelingControllerTest",
+      "tests": 41,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "BusinessKnowledgeModelTest",
+      "tests": 89,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  ],
+  "performance": {
+    "rows": 300,
+    "imageOccurrences": 50,
+    "referenceParseCalls": 52,
+    "currentParseCalls": 1,
+    "referenceMs": [
+      1486.5,
+      1336.1000000000931,
+      1440.1999999997206
+    ],
+    "currentMs": [
+      63.39999999990687,
+      48.5,
+      44.5
+    ],
+    "referenceMedianMs": 1440.1999999997206,
+    "currentMedianMs": 48.5,
+    "fullPageJsonEqual": true,
+    "measurement": "Browser conversion including test JSON preparation;not whole UI latency,peak memory or productionSLA;time not assertion threshold"
+  },
+  "negativeSameFinalScripts": {
+    "startedAt": "2026-11-12T06:34:53.259933+00:00",
+    "finishedAt": "2026-11-12T06:35:09.665298+00:00",
+    "command": [
+      "node",
+      "scripts/test-designer-word-table-reuse.mjs"
+    ],
+    "exitCode": 1,
+    "selectedProductCommit": "8a415040babc1cc91ca9f5683bf0db46829eea76",
+    "testHead": "de9aa396115ac326dd016235ec664a9c0c95fe15",
+    "scripts": {
+      "scripts/test-designer-word-table-reuse.mjs": "97d61a96b4c985a61415e93eec628311753ffa47b695ee2e42d696236bdb1b9b",
+      "scripts/fixtures/template-designer-react/word-table-reuse.mjs": "3b2c9ae40e90f2ae8e49b26aacaa000d754137c40dcb521fcb9bdd76449fef85"
+    },
+    "passed": 1,
+    "failed": 7,
+    "allPageComparisonsEqual": true,
+    "reason": "Expected deterministic parse-budget failures only;not product correctness failures or all old suites"
+  },
+  "resolution": {
+    "id": "PERF-W2-WORD-TABLE-REPARSE-001",
+    "parentId": "PERF-DESIGNER-OFFICE-EXPANSION-001",
+    "status": "resolved",
+    "scope": "Per-import reuse of already parsed direct-body tables;parent fullZIP/workbook/media capacity risk remains open",
+    "userAuthorization": "下一批先复用表格解析结果（推荐）"
+  },
+  "premium": [
+    {
+      "scope": "repo",
+      "baseline": {
+        "errors": 86,
+        "total": 86,
+        "unresolved": 14,
+        "violations": 72,
+        "warnings": 0
+      },
+      "candidate": {
+        "errors": 86,
+        "total": 86,
+        "unresolved": 14,
+        "violations": 72,
+        "warnings": 0
+      },
+      "fullFindingMultisetsEqualIgnoringLineOnly": true,
+      "added": [],
+      "removed": []
+    },
+    {
+      "scope": "frontend",
+      "baseline": {
+        "errors": 28,
+        "total": 28,
+        "unresolved": 14,
+        "violations": 14,
+        "warnings": 0
+      },
+      "candidate": {
+        "errors": 28,
+        "total": 28,
+        "unresolved": 14,
+        "violations": 14,
+        "warnings": 0
+      },
+      "fullFindingMultisetsEqualIgnoringLineOnly": true,
+      "added": [],
+      "removed": []
+    }
+  ],
+  "lint": {
+    "baselineExit": 2,
+    "candidateExit": 2,
+    "reason": "Existing missing configuration;not passed"
+  },
+  "processEvidence": {
+    "initialOld": "One error-path evidence hash attempted undefined;fixture/test error,not product failure;final immutable-base run1positive/7true parse-budget failures",
+    "initialHost": "Raw JS undefined props compared to JSON serialization/normalization led representation-only mismatch;final compares entire protocol JSON,with all values/styles/borders/media retained;no product normalizer/serialization change",
+    "network": "Two transient HTTP503 fetch failures and one bad upstream API body retained as observations;target-refresh.json actual later successful fetch to same base",
+    "environment": "Starting->ready wait completed;HEAD and retained test/role evidence reverified against source hashes,no claim of rerun"
+  },
+  "inflightPr87": {
+    "headRefOid": "ba030245fd8410c4a4dcfa99f30cc11fa1ad3c0b",
+    "mergeCommit": null,
+    "mergedAt": null,
+    "number": 87,
+    "state": "OPEN",
+    "url": "https://github.com/IvenYi/edhr-nexus-frontend/pull/87"
+  },
+  "visualInspected": [
+    "final/word-1440/history-and-save.png",
+    "final/word-390/history-and-save.png"
+  ],
+  "limits": [
+    "PR87 independent OPEN branch;no inherited Excel fix or scope certification",
+    "Complete JSON equality preserves existing Word approximations,not full Office layout/legacyDOC support",
+    "Actual component/controlledGETAPI/save callbacks and mock/direct controller not realHTTP/PG E2E",
+    "Original grid300/75 is not global Word content/input memory policy;no new file/row/image limits",
+    "Strict86/28 and missinglint configuration remain",
+    "WholeW2/W3-W7/knowledge semantics/A23/allUI/productioncapacity and original deferred issues remain"
+  ]
+}

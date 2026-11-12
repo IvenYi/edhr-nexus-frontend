@@ -1,0 +1,38 @@
+{
+  "observedAt": "2026-11-12T14:59:52.537887+08:00",
+  "testedCandidate": "de9aa396115ac326dd016235ec664a9c0c95fe15",
+  "target": "8a415040babc1cc91ca9f5683bf0db46829eea76",
+  "protectedInputsMatched": 49,
+  "knowledgeInputsMatched": 359,
+  "qualityResult": "passed",
+  "ontologyResult": "not-applicable",
+  "requiredQualityChecksPassed": 17,
+  "archiveAndManifestHashesUnchanged": true,
+  "knowledgeUnchanged": true,
+  "verifiedArchiveMembers": 481,
+  "rolesFinalObservation": {
+    "recordedAt": "2026-11-12T14:59:07.457733+08:00",
+    "source": "All formal FINAL results received. QA completed observed by actual collaboration.list_agents after resume;ontology formal FINAL and frozen manifest retained before environment restart,not listed among live agents after restore.",
+    "professionalTasks": [
+      {
+        "name": "/root/w2_word_table_reuse_ontology",
+        "status": "completed",
+        "statusEvidence": "Formal FINAL received before environment restart;retained frozen manifest verified;no longer listed as live",
+        "result": "not-applicable",
+        "manifestSha256": "365d078f7433284c4e1844dbdf87a42f81fbbf20e97b428d5720ea7718f6df5b"
+      },
+      {
+        "name": "/root/w2_word_table_reuse_final_qa",
+        "status": "completed",
+        "statusEvidence": "Actual collaboration.list_agents after resumed formal FINAL",
+        "result": "passed",
+        "manifestSha256": "22cc74cc696d06804e0ead5ba305678e504c1a518083eddbe1e9f3769d3023ee"
+      }
+    ],
+    "unfinishedTasks": []
+  },
+  "workingTreeStatus": " M docs/development/branch-review-20261015/NEXT.md\n?? docs/development/branch-review-20261112-w2-word-table-reuse/README.md\n?? docs/development/branch-review-20261112-w2-word-table-reuse/evidence-packages.json\n?? docs/development/branch-review-20261112-w2-word-table-reuse/evidence/\n?? docs/development/branch-review-20261112-w2-word-table-reuse/independent-review.md\n?? docs/development/branch-review-20261112-w2-word-table-reuse/inventory-summary.json\n?? docs/development/branch-review-20261112-w2-word-table-reuse/main-analysis.json\n?? docs/development/branch-review-20261112-w2-word-table-reuse/method-review-records.jsonl\n?? docs/development/branch-review-20261112-w2-word-table-reuse/ontology-result.yaml\n?? docs/development/branch-review-20261112-w2-word-table-reuse/ontology-review.md\n?? docs/development/branch-review-20261112-w2-word-table-reuse/quality-result.yaml\n?? docs/development/branch-review-20261112-w2-word-table-reuse/review.md\n",
+  "taskDrift": "none",
+  "postTestChanges": "L0 reports/evidence/ledger only",
+  "scope": "W2 authorized per-import Word table reuse;complete old/current page output equal;PR87 independent not merged;no policy/backend/layout/history change;parent Office capacity risk and overall audit incomplete"
+}
