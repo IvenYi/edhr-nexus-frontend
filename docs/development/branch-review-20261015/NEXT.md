@@ -1,5 +1,25 @@
 # 持续推进台账
 
+## PR86已合入：W2 Office导入与Excel图片尺寸
+
+已交付 [PR87](https://github.com/IvenYi/edhr-nexus-frontend/pull/87)，audit/edhr-dev-w2-import-normalization-20261112→edhr-dev，实际观察OPEN/MERGEABLE/CLEAN，建议人工合入图片尺寸修复。受测38aae69e、验收归档9688d7f3后仅L0登记；登记前本地/真实远端/PR head同9688，目标仍8a且48/359输入、三包488成员摘要相同。正常推送登记后再核对，下批先fetch实际合入及新增再接W2余项；Word性能顺序待真实答复，不自动merge/deploy/恢复/查询触发CI。
+
+最新基线 `8a415040babc1cc91ca9f5683bf0db46829eea76`，PR86实际merged且树同交付4ea1a96f，无外部代码/知识/契约。[本批](../branch-review-20261112-w2-import-normalization/README.md)L2继续原W2叶子归一化/Excel/Word导入/序列化、W6健壮性/A23及W7增量。分支audit/edhr-dev-w2-import-normalization-20261112，clean受测38aae69e345ca1505873bb47c7456e02ec4783ff。
+
+确认并修复W2-IMPORT-EXCEL-IMAGE-EXTENT-001：标准单锚点有ext像素宽高无br，原180×72/49×101均误成24×24。ExcelJS ExtXform已/9525，不可再换EMU。仅importExcel.ts产品5+/4−加ext类型和nullish尺寸读取，原双锚点/min24/坐标/媒体保持，2新维护脚本+DP；无新业务尺寸/导入上限、后台/API/权限/签署/历史/知识政策，旧冻结和已有模板不回填。
+
+主侧及全新独立各101Node+80两屏浏览器+41Controller=222功能执行，另知识89，0F/E/S；build/原3guard过。旧同最终脚本10中4P6真尺寸F，每宽4中1双锚点正/3尺寸F，无pageerror。实际原ExcelJS写出/再读、媒体字节、共享媒体多尺寸/多媒体、min24/无图/零、真实store一次history/undo/redo及保存重读，实际Shell/CanvasCSS几何/图片加载/不自动保存和保存重开全过。xlsm只是OOXML扩展路由，不称宏认证。390关闭原侧栏/横向滚动可达，重开恢复原侧栏布局限制保留；非HTTP/PG全链。
+
+48源码/测试/契约及359知识/知识测试输入同Git/当前/原件。独立quality passed/FINAL，17必需项过，无findings/blocking，依赖已清/工作树clean；本体NA/FINAL，有限8=5一致/1原gap/2原待决，353知识文件/2849ID、0.3.25/schema1.2.0/P0保持。官方精确原脚本仓库86/前端28完整finding多重集相同新增0，仍exit2；lint缺配置保持。初次新增夹具错误与真正产品红、首轮脚本多尾换行及精确重跑原件分列，不改断言换绿。
+
+五个有限方法范围及8289路径机械清单分别记录，5833历史证据不重算覆盖，不造整文件或历史unique完成比例。源码阅读覆盖Excel/Word适配文本和有限消费方法，review列健壮性/A23维度及图片/单元格/纯布局、Word ZIP/XML/布局的具体提取边界，本批不大重构。
+
+新PERF-W2-WORD-TABLE-REPARSE-001是原PERF-DESIGNER-OFFICE-EXPANSION-001细化子项：实际原Word/JSZip/Chromium加入口计数，300行50处图片同表解析52次，3次约1.14–1.26秒；合成XML包约3.1KiB压缩，非真实Office合规/完整UI/SLA/峰值内存认证。样本数不是上限，300为表格行非DHR表单数。已问下一批复用表解析顺序，未收到答复不实施；旧全ZIP/工作簿膨胀、300/75工程clamp及本地legacy抽取不可达候选保留，不当业务政策或顺手删除。
+
+下一轮先fetch实际合入和新增，再审原W2归一化叶子、Office格式/图文布局与序列化身份及信息保留；Word性能按真实答复另批安排。完整W2/W3–W7、全知识语义、A23含已审补查、另一通用质量/异常/源签署high、A12、完整UI/账号/错误/权限矩阵、非MVP多租户、strict/lint旧债、生产容量UNKNOWN及原暂停/未答继续。不自动merge/deploy/恢复/查询触发CI。全部角色已正式FINAL，随后必须实际PR前漂移复核再交付。
+
+全部角色正式FINAL后，2026-11-12 13:55:59 Asia/Shanghai已实际[PR前漂移/阶段复核](../branch-review-20261112-w2-import-normalization/pre-pr-drift-review.md)：目标仍8a，48/359输入及三包488成员/角色原manifest重算一致，无任务漂移。之后仅L0验收/台账/交付，整体未完成，不改称重新跑测试。
+
 ## PR85已合入：W2设计文档加载失败保护
 
 已交付 [PR86](https://github.com/IvenYi/edhr-nexus-frontend/pull/86)，audit/edhr-dev-w2-designer-document-20261112→edhr-dev，实际观察OPEN/MERGEABLE/CLEAN，建议人工合入本批修复。受测3193fc64、验收归档e3e4adcb后仅L0交付登记；登记前本地/真实远端/PR head同e3e4，目标仍0dd6，43/359输入及490原件成员摘要一致，正常推送登记后再核对。不自动merge/deploy/恢复或查询触发CI；下轮先fetch实际合入和新增，再继续原W2余项。

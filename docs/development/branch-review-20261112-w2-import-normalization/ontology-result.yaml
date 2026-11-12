@@ -1,0 +1,96 @@
+ontologyResult:
+  result: not-applicable
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: 38aae69e345ca1505873bb47c7456e02ec4783ff
+    targetBranch: edhr-dev
+    targetCommit: 8a415040babc1cc91ca9f5683bf0db46829eea76
+    contractReadCommit: 8a415040babc1cc91ca9f5683bf0db46829eea76
+    uncommittedContractPaths: []
+  reason: 本轮仅补读ExcelJS已经提供为像素的单锚点图片ext，使新导入图片不再误用缺失br的24x24回退。原双锚点差值、最小24像素、媒体身份/内容、布局坐标、原配置保存撤销及使用时快照不改；无新业务概念、数量政策、格式协议、生命周期、权限、签署、审计、历史迁移或知识发布。353知识文件和2849资产ID与目标及候选逐字节/按schema清单保持，无必要新增同义业务规则。
+  changedArtifacts: []
+  knowledgeSync:
+  - id: DEC-0077-12
+    disposition: retained
+    scope: 仅新导入格式适配，模板仍按原编辑规则，新使用冻结、旧实例/执行/DHR不回写；未创造发布或图片快照新状态。
+    sourceReferences:
+    - gmp-platform/frontend/src/pages/master-data/template-designer-react/utils/importExcel.ts
+    - docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md#同切片纠正使用时冻结来源配置
+  - id: DEC-0077-22
+    disposition: retained
+    scope: 沿原CanvasPage/store/序列化和同一配置的保存/撤销；不创建第二套图片存储或历史，也不把导入自动保存。
+    sourceReferences:
+    - gmp-platform/frontend/src/pages/master-data/template-designer-react/store/useTemplateDesignerStore.ts#replaceCurrentPageFromImport
+    - gmp-platform/frontend/src/pages/master-data/template-designer-react/utils/document.ts#serializeTemplateDesignerDocument
+  - id: DEC-0077-30
+    disposition: retained
+    scope: 读标准ext不新增字段完整性或投影业务门禁；不收紧正常草稿，来源权限/格式/证据和签署安全边界保持。
+    sourceReferences:
+    - gmp-platform/frontend/src/pages/master-data/template-designer-react/utils/importExcel.ts
+    - docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md#2026-10-10-第三轮注释草稿缺上下文可空批号单位与保存后追溯
+  - id: discrepancy.dhr-review-complete-evidence-impact-gap
+    disposition: deferred
+    scope: 原通用质量/异常/源签署有效性自动变化比较high保持open；图片几何适配与其无依赖，未将本轮原件当作关闭依据。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml
+  - id: question.form-projection-trace-index-effective-scope
+    disposition: deferred
+    scope: 原A12失效/修订历史视图未决保持；本轮不迁移旧图或实现历史视图，不重问已确认当前过程检索。
+    sourceReferences:
+    - docs/knowledge/open-questions.yaml
+  - id: question.multi-tenant-workflow-isolation
+    disposition: deferred
+    scope: 原非MVP完整租户隔离未决保持；前端图片解析不构成后台权限或多租户隔离验收。
+    sourceReferences:
+    - docs/knowledge/open-questions.yaml
+  conflicts: []
+  questions: []
+  validationEvidence:
+  - id: validation.w2-import-finite-records
+    checkType: reference
+    command: python3 build-finite-records.py
+    outcome: passed
+    evidence:
+    - finite-review-records.jsonl
+    - finite-review-summary.json
+    - knowledge-file-inventory.jsonl
+    - knowledge-id-inventory.jsonl
+    - 有限8条=6个既有ID和2个选定说明，5consistent/1原evidence-gap/2原needs-decision；机械353文件/2849唯一schema资产保持pending，不把目录或原成熟度当语义通过。
+  - id: validation.w2-import-source-and-knowledge-preserved
+    checkType: status-transition
+    command: python3 bind-final-inputs.py 38aae69e345ca1505873bb47c7456e02ec4783ff <main-final-run.json>
+    outcome: passed
+    evidence:
+    - baseline-inputs.json
+    - final-source-knowledge-binding.json
+    - read-evidence/import-excel-candidate.diff
+    - 知识0.3.25/schema1.2.0/P0 in-progress和全部成熟度及投影保持；契约与知识相对目标无差异；range.ext像素单位依据已锁定ExcelJS源码，不定义新业务规则。
+  - id: validation.w2-import-main-knowledge-89
+    checkType: schema
+    command: 主侧实际Java命令见final-source-knowledge-binding.json.mainJavaCommand；本体仅核对原件
+    outcome: passed
+    evidence:
+    - read-evidence/final-main/java-summary.json
+    - read-evidence/final-main/TEST-com.zencas.edhr.knowledge.BusinessKnowledgeModelTest.xml
+    - read-evidence/final-main/knowledge-inputs-before.json
+    - read-evidence/final-main/knowledge-inputs.json
+    - 实际XML89个testcase且0失败/错误/skip；原XML时间在主侧本轮Java步骤内，前后知识/测试输入和候选一致。
+  - id: validation.w2-import-main-runtime-binding
+    checkType: evidence-path
+    command: python3 bind-final-inputs.py；读取主侧实际运行输出，不执行浏览器或业务测试
+    outcome: passed
+    evidence:
+    - runtime-evidence-inspection.json
+    - final-source-knowledge-binding.json
+    - read-evidence/main-probe/initial-image-probe.json
+    - read-evidence/installed-exceljs/lib/xlsx/xform/drawing/ext-xform.js
+    - 主侧当前测试、浏览器和构建证据按实际来源记录，不由本体阅读升级为独立质量或完整HTTP/PG/Office容量认证。
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages:
+    - P1
+    - P2
+    - P3
