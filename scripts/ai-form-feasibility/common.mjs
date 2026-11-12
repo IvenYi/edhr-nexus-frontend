@@ -46,7 +46,7 @@ export async function login() {
 
 export async function loadDesigner() {
   const frontend = path.join(root, 'gmp-platform/frontend');
-  const file = path.join(out, 'local/designer.cjs');
+  const file = path.join(out, `local/designer-${process.pid}.cjs`);
   await mkdir(path.dirname(file), { recursive: true });
   await build({ absWorkingDir: frontend, stdin: { resolveDir: frontend, contents: `
     export { importExcelToCanvasPage } from './src/pages/master-data/template-designer-react/utils/importExcel';

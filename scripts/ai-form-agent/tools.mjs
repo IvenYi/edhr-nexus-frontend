@@ -36,7 +36,7 @@ export function isSourceReference(value, sample) {
   } catch { return false; }
 }
 
-export function createSession({ knowledge, sample, designer, token, runId }) {
+export function createSession({ knowledge, sample, designer, token, runId, codePrefix = 'AGENT-V2-' }) {
   const state = { template: null, draft: null, payload: null, readback: null, inspected: false, queriedIds: new Set(), evidenceIds: new Set(), calls: [], saves: 0, finished: null };
   let catalog, lookupItems;
   const dir = 'runs/' + runId;
@@ -88,7 +88,7 @@ export function createSession({ knowledge, sample, designer, token, runId }) {
       }
       const compiled = compileLayout(args, sample, designer, lookupItems);
       if (compiled.errors.length) return { saved: false, errors: compiled.errors };
-      if (!state.template) state.template = await api(templates, token, 'POST', { code: 'AGENT-V2-' + runId.toUpperCase(), name: args.name, version: 'V1.0', categoryName: 'AI验证', description: '自主知识查询隔离实验；非客户生产配置' });
+      if (!state.template) state.template = await api(templates, token, 'POST', { code: codePrefix + runId.toUpperCase(), name: args.name, version: 'V1.0', categoryName: 'AI验证', description: '自主知识查询隔离实验；非客户生产配置' });
       const before = await current(), versionId = state.template.versions[0].id;
       const v = before.versions.find(v => v.id === versionId);
       if (state.payload && (v.modelDesignJson !== state.payload.modelDesignJson || v.canvasDesignJson !== state.payload.canvasDesignJson)) throw new Error('目标被其他操作者修改，停止覆盖');

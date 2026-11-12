@@ -13,7 +13,13 @@ export function physicalRect(address, box, page) {
 
 // Fractional placement is materialized as real native rows/columns; renderer sees cellRange only.
 export function compileLayout(draft, sample, designer, lookupItems) {
-  const original = sample.page, errors = [], keys = new Set();
+  const original = structuredClone(sample.page), errors = [], keys = new Set();
+  for (const [axis, property] of [['rows', 'rowHeights'], ['columns', 'columnWidths']]) {
+    for (const [index, size] of Object.entries(draft.gridAdjustments?.[axis] ?? {})) {
+      if (!/^[1-9]\d*$/.test(index) || Number(index) > original.sheet[property].length || !Number.isFinite(size) || size < 20 || size > 2000) errors.push('非法网格尺寸：' + axis + '/' + index);
+      else original.sheet[property][Number(index) - 1] = size;
+    }
+  }
   const moves = new Map((draft.textMoves ?? []).map(m => [m.source, m.parts]));
   if (moves.size !== (draft.textMoves ?? []).length) errors.push('同一原文只能拆分一次');
   const sourceText = new Map(sample.input.cells.map(c => [c.address, c.text]));

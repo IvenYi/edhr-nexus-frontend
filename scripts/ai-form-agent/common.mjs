@@ -5,8 +5,10 @@ import { isDeepStrictEqual } from 'node:util';
 export { root, requireFrontend, range, loadDesigner } from '../ai-form-feasibility/common.mjs';
 import { root } from '../ai-form-feasibility/common.mjs';
 
-export const out = path.join(root, 'output/ai-form-agent-v2-20261112');
-export const base = 'http://127.0.0.1:18092/api/v1';
+const batch = process.env.AI_FORM_AGENT_BATCH ?? 'ai-form-agent-v2-20261112';
+if (!/^[a-z0-9-]+$/.test(batch)) throw new Error('Invalid experiment batch name');
+export const out = path.join(root, 'output', batch);
+export const base = `http://127.0.0.1:${process.env.AI_FORM_AGENT_PORT ?? '18092'}/api/v1`;
 export const templates = '/master-data/template-modeling/form-templates';
 export const hash = value => createHash('sha256').update(typeof value === 'string' ? value : JSON.stringify(value)).digest('hex');
 export const read = async name => JSON.parse(await readFile(path.join(out, name), 'utf8'));
