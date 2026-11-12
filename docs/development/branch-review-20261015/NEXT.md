@@ -1,5 +1,23 @@
 # 持续推进台账
 
+## PR87、PR88已合入：W2显式字段类型信息保留
+
+已交付 [PR89](https://github.com/IvenYi/edhr-nexus-frontend/pull/89)，audit/edhr-dev-w2-normalization-boundaries-20261112→edhr-dev，实际观察open/mergeable/clean，建议人工合入。受测1ae712ef、验收归档7919ee00后仅L0交付登记；登记前本地/实际远端/PR head同7919，目标仍fc2f21aa、53/359输入及三包492成员保持。普通推送登记后再核对；下一批先fetch实际合入及新增，不自动merge/deploy/恢复/查询触发CI。
+
+最新目标 `fc2f21aa5e58c2d9a3a39270f1f624bef39da652`：PR88先合入2259b8ae，PR87随后合入fc2f21aa；不再沿用下方旧批“PR87在途”。本轮L2独立新分支audit/edhr-dev-w2-normalization-boundaries-20261112，clean受测 `1ae712ef9f35d8d0b0eb9022e1d7acfc85d14cd7`，无额外契约/知识/外部产品增量。[本批记录](../branch-review-20261112-w2-normalization-boundaries/README.md)。
+
+BUG-W2-UNSUPPORTED-FIELD-TYPE-001：当前格式内未知显式非空类型原被降为text，实际Shell手动保存改写原类型。仅document.ts+9行严格编辑读取识别，复用原加载失败/禁写/恢复；当前十类型、十六旧别名、缺省/null/空白草稿、默认只读保持，无后台/业务政策/历史回写或大重构。原PR86外壳/集合与本次叶子判别分列，不重复修旧问题。
+
+主侧与全新独立各111Node+8Word解析+88两屏组件+41Controller=248功能执行，另89知识，无F/E/S；build/原三guard过。旧相同最终脚本Node30P/7预期F、浏览器8P/1预期F，原载荷确将future-number写text；新类型禁写和当前/旧/草稿/只读兼容通过。PR87图片与PR88表格复用在实际组合重跑；不冒称完整HTTP/PG、全部叶子/Office格式或容量认证。官方strict仓库86/前端28完整finding集合相同，仍exit2；lint旧缺配置保持。
+
+本体NA/FINAL，无知识资产政策更新；全新独立quality passed/FINAL、19必需过，无findings/blocking。53源码/契约/邻接和359知识输入与Git/当前相同；三包492成员及角色原manifest已核。两实例实际completed后于2026-11-12 15:46:16 Asia/Shanghai执行[PR前漂移复核](../branch-review-20261112-w2-normalization-boundaries/pre-pr-drift-review.md)，再次fetch目标相同、无漂移。首次fetch的环境失效旧分支映射导致失败，精确清除后成功，原件保留；之后仅L0记录。
+
+按用户本轮明确授权，已实际删除88个合并审计远端分支：实时合入/可达证据、精确头lease和原子删除及事后API复核齐全，main/edhr-dev稳定头与三个非审计分支保持，88本地恢复引用已核。未删除稳定历史或恢复数据，新审查分支保留；操作原件在主包branch-cleanup。
+
+8332路径机械盘点、三条有限方法覆盖和知识语义/运行分别报告，不造全文件或整体完成率。A23对原document/Shell邻接有限补查，无本次新增过度防御；store3538行与Shell460行给出具体纯计算/命令族/来源生命周期拆分边界，不在本批重构。
+
+下一轮先fetch本PR实际合入和新增，再续模型/画布其余叶子、子表列和序列化身份/信息保留、Office布局/容量。完整W2/W3–W7、全知识语义、A23已审补查、原high/A12、完整UI/账号/错误/权限与非MVP多租户、strict/lint、生产容量UNKNOWN及原暂停范围保持；性能先量化讨论，不自动merge/deploy/恢复或查询触发CI。
+
 ## PR86已合入：W2 Office导入与Excel图片尺寸
 
 已交付 [PR87](https://github.com/IvenYi/edhr-nexus-frontend/pull/87)，audit/edhr-dev-w2-import-normalization-20261112→edhr-dev，实际观察OPEN/MERGEABLE/CLEAN，建议人工合入图片尺寸修复。受测38aae69e、验收归档9688d7f3后仅L0登记；登记前本地/真实远端/PR head同9688，目标仍8a且48/359输入、三包488成员摘要相同。正常推送登记后再核对，下批先fetch实际合入及新增再接W2余项；Word性能顺序待真实答复，不自动merge/deploy/恢复/查询触发CI。

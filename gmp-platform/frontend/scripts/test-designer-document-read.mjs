@@ -85,3 +85,32 @@ test('editing validation parses each persisted slice at most once',()=>{
   try {strict(source);} finally {JSON.parse=original;}
   assert.ok(calls<=3,`read parsed the three slices ${calls} times`);
 });
+
+for(const type of ['future-number',42,{},[], 'constructor','toString','__proto__']) test(`editing rejects unsupported explicit field type ${JSON.stringify(type)} before it can be saved as text`,()=>{
+  const source={modelDesignJson:wrap({fields:[{id:'keep-field',type,typeConfig:{custom:'keep-config'}}]})};
+  const before=JSON.stringify(source);
+  assert.throws(()=>strict(source));assert.equal(JSON.stringify(source),before);
+});
+
+test('all current and explicitly mapped legacy field types remain editable',()=>{
+  const types=['text','number','datetime','signature','attachment','image','singleSelect','multiSelect','reference','subTable'];
+  const legacy={input:'text',link:'text',textarea:'text',inputnumber:'number',inputdouble:'number',datepicker:'datetime',datetimepicker:'datetime',timepicker:'datetime',radio:'singleSelect',select:'singleSelect',switch:'singleSelect',checkbox:'multiSelect',userpicker:'reference',department:'reference','sub-table':'subTable',readonlycmp:'text'};
+  for(const [type,expected] of [...types.map(type=>[type,type]),...Object.entries(legacy)]){
+    const result=strict({modelDesignJson:wrap({fields:[{id:'keep-field',type,typeConfig:{custom:'keep-config'}}]})});
+    assert.equal(result.model.fields[0].type,expected);assert.equal(result.model.fields[0].id,'keep-field');
+    assert.equal(result.model.fields[0].typeConfig.custom,'keep-config');
+  }
+});
+
+test('missing and blank field types keep incomplete-draft defaults',()=>{
+  for(const type of [undefined,null,'','   ']){
+    const result=strict({modelDesignJson:wrap({fields:[{id:'draft-field',type}]})});
+    assert.equal(result.model.fields[0].type,'text');assert.equal(result.model.fields[0].id,'draft-field');
+  }
+});
+
+test('unknown field types retain the existing read-only fallback without altering source JSON',()=>{
+  const source={id:'readonly',version:'V1',modelDesignJson:wrap({fields:[{id:'unknown-field',type:'future-number'}]})};
+  const before=JSON.stringify(source),result=parse(row,source);
+  assert.equal(result.model.fields[0].type,'text');assert.equal(JSON.stringify(source),before);
+});

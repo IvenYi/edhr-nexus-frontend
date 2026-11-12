@@ -1,0 +1,22 @@
+{
+  "observedAt": "2026-11-12T07:46:14.097536+00:00",
+  "command": [
+    "git",
+    "config",
+    "--fixed-value",
+    "--unset-all",
+    "remote.origin.fetch",
+    "+refs/heads/audit/edhr-dev-signature-payload-20261021:refs/remotes/origin/audit/edhr-dev-signature-payload-20261021"
+  ],
+  "exitCode": 0,
+  "before": [
+    "+refs/heads/main:refs/remotes/origin/main",
+    "+refs/heads/edhr-dev:refs/remotes/origin/edhr-dev",
+    "+refs/heads/audit/edhr-dev-signature-payload-20261021:refs/remotes/origin/audit/edhr-dev-signature-payload-20261021"
+  ],
+  "after": [
+    "+refs/heads/main:refs/remotes/origin/main",
+    "+refs/heads/edhr-dev:refs/remotes/origin/edhr-dev"
+  ],
+  "scope": "Only exact deleted audit remote fetch mapping;local environment config,not repository source or stable refs;recovery refs untouched"
+}

@@ -352,6 +352,15 @@ function parsePersistedSlice<T>(input: unknown, part: 'model' | 'canvas' | 'work
       const items = input.payload[key];
       if (items !== undefined && (!Array.isArray(items) || items.some(item => !object(item)))) throw new Error('表单设计内容无法读取');
     }
+    if (part === 'model' && Array.isArray(input.payload.fields)) {
+      for (const field of input.payload.fields) {
+        const type: unknown = field.type;
+        if (type == null || (typeof type === 'string' && !type.trim())) continue;
+        if (typeof type !== 'string' || (getFieldTypeDefinition(type).type !== type && !Object.prototype.hasOwnProperty.call(LEGACY_FIELD_TYPE_MAP, type))) {
+          throw new Error('表单设计内容无法读取');
+        }
+      }
+    }
   }
   if (!isReactTemplateDesignerPayload<T>(input)) return undefined;
   return input.payload;

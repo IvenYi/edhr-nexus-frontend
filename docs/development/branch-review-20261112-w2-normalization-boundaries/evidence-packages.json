@@ -1,0 +1,40 @@
+{
+  "sealedAt": "2026-11-12T07:45:09.622751+00:00",
+  "testedCandidate": "1ae712ef9f35d8d0b0eb9022e1d7acfc85d14cd7",
+  "packages": [
+    {
+      "name": "main",
+      "path": "evidence/main.zip",
+      "bytes": 3737866,
+      "sha256": "36b1fd93db879bc091e0f842c729f3df9edb868eab37ff2d8b0a45735f302663",
+      "members": 234,
+      "manifest": "evidence/main-manifest.json",
+      "manifestSha256": "373212fd3787e7f2388210575b447d363d1b05ffdca384a2a4ca6c2012008edf"
+    },
+    {
+      "name": "ontology",
+      "path": "evidence/ontology.zip",
+      "bytes": 200943,
+      "sha256": "780c61ae71e0ed665e7779e8aa34a330f8f0b567b31fee7c42b9631d06351af1",
+      "members": 28,
+      "manifest": "evidence/ontology-manifest.json",
+      "manifestSha256": "b5b08f357054c3775c41771c7c895855a1daf35d238e6c4418eedb43294371b7"
+    },
+    {
+      "name": "independent",
+      "path": "evidence/independent.zip",
+      "bytes": 3328200,
+      "sha256": "d1dd33d213a3fde2c3ecb137e60d5c5a61f64aae655060d65ba0f34cae9d71de",
+      "members": 230,
+      "manifest": "evidence/independent-manifest.json",
+      "manifestSha256": "acb5a384f045af1fa90648049507b6b8b1e9a67c3472bba4f76674b9484e1374"
+    }
+  ],
+  "roleFinalManifestSha256": {
+    "ontology": "7ff2d0667ec9719bcad6a0424b66295f4c38d80d1b0d5e9652f2451e8007a3a4",
+    "independent": "3cf452a7ad4db674f30803909316b0f6e9462ecf257c4cb531ce6099b5bd7ef0"
+  },
+  "allArchiveMemberHashesVerified": true,
+  "originalRoleManifestsAndSha256SumsVerified": true,
+  "scope": "W2 explicit unsupported field type strict editing protection;PR87+88 actual integration;1 product+2 maintained tests+DP;main/independent111Node+96Chromium+41controller,knowledge89 separate;controlledAPI browser and mockdirect controller not nativeHTTP/PG;strict86/28 and missingLintConfiguration retained;88 merged audit remote branches deleted with stable history and local recovery refs;no businesspolicy/schema/index/backend/knowledge/history change"
+}

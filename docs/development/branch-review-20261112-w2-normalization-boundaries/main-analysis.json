@@ -1,0 +1,184 @@
+{
+  "analysedAt": "2026-11-12T07:34:45.020274+00:00",
+  "testedCandidate": "1ae712ef9f35d8d0b0eb9022e1d7acfc85d14cd7",
+  "target": "fc2f21aa5e58c2d9a3a39270f1f624bef39da652",
+  "result": "passed",
+  "protectedSourceInputs": 51,
+  "reviewAdjacencyInputs": 2,
+  "protectedSourceCurrentGitAndSnapshotEqual": true,
+  "knowledgeInputs": 359,
+  "knowledgeBeforeAfterCurrentGitEqual": true,
+  "node": {
+    "tests": 111,
+    "pass": 111,
+    "fail": 0,
+    "skipped": 0,
+    "cancelled": 0
+  },
+  "pureParserCases": 8,
+  "browserExecutions": [
+    {
+      "group": "word",
+      "width": 1440,
+      "passed": 3,
+      "failed": 0
+    },
+    {
+      "group": "document",
+      "width": 1440,
+      "passed": 9,
+      "failed": 0
+    },
+    {
+      "group": "save",
+      "width": 1440,
+      "passed": 13,
+      "failed": 0
+    },
+    {
+      "group": "import",
+      "width": 1440,
+      "passed": 15,
+      "failed": 0
+    },
+    {
+      "group": "excel",
+      "width": 1440,
+      "passed": 4,
+      "failed": 0
+    },
+    {
+      "group": "word",
+      "width": 390,
+      "passed": 3,
+      "failed": 0
+    },
+    {
+      "group": "document",
+      "width": 390,
+      "passed": 9,
+      "failed": 0
+    },
+    {
+      "group": "save",
+      "width": 390,
+      "passed": 13,
+      "failed": 0
+    },
+    {
+      "group": "import",
+      "width": 390,
+      "passed": 15,
+      "failed": 0
+    },
+    {
+      "group": "excel",
+      "width": 390,
+      "passed": 4,
+      "failed": 0
+    }
+  ],
+  "componentBrowserExecutions": 88,
+  "functionalExecutions": 248,
+  "knowledgeChecksSeparate": 89,
+  "java": [
+    {
+      "class": "TemplateModelingControllerTest",
+      "tests": 41,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "BusinessKnowledgeModelTest",
+      "tests": 89,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  ],
+  "negativeSameFinalScripts": {
+    "base": "fc2f21aa5e58c2d9a3a39270f1f624bef39da652",
+    "scriptCandidate": "1ae712ef9f35d8d0b0eb9022e1d7acfc85d14cd7",
+    "node": {
+      "passed": 30,
+      "failed": 7
+    },
+    "browser": {
+      "passed": 8,
+      "failed": 1
+    },
+    "savedUnknownTypeAsText": true,
+    "scope": "Same final tests select original product source;expected negative failures only"
+  },
+  "resolution": {
+    "id": "BUG-W2-UNSUPPORTED-FIELD-TYPE-001",
+    "status": "resolved",
+    "severity": "medium",
+    "trigger": "Current envelope includes explicit nonempty type unsupported by current editor",
+    "rootCause": "normalizeFieldType fallback silently changes explicit type to text before manual save",
+    "scope": "Top-level model fields strict editing only;not complete leaf/nested schema validation"
+  },
+  "premium": [
+    {
+      "scope": "repo",
+      "baseline": {
+        "errors": 86,
+        "total": 86,
+        "unresolved": 14,
+        "violations": 72,
+        "warnings": 0
+      },
+      "candidate": {
+        "errors": 86,
+        "total": 86,
+        "unresolved": 14,
+        "violations": 72,
+        "warnings": 0
+      },
+      "fullFindingMultisetsEqualIgnoringLineOnly": true
+    },
+    {
+      "scope": "frontend",
+      "baseline": {
+        "errors": 28,
+        "total": 28,
+        "unresolved": 14,
+        "violations": 14,
+        "warnings": 0
+      },
+      "candidate": {
+        "errors": 28,
+        "total": 28,
+        "unresolved": 14,
+        "violations": 14,
+        "warnings": 0
+      },
+      "fullFindingMultisetsEqualIgnoringLineOnly": true
+    }
+  ],
+  "lint": {
+    "baselineExit": 2,
+    "candidateExit": 2,
+    "reason": "Existing missing configuration;not passed"
+  },
+  "branchCleanup": {
+    "deletedCount": 88,
+    "retained": [
+      "codex/ai-experiments",
+      "edhr-dev",
+      "feat/record-change",
+      "form-traceability-projection",
+      "main"
+    ],
+    "stableHeadsUnchanged": true,
+    "localRecoveryRefsVerified": 88
+  },
+  "limits": [
+    "Controlled component API/savecallbacks and direct mockcontroller are not fullHTTP/PG E2E",
+    "Unknown field type input proven;normal current UI does not create such input",
+    "Top-level discriminator only;other leaves/nested columns/Office allformat and capacity remain",
+    "Strict86/frontend28 and missinglint configuration remain",
+    "WholeW2/W3-W7/allknowledge semantics/A23 alreadyreviewed revisit/other deferred scope remain"
+  ]
+}
