@@ -457,13 +457,15 @@ function parseTable(tableNode: Element): ParsedTable {
   };
 }
 
-function parseBlocks(doc: Document) {
+function parseBlocks(doc: Document, tables: Map<Element, ParsedTable>) {
   return childrenByLocalName(firstDescendant(doc, 'body'), ['p', 'tbl'])
     .map((node): ParsedBlock | null => {
       if (getLocalName(node) === 'tbl') {
+        const table = parseTable(node);
+        tables.set(node, table);
         return {
           type: 'table',
-          table: parseTable(node),
+          table,
         };
       }
       const text = paragraphText(node);
@@ -700,13 +702,14 @@ async function readZipEntries(file: File) {
   return entries;
 }
 
-function collectImageItems(doc: Document) {
+function collectImageItems(doc: Document, tables: ReadonlyMap<Element, ParsedTable>) {
   const items: Array<{ relationshipId: string; width: number; height: number; left: number; top: number }> = [];
   const body = firstDescendant(doc, 'body');
   const blocks = childrenByLocalName(body, ['p', 'tbl']);
   let top = 0;
 
   blocks.forEach((blockNode) => {
+    const table = tables.get(blockNode);
     descendantsByLocalName(blockNode, 'blip').forEach((blipNode) => {
       const relationshipId = getAttribute(blipNode, 'embed');
       if (!relationshipId) return;
@@ -719,8 +722,7 @@ function collectImageItems(doc: Document) {
 
       let left = 0;
       let innerTop = 0;
-      if (getLocalName(blockNode) === 'tbl') {
-        const table = parseTable(blockNode);
+      if (table) {
         const trNode = closestAncestor(blipNode, 'tr', blockNode);
         const tcNode = closestAncestor(blipNode, 'tc', blockNode);
         const rows = childrenByLocalName(blockNode, ['tr']);
@@ -745,8 +747,8 @@ function collectImageItems(doc: Document) {
       });
     });
 
-    top += getLocalName(blockNode) === 'tbl'
-      ? parseTable(blockNode).rows.reduce((sum, row) => sum + row.height, 0)
+    top += table
+      ? table.rows.reduce((sum, row) => sum + row.height, 0)
       : estimateTextHeight(paragraphText(blockNode), DEFAULT_COLUMN_WIDTH * 3);
   });
 
@@ -766,8 +768,9 @@ function buildDocxImages(
   doc: Document,
   rels: Map<string, string>,
   entries: Map<string, DocxEntry>,
+  tables: ReadonlyMap<Element, ParsedTable>,
 ): { medias: CanvasSheetMedia[]; images: CanvasSheetImage[] } {
-  const items = collectImageItems(doc);
+  const items = collectImageItems(doc, tables);
   const medias: CanvasSheetMedia[] = [];
   const images: CanvasSheetImage[] = [];
 
@@ -896,8 +899,9 @@ async function importDocxToCanvasPage(file: File, pageId: string, pageName: stri
   const doc = parseXml(new TextDecoder().decode(documentEntry.bytes));
   const rels = relsEntry ? parseRelationships(new TextDecoder().decode(relsEntry.bytes)) : new Map<string, string>();
   const orientation = resolveDocxOrientation(doc);
-  const blocks = parseBlocks(doc);
-  const { medias, images } = buildDocxImages(doc, rels, entries);
+  const tables = new Map<Element, ParsedTable>();
+  const blocks = parseBlocks(doc, tables);
+  const { medias, images } = buildDocxImages(doc, rels, entries, tables);
   const contentWidth = getImportedPaperContentWidth(orientation);
   const nodes = [
     ...buildWordParagraphNodes(blocks, contentWidth),
