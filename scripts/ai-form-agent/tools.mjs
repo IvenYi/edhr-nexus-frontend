@@ -36,9 +36,10 @@ export function isSourceReference(value, sample) {
   } catch { return false; }
 }
 
-export function createSession({ knowledge, sample, designer, token, runId, codePrefix = 'AGENT-V2-' }) {
-  const state = { template: null, draft: null, payload: null, readback: null, inspected: false, queriedIds: new Set(), evidenceIds: new Set(), calls: [], saves: 0, finished: null };
-  let catalog, lookupItems;
+export function createSession({ knowledge, sample, designer, token, runId, codePrefix = 'AGENT-V2-', checkpoint, write = api }) {
+  const state = { template: null, draft: null, payload: null, readback: null, inspected: false, calls: [], saves: 0, finished: null,
+    ...checkpoint?.state, queriedIds: new Set(checkpoint?.state.queriedIds), evidenceIds: new Set(checkpoint?.state.evidenceIds) };
+  let { catalog, lookupItems } = checkpoint ?? {};
   const dir = 'runs/' + runId;
   async function current() {
     if (!state.template) throw new Error('本会话尚未创建模板');
@@ -88,11 +89,11 @@ export function createSession({ knowledge, sample, designer, token, runId, codeP
       }
       const compiled = compileLayout(args, sample, designer, lookupItems);
       if (compiled.errors.length) return { saved: false, errors: compiled.errors };
-      if (!state.template) state.template = await api(templates, token, 'POST', { code: codePrefix + runId.toUpperCase(), name: args.name, version: 'V1.0', categoryName: 'AI验证', description: '自主知识查询隔离实验；非客户生产配置' });
+      if (!state.template) state.template = await write(templates, token, 'POST', { code: codePrefix + runId.toUpperCase(), name: args.name, version: 'V1.0', categoryName: 'AI验证', description: '自主知识查询隔离实验；非客户生产配置' });
       const before = await current(), versionId = state.template.versions[0].id;
       const v = before.versions.find(v => v.id === versionId);
       if (state.payload && (v.modelDesignJson !== state.payload.modelDesignJson || v.canvasDesignJson !== state.payload.canvasDesignJson)) throw new Error('目标被其他操作者修改，停止覆盖');
-      const saved = await api(`${templates}/${state.template.id}/versions/${versionId}/design`, token, 'PUT', compiled.payload);
+      const saved = await write(`${templates}/${state.template.id}/versions/${versionId}/design`, token, 'PUT', compiled.payload);
       state.draft = structuredClone(args); state.payload = { modelDesignJson: saved.modelDesignJson, canvasDesignJson: saved.canvasDesignJson, workflowDesignJson: saved.workflowDesignJson };
       state.inspected = false; state.saves++;
       await save(dir + `/save-${state.saves}.json`, { draft: args, document: compiled.document, geometry: compiled.geometry, saved }, true);
@@ -126,7 +127,9 @@ export function createSession({ knowledge, sample, designer, token, runId, codeP
     }
     throw new Error('未知或不允许的工具：' + name);
   }
-  return { state, async execute(name, args) {
+  return { state, checkpoint() {
+    return { state: { ...state, queriedIds: [...state.queriedIds], evidenceIds: [...state.evidenceIds] }, catalog, lookupItems };
+  }, async execute(name, args) {
     const entry = { sequence: state.calls.length + 1, name, args, at: new Date().toISOString() };
     try { entry.result = await handle(name, args); } catch (error) { entry.result = { error: error.message }; }
     state.calls.push(entry); await save(dir + '/tool-' + entry.sequence + '.json', entry, true);

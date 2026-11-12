@@ -16,14 +16,15 @@ export async function createProvider(provider, instructions, tools, task) {
   if (!key) throw new Error('缺少 ' + provider + ' API key');
   const history = provider === 'openai' ? [{ role: 'user', content: task }] : [{ role: 'system', content: instructions }, { role: 'user', content: task }];
   return { history,
-    async call() {
+    async call(signal) {
       const request = provider === 'openai'
         ? { model: configuration.model, instructions, input: history, tools: tools.map(t => ({ ...t, type: 'function', strict: false })),
           reasoning: { effort: configuration.effort }, include: ['reasoning.encrypted_content'], max_output_tokens: configuration.maxOutputTokens, store: false, parallel_tool_calls: true }
         : { model: configuration.model, messages: history, tools: tools.map(t => ({ type: 'function', function: { ...t, strict: false } })),
           thinking: { type: 'enabled' }, reasoning_effort: configuration.effort, max_tokens: configuration.maxOutputTokens, stream: false };
       const started = performance.now(), at = new Date().toISOString();
-      const response = await fetch(configuration.endpoint, { method: 'POST', signal: AbortSignal.timeout(240000),
+      const timeout = AbortSignal.timeout(240000);
+      const response = await fetch(configuration.endpoint, { method: 'POST', signal: signal ? AbortSignal.any([signal, timeout]) : timeout,
         headers: { Authorization: 'Bearer ' + key, 'Content-Type': 'application/json' }, body: JSON.stringify(request) });
       const data = await response.json();
       if (!response.ok) throw new Error(provider + ' HTTP ' + response.status + '; code=' + String(data.error?.code ?? 'unknown') + '; message=' + String(data.error?.message ?? '').replaceAll(key, '[redacted]').slice(0, 350));

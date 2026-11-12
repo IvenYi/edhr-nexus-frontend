@@ -47,8 +47,9 @@ export async function checkReferences(draft, token, query = api) {
 }
 
 export function createControlledSession(options) {
-  const base = createSession({ ...options, codePrefix: 'AGENT-V3-' }), state = base.state;
-  const extra = { applicableQueries: [], preview: null, observedPreviewRevision: null, lastCheck: null, calls: [], finished: null, policies: options.policies ?? [] };
+  const base = createSession({ ...options, codePrefix: options.codePrefix ?? 'AGENT-V3-', checkpoint: options.checkpoint?.base }), state = base.state;
+  const extra = { applicableQueries: [], preview: null, observedPreviewRevision: null, lastCheck: null, calls: [], finished: null,
+    ...options.checkpoint?.extra, policies: options.policies ?? [] };
   const check = draft => checkSemantics(draft, options.sample, extra.policies);
   async function current() {
     if (!state.template) throw new Error('尚未创建本会话模板');
@@ -112,7 +113,8 @@ export function createControlledSession(options) {
     if (!tools.some(t => t.name === name)) throw new Error('未开放的工具');
     return base.execute(name, args);
   }
-  return { state, extra, observePreview(revision) { extra.observedPreviewRevision = revision; }, async execute(name, args) {
+  return { state, extra, checkpoint() { return { base: base.checkpoint(), extra }; },
+    observePreview(revision) { extra.observedPreviewRevision = revision; }, async execute(name, args) {
     const entry = { sequence: extra.calls.length + 1, name, args, at: new Date().toISOString() };
     try { entry.result = await handle(name, args); } catch (e) { entry.result = { error: e.message }; }
     extra.calls.push(entry); await save(`runs/${options.runId}/controlled-tool-${entry.sequence}.json`, entry, true); return entry.result;

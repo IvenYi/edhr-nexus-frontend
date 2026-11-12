@@ -30,7 +30,7 @@ if (process.argv.includes('--freeze')) {
     row.clippingProgress = calls.filter(c => c.name === 'preview_template' && c.result.images).sort((a,b) => a.sequence-b.sequence).map(c => c.result.issues.length);
     if (r.saved) {
       const draft = await read(`runs/${id}/draft.json`), lastSave = await read(`runs/${id}/save-${r.saves}.json`);
-      const list = await api(templates + '?code=' + encodeURIComponent('AGENT-V3-' + id.toUpperCase()) + '&size=100', token);
+      const list = await api(templates + '?code=' + encodeURIComponent(r.templateCode ?? 'AGENT-V3-' + id.toUpperCase()) + '&size=100', token);
       const current = list.content.find(t => t.id === r.templateId), version = current?.versions.find(v => v.id === r.versionId);
       assert.ok(version, id + ' missing live version');
       row.persistenceMatches = ['modelDesignJson', 'canvasDesignJson', 'workflowDesignJson'].every(k => version[k] === lastSave.saved[k]);
