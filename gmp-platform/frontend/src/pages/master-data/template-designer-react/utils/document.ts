@@ -18,11 +18,12 @@ import type {
 import { getFieldTypeDefinition } from '../registry/fieldRegistry';
 import { createLegacySubTableRegion, readNodeCellRange } from './subTableRegion';
 
-function safeParseJson(input?: string | null) {
-  if (!input?.trim()) return null;
+function safeParseJson(input?: string | null, forEditing = false) {
+  if (!input?.trim()) return undefined;
   try {
     return JSON.parse(input) as unknown;
   } catch (error) {
+    if (forEditing) throw new Error('表单设计内容无法读取');
     console.warn(error);
     return null;
   }
@@ -337,7 +338,21 @@ function normalizeCanvasState(canvas: CanvasDesignState | undefined): CanvasDesi
   };
 }
 
-function parsePersistedSlice<T>(input: unknown): T | undefined {
+function parsePersistedSlice<T>(input: unknown, part: 'model' | 'canvas' | 'workflow', forEditing = false): T | undefined {
+  if (forEditing && input !== undefined) {
+    const object = (value: unknown): value is Record<string, unknown> => Boolean(value) && typeof value === 'object' && !Array.isArray(value);
+    if (!isReactTemplateDesignerPayload<unknown>(input)) {
+      const emptyKeys = part === 'model' ? ['fields', 'groups'] : part === 'canvas' ? ['layers', 'pages'] : ['nodes', 'edges'];
+      if (object(input) && Object.keys(input).every(key => emptyKeys.includes(key) && Array.isArray(input[key]) && input[key].length === 0)) return undefined;
+      throw new Error('表单设计内容无法读取');
+    }
+    if (input.version !== 1 || !object(input.payload)) throw new Error('表单设计内容无法读取');
+    const arrayKeys = part === 'model' ? ['fields', 'groups'] : part === 'canvas' ? ['pages'] : ['nodes', 'edges'];
+    for (const key of arrayKeys) {
+      const items = input.payload[key];
+      if (items !== undefined && (!Array.isArray(items) || items.some(item => !object(item)))) throw new Error('表单设计内容无法读取');
+    }
+  }
   if (!isReactTemplateDesignerPayload<T>(input)) return undefined;
   return input.payload;
 }
@@ -345,10 +360,12 @@ function parsePersistedSlice<T>(input: unknown): T | undefined {
 export function parseReactTemplateDesignerDocument(
   row: TemplateModelingRecord,
   version: TemplateVersionRecord,
+  options?: { forEditing?: boolean },
 ): TemplateDesignerDocument {
-  const persistedModel = parsePersistedSlice<ModelDesignState>(safeParseJson(version.modelDesignJson));
-  const persistedCanvas = normalizeCanvasState(parsePersistedSlice<CanvasDesignState>(safeParseJson(version.canvasDesignJson)));
-  const persistedWorkflow = parsePersistedSlice<WorkflowDesignState>(safeParseJson(version.workflowDesignJson));
+  const forEditing = options?.forEditing ?? false;
+  const persistedModel = parsePersistedSlice<ModelDesignState>(safeParseJson(version.modelDesignJson, forEditing), 'model', forEditing);
+  const persistedCanvas = normalizeCanvasState(parsePersistedSlice<CanvasDesignState>(safeParseJson(version.canvasDesignJson, forEditing), 'canvas', forEditing));
+  const persistedWorkflow = parsePersistedSlice<WorkflowDesignState>(safeParseJson(version.workflowDesignJson, forEditing), 'workflow', forEditing);
 
   return createEmptyTemplateDesignerDocument(buildMeta(row, version), {
     model: persistedModel,
