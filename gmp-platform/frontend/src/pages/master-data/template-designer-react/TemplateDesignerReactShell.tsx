@@ -193,7 +193,11 @@ export default function TemplateDesignerReactShell({
   };
 
   const handleClose = () => {
-    if (document && isDirty()) {
+    if (!document) {
+      closeDesigner();
+      return;
+    }
+    if (isDirty()) {
       setCloseConfirmOpen(true);
       return;
     }

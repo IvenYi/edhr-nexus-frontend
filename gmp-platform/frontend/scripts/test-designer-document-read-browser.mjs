@@ -77,7 +77,9 @@ try {
     try {
       await page.goto('http://127.0.0.1:'+server.address().port);
       await page.waitForFunction(()=>window.__store.getState().document?.meta.versionId==='version-A');await frame(page);
+      if(name==='failure-close-and-reopen')await page.evaluate(()=>window.__store.getState().updateSheetCellValue(1,1,'上一版本尚未保存'));
       const before=await state(page);record.before=before;record.beforeSha256=hash(before);
+      if(name==='failure-close-and-reopen')assert.equal(before.dirty,true);
       if(name==='normal-save'||name==='empty-initial'){
         if(name==='empty-initial'){await page.getByRole('button',{name:'宿主打开Empty',exact:true}).click();await frame(page);}
         const save=page.getByRole('button',{name:'保存',exact:true});assert.equal(await save.isEnabled(),true);await save.click();await frame(page);
