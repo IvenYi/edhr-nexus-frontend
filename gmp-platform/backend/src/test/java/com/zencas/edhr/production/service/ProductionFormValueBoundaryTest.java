@@ -94,6 +94,27 @@ class ProductionFormValueBoundaryTest {
         assertThat(reopened.at("/operations/op/forms/f/values/entries/0/files/0/fileId").asText()).isEqualTo("9");
     }
 
+    @Test void fileMetadataReuseStillChecksEveryNameAndNeverSurvivesAnIndependentCall() throws Exception {
+        JsonNode field=mapper.readTree("{\"id\":\"files\",\"type\":\"attachment\"}");
+        JsonNode good=mapper.readTree("[{\"fileId\":\"9\",\"originalName\":\"原件.pdf\"},{\"fileId\":\"9\",\"originalName\":\"原件.pdf\"}]");
+        access.validateEvidence(field,good,"101");assertThat(jdbc.queries).hasSize(1);
+        JsonNode forged=mapper.readTree("[{\"fileId\":\"9\",\"originalName\":\"原件.pdf\"},{\"fileId\":\"9\",\"originalName\":\"伪造.pdf\"}]");
+        assertThatThrownBy(()->access.validateEvidence(field,forged,"101")).hasMessageContaining("不属于当前生产对象");
+        assertThat(jdbc.queries).hasSize(2);
+        assertThatThrownBy(()->access.validateEvidence(field,good,"202")).hasMessageContaining("不属于当前生产对象");
+        jdbc.update("DELETE FROM file_object WHERE id=9");
+        assertThatThrownBy(()->access.validateEvidence(field,good,"101")).hasMessageContaining("不属于当前生产对象");
+    }
+
+    @Test void distinctFilesAreCheckedAndDatabaseFailuresRemainVisible() throws Exception {
+        jdbc.update("INSERT INTO file_object VALUES(11,'PRODUCTION_EXECUTION','101','第二原件.pdf')");
+        JsonNode field=mapper.readTree("{\"id\":\"files\",\"type\":\"attachment\"}");
+        JsonNode values=mapper.readTree("[{\"fileId\":\"9\",\"originalName\":\"原件.pdf\"},{\"fileId\":\"11\",\"originalName\":\"第二原件.pdf\"},{\"fileId\":\"9\",\"originalName\":\"原件.pdf\"}]");
+        access.validateEvidence(field,values,"101");assertThat(jdbc.queries).hasSize(2);
+        jdbc.execute("DROP TABLE file_object");
+        assertThatThrownBy(()->access.validateEvidence(field,values,"101")).isInstanceOf(org.springframework.dao.DataAccessException.class);
+    }
+
     @ParameterizedTest @CsvSource({"0,false", "10,false", "100,false", "300,false", "10,true", "100,true", "300,true"})
     @EnabledIfSystemProperty(named="edhr.audit.w2Values", matches="true")
     void observeRealEvidenceValidationWithWideRows(int rows, boolean files) throws Exception {
@@ -119,6 +140,8 @@ class ProductionFormValueBoundaryTest {
         assertThat(values.toString()).isEqualTo(before);assertThat(previous.toString()).isEqualTo(previousBefore);
         if(files && rows>0) assertThat(jdbc.queries).isNotEmpty();
         else assertThat(jdbc.queries).isEmpty();
+        assertThat(jdbc.queries).hasSize(files && rows>0?1:0);
+        if(rows>=100) assertThat(bytes).isLessThan(16L*1024*1024);
         ObjectNode observation=mapper.createObjectNode().put("rows",rows).put("textColumns",12).put("repeatedFile",files)
                 .put("inputJsonBytes",before.getBytes(java.nio.charset.StandardCharsets.UTF_8).length).put("elapsedNanos",elapsed)
                 .put("threadAllocatedBytes",bytes).put("actualH2Queries",jdbc.queries.size()).put("inputUnchanged",true).put("previousUnchanged",true);

@@ -61,16 +61,22 @@ public class ExecutionAccess {
     }
 
     public void validateEvidence(JsonNode field, JsonNode value, String objectId, JsonNode values, JsonNode previous) {
+        validateEvidence(field, value, objectId, values, previous, new HashMap<>());
+    }
+
+    private void validateEvidence(JsonNode field, JsonNode value, String objectId, JsonNode values, JsonNode previous,
+                                  Map<Long, List<String>> fileNames) {
         if (value.isNull() || value.isMissingNode() || (value.isTextual() && value.asText().isBlank())) return;
         String type = field.path("type").asText();
         if ("subTable".equals(type) && value.isArray()) {
             int index = 0;
             for (JsonNode row : value) {
-                ObjectNode context = values.isObject() ? ((ObjectNode) values).deepCopy() : mapper.createObjectNode();
+                ObjectNode context = mapper.createObjectNode();
+                if (values.isObject()) context.setAll((ObjectNode) values);
                 if (row.isObject()) context.setAll((ObjectNode) row);
                 JsonNode oldRow = previousRow(previous, row, index++);
                 for (JsonNode column : field.path("typeConfig").path("columns"))
-                    validateEvidence(column, row.path(column.path("id").asText()), objectId, context, oldRow.path(column.path("id").asText()));
+                    validateEvidence(column, row.path(column.path("id").asText()), objectId, context, oldRow.path(column.path("id").asText()), fileNames);
             }
         }
         if ("reference".equals(type)) {
@@ -81,7 +87,9 @@ public class ExecutionAccess {
             for (JsonNode file : value) {
                 long fileId;
                 try { fileId = Long.parseLong(file.path("fileId").asText()); } catch (NumberFormatException e) { throw invalid("文件标识不正确"); }
-                List<String> names = jdbc.query("SELECT original_name FROM file_object WHERE id=? AND target_type='PRODUCTION_EXECUTION' AND target_id=?", (rs, i) -> rs.getString(1), fileId, objectId);
+                List<String> names = fileNames.computeIfAbsent(fileId, id -> jdbc.query(
+                        "SELECT original_name FROM file_object WHERE id=? AND target_type='PRODUCTION_EXECUTION' AND target_id=?",
+                        (rs, i) -> rs.getString(1), id, objectId));
                 if (names.isEmpty() || !names.get(0).equals(file.path("originalName").asText())) throw invalid("文件不属于当前生产对象或已不存在");
             }
         }
