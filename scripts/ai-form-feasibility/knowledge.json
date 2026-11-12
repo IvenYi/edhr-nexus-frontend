@@ -1,0 +1,23 @@
+{
+  "knowledgeBaseline": "0.3.25",
+  "gitBaseline": "3ae01d53dda205de277f4aa09b92fbbb9a337468",
+  "scope": "internal-experiment; not a verified/runtime release",
+  "rules": [
+    {"id":"DEC-0077-01","status":"specified/internal","rule":"业务模型由产品预置，只从有效目录选择用途，不因表头增加新运行模型。"},
+    {"id":"DEC-0077-03","status":"specified/internal","rule":"不是每个字段都需要追溯或统计；按实际含义选择，未配用途不删除原记录或改变生产归属。"},
+    {"id":"rule.form-projection.trace-field-single-binding","status":"specified/internal","rule":"每个真实主表字段或子表列最多一个追溯项；同项可在多个字段复用。按真实字段身份判断，不能按同名或画布次数判断。追溯与业务用途独立，合法业务角色复用不受单追溯限制。"},
+    {"id":"DEC-0077-06","status":"specified/internal","rule":"正式统计按工序和用途合计；重复记载同一业务事实的表只作查表来源。不同工序不能直接相加成最终产出；重试幂等不解决业务重复来源选择。"},
+    {"id":"DEC-0077-13","status":"specified/internal","rule":"产出、良品、不良、报废分别取有对应语义的来源，不自动加减或生成良率；最终产出工序不能由表名决定；缺少正式数据不等于零。"},
+    {"id":"DEC-0077-05;DEC-0077-04","status":"specified/internal","rule":"报废数量取明确的报废来源，不替客户强加申请、批准或处理阶段；配置用途不授权扣库存或其他动作。"},
+    {"id":"DEC-0077-19;DEC-0077-29","status":"specified/internal","rule":"支持主表分散字段组成独立业务明细，也支持真实子表行。同笔子表条件须在同一实际行满足，不能跨行拼接；表头共享和跨表关系不能由排版自行推定。"},
+    {"id":"rule.form-reference-runtime","status":"implemented/internal with specified extensions","rule":"引用使用有效目录和真实身份，显示文字不是ID，字典引用须明确字典。无候选不选第一项、不造ID；来源授权和冻结模板边界保持。"},
+    {"id":"DEC-0077-28;DEC-0077-30;DEC-0077-31","status":"specified/internal","rule":"真实生产归属沿执行上下文；填写相同编号不创建执行、统计或DHR归属。物料批号可空或自由文本，同文不等于物料批实体。"},
+    {"id":"DEC-0077-32","status":"specified/internal","rule":"MVP不换算单位，统计单位可空，不能按物料或默认值猜补。空单位、有单位及不同物料等分组不混加。"},
+    {"id":"DEC-0077-35","status":"implemented/internal","rule":"工时为用户填写的数字人时，不根据时间、人数或签名计算；业务日期与审计时间分别处理，创建人不是报工人。"},
+    {"id":"DEC-0077-36","status":"specified/internal","rule":"报工人只取人员引用或签名保存的实际签署身份，不解析展示文本、不用登录人替代，不按签名人数重复计量。"},
+    {"id":"DEC-0077-40","status":"specified/internal","rule":"生产批次/SN、物料批号、设备编号、物料编码、工单号、产品编码、供应商批号、客户订单号与追溯日期含义不同；使用实际目录ID。追溯日期取业务日期，不取创建时间；外部序列号不能机械当本单SN。"},
+    {"id":"DEC-0077-12;DEC-0077-33","status":"specified/internal","rule":"已保存内容可按权限追溯并显示状态，正式统计要最终完成和投影成功；模板修改影响新使用，不回写已有执行快照和原始记录。"},
+    {"id":"question.form-projection-defect-count-semantics;question.form-projection-free-text-identity;question.form-projection-header-shared-fields;question.form-projection-cross-form-event-association","status":"unresolved/internal","rule":"不可由排版确定缺陷件数/次数、原因互斥、文本实体身份、跨表事件或表头共享。缺乏依据时仅暂缓相关配置，不用原因明细合计替代NG，不从总量拆出未提供的分项。"}
+  ],
+  "sources": ["docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml", "docs/knowledge/rules/form-trace-field-binding.yaml", "docs/knowledge/rules/form-reference-runtime.yaml", "docs/knowledge/open-questions.yaml"]
+}
