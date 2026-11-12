@@ -2,6 +2,8 @@
 
 ## PR85已合入：W2设计文档加载失败保护
 
+已交付 [PR86](https://github.com/IvenYi/edhr-nexus-frontend/pull/86)，audit/edhr-dev-w2-designer-document-20261112→edhr-dev，实际观察OPEN/MERGEABLE/CLEAN，建议人工合入本批修复。受测3193fc64、验收归档e3e4adcb后仅L0交付登记；登记前本地/真实远端/PR head同e3e4，目标仍0dd6，43/359输入及490原件成员摘要一致，正常推送登记后再核对。不自动merge/deploy/恢复或查询触发CI；下轮先fetch实际合入和新增，再继续原W2余项。
+
 实际基线 `edhr-dev@0dd6e8828f544aec01285e0ea140029d783ec38f`，PR85真实merged，树同交付5295f40f，无外部代码/知识/契约增量。[本批](../branch-review-20261112-w2-designer-document/README.md)L2沿原W2解析/导入/序列化余项推进，不重开已授权且已交付的两项子表优化。分支audit/edhr-dev-w2-designer-document-20261112，统一受测clean3193fc646951c0accde0fe36e494273ef4f33e06。
 
 修复W2-DESIGNER-DOCUMENT-LOAD-001：非空损坏/无法解释的持久源原先可被默认为空设计并写回，部分canvas结构直接抛异常。仅document编辑模式和Shell当前来源保护，2产品+2维护测试+DP；失败不改旧store/保存基线或原件，写/导入/旧编辑/预览禁用，关闭重开正常。真实空白、原API三个bareempty、不完整当前协议草稿和正常三片往返保持，默认只读不改；不把后台可接受的bare nonempty定义成全局非法、不迁移数据，协议version1不是业务V1。后台/API/业务规则/权限/事务/历史/知识保持。
