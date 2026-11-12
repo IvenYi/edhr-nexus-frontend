@@ -1,0 +1,29 @@
+{
+  "verifiedAt": "2026-11-12T15:46:16.275525+08:00",
+  "testedCandidate": "1ae712ef9f35d8d0b0eb9022e1d7acfc85d14cd7",
+  "liveTarget": "fc2f21aa5e58c2d9a3a39270f1f624bef39da652",
+  "sourceInputs": 53,
+  "knowledgeInputs": 359,
+  "inputsCurrentGitAndTestedEqual": true,
+  "contractAndKnowledgeDiff": [],
+  "qualityResult": "passed",
+  "ontologyResult": "not-applicable",
+  "requiredQualityChecksPassed": 19,
+  "archiveMembersVerified": 492,
+  "roleFinalManifestsVerified": {
+    "ontology": "7ff2d0667ec9719bcad6a0424b66295f4c38d80d1b0d5e9652f2451e8007a3a4",
+    "independent": "3cf452a7ad4db674f30803909316b0f6e9462ecf257c4cb531ce6099b5bd7ef0"
+  },
+  "completedRolesObservation": "Actual collaboration.list_agents observed both current-round tasks completed after their structured FINAL responses;root recorded this before executing gate",
+  "mergedAuditBranchesAbsent": 88,
+  "retainedBranchesPresent": [
+    "codex/ai-experiments",
+    "edhr-dev",
+    "feat/record-change",
+    "form-traceability-projection",
+    "main"
+  ],
+  "stableHeadsUnchanged": true,
+  "taskDrift": false,
+  "scope": "W2 finite normalization leaf fix and PR87+88 combined regression plus user-authorized merged audit ref cleanup;whole audit remains pending;no newpolicy/refactor/merge/deploy/restore/CI query"
+}

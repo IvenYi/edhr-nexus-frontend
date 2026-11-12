@@ -1,0 +1,236 @@
+qualityResult:
+  result: passed
+  baseCommit: fc2f21aa5e58c2d9a3a39270f1f624bef39da652
+  headCommit: 1ae712ef9f35d8d0b0eb9022e1d7acfc85d14cd7
+  contractBaseline:
+    sourceCommit: 1ae712ef9f35d8d0b0eb9022e1d7acfc85d14cd7
+    targetBranch: edhr-dev
+    targetCommit: fc2f21aa5e58c2d9a3a39270f1f624bef39da652
+    contractReadCommit: 1ae712ef9f35d8d0b0eb9022e1d7acfc85d14cd7
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: dirty
+    includedPaths: &id001
+    - docs/development/branch-review-20261112-w2-normalization-boundaries/README.md
+    - docs/development/branch-review-20261112-w2-normalization-boundaries/review.md
+    excludedPaths: []
+    untrackedPaths: *id001
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+  - id: check.baseline-contract
+    required: true
+    category: documentation
+    description: 核对实际目标、候选、契约与知识增量
+    method: command
+    command: git diff base candidate -- AGENTS.md codeplzreadme.md docs/agents docs/knowledge docs/architecture;git ls-remote
+      origin refs/heads/edhr-dev
+    outcome: passed
+    evidence:
+    - base=fc2f21aa5e58c2d9a3a39270f1f624bef39da652
+    - head/testedCandidate=1ae712ef9f35d8d0b0eb9022e1d7acfc85d14cd7
+    - 契约/知识/架构差异为空；remote-final.txt实时目标仍为base，PR87/88均MERGED。
+  - id: check.knowledge-policy-boundary
+    required: true
+    category: ontology
+    description: 草稿与请求格式边界及有限本体结果
+    method: inspection
+    command: 读取DEC-0077-30、DEC-0009-01/05和ontologyResult
+    outcome: passed
+    evidence:
+    - 缺省/null/空白可编辑，不增加必填/发布完整性；不认识类型仅代表当前编辑器无法安全解释，不声明全局业务非法。
+    - 本体原manifest摘要已重算一致且正式not-applicable；知识0.3.25/schema1.2.0不变。
+  - id: check.scope-and-owner
+    required: true
+    category: requirements
+    description: 最小修复、扩展归属与L2影响分析
+    method: inspection
+    command: git diff base candidate;原解析/注册表/Shell/后端写入源码核对
+    outcome: passed
+    evidence:
+    - 产品仅document.ts+9行，两个维护测试和DP；沿原forEditing边界及Shell错误/禁写所有者；无第二套UI、后台规则或历史迁移。
+    - DP直接/传递/潜在/不受影响/兼容/快照/审计/权限/测试/缺口与实际范围一致。
+  - id: check.old-parser-negative
+    required: true
+    category: unit
+    description: 相同最终测试选旧产品源码的真实负例
+    method: automated-test
+    command: DOCUMENT_READ_BASELINE_COMMIT=fc2f21aa5e58c2d9a3a39270f1f624bef39da652 node --test scripts/test-designer-document-read.mjs
+    outcome: passed
+    evidence:
+    - negative-node.log/negative-summary.json：30通过、7预期失败；显式未知/错误类型被旧读取接受，不把边界输入计成七个独立业务缺陷。
+  - id: check.old-shell-write-negative
+    required: true
+    category: e2e
+    description: 旧Shell真实保存回调证明类型改写
+    method: browser
+    command: DOCUMENT_READ_BASELINE_COMMIT=fc2f21aa5e58c2d9a3a39270f1f624bef39da652 node scripts/test-designer-document-read-browser.mjs
+    outcome: passed
+    evidence:
+    - negative-browser/result.json：8通过/1预期失败，仅unsupported-field-type；手动保存目标version-E，原future-number变为text。
+    - 真实Shell/Canvas/store、受控GET及保存回调；不冒称完整HTTP或数据库持久化E2E。
+  - id: check.current-node
+    required: true
+    category: unit
+    description: 当前兼容边界及相邻纯逻辑回归
+    method: automated-test
+    command: node --test --test-reporter=tap scripts/test-designer-*.mjs（精确七脚本见final/run.json）
+    outcome: passed
+    evidence:
+    - final/node.log和node-summary.json：111/111，0fail/skipped/cancelled。
+    - 其中读取37项覆盖十当前类型/十六旧别名（循环子断言）、缺省/null/空白、原件不变及默认只读兼容；未将循环子断言额外计数。
+  - id: check.current-read-browser
+    required: true
+    category: e2e
+    description: 未知类型错误可见、禁写、历史状态与恢复
+    method: browser
+    command: node scripts/test-designer-document-read-browser.mjs at1440/390
+    outcome: passed
+    evidence:
+    - final/document-1440/result.json和document-390/result.json：各9/9。
+    - 未知类型零写入且store/document/saved/undo/redo哈希不变；错误路径关闭重开/旧回调压力及正常草稿保存邻接通过。
+  - id: check.current-save-browser
+    required: true
+    category: regression
+    description: 保存异步身份和失败恢复回归
+    method: browser
+    command: node scripts/test-designer-save-context-browser.mjs at1440/390
+    outcome: passed
+    evidence:
+    - final/save-1440/result.json和save-390/result.json：各13/13。
+  - id: check.current-import-browser
+    required: true
+    category: regression
+    description: 既有导入异步、历史和错误恢复
+    method: browser
+    command: node scripts/test-designer-import-browser.mjs at1440/390
+    outcome: passed
+    evidence:
+    - final/import-1440/result.json和import-390/result.json：各15/15。
+  - id: check.merged-excel-integration
+    required: true
+    category: integration
+    description: PR87已合入图片尺寸与保存重读组合
+    method: browser
+    command: node scripts/test-designer-excel-images-browser.mjs at1440/390
+    outcome: passed
+    evidence:
+    - final/excel-1440/result.json和excel-390/result.json：各4/4；NodeExcel夹具也纳入111。
+  - id: check.merged-word-integration
+    required: true
+    category: integration
+    description: PR88已合入表格复用与真实宿主组合
+    method: browser
+    command: node scripts/test-designer-word-table-reuse.mjs;node scripts/test-designer-word-table-reuse-browser.mjs at1440/390
+    outcome: passed
+    evidence:
+    - final/word-parser/result.json：8/8；两屏宿主各3/3，完整页JSON等价和当前每表一次解析预算保持。
+    - 性能样本不变为生产SLA或新上限。
+  - id: check.build-and-guards
+    required: true
+    category: regression
+    description: 正式前端构建及原有三项维护guard
+    method: command
+    command: npm run build;node scripts/verify-template-designer-react.mjs;node scripts/verify-list-table-style-contract.mjs;node
+      scripts/verify-no-external-fonts.mjs
+    outcome: passed
+    evidence:
+    - final/run.json记录四命令实际exit0；build包含TypeScript检查。
+  - id: check.controller
+    required: true
+    category: api
+    description: 持久化/版本/审计邻接直接控制器回归
+    method: automated-test
+    command: mvn-edhr -Dtest=TemplateModelingControllerTest,BusinessKnowledgeModelTest test
+    outcome: passed
+    evidence:
+    - final/TEST-com.zencas.edhr.template.controller.TemplateModelingControllerTest.xml：41，0fail/errors/skipped。
+    - 直接mock控制器测试，非真实HTTP/原生PG验收。
+  - id: check.knowledge-regression
+    required: true
+    category: ontology
+    description: 正式知识校验与输入不变
+    method: automated-test
+    command: mvn-edhr -Dtest=TemplateModelingControllerTest,BusinessKnowledgeModelTest test
+    outcome: passed
+    evidence:
+    - final/TEST-com.zencas.edhr.knowledge.BusinessKnowledgeModelTest.xml：89，0fail/errors/skipped；359知识/知识测试/pom前后和当前Git/主工作树一致。
+    - 这是结构/引用等正式测试，不冒称全部知识逐条语义已通过。
+  - id: check.visual-and-shared-ui
+    required: true
+    category: visual
+    description: 真实观察两屏错误状态及动作可达
+    method: inspection
+    command: 查看1440及390 unsupported-field-type.png；读取DESIGN和共享UI规范
+    outcome: passed
+    evidence:
+    - 错误文案完整且能换行，保存明显禁用，关闭位于视口内；沿原MUI提示及现有工具栏，没有样式或暂停弹窗修改。
+    - 只覆盖本轮页面状态；不声明全UI/全部键盘/所有设备验收。
+  - id: check.a23-and-runtime-cost
+    required: true
+    category: regression
+    description: 有限健壮性与过度防御复查
+    method: inspection
+    command: 源码核对parsePersistedSlice/normalizeFieldType/注册表及Shell写入入口
+    outcome: passed
+    evidence:
+    - 未知类型有实际有损保存负例，保护必要；保留不完整草稿和旧别名，自身属性检查防原型键被当作旧别名；无新增重试/兜底写入/通用校验框架。
+    - 新增线性字段遍历、固定小注册表，无额外JSON.parse/整表复制/SQL/N+1/内存分页或全局缓存；不外推整个系统性能。
+  - id: check.static-no-regression
+    required: true
+    category: regression
+    description: 精确官方静态审查完整finding差异
+    method: command
+    command: python3 audit_project.py baseline|candidate --mode strict
+    outcome: passed
+    evidence:
+    - premium-summary.json：仓库86/前端28，两边完整多重集相同，仅忽略行列号；scriptSHA=67fd35597c85a2f37dd3c566f0bd79768cbe059114edcf28074fc5afa3e0ce68。
+    - 四次扫描均exit2，本项通过只表示本轮无新增，未报告全局strict通过。
+  - id: check.branch-cleanup
+    required: true
+    category: audit
+    description: 只读复核已合并审计分支清理和恢复依据
+    method: command
+    command: independent-branch-cleanup-verification.json对应实际git/gh只读命令
+    outcome: passed
+    evidence:
+    - 88项审计头均在稳定分支历史可达；88精确头lease/原子删除参数、结果exit0及本地备份引用逐项相符。
+    - 实时远端仅五个原保留分支，88已删引用全不存在；main/edhr-dev头不变；PR87/88均MERGED。
+  - id: check.final-input-and-l0-docs
+    required: true
+    category: documentation
+    description: 验收原件、输入、阶段覆盖及L0说明
+    method: command
+    command: python3 finalize.py;源码/知识摘要和git show交叉核对
+    outcome: passed
+    evidence:
+    - 51运行输入、14审读输入与候选Git/隔离及主工作树一致，359知识输入前后不变。
+    - 隔离候选仅运行环境依赖软链未跟踪，已移除后clean；受保护源码全程不变；主工作树只有README/review两份未跟踪L0文件，副本及摘要在review-l0-inputs.json，已只读核对其有限范围/不夸大全量覆盖和后续拆分建议。
+    - 不提前声称全角色门禁/PR前漂移已执行，后续由主审在正式FINAL后实际执行。
+  - id: check.existing-lint-limit
+    required: false
+    category: documentation
+    description: 既存缺配置的ESLint未执行成功
+    method: command
+    command: npm run lint（baseline及candidate）
+    outcome: blocked
+    evidence:
+    - baseline-lint.log及candidate-lint.log均exit2，缺配置；未新增或降低配置/断言以换绿。
+  findings: []
+  residualRisks:
+  - id: risk.controlled-e2e
+    description: 真实组件受控GET/保存回调及直接mock控制器不等同完整认证HTTP/原生PG E2E。
+    impact: 不认证全部权限、账号及生产集成行为。
+    mitigation: 当前仅前端格式边界，保留全系统后续矩阵。
+  - id: risk.remaining-leaves-and-capacity
+    description: 主字段类型一项不等同全部模型/子表叶子、Office格式或大输入容量审查完成。
+    impact: 父容量/其他未审范围仍开放。
+    mitigation: 按W2后续及W5/W6分批取证；性能先量化讨论，不默增上限。
+  - id: risk.static-and-lint-debt
+    description: strict仓库86/前端28及ESLint缺配置仍存在；无本轮新增。
+    impact: 未达到全局UI规范和lint绿色。
+    mitigation: 保留原件及精确差异；不降低标准或冒称全局通过。
+  - id: risk.whole-audit-pending
+    description: 全知识逐条语义、W2余项/W3-W7、A23已审补查、原high/A12/完整UI与多租户等未由本批关闭。
+    impact: 不能宣布整体审计或发布验收完成。
+    mitigation: 固定树盘点与三条有限方法清单分列，继续按最新提交增量审计。
+  blockingConditions: []

@@ -1,0 +1,41 @@
+ontologyResult:
+  result: not-applicable
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: 1ae712ef9f35d8d0b0eb9022e1d7acfc85d14cd7
+    targetBranch: edhr-dev
+    targetCommit: fc2f21aa5e58c2d9a3a39270f1f624bef39da652
+    contractReadCommit: fc2f21aa5e58c2d9a3a39270f1f624bef39da652
+    uncommittedContractPaths: []
+  reason: 本轮只修复当前设计器对不认识的显式字段类型进行有损解释后仍保存的问题。识别位于原forEditing读取边界，复用既有加载失败/禁写与恢复路径；不新增字段必填、业务完整性、发布或执行政策。当前注册类型和明确旧别名、缺省/null/空白未完成草稿、默认只读兼容保持。DEC-0077-30请求格式与业务完整性分层、DEC-0009-01/05不完整草稿与发布分层均不替代；不认识的未来类型不因此被宣布为全局无效业务数据。远端已合入分支引用清理不改变业务语义和稳定分支历史。无应更新的术语、概念、关系、事实、规则或执行契约，不新增知识决策、不改变成熟度/版本/阶段。
+  changedArtifacts: []
+  knowledgeSync: []
+  conflicts: []
+  questions: []
+  validationEvidence:
+    - id: validation.w2-normalization-dp-and-version
+      checkType: schema
+      command: python3 /tmp/edhr-w2-normalization-boundaries-ontology-20261112/collect.py
+      outcome: passed
+      evidence:
+        - input-receipt.json记录实际读取17项输入、相关YAML语法/0.3.25版本及DP必需列表/影响层次检查；这是有限结构检查，不冒称正式知识schema或全库语义通过。
+    - id: validation.w2-normalization-policy-boundary
+      checkType: reference
+      command: 源码与DEC-0077-30、DEC-0009-01/05原始定义有限人工核对；node --test --test-reporter=tap scripts/test-designer-document-read.mjs
+      outcome: passed
+      evidence:
+        - review.md逐条区分规范、原始源码与测试证据；current-read-tests.log实际37/37，当前十类型与十六旧别名以及空白草稿/默认只读断言保持。
+        - baseline-read-tests.log同最终脚本选择fc2f21aa旧document实现，30通过/7失败，失败均为新增未知显式类型禁有损写入断言；旧结果不回写为当前通过。
+    - id: validation.w2-normalization-input-provenance
+      checkType: evidence-path
+      command: python3 /tmp/edhr-w2-normalization-boundaries-ontology-20261112/collect.py
+      outcome: passed
+      evidence:
+        - target-live.log实际远端edhr-dev为fc2f21aa5e58c2d9a3a39270f1f624bef39da652，契约/知识相对候选差异为空；输入原件与候选Git及验证后工作树摘要一致。
+        - baseline-browser-original-result.json为主审真实组件原始记录副本，unknown future-number被保存为text且手动回调发生；本体角色没有重跑浏览器，不以读取原件替代独立质量。
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages: [P1, P2, P3]
