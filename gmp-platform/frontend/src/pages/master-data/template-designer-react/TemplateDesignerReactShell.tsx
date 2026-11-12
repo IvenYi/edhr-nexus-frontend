@@ -2,7 +2,7 @@ import ArrowBackOutlined from '@mui/icons-material/ArrowBackOutlined';
 import SaveOutlined from '@mui/icons-material/SaveOutlined';
 import WarningAmberRounded from '@mui/icons-material/WarningAmberRounded';
 import { useEffect, useMemo, useRef, useState, type ChangeEvent } from 'react';
-import { Box, Button, DialogActions, DialogContent, DialogTitle, Divider, Stack, Typography } from '@mui/material';
+import { Alert, Box, Button, CircularProgress, DialogActions, DialogContent, DialogTitle, Divider, Stack, Typography } from '@mui/material';
 import AppDialog from '@/components/AppDialog';
 import type { TemplateDesignerDialogProps } from './types';
 import { useTemplateDesignerStore } from './store/useTemplateDesignerStore';
@@ -24,6 +24,7 @@ const headerActionButtonSx = {
   minWidth: 88,
   px: 2,
   borderRadius: 1,
+  '&.Mui-disabled': { color: 'inherit', opacity: 0.45 },
 };
 
 const headerOutlinedActionButtonSx = {
@@ -43,8 +44,9 @@ const headerPrimaryActionButtonSx = {
   bgcolor: '#2990ff',
   '&:hover': { bgcolor: '#1677d2' },
   '&.Mui-disabled': {
-    color: 'rgba(255,255,255,.72)',
-    bgcolor: 'rgba(41,144,255,.52)',
+    color: 'inherit',
+    bgcolor: 'rgba(255,255,255,.10)',
+    opacity: 0.45,
   },
 };
 
@@ -57,7 +59,7 @@ export default function TemplateDesignerReactShell({
   saving,
 }: TemplateDesignerReactShellProps) {
   const activeTab = useTemplateDesignerStore((state) => state.activeTab);
-  const document = useTemplateDesignerStore((state) => state.document);
+  const storedDocument = useTemplateDesignerStore((state) => state.document);
   const setDocument = useTemplateDesignerStore((state) => state.setDocument);
   const setActiveTab = useTemplateDesignerStore((state) => state.setActiveTab);
   const markSaved = useTemplateDesignerStore((state) => state.markSaved);
@@ -67,6 +69,9 @@ export default function TemplateDesignerReactShell({
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const importRequestRef = useRef(0);
   const saveContextRef = useRef({ busy: false });
+  const [loadedSource, setLoadedSource] = useState<{ row: typeof row; version: typeof version; context: { busy: boolean }; error: boolean } | null>(null);
+  const source = loadedSource?.row === row && loadedSource?.version === version && loadedSource?.context === saveContextRef.current ? loadedSource : null;
+  const document = row && version && source && !source.error ? storedDocument : null;
   const [mockFillOpen, setMockFillOpen] = useState(false);
   const [projectionOpen, setProjectionOpen] = useState(false);
   const [projectionValidationRequested, setProjectionValidationRequested] = useState(false);
@@ -91,12 +96,22 @@ export default function TemplateDesignerReactShell({
     importRequestRef.current += 1;
     saveContextRef.current = { busy: false };
     setCheckingProjection(false);
+    setMockFillOpen(false);
+    setProjectionOpen(false);
+    setProjectionValidationRequested(false);
+    setCloseConfirmOpen(false);
     if (row && version) {
-      setDocument(parseReactTemplateDesignerDocument(row, version));
-      setActiveTab('canvas');
-      setSubTableDesignFieldId(null);
-      markSaved();
-    }
+      try {
+        const nextDocument = parseReactTemplateDesignerDocument(row, version, { forEditing: true });
+        setDocument(nextDocument);
+        setActiveTab('canvas');
+        setSubTableDesignFieldId(null);
+        markSaved(nextDocument);
+        setLoadedSource({ row, version, context: saveContextRef.current, error: false });
+      } catch {
+        setLoadedSource({ row, version, context: saveContextRef.current, error: true });
+      }
+    } else setLoadedSource(null);
     return () => {
       importRequestRef.current += 1;
       saveContextRef.current = { busy: false };
@@ -110,6 +125,7 @@ export default function TemplateDesignerReactShell({
   }, [activeSubTableDesignField, subTableDesignFieldId]);
 
   const persistCurrentDocument = async (persist: TemplateDesignerDialogProps['onSave']) => {
+    if (!document || source?.context !== saveContextRef.current) return;
     const context = saveContextRef.current;
     const currentDocument = useTemplateDesignerStore.getState().document;
     if (!currentDocument) return;
@@ -130,6 +146,7 @@ export default function TemplateDesignerReactShell({
   };
 
   const handleSave = async () => {
+    if (!document || source?.context !== saveContextRef.current) return;
     const context = saveContextRef.current;
     if (context.busy || saving) return;
     context.busy = true;
@@ -176,6 +193,10 @@ export default function TemplateDesignerReactShell({
   };
 
   const handleClose = () => {
+    if (!document) {
+      closeDesigner();
+      return;
+    }
     if (isDirty()) {
       setCloseConfirmOpen(true);
       return;
@@ -192,13 +213,14 @@ export default function TemplateDesignerReactShell({
   };
 
   const handleImportTemplate = () => {
+    if (!document) return;
     fileInputRef.current?.click();
   };
 
   const handleImportFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     event.target.value = '';
-    if (!file) return;
+    if (!file || !document || source?.context !== saveContextRef.current) return;
 
     const request = ++importRequestRef.current;
     const sourceDocument = useTemplateDesignerStore.getState().document;
@@ -239,6 +261,7 @@ export default function TemplateDesignerReactShell({
         ref={fileInputRef}
         type="file"
         accept=".xlsx,.xlsm,.xls,.docx,.doc"
+        disabled={!document}
         hidden
         onChange={(event) => {
           void handleImportFileChange(event);
@@ -297,6 +320,7 @@ export default function TemplateDesignerReactShell({
             ].map((item) => (
               <Button
                 key={item.key}
+                disabled={!document}
                 onClick={() => setActiveTab(item.key as typeof activeTab)}
                 sx={{
                   minWidth: 96,
@@ -306,6 +330,7 @@ export default function TemplateDesignerReactShell({
                   color: activeTab === item.key ? '#fff' : 'rgba(255,255,255,.78)',
                   bgcolor: activeTab === item.key ? 'rgba(255,255,255,.10)' : 'transparent',
                   border: activeTab === item.key ? '1px solid rgba(255,255,255,.18)' : '1px solid transparent',
+                  '&.Mui-disabled': { color: 'inherit', opacity: 0.45 },
                 }}
               >
                 {item.label}
@@ -319,21 +344,22 @@ export default function TemplateDesignerReactShell({
             '@media (max-width: 1399px)': { gridRow: 1, gridColumn: 2 },
             '@media (max-width: 767px)': { gridRow: 3, gridColumn: '1 / -1', justifySelf: 'stretch', flexWrap: 'wrap' },
           }}>
-            <Button variant="outlined" onClick={() => { setProjectionField(null); setProjectionOpen(true); }} sx={headerOutlinedActionButtonSx}>用途总览</Button>
+            <Button variant="outlined" disabled={!document} onClick={() => { setProjectionField(null); setProjectionOpen(true); }} sx={headerOutlinedActionButtonSx}>用途总览</Button>
             <Button
               variant="outlined"
               onClick={handleImportTemplate}
+              disabled={!document}
               sx={headerOutlinedActionButtonSx}
             >
               模板导入
             </Button>
-            <Button variant="outlined" onClick={() => setMockFillOpen(true)} sx={headerOutlinedActionButtonSx}>
+            <Button variant="outlined" disabled={!document} onClick={() => setMockFillOpen(true)} sx={headerOutlinedActionButtonSx}>
               模拟填报
             </Button>
             <Button
               variant="contained"
               startIcon={<SaveOutlined />}
-              disabled={saving || checkingProjection}
+              disabled={!document || saving || checkingProjection}
               onClick={() => void handleSave()}
               sx={headerPrimaryActionButtonSx}
             >
@@ -346,7 +372,9 @@ export default function TemplateDesignerReactShell({
         )}
       </Box>
       <Box sx={{ flex: 1, minWidth: 0, minHeight: 0, overflow: 'hidden', border: 0, p: 0, m: 0 }}>
-        {activeTab === 'model' ? (
+        {!document ? <Box sx={{ p: 3 }}>{source?.error
+          ? <Alert severity="error">表单设计加载失败，原设计未被修改。请关闭后重试；若问题持续，请联系管理员检查设计内容。</Alert>
+          : <CircularProgress aria-label="加载表单设计" />}</Box> : activeTab === 'model' ? (
           <Box sx={{ height: '100%', minHeight: 0, p: 3 }}>
             <ModelTab
               subTableDesignFieldId={subTableDesignFieldId}
@@ -357,12 +385,12 @@ export default function TemplateDesignerReactShell({
             />
           </Box>
         ) : null}
-        {activeTab === 'canvas' ? <CanvasTab /> : null}
+        {document && activeTab === 'canvas' ? <CanvasTab /> : null}
       </Box>
-      <ProjectionDialog open={projectionOpen && !projectionValidationRequested} onClose={() => setProjectionOpen(false)} focusField={projectionField} />
-      <ProjectionValidationDialog open={projectionValidationRequested} onClose={() => { setProjectionValidationRequested(false); setProjectionOpen(false); }}
+      <ProjectionDialog open={Boolean(document) && projectionOpen && !projectionValidationRequested} onClose={() => setProjectionOpen(false)} focusField={projectionField} />
+      <ProjectionValidationDialog open={Boolean(document) && projectionValidationRequested} onClose={() => { setProjectionValidationRequested(false); setProjectionOpen(false); }}
         onSave={async () => { await handleSave(); }} saving={checkingProjection || Boolean(saving)} focusBindingId={projectionFocusBindingId} />
-      <AppDialog
+      {document && <AppDialog
         open={closeConfirmOpen}
         onClose={() => setCloseConfirmOpen(false)}
         closeAriaLabel="关闭提示"
@@ -419,7 +447,7 @@ export default function TemplateDesignerReactShell({
             继续编辑
           </Button>
         </DialogActions>
-      </AppDialog>
+      </AppDialog>}
       {document ? (
         <MockFillDialog
           open={mockFillOpen}

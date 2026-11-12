@@ -1,5 +1,23 @@
 # 持续推进台账
 
+## PR85已合入：W2设计文档加载失败保护
+
+已交付 [PR86](https://github.com/IvenYi/edhr-nexus-frontend/pull/86)，audit/edhr-dev-w2-designer-document-20261112→edhr-dev，实际观察OPEN/MERGEABLE/CLEAN，建议人工合入本批修复。受测3193fc64、验收归档e3e4adcb后仅L0交付登记；登记前本地/真实远端/PR head同e3e4，目标仍0dd6，43/359输入及490原件成员摘要一致，正常推送登记后再核对。不自动merge/deploy/恢复或查询触发CI；下轮先fetch实际合入和新增，再继续原W2余项。
+
+实际基线 `edhr-dev@0dd6e8828f544aec01285e0ea140029d783ec38f`，PR85真实merged，树同交付5295f40f，无外部代码/知识/契约增量。[本批](../branch-review-20261112-w2-designer-document/README.md)L2沿原W2解析/导入/序列化余项推进，不重开已授权且已交付的两项子表优化。分支audit/edhr-dev-w2-designer-document-20261112，统一受测clean3193fc646951c0accde0fe36e494273ef4f33e06。
+
+修复W2-DESIGNER-DOCUMENT-LOAD-001：非空损坏/无法解释的持久源原先可被默认为空设计并写回，部分canvas结构直接抛异常。仅document编辑模式和Shell当前来源保护，2产品+2维护测试+DP；失败不改旧store/保存基线或原件，写/导入/旧编辑/预览禁用，关闭重开正常。真实空白、原API三个bareempty、不完整当前协议草稿和正常三片往返保持，默认只读不改；不把后台可接受的bare nonempty定义成全局非法、不迁移数据，协议version1不是业务V1。后台/API/业务规则/权限/事务/历史/知识保持。
+
+主侧与全新独立各实际204项功能执行（Node91+两屏浏览器72+控制器41），另知识89，0失败/错误/skip；build及原3guard过。旧同最终维护脚本Node11P16F，两屏各2P6F，真实写回调默认内容和pageerror取证；不是生产库覆盖实验。held callback仅生命周期压力，不把当前ModelTab同步调用描述成已证实延迟触发。两次静态文本识别过程失败保留，最终把document条件放到AppDialog渲染，原检查/断言未改后完整通过。
+
+43受保护输入及359知识/测试输入同受测Git/当前/原件；本体NA/FINAL，有限20=17一致/1原gap/2原待决，353文件/2849资产ID及0.3.25/schema1.2.0/P0保持。独立quality passed/FINAL，16必需项通过、无findings/blocking，软链已清/工作树clean。官方strict仓库86/前端28基线和候选完整finding多重集相同新增0，仍exit2；lint缺配置保持，不计通过。受控API真实组件、mock/directController不冒称HTTP/PG全链。
+
+8267路径是固定树机械盘点，5813历史证据不重算覆盖。六条方法范围台账不升级整文件/历史unique完成数；review逐维说明A23/错误恢复/异步身份/内存/SQL适用范围，给出document/局部加载和导入hook、Excel/Word适配职责及宿主版本/保存/分类的具体提取方向，本批不大重构。
+
+下一轮先fetch实际合入和新增，再审原W2模型/画布叶子归一化与Excel/Word格式导入、序列化的信息/身份保留和容量；存在真实性能风险先量化讨论。完整W2、W3–W7、全知识语义、A23含已审补查、另一通用质量/异常/源签署high、A12、完整UI/账号/错误/权限矩阵、非MVP多租户、strict/lint旧债、生产容量UNKNOWN及原未答/用户暂停继续。不自动merge/deploy/恢复/查询触发CI；两角色均正式FINAL，仍须执行实际PR前漂移门禁后交付。
+
+两角色正式FINAL后，2026-11-12 12:16:30 Asia/Shanghai已实际[PR前漂移/阶段复核](../branch-review-20261112-w2-designer-document/pre-pr-drift-review.md)：目标仍0dd6，43/359输入及三包490成员/角色manifest逐项核过，无任务漂移；此后仅L0验收/台账/交付，不改称重新跑测试。整体审计未完成，下一批仍回原W2余项。
+
 ## PR84已合入：回到W2，表单值边界及两项已授权优化
 
 已交付[PR85](https://github.com/IvenYi/edhr-nexus-frontend/pull/85)，audit/edhr-dev-w2-form-serialization-20261112→edhr-dev，观察OPEN／MERGEABLE／CLEAN，建议人工合入两项优化。受测6e878e49、验收归档d4dbef25后仅L0交付登记；登记前本地／真实远端／PR head与35／359输入、包摘要一致，正常推送登记后再核对。下轮先fetch真实合入及新增，再回原W2解析／导入／序列化余项，不自动merge／部署／恢复或查触发CI。

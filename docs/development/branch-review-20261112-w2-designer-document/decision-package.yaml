@@ -1,0 +1,51 @@
+decisionPackage:
+  id: DEC-PACKAGE-W2-DESIGNER-DOCUMENT-20261112
+  scope: W2 persisted designer document read/import/serialization safety;W6 robustness/A23 and W7 increment
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: 0dd6e8828f544aec01285e0ea140029d783ec38f
+    targetBranch: edhr-dev
+    targetCommit: 0dd6e8828f544aec01285e0ea140029d783ec38f
+    contractReadCommit: 0dd6e8828f544aec01285e0ea140029d783ec38f
+    uncommittedContractPaths: []
+  summary: PR85真实合入整树同5295f40f，无外部代码/知识/契约。回原W2解析/导入/序列化剩余分支，核对非空损坏/不支持格式是否被当空白草稿并允许写回，以及解析抛错时是否展示其他版本的旧store。只做明确的编辑加载失败保护，真实空白/未完整草稿仍允许，历史只读消费者及保存协议保持，不做格式迁移或广泛重构。
+  confirmed: {concepts: [], relationships: [], rules: [], executionContracts: []}
+  inferred: []
+  unresolved: []
+  replacementScopes: []
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - {area: persisted-read, change: 当前三片schema1序列化协议；编辑入口明确区分正常空白与读取失败，不把失败默认为空成功, evidenceReferences: [gmp-platform/frontend/src/pages/master-data/template-designer-react/utils/document.ts]}
+    transitiveImpacts:
+      - {area: designer-write, change: 加载失败和切换待加载时阻止编辑/保存/自动保存/导入/预览，保留关闭及可见恢复提示；旧异步动作不可写错上下文, evidenceReferences: [gmp-platform/frontend/src/pages/master-data/template-designer-react/TemplateDesignerReactShell.tsx]}
+    potentialImpacts:
+      - {area: shared-parser-consumers, concern: 解析器还被历史记录和工作流只读预览使用，不能为编辑保护顺带改变这些消费语义；编辑严格模式不得二次重复解析整文档, evidenceReferences: [gmp-platform/frontend/src/pages/master-data/template-designer-react/tabs/model/FormInstanceDetailDrawer.tsx, gmp-platform/frontend/src/pages/workflow-center/WorkTemplateEditor.tsx]}
+    unaffectedAreas:
+      - {area: business-policy, change: 不新增字段完整性/发布门禁，不改生命周期/权限/签署/历史或当前格式版本；不动用户暂停的生产管理弹窗样式，不迁移旧数据, evidenceReferences: [docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml]}
+    compatibilityAndMigration:
+      - {area: initialization, change: 空值和API当前三个已知空白初始载荷保持；无法展示的非空内容在编辑入口报错，不补造或修复原件，不改变只读兼容路径, evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/template/controller/TemplateModelingController.java]}
+    snapshotImpacts:
+      - {area: frozen-read, change: 不修改模板/实例/执行/DHR冻结内容；只读解析默认行为保留，正常model/canvas/workflow往返不变, evidenceReferences: []}
+    auditImpacts:
+      - {area: failure-no-write, change: 失败时不调用onSave/onAutoSave，不markSaved/重置其他版本store；关闭恢复不伪造成功保存，不改服务端审计, evidenceReferences: []}
+    permissionImpacts:
+      - {area: no-new-authority, change: 只保护加载未成功的写入口，不扩大编辑资格；原后端鉴权和保存校验保持, evidenceReferences: []}
+    testImpacts:
+      - {scope: node-and-real-component-browser, scenarios: [三片正常往返, 空白初始化, 非空损坏JSON/不支持schema或版本/结构失败, A到失败B不误保存旧A, 失败关闭及正常重开, 同身份载荷变化, 保存和导入异步过期隔离, 键盘和窄屏错误可见], evidenceReferences: []}
+    evidenceGaps: [受控API浏览器不等于真实服务器到生产库E2E, 本批不做完整所有文件格式/历史迁移/全schema叶子语义验证, 旧strict86及lint缺配置不因本批默认关闭, W2其他入口/W3-W7/A23含已审及全知识语义继续, 另一通用质量自动判读high/A12/完整UI权限矩阵及用户暂停保持]
+  extensionStrategy:
+    selectedPaths: [product-core]
+    rationale: 持久协议归原document工具，编辑加载/错误和动作资格归原Shell；复用MUI Alert及应用通知/关闭行为，不造新协议/存储/通用错误框架。
+    ownershipBoundaries:
+      - {owner: designer-document, responsibility: 三片解析及序列化，正常空白与无法读取分离}
+      - {owner: designer-shell, responsibility: 当前载入源/保存导入上下文/失败可恢复交互}
+  affectedFiles:
+    - {path: gmp-platform/frontend/src/pages/master-data/template-designer-react/utils/document.ts, changeType: update, reason: 编辑读取的有限格式失败保护，默认只读行为保持}
+    - {path: gmp-platform/frontend/src/pages/master-data/template-designer-react/TemplateDesignerReactShell.tsx, changeType: update, reason: 加载失败可见且写动作不可作用于旧store，成功后恢复原编辑}
+  acceptanceScenarios:
+    - id: scenario.w2-designer-read-failure-no-write
+      given: 当前空白/有效三片设计，或非空损坏/不支持的来源；全局store可能属于上一版本
+      when: 打开/切换/重开设计器并尝试保存、自动保存或导入
+      then: 真实空白正常初始化，失败明确显示且不写/不编辑旧store，关闭可用，正常载荷恢复；现有协议/只读/权限和历史保持
+      evidenceRequirements: [同最终测试旧实现反例, 正常Node和实际组件浏览器含窄屏/键盘, 构建/既有保存导入回归, 官方premium同范围基线/当前对照及既有债务保留, 本体有限核对及全新独立质量FINAL, 全角色FINAL后实际PR前漂移复核]
