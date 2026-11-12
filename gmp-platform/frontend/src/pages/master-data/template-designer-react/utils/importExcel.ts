@@ -746,6 +746,7 @@ type ModernExcelImage = {
   range?: {
     tl?: { nativeRow?: number; nativeCol?: number; nativeRowOff?: number; nativeColOff?: number };
     br?: { nativeRow?: number; nativeCol?: number; nativeRowOff?: number; nativeColOff?: number };
+    ext?: { width: number; height: number };
   };
 };
 
@@ -803,15 +804,15 @@ function buildModernExcelImages(
     const top = sumByRange(rowHeights, 0, startRow) + emuToPx(tl.nativeRowOff);
     const width = Math.max(
       24,
-      sumByRange(columnWidths, startCol, endCol)
+      range?.ext?.width ?? (sumByRange(columnWidths, startCol, endCol)
       + emuToPx(br?.nativeColOff)
-      - emuToPx(tl.nativeColOff),
+      - emuToPx(tl.nativeColOff)),
     );
     const height = Math.max(
       24,
-      sumByRange(rowHeights, startRow, endRow)
+      range?.ext?.height ?? (sumByRange(rowHeights, startRow, endRow)
       + emuToPx(br?.nativeRowOff)
-      - emuToPx(tl.nativeRowOff),
+      - emuToPx(tl.nativeRowOff)),
     );
     images.push({
       id: `excel-image-${index}`,

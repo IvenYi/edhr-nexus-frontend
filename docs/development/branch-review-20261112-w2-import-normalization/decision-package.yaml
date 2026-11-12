@@ -1,0 +1,50 @@
+decisionPackage:
+  id: DEC-PACKAGE-W2-IMPORT-NORMALIZATION-20261112
+  scope: W2 Excel/Word import and document normalization;W6 robustness/performance/A23;W7 increment
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: 8a415040babc1cc91ca9f5683bf0db46829eea76
+    targetBranch: edhr-dev
+    targetCommit: 8a415040babc1cc91ca9f5683bf0db46829eea76
+    contractReadCommit: 8a415040babc1cc91ca9f5683bf0db46829eea76
+    uncommittedContractPaths: []
+  summary: PR86实际合入且树同4ea1a96f，无额外代码/知识/契约。继续原W2格式转换的信息/身份保留，已实际复现合法Excel单锚点图片180x72被缩为24x24；仅补读ExcelJS已提供的像素ext尺寸，双锚点及既有24最小尺寸保持。未审格式/容量和旧性能候选保留，不改变导入上限或业务政策。
+  confirmed: {concepts: [], relationships: [], rules: [], executionContracts: []}
+  inferred: []
+  unresolved: []
+  replacementScopes: []
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - {area: modern-excel-image, change: 单锚点图片无br但有ext像素尺寸，不能默认为24方图；ext不再次换算EMU, evidenceReferences: [gmp-platform/frontend/src/pages/master-data/template-designer-react/utils/importExcel.ts]}
+    transitiveImpacts:
+      - {area: canvas-image-consumption, change: 原CanvasPage图片布局经原store导入/撤销/重做/序列化及实际预览消费，不新增渲染器或保存通道, evidenceReferences: [gmp-platform/frontend/src/pages/master-data/template-designer-react/utils/document.ts, gmp-platform/frontend/src/pages/master-data/template-designer-react/TemplateDesignerReactShell.tsx]}
+    potentialImpacts:
+      - {area: office-capacity, concern: Word整包解压/重复表格解析与Excel全工作簿加载已有或相邻风险，须量化记录；不自动优化或新增文件/行列上限, evidenceReferences: [docs/development/branch-review-20261028-designer-import/findings.md]}
+    unaffectedAreas:
+      - {area: business-and-ui-policy, change: 不改字段/工作流/冻结/权限/签署/审计/后台API/历史/共享原语和页面设计，不触碰用户暂停生产管理弹窗, evidenceReferences: [docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml]}
+    compatibilityAndMigration:
+      - {area: existing-images, change: 双锚点原坐标差值分支保持，原最小24像素保持；不重写既有设计或历史图片，旧.xls/.doc能力不借此认证, evidenceReferences: []}
+    snapshotImpacts:
+      - {area: frozen-content, change: 仅未来新导入的布局读取；不回填已形成实例/执行/DHR快照, evidenceReferences: []}
+    auditImpacts:
+      - {area: draft-history, change: 保持一次导入一次撤销项且不自动保存，失败/过期不能覆盖原文；存储/审计路径不变, evidenceReferences: []}
+    permissionImpacts:
+      - {area: existing-authority, change: 无新入口或新资格，不将图片修复视为服务端权限验收, evidenceReferences: []}
+    testImpacts:
+      - {scope: actual-xlsx-and-components, scenarios: [单锚点原尺寸/偏移, 双锚点正对照, 同媒体多尺寸/多媒体, 小图原最小值, 无图及xlsm, 导入撤销重做/保存重读及媒体摘要, 实际Canvas图片几何和窄屏, 原异步导入/保存/读取回归], evidenceReferences: []}
+    evidenceGaps: [非全部Office格式/打印PDF/历史迁移认证, 受控API组件不等于真实后端/数据库E2E, Office容量和旧strict/lint限制保持, 全W2/W3-W7/知识语义及A23已审补查未完成]
+  extensionStrategy:
+    selectedPaths: [product-core]
+    rationale: Excel格式适配归原importExcel，布局和媒体沿原CanvasPage/renderer/store消费；不造通用图片兼容层或大重构。
+    ownershipBoundaries:
+      - {owner: excel-import-adapter, responsibility: 将ExcelJS单/双锚点的既有格式数据转换到Canvas图片布局}
+      - {owner: existing-designer, responsibility: 页面身份/撤销/保存及实际渲染保持}
+  affectedFiles:
+    - {path: gmp-platform/frontend/src/pages/master-data/template-designer-react/utils/importExcel.ts, changeType: update, reason: 补读range.ext像素尺寸}
+  acceptanceScenarios:
+    - id: scenario.w2-excel-image-extent
+      given: 合法Excel单锚点180x72图片或既有双锚点图片，目标页面有其他模型/工作流/页面
+      when: 通过原导入入口转换、预览、撤销重做、保存及重读
+      then: 单锚点尺寸/媒体内容正确，原双锚点/最小值及其他文档内容/身份保持，不自动保存
+      evidenceRequirements: [同最终测试旧实现反例, 真实Excel读写及组件浏览器两屏, 主侧构建/回归和官方strict对照, 本体有限核对, 全新独立质量FINAL, 全角色FINAL后的实际PR前漂移门禁]
