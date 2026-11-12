@@ -1,0 +1,51 @@
+decisionPackage:
+  id: DEC-PACKAGE-W2-FORM-VALUES-20261112
+  scope: W2 draft save/JSON reopen/final completion;W5/W6 robustness,performance,A23 and W7 increment
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: fb68cf02b707052eb6f5bfb85192ed711fba5e30
+    targetBranch: edhr-dev
+    targetCommit: fb68cf02b707052eb6f5bfb85192ed711fba5e30
+    contractReadCommit: fb68cf02b707052eb6f5bfb85192ed711fba5e30
+    uncommittedContractPaths: []
+  summary: PR84真实合入且整树同0c810883，无额外代码/知识/契约。回原W2保存与完成消费链，先按实际方法和旧证据去重；审草稿/最终校验、默认/清空/零、稳定行身份、证据范围及序列化重读，量化逐行上下文复制和文件重复资格SQL。先补维护测试和取证，不改政策或擅自实施性能优化。
+  confirmed: {concepts: [], relationships: [], rules: [], executionContracts: []}
+  inferred: []
+  unresolved: []
+  replacementScopes: []
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - {area: form-value-boundary, change: 真实引擎与ExecutionAccess贯通保存/JSON往返/完成，保留草稿与最终资格差异, evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionEngine.java, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionAccess.java]}
+    transitiveImpacts:
+      - {area: record-trace-projection, change: 核对执行事务后续saved/trace/正式投影和审计入口，已有回归明确标H2及mock边界，不冒称原生PG或全HTTP/E2E, evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormInstanceRecordService.java]}
+    potentialImpacts:
+      - {area: wide-subtable, concern: 实际保存每行创建完整主值上下文可能重复复制整张子表；原行定位也有循环。普通行与同原件重复引用分别量化，样本不是上限，未获确认不优化, evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionAccess.java]}
+    unaffectedAreas:
+      - {area: business-policy, change: 不改字段/默认生命周期/合法选项/签署/权限/生产及DHR状态，不恢复旧规则或历史，不进入用户暂停UI, evidenceReferences: [docs/knowledge/decisions/DEC-0067-form-fill-settings.yaml, docs/knowledge/decisions/DEC-0080-shared-choice-field-options.yaml, docs/knowledge/decisions/DEC-0074-shared-terminal-button-signature.yaml]}
+    compatibilityAndMigration:
+      - {area: fixture-only, change: 仅自有内存夹具，保存JSON往返不改持久协议或迁移；旧数据与冻结内容不自动改写, evidenceReferences: []}
+    snapshotImpacts:
+      - {area: frozen-input, change: 断言冻结配置和调用方输入不被写入修改，行ID保留，真实0/清空/省略分别核对, evidenceReferences: []}
+    auditImpacts:
+      - {area: failed-action, change: 拒绝无权证据时不产生成功执行；引擎状态断言与原事务审计回归分列，不以单元测试声称整个数据库事务证明, evidenceReferences: []}
+    permissionImpacts:
+      - {area: evidence-scope, change: 本对象文件资格和只读列约束沿原入口；收到提醒/历史授权等上轮规则不扩大, evidenceReferences: []}
+    testImpacts:
+      - {scope: real-engine-and-access, scenarios: [部分草稿保存, JSON重读和省略/空/零, 最终必填与只读默认/真实行ID, 本对象与外对象文件, 普通/文件子表1到300行累计分配与SQL], evidenceReferences: []}
+    evidenceGaps: [本批内存H2和领域方法不等于当前生产原生PG全HTTP/浏览器链, 主线程累计分配不是峰值/RSS或生产SLA, 没有全表单/全列/所有并发和权限矩阵证明, W2其他入口/W3-W7/A23含已审补查及全知识语义仍未完成, 另通用质量自动判读high/A12/多租户/strict86和lint缺配置及用户暂停保持]
+  extensionStrategy:
+    selectedPaths: [product-core]
+    rationale: 沿用实际生产引擎/字段证据所有者，仅定向验证与取证；若证实缺陷再做确定性小修，不建通用校验框架或跨请求缓存。
+    ownershipBoundaries:
+      - {owner: execution-engine, responsibility: 草稿合并/字段权限/行身份/签名失效/完成推进}
+      - {owner: execution-access, responsibility: 当前节点权限与证据/引用/文件资格}
+      - {owner: form-record, responsibility: 已保存编号和冻结来源/过程索引/正式投影接续}
+  affectedFiles:
+    - {path: gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/ProductionFormValueBoundaryTest.java, changeType: add, reason: 真实引擎与证据校验边界及只取证性能实验}
+  acceptanceScenarios:
+    - id: scenario.w2-draft-json-final-value-boundary
+      given: 明确DIRECT冻结入口、真实引擎和ExecutionAccess、本次自有H2文件夹具
+      when: 保存部分值/JSON重读/补全后提交，或带入范围外证据
+      then: 草稿与最终校验有界，零/空/省略/行身份和原输入保持；拒绝无权证据不推进；性能原件可核且不自动改变政策/实现
+      evidenceRequirements: [实际新鲜JUnit和命令/候选字节, 观察值与真实查询计数, 本体有限核对和全新独立质量FINAL, 全角色FINAL后实际远端增量及漂移门禁]
