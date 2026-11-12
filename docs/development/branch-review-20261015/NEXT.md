@@ -2,6 +2,8 @@
 
 ## PR87、PR88已合入：W2显式字段类型信息保留
 
+已交付 [PR89](https://github.com/IvenYi/edhr-nexus-frontend/pull/89)，audit/edhr-dev-w2-normalization-boundaries-20261112→edhr-dev，实际观察open/mergeable/clean，建议人工合入。受测1ae712ef、验收归档7919ee00后仅L0交付登记；登记前本地/实际远端/PR head同7919，目标仍fc2f21aa、53/359输入及三包492成员保持。普通推送登记后再核对；下一批先fetch实际合入及新增，不自动merge/deploy/恢复/查询触发CI。
+
 最新目标 `fc2f21aa5e58c2d9a3a39270f1f624bef39da652`：PR88先合入2259b8ae，PR87随后合入fc2f21aa；不再沿用下方旧批“PR87在途”。本轮L2独立新分支audit/edhr-dev-w2-normalization-boundaries-20261112，clean受测 `1ae712ef9f35d8d0b0eb9022e1d7acfc85d14cd7`，无额外契约/知识/外部产品增量。[本批记录](../branch-review-20261112-w2-normalization-boundaries/README.md)。
 
 BUG-W2-UNSUPPORTED-FIELD-TYPE-001：当前格式内未知显式非空类型原被降为text，实际Shell手动保存改写原类型。仅document.ts+9行严格编辑读取识别，复用原加载失败/禁写/恢复；当前十类型、十六旧别名、缺省/null/空白草稿、默认只读保持，无后台/业务政策/历史回写或大重构。原PR86外壳/集合与本次叶子判别分列，不重复修旧问题。

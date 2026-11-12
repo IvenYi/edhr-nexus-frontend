@@ -1,0 +1,19 @@
+{
+  "observedAt": "2026-11-12T07:49:19.398803+00:00",
+  "stage": "Before L0 delivery registration commit",
+  "localHead": "7919ee00318a7c58de0b8cfd5d9b6c20f6443ab0",
+  "actualRemoteBranchHead": "7919ee00318a7c58de0b8cfd5d9b6c20f6443ab0",
+  "pr": {
+    "number": 89,
+    "state": "open",
+    "url": "https://github.com/IvenYi/edhr-nexus-frontend/pull/89",
+    "headRefOid": "7919ee00318a7c58de0b8cfd5d9b6c20f6443ab0",
+    "baseRefName": "edhr-dev",
+    "baseRefOid": "fc2f21aa5e58c2d9a3a39270f1f624bef39da652",
+    "mergeable": true,
+    "mergeStateStatus": "clean"
+  },
+  "localRemotePrHeadEqual": true,
+  "toolCompatibility": "Installed gh pr view does not expose baseRefOid;used actual REST pull base.sha,head.sha instead;no CI queried",
+  "next": "Only L0 delivery record/log inclusion,ordinary push then actual final equality check;no claimed test rerun"
+}

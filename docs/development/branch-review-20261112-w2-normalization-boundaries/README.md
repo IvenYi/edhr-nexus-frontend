@@ -2,6 +2,8 @@
 
 PR87与PR88均已实际合入，当前受测候选 `1ae712ef9f35d8d0b0eb9022e1d7acfc85d14cd7`，目标edhr-dev `fc2f21aa5e58c2d9a3a39270f1f624bef39da652`。
 
+已交付 [PR89](https://github.com/IvenYi/edhr-nexus-frontend/pull/89)，建议人工合入本批修复。[登记前核对](evidence/delivery-before-registration.json)：本地、实际远端与PR head同验收归档7919ee00，目标仍fc2f21aa，PR为open/mergeable/clean；之后仅L0交付登记，普通推送后再核对，不改称L0提交重跑业务测试。
+
 修复未知非空字段类型打开后被静默保存为text：仅在编辑读取边界使用原失败/禁写路径，当前类型、旧别名、缺省/空白草稿与默认只读保持。产品9行、两项维护测试；无业务政策或历史数据改写。
 
 主侧和全新独立实例各248功能执行及另89知识检查通过，构建和三guard通过；旧同最终测试明确复现类型改写。本体正式not-applicable、独立质量正式passed，19项必需检查通过，无本批阻断。原strict86/28与lint缺配置保持，不计全局绿。
