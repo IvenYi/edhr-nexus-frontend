@@ -2,6 +2,8 @@
 
 ## PR86已合入：W2 Office导入与Excel图片尺寸
 
+已交付 [PR87](https://github.com/IvenYi/edhr-nexus-frontend/pull/87)，audit/edhr-dev-w2-import-normalization-20261112→edhr-dev，实际观察OPEN/MERGEABLE/CLEAN，建议人工合入图片尺寸修复。受测38aae69e、验收归档9688d7f3后仅L0登记；登记前本地/真实远端/PR head同9688，目标仍8a且48/359输入、三包488成员摘要相同。正常推送登记后再核对，下批先fetch实际合入及新增再接W2余项；Word性能顺序待真实答复，不自动merge/deploy/恢复/查询触发CI。
+
 最新基线 `8a415040babc1cc91ca9f5683bf0db46829eea76`，PR86实际merged且树同交付4ea1a96f，无外部代码/知识/契约。[本批](../branch-review-20261112-w2-import-normalization/README.md)L2继续原W2叶子归一化/Excel/Word导入/序列化、W6健壮性/A23及W7增量。分支audit/edhr-dev-w2-import-normalization-20261112，clean受测38aae69e345ca1505873bb47c7456e02ec4783ff。
 
 确认并修复W2-IMPORT-EXCEL-IMAGE-EXTENT-001：标准单锚点有ext像素宽高无br，原180×72/49×101均误成24×24。ExcelJS ExtXform已/9525，不可再换EMU。仅importExcel.ts产品5+/4−加ext类型和nullish尺寸读取，原双锚点/min24/坐标/媒体保持，2新维护脚本+DP；无新业务尺寸/导入上限、后台/API/权限/签署/历史/知识政策，旧冻结和已有模板不回填。

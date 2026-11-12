@@ -2,6 +2,8 @@
 
 L2；PR86已真实合入 `edhr-dev@8a415040`，树同4ea1a96f，无外部代码/知识/契约增量。受测候选 `38aae69e345ca1505873bb47c7456e02ec4783ff`。
 
+已交付 [PR87](https://github.com/IvenYi/edhr-nexus-frontend/pull/87)，本批分支→edhr-dev，实际观察OPEN/MERGEABLE/CLEAN，建议人工合入本修复。验收归档9688d7f3后仅L0登记；登记前本地/真实远端/PR head一致，目标8a、48/359输入及488原件成员摘要保持，见[交付核对](evidence/delivery-verification.json)。正常推送登记后再核对，不冒称重新跑测试。
+
 修复 `W2-IMPORT-EXCEL-IMAGE-EXTENT-001`：单锚点Excel图片180×72原会变24×24；现读取ExcelJS已有的像素ext。产品仅importExcel.ts 5增/4减，原双锚点/最小尺寸、媒体、页面身份、撤销、保存协议及业务规则/后台/知识保持。新增两份真实Excel与组件维护测试，不实施格式迁移或大模块重构。
 
 主侧与全新独立各101Node+80浏览器+41控制器=222功能执行，另知识89，0失败/错误/skip；build/原3guard过。旧同最终脚本Node4P6F，两屏各1P3F；当前新10Node/8浏览器过。48/359输入绑定。本体NA/FINAL，有限8=5一致/1原gap/2原待决，353文件/2849ID及0.3.25/schema1.2.0/P0保持。独立quality passed/FINAL，17必需项通过，无findings/blocking，依赖已清、工作树clean。三包488成员摘要及角色原manifest核过。
