@@ -45,7 +45,11 @@ class ProductionFormValueBoundaryTest {
         engine = new ProductionExecutionEngine(mapper, access);
     }
 
-    @AfterEach void closeOwnedDatabase() { if (jdbc != null) jdbc.execute("SHUTDOWN"); }
+    @AfterEach void closeOwnedDatabase() throws java.sql.SQLException {
+        if (jdbc != null) try (var connection=jdbc.getDataSource().getConnection();var statement=connection.createStatement()) {
+            statement.execute("SHUTDOWN");
+        }
+    }
 
     @Test void draftJsonRoundTripPreservesClearsZeroAndRowIdentityUntilFinalCompletion() throws Exception {
         ObjectNode snapshot = snapshot(false), state = start(snapshot);
