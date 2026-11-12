@@ -2,6 +2,8 @@
 
 ## PR84已合入：回到W2，表单值边界及两项已授权优化
 
+已交付[PR85](https://github.com/IvenYi/edhr-nexus-frontend/pull/85)，audit/edhr-dev-w2-form-serialization-20261112→edhr-dev，观察OPEN／MERGEABLE／CLEAN，建议人工合入两项优化。受测6e878e49、验收归档d4dbef25后仅L0交付登记；登记前本地／真实远端／PR head与35／359输入、包摘要一致，正常推送登记后再核对。下轮先fetch真实合入及新增，再回原W2解析／导入／序列化余项，不自动merge／部署／恢复或查触发CI。
+
 已fetch `edhr-dev@fb68cf02b707052eb6f5bfb85192ed711fba5e30`，PR84真实合入且整树同0c810883，无额外代码／知识／契约。新分支audit/edhr-dev-w2-form-serialization-20261112；[本批](../branch-review-20261112-w2-form-values/README.md)L2回原W2保存→JSON重读→最终完成及W5/W6性能／健壮性／A23、W7增量，先按旧方法／提交去重，不重开共享选项／显式模式／行ID或通知high。
 
 先测300行12说明列局部校验普通值约83MiB累计分配、同原件300次资格查询后，用户本轮明确回复“两项一起优化”。本轮已完成PERF-W2-SUBTABLE-EVIDENCE-CONTEXT-001及PERF-W2-FILE-EVIDENCE-LOOKUP-001：每行新顶层context共享只读子图；每公开字段校验调用树局部文件元数据Map、原objectId恒定，逐处originalName仍核，独立调用重查，不缓存成功结果／跨请求内容。仅1产品＋新测试＋DP，原权限／签署／事务／SQL谓词／历史／API/UI/schema/索引及353知识不改。不要误称整个SAVE所有顶层字段共用一次读取。

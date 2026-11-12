@@ -2,6 +2,8 @@
 
 L2；PR84已真实合入`edhr-dev@fb68cf02`，整树同0c810883，无外部增量。受测候选`6e878e496189c2fdd765f9ea71b5264a3e181709`。
 
+已交付[PR85](https://github.com/IvenYi/edhr-nexus-frontend/pull/85)，audit/edhr-dev-w2-form-serialization-20261112→edhr-dev，观察OPEN／MERGEABLE／CLEAN，建议人工合入两项已授权优化。验收归档d4dbef25后仅L0登记；登记前本地／真实远端／PR head一致，目标fb68及35／359输入、原件包摘要保持，见[交付核对](evidence/delivery-verification.json)。登记正常推送后再次核对，不改称重新运行测试。
+
 按用户本轮实际答复“**两项一起优化**”落实两项已量化开销：每行只复制上下文顶层容器；每个公开字段证据校验调用树内复用本对象文件元数据，仍逐处核对名称且新调用重新查询。仅ExecutionAccess、新维护测试和DP三个受测文件；业务规则、权限、签署、事务、历史、API/UI/schema/索引及知识不改。
 
 300行12说明字段的普通子表，局部校验累计分配约80–83MiB→**0.44MiB**；同原件引用资格查询**300→1**，文件场景累计约0.50MiB。方法局部实测，不是保存全事务、RSS／峰值、PG计划或生产SLA；300是行样本，不是人数／表单／可填行数上限。旧同最终测试11项5通过／6真实预算失败，新11全过。
