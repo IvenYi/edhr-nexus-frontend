@@ -1,0 +1,97 @@
+ontologyResult:
+  result: not-applicable
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: de9aa396115ac326dd016235ec664a9c0c95fe15
+    targetBranch: edhr-dev
+    targetCommit: 8a415040babc1cc91ca9f5683bf0db46829eea76
+    contractReadCommit: 8a415040babc1cc91ca9f5683bf0db46829eea76
+    uncommittedContractPaths: []
+  reason: 用户明确授权复用Word表格解析结果。本轮仅将同次DOCX导入已经解析的正文表格按实际DOM Element身份共享给原图片/高度读取，去掉重复运算；不改原图位、文字、边框、合并、媒体、错误/空白或原保存撤销/使用时冻结规则。未新增业务概念、生命周期、数量上限、权限、签署、审计、格式迁移、跨请求缓存或知识发布。353知识文件、2849资产ID和全部成熟度及投影保持，性能子项关闭不代表完整Office容量或父风险关闭，无必要新增同义业务规则。
+  changedArtifacts: []
+  knowledgeSync:
+  - id: DEC-0077-12
+    disposition: retained
+    scope: 仅优化新导入临时解析，不回写模板或实例/执行/DHR既有快照；原使用时冻结与模板可编辑规则保持，不创造发布冻结或图片快照新状态。
+    sourceReferences:
+    - gmp-platform/frontend/src/pages/master-data/template-designer-react/utils/importWord.ts
+    - docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md
+  - id: DEC-0077-22
+    disposition: retained
+    scope: 表格复用留在原Word适配器；完整CanvasPage仍经原Shell/store一次导入及同一保存/撤销机制应用，不建立另一历史或自动保存。
+    sourceReferences:
+    - gmp-platform/frontend/src/pages/master-data/template-designer-react/store/useTemplateDesignerStore.ts#replaceCurrentPageFromImport
+    - gmp-platform/frontend/src/pages/master-data/template-designer-react/TemplateDesignerReactShell.tsx#handleImportFileChange
+    - gmp-platform/frontend/src/pages/master-data/template-designer-react/utils/document.ts#serializeTemplateDesignerDocument
+  - id: DEC-0077-30
+    disposition: retained
+    scope: 不增加字段/投影业务完整性门禁，不改变空白、损坏来源或原请求/证据安全边界；本次性能授权不能扩为草稿资格或无上下文所属政策。
+    sourceReferences:
+    - gmp-platform/frontend/src/pages/master-data/template-designer-react/utils/importWord.ts
+    - docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md#2026-10-10-第三轮注释草稿缺上下文可空批号单位与保存后追溯
+  - id: discrepancy.dhr-review-complete-evidence-impact-gap
+    disposition: deferred
+    scope: 原通用质量/异常/源签署有效性变化自动判读high继续open；Word表格复用没有覆盖或关闭依据，与当前有限优化无依赖。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml
+  - id: question.form-projection-trace-index-effective-scope
+    disposition: deferred
+    scope: 原A12失效/修订历史视图未决保持；不迁移设计或改历史只读，不重新询问已确认过程检索，不用复用结果关闭A12。
+    sourceReferences:
+    - docs/knowledge/open-questions.yaml
+  - id: question.multi-tenant-workflow-isolation
+    disposition: deferred
+    scope: 完整非MVP租户隔离未决保持；本次调用局部DOM Map不等于后台认证或多租户隔离验收。
+    sourceReferences:
+    - docs/knowledge/open-questions.yaml
+  conflicts: []
+  questions: []
+  validationEvidence:
+  - id: validation.w2-word-reuse-finite-records
+    checkType: reference
+    command: python3 build-finite-records.py
+    outcome: passed
+    evidence:
+    - finite-review-records.jsonl
+    - finite-review-summary.json
+    - knowledge-file-inventory.jsonl
+    - knowledge-id-inventory.jsonl
+    - user-authorization.json
+    - 有限8条=6个既有ID与2个选定Markdown说明，5consistent/1原evidence-gap/2原needs-decision；机械353文件/2849唯一schema资产全pending，不新增历史unique或全库语义完成结论。
+  - id: validation.w2-word-reuse-source-and-knowledge
+    checkType: status-transition
+    command: python3 bind-final-inputs.py de9aa396115ac326dd016235ec664a9c0c95fe15 <main-final-run.json> 8a415040babc1cc91ca9f5683bf0db46829eea76
+    outcome: passed
+    evidence:
+    - baseline-inputs.json
+    - final-source-knowledge-binding.json
+    - read-evidence/import-word-candidate.diff
+    - knowledge0.3.25/schema1.2.0/P0 in-progress及原成熟度/客户和运行投影均保持；目标与候选契约及知识无差异。PR87初读时OPEN且Word无差异，未据其未合入分支认证当前范围。
+  - id: validation.w2-word-reuse-main-knowledge-89
+    checkType: schema
+    command: 主侧实际Java命令见final-source-knowledge-binding.json.mainJavaCommand；本体仅核对原件
+    outcome: passed
+    evidence:
+    - read-evidence/final-main/java-summary.json
+    - read-evidence/final-main/TEST-com.zencas.edhr.knowledge.BusinessKnowledgeModelTest.xml
+    - read-evidence/final-main/knowledge-inputs-before.json
+    - read-evidence/final-main/knowledge-inputs.json
+    - 实际XML89个testcase且0失败/错误/skip；源XML时间在本轮Java步骤内，前后知识/测试输入与Git候选及当前一致。
+  - id: validation.w2-word-reuse-runtime-binding
+    checkType: evidence-path
+    command: python3 bind-final-inputs.py；只读主侧正式测试和源码绑定，不执行运行测试
+    outcome: passed
+    evidence:
+    - runtime-evidence-inspection.json
+    - final-source-knowledge-binding.json
+    - read-evidence/final-main/run.json
+    - 主侧完整页面新旧等价、解析次数和实际组件结果按各自原件记录；本体没有亲跑浏览器/Node/Java/数据库/CI或手动视觉检查，不替代独立QA，也不认证全部格式/布局近似/历史或生产SLA。
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages:
+    - P1
+    - P2
+    - P3

@@ -1,0 +1,250 @@
+qualityResult:
+  result: passed
+  baseCommit: 8a415040babc1cc91ca9f5683bf0db46829eea76
+  headCommit: de9aa396115ac326dd016235ec664a9c0c95fe15
+  contractBaseline:
+    sourceCommit: de9aa396115ac326dd016235ec664a9c0c95fe15
+    targetBranch: edhr-dev
+    targetCommit: 8a415040babc1cc91ca9f5683bf0db46829eea76
+    contractReadCommit: de9aa396115ac326dd016235ec664a9c0c95fe15
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: clean
+    includedPaths: []
+    excludedPaths: []
+    untrackedPaths: []
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+  - id: quality.baseline-and-scope
+    required: true
+    category: requirements
+    description: 独立核对固定base/candidate及五文件切片，知识/契约无差异；PR87未合入独立处理
+    method: inspection
+    command: ''
+    outcome: passed
+    evidence:
+    - baseline.json
+    - final-working-tree.json
+  - id: quality.policy-and-ontology
+    required: true
+    category: ontology
+    description: DEC0077-12/22/30及本体NA FINAL与实现边界一致，非业务政策或成熟度升级
+    method: inspection
+    command: ''
+    outcome: passed
+    evidence:
+    - ontology-final/ontology-result.yaml
+    - ontology-final-inspection.json
+    - review.md
+  - id: quality.source-lifetime-a23
+    required: true
+    category: security
+    description: Map仅本次DOCX创建、DOM Element身份、只读消费者，不全局缓存或新增兜底/验证绕过
+    method: inspection
+    command: ''
+    outcome: passed
+    evidence:
+    - review.md
+    - anti-pattern-scan.json
+  - id: quality.parser-full-output
+    required: true
+    category: regression
+    description: 真实JSZip/DOM/旧新Word模块逐项完整CanvasPage JSON等价，非结果mock
+    method: automated-test
+    command: node scripts/test-designer-word-table-reuse.mjs
+    outcome: passed
+    evidence:
+    - final/word-parser/result.json
+    - inputs-verified.json
+  - id: quality.parser-budget-capacity
+    required: true
+    category: regression
+    description: 实际300行50图片三次对照52次解析到1次，600单元格/50图片和页面摘要保持；耗时仅记录不作阈值
+    method: automated-test
+    command: same recorded parser execution
+    outcome: passed
+    evidence:
+    - final/word-parser/result.json
+    - inputs-verified.json
+  - id: quality.parser-isolation-recovery
+    required: true
+    category: regression
+    description: 实际同名新内容、并发独立导入、空白/缺失关系/坏XML及重试保持
+    method: automated-test
+    command: same recorded 8-case parser execution
+    outcome: passed
+    evidence:
+    - final/word-parser/result.json
+  - id: quality.host-history-save
+    required: true
+    category: e2e
+    description: 真实Shell/store/Canvas两屏6项，导入不自动保存、单次撤销历史、同名新文件、错误恢复及保存重开完整JSON
+    method: browser
+    command: node scripts/test-designer-word-table-reuse-browser.mjs at 1440 and 390
+    outcome: passed
+    evidence:
+    - final/word-1440/result.json
+    - final/word-390/result.json
+  - id: quality.adjacent-node
+    required: true
+    category: regression
+    description: 本人实际原解析/保存状态/子列/选项/表单及执行预览91项全过
+    method: automated-test
+    command: node --test --test-reporter=tap <six recorded scripts>
+    outcome: passed
+    evidence:
+    - final/node.log
+    - final/node-summary.json
+  - id: quality.adjacent-browser
+    required: true
+    category: regression
+    description: 本人实际原加载16、保存26、导入30，两宽合计72项全过
+    method: browser
+    command: recorded three browser scripts at both widths
+    outcome: passed
+    evidence:
+    - final/document-1440/result.json
+    - final/document-390/result.json
+    - final/save-1440/result.json
+    - final/save-390/result.json
+    - final/import-1440/result.json
+    - final/import-390/result.json
+  - id: quality.build-and-guards
+    required: true
+    category: integration
+    description: 实际npm构建含tsc及三个原静态约束通过，原检查未改
+    method: command
+    command: npm run build;node scripts/verify-template-designer-react.mjs;node scripts/verify-list-table-style-contract.mjs;node
+      scripts/verify-no-external-fonts.mjs
+    outcome: passed
+    evidence:
+    - final/build.log
+    - final/verify-template-designer-react.log
+    - final/verify-list-table-style-contract.log
+    - final/verify-no-external-fonts.log
+  - id: quality.controller
+    required: true
+    category: api
+    description: 原控制器mock/direct41项实际独立运行，无失败/错误/skip；非真实HTTP/PG
+    method: automated-test
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr --batch-mode --no-transfer-progress -f gmp-platform/backend/pom.xml
+      -Dtest=TemplateModelingControllerTest,BusinessKnowledgeModelTest test
+    outcome: passed
+    evidence:
+    - final/java.log
+    - final/java-summary.json
+    - final/TEST-com.zencas.edhr.template.controller.TemplateModelingControllerTest.xml
+  - id: quality.knowledge
+    required: true
+    category: ontology
+    description: 知识89实际独立运行，新鲜XML；359输入前后/Git一致，不等于全库语义已审
+    method: automated-test
+    command: same independently recorded Maven execution
+    outcome: passed
+    evidence:
+    - final/java-summary.json
+    - final/TEST-com.zencas.edhr.knowledge.BusinessKnowledgeModelTest.xml
+    - inputs-verified.json
+  - id: quality.visual
+    required: true
+    category: visual
+    description: 本人实际查看1440/390导入截图，表格/合并/图片渲染、窄屏原侧栏关闭/滚动可达；不声称全部Word版式正确
+    method: inspection
+    command: ''
+    outcome: passed
+    evidence:
+    - visual-review.json
+    - final/word-1440/history-and-save.png
+    - final/word-390/history-and-save.png
+  - id: quality.old-product-counterexample
+    required: true
+    category: regression
+    description: 复核主侧同最终脚本/旧产品原件1P7真实解析预算F，完整页面仍相同；明确非本人重跑旧产品
+    method: inspection
+    command: ''
+    outcome: passed
+    evidence:
+    - main-negative-inspection/command.json
+    - main-negative-inspection/parser/result.json
+    - inputs-verified.json
+  - id: quality.premium-increment
+    required: true
+    category: regression
+    description: 本人官方精确脚本base/current两范围完整finding多重集相同，仅忽略行号；新增0
+    method: command
+    command: python3 audit_project.py <base/candidate repo/frontend> --mode strict --output <recorded file>
+    outcome: passed
+    evidence:
+    - premium-commands.json
+    - premium-comparison.json
+  - id: quality.inputs-and-integrity
+    required: true
+    category: documentation
+    description: 49源码输入与359知识输入同当前/Git/原件，环境恢复后再次核对；清依赖软链且worktreeclean
+    method: inspection
+    command: ''
+    outcome: passed
+    evidence:
+    - inputs-verified.json
+    - final-working-tree.json
+    - final/run.json
+  - id: quality.live-target-observation
+    required: true
+    category: requirements
+    description: 本人GitHub API实际观察目标8a415040及PR87 OPEN；主审集成前仍需实际fetch增量复核
+    method: command
+    command: gh api repos/IvenYi/edhr-nexus-frontend/git/ref/heads/edhr-dev --jq .object.sha;gh pr view 87 --json number,state,headRefOid,mergeCommit,mergedAt
+    outcome: passed
+    evidence:
+    - network-observation.json
+  - id: quality.premium-whole-project
+    required: false
+    category: visual
+    description: 既有strict仓库86/前端28债务未关闭，包含关系不相加
+    method: command
+    command: recorded official strict audits
+    outcome: blocked
+    evidence:
+    - premium-comparison.json
+  - id: quality.eslint
+    required: false
+    category: regression
+    description: 基线/当前均因已有缺配置exit2，未计通过
+    method: command
+    command: recorded installed ESLint command
+    outcome: blocked
+    evidence:
+    - lint-commands.json
+    - baseline-lint.log
+    - candidate-lint.log
+  findings: []
+  residualRisks:
+  - id: risk.controlled-not-http-pg
+    description: 纯解析与受控API真实组件/保存回调、mock/direct控制器不等于真实HTTP/PG完整E2E。
+    impact: 未认证真实服务器鉴权、数据库事务或生产端到端。
+    mitigation: 按真实链后续验证；本批没有后台或DB改动。
+  - id: risk.old-layout-fidelity
+    description: 完整JSON等价保留现有Word图文近似，包括部分图片与文字重叠；嵌套样本仅保留既有表现。
+    impact: 不能据此宣称所有Word版式、打印PDF/历史格式正确。
+    mitigation: 保持本次优化边界，格式/布局专项另审，不在复用中改变布局政策。
+  - id: risk.parent-capacity
+    description: 本批仅关闭重复表解析；ZIP全解压、DOM/媒体编码、其他Office输入膨胀未关闭。
+    impact: 不保证生产SLA、峰值内存或任意大文档容量。
+    mitigation: 保留父风险并分别量化讨论；300/50为样本而非上限。
+  - id: risk.existing-static-lint-debt
+    description: 官方strict仓库86/前端28旧债及ESLint缺配置保留。
+    impact: 未宣称全仓静态合规或lint通过。
+    mitigation: 完整finding多重集新增0；按原审计队列处理。
+  - id: risk.not-overall-completion
+    description: 全W2/W3-W7、A23已审补查、全知识语义及原high/A12/多租户/用户暂停仍未完成。
+    impact: 307项局部执行不能换算整体覆盖比例或生产发布。
+    mitigation: 台账分列机械盘点、有限方法与语义审查、运行验收和后续范围。
+  - id: risk.parallel-pr87
+    description: PR87仍OPEN，不在本基线内；本批没有继承其Excel修复和覆盖。
+    impact: 后续目标/并行合入变化需要实际集成候选增量复核。
+    mitigation: 主审PR前及收到合入消息后fresh fetch、检查相关变化再适用复验。
+  - id: risk.limited-ui-matrix
+    description: 只对实际变更导入链两屏截图/键盘/错误恢复做验证，复杂窄屏画布与重开侧栏原布局保留。
+    impact: 未认证全站响应式、无障碍、账号/离线/权限/本地化完整矩阵。
+    mitigation: 维持既有完整UI队列，不为计算优化重设计。
+  blockingConditions: []

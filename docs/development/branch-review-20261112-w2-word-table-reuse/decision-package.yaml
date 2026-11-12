@@ -1,0 +1,50 @@
+decisionPackage:
+  id: DEC-PACKAGE-W2-WORD-TABLE-REUSE-20261112
+  scope: W2 user-authorized per-import Word table parsing reuse;W6 performance/robustness/A23;W7 increment
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: 8a415040babc1cc91ca9f5683bf0db46829eea76
+    targetBranch: edhr-dev
+    targetCommit: 8a415040babc1cc91ca9f5683bf0db46829eea76
+    contractReadCommit: 8a415040babc1cc91ca9f5683bf0db46829eea76
+    uncommittedContractPaths: []
+  summary: 用户明确选择下一批先复用表格解析结果。PR87目前OPEN未合入，Word改动独立于其Excel尺寸修复；从最新edhr-dev另建分支，不继承PR87覆盖结论。只在单次DOCX导入内将已解析的正文顶层表格按实际DOM节点共享给图片布局消费，保留原图位、文字、边框、合并、撤销和保存行为。原300行50处图52次表解析已量化；不改业务政策、布局算法或输入上限。
+  confirmed: {concepts: [], relationships: [], rules: [], executionContracts: []}
+  inferred: []
+  unresolved: []
+  replacementScopes: []
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - {area: docx-table-parser, change: parseBlocks形成的ParsedTable在该次导入中按Element身份复用，避免每图及高度累计重解析, evidenceReferences: [gmp-platform/frontend/src/pages/master-data/template-designer-react/utils/importWord.ts]}
+    transitiveImpacts:
+      - {area: imported-layout, change: 图片位置/表格图文/媒体/页面组装仍消费相同解析结果，输出与旧基线完整JSON比较，不顺改已有布局近似, evidenceReferences: [gmp-platform/frontend/src/pages/master-data/template-designer-react/utils/importGrid.ts]}
+    potentialImpacts:
+      - {area: shared-object-lifetime, concern: ParsedTable被块和图片两处读取，须核对消费者不修改及导入调用间隔离，不能全局缓存或按文件名复用, evidenceReferences: [gmp-platform/frontend/src/pages/master-data/template-designer-react/utils/importWord.ts]}
+    unaffectedAreas:
+      - {area: policy-and-other-formats, change: 不改XML/关系解析、媒体编码、表格/段落布局、Excel/.doc、后端/UI设计/权限/签署/冻结/知识，不触碰用户暂停弹窗, evidenceReferences: []}
+    compatibilityAndMigration:
+      - {area: persisted-design, change: 原序列化格式/默认只读及现有模板/历史不回写，无数据迁移；空白、损坏、缺失图片关系行为保持, evidenceReferences: []}
+    snapshotImpacts:
+      - {area: frozen-content, change: 不改变生产/实例/DHR快照，只优化新导入的临时解析, evidenceReferences: []}
+    auditImpacts:
+      - {area: draft-history, change: 导入仍由原store一次应用且不自动保存，撤销/重做及失败/过期隔离回归, evidenceReferences: []}
+    permissionImpacts:
+      - {area: no-new-access, change: 无新API、用户资格或跨请求共享，不把组件回归当真实HTTP/数据库权限验收, evidenceReferences: []}
+    testImpacts:
+      - {scope: actual-word-and-shell, scenarios: [完整新旧页面JSON等价, 每正文表格一次解析, 多图/多表/合并/边框/图位, 空白/损坏/缺失关系, 连续同名及并发独立导入, 原300行50图容量对照, 实际组件两屏撤销重做/保存重开/失败恢复, 原读取保存导入回归], evidenceReferences: []}
+    evidenceGaps: [不认证全部Office/嵌套表格式及既有布局完全正确, 受控组件非完整HTTP/PG E2E, 全ZIP/工作簿/媒体编码旧容量风险另排, PR87未合入按独立提交范围保留, 全W2/W3-W7/知识语义/A23及原暂停未完成]
+  extensionStrategy:
+    selectedPaths: [product-core]
+    rationale: 复用归原Word适配器的调用局部Map，消费者只读；不抽象通用缓存或复制导入/撤销/保存所有者。
+    ownershipBoundaries:
+      - {owner: word-import-adapter, responsibility: 单次DOM及ParsedTable共享和原图文输出}
+      - {owner: existing-designer, responsibility: 页面身份/异步失效/撤销和保存保持}
+  affectedFiles:
+    - {path: gmp-platform/frontend/src/pages/master-data/template-designer-react/utils/importWord.ts, changeType: update, reason: 复用当前导入已解析的表格}
+  acceptanceScenarios:
+    - id: scenario.w2-word-table-reuse
+      given: 含表格/图片/文字及合并边框的DOCX，或空白/失败/连续及并发新来源
+      when: 真实导入、渲染、撤销/重做和保存重读
+      then: 每个当前正文表格仅解析一次，各导入隔离且完整页面输出与旧实现相同；原错误及编辑历史行为保持
+      evidenceRequirements: [新旧相同夹具的完整JSON及计数/耗时原件, 真实组件含窄屏和错误恢复, 主侧构建/原回归及知识89, 本体有限核对, 全新独立质量FINAL, 全角色FINAL后实际PR前漂移与目标增量复核]

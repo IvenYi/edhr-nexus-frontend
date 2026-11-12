@@ -930,3 +930,23 @@ W2六批分别随PR10至PR15人工合入，W3的H003已随PR16人工合入，各
 同步新目标应保留普通提交历史；不覆盖用户改动、不强推。清单、语义检查、整改和运行验证分别计数，保留旧来源/旧结论，不重新收尾 PR5/PR6。只有真正业务歧义集中向用户确认，其余继续。本地日志/账号/token/字体包不进入提交。当前原库和历史上传目录不恢复、不补算。
 
 2026-10-15 用户明确同意将首批审查分支通过 PR 合入 edhr-dev，并继续下一步。该批 PR 为 #7，验收仍引用实际受测候选 1dac6338 的独立 passed；集成前核对产品、测试、知识及工具摘要未变，新增差异只有报告/授权台账和一处报告 EOF 空行规范化。该 L0 文档增量不重跑业务测试，也不把原验收提交改写为新测试。保留既有 CSV 的标准 CRLF 行尾，Git 空白检查按 cr-at-eol 识别终止符，未忽略其他空白错误。不得扩大授权为后续批次自动合并、部署或恢复历史数据；不手动查询/触发 GitHub Actions，本次已验收提交及合并说明保留 skip-ci 标记。
+
+## 2026-11-12 最新并行专项：已授权Word表格解析复用
+
+已交付 [PR88](https://github.com/IvenYi/edhr-nexus-frontend/pull/88)，audit/edhr-dev-w2-word-table-reuse-20261112→edhr-dev，实际观察OPEN/MERGEABLE/CLEAN，建议按当前受测基线人工合入。PR87仍OPEN未合入，两分支独立；受测de9aa396，验收归档13ad54ea后仅L0登记。登记前本地/真实远端/PR head同13ad，目标仍8a，49/359输入及481原件成员摘要保持；正常推送登记后再核对，下轮先查两PR实际合入与新增，不自动merge/deploy/恢复或查询触发CI。
+
+用户明确选择“下一批先复用表格解析结果”。[本批](../branch-review-20261112-w2-word-table-reuse/README.md)L2受测clean `de9aa396115ac326dd016235ec664a9c0c95fe15`，独立从最新edhr-dev@8a415040建立audit/edhr-dev-w2-word-table-reuse-20261112；PR87仍OPEN未合入、Word源相同，不继承其Excel修复或范围覆盖。本检查点追加保存，保留PR87在途记录。
+
+PERF-W2-WORD-TABLE-REPARSE-001只关闭重复整表解析子项：importWord.ts 14+/10−在单次importDocxToCanvasPage创建DOM Element→ParsedTable Map，parseBlocks解析一次，图片与高度ReadonlyMap读同结果；每个当前正文顶层表格一次，不是宣称独立支持全部嵌套表。无全局/文件名/跨请求缓存，不改表解析/原布局近似/媒体/上限/.doc/Excel/后台/规则/权限/签署/冻结/历史，父Office膨胀风险保持。
+
+同包300行50处图52→1次，主侧正式旧1486.5/1336.1/1440.2ms、新63.4/48.5/44.5ms，中位1440.2→48.5ms；完整CanvasPage JSON一致并保留600cells/50images。只计本地转换含测试JSON准备，非整页/峰值内存/生产SLA；样本不是限额。旧同最终纯脚本8中1正/7真实解析次数预算红，所有旧页比较仍相同，不计作七个正确性缺陷。
+
+主侧与全新独立各91Node+8纯解析+78真实组件浏览器+41Controller=218功能执行，另知识89，0F/E/S；build及原3guard过。完整输出、合并/边框/图位、多表、缺失关系、同名新来源/并发/错误重试、真实导入单history/不自动保存/另页身份/undo-redo/保存重开覆盖。原JS undefined与JSON表示差异的测试作者错误单列，最终完整协议JSON比较，不改产品normalizer或删有效值换绿。组件/直接mock控制器不冒称HTTP/PG全链或全部Word版式正确。
+
+49源码/测试/契约及359知识/知识测试输入同Git/当前/运行原件，环境恢复后再核；GitHub暂时503后真实fetch恢复成功，target-refresh.json另存，不回写失败。官方精确原脚本仓库86/前端28完整finding多重集相同新增0，仍exit2；lint原缺配置保持。353知识文件/2849资产ID和0.3.25/schema1.2.0/P0保持；本体NA/FINAL，有限8=5一致/1原gap/2原待决，独立quality passed/FINAL、17必需项过、无findings/blocking，软链已清/工作树clean。三包481成员与角色原manifest已核。
+
+三条有限方法范围及8290固定树路径分列，5833历史证据不重算覆盖，不造整文件/历史unique完成比例。review明确局部Map生命周期/A23及Word ZIP→XML/ParsedBlock→布局的具体提取边界，本批不大重构。
+
+下一轮先fetch本PR/PR87实际状态和目标新增，形成真实集成候选再评估，续原W2叶子归一化、Office图文布局及序列化信息/身份保留。全W2/W3–W7、全知识语义、A23含已审补查、另一通用质量/异常/源签署high、A12、全UI/账号/错误/权限矩阵、非MVP多租户、strict/lint旧债、容量UNKNOWN及原暂停/未答继续。不自动merge/deploy/恢复或查询触发CI；全部角色正式FINAL后必须实际PR前漂移门禁。
+
+两角色均已正式FINAL，2026-11-12 14:59:52 Asia/Shanghai已实际[PR前漂移/阶段复核](../branch-review-20261112-w2-word-table-reuse/pre-pr-drift-review.md)：目标仍8a、PR87仍OPEN，49/359输入及三包481成员/原角色manifest核过，无漂移。之后仅L0验收/台账/交付，不改称重跑测试。
