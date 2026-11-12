@@ -933,6 +933,8 @@ W2六批分别随PR10至PR15人工合入，W3的H003已随PR16人工合入，各
 
 ## 2026-11-12 最新并行专项：已授权Word表格解析复用
 
+已交付 [PR88](https://github.com/IvenYi/edhr-nexus-frontend/pull/88)，audit/edhr-dev-w2-word-table-reuse-20261112→edhr-dev，实际观察OPEN/MERGEABLE/CLEAN，建议按当前受测基线人工合入。PR87仍OPEN未合入，两分支独立；受测de9aa396，验收归档13ad54ea后仅L0登记。登记前本地/真实远端/PR head同13ad，目标仍8a，49/359输入及481原件成员摘要保持；正常推送登记后再核对，下轮先查两PR实际合入与新增，不自动merge/deploy/恢复或查询触发CI。
+
 用户明确选择“下一批先复用表格解析结果”。[本批](../branch-review-20261112-w2-word-table-reuse/README.md)L2受测clean `de9aa396115ac326dd016235ec664a9c0c95fe15`，独立从最新edhr-dev@8a415040建立audit/edhr-dev-w2-word-table-reuse-20261112；PR87仍OPEN未合入、Word源相同，不继承其Excel修复或范围覆盖。本检查点追加保存，保留PR87在途记录。
 
 PERF-W2-WORD-TABLE-REPARSE-001只关闭重复整表解析子项：importWord.ts 14+/10−在单次importDocxToCanvasPage创建DOM Element→ParsedTable Map，parseBlocks解析一次，图片与高度ReadonlyMap读同结果；每个当前正文顶层表格一次，不是宣称独立支持全部嵌套表。无全局/文件名/跨请求缓存，不改表解析/原布局近似/媒体/上限/.doc/Excel/后台/规则/权限/签署/冻结/历史，父Office膨胀风险保持。
