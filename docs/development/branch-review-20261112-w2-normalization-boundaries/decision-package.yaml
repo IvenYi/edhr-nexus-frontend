@@ -1,0 +1,52 @@
+decisionPackage:
+  id: DEC-PACKAGE-W2-NORMALIZATION-BOUNDARIES-20261112
+  scope: W2 model leaf normalization/editing safety;W6 robustness/A23;W7 PR87+88 integration and merged audit branch cleanup
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: fc2f21aa5e58c2d9a3a39270f1f624bef39da652
+    targetBranch: edhr-dev
+    targetCommit: fc2f21aa5e58c2d9a3a39270f1f624bef39da652
+    contractReadCommit: fc2f21aa5e58c2d9a3a39270f1f624bef39da652
+    uncommittedContractPaths: []
+  summary: 实际合入PR87与PR88后从最新目标续审。当前编辑器把非空未知字段类型降为text，保存会改写原类型；仅在编辑读取边界识别不能解释的显式类型，复用既有加载失败/禁写恢复，不改默认只读及空白草稿兼容。用户另明确授权清理已合并审计分支，88项均核对稳定分支可达并CAS原子删除，有本地恢复引用；五个稳定或非审计分支保留。
+  confirmed: {concepts: [], relationships: [], rules: [], executionContracts: []}
+  inferred: []
+  unresolved: []
+  replacementScopes: []
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - {area: model-read, change: 编辑读取拒绝非空未知或非字符串类型；当前注册类型和显式旧别名可用，缺省或空白仍为未完成草稿, evidenceReferences: [gmp-platform/frontend/src/pages/master-data/template-designer-react/utils/document.ts]}
+    transitiveImpacts:
+      - {area: designer-save, change: Shell沿既有读取失败路径显示错误并阻止手动/字段保存，保留原文档及历史状态, evidenceReferences: [gmp-platform/frontend/src/pages/master-data/template-designer-react/TemplateDesignerReactShell.tsx]}
+    potentialImpacts:
+      - {area: alternate-writers, concern: 自定义/未来类型或损坏格式可能来自别的写入方；不能据当前编辑器不支持将其声明为全局无效数据, evidenceReferences: []}
+    unaffectedAreas:
+      - {area: domain-policy, change: 无业务必填/完整性新校验，无后端/API/权限/签署/冻结/只读消费者/UI样式改动，不碰暂停弹窗或通用签署, evidenceReferences: [docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml]}
+    compatibilityAndMigration:
+      - {area: draft-and-history, change: 当前十类及十六旧别名保留，缺省/null/空白保留，默认只读兼容不变，不迁移或恢复历史数据；当前编辑器不能解释的类型先保留原件并报错, evidenceReferences: []}
+    snapshotImpacts:
+      - {area: frozen-snapshots, change: 无生产/实例/DHR快照改写或回填, evidenceReferences: []}
+    auditImpacts:
+      - {area: evidence-and-history, change: 防止未知类型被静默文本化保存；不改变后端版本审计事件，分支清理只删除远端引用不删除稳定历史, evidenceReferences: []}
+    permissionImpacts:
+      - {area: access, change: 无新访问或授权规则，组件受控API/回调不冒称完整HTTP/PG权限验收, evidenceReferences: []}
+    testImpacts:
+      - {scope: read-save-and-integrated-imports, scenarios: [真实旧实现负例及保存回调, 当前/旧类型及不完整草稿, 只读兼容/来源不变, 两屏失败禁写和恢复, 已合入PR87Excel及PR88Word组合回归, 主侧构建/契约/控制器/知识检查, 新实例独立验收], evidenceReferences: []}
+    evidenceGaps: [不认证所有模型叶子/嵌套子表/Office布局或容量, 受控组件及直接控制器不等于完整HTTP/PG E2E, 旧strict与lint基线保留, W2余项/W3-W7/全知识语义/A23已审补查/原high和A12等不因此关闭]
+  extensionStrategy:
+    selectedPaths: [product-core]
+    rationale: 使用原document编辑边界和中央字段注册表及旧别名，不新建通用schema校验器、缓存或并行保存路径。
+    ownershipBoundaries:
+      - {owner: designer-document, responsibility: 区分可解释字段类型与不可解释输入}
+      - {owner: existing-shell, responsibility: 沿原错误提示/禁写/关闭重开恢复，不另造UI}
+  affectedFiles:
+    - {path: gmp-platform/frontend/src/pages/master-data/template-designer-react/utils/document.ts, changeType: update, reason: 防止未知显式类型保存为text}
+    - {path: gmp-platform/frontend/scripts/test-designer-document-read.mjs, changeType: update, reason: 负例和当前/旧/空白/只读兼容}
+    - {path: gmp-platform/frontend/scripts/test-designer-document-read-browser.mjs, changeType: update, reason: 真实Shell错误禁写与旧实现保存负例}
+  acceptanceScenarios:
+    - id: scenario.w2-explicit-field-type
+      given: 当前格式外壳但存在编辑器不认识的非空字段类型，或合法当前/旧/空白草稿
+      when: 打开编辑并尝试保存
+      then: 不认识类型显示既有加载错误且无写入；合法及未完成草稿继续保存，默认只读行为保持
+      evidenceRequirements: [同脚本旧基线负例与原保存载荷, 新实现两屏真实组件, 主侧测试及构建, 有限本体核对, 全新独立质量FINAL, 全角色FINAL后实际fetch/输入摘要/证据归档/任务漂移门禁]

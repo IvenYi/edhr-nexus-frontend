@@ -22,7 +22,7 @@ const hash=value=>createHash('sha256').update(JSON.stringify(value)).digest('hex
 const sourceFiles=['src/pages/master-data/template-designer-react/TemplateDesignerReactShell.tsx','src/pages/master-data/template-designer-react/utils/document.ts'];
 const sources=[];
 for(const name of sourceFiles){const text=baseline?execFileSync('git',['show',baseline+':gmp-platform/frontend/'+name],{cwd:root,encoding:'utf8'}):await readFile(path.join(root,name),'utf8');sources.push({path:name,sha256:createHash('sha256').update(text).digest('hex')});}
-const cases=['normal-save','empty-initial','workflow-syntax','canvas-shape','future-protocol','same-id-failure','failure-close-and-reopen','held-autosave-after-failure'];
+const cases=['normal-save','empty-initial','workflow-syntax','canvas-shape','future-protocol','unsupported-field-type','same-id-failure','failure-close-and-reopen','held-autosave-after-failure'];
 const results=[];let server,browser;
 try {
   await build({absWorkingDir:root,stdin:{resolveDir:root,loader:'tsx',contents:`
@@ -34,12 +34,13 @@ try {
     import{createEmptyTemplateDesignerDocument as createDoc,serializeTemplateDesignerDocument as serialize}from'./src/pages/master-data/template-designer-react/utils/document';
     import{SnackbarProvider}from'./src/components/SnackbarProvider';
     const row={id:'read-template',name:'设计读取审查'};const versions={};
-    for(const key of ['A','B','C','D']){const doc=createDoc({schema:'edhr-template-designer-react',version:1,templateId:row.id,versionId:'version-'+key,templateName:row.name,versionLabel:key});
+    for(const key of ['A','B','C','D','E']){const doc=createDoc({schema:'edhr-template-designer-react',version:1,templateId:row.id,versionId:'version-'+key,templateName:row.name,versionLabel:key});
       const p=doc.canvas.pages[0];p.sheet={...p.sheet,rowCount:5,columnCount:4,rowHeights:Array(5).fill(36),columnWidths:Array(4).fill(84),showRuler:false};p.cells={'1:1':{value:'原设计'+key}};
       versions[key]={id:'version-'+key,version:key,...serialize(doc)};}
     versions.B.workflowDesignJson='{"nodes":';
     versions.C.canvasDesignJson=JSON.stringify({schema:'edhr-template-designer-react',version:1,payload:{pages:{unreadable:true}}});
     versions.D.canvasDesignJson=JSON.stringify({schema:'edhr-template-designer-react',version:2,payload:{pages:[]}});
+    versions.E.modelDesignJson=JSON.stringify({schema:'edhr-template-designer-react',version:1,payload:{fields:[{id:'unknown-field',code:'keep_code',name:'外部类型字段',type:'future-number',typeConfig:{custom:'keep-config'}}]}});
     versions.Empty={id:'empty-version',version:'草稿',modelDesignJson:'{"fields":[]}',canvasDesignJson:'{"layers":[]}',workflowDesignJson:'{"nodes":[],"edges":[]}'};
     window.__store=store;window.__writes=[];
     function App(){const[version,setVersion]=useState(versions.A),[open,setOpen]=useState(true);
@@ -87,7 +88,7 @@ try {
         assert.equal(record.writes[0].target,name==='empty-initial'?'empty-version':'version-A');assert.equal((await state(page)).dirty,false);
       }else{
         if(name==='held-autosave-after-failure')await page.evaluate(()=>{window.__heldAutoSave=window.__currentAutoSave;});
-        const target=name==='canvas-shape'?'C':name==='future-protocol'?'D':'B';
+        const target=name==='canvas-shape'?'C':name==='future-protocol'?'D':name==='unsupported-field-type'?'E':'B';
         if(name==='same-id-failure')await page.getByRole('button',{name:'宿主更新同身份来源',exact:true}).click();
         else await page.getByRole('button',{name:'宿主打开'+target,exact:true}).click();
         await frame(page);
