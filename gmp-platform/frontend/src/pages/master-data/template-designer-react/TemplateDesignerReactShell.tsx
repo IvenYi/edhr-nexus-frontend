@@ -390,8 +390,8 @@ export default function TemplateDesignerReactShell({
       <ProjectionDialog open={Boolean(document) && projectionOpen && !projectionValidationRequested} onClose={() => setProjectionOpen(false)} focusField={projectionField} />
       <ProjectionValidationDialog open={Boolean(document) && projectionValidationRequested} onClose={() => { setProjectionValidationRequested(false); setProjectionOpen(false); }}
         onSave={async () => { await handleSave(); }} saving={checkingProjection || Boolean(saving)} focusBindingId={projectionFocusBindingId} />
-      <AppDialog
-        open={Boolean(document) && closeConfirmOpen}
+      {document && <AppDialog
+        open={closeConfirmOpen}
         onClose={() => setCloseConfirmOpen(false)}
         closeAriaLabel="关闭提示"
         maxWidth="xs"
@@ -447,7 +447,7 @@ export default function TemplateDesignerReactShell({
             继续编辑
           </Button>
         </DialogActions>
-      </AppDialog>
+      </AppDialog>}
       {document ? (
         <MockFillDialog
           open={mockFillOpen}
