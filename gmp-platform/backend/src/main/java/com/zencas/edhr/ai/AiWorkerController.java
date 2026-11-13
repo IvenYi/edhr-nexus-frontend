@@ -45,6 +45,19 @@ public class AiWorkerController {
     }
 
     public record LeaseRequest(@NotNull UUID taskId, @NotNull UUID runId, @Min(1) long leaseEpoch) { }
+    @PostMapping("/yield")
+    public ApiResponse<Map<String, Object>> yieldRun(@Valid @RequestBody LeaseRequest request) {
+        return ApiResponse.success(tasks.yieldRun(request.taskId(), request.runId(), request.leaseEpoch()));
+    }
+
+    @PostMapping("/tool-events")
+    public ApiResponse<Map<String, Object>> toolEvent(@Valid @RequestBody ToolEventRequest request) {
+        return ApiResponse.success(tasks.toolEvent(request.taskId(), request.runId(), request.leaseEpoch(), request.callId(), request.tool(), request.phase()));
+    }
+
+    public record ToolEventRequest(@NotNull UUID taskId, @NotNull UUID runId, @Min(1) long leaseEpoch,
+                                   @NotBlank @Size(max=128) String callId, @NotBlank @Size(max=64) String tool,
+                                   @NotBlank @Size(max=32) String phase) { }
     public record ReserveRequest(@NotNull UUID taskId, @NotNull UUID runId, @Min(1) long leaseEpoch,
                                  @NotBlank @Size(max = 128) String requestId) { }
     public record SettleRequest(@NotNull UUID taskId, @NotNull UUID runId, @Min(1) long leaseEpoch,

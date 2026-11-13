@@ -1,5 +1,35 @@
 knowledgeModelVersion: 0.3.25
 implementationAnchors:
+  - id: anchor.ai-worker-runtime
+    targetId: concept.ai-execution-run
+    targetType: concept
+    codeReferences: [gmp-platform/ai-worker/src/worker.mjs, gmp-platform/ai-worker/src/form-plugin.mjs, gmp-platform/ai-worker/src/client.mjs, gmp-platform/backend/src/main/java/com/zencas/edhr/ai/AiProperties.java]
+    apiReferences: ["POST /api/v1/ai/internal/claim", "POST /api/v1/ai/internal/renew", "POST /api/v1/ai/internal/yield", "POST /api/v1/ai/internal/forms/reconcile"]
+    databaseReferences: []
+    uiReferences: []
+    testReferences: [gmp-platform/ai-worker/test/worker.test.mjs, gmp-platform/ai-worker/test/launch-profile.mjs, gmp-platform/ai-worker/test/profile-boot.mjs, gmp-platform/backend/src/test/java/com/zencas/edhr/ai/AiFormPostgresTest.java]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.ai-worker-runtime-scope, evidence.ai-worker-runtime-source]
+    sourceRevision: working-tree
+    sourceLocator: runClaimedWorker及workerBaseline；领取续租、受控回执核对、DSH工具挂载及释放，固定四项配置基线，不兼容拒绝；STOPPED/WORKER_YIELDED为工程停止而非任务成功，测试入口不等于通过证据
+    capturedAt: '2026-11-13'
+    reviewStatus: reviewed
+  - id: anchor.ai-tool-process-events
+    targetId: concept.ai-operation-event
+    targetType: concept
+    codeReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/ai/AiTaskService.java, gmp-platform/backend/src/main/java/com/zencas/edhr/ai/AiWorkerController.java, gmp-platform/backend/src/main/java/com/zencas/edhr/ai/AiFormService.java, gmp-platform/backend/src/main/java/com/zencas/edhr/ai/AiFormController.java, gmp-platform/backend/src/main/java/com/zencas/edhr/ai/AiEventPresentation.java]
+    apiReferences: ["POST /api/v1/ai/internal/tool-events", "GET /api/v1/ai/tasks/{id}/events", "POST /api/v1/ai/internal/forms/reconcile"]
+    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/0093-ai-task-foundation.sql]
+    uiReferences: []
+    testReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/ai/AiFormPostgresTest.java]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.ai-worker-runtime-scope, evidence.ai-tool-process-event-source]
+    sourceRevision: working-tree
+    sourceLocator: toolEvent/recordFormRead/recordFormEvent/recordRecovery/end与AiEventPresentation；工具与实际动作匹配，未知结果由原生提交或幂等FORM_OPERATION_CONFIRMED确认历史保存，task/run/callId关联，恢复仍读取当前修订
+    capturedAt: '2026-11-13'
+    reviewStatus: reviewed
   - id: anchor.ai-harness-controlled-form-adapter
     targetId: concept.ai-operation-receipt
     targetType: concept

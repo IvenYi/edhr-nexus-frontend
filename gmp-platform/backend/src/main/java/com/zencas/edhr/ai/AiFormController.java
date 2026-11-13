@@ -17,9 +17,17 @@ public class AiFormController {
 
     @PostMapping("/api/v1/ai/internal/forms/read")
     @PreAuthorize("hasAuthority('AI_WORKER')")
-    public ApiResponse<Map<String, Object>> read(@Valid @RequestBody AiWorkerController.LeaseRequest request) {
-        return ApiResponse.success(forms.read(request.taskId(), request.runId(), request.leaseEpoch()));
+    public ApiResponse<Map<String, Object>> read(@Valid @RequestBody ReadRequest request) {
+        return ApiResponse.success(forms.read(request.taskId(), request.runId(), request.leaseEpoch(), request.callId()));
     }
+    public record ReadRequest(@NotNull UUID taskId, @NotNull UUID runId, @Min(1) long leaseEpoch, @Size(min=1,max=128) String callId) { }
+
+    @PostMapping("/api/v1/ai/internal/forms/reconcile")
+    @PreAuthorize("hasAuthority('AI_WORKER')")
+    public ApiResponse<Map<String, Object>> reconcile(@Valid @RequestBody ReconcileRequest request) {
+        return ApiResponse.success(forms.reconcile(request.taskId(),request.runId(),request.leaseEpoch(),request.operationId()));
+    }
+    public record ReconcileRequest(@NotNull UUID taskId, @NotNull UUID runId, @Min(1) long leaseEpoch, @NotBlank @Size(max=128) String operationId) { }
 
     @PostMapping("/api/v1/ai/internal/forms/write")
     @PreAuthorize("hasAuthority('AI_WORKER')")

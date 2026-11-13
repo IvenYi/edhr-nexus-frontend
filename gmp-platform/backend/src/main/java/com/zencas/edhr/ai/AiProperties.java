@@ -20,8 +20,8 @@ public class AiProperties {
     @Min(1) private int maxOutputTokens = 4096;
     @Min(1) private long budgetMicros = 1_000_000;
     @Min(1) private long requestReserveMicros = 100_000;
-    @NotBlank private String pluginVersion = "form-foundation-1";
-    @NotBlank private String toolProtocol = "ai-task-v1";
+    @NotBlank private String pluginVersion = "form-worker-2b";
+    @NotBlank private String toolProtocol = "ai-task-v2";
     @NotBlank private String knowledgePackage = "unpublished";
     @NotBlank private String modelConfig = "fixture-no-model";
 }

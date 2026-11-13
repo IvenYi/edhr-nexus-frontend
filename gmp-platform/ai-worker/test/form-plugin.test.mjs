@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { mkdtemp, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+import { createServer } from 'node:http';
 import { createNativeFormPlugin, operationId } from '../src/form-plugin.mjs';
 import { createWorkerClient, WorkerRejection } from '../src/client.mjs';
 import { Context } from '@deepseek-ai/cordis';
@@ -11,16 +12,17 @@ import SystemPrompt from '@deepseek-ai/dsh-system-prompt';
 
 const claim = { taskId: '11111111-1111-4111-8111-111111111111', runId: '22222222-2222-4222-8222-222222222222', state: 'RUNNING', leaseEpoch: 2 };
 const design = { modelDesignJson: '{}', canvasDesignJson: '{}', workflowDesignJson: '{}' };
-async function fixture(t, overrides = {}, directory) {
+async function fixture(t, overrides = {}, directory, leaseEpoch = 2) {
   directory ??= await mkdtemp(join(tmpdir(), 'edhr-worker-'));
   t.after(() => rm(directory, { recursive: true, force: true }));
   const calls = [], registered = new Map(), cleanup = [];
   const client = {
+    toolEvent: async () => ({ recorded: true }),
     read: async lease => { calls.push(['read', lease]); return { version: { revision: 7 } }; },
     write: async (lease, id, action, form) => { calls.push(['write', lease, id, action, form]); return { receipt: { operationId: id, taskId: lease.taskId, revision: 8 } }; },
     ...overrides,
   };
-  const adapter = await createNativeFormPlugin({ client, claim, sessionId: 'session', directory });
+  const adapter = await createNativeFormPlugin({ client, claim: { ...claim, leaseEpoch }, sessionId: 'session', directory });
   adapter.plugin.apply({ effect: fn => cleanup.push(fn()), tools: { register: tool => registered.set(tool.name, tool) } });
   const execute = (name, args = {}, extra = {}) => registered.get(name).execute(args, { agent: { session: { id: 'session' } }, callId: 'call-1', signal: new AbortController().signal, ...extra });
   return { ...adapter, execute, calls, directory, dispose: () => cleanup.forEach(fn => fn()) };
@@ -47,14 +49,14 @@ test('lost write response blocks further calls and restart until matching receip
   const f = await fixture(t, { write: async () => { throw new Error('network lost'); } });
   await assert.rejects(f.execute('create_form', { categoryName: '生产' }), /network lost/);
   await assert.rejects(f.execute('read_current_form'), /unknown/);
-  const restored = await fixture(t, { receipt: async () => ({ receipt: { operationId: id, taskId: claim.taskId } }) }, f.directory);
+  const restored = await fixture(t, { reconcile: async () => ({ receipt: { operationId: id, taskId: claim.taskId } }) }, f.directory);
   await assert.rejects(restored.execute('create_form', { categoryName: '生产' }), /unknown/);
   await restored.reconcile();
   await restored.execute('read_current_form');
   assert.equal(restored.calls.length, 1);
 });
 test('receipt missing or mismatched never clears pending operation', async t => {
-  const f = await fixture(t, { write: async () => { throw new Error('lost'); }, receipt: async () => ({ receipt: { operationId: 'wrong' } }) });
+  const f = await fixture(t, { write: async () => { throw new Error('lost'); }, reconcile: async () => ({ receipt: { operationId: 'wrong' } }) });
   await assert.rejects(f.execute('create_form', { categoryName: '生产' }));
   await assert.rejects(f.reconcile(), /mismatch/);
   await assert.rejects(f.execute('read_current_form'), /unknown/);
@@ -104,4 +106,37 @@ test('real Cordis and DSH registry mount and unload only the three native tools'
   assert.deepEqual(ctx.tools.definitions().map(t => t.name).sort(), ['create_form', 'read_current_form', 'save_form_design']);
   await fork.dispose();
   assert.equal(ctx.tools.definitions().length, 0);
+});
+test('a real socket disconnect leaves the write pending and prevents a second dispatch', async t => {
+  let writes = 0;
+  const server = createServer((req, res) => {
+    req.resume();
+    if (req.url.endsWith('/forms/write')) { writes++; req.socket.destroy(); return; }
+    res.setHeader('Content-Type', 'application/json');res.end(JSON.stringify({ code: 200, data: { recorded: true } }));
+  });
+  await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
+  t.after(() => { server.closeAllConnections(); return new Promise(resolve => server.close(resolve)); });
+  const client = createWorkerClient({ origin: 'http://127.0.0.1:' + server.address().port, key: 'x'.repeat(32) });
+  const f = await fixture(t, client);
+  await assert.rejects(f.execute('create_form', { categoryName: 'fixture' }));
+  await assert.rejects(f.execute('create_form', { categoryName: 'fixture' }, { callId: 'second' }), /unknown/);
+  assert.equal(writes, 1);
+});
+test('an old late response cannot remove a reclaimed worker pending operation', async t => {
+  let releaseOld, releaseNew, oldEntered, newEntered;
+  const oldReady = new Promise(resolve => { oldEntered = resolve; });
+  const newReady = new Promise(resolve => { newEntered = resolve; });
+  const old = await fixture(t, { write: async (lease, id) => { oldEntered(); await new Promise(resolve => { releaseOld = resolve; }); return { receipt: { operationId: id, taskId: lease.taskId } }; } }, undefined, 1);
+  const oldWrite = old.execute('create_form', { categoryName: 'fixture' }, { callId: 'old' });
+  await oldReady;
+  const next = await fixture(t, {
+    reconcile: async (lease, id) => ({ receipt: { operationId: id, taskId: lease.taskId } }),
+    write: async () => { newEntered(); await new Promise(resolve => { releaseNew = resolve; }); throw new Error('new response lost'); },
+  }, old.directory, 2);
+  await next.reconcile();await next.execute('read_current_form', {}, { callId: 'read-new' });
+  const nextWrite = next.execute('save_form_design', design, { callId: 'new' });
+  const rejected = assert.rejects(nextWrite, /new response lost/);
+  await newReady;releaseOld();await oldWrite;releaseNew();await rejected;
+  const restored = await fixture(t, {}, old.directory, 3);
+  await assert.rejects(restored.execute('read_current_form'), /unknown/);
 });

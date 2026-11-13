@@ -1,0 +1,17 @@
+knowledgeModelVersion: 0.3.25
+evidence:
+  - id: evidence.ai-worker-runtime-scope
+    type: document
+    path: docs/knowledge/evidence/ai-worker-runtime-20261113.md
+    description: user-confirmed-and-original-evidence；2B最小权限启动、真实执行及可读过程事件授权，分列既有规范、源码及工程推断，未将源码存在视为运行或商用通过。
+    visibility: internal
+  - id: evidence.ai-worker-runtime-source
+    type: code
+    path: gmp-platform/ai-worker/src/worker.mjs
+    description: original-evidence；runClaimedWorker领取、续租、回执核对和工具生命周期编排；实际DSH启动、故障恢复和运行边界另由2B验证提供。
+    visibility: internal
+  - id: evidence.ai-tool-process-event-source
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/ai/AiTaskService.java
+    description: original-evidence；工具过程事件、类型匹配的原生结果、幂等回执恢复确认及轮次释放的Java源码，成功由受控领域路径提供依据；非独立质量通过证据。
+    visibility: internal

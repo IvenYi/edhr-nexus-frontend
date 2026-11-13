@@ -38,12 +38,16 @@ public class AiFormService {
     private final SnowflakeIdGenerator ids;
 
     public Map<String, Object> read(UUID taskId, UUID runId, long epoch) {
+        return read(taskId, runId, epoch, null);
+    }
+    public Map<String, Object> read(UUID taskId, UUID runId, long epoch, String callId) {
         var execution = tasks.authorizeExecution(taskId, runId, epoch);
         var task = execution.task();
         requireTarget(task);
         long template = number(task, "form_template_id"), version = number(task, "form_version_id");
         long revision = guard.acquire(template, version, runId, ((java.sql.Timestamp) execution.run().get("lease_until")).toInstant());
         rememberRead(runId, epoch, revision);
+        tasks.recordFormRead(taskId, runId, callId, revision);
         return Map.of("templateId", Long.toString(template), "version", templates.getFormTemplateVersion(template, version).getData());
     }
 
@@ -55,6 +59,13 @@ public class AiFormService {
         var rows = jdbc.queryForList("SELECT result_json::text FROM ai_form_receipt WHERE task_id=? AND operation_id=?", String.class, taskId, operationId);
         if (rows.isEmpty()) throw new AiException(404, "RECEIPT_NOT_FOUND");
         return Map.of("receipt", parse(rows.getFirst()));
+    }
+
+    public Map<String, Object> reconcile(UUID taskId, UUID runId, long epoch, String operationId) {
+        tasks.authorizeExecution(taskId, runId, epoch);
+        var result = receipt(taskId, operationId);
+        tasks.recordRecovery(taskId, runId, result);
+        return result;
     }
 
     public Map<String, Object> write(UUID taskId, UUID runId, long epoch, String operationId, String action, TemplateModelingRequest request) {

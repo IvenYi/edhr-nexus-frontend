@@ -1,0 +1,72 @@
+decisionPackage:
+  id: DEC-PACKAGE-20261113-AI-2B
+  scope: 最小权限DSH启动、真实Worker执行、过程日志及故障恢复；不开发页面或调用付费模型
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: 4ca507d294859213bde8eaf5d1efff77a0a93406
+    targetBranch: codex/ai-experiments
+    targetCommit: 4ca507d294859213bde8eaf5d1efff77a0a93406
+    contractReadCommit: 4ca507d294859213bde8eaf5d1efff77a0a93406
+    uncommittedContractPaths: []
+  summary: 用户明确授权2B三步实施，使用确定性模型替身先验证底座；运行日志关联实际回执，不以模型回复声明成功。
+  confirmed:
+    concepts: []
+    relationships: []
+    rules: []
+    executionContracts: []
+  inferred:
+    - id: inference.ai-worker-yield
+      statement: 验证驱动执行结束调用yield，以STOPPED和WORKER_YIELDED结束轮次并释放占用，保留成果；不开放SUCCEEDED。
+      rationale: 当前尚无完整语义及预览证据，不能把循环结束当作业务成功。
+      relatedIds: [concept.ai-execution-run]
+  unresolved: []
+  replacementScopes: []
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - area: ai-runtime
+        change: 增加Worker驱动和受控过程事件；Java对成功证据负责
+        evidenceReferences: [gmp-platform/ai-worker/src/worker.mjs, gmp-platform/backend/src/main/java/com/zencas/edhr/ai/AiTaskService.java]
+    transitiveImpacts: []
+    potentialImpacts:
+      - area: deployment
+        concern: DSH profile及依赖锁、会话存储和最小工具集合必须单独验证，默认profile不能直接使用
+        evidenceReferences: [docs/architecture/ai-harness-evaluation-20261113.md]
+    unaffectedAreas: [生产执行, 电子签名, 原生前端, 客户付费套餐定义]
+    compatibilityAndMigration: [沿用现有事件表，旧表单读取请求兼容可选callId；不修改历史迁移, 默认插件及协议升为form-worker-2b和ai-task-v2；旧任务配置不静默迁移且拒绝不兼容续跑]
+    snapshotImpacts: [重领后必须读取最新表单；当前修订不取自旧回执]
+    auditImpacts: [工具开始及错误为过程事实；成功只由原生读写路径产生；停止结束未完成过程]
+    permissionImpacts: [每次日志和业务调用检查当前权限及代际；只开放三个表单工具]
+    testImpacts:
+      - scope: worker-java
+        scenarios: [真实HTTP与隔离PG, 禁用与停止拒写, 过程日志幂等, 进程恢复与未知回执, 最小工具集]
+        evidenceReferences: []
+    evidenceGaps: [付费模型和知识包留待后续, 商用容量及平台级隔离另验]
+  extensionStrategy:
+    selectedPaths: [project-plugin, standard-action, product-core]
+    rationale: DSH插件驱动Java受控动作，原生业务所有权不变
+    ownershipBoundaries:
+      - owner: ai-worker
+        responsibility: 领取续租、DSH工具适配、故障中断
+      - owner: ai-java
+        responsibility: 资格、事件、原生回执与终态
+  affectedFiles:
+    - path: gmp-platform/ai-worker
+      changeType: update
+      reason: Worker及启动验证
+    - path: gmp-platform/backend/src/main/java/com/zencas/edhr/ai
+      changeType: update
+      reason: 过程事件及释放轮次
+  acceptanceScenarios:
+    - id: scenario.ai-worker-process-log
+      given: 有合法领取的任务
+      when: 通过Worker读取和写入，停止后旧Worker继续调用
+      then: 日志关联实际回执；停止后拒绝新业务与成功日志
+      evidenceRequirements: [真实HTTP及PG测试, Node驱动]
+  ontologyRoadmap:
+    currentStage: P0
+    targetOutcome: 过程事件、调用与原生事实有可追踪实现依据
+    entryCriteria: [DEC-0097]
+    exitCriteria: [受影响知识与证据同步]
+    explicitNonGoals: [全仓阶段升级, 知识运行发布]
+    nextStage: P1

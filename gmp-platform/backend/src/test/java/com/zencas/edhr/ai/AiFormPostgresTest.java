@@ -206,6 +206,104 @@ class AiFormPostgresTest {
         worker("POST","/forms/write",command(run,"late-race","save-design",edit),409);
     }
     private Map<String,Object> run() {tasks.create(OWNER,UUID.randomUUID().toString(),"isolated native form fixture");return tasks.claim();}
+    @Test void realNodeDshWorkerCreatesReadsSavesAndYields() throws Exception {
+        var task=tasks.create(OWNER,UUID.randomUUID().toString(),"isolated worker fixture");
+        long before=count("form_template");
+        var directory=java.nio.file.Files.createTempDirectory("edhr-worker-java-");
+        String script=System.getenv("EDHR_DSH_BIN")==null?"java-worker.mjs":"launch-profile.mjs";
+        var builder=new ProcessBuilder("node", "../ai-worker/test/"+script).redirectErrorStream(true);
+        builder.environment().putAll(Map.of("EDHR_AI_FIXTURE","isolated-java-test", "EDHR_AI_ORIGIN","http://127.0.0.1:"+port,
+                "EDHR_AI_WORKER_KEY",KEY,"EDHR_AI_DIRECTORY",directory.toString()));
+        var log=directory.resolve("worker.log");builder.redirectOutput(log.toFile());
+        var process=builder.start();
+        boolean exited=process.waitFor(45,TimeUnit.SECONDS);if(!exited)process.destroyForcibly();
+        assertThat(exited).as("Worker timeout; log %s",log).isTrue();
+        assertThat(process.exitValue()).as(java.nio.file.Files.readString(log)).isZero();
+        assertThat(count("form_template")).isEqualTo(before+1);
+        var view=tasks.get(OWNER,UUID.fromString(task.get("taskId").toString()));
+        assertThat(view.get("state")).isEqualTo("STOPPED");assertThat(view.get("reason")).isEqualTo("WORKER_YIELDED");
+        assertThat(count("form_edit_lease")).isZero();
+        assertThat(count("ai_form_receipt")).isEqualTo(2);
+        assertThat(tasks.events(OWNER,UUID.fromString(task.get("taskId").toString()),0).toString()).contains("开始创建表单","已完成保存表单设计");
+    }
+    @Test void toolEventsCannotForgeCommitAndStopClosesPendingSteps() throws Exception {
+        var run=run();var request=new LinkedHashMap<String,Object>(lease(run));
+        request.put("callId","tool-1");request.put("tool","create_form");request.put("phase","COMMITTED");
+        worker("POST","/tool-events",request,400);
+        request.put("phase","STARTED");worker("POST","/tool-events",request,200);worker("POST","/tool-events",request,200);
+        assertThat(jdbc.queryForObject("SELECT count(*) FROM ai_task_event WHERE action='TOOL_STARTED'",Long.class)).isEqualTo(1);
+        tasks.action(OWNER,id(run,"taskId"),"stop-log",id(run,"runId"),"stop");
+        assertThat(tasks.events(OWNER,id(run,"taskId"),0).toString()).contains("TOOL_INTERRUPTED");
+        request.put("phase","FAILED");worker("POST","/tool-events",request,409);
+    }
+    @Test @EnabledIfEnvironmentVariable(named="EDHR_DSH_BIN",matches=".+")
+    void killedProfileReconcilesCommittedWriteWithoutCreatingTwice() throws Exception {
+        var task=tasks.create(OWNER,UUID.randomUUID().toString(),"isolated recovery fixture");
+        var taskId=UUID.fromString(task.get("taskId").toString());
+        long before=count("form_template");
+        var directory=java.nio.file.Files.createTempDirectory("edhr-worker-crash-");
+        var log=directory.resolve("first.log");
+        var builder=new ProcessBuilder("node","../ai-worker/test/launch-profile.mjs").redirectErrorStream(true).redirectOutput(log.toFile());
+        builder.environment().putAll(Map.of("EDHR_AI_FIXTURE","isolated-java-test","EDHR_AI_ORIGIN","http://127.0.0.1:"+port,
+                "EDHR_AI_WORKER_KEY",KEY,"EDHR_AI_DIRECTORY",directory.toString(),"EDHR_AI_CRASH_AFTER_WRITE","1"));
+        var first=builder.start();
+        try {
+            long deadline=System.nanoTime()+TimeUnit.SECONDS.toNanos(25);
+            while(System.nanoTime()<deadline && !java.nio.file.Files.readString(log).contains("WRITE_COMMITTED_AWAITING_RESPONSE")) Thread.sleep(50);
+            assertThat(java.nio.file.Files.readString(log)).contains("WRITE_COMMITTED_AWAITING_RESPONSE");
+        } finally {
+            first.descendants().forEach(ProcessHandle::destroyForcibly);first.destroyForcibly();first.waitFor(5,TimeUnit.SECONDS);
+        }
+        assertThat(count("form_template")).isEqualTo(before+1);
+        jdbc.update("UPDATE ai_run SET lease_until=clock_timestamp()-interval '1 second' WHERE task_id=?",taskId);
+        builder.environment().remove("EDHR_AI_CRASH_AFTER_WRITE");
+        var resumedLog=directory.resolve("resumed.log");builder.redirectOutput(resumedLog.toFile());
+        var resumed=builder.start();boolean exited=resumed.waitFor(35,TimeUnit.SECONDS);
+        if(!exited){resumed.descendants().forEach(ProcessHandle::destroyForcibly);resumed.destroyForcibly();}
+        assertThat(exited).isTrue();assertThat(resumed.exitValue()).as(java.nio.file.Files.readString(resumedLog)).isZero();
+        assertThat(count("form_template")).isEqualTo(before+1);assertThat(count("ai_form_receipt")).isEqualTo(2);
+        assertThat(tasks.get(OWNER,taskId).get("leaseEpoch")).isEqualTo(2L);
+        assertThat(tasks.events(OWNER,taskId,0).toString()).contains("FORM_OPERATION_CONFIRMED");
+    }
+    @Test @EnabledIfEnvironmentVariable(named="EDHR_DSH_BIN",matches=".+")
+    void disablingCapabilityAbortsLiveProfileWithoutAnotherWrite() throws Exception {
+        var task=tasks.create(OWNER,UUID.randomUUID().toString(),"isolated disable fixture");
+        var directory=java.nio.file.Files.createTempDirectory("edhr-worker-disable-");var log=directory.resolve("worker.log");
+        var builder=new ProcessBuilder("node","../ai-worker/test/launch-profile.mjs").redirectErrorStream(true).redirectOutput(log.toFile());
+        builder.environment().putAll(Map.of("EDHR_AI_FIXTURE","isolated-java-test","EDHR_AI_ORIGIN","http://127.0.0.1:"+port,
+                "EDHR_AI_WORKER_KEY",KEY,"EDHR_AI_DIRECTORY",directory.toString(),"EDHR_AI_CRASH_AFTER_WRITE","1"));
+        var process=builder.start();
+        try {
+            long deadline=System.nanoTime()+TimeUnit.SECONDS.toNanos(25);
+            while(System.nanoTime()<deadline && !java.nio.file.Files.readString(log).contains("WRITE_COMMITTED_AWAITING_RESPONSE"))Thread.sleep(50);
+            assertThat(java.nio.file.Files.readString(log)).contains("WRITE_COMMITTED_AWAITING_RESPONSE");
+            tasks.setEnabled(OWNER,false);
+            assertThat(process.waitFor(15,TimeUnit.SECONDS)).isTrue();assertThat(process.exitValue()).isNotZero();
+            assertThat(count("ai_form_receipt")).isEqualTo(1);assertThat(count("form_edit_lease")).isZero();
+            assertThat(tasks.get(OWNER,UUID.fromString(task.get("taskId").toString())).get("state")).isEqualTo("STOPPED");
+        } finally {process.descendants().forEach(ProcessHandle::destroyForcibly);process.destroyForcibly();}
+    }
+    @Test void mismatchedToolCannotCommitAndRecoveryIsIdempotent() throws Exception {
+        var run=run();long before=count("form_template");
+        tasks.toolEvent(id(run,"taskId"),id(run,"runId"),((Number)run.get("leaseEpoch")).longValue(),"wrong-tool","read_current_form","STARTED");
+        worker("POST","/forms/write",command(run,"wrong-tool","create",payload()),409);
+        assertThat(count("form_template")).isEqualTo(before);assertThat(count("ai_form_receipt")).isZero();
+        create(run);
+        var request=new LinkedHashMap<String,Object>(lease(run));request.put("operationId","create");
+        worker("POST","/forms/reconcile",request,200);worker("POST","/forms/reconcile",request,200);
+        assertThat(jdbc.queryForObject("SELECT count(*) FROM ai_task_event WHERE action='FORM_OPERATION_CONFIRMED'",Long.class)).isEqualTo(1);
+    }
+    @Test void failedToolIdCannotBeReusedForCorrectedWrite() throws Exception {
+        var run=run();long before=count("form_template");long epoch=((Number)run.get("leaseEpoch")).longValue();
+        tasks.toolEvent(id(run,"taskId"),id(run,"runId"),epoch,"failed-call","create_form","STARTED");
+        tasks.toolEvent(id(run,"taskId"),id(run,"runId"),epoch,"failed-call","create_form","FAILED");
+        assertThatThrownBy(()->tasks.toolEvent(id(run,"taskId"),id(run,"runId"),epoch,"failed-call","create_form","STARTED")).isInstanceOf(AiException.class);
+        worker("POST","/forms/write",command(run,"failed-call","create",payload()),409);
+        assertThat(count("form_template")).isEqualTo(before);assertThat(count("ai_form_receipt")).isZero();
+        tasks.toolEvent(id(run,"taskId"),id(run,"runId"),epoch,"corrected-call","create_form","STARTED");
+        worker("POST","/forms/write",command(run,"corrected-call","create",payload()),200);
+        assertThat(tasks.events(OWNER,id(run,"taskId"),0).toString()).contains("TOOL_COMMITTED");
+    }
     private TemplateModelingRequest payload() {return TemplateModelingRequest.builder().categoryName("AI隔离验证").modelDesignJson("{\"fields\":[]}").canvasDesignJson("{\"layers\":[]}").workflowDesignJson("{\"nodes\":[],\"edges\":[]}").build();}
     private Map<String,Object> command(Map<String,Object> run,String op,String action,TemplateModelingRequest form) {var c=new LinkedHashMap<>(lease(run));c.put("operationId",op);c.put("action",action);c.put("form",form);return c;}
     private Map<String,Object> lease(Map<String,Object> run) {return Map.of("taskId",run.get("taskId"),"runId",run.get("runId"),"leaseEpoch",run.get("leaseEpoch"));}

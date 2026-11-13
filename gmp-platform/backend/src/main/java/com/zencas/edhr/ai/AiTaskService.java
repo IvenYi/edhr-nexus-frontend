@@ -236,7 +236,61 @@ public class AiTaskService {
     }
 
     public void recordFormEvent(UUID task, UUID run, long actor, String action, Map<String, Object> detail) {
+        var starts = toolEvents(run, detail.get("operationId").toString());
+        rejectTerminatedTool(starts);
+        String tool = "FORM_CREATED".equals(action) ? "create_form" : "save_form_design";
+        if (!starts.isEmpty() && !starts.getFirst().path("tool").asText().equals(tool)) throw new AiException(409, "TOOL_ID_CONFLICT");
         event(task, run, Long.toString(actor), action, detail);
+        toolOutcome(task, run, detail.get("operationId").toString(), "COMMITTED");
+    }
+
+    public Map<String, Object> toolEvent(UUID task, UUID run, long epoch, String callId, String tool, String phase) {
+        execution(task, run, epoch);
+        if (!List.of("read_current_form", "create_form", "save_form_design").contains(tool)
+                || !List.of("STARTED", "FAILED", "RESULT_UNKNOWN").contains(phase)) throw new AiException(400, "INVALID_TOOL_EVENT");
+        var previous = toolEvents(run, callId);
+        if (!previous.isEmpty()) {
+            if (!previous.getFirst().path("tool").asText().equals(tool)) throw new AiException(409, "TOOL_ID_CONFLICT");
+            if (phase.equals("STARTED")) rejectTerminatedTool(previous);
+            if (phase.equals("STARTED") || previous.size() > 1) return Map.of("recorded", false);
+        } else {
+            if (!phase.equals("STARTED")) throw new AiException(409, "TOOL_START_REQUIRED");
+            if (jdbc.queryForObject("SELECT count(*) FROM ai_task_event WHERE run_id=? AND action='TOOL_STARTED'", Long.class, run) >= 256)
+                throw new AiException(409, "TOOL_EVENT_LIMIT");
+        }
+        event(task, run, "worker", "TOOL_" + phase, Map.of("callId", callId, "tool", tool, "leaseEpoch", epoch, "phase", phase));
+        return Map.of("recorded", true);
+    }
+
+    public void recordFormRead(UUID task, UUID run, String callId, long revision) {
+        if (callId == null) return;
+        var previous = toolEvents(run, callId);
+        rejectTerminatedTool(previous);
+        if (previous.isEmpty() || !previous.getFirst().path("tool").asText().equals("read_current_form"))
+            throw new AiException(409, "TOOL_START_REQUIRED");
+        if (previous.size() == 1) event(task, run, "worker", "TOOL_COMMITTED", Map.of("callId", callId, "tool", "read_current_form", "revision", revision, "phase", "COMMITTED"));
+    }
+
+    private void rejectTerminatedTool(List<JsonNode> events) {
+        if (!events.isEmpty() && List.of("FAILED", "INTERRUPTED").contains(events.getLast().path("phase").asText()))
+            throw new AiException(409, "TOOL_CALL_TERMINATED");
+    }
+
+    private List<JsonNode> toolEvents(UUID run, String callId) {
+        return jdbc.queryForList("SELECT detail_json::text FROM ai_task_event WHERE run_id=? AND action LIKE 'TOOL_%' AND detail_json->>'callId'=? ORDER BY id", String.class, run, callId)
+                .stream().map(this::parse).toList();
+    }
+
+    private void toolOutcome(UUID task, UUID run, String callId, String phase) {
+        var previous = toolEvents(run, callId);
+        if (previous.size() == 1 || (!previous.isEmpty() && phase.equals("COMMITTED") && previous.getLast().path("phase").asText().equals("RESULT_UNKNOWN")))
+            event(task, run, "worker", "TOOL_" + phase, Map.of("callId", callId, "tool", previous.getFirst().path("tool").asText(), "phase", phase));
+    }
+
+    public void recordRecovery(UUID task, UUID run, Map<String, Object> result) {
+        String operationId = ((JsonNode) result.get("receipt")).path("operationId").asText();
+        if (jdbc.queryForObject("SELECT count(*) FROM ai_task_event WHERE run_id=? AND action='FORM_OPERATION_CONFIRMED' AND detail_json->'receipt'->>'operationId'=?", Long.class, run, operationId) == 0)
+            event(task, run, "worker", "FORM_OPERATION_CONFIRMED", result);
     }
 
     private void newRun(UUID taskId, JsonNode baseline, String actor) {
@@ -247,9 +301,17 @@ public class AiTaskService {
     }
 
     private void end(Map<String, Object> run, String state, String reason, String actor) {
+        var starts = jdbc.queryForList("SELECT detail_json->>'callId' FROM ai_task_event WHERE run_id=? AND action='TOOL_STARTED'", String.class, run.get("id"));
+        for (String callId : starts) toolOutcome((UUID) run.get("task_id"), (UUID) run.get("id"), callId, "INTERRUPTED");
         jdbc.update("DELETE FROM form_edit_lease WHERE owner_token = ?", run.get("id"));
         jdbc.update("UPDATE ai_run SET state = ?, reason = ?, lease_until = NULL WHERE id = ?", state, reason, run.get("id"));
         event((UUID) run.get("task_id"), (UUID) run.get("id"), actor, state, Map.of("reason", reason));
+    }
+
+    public Map<String, Object> yieldRun(UUID taskId, UUID runId, long epoch) {
+        var execution = execution(taskId, runId, epoch);
+        end(execution.run(), "STOPPED", "WORKER_YIELDED", "worker");
+        return view(execution.task());
     }
 
     private void event(UUID task, UUID run, String actor, String action, Map<String, Object> detail) {
