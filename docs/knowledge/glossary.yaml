@@ -1,5 +1,35 @@
 knowledgeModelVersion: 0.3.25
 terms:
+  - id: term.ai-capability
+    name: AI能力
+    definition: 产品内按安装授权和当前用户业务权限启停的协作功能，例如表单构建；启用能力不直接授予业务对象读写资格，关闭能力不删除既有成果。
+    aliases: [AI功能点]
+    status: specified
+    visibility: internal
+  - id: term.ai-collaboration-task
+    name: AI协作任务
+    definition: 绑定发起用户、安装实例和AI能力的持续协作容器；有确定成果时记录其目标，首版表单任务只新建一个模板版本并在该版本继续协作，不因单轮停止或失败删除已提交成果。
+    aliases: [AI任务]
+    status: specified
+    visibility: internal
+  - id: term.ai-execution-run
+    name: AI执行轮次
+    definition: AI协作任务中一次受当前权限、领取资格、固定版本依据和预算约束的执行。每任务最多一个排队或运行轮次；故障重领恢复同轮，用户继续创建新轮次，终态不复活。它不是审批任务或生产作业实例。
+    aliases: [AI轮次]
+    status: specified
+    visibility: internal
+  - id: term.ai-knowledge-package
+    name: AI知识包
+    definition: 按能力范围筛选、记录来源Git提交和内容摘要、适用产品版本及投影资格的知识集合。固定知识版本不固定动态用户权限或客户目录，不等于允许产品读取整个研发知识库。
+    aliases: [Agent知识包]
+    status: specified
+    visibility: internal
+  - id: term.ai-scoped-answer
+    name: AI任务业务回答
+    definition: 认证用户针对确定问题及问题修订给出的业务回答，保留原文、时间、影响配置及适用范围；依据变化后需重核适用性，默认仅作用于本任务，不自动成为全局客户政策。
+    aliases: [AI补答]
+    status: specified
+    visibility: internal
   - id: term.standard-reason-entry
     name: 标准原因项
     definition: 不良原因或报废原因目录中具有稳定身份及编号、名称的可引用条目；两套目录分别维护，本轮分类暂缓。新建或编辑对应标准原因用途必须选择本目录单选引用，文本只作补充；历史文本不按同名归并，已记录引用保留来源编号名称快照。标准原因身份不证明各原因数量互斥，也不替代不良件数累计口径。

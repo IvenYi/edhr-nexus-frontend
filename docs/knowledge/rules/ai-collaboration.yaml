@@ -1,0 +1,74 @@
+knowledgeModelVersion: 0.3.25
+rules:
+  - id: rule.ai-task-single-active-run
+    name: AI任务最多一个活动轮次
+    status: specified
+    visibility: internal
+    trigger: ai-task.create-run
+    scope: ai-collaboration
+    factCatalogProfile: core-business
+    condition:
+      all:
+        - fact: aiTask.activeRunCount
+          operator: greater-than-or-equal
+          value: 1
+    result:
+      type: block
+      target: ai-task.create-run
+      reason: active-run-exists
+    explanation: 活动轮次指QUEUED或RUNNING，已有活动轮次时不另建并行轮次；故障重新领取属于同轮恢复，用户在终态后继续才创建新轮次。关系图允许历史多轮，不表示同时多轮执行。
+    evidenceIds: [evidence.ai-collaboration-confirmed]
+  - id: rule.ai-run-current-qualification
+    name: AI受控调用须具备当前资格
+    status: specified
+    visibility: internal
+    trigger: ai-run.controlled-call
+    scope: ai-collaboration
+    factCatalogProfile: core-business
+    condition:
+      all:
+        - fact: aiRun.currentQualification
+          operator: equals
+          value: false
+    result:
+      type: block
+      target: ai-run.controlled-call
+      reason: current-qualification-missing
+    explanation: 资格由服务端从持久任务和认证身份核对，包含当前用户业务权限、能力、有效轮次和领取；未知或核验失败不授予资格。停止、禁用或领取换代后的旧执行者不得继续。模型参数、JWT旧权限快照、Worker服务身份均不能替代核验。
+    evidenceIds: [evidence.ai-collaboration-confirmed]
+  - id: rule.ai-knowledge-approved-projection
+    name: AI知识包不得绕过发布投影
+    status: specified
+    visibility: internal
+    trigger: ai-knowledge.package
+    scope: ai-collaboration
+    factCatalogProfile: core-business
+    condition:
+      all:
+        - fact: aiKnowledge.projectionEligible
+          operator: equals
+          value: false
+    result:
+      type: block
+      target: ai-knowledge.include-record
+      reason: projection-not-approved
+    explanation: 产品Agent按能力消费批准知识子集；成熟度、visibility、证据和执行契约均按现行schema判定，未知资格拒绝包含。内部实验资料、代码链接或模型生成解释不能自行获得运行资格，不能以创建知识包文件代替发布验收。
+    evidenceIds: [evidence.ai-collaboration-confirmed]
+  - id: rule.ai-answer-current-context
+    name: AI回答不得跨失效依据复用
+    status: specified
+    visibility: internal
+    trigger: ai-answer.apply
+    scope: ai-collaboration
+    factCatalogProfile: core-business
+    condition:
+      all:
+        - fact: aiAnswer.contextMatches
+          operator: equals
+          value: false
+    result:
+      type: block
+      target: ai-answer.apply
+      reason: answer-context-changed
+    explanation: 回答只适用于记录的问题修订和配置范围；无法确认匹配时不复用，保留原回答历史，重新判断受影响部分。回答默认限本任务，不自动修改全局本体或客户实施政策。
+    evidenceIds: [evidence.ai-collaboration-confirmed]

@@ -1,0 +1,66 @@
+knowledgeModelVersion: 0.3.25
+facts:
+  - id: fact.ai-task-active-run-count
+    name: AI任务当前排队或运行轮次数
+    conceptId: concept.ai-collaboration-task
+    valueType: integer
+    sourceType: derived
+    sourcePath: docs/knowledge/decisions/DEC-0097-ai-collaboration-runtime-boundary.yaml
+    aliases: [aiTask.activeRunCount]
+    availability: not-available
+    allowedOperators: [greater-than-or-equal]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.ai-collaboration-confirmed]
+    sourceRevision: working-tree
+    sourceLocator: DEC-0097-03；设计事实，实际运行来源和实现锚点按后端切片另验
+    capturedAt: '2026-11-12'
+    reviewStatus: reviewed
+  - id: fact.ai-run-current-qualification
+    name: AI轮次当前受控调用资格
+    conceptId: concept.ai-execution-run
+    valueType: boolean
+    sourceType: derived
+    sourcePath: docs/knowledge/decisions/DEC-0097-ai-collaboration-runtime-boundary.yaml
+    aliases: [aiRun.currentQualification]
+    availability: not-available
+    allowedOperators: [equals]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.ai-collaboration-confirmed]
+    sourceRevision: working-tree
+    sourceLocator: DEC-0097-04；当前身份/权限/能力/轮次/领取资格的合取，未知或无法核验不视为具备资格
+    capturedAt: '2026-11-12'
+    reviewStatus: reviewed
+  - id: fact.ai-knowledge-projection-eligible
+    name: AI知识包内容满足当前投影资格
+    conceptId: concept.ai-knowledge-package
+    valueType: boolean
+    sourceType: derived
+    sourcePath: docs/knowledge/schema.yaml
+    aliases: [aiKnowledge.projectionEligible]
+    availability: not-available
+    allowedOperators: [equals]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.ai-collaboration-confirmed]
+    sourceRevision: working-tree
+    sourceLocator: projectionRules；产品知识包消费适配尚未验证，内部可读不推导对外资格
+    capturedAt: '2026-11-12'
+    reviewStatus: reviewed
+  - id: fact.ai-answer-context-matches
+    name: AI业务回答仍匹配当前问题与配置依据
+    conceptId: concept.ai-scoped-answer
+    valueType: boolean
+    sourceType: derived
+    sourcePath: docs/knowledge/decisions/DEC-0097-ai-collaboration-runtime-boundary.yaml
+    aliases: [aiAnswer.contextMatches]
+    availability: not-available
+    allowedOperators: [equals]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.ai-collaboration-confirmed]
+    sourceRevision: working-tree
+    sourceLocator: DEC-0097-08；设计事实，补答与配置适用性验证在插件切片落实
+    capturedAt: '2026-11-12'
+    reviewStatus: reviewed

@@ -2,12 +2,15 @@ package com.zencas.edhr.common.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zencas.edhr.common.dto.ApiResponse;
+import com.zencas.edhr.ai.AiProperties;
+import com.zencas.edhr.ai.AiWorkerAuthenticationFilter;
 import com.zencas.edhr.identity.security.JwtAuthenticationFilter;
 import com.zencas.edhr.production.controller.DhrArchiveResponseFilter;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -27,6 +30,7 @@ import java.nio.charset.StandardCharsets;
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
+@EnableConfigurationProperties(AiProperties.class)
 @RequiredArgsConstructor
 public class SecurityConfig {
 
@@ -39,7 +43,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, AiProperties aiProperties) throws Exception {
         http
             .csrf(AbstractHttpConfigurer::disable)
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -57,6 +61,7 @@ public class SecurityConfig {
                 .anyRequest().authenticated())
             .addFilterBefore(new DhrArchiveResponseFilter(), HeaderWriterFilter.class)
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+            .addFilterAfter(new AiWorkerAuthenticationFilter(aiProperties, objectMapper), JwtAuthenticationFilter.class)
             .formLogin(AbstractHttpConfigurer::disable)
             .httpBasic(AbstractHttpConfigurer::disable);
         return http.build();

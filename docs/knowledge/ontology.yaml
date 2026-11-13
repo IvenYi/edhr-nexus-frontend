@@ -1,5 +1,35 @@
 knowledgeModelVersion: 0.3.25
 concepts:
+  - id: concept.ai-capability
+    termId: term.ai-capability
+    kind: business-configuration
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.ai-collaboration-confirmed]
+  - id: concept.ai-collaboration-task
+    termId: term.ai-collaboration-task
+    kind: business-concept
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.ai-collaboration-confirmed]
+  - id: concept.ai-execution-run
+    termId: term.ai-execution-run
+    kind: runtime-fact
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.ai-collaboration-confirmed]
+  - id: concept.ai-knowledge-package
+    termId: term.ai-knowledge-package
+    kind: business-configuration
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.ai-collaboration-confirmed]
+  - id: concept.ai-scoped-answer
+    termId: term.ai-scoped-answer
+    kind: business-fact
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.ai-collaboration-confirmed]
   - id: concept.form-lookup-item
     termId: term.form-lookup-item
     kind: business-configuration
@@ -844,6 +874,48 @@ concepts:
     visibility: internal
     evidenceIds: [evidence.equipment-modeling-user-decision, evidence.equipment-instance-entity, evidence.equipment-legacy-schema]
 relations:
+  - id: relation.ai-task-has-runs
+    source: concept.ai-collaboration-task
+    target: concept.ai-execution-run
+    cardinality: one-to-zero-or-many
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.ai-collaboration-confirmed]
+  - id: relation.ai-run-belongs-to-task
+    source: concept.ai-execution-run
+    target: concept.ai-collaboration-task
+    cardinality: many-to-one
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.ai-collaboration-confirmed]
+  - id: relation.ai-task-uses-capability
+    source: concept.ai-collaboration-task
+    target: concept.ai-capability
+    cardinality: many-to-one
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.ai-collaboration-confirmed]
+  - id: relation.ai-task-targets-form-version
+    source: concept.ai-collaboration-task
+    target: concept.form-template-version
+    cardinality: one-to-zero-or-one
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.ai-collaboration-confirmed]
+  - id: relation.ai-run-uses-knowledge-package
+    source: concept.ai-execution-run
+    target: concept.ai-knowledge-package
+    cardinality: many-to-one
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.ai-collaboration-confirmed]
+  - id: relation.ai-answer-belongs-to-task
+    source: concept.ai-scoped-answer
+    target: concept.ai-collaboration-task
+    cardinality: many-to-one
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.ai-collaboration-confirmed]
   - id: relation.form-field-associated-trace-item
     source: concept.form-template-field
     target: concept.form-lookup-item

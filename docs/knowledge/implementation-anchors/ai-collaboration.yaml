@@ -1,0 +1,76 @@
+knowledgeModelVersion: 0.3.25
+implementationAnchors:
+  - id: anchor.ai-task-foundation
+    targetId: concept.ai-collaboration-task
+    targetType: concept
+    codeReferences:
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/ai/AiController.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/ai/AiTaskService.java
+    apiReferences:
+      - GET /api/v1/ai/capabilities
+      - PUT /api/v1/ai/capabilities/form-builder
+      - POST /api/v1/ai/tasks
+      - GET /api/v1/ai/tasks/{id}
+      - GET /api/v1/ai/tasks/{id}/events
+      - POST /api/v1/ai/tasks/{id}/actions
+    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/0093-ai-task-foundation.sql]
+    uiReferences: []
+    testReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/ai/AiTaskPostgresTest.java]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.ai-collaboration-task-source, evidence.ai-collaboration-migration-source, evidence.ai-collaboration-test-source]
+    sourceRevision: working-tree
+    sourceLocator: AiController请求DTO与路径；AiTaskService.create/get/action/events；1A无附件、模板目标写入、补答或成功完成入口
+    capturedAt: '2026-11-12'
+    reviewStatus: reviewed
+  - id: anchor.ai-task-single-active-run
+    targetId: rule.ai-task-single-active-run
+    targetType: rule
+    codeReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/ai/AiTaskService.java]
+    apiReferences: ["POST /api/v1/ai/tasks/{id}/actions", "POST /api/v1/ai/internal/claim"]
+    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/0093-ai-task-foundation.sql]
+    uiReferences: []
+    testReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/ai/AiTaskPostgresTest.java]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.ai-collaboration-task-source, evidence.ai-collaboration-migration-source, evidence.ai-collaboration-test-source]
+    sourceRevision: working-tree
+    sourceLocator: AiTaskService.action/claim/newRun；ai_run_one_active部分唯一索引限制QUEUED/RUNNING；终态续做创建新轮，过期重领增加lease_epoch
+    capturedAt: '2026-11-12'
+    reviewStatus: reviewed
+  - id: anchor.ai-run-current-qualification
+    targetId: rule.ai-run-current-qualification
+    targetType: rule
+    codeReferences:
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/ai/AiAccess.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/ai/AiTaskService.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/ai/AiWorkerAuthenticationFilter.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/ai/AiWorkerController.java
+    apiReferences: [POST /api/v1/ai/internal/claim, POST /api/v1/ai/internal/renew, POST /api/v1/ai/internal/reserve, POST /api/v1/ai/internal/settle, POST /api/v1/ai/internal/fail]
+    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/0093-ai-task-foundation.sql]
+    uiReferences: []
+    testReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/ai/AiTaskPostgresTest.java]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.ai-collaboration-authorization-source, evidence.ai-collaboration-task-source, evidence.ai-collaboration-test-source]
+    sourceRevision: working-tree
+    sourceLocator: AiAccess.permitted查默认租户ACTIVE未锁定账号及当前角色权限；filter仅认证internal路径；execution核对当前run/epoch/期限/配置及权限；不含1B业务对象写入资格
+    capturedAt: '2026-11-12'
+    reviewStatus: reviewed
+  - id: anchor.ai-run-budget-and-baseline
+    targetId: concept.ai-execution-run
+    targetType: concept
+    codeReferences:
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/ai/AiTaskService.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/ai/AiProperties.java
+    apiReferences: [POST /api/v1/ai/internal/reserve, POST /api/v1/ai/internal/settle, POST /api/v1/ai/internal/renew]
+    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/0093-ai-task-foundation.sql]
+    uiReferences: []
+    testReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/ai/AiTaskPostgresTest.java]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.ai-collaboration-task-source, evidence.ai-collaboration-migration-source, evidence.ai-collaboration-test-source]
+    sourceRevision: working-tree
+    sourceLocator: reserve/settle及ai_model_reservation持久账本；baseline/compatible固定版本标识；默认unpublished/fixture-no-model仅工程占位，不表示知识发布或供应商调用；终态不接收settle，未知费用预留保持
+    capturedAt: '2026-11-12'
+    reviewStatus: reviewed

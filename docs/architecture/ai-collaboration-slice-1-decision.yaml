@@ -1,0 +1,116 @@
+decisionPackage:
+  id: DEC-PACKAGE-20261112-AI-COLLABORATION-1
+  scope: AI协作知识、产品运行契约及后端任务底座1A；模板写入1B与DSH产品接入后续连续实施
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: 9c18e27793a2bfa693957e0319ceea2d25b0fcf2
+    targetBranch: codex/ai-experiments
+    targetCommit: 9c18e27793a2bfa693957e0319ceea2d25b0fcf2
+    contractReadCommit: 9c18e27793a2bfa693957e0319ceea2d25b0fcf2
+    uncommittedContractPaths: [AGENTS.md, docs/architecture/ai-agent-runtime-contract.md]
+  summary: 用户授权按产品设计建设可选AI协作能力；本轮完成知识和契约并开始后端第一切片，不开发页面。
+  confirmed:
+    concepts:
+      - id: concept.ai-collaboration-task
+        name: AI协作任务
+        definition: 绑定发起用户、能力与确定成果目标的持续协作容器；停止某轮不删除既有成果。
+        status: specified
+        sourceReferences: [docs/architecture/ai-form-agent-product-design.md]
+      - id: concept.ai-execution-run
+        name: AI执行轮次
+        definition: 一次可停止且受权限、预算与版本约束的执行；故障重领属于同轮，用户继续创建新轮。
+        status: specified
+        sourceReferences: [docs/architecture/ai-form-agent-product-design.md]
+    relationships:
+      - id: relation.ai-task-has-runs
+        sourceId: concept.ai-collaboration-task
+        targetId: concept.ai-execution-run
+        cardinality: one-to-zero-or-many
+        description: 任务含多个历史轮次，同时最多一个排队或运行轮次。
+        sourceReferences: [docs/architecture/ai-form-agent-product-design.md]
+    rules: []
+    executionContracts: []
+  inferred:
+    - id: inference.ai-slice-decomposition
+      statement: 将原后端大切片分为1A任务调度与1B原生写入，1A不开放业务工具与成功完成声明。
+      rationale: 原生设计器修订兼容与所有修改入口的占用保护必须整体落实，避免半接入写入通道。
+      relatedIds: [concept.ai-collaboration-task]
+    - id: inference.ai-admin-switch
+      statement: 1A使用现有system.settings权限管理安装启停，保留部署开关；执行沿master-data.form-templates当前权限。
+      rationale: 复用当前单安装管理资格，不建立计费系统或新长期角色。
+      relatedIds: [concept.ai-collaboration-task]
+  unresolved: []
+  replacementScopes:
+    - decisionStatementId: DEC-0097-01
+      supersededStatementIds: [DEC-0005-04, DEC-0005-07]
+      scope: 扩展为产品内也提供受控AI配置协作；外部Codex不再是AI能力的唯一形态。
+      retainedScope: 外部研发交付契约、生产确定性执行、签署放行和已有快照规则保持；AI配置不另加应用步骤。
+      sourceReferences: [docs/architecture/ai-form-agent-product-design.md]
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - area: ai
+        change: 新增任务轮次、启停、权限实查、领取换代、持久请求预算与事件记录。
+        evidenceReferences: [docs/architecture/ai-form-agent-product-design.md]
+    transitiveImpacts:
+      - area: security
+        change: 后台任务按持久用户ID查当前账号及权限，不使用旧JWT权限声明；worker凭据只限内部AI接口。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/identity/security/JwtAuthenticationFilter.java]
+    potentialImpacts:
+      - area: form-template
+        concern: 1B需要改造共享领域写入、修订兼容及全部目标修改入口。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/template/controller/TemplateModelingController.java]
+    unaffectedAreas: [生产执行, 电子签名, 放行, 原生模板写入与前端页面在1A保持]
+    compatibilityAndMigration: [追加独立AI表且默认关闭；停用保留任务历史，回退应用版本不删数据, 历史用户ID不新增账号删除外键；保留原受保护账号规则，缺少当前账号时拒绝访问和执行]
+    snapshotImpacts: [轮次固定配置依据；现有生产实际使用时冻结保持]
+    auditImpacts: [AI运行事件记录actor与worker来源，不冒充模板业务审计或签名证据]
+    permissionImpacts: [所有者任务隔离, 当前账号锁定停用检查, 当前角色权限实查, 管理启停与执行权限分离]
+    testImpacts:
+      - scope: ai-task-backend
+        scenarios: [真实PG迁移, 创建幂等并发, 无权与跨用户拒绝, 停止与领取竞态, 旧代际拒绝, 禁用与重新启用, 预算跨重领与轮次保持, HTTP凭据隔离]
+        evidenceReferences: []
+    evidenceGaps: [知识包投影与DSH接入在切片2, 原生建表和设计冲突在1B, 生产选用边界与性能尚待上线前验证]
+  extensionStrategy:
+    selectedPaths: [configuration, product-core, standard-action, project-plugin]
+    rationale: Java拥有身份与确定性任务状态；后续领域命令归表单，DSH封装在Worker适配边界。
+    ownershipBoundaries:
+      - owner: ai-java
+        responsibility: 任务、权限、预算与执行资格
+      - owner: template
+        responsibility: 1B原生对象及共享写入校验
+      - owner: ai-worker
+        responsibility: 后续DSH与插件；1A不新增模型调用
+  affectedFiles:
+    - path: docs/knowledge
+      changeType: update
+      reason: 新增AI领域及声明级扩展，保留内部成熟度
+    - path: docs/architecture/ai-agent-runtime-contract.md
+      changeType: create
+      reason: 将产品Agent执行契约与研发角色契约分离
+    - path: AGENTS.md
+      changeType: update
+      reason: 补充AI变更验收与产品知识消费边界，不新增长期角色
+    - path: gmp-platform/backend/src/main/java/com/zencas/edhr/ai
+      changeType: create
+      reason: 可独立关闭的任务执行底座
+    - path: gmp-platform/backend/src/main/resources/db/changelog
+      changeType: update
+      reason: 增量AI持久化
+  acceptanceScenarios:
+    - id: scenario.ai-task-lifecycle
+      given: 有当前表单权限且安装启用的真实用户
+      when: 创建任务、领取、停止与继续
+      then: 所有者隔离与轮次唯一；停止后旧代际不能继续，终态不复活
+      evidenceRequirements: [真实PostgreSQL及HTTP测试]
+    - id: scenario.ai-retry-budget
+      given: 已有领取与模型调用预留
+      when: 响应丢失、进程重启或用户开启新轮次
+      then: 原请求幂等，旧代际失效；任务累计预算不重置
+      evidenceRequirements: [并发测试, 重建服务后的持久化读回]
+  ontologyRoadmap:
+    currentStage: P0
+    targetOutcome: AI领域语义与表单知识可追踪，规划能力范围内关系查询和最小不可变知识包
+    entryCriteria: [用户明确要求产品内Agent消费本体并保存跨轮次依据]
+    exitCriteria: [AI概念关系与决定可解析, 执行设计和实现证据分开记录, 正式知识校验通过]
+    explicitNonGoals: [全仓升为P1或P2, 图数据库, 全量知识发布, 自动学习改写权威知识]
+    nextStage: P1

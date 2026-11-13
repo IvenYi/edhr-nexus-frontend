@@ -1,0 +1,83 @@
+knowledgeModelVersion: 0.3.25
+decisions:
+  - id: DEC-0097
+    title: 产品内AI协作与确定性业务执行边界
+    status: specified
+    visibility: internal
+    context: 用户明确授权以现有表单Agent实验为基础开展可选产品AI建设，要求先补齐本体和执行契约，再开始后端工程切片。产品内Agent与产品外部Codex研发交付分别建模；本决策记录已接受的产品设计约束，不把设计、实验样本通过或本体校验等同于商用上线验收。当前工程拆分1A任务底座、1B原生模板写入、后续DSH插件和页面，属于实施安排，不把阶段性未实现改成永久业务禁令。
+    decisionStatements:
+      - id: DEC-0097-01
+        statement: user-confirmed；产品内可以提供可选AI协作能力，并按安装授权、依赖模块和当前用户权限启停。此范围扩展DEC-0005-04/07中仅描述外部Codex交付及第一阶段非产品内AI工作台的边界；外部Codex研发交付定义和治理保持，不将其重定义为产品Agent。DEC-0005-05/06的生产确定性执行与历史冻结约束保留，AI不因此获得生产执行、签署或放行权。
+        status: specified
+        visibility: internal
+      - id: DEC-0097-02
+        statement: user-confirmed；首个能力为表单构建，用户用自然语言和空白或脱敏单工作表XLSX发起任务。Agent通过受控领域动作直接创建原生模板及版本并在同一目标继续配置，无额外应用到模板步骤。任务首次建表最多一次，首版只操作本任务新建版本；不得将模板保存或任务状态当作生产可选用资格，首批隔离实施环境验证，生产选用边界仍待上线前核对。
+        status: specified
+        visibility: internal
+      - id: DEC-0097-03
+        statement: confirmed-design；任务是持续协作容器，轮次是一次可停止与恢复的执行，每任务同时最多一个QUEUED或RUNNING轮次。用户继续或补答续做创建新轮，故障重新领取恢复同轮但废止旧领取资格；WAITING_INPUT、SUCCEEDED、PARTIAL、STOPPED、FAILED均为该轮终态，不回退RUNNING。停止、失败和关闭能力保留已提交成果，重新启用不复活旧轮次。
+        status: specified
+        visibility: internal
+      - id: DEC-0097-04
+        statement: confirmed-design；服务端从认证与持久任务解析真实用户、安装与目标，受控调用重新核对当前业务权限、能力、有效轮次和领取资格。模型、上传文件、页面上下文与Worker身份均不授予额外业务范围；任务读取按对象权限隔离。关闭能力拒绝新执行和后续受控调用，已发往供应商的请求不能被承诺撤回或免费。
+        status: specified
+        visibility: internal
+      - id: DEC-0097-05
+        statement: confirmed-design；原生写入由Java领域服务负责校验、事务与业务审计，第一次写入原子保存模板、版本、设计、任务目标和回执。同操作标识同请求返回原回执，不同请求拒绝；未知结果先核对回执，不得换标识重复建表。停止与写入有确定顺序，旧代际失效；编辑占用与预期修订分别保护执行资格和过期覆盖，人工及AI修改入口均适用。该规范在1B落实，1A不开放模板写入。
+        status: specified
+        visibility: internal
+      - id: DEC-0097-06
+        statement: confirmed-design；人工交给AI前必须处理本地未保存修改，接手成功表示旧轮次已失去后续写入资格，随后读回最新修订；停止不撤销已提交内容。人工修改后AI继续以最新设计重建依据，保留字段身份及人工配置，无法理解的原生配置不得静默删除。首版仅任务所有者且有当前编辑资格可主动接手，不额外授予管理员强制接管权。
+        status: specified
+        visibility: internal
+      - id: DEC-0097-07
+        statement: confirmed-design；保存成功与任务成功分别判定。SUCCEEDED须有当前修订读回、确定性检查及预览证据，并且无未决问题或已知缺陷；业务歧义用WAITING_INPUT，已有成果但质量、预览或运行限制未闭环用PARTIAL。模型完成自述不能直接改变状态；新修订使旧校验与预览证据失效。1A不提供成果完成证明或SUCCEEDED入口。
+        status: specified
+        visibility: internal
+      - id: DEC-0097-08
+        statement: confirmed-design；问题和回答绑定稳定问题标识、问题修订、影响配置与适用范围，认证用户回答保留来源。布局与有依据配置先完成，不能凭字段名称创造正式统计职责；依据改变需重新核对答案，推断不得写作用户确认。回答默认限本任务，不自动提升为客户政策或写入权威知识。
+        status: specified
+        visibility: internal
+      - id: DEC-0097-09
+        statement: confirmed-design；Agent按能力检索批准的版本化知识子集，复用原有表单、引用、追溯、统计和快照知识，不复制成另一套业务规则。知识包记录来源提交、内容摘要、适用产品版本和投影范围，遵守现行成熟度、visibility、证据与执行契约门禁；内部实验读取不授予客户或运行投影资格。固定知识版本与动态权限、目录读取分开，恢复同轮不得静默切换插件、工具协议、知识或模型配置。
+        status: specified
+        visibility: internal
+      - id: DEC-0097-10
+        statement: confirmed-design；调用预算和未知结果预留持久化，重启和新轮次不重置任务累计消耗；同类错误无进展时有界收敛。费用估算不承诺等于供应商精确账单。首版热插拔是授权启停和运行工具资格失效，不承诺任意新代码无部署热加载；关闭AI不阻断普通业务或删除成果。
+        status: specified
+        visibility: internal
+      - id: DEC-0097-11
+        statement: confirmed-scope；研发主开发、本体、质量三角色及现有门禁继续适用，产品Agent运行契约单独记录，不把研发AGENTS授予的文件和电脑操作能力带入客户产品。按表单需求推进关系查询和最小不可变知识包，可提前落实必要P1/P2切片但不据此升级全仓阶段，不新增图数据库、自动学习权威知识或长期角色。
+        status: specified
+        visibility: internal
+      - id: DEC-0097-12
+        statement: user-confirmed；AI开发中的业务含义、调用方式、实现位置和依赖关系应分层纳入可追踪知识，便于后续实现和托管；概念与规则表达业务，调用契约表达输入输出、权限、副作用与失败边界，实现锚点连接真实代码/接口/测试。此要求不等于把所有实现对象变成本体概念，不以源码链接授予执行权；未来托管仅消费届时已验证、发布且获授权的规则和动作，当前不开放生产托管。
+        status: specified
+        visibility: internal
+    supersedes: [DEC-0005]
+    evidenceIds: [evidence.ai-collaboration-confirmed, evidence.ai-collaboration-product-design]
+    acceptanceScenarios:
+      - id: scenario.ai-current-permission-and-owner
+        given: 有真实用户发起的AI任务，另一用户或已撤销权限的原用户尝试访问
+        when: 读取或发起受控执行
+        then: 服务端按当前资格和任务对象范围拒绝越权，不使用旧JWT或Worker权限替代
+        evidenceIds: [evidence.ai-collaboration-confirmed]
+        evidenceRequirements: [真实用户HTTP权限矩阵, 数据库身份与撤权核对]
+      - id: scenario.ai-run-stop-and-recovery
+        given: 已领取轮次存在且可能有已提交成果
+        when: 停止、能力禁用或新代际领取后旧Worker返回
+        then: 旧轮次或代际不能新写入，已提交成果保持；用户继续创建新轮，故障重领不重复建表
+        evidenceIds: [evidence.ai-collaboration-confirmed]
+        evidenceRequirements: [真实PG并发与恢复, 1B模板写入回执故障测试]
+      - id: scenario.ai-manual-resume-and-answer-scope
+        given: 用户接手后修改了字段及问题依据
+        when: 在同一任务继续AI执行
+        then: 使用最新设计保留人工修改，重新核对旧回答和预览依据，不以历史答案代替新业务确认
+        evidenceIds: [evidence.ai-collaboration-confirmed]
+        evidenceRequirements: [原生设计器实际交互, 字段身份与修订读回]
+      - id: scenario.ai-knowledge-publishing-boundary
+        given: 研发知识含未发布规则及历史实验资料
+        when: 生成面向产品Agent的知识包
+        then: 仅适用且通过当前投影门禁的规则进入，保留来源与内容摘要，缺资格项明确拒绝
+        evidenceIds: [evidence.ai-collaboration-confirmed]
+        evidenceRequirements: [知识包正反例校验, 固定版本恢复与不兼容拒绝]

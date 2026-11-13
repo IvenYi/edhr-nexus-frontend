@@ -1,0 +1,37 @@
+knowledgeModelVersion: 0.3.25
+evidence:
+  - id: evidence.ai-collaboration-confirmed
+    type: document
+    path: docs/knowledge/evidence/ai-collaboration-20261112.md
+    description: user-confirmed-and-original-evidence；记录本轮授权原话、AI产品领域与外部研发治理区分、DEC-0005声明级扩展及工程分期和本体投影边界；不证明运行实现或商用上线资格。
+    visibility: internal
+  - id: evidence.ai-collaboration-product-design
+    type: document
+    path: docs/architecture/ai-form-agent-product-design.md
+    description: original-evidence；读取用户补充后的任务轮次、占用、回执、权限、预算、知识包、人工接手与故障验收设计。属于待实现设计依据，非运行证据。
+    visibility: internal
+  - id: evidence.ai-collaboration-runtime-contract
+    type: document
+    path: docs/architecture/ai-agent-runtime-contract.md
+    description: original-evidence；1A/1B分期、用户与Worker身份、调用输入输出所有权、轮次资格、预算、知识发布与研发契约适用性设计；不是verified执行契约注册。
+    visibility: internal
+  - id: evidence.ai-collaboration-task-source
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/ai/AiTaskService.java
+    description: original-evidence；本体角色直接读取1A创建幂等、所有者读取、动作回执、领取换代、停止继续、配置兼容及请求预留结算源码。1A只QUEUED/RUNNING/STOPPED/FAILED，不开放业务写入或成功声明；版本标识固定不表示知识包已发布。
+    visibility: internal
+  - id: evidence.ai-collaboration-authorization-source
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/ai/AiAccess.java
+    description: original-evidence；AiAccess从稳定用户ID查默认租户ACTIVE/未锁定账号及当前角色权限；配合AiWorkerAuthenticationFilter仅internal路径服务认证与AiTaskService.execution的轮次/代际/期限检查。未从该源码外推全产品权限或多租户隔离。
+    visibility: internal
+  - id: evidence.ai-collaboration-migration-source
+    type: database
+    path: gmp-platform/backend/src/main/resources/db/changelog/0093-ai-task-foundation.sql
+    description: original-evidence；增量AI能力、任务、轮次、动作回执、请求预留及事件表；同任务活动轮次部分唯一索引；本体核对DDL不等于亲自执行迁移或业务并发验收。
+    visibility: internal
+  - id: evidence.ai-collaboration-test-source
+    type: test
+    path: gmp-platform/backend/src/test/java/com/zencas/edhr/ai/AiTaskPostgresTest.java
+    description: original-evidence；读取真实隔离PG、canonical迁移、数据库用户权限及MockMvc/JWT测试定义，覆盖幂等、所有者隔离、撤权、启停、代际、预算与HTTP凭据边界；本体角色未运行该后端测试，实际结果由主侧与独立质量分别记录，源码存在不代表通过。
+    visibility: internal
