@@ -1,0 +1,69 @@
+decisionPackage:
+  id: DEC-PACKAGE-20261113-AI-2A
+  scope: DSH受控工具适配层及底座复用评估；不是完整Worker上线
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: 66fd109f24636613c4f3dc5404ca551c19a5c27b
+    targetBranch: codex/ai-experiments
+    targetCommit: 66fd109f24636613c4f3dc5404ca551c19a5c27b
+    contractReadCommit: 66fd109f24636613c4f3dc5404ca551c19a5c27b
+    uncommittedContractPaths: []
+  summary: 用户授权继续并强调先进稳定的Harness底座及DSH复用评估。先交付独立适配层，保留知识、日志、预览与模型接入后续验收。
+  confirmed:
+    concepts: []
+    relationships: []
+    rules: []
+    executionContracts: []
+  inferred:
+    - id: inference.ai-dsh-adapter-boundary
+      statement: DSH拥有工具注册及会话机制，eDHR Java拥有执行资格和业务事实；适配层用服务器领取结果绑定身份，结果未知停止并查回执。
+      rationale: 复用已确认DEC-0097，不把实验账号适配器搬入产品。
+      relatedIds: [concept.ai-execution-run, concept.ai-operation-receipt]
+  unresolved: []
+  replacementScopes: []
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - area: ai-worker
+        change: 新增受控HTTP客户端及DSH表单工具插件；独立依赖锁定，限制工具参数和当前读取修订。
+        evidenceReferences: [gmp-platform/ai-worker/src/client.mjs, gmp-platform/ai-worker/src/form-plugin.mjs]
+    transitiveImpacts: []
+    potentialImpacts:
+      - area: harness-upgrade
+        concern: DSH预发布版本、启动profile和会话格式升级需要兼容矩阵；旧实验rc.1依赖存在npm审计高危传播项。
+        evidenceReferences: [scripts/ai-form-agent/dsh/package-lock.json]
+    unaffectedAreas: [Java业务规则, 数据库结构, 原生前端, 生产执行, 电子签名]
+    compatibilityAndMigration: [新Node模块；不改变Java协议和旧实验依赖；锁定候选rc.2并单独验证]
+    snapshotImpacts: [回执不替代当前读取，恢复后不保留旧修订缓存]
+    auditImpacts: [继续使用Java已提交事件；本地pending文件仅技术恢复依据，不是用户运行日志]
+    permissionImpacts: [不提供管理员账号及任意HTTP工具；Java每次校验真实用户和执行代际]
+    testImpacts:
+      - scope: controlled-tool-adapter
+        scenarios: [任务隔离, 参数注入拒绝, 未读拒写, 结果未知阻断及恢复, 卸载中断, HTTP凭据范围]
+        evidenceReferences: [gmp-platform/ai-worker/test/form-plugin.test.mjs]
+    evidenceGaps: [实际DSH profile启动, 真实Java端到端连接, 完整模型预算及恢复, 版本化知识包, 工具过程事件, 预览完成证据, 双模型样本]
+  extensionStrategy:
+    selectedPaths: [project-plugin, standard-action]
+    rationale: 以DSH插件适配已有Java动作；不自研模型循环，不修改通用Harness核心。
+    ownershipBoundaries:
+      - owner: ai-worker
+        responsibility: 传输与工具适配、未知结果阻断
+      - owner: ai-java
+        responsibility: 保持既有权限、事务、回执和审计权威
+  affectedFiles:
+    - path: gmp-platform/ai-worker
+      changeType: add
+      reason: 独立产品适配候选
+  acceptanceScenarios:
+    - id: scenario.ai-worker-unknown-write
+      given: 写请求发出但没有可核对响应
+      when: 再次执行或重建插件
+      then: 阻断新调用；匹配任务操作回执后才解除；404不证明未写入
+      evidenceRequirements: [本地适配层测试]
+  ontologyRoadmap:
+    currentStage: P0
+    targetOutcome: 记录Harness与受控动作实现关系，不提升运行投影资格
+    entryCriteria: [DEC-0097]
+    exitCriteria: [增量锚点及证据同步]
+    explicitNonGoals: [全仓阶段升级, 知识运行发布]
+    nextStage: P1

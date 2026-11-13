@@ -1,0 +1,17 @@
+knowledgeModelVersion: 0.3.25
+evidence:
+  - id: evidence.ai-harness-adapter-scope
+    type: document
+    path: docs/knowledge/evidence/ai-harness-adapter-20261113.md
+    description: user-confirmed-and-original-evidence；保存用户对先进稳定Harness底座和DSH复用评估的要求，并分列2A适配源码、工程推断与尚待验收范围；不将评估要求当成DSH已适合商用的事实。
+    visibility: internal
+  - id: evidence.ai-harness-controlled-client-source
+    type: code
+    path: gmp-platform/ai-worker/src/client.mjs
+    description: original-evidence；固定Worker内部路由、部署凭据、禁止重定向及超时传输；不由客户端适配代码证明Java权限或实际网络链路已经验收。
+    visibility: internal
+  - id: evidence.ai-harness-form-plugin-source
+    type: code
+    path: gmp-platform/ai-worker/src/form-plugin.mjs
+    description: original-evidence；任务与会话绑定、参数白名单、读取修订、操作标识和未知写入待确认机制；不等同于完整DSH启动、全过程日志或任务完成证据。
+    visibility: internal

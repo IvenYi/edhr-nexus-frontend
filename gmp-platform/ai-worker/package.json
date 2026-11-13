@@ -1,0 +1,14 @@
+{
+  "name": "edhr-ai-worker",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=24.9.0" },
+  "scripts": { "test": "node --test test/*.test.mjs" },
+  "dependencies": {
+    "@deepseek-ai/cordis": "4.1.0",
+    "@deepseek-ai/dsh-tools": "0.2.2-rc.2"
+  },
+  "devDependencies": {
+    "@deepseek-ai/dsh-system-prompt": "0.2.2-rc.2"
+  }
+}

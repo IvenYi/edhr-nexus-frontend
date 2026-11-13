@@ -1,5 +1,22 @@
 knowledgeModelVersion: 0.3.25
 implementationAnchors:
+  - id: anchor.ai-harness-controlled-form-adapter
+    targetId: concept.ai-operation-receipt
+    targetType: concept
+    codeReferences:
+      - gmp-platform/ai-worker/src/client.mjs
+      - gmp-platform/ai-worker/src/form-plugin.mjs
+    apiReferences: ["POST /api/v1/ai/internal/forms/read", "POST /api/v1/ai/internal/forms/write", "GET /api/v1/ai/internal/forms/receipt"]
+    databaseReferences: []
+    uiReferences: []
+    testReferences: [gmp-platform/ai-worker/test/form-plugin.test.mjs]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.ai-harness-adapter-scope, evidence.ai-harness-controlled-client-source, evidence.ai-harness-form-plugin-source]
+    sourceRevision: working-tree
+    sourceLocator: createWorkerClient及createNativeFormPlugin；DSH工具适配候选绑定task/run/leaseEpoch并调用既有Java动作，未知结果查回执；源码与测试入口不代表完整Worker或商用验证通过
+    capturedAt: '2026-11-13'
+    reviewStatus: reviewed
   - id: anchor.ai-task-foundation
     targetId: concept.ai-collaboration-task
     targetType: concept
