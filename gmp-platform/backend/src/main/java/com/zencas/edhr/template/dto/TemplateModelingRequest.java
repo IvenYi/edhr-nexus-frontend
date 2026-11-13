@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TemplateModelingRequest {
+    private Long expectedRevision;
     private String code;
     private String name;
     private String categoryName;

@@ -1,5 +1,17 @@
 knowledgeModelVersion: 0.3.25
 concepts:
+  - id: concept.ai-operation-receipt
+    termId: term.ai-operation-receipt
+    kind: runtime-fact
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.ai-collaboration-confirmed, evidence.ai-collaboration-native-write-source]
+  - id: concept.ai-operation-event
+    termId: term.ai-operation-event
+    kind: runtime-fact
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.ai-collaboration-readable-log-confirmed]
   - id: concept.ai-capability
     termId: term.ai-capability
     kind: business-configuration
@@ -874,6 +886,34 @@ concepts:
     visibility: internal
     evidenceIds: [evidence.equipment-modeling-user-decision, evidence.equipment-instance-entity, evidence.equipment-legacy-schema]
 relations:
+  - id: relation.ai-receipt-belongs-to-task
+    source: concept.ai-operation-receipt
+    target: concept.ai-collaboration-task
+    cardinality: many-to-one
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.ai-collaboration-confirmed, evidence.ai-collaboration-native-write-source]
+  - id: relation.ai-receipt-records-run
+    source: concept.ai-operation-receipt
+    target: concept.ai-execution-run
+    cardinality: many-to-one
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.ai-collaboration-confirmed, evidence.ai-collaboration-native-write-source]
+  - id: relation.ai-task-has-operation-events
+    source: concept.ai-collaboration-task
+    target: concept.ai-operation-event
+    cardinality: one-to-zero-or-many
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.ai-collaboration-readable-log-confirmed]
+  - id: relation.ai-receipt-targets-form-version
+    source: concept.ai-operation-receipt
+    target: concept.form-template-version
+    cardinality: many-to-one
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.ai-collaboration-confirmed, evidence.ai-collaboration-native-write-source]
   - id: relation.ai-task-has-runs
     source: concept.ai-collaboration-task
     target: concept.ai-execution-run

@@ -24,6 +24,11 @@ class AiTaskMigrationPostgresTest {
                     "0088-record-change-menu-permissions.sql", "0089-record-control-dhr-linkage.sql", "0090-workflow-operations.sql",
                     "0091-dhr-review-query-indexes.sql", "0092-audit-event-hash-version.sql")) migrate(connection, "db/changelog/" + file);
             connection.createStatement().execute("INSERT INTO audit_event(id,entity_type,entity_id,action,content_before,content_after) VALUES(910001,'AI_MIGRATION_FIXTURE','42','UPDATE','{}','{\"beforeAI\":true}')");
+            migrate(connection, "db/changelog/0093-ai-task-foundation.sql");
+            connection.createStatement().execute("INSERT INTO form_template(id,code,name) VALUES(910010,'AI-UPGRADE','保留模板')");
+            connection.createStatement().execute("INSERT INTO form_template_version(id,template_id,version_label,model_design_json,canvas_design_json,lock_version) VALUES(910011,910010,'V2','{\"fields\":[]}','{\"layers\":[]}',7)");
+            String template = scalar(connection, "SELECT to_jsonb(t)::text FROM form_template t WHERE id=910010");
+            String version = scalar(connection, "SELECT to_jsonb(t)::text FROM form_template_version t WHERE id=910011");
             String users = scalar(connection, "SELECT jsonb_agg(to_jsonb(t) ORDER BY id)::text FROM user_account t");
             String audit = scalar(connection, "SELECT jsonb_agg(to_jsonb(t) ORDER BY id)::text FROM audit_event t");
             migrate(connection, "db/changelog/db.changelog-master.yaml");
@@ -31,6 +36,10 @@ class AiTaskMigrationPostgresTest {
             assertThat(scalar(connection, "SELECT jsonb_agg(to_jsonb(t) ORDER BY id)::text FROM user_account t")).isEqualTo(users);
             assertThat(scalar(connection, "SELECT jsonb_agg(to_jsonb(t) ORDER BY id)::text FROM audit_event t")).isEqualTo(audit);
             assertThat(scalar(connection, "SELECT count(*) FROM databasechangelog WHERE id='0093-ai-task-foundation'")).isEqualTo("1");
+            assertThat(scalar(connection, "SELECT count(*) FROM databasechangelog WHERE id='0094-ai-native-form-writes'")).isEqualTo("1");
+            assertThat(scalar(connection, "SELECT (to_jsonb(t)-'lock_version')::text FROM form_template t WHERE id=910010")).isEqualTo(template);
+            assertThat(scalar(connection, "SELECT lock_version FROM form_template WHERE id=910010")).isEqualTo("0");
+            assertThat(scalar(connection, "SELECT to_jsonb(t)::text FROM form_template_version t WHERE id=910011")).isEqualTo(version);
             assertThat(scalar(connection, "SELECT count(*) FROM ai_task")).isEqualTo("0");
             // An old application can still use its original audit column set after the additive migration.
             connection.createStatement().execute("INSERT INTO audit_event(id,entity_type,entity_id,action) VALUES(910002,'OLD_APP','42','UPDATE')");

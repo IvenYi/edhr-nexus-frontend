@@ -54,8 +54,12 @@ decisions:
         statement: user-confirmed；AI开发中的业务含义、调用方式、实现位置和依赖关系应分层纳入可追踪知识，便于后续实现和托管；概念与规则表达业务，调用契约表达输入输出、权限、副作用与失败边界，实现锚点连接真实代码/接口/测试。此要求不等于把所有实现对象变成本体概念，不以源码链接授予执行权；未来托管仅消费届时已验证、发布且获授权的规则和动作，当前不开放生产托管。
         status: specified
         visibility: internal
+      - id: DEC-0097-13
+        statement: user-confirmed-20261113；AI运行操作日志是产品能力的一部分，必须能够向用户可读地展示。日志表达实际发生的过程与结果，可追踪回任务、轮次、业务目标和操作依据；业务动作、已发生事件与Agent工具调用分别记录其含义，不能以计划或模型推理替代执行事实。首个表单配置切片不因此开放生产过站等动作；完整知识与工具过程记录及日志界面按后续Worker和页面切片交付。
+        status: specified
+        visibility: internal
     supersedes: [DEC-0005]
-    evidenceIds: [evidence.ai-collaboration-confirmed, evidence.ai-collaboration-product-design]
+    evidenceIds: [evidence.ai-collaboration-confirmed, evidence.ai-collaboration-product-design, evidence.ai-collaboration-readable-log-confirmed]
     acceptanceScenarios:
       - id: scenario.ai-current-permission-and-owner
         given: 有真实用户发起的AI任务，另一用户或已撤销权限的原用户尝试访问

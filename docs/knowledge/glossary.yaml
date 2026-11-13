@@ -1,5 +1,17 @@
 knowledgeModelVersion: 0.3.25
 terms:
+  - id: term.ai-operation-receipt
+    name: AI业务操作回执
+    definition: 服务端记录一次受控业务写入的确定结果，按任务及操作标识查回，关联执行轮次、实际目标、保存后的修订与审计依据。同标识同请求回读既有结果，不代表再次执行；保存回执不等于整个AI任务已成功完成。
+    aliases: [AI写入回执]
+    status: specified
+    visibility: internal
+  - id: term.ai-operation-event
+    name: AI运行操作事件
+    definition: AI协作任务运行中实际发生并由服务端记录的状态或操作事实，供用户阅读执行过程及结果。业务动作是请求执行的命令，事件是已经发生的事实，Agent工具调用是进入受控动作的调用方式；计划或模型推理文字不能替代事件、业务审计或成功证据。
+    aliases: [AI操作日志事件]
+    status: specified
+    visibility: internal
   - id: term.ai-capability
     name: AI能力
     definition: 产品内按安装授权和当前用户业务权限启停的协作功能，例如表单构建；启用能力不直接授予业务对象读写资格，关闭能力不删除既有成果。

@@ -202,7 +202,7 @@ class FormProjectionPostgresTest {
         assertThat(jdbc.queryForObject("SELECT attributes->>'documentNumberText' FROM form_projection_record", String.class)).isEqualTo("L1");
     }
     private com.zencas.edhr.production.controller.FormProjectionController reports() {
-        var catalog = new com.zencas.edhr.template.service.FormLookupCatalogService(jdbc, mapper,
+        var catalog = new com.zencas.edhr.template.service.FormLookupCatalogService(jdbc, new com.zencas.edhr.template.service.FormEditGuard(jdbc), mapper,
                 org.mockito.Mockito.mock(com.zencas.edhr.common.util.SnowflakeIdGenerator.class),
                 org.mockito.Mockito.mock(com.zencas.edhr.compliance.repository.AuditEventRepository.class));
         return new com.zencas.edhr.production.controller.FormProjectionController(jdbc, mapper,

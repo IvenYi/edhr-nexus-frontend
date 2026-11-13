@@ -1,5 +1,7 @@
 # eDHR 业务知识本体模型
 
+2026-11-13 AI协作补充“操作回执”和“运行操作事件”两类运行事实定义：前者关联任务、实际执行轮次及原生表单版本，后者使运行过程可读并追踪真实结果。业务动作、事件和Agent工具不混为同一概念；回执、当前修订和审计依据仍由确定性服务产生。1B实现锚点连接`AiFormService`、共享`TemplateModelingService`、`FormEditGuard`和`AiEventPresentation`，只证明已存在代码，后端运行/并发及独立质量证据另验。新增定义保持specified/internal，四项AI设计事实仍not-available；知识与工具全过程及日志界面属于切片2/3，不提升P0阶段或运行投影资格。见[本轮来源与边界](../knowledge/evidence/ai-collaboration-20261113.md)。
+
 2026-11-12 产品内AI协作知识按[DEC-0097](../knowledge/decisions/DEC-0097-ai-collaboration-runtime-boundary.yaml)补充：AI能力、任务、轮次、知识包及有范围的业务回答构成独立领域，引用既有表单版本、追溯和统计规则，不另复制业务定义。产品Agent通过受控领域动作配置原生模板，直接保存不另设应用步骤；外部Codex开发交付仍沿自身治理，生产确定性执行、签署和放行边界不变。知识分为业务语义、调用契约和连接代码/接口/测试的实现锚点，模型不能凭源码链接获得运行权限。首版1A任务底座与1B模板写入分开验收，知识包投影及DSH产品接入另验；本轮新增资产specified/internal、设计事实not-available，不宣称商用上线或P1/P2全阶段完成。现有schema的成熟度、visibility、证据及执行契约要求仍适用于产品知识包；内部实验读取资料不能自动对外发布。详细来源见[确认记录](../knowledge/evidence/ai-collaboration-20261112.md)。
 
 2026-11-05人员选择覆盖见[DEC-0095](../knowledge/decisions/DEC-0095-qualified-personnel-selection-completeness.yaml)：全部符合当前入口原资格的人员须能通过分页或分批加载被找到和选择，不得以100或其他单批大小截断总可选集合；此前100名匹配目录及同类转办/重新分配入口统一处理。通用/普通表单同租户委托、记录控制原候选和申请人回避、管理员领域权限及DHR专属动作限制保持，完整资格在分页前应用，提交时继续即时复核。此前100是工程读取上限，不是待替代的历史业务人数政策；具体页大小、续页协议、姓名批量及精确文本候选数组为工程选择，原候选、历史姓名/签名、冻结和审计不改写。新增规范specified/internal，运行、浏览器、独立质量及性能边界分别取本轮原件，不提升知识0.3.25或P0阶段；[原话和范围](../knowledge/evidence/qualified-personnel-selection-20261105.md)不关闭完整多租户或其他全审余项。

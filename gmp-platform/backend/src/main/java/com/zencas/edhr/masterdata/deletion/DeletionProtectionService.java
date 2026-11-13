@@ -29,6 +29,11 @@ public class DeletionProtectionService {
     /** Called inside the deletion transaction. Locks stay held through the original delete and audit. */
     public void check(String table, long id) {
         if (!DeletionRelations.ENTITIES.containsKey(table)) throw new IllegalArgumentException("Unknown deletion target");
+        // Match all form editing paths: parent template before child version.
+        if (table.equals("form_template_version")) {
+            var parents = jdbc.queryForList("SELECT template_id FROM form_template_version WHERE id=:id", Map.of("id", id), Long.class);
+            if (!parents.isEmpty()) row("form_template", parents.getFirst(), true);
+        }
         Row target = row(table, id, true);
         if (target == null || !sameTenant(target)) throw new BusinessException(ErrorCode.GENERAL_001, "记录不存在，请刷新后重试");
         if (!canView(destination(target))) throw new org.springframework.security.access.AccessDeniedException("无操作权限");

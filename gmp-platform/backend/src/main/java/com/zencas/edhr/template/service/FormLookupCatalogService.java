@@ -29,6 +29,7 @@ import java.util.Set;
 public class FormLookupCatalogService {
     private static final Set<String> LEGACY_LOOKUP_IDS = Set.of("materialLotText", "serialNumberText", "equipmentText", "teamText", "documentNumberText");
     private final JdbcTemplate jdbc;
+    private final FormEditGuard editGuard;
     private final ObjectMapper mapper;
     private final SnowflakeIdGenerator ids;
     private final AuditEventRepository audits;
@@ -152,7 +153,6 @@ public class FormLookupCatalogService {
 
     @Transactional
     public void unlink(String id, List<BindingSelection> selected) {
-        lockItem(id, true);
         if (selected == null || selected.isEmpty()) throw invalid("请勾选需要解除的关联配置");
         Map<Long, List<BindingSelection>> groups = new java.util.TreeMap<>();
         Set<List<String>> unique = new LinkedHashSet<>();
@@ -162,7 +162,19 @@ public class FormLookupCatalogService {
                 throw invalid("关联配置选择无效或重复，请刷新后重试");
             groups.computeIfAbsent(selection.versionId(), ignored -> new ArrayList<>()).add(selection);
         }
+        // Match native saves: parent first, then version and catalog locks.
+        var parents = new java.util.TreeSet<Long>();
+        for (Long versionId : groups.keySet()) {
+            var templateIds = jdbc.queryForList("SELECT template_id FROM form_template_version WHERE tenant_id='default' AND id=?", Long.class, versionId);
+            if (templateIds.isEmpty()) throw invalid("表单版本不存在");
+            parents.add(templateIds.getFirst());
+        }
+        parents.forEach(editGuard::lockTemplate);
+        lockItem(id, true);
         for (var group : groups.entrySet()) {
+            var templateIds = jdbc.queryForList("SELECT template_id FROM form_template_version WHERE tenant_id='default' AND id=?", Long.class, group.getKey());
+            if (templateIds.isEmpty()) throw invalid("表单版本不存在");
+            editGuard.version(templateIds.getFirst(), group.getKey(), group.getValue().getFirst().revision(), null);
             var versions = jdbc.query("SELECT id,COALESCE(lock_version,0) revision,version_label,model_design_json FROM form_template_version WHERE tenant_id='default' AND id=? FOR UPDATE",
                     (rs, n) -> new Version(rs.getLong("id"), rs.getLong("revision"), "", "", rs.getString("version_label"), rs.getString("model_design_json")), group.getKey());
             if (versions.isEmpty()) throw invalid("表单配置已变化，请刷新关联配置后重试");

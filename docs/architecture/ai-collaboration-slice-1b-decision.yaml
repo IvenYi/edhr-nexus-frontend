@@ -1,0 +1,87 @@
+decisionPackage:
+  id: DEC-PACKAGE-20261113-AI-COLLABORATION-1B
+  scope: 原生表单受控保存、编辑占用、修订保护、回执与可读运行事件；不开发AI页面和DSH产品Worker
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: 1ee8cd30f63c68b5b3eb3447d5b31b76d7c71297
+    targetBranch: codex/ai-experiments
+    targetCommit: 1ee8cd30f63c68b5b3eb3447d5b31b76d7c71297
+    contractReadCommit: 1ee8cd30f63c68b5b3eb3447d5b31b76d7c71297
+    uncommittedContractPaths: [docs/architecture/ai-agent-runtime-contract.md]
+  summary: 用户授权继续1B，并强调AI运行操作日志需要可读展示。动作、事件、工具分层；过站不在当前范围。
+  confirmed:
+    concepts: []
+    relationships: []
+    rules: []
+    executionContracts: []
+  inferred:
+    - id: inference.ai-form-shared-service
+      statement: 提取既有模板控制器应用逻辑，保持原业务规则；原生修订号用于客户端明确并发基线。
+      rationale: 人工和AI必须共用领域校验及审计，不让Worker调用控制器冒充用户。
+      relatedIds: [concept.ai-collaboration-task]
+    - id: inference.ai-readable-events
+      statement: 服务端从已提交的事件类型生成摘要、级别和结构化详情；知识/工具过程事件在Worker切片补齐。
+      rationale: 不以模型推理或准备执行文本伪造成功；日志展示与操作结果可核对。
+      relatedIds: [concept.ai-execution-run]
+  unresolved: []
+  replacementScopes: []
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - area: form-template
+        change: 原生人工保存与AI保存共用应用服务；表单版本占用与显式修订校验；任务首次建表唯一。
+        evidenceReferences: [docs/architecture/ai-form-agent-product-design.md, gmp-platform/backend/src/main/java/com/zencas/edhr/template/controller/TemplateModelingController.java]
+    transitiveImpacts:
+      - area: form-lookup-and-category
+        change: 解除追溯关联、父模板编辑删除与分类改名也检查版本占用；前端原有保存请求携带修订。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/FormLookupCatalogService.java]
+    potentialImpacts:
+      - area: production-selection
+        concern: 原生时间窗口规则可能允许未完成模板被选用；首批仅隔离实施环境，不作为生产隔离已完成。
+        evidenceReferences: [docs/architecture/ai-form-agent-product-design.md]
+    unaffectedAreas: [生产过站, 电子签名, 放行, 已冻结生产快照, DSH会话格式, 新AI界面]
+    compatibilityAndMigration: [追加模板主记录乐观锁与编辑占用表及AI目标回执字段, 版本修改接口要求expectedRevision并协调现有客户端升级, DHR接口规则保持原样]
+    snapshotImpacts: [重新领取必须读取当前原生版本，旧读取代际不能写, 原生产快照不改写]
+    auditImpacts: [原生保存审计使用真实发起用户及AI来源, 操作回执和AI_FORM_OPERATION审计及可读事件同事务提交]
+    permissionImpacts: [Worker不可指定业务用户及替换既有目标, 接手仅当前任务所有者, 每次受控读写重新查当前权限]
+    testImpacts:
+      - scope: ai-native-form-writes
+        scenarios: [真实PG迁移与持久化, HTTP认证, 并发幂等与冲突, 停止及代际失效, 人工修订和占用, 原子失败回滚, 回执审计及可读事件, 原生模板回归]
+        evidenceReferences: []
+    evidenceGaps: [DSH与双模型实跑属于切片2, 新AI日志页面属于切片3, 生产上线容量与选用边界另验收]
+  extensionStrategy:
+    selectedPaths: [standard-action, product-core, project-plugin]
+    rationale: 表单领域拥有保存和编辑保护；AI模块管理任务及受控动作；DSH后续通过插件调用这些动作。
+    ownershipBoundaries:
+      - owner: template
+        responsibility: 原生模型及校验、并发和业务审计
+      - owner: ai-java
+        responsibility: 运行资格、目标、回执、可读事件和真实用户归因
+  affectedFiles:
+    - path: gmp-platform/backend/src/main/java/com/zencas/edhr/template
+      changeType: update
+      reason: 提取共享应用服务并覆盖原生修改入口
+    - path: gmp-platform/backend/src/main/java/com/zencas/edhr/ai
+      changeType: update
+      reason: 新增受控表单读写和回执
+    - path: gmp-platform/frontend/src
+      changeType: update
+      reason: 现有设计器修订请求兼容；无新页面
+  acceptanceScenarios:
+    - id: scenario.ai-native-atomic-create
+      given: 当前有表单权限且已领取的任务
+      when: 创建表单并重复同操作
+      then: 原生对象和审计及回执原子落库，不重复建表
+      evidenceRequirements: [真实PG事务及HTTP测试]
+    - id: scenario.ai-native-takeover
+      given: AI占用目标且人工有旧版本
+      when: 停止接手、人工保存、继续后旧Worker回写
+      then: 旧Worker拒绝，新轮次读取后保留人工修改；已保存成果不撤销
+      evidenceRequirements: [并发和修订测试]
+  ontologyRoadmap:
+    currentStage: P0
+    targetOutcome: 增量维护AI动作、事件、实现和日志的可追溯关系
+    entryCriteria: [已批准AI运行契约]
+    exitCriteria: [受影响知识同步, 实现与运行证据分离]
+    explicitNonGoals: [全仓阶段升级, 图数据库, 运行时通用规则引擎]
+    nextStage: P1

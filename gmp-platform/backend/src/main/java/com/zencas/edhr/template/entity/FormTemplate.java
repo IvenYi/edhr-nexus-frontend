@@ -26,6 +26,10 @@ public class FormTemplate {
     @JsonSerialize(using = ToStringSerializer.class)
     private Long id;
 
+    @jakarta.persistence.Version
+    @Column(name = "lock_version")
+    private Long lockVersion;
+
     @Column(name = "tenant_id")
     @Builder.Default
     private String tenantId = "default";

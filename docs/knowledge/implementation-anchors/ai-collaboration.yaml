@@ -20,8 +20,8 @@ implementationAnchors:
     visibility: internal
     evidenceIds: [evidence.ai-collaboration-task-source, evidence.ai-collaboration-migration-source, evidence.ai-collaboration-test-source]
     sourceRevision: working-tree
-    sourceLocator: AiController请求DTO与路径；AiTaskService.create/get/action/events；1A无附件、模板目标写入、补答或成功完成入口
-    capturedAt: '2026-11-12'
+    sourceLocator: AiController请求DTO与路径；AiTaskService.create/get/action/events；1A任务底座保留，1B原生目标写入另见anchor.ai-form-native-operation；无附件、补答或成功完成入口
+    capturedAt: '2026-11-13'
     reviewStatus: reviewed
   - id: anchor.ai-task-single-active-run
     targetId: rule.ai-task-single-active-run
@@ -54,8 +54,8 @@ implementationAnchors:
     visibility: internal
     evidenceIds: [evidence.ai-collaboration-authorization-source, evidence.ai-collaboration-task-source, evidence.ai-collaboration-test-source]
     sourceRevision: working-tree
-    sourceLocator: AiAccess.permitted查默认租户ACTIVE未锁定账号及当前角色权限；filter仅认证internal路径；execution核对当前run/epoch/期限/配置及权限；不含1B业务对象写入资格
-    capturedAt: '2026-11-12'
+    sourceLocator: AiAccess.permitted查默认租户ACTIVE未锁定账号及当前角色权限；filter仅认证internal路径；execution/authorizeExecution核对当前run/epoch/期限/配置及权限；1B目标和修订保护另见anchor.ai-form-native-operation
+    capturedAt: '2026-11-13'
     reviewStatus: reviewed
   - id: anchor.ai-run-budget-and-baseline
     targetId: concept.ai-execution-run
@@ -73,4 +73,59 @@ implementationAnchors:
     sourceRevision: working-tree
     sourceLocator: reserve/settle及ai_model_reservation持久账本；baseline/compatible固定版本标识；默认unpublished/fixture-no-model仅工程占位，不表示知识发布或供应商调用；终态不接收settle，未知费用预留保持
     capturedAt: '2026-11-12'
+    reviewStatus: reviewed
+  - id: anchor.ai-form-native-operation
+    targetId: concept.ai-operation-receipt
+    targetType: concept
+    codeReferences:
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/ai/AiFormService.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/ai/AiFormController.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/TemplateModelingService.java
+    apiReferences: [POST /api/v1/ai/internal/forms/read, POST /api/v1/ai/internal/forms/write, GET /api/v1/ai/internal/forms/receipt]
+    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/0094-ai-native-form-writes.sql]
+    uiReferences: []
+    testReferences: []
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.ai-collaboration-native-write-source, evidence.ai-collaboration-shared-form-source, evidence.ai-collaboration-native-migration-source]
+    sourceRevision: working-tree
+    sourceLocator: AiFormService.read/write/receipt；服务端资格、首次创建、当前读取代际/修订、任务范围operationId及请求摘要去重、真实用户AI来源审计和回执同事务；仅源码核对，不代表运行通过或任务成功
+    capturedAt: '2026-11-13'
+    reviewStatus: reviewed
+  - id: anchor.ai-form-edit-protection
+    targetId: concept.form-template-version
+    targetType: concept
+    codeReferences:
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/FormEditGuard.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/TemplateModelingService.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/template/controller/TemplateModelingController.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/ai/AiTaskService.java
+    apiReferences: []
+    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/0094-ai-native-form-writes.sql]
+    uiReferences: []
+    testReferences: []
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.ai-collaboration-shared-form-source, evidence.ai-collaboration-native-migration-source]
+    sourceRevision: working-tree
+    sourceLocator: FormEditGuard编辑占用及expectedRevision、共享建模服务、任务停止/领取代际保护；原生人工入口和AI入口共用领域校验；完整并发及原入口回归由1B验收提供
+    capturedAt: '2026-11-13'
+    reviewStatus: reviewed
+  - id: anchor.ai-readable-operation-events
+    targetId: concept.ai-operation-event
+    targetType: concept
+    codeReferences:
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/ai/AiEventPresentation.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/ai/AiTaskService.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/ai/AiFormService.java
+    apiReferences: ["GET /api/v1/ai/tasks/{id}/events"]
+    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/0093-ai-task-foundation.sql, gmp-platform/backend/src/main/resources/db/changelog/0094-ai-native-form-writes.sql]
+    uiReferences: []
+    testReferences: []
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.ai-collaboration-readable-log-confirmed, evidence.ai-collaboration-readable-event-source, evidence.ai-collaboration-native-write-source]
+    sourceRevision: working-tree
+    sourceLocator: 持久事件读出后生成summary/level；表单事件detail关联actorId/taskId/runId/operationId/templateId/versionId/revision/auditId，读回回执不虚构新操作；不含未来知识/工具全过程或日志界面
+    capturedAt: '2026-11-13'
     reviewStatus: reviewed

@@ -1,0 +1,27 @@
+knowledgeModelVersion: 0.3.25
+evidence:
+  - id: evidence.ai-collaboration-readable-log-confirmed
+    type: document
+    path: docs/knowledge/evidence/ai-collaboration-20261113.md
+    description: user-confirmed-and-original-evidence；保存可读AI操作日志原话、1B范围、动作/事件/工具分层与来源；工程事件呈现方案单列inference，不声称后端或独立质量通过。
+    visibility: internal
+  - id: evidence.ai-collaboration-native-write-source
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/ai/AiFormService.java
+    description: original-evidence；本体角色读取受控原生创建/保存、当前资格、真实用户审计、任务目标与操作幂等回执代码；实际运行及并发效果须由主侧和质量验收，源码不扩大DEC-0097-02本任务新建版本边界。
+    visibility: internal
+  - id: evidence.ai-collaboration-shared-form-source
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/TemplateModelingService.java
+    description: original-evidence；原生模板控制器抽取共享应用服务，AI与人工路径共用领域校验并接入FormEditGuard；不由源码存在证明所有原入口回归通过。
+    visibility: internal
+  - id: evidence.ai-collaboration-readable-event-source
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/ai/AiEventPresentation.java
+    description: original-evidence；服务端从持久事件生成固定摘要和级别；知识与工具全过程及日志界面仍属后续切片，不记录或公开模型内部推理作为审计。
+    visibility: internal
+  - id: evidence.ai-collaboration-native-migration-source
+    type: database
+    path: gmp-platform/backend/src/main/resources/db/changelog/0094-ai-native-form-writes.sql
+    description: original-evidence；本体核对原生模板修订、编辑占用、任务目标、轮次读取基线及表单回执DDL，未将DDL核对等同迁移运行通过。
+    visibility: internal

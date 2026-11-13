@@ -19,9 +19,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
-/** Single-installation task coordinator. Every mutation locks capability -> task -> run.
- * No business write tool or provider call is exposed by this foundation slice.
- */
+/** Single-installation task coordinator. Mutations lock capability -> task -> run -> form. */
 @Service
 @RequiredArgsConstructor
 @Transactional(noRollbackFor = AiException.class)
@@ -35,7 +33,7 @@ public class AiTaskService {
         boolean enabled = jdbc.queryForList("SELECT enabled FROM ai_capability WHERE installation_id = ?",
                 Boolean.class, config.getInstallationId()).stream().findFirst().orElse(false);
         return Map.of("id", "form-builder", "available", deployed() && enabled && access.permitted(actor, AiAccess.FORM_PERMISSION),
-                "stage", "task-foundation", "businessWritesAvailable", false);
+                "stage", "native-form-writes", "businessWritesAvailable", deployed() && enabled && access.permitted(actor, AiAccess.FORM_PERMISSION));
     }
 
     public Map<String, Object> setEnabled(long actor, boolean enabled) {
@@ -93,6 +91,7 @@ public class AiTaskService {
             event.put("id", rs.getLong(1)); event.put("runId", rs.getString(2));
             event.put("actor", rs.getString(3)); event.put("action", rs.getString(4));
             event.put("detail", parse(rs.getString(5))); event.put("createdAt", rs.getTimestamp(6).toInstant());
+            event.putAll(AiEventPresentation.describe(rs.getString(4), parse(rs.getString(5))));
             return event;
         }, taskId, after);
     }
@@ -111,7 +110,7 @@ public class AiTaskService {
         }
         if (!Objects.equals(task.get("current_run_id"), expectedRun)) throw new AiException(409, "STALE_RUN");
         var run = run(expectedRun);
-        if ("stop".equals(action)) {
+        if ("stop".equals(action) || "takeover".equals(action)) {
             if (active(run)) end(run, "STOPPED", "USER_STOPPED", Long.toString(actor));
         } else if ("continue".equals(action)) {
             requireEnabled(enabled);
@@ -169,6 +168,7 @@ public class AiTaskService {
         var context = execution(taskId, runId, epoch);
         Instant until = earlier(now().plusSeconds(config.getLeaseSeconds()), instant(context.run(), "deadline_at"));
         jdbc.update("UPDATE ai_run SET lease_until = ? WHERE id = ?", timestamp(until), runId);
+        jdbc.update("UPDATE form_edit_lease SET lease_until = ? WHERE owner_token = ? AND lease_until > clock_timestamp()", timestamp(until), runId);
         return view(context.task());
     }
 
@@ -218,17 +218,25 @@ public class AiTaskService {
         var run = run(runId);
         if (!enabled || !deployed() || !access.permitted(number(task, "owner_id"), AiAccess.FORM_PERMISSION)) {
             if (active(run)) end(run, "STOPPED", !enabled || !deployed() ? "CAPABILITY_DISABLED" : "PERMISSION_REVOKED", "worker");
-            throw new AiException(403, "EXECUTION_REVOKED");
+            throw new AiExecutionTerminatedException(403, "EXECUTION_REVOKED");
         }
         if (!"RUNNING".equals(run.get("state"))) throw new AiException(409, "RUN_NOT_ACTIVE");
         Instant now = now();
         if (!instant(run, "deadline_at").isAfter(now)) {
             end(run, "FAILED", "RUN_TIME_LIMIT", "worker");
-            throw new AiException(409, "RUN_TIME_LIMIT");
+            throw new AiExecutionTerminatedException(409, "RUN_TIME_LIMIT");
         }
         if (number(run, "lease_epoch") != epoch || !instant(run, "lease_until").isAfter(now)) throw new AiException(409, "LEASE_EXPIRED");
         if (!compatible(parse(run.get("config_json").toString()))) throw new AiException(409, "CONFIG_UNAVAILABLE");
         return new Execution(task, run);
+    }
+
+    public Execution authorizeExecution(UUID taskId, UUID runId, long epoch) {
+        return execution(taskId, runId, epoch);
+    }
+
+    public void recordFormEvent(UUID task, UUID run, long actor, String action, Map<String, Object> detail) {
+        event(task, run, Long.toString(actor), action, detail);
     }
 
     private void newRun(UUID taskId, JsonNode baseline, String actor) {
@@ -239,6 +247,7 @@ public class AiTaskService {
     }
 
     private void end(Map<String, Object> run, String state, String reason, String actor) {
+        jdbc.update("DELETE FROM form_edit_lease WHERE owner_token = ?", run.get("id"));
         jdbc.update("UPDATE ai_run SET state = ?, reason = ?, lease_until = NULL WHERE id = ?", state, reason, run.get("id"));
         event((UUID) run.get("task_id"), (UUID) run.get("id"), actor, state, Map.of("reason", reason));
     }
@@ -283,7 +292,14 @@ public class AiTaskService {
         result.put("config", parse(run.get("config_json").toString()));
         result.put("usedRequests", task.get("used_requests")); result.put("maxRequests", task.get("max_requests"));
         result.put("chargedMicros", task.get("charged_micros")); result.put("budgetMicros", task.get("budget_micros"));
-        result.put("maxOutputTokens", task.get("max_output_tokens")); result.put("businessWritesAvailable", false);
+        result.put("maxOutputTokens", task.get("max_output_tokens"));
+        Instant observedAt = now();
+        result.put("businessWritesAvailable", "RUNNING".equals(run.get("state"))
+                && instant(run, "lease_until").isAfter(observedAt) && instant(run, "deadline_at").isAfter(observedAt)
+                && compatible(parse(run.get("config_json").toString()))
+                && Boolean.TRUE.equals(capabilities(number(task, "owner_id")).get("businessWritesAvailable")));
+        result.put("templateId", task.get("form_template_id") == null ? null : task.get("form_template_id").toString());
+        result.put("versionId", task.get("form_version_id") == null ? null : task.get("form_version_id").toString());
         return result;
     }
 
@@ -331,5 +347,5 @@ public class AiTaskService {
         try { return HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(value.getBytes(StandardCharsets.UTF_8))); }
         catch (NoSuchAlgorithmException error) { throw new IllegalStateException(error); }
     }
-    private record Execution(Map<String, Object> task, Map<String, Object> run) { }
+    public record Execution(Map<String, Object> task, Map<String, Object> run) { }
 }

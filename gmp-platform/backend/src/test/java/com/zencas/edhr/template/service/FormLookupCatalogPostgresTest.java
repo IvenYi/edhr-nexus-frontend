@@ -67,7 +67,9 @@ class FormLookupCatalogPostgresTest {
         var ids = mock(SnowflakeIdGenerator.class);
         AtomicLong sequence = new AtomicLong(100);
         when(ids.nextId()).thenAnswer(invocation -> sequence.incrementAndGet());
-        catalog = new FormLookupCatalogService(jdbc, mapper, ids, audits);
+        jdbc.execute("ALTER TABLE form_template ADD COLUMN lock_version bigint NOT NULL DEFAULT 0");
+        jdbc.execute("CREATE TABLE form_edit_lease(version_id bigint PRIMARY KEY, owner_token uuid, lease_until timestamptz)");
+        catalog = new FormLookupCatalogService(jdbc, new FormEditGuard(jdbc), mapper, ids, audits);
         trace = new FormTraceIndexService(jdbc, mapper);
         reports = new FormProjectionController(jdbc, mapper, audits, ids, catalog);
     }
@@ -236,11 +238,23 @@ class FormLookupCatalogPostgresTest {
                 .allSatisfy(event -> assertThat(event.getContentBefore()).contains("modelDesignJson", item.id()));
     }
 
+    @Test void activeFormLeaseBlocksUnlinkAndExpiredLeaseAllowsIt() {
+        var item = create(); design(20, form(item.id()));
+        var selected = selections(catalog.bindings(item.id()));
+        jdbc.update("INSERT INTO form_edit_lease(version_id,owner_token,lease_until) VALUES(20,?::uuid,clock_timestamp()+interval '1 minute')", java.util.UUID.randomUUID().toString());
+        assertThatThrownBy(() -> tx.executeWithoutResult(status -> catalog.unlink(item.id(), selected)))
+                .isInstanceOf(org.springframework.web.server.ResponseStatusException.class).hasMessageContaining("编辑占用已变化");
+        assertThat(catalog.bindings(item.id())).hasSize(1);
+        jdbc.update("UPDATE form_edit_lease SET lease_until=clock_timestamp()-interval '1 second' WHERE version_id=20");
+        tx.executeWithoutResult(status -> catalog.unlink(item.id(), selected));
+        assertThat(catalog.bindings(item.id())).isEmpty();
+    }
+
     @Test void staleBatchSelectionRollsBackEveryVersionAndMetadataAloneDoesNotBlockDeletion() {
         var item = create(); design(20, form(item.id())); design(21, form(item.id()));
         var rows = catalog.bindings(item.id());
         jdbc.update("UPDATE form_template_version SET lock_version=1 WHERE id=21");
-        assertThatThrownBy(() -> tx.executeWithoutResult(status -> catalog.unlink(item.id(), selections(rows)))).hasMessageContaining("配置已变化");
+        assertThatThrownBy(() -> tx.executeWithoutResult(status -> catalog.unlink(item.id(), selections(rows)))).hasMessageContaining("表单已被修改");
         assertThat(catalog.bindings(item.id())).hasSize(2);
         assertThat(jdbc.queryForObject("SELECT lock_version FROM form_template_version WHERE id=20", Long.class)).isZero();
         assertThatThrownBy(() -> tx.executeWithoutResult(status -> catalog.unlink(item.id(), java.util.List.of()))).hasMessageContaining("请勾选");

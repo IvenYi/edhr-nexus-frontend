@@ -17,3 +17,5 @@ databaseChangeLog:
       file: db/changelog/0092-audit-event-hash-version.sql
   - include:
       file: db/changelog/0093-ai-task-foundation.sql
+  - include:
+      file: db/changelog/0094-ai-native-form-writes.sql

@@ -1,3 +1,4 @@
+import { createFormDesignSaveQueue } from './formDesignSaveQueue';
 import { readRecordLocation, useRecordLocationAction } from '@/utils/recordLocation';
 import TableStateCell from '@/components/TableStateCell';
 import { listTableHeaderCellSx, listTablePrimaryTextSx, listTableStickyEdgeSx } from '@/components/listTableStyles';
@@ -88,6 +89,7 @@ import {
   deleteTemplateModelingCategory,
   getBatchRecordTemplates,
   getFormTemplates,
+  getFormTemplateVersion,
   getTemplateModelingCategories,
   reorderTemplateModelingCategories,
   saveFormTemplateVersionDesign,
@@ -166,7 +168,7 @@ interface TemplatePageConfig {
   editTitle: string;
   createAction: (body: TemplateModelingPayload) => Promise<{ data: { data: TemplateModelingRecord } }>;
   updateAction: (id: string | number, body: TemplateModelingPayload) => Promise<{ data: { data: TemplateModelingRecord } }>;
-  deleteAction: (id: string | number) => Promise<unknown>;
+  deleteAction: (id: string | number, expectedRevision?: number) => Promise<unknown>;
   listAction: (params: Record<string, unknown>) => Promise<{ data: { data: PageResult<TemplateModelingRecord> } }>;
 }
 
@@ -732,6 +734,7 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
   const [auditSnapshot, setAuditSnapshot] = useState<AuditSnapshotDialogState | null>(null);
   const [draggingCategoryId, setDraggingCategoryId] = useState('');
   const [expandedTemplateGroups, setExpandedTemplateGroups] = useState<Set<string>>(() => new Set([readRecordLocation().id].filter(Boolean)));
+  const designerSaveSession = useRef<ReturnType<typeof createFormDesignSaveQueue> | null>(null);
   const [reactDesignerState, setReactDesignerState] = useState<TemplateDesignerState>({ open: false, row: null, version: null });
   const [dhrWorkspaceRow, setDhrWorkspaceRow] = useState<DhrWorkspaceState | null>(null);
   const [dhrVersionDialog, setDhrVersionDialog] = useState<DhrVersionDialogState | null>(null);
@@ -893,6 +896,7 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
       const shouldSubmitInitialVersionFields = !editingRow && !isVersionDialog;
       const shouldSubmitVersionFields = shouldSubmitInitialVersionFields || isVersionDialog;
       const payload: TemplateModelingPayload = {
+        expectedRevision: editingRow?.revision,
         code: form.code.trim(),
         name: form.name.trim(),
         categoryName: form.categoryName.trim() || null,
@@ -904,11 +908,11 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
         effectiveTo: shouldSubmitVersionFields ? effectiveTo || null : undefined,
       };
       if (creatingVersionFrom) {
-        const versionResponse = await createFormTemplateVersion(creatingVersionFrom.id, pickTemplatePayload(payload, TEMPLATE_VERSION_FIELD_IDS));
+        const versionResponse = await createFormTemplateVersion(creatingVersionFrom.id, { ...pickTemplatePayload(payload, TEMPLATE_VERSION_FIELD_IDS), expectedRevision: creatingVersionFrom.revision });
         return { response: null, versionResponse };
       }
       if (editingVersion) {
-        const versionResponse = await updateFormTemplateVersion(editingVersion.row.id, editingVersion.version.id, pickTemplatePayload(payload, TEMPLATE_VERSION_FIELD_IDS));
+        const versionResponse = await updateFormTemplateVersion(editingVersion.row.id, editingVersion.version.id, { ...pickTemplatePayload(payload, TEMPLATE_VERSION_FIELD_IDS), expectedRevision: editingVersion.version.revision });
         return { response: null, versionResponse };
       }
       const response = editingRow ? await config.updateAction(editingRow.id, payload) : await config.createAction(payload);
@@ -928,7 +932,7 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (row: TemplateModelingRecord) => config.deleteAction(row.id),
+    mutationFn: (row: TemplateModelingRecord) => config.deleteAction(row.id, row.revision),
     onSuccess: async () => {
       setDeleteRowTarget(null);
       showMessage('删除成功', 'success');
@@ -941,7 +945,7 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
   const deleteVersionMutation = useMutation({
     mutationFn: (target: { row: TemplateModelingRecord; version: TemplateVersionRecord }) => pageKey === 'batchRecordTemplates'
       ? deleteDhrTemplateVersion(target.row.id, target.version.id)
-      : deleteFormTemplateVersion(target.row.id, target.version.id),
+      : deleteFormTemplateVersion(target.row.id, target.version.id, target.version.revision),
     onSuccess: async (_, target) => {
       setDeleteVersionTarget(null);
       showMessage('版本删除成功', 'success');
@@ -1253,8 +1257,22 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
     setExpandedTemplateGroups(new Set());
   };
 
+  const openDesignerMutation = useMutation({
+    mutationFn: async ({ row, version }: { row: TemplateModelingRecord; version: TemplateVersionRecord }) => {
+      const response = await getFormTemplateVersion(row.id, version.id);
+      return { row, version: response.data.data };
+    },
+    onSuccess: ({ row, version }) => {
+      designerSaveSession.current = createFormDesignSaveQueue(version.revision);
+      setReactDesignerState({ open: true, row, version });
+    },
+    onError: (error: unknown) => showMessage(error instanceof Error ? error.message : '读取表单失败', 'error'),
+  });
+
   const saveDesignerPayload = (id: string | number, versionId: string | number, payload: { modelDesignJson: string; canvasDesignJson: string; workflowDesignJson: string }) => {
-    return saveFormTemplateVersionDesign(id, versionId, payload);
+    const session = designerSaveSession.current;
+    if (!session) return Promise.reject(new Error('设计器上下文缺失，请重新打开'));
+    return session.save(expectedRevision => saveFormTemplateVersionDesign(id, versionId, { ...payload, expectedRevision }));
   };
 
   const autoSaveDesignerMutation = useMutation({
@@ -1501,12 +1519,13 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
         <IconButton
           size="small"
           aria-label="设计"
+          disabled={openDesignerMutation.isPending}
           onClick={(event) => {
             event.stopPropagation();
             if (pageKey === 'batchRecordTemplates') {
               setDhrWorkspaceRow({ row, initialVersionId: version.id });
             } else {
-              setReactDesignerState({ open: true, row, version });
+              openDesignerMutation.mutate({ row, version });
             }
           }}
         >

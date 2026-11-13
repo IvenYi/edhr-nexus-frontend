@@ -24,6 +24,11 @@ import java.util.stream.Collectors;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    @ExceptionHandler(org.springframework.web.server.ResponseStatusException.class)
+    public ResponseEntity<ApiResponse<Void>> handleStatus(org.springframework.web.server.ResponseStatusException ex) {
+        return ResponseEntity.status(ex.getStatusCode()).body(ApiResponse.error(ex.getStatusCode().value(), ex.getReason()));
+    }
+
     @ExceptionHandler(com.zencas.edhr.masterdata.deletion.DeletionBlockedException.class)
     public ResponseEntity<ApiResponse<com.zencas.edhr.masterdata.deletion.DeletionImpact>> handleDeletionBlocked(
             com.zencas.edhr.masterdata.deletion.DeletionBlockedException ex) {

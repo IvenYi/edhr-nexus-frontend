@@ -4,6 +4,7 @@ import type { PageResult } from '@/types/common';
 export type TemplateModelingPageKey = 'formTemplates' | 'batchRecordTemplates';
 
 export interface TemplateModelingRecord {
+  revision?: number;
   id: string | number;
   tenantId?: string;
   code?: string | null;
@@ -20,6 +21,7 @@ export interface TemplateModelingRecord {
 }
 
 export interface TemplateVersionRecord {
+  revision?: number;
   id: string | number;
   templateId?: string | number | null;
   version: string;
@@ -65,6 +67,7 @@ export interface TemplateModelingQuery {
 }
 
 export interface TemplateModelingPayload {
+  expectedRevision?: number;
   code?: string;
   name?: string;
   categoryName?: string | null;
@@ -228,8 +231,8 @@ export const createFormTemplate = (body: TemplateModelingPayload) =>
 export const updateFormTemplate = (id: string | number, body: TemplateModelingPayload) =>
   client.put(`${templateModelingBase}/form-templates/${id}`, body) as Promise<{ data: { data: TemplateModelingRecord } }>;
 
-export const deleteFormTemplate = (id: string | number) =>
-  client.delete(`${templateModelingBase}/form-templates/${id}`);
+export const deleteFormTemplate = (id: string | number, expectedRevision?: number) =>
+  client.delete(`${templateModelingBase}/form-templates/${id}`, { params: { expectedRevision } });
 
 export const createFormTemplateVersion = (id: string | number, body: TemplateModelingPayload) =>
   client.post(`${templateModelingBase}/form-templates/${id}/versions`, body) as Promise<{ data: { data: TemplateVersionRecord } }>;
@@ -240,10 +243,10 @@ export const getFormTemplateVersion = (id: string | number, versionId: string | 
 export const updateFormTemplateVersion = (id: string | number, versionId: string | number, body: TemplateModelingPayload) =>
   client.put(`${templateModelingBase}/form-templates/${id}/versions/${versionId}`, body) as Promise<{ data: { data: TemplateVersionRecord } }>;
 
-export const deleteFormTemplateVersion = (id: string | number, versionId: string | number) =>
-  client.delete(`${templateModelingBase}/form-templates/${id}/versions/${versionId}`);
+export const deleteFormTemplateVersion = (id: string | number, versionId: string | number, expectedRevision?: number) =>
+  client.delete(`${templateModelingBase}/form-templates/${id}/versions/${versionId}`, { params: { expectedRevision } });
 
-export const saveFormTemplateVersionDesign = (id: string | number, versionId: string | number, body: Pick<TemplateModelingPayload, 'modelDesignJson' | 'canvasDesignJson' | 'workflowDesignJson'>) =>
+export const saveFormTemplateVersionDesign = (id: string | number, versionId: string | number, body: Pick<TemplateModelingPayload, 'modelDesignJson' | 'canvasDesignJson' | 'workflowDesignJson' | 'expectedRevision'>) =>
   client.put(`${templateModelingBase}/form-templates/${id}/versions/${versionId}/design`, body) as Promise<{ data: { data: TemplateVersionRecord } }>;
 
 export const importLegacyWordTemplate = (file: File) => {

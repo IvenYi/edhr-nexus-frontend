@@ -6,6 +6,8 @@ import com.zencas.edhr.common.util.SnowflakeIdGenerator;
 import com.zencas.edhr.compliance.entity.AuditEvent;
 import com.zencas.edhr.compliance.repository.AuditEventRepository;
 import com.zencas.edhr.template.dto.TemplateModelingRequest;
+import com.zencas.edhr.template.service.TemplateModelingService;
+import com.zencas.edhr.template.service.FormEditGuard;
 import com.zencas.edhr.template.dto.TemplateImportGridResponse;
 import com.zencas.edhr.template.entity.DhrTemplate;
 import com.zencas.edhr.template.entity.DhrTemplateItem;
@@ -65,7 +67,8 @@ class TemplateModelingControllerTest {
     @Mock private SnowflakeIdGenerator idGenerator;
     @Mock private TemplateLegacyWordImportService templateLegacyWordImportService;
     @Mock private FormLookupCatalogService formLookupCatalogService;
-    @InjectMocks private TemplateModelingController controller;
+    @Mock private FormEditGuard editGuard;
+    @InjectMocks private TemplateModelingService controller;
 
     @BeforeEach void preserveLegacyDesignInCatalogAdapter() {
         org.mockito.Mockito.lenient().when(formLookupCatalogService.prepareDesign(org.mockito.ArgumentMatchers.any()))
@@ -97,13 +100,13 @@ class TemplateModelingControllerTest {
         var response = controller.listCategories("form-templates");
 
         assertThat(response.getData())
-                .extracting(TemplateModelingController.TemplateCategoryResponse::id)
+                .extracting(TemplateModelingService.TemplateCategoryResponse::id)
                 .containsExactly("ALL", "UNCATEGORIZED", "11");
         assertThat(response.getData())
-                .extracting(TemplateModelingController.TemplateCategoryResponse::name)
+                .extracting(TemplateModelingService.TemplateCategoryResponse::name)
                 .containsExactly("全部", "未分类", "生产表单");
         assertThat(response.getData())
-                .extracting(TemplateModelingController.TemplateCategoryResponse::count)
+                .extracting(TemplateModelingService.TemplateCategoryResponse::count)
                 .containsExactly(2L, 1L, 1L);
     }
 
@@ -116,12 +119,12 @@ class TemplateModelingControllerTest {
         when(templateCategoryRepository.saveAll(any())).thenAnswer(invocation -> invocation.getArgument(0));
 
         var response = controller.reorderCategories("batch-record-templates",
-                new TemplateModelingController.TemplateCategoryOrderRequest(List.of("22", "11")));
+                new TemplateModelingService.TemplateCategoryOrderRequest(List.of("22", "11")));
 
         assertThat(first.getSortOrder()).isEqualTo(20);
         assertThat(second.getSortOrder()).isEqualTo(10);
         assertThat(response.getData())
-                .extracting(TemplateModelingController.TemplateCategoryResponse::id)
+                .extracting(TemplateModelingService.TemplateCategoryResponse::id)
                 .containsExactly("ALL", "UNCATEGORIZED", "22", "11");
     }
 
@@ -131,8 +134,8 @@ class TemplateModelingControllerTest {
         when(formTemplateRepository.findByTenantIdAndCodeIgnoreCase("default", "FT-001")).thenReturn(List.of());
         when(templateCategoryRepository.findByTenantIdAndTemplateTypeAndNameIgnoreCase("default", "FORM", "生产表单"))
                 .thenReturn(Optional.of(TemplateCategory.builder().id(11L).tenantId("default").templateType("FORM").name("生产表单").build()));
-        when(formTemplateRepository.save(any(FormTemplate.class))).thenAnswer(invocation -> invocation.getArgument(0));
-        when(formTemplateVersionRepository.save(any(FormTemplateVersion.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(formTemplateRepository.saveAndFlush(any(FormTemplate.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(formTemplateVersionRepository.saveAndFlush(any(FormTemplateVersion.class))).thenAnswer(invocation -> invocation.getArgument(0));
         when(idGenerator.nextId()).thenReturn(101L, 102L, 103L);
 
         var response = controller.createFormTemplate(TemplateModelingRequest.builder()
@@ -153,7 +156,7 @@ class TemplateModelingControllerTest {
         assertThat(response.getData().versions().getFirst().version()).isEqualTo("V1.0");
         assertThat(response.getData().versions().getFirst().description()).isEqualTo("首版说明");
         ArgumentCaptor<FormTemplateVersion> versionCaptor = ArgumentCaptor.forClass(FormTemplateVersion.class);
-        verify(formTemplateVersionRepository).save(versionCaptor.capture());
+        verify(formTemplateVersionRepository).saveAndFlush(versionCaptor.capture());
         assertThat(versionCaptor.getValue().getDescription()).isEqualTo("首版说明");
         ArgumentCaptor<AuditEvent> auditCaptor = ArgumentCaptor.forClass(AuditEvent.class);
         verify(auditEventRepository, times(2)).save(auditCaptor.capture());
@@ -214,9 +217,9 @@ class TemplateModelingControllerTest {
         var response = controller.listFormTemplates(null, null, null, null, null, 1, 20, "createdAt", "desc");
 
         assertThat(response.getData().getContent()).hasSize(1);
-        TemplateModelingController.FormTemplateResponse record = response.getData().getContent().getFirst();
+        TemplateModelingService.FormTemplateResponse record = response.getData().getContent().getFirst();
         assertThat(record.versions())
-                .extracting(TemplateModelingController.TemplateVersionResponse::version)
+                .extracting(TemplateModelingService.TemplateVersionResponse::version)
                 .containsExactly("V2.0", "V1.0");
     }
 
@@ -237,7 +240,7 @@ class TemplateModelingControllerTest {
                 .build();
         when(formTemplateRepository.findById(101L)).thenReturn(Optional.of(template));
         when(formTemplateVersionRepository.findByTemplateIdOrderByCreatedAtDesc(101L)).thenReturn(List.of(current));
-        when(formTemplateVersionRepository.save(any(FormTemplateVersion.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(formTemplateVersionRepository.saveAndFlush(any(FormTemplateVersion.class))).thenAnswer(invocation -> invocation.getArgument(0));
         when(idGenerator.nextId()).thenReturn(201L, 202L);
 
         var response = controller.createFormTemplateVersion(101L, TemplateModelingRequest.builder()
@@ -251,9 +254,9 @@ class TemplateModelingControllerTest {
         assertThat(response.getData().version()).isEqualTo("V2.0");
         assertThat(response.getData().status()).isEqualTo("ACTIVE");
         ArgumentCaptor<FormTemplateVersion> versionCaptor = ArgumentCaptor.forClass(FormTemplateVersion.class);
-        verify(formTemplateVersionRepository).save(versionCaptor.capture());
+        verify(formTemplateVersionRepository).saveAndFlush(versionCaptor.capture());
         assertThat(versionCaptor.getValue().getVersion()).isEqualTo("V2.0");
-        verify(formTemplateRepository, never()).save(any(FormTemplate.class));
+        verify(formTemplateRepository, never()).saveAndFlush(any(FormTemplate.class));
     }
 
     @Test
@@ -279,7 +282,7 @@ class TemplateModelingControllerTest {
                 .build()))
                 .hasMessageContaining("模板版本已存在");
 
-        verify(formTemplateVersionRepository, never()).save(any(FormTemplateVersion.class));
+        verify(formTemplateVersionRepository, never()).saveAndFlush(any(FormTemplateVersion.class));
     }
 
     @Test
@@ -302,7 +305,7 @@ class TemplateModelingControllerTest {
                 .build();
         when(formTemplateRepository.findById(101L)).thenReturn(Optional.of(template));
         when(formTemplateVersionRepository.findByIdAndTemplateId(202L, 101L)).thenReturn(Optional.of(version));
-        when(formTemplateVersionRepository.save(any(FormTemplateVersion.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(formTemplateVersionRepository.saveAndFlush(any(FormTemplateVersion.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         var response = controller.saveFormTemplateVersionDesign(101L, 202L, TemplateModelingRequest.builder()
                 .modelDesignJson("{\"fields\":[{\"id\":\"f1\",\"type\":\"number\",\"typeConfig\":{\"businessPurpose\":\"PRODUCTION_GOOD\"}}]}")
@@ -314,7 +317,7 @@ class TemplateModelingControllerTest {
         assertThat(version.getModelDesignJson()).contains("\"businessPurpose\":\"PRODUCTION_GOOD\"");
         assertThat(response.getData().canvasDesignJson()).contains("\"p1\"");
         assertThat(response.getData().workflowDesignJson()).contains("\"n1\"");
-        verify(formTemplateVersionRepository).save(version);
+        verify(formTemplateVersionRepository).saveAndFlush(version);
         verify(auditEventRepository).save(any(AuditEvent.class));
     }
 
@@ -334,7 +337,7 @@ class TemplateModelingControllerTest {
         assertThat(version.getModelDesignJson()).isEqualTo(beforeModel);
         assertThat(version.getCanvasDesignJson()).isEqualTo(beforeCanvas);
         assertThat(version.getWorkflowDesignJson()).isEqualTo("{}");
-        verify(formTemplateVersionRepository, never()).save(any());
+        verify(formTemplateVersionRepository, never()).saveAndFlush(any());
         verify(auditEventRepository, never()).save(any());
         verify(formLookupCatalogService, never()).prepareDesign(any());
     }
@@ -356,7 +359,7 @@ class TemplateModelingControllerTest {
         assertThatThrownBy(() -> controller.saveFormTemplateVersionDesign(101L, 202L, request)).hasMessageContaining("已失效");
         assertThat(version.getModelDesignJson()).isEqualTo(model);
         assertThat(version.getCanvasDesignJson()).isEqualTo(canvas);
-        verify(formTemplateVersionRepository, never()).save(any());
+        verify(formTemplateVersionRepository, never()).saveAndFlush(any());
         verify(auditEventRepository, never()).save(any());
     }
 
@@ -376,7 +379,7 @@ class TemplateModelingControllerTest {
         }
         assertThat(version.getModelDesignJson()).isEqualTo("{\"fields\":[]}");
         assertThat(version.getCanvasDesignJson()).isEqualTo("{\"pages\":[]}");
-        verify(formTemplateVersionRepository, never()).save(any());
+        verify(formTemplateVersionRepository, never()).saveAndFlush(any());
         verify(auditEventRepository, never()).save(any());
         verify(formLookupCatalogService, never()).prepareDesign(any());
     }
@@ -398,7 +401,7 @@ class TemplateModelingControllerTest {
                 .status("ACTIVE")
                 .build()))
                 .hasMessageContaining("失效时间不能早于生效时间");
-        verify(formTemplateVersionRepository, never()).save(any(FormTemplateVersion.class));
+        verify(formTemplateVersionRepository, never()).saveAndFlush(any(FormTemplateVersion.class));
     }
 
     @Test
@@ -426,11 +429,11 @@ class TemplateModelingControllerTest {
         when(formTemplateVersionRepository.findByTemplateIdOrderByCreatedAtDesc(101L)).thenReturn(List.of(child, current));
         when(idGenerator.nextId()).thenReturn(301L);
 
-        controller.deleteFormTemplateVersion(101L, 201L);
+        controller.deleteFormTemplateVersion(101L, 201L, 0L);
 
         verify(formTemplateVersionRepository).delete(child);
         verify(formTemplateRepository, never()).deleteById(101L);
-        verify(formTemplateRepository, never()).save(any(FormTemplate.class));
+        verify(formTemplateRepository, never()).saveAndFlush(any(FormTemplate.class));
     }
 
     @Test
@@ -448,7 +451,7 @@ class TemplateModelingControllerTest {
         when(formTemplateRepository.findById(101L)).thenReturn(Optional.of(template));
         when(formTemplateVersionRepository.findByTemplateIdOrderByCreatedAtDesc(101L)).thenReturn(List.of(current));
 
-        assertThatThrownBy(() -> controller.deleteFormTemplateVersion(101L, 102L))
+        assertThatThrownBy(() -> controller.deleteFormTemplateVersion(101L, 102L, 0L))
                 .hasMessageContaining("至少保留一个版本");
     }
 
@@ -479,7 +482,7 @@ class TemplateModelingControllerTest {
         when(formTemplateVersionRepository.findByTemplateIdOrderByCreatedAtDesc(101L)).thenReturn(List.of(current, history));
         when(idGenerator.nextId()).thenReturn(301L);
 
-        controller.deleteFormTemplate(101L);
+        controller.deleteFormTemplate(101L, 0L);
 
         InOrder deletionOrder = inOrder(formTemplateVersionRepository, formTemplateRepository);
         deletionOrder.verify(formTemplateVersionRepository).deleteAll(List.of(current, history));
@@ -627,7 +630,7 @@ class TemplateModelingControllerTest {
         assertThat(response.getData().getContent()).hasSize(1);
         var record = response.getData().getContent().getFirst();
         assertThat(record.status()).isEqualTo("ACTIVE");
-        assertThat(record.versions()).extracting(TemplateModelingController.DhrTemplateVersionResponse::version)
+        assertThat(record.versions()).extracting(TemplateModelingService.DhrTemplateVersionResponse::version)
                 .containsExactly("V2.0", "V1.0");
     }
 
@@ -661,7 +664,7 @@ class TemplateModelingControllerTest {
         var record = response.getData().getContent().getFirst();
         assertThat(record.status()).isEqualTo("EXPIRED");
         assertThat(record.versions())
-                .extracting(TemplateModelingController.DhrTemplateVersionResponse::status)
+                .extracting(TemplateModelingService.DhrTemplateVersionResponse::status)
                 .containsExactly("EXPIRED", "EXPIRED");
     }
 
@@ -937,7 +940,7 @@ class TemplateModelingControllerTest {
         when(templateCategoryRepository.findByIdAndTenantIdAndTemplateType(11L, "default", "DHR")).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> controller.updateCategory(
-                "batch-record-templates", 11L, new TemplateModelingController.TemplateCategoryRequest("生产批记录")))
+                "batch-record-templates", 11L, new TemplateModelingService.TemplateCategoryRequest("生产批记录")))
                 .hasMessageContaining("模板分类不存在");
 
         verify(templateCategoryRepository, never()).save(any(TemplateCategory.class));
@@ -968,7 +971,7 @@ class TemplateModelingControllerTest {
         when(templateCategoryRepository.saveAll(any())).thenAnswer(invocation -> invocation.getArgument(0));
 
         controller.reorderCategories("batch-record-templates",
-                new TemplateModelingController.TemplateCategoryOrderRequest(List.of("22", "11")));
+                new TemplateModelingService.TemplateCategoryOrderRequest(List.of("22", "11")));
 
         verify(auditEventRepository, times(2)).save(any(AuditEvent.class));
     }
