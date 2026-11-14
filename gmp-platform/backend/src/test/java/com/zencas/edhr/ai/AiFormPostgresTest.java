@@ -45,6 +45,7 @@ class AiFormPostgresTest {
     @EntityScan({"com.zencas.edhr.template.entity", "com.zencas.edhr.compliance.entity"})
     @EnableJpaRepositories({"com.zencas.edhr.template.repository", "com.zencas.edhr.compliance.repository"})
     @Import({AiTaskService.class,AiAccess.class,AiController.class,AiWorkerController.class,AiFormController.class,AiFormService.class,
+            AiWorkbenchController.class,AiWorkbenchService.class,AiKnowledgePackage.class,FormReferenceLookup.class,
             AiExceptionHandler.class, SecurityConfig.class, JwtAuthenticationFilter.class, JwtTokenProvider.class,GlobalExceptionHandler.class,
             TemplateModelingController.class,TemplateModelingService.class,FormEditGuard.class,FormLookupCatalogService.class,
             TemplateLegacyWordImportService.class,SnowflakeIdGenerator.class,FormLookupCatalogController.class,
@@ -72,7 +73,7 @@ class AiFormPostgresTest {
         jdbc.update("INSERT INTO role_permission(id,role_id,permission_id) SELECT 920001,920001,id FROM permission WHERE code='master-data.form-templates' ON CONFLICT DO NOTHING");
         jdbc.update("INSERT INTO role_permission(id,role_id,permission_id) SELECT 920002,920001,id FROM permission WHERE code='system.settings' ON CONFLICT DO NOTHING");
         jdbc.update("INSERT INTO template_category(id,tenant_id,template_type,name,sort_order) VALUES (920001,'default','FORM','AI隔离验证',0) ON CONFLICT DO NOTHING");
-        config.setEnabled(true);config.setWorkerKey(KEY);config.setInstallationId("default");config.setLeaseSeconds(30);config.setRunSeconds(600);
+        config.setEnabled(true);config.setInternalValidation(true);config.setWorkerKey(KEY);config.setInstallationId("default");config.setLeaseSeconds(30);config.setRunSeconds(600);
         tasks.setEnabled(OWNER,true);
     }
     @Test void createIsAtomicIdempotentAuditedAndReadableOverHttp() throws Exception {
@@ -205,6 +206,61 @@ class AiFormPostgresTest {
         for(var event:events) {if("STOPPED".equals(event.get("action"))) stopped=true;else if(stopped) assertThat(event.get("action")).isNotEqualTo("FORM_DESIGN_SAVED");}
         worker("POST","/forms/write",command(run,"late-race","save-design",edit),409);
     }
+    @Test void knowledgeAndRelationsAreTaskScopedAndInternalOnly() throws Exception {
+        var run=run();
+        startTool(run,"knowledge","get_applicable_knowledge");
+        var request=new LinkedHashMap<String,Object>(lease(run));request.putAll(Map.of("callId","knowledge","tool","get_applicable_knowledge","query","追溯","id","","offset",0));
+        config.setInternalValidation(false);worker("POST","/workbench/query",request,403);config.setInternalValidation(true);
+        var result=worker("POST","/workbench/query",request,200);
+        assertThat(result.path("scope").asText()).isEqualTo("internal-validation");
+        assertThat(result.path("records").size()).isPositive();assertThat(result.path("packageHash").asText()).hasSize(64);
+        startTool(run,"relations","query_business_relations");request.putAll(Map.of("callId","relations","tool","query_business_relations","id","concept.form-template-field"));
+        assertThat(worker("POST","/workbench/query",request,200).toString()).contains("relation.form-field-associated-trace-item","term.form-template-field");
+        request.put("id","../../AGENTS.md");worker("POST","/workbench/query",request,404);
+        tasks.setEnabled(OWNER,false);worker("POST","/workbench/query",request,403);
+    }
+    @Test void nativePatchPreservesOtherDesignAndReplaysWithoutReapplying() throws Exception {
+        var run=run();var initial=payload();
+        initial.setModelDesignJson("{\"fields\":[{\"id\":\"a\",\"name\":\"old\",\"type\":\"text\",\"status\":\"enabled\",\"typeConfig\":{}},{\"id\":\"b\",\"name\":\"keep\",\"type\":\"text\",\"custom\":{\"untouched\":true}}],\"unknown\":{\"keep\":42}}");
+        initial.setCanvasDesignJson("{\"customCanvas\":true}");
+        var created=worker("POST","/forms/write",command(run,"create-patch","create",initial),200).path("receipt");
+        long revision=created.path("revision").asLong();startTool(run,"patch","patch_form");
+        var request=new LinkedHashMap<String,Object>(lease(run));
+        request.putAll(Map.of("operationId","patch","expectedRevision",revision,"patches",Map.of("modelDesignJson",List.of(Map.of("op","test","path","/fields/0/id","value","a"),Map.of("op","replace","path","/fields/0/name","value","renamed")))));
+        var patched=worker("POST","/forms/patch",request,200);
+        assertThat(worker("POST","/forms/patch",request,200).path("receipt")).isEqualTo(patched.path("receipt"));
+        var current=worker("POST","/forms/read",lease(run),200).path("version");
+        var model=new ObjectMapper().readTree(current.path("modelDesignJson").asText());
+        assertThat(model.path("fields").get(0).path("name").asText()).isEqualTo("renamed");
+        assertThat(model.path("fields").get(1).path("custom").path("untouched").asBoolean()).isTrue();
+        assertThat(model.path("unknown").path("keep").asInt()).isEqualTo(42);
+        assertThat(current.path("canvasDesignJson").asText()).isEqualTo(initial.getCanvasDesignJson());
+        assertThat(count("ai_form_receipt")).isEqualTo(2);
+        request.put("operationId","stale");worker("POST","/forms/patch",request,409);
+        request.put("expectedRevision",current.path("revision").asLong());request.put("patches",Map.of("ownerId",List.of(Map.of("op","add","path","/x","value",1))));
+        worker("POST","/forms/patch",request,400);assertThat(count("ai_form_receipt")).isEqualTo(2);
+    }
+    @Test void checksReportDefectsAndPreviewEvidenceRejectsOldRevision() throws Exception {
+        var run=run();var saved=create(run);long revision=saved.path("revision").asLong();
+        startTool(run,"check","check_form");
+        var request=new LinkedHashMap<String,Object>(lease(run));request.putAll(Map.of("callId","check","tool","check_form","expectedRevision",revision));
+        var report=worker("POST","/workbench/inspect",request,200);
+        assertThat(report.path("passed").asBoolean()).isFalse();assertThat(report.toString()).contains("CANVAS_EMPTY");
+        startTool(run,"preview","preview_form");request.putAll(Map.of("callId","preview","tool","preview_form"));
+        assertThat(worker("POST","/workbench/inspect",request,200).path("snapshot").path("version").path("revision").asLong()).isEqualTo(revision);
+        var edit=payload();edit.setExpectedRevision(revision);worker("POST","/forms/write",command(run,"edit-after-preview","save-design",edit),200);
+        var feedback=new LinkedHashMap<String,Object>(lease(run));feedback.putAll(Map.of("callId","preview","revision",revision,"artifactHash","a".repeat(64),"pages",1,"issueCount",0));
+        worker("POST","/workbench/preview-feedback",feedback,409);
+        var latest=worker("POST","/forms/read",lease(run),200).path("version").path("revision").asLong();
+        startTool(run,"preview-latest","preview_form");feedback.putAll(Map.of("callId","preview-latest","revision",latest));
+        worker("POST","/workbench/preview-feedback",feedback,200);
+        feedback.put("artifactHash","b".repeat(64));worker("POST","/workbench/preview-feedback",feedback,409);
+        assertThat(user("GET","/api/v1/ai/tasks/"+run.get("taskId")+"/events",null,OWNER,200).toString()).contains("检查表单配置","生成原生预览反馈");
+    }
+    private void startTool(Map<String,Object> run,String id,String tool) throws Exception {
+        var request=new LinkedHashMap<String,Object>(lease(run));request.putAll(Map.of("callId",id,"tool",tool,"phase","STARTED"));
+        worker("POST","/tool-events",request,200);
+    }
     private Map<String,Object> run() {tasks.create(OWNER,UUID.randomUUID().toString(),"isolated native form fixture");return tasks.claim();}
     @Test void realNodeDshWorkerCreatesReadsSavesAndYields() throws Exception {
         var task=tasks.create(OWNER,UUID.randomUUID().toString(),"isolated worker fixture");
@@ -225,6 +281,23 @@ class AiFormPostgresTest {
         assertThat(count("form_edit_lease")).isZero();
         assertThat(count("ai_form_receipt")).isEqualTo(2);
         assertThat(tasks.events(OWNER,UUID.fromString(task.get("taskId").toString()),0).toString()).contains("开始创建表单","已完成保存表单设计");
+    }
+    @Test @EnabledIfEnvironmentVariable(named="EDHR_DSH_BIN",matches=".+")
+    void realDshWorkbenchQueriesPatchesChecksAndRendersNativePreview() throws Exception {
+        var task=tasks.create(OWNER,UUID.randomUUID().toString(),"isolated 2c workbench");
+        var directory=java.nio.file.Files.createTempDirectory("edhr-workbench-2c-");
+        var log=directory.resolve("worker.log");
+        var builder=new ProcessBuilder("node","../ai-worker/test/launch-profile.mjs").redirectErrorStream(true).redirectOutput(log.toFile());
+        builder.environment().putAll(Map.of("EDHR_AI_FIXTURE","isolated-java-test","EDHR_AI_WORKBENCH","1","EDHR_AI_ORIGIN","http://127.0.0.1:"+port,
+                "EDHR_AI_WORKER_KEY",KEY,"EDHR_AI_DIRECTORY",directory.toString()));
+        var process=builder.start();boolean exited=process.waitFor(60,TimeUnit.SECONDS);
+        if(!exited){process.descendants().forEach(ProcessHandle::destroyForcibly);process.destroyForcibly();}
+        assertThat(exited).as(log.toString()).isTrue();assertThat(process.exitValue()).as(java.nio.file.Files.readString(log)).isZero();
+        assertThat(count("ai_form_receipt")).isEqualTo(2);
+        var events=tasks.events(OWNER,UUID.fromString(task.get("taskId").toString()),0).toString();
+        assertThat(events).contains("查询适用本体知识","查询业务关系与配置目录","局部修改表单设计","检查表单配置","worker-native-renderer");
+        assertThat(jdbc.queryForObject("SELECT count(*) FROM ai_task_event WHERE action='TOOL_COMMITTED' AND detail_json->>'tool'='preview_form'",Long.class)).isEqualTo(1);
+        try(var files=java.nio.file.Files.walk(directory)){assertThat(files.filter(p->p.getFileName().toString().equals("preview.png")).count()).isEqualTo(1);}
     }
     @Test void toolEventsCannotForgeCommitAndStopClosesPendingSteps() throws Exception {
         var run=run();var request=new LinkedHashMap<String,Object>(lease(run));

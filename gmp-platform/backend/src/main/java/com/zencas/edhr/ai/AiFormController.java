@@ -15,6 +15,15 @@ import java.util.UUID;
 public class AiFormController {
     private final AiFormService forms;
 
+    @PostMapping("/api/v1/ai/internal/forms/patch")
+    @PreAuthorize("hasAuthority('AI_WORKER')")
+    public ApiResponse<Map<String, Object>> patch(@Valid @RequestBody PatchRequest request) {
+        return ApiResponse.success(forms.patch(request.taskId(),request.runId(),request.leaseEpoch(),request.operationId(),request.expectedRevision(),request.patches()));
+    }
+    public record PatchRequest(@NotNull UUID taskId, @NotNull UUID runId, @Min(1) long leaseEpoch,
+                               @NotBlank @Size(max=128) String operationId, @Min(0) long expectedRevision,
+                               @NotNull com.fasterxml.jackson.databind.JsonNode patches) {}
+
     @PostMapping("/api/v1/ai/internal/forms/read")
     @PreAuthorize("hasAuthority('AI_WORKER')")
     public ApiResponse<Map<String, Object>> read(@Valid @RequestBody ReadRequest request) {

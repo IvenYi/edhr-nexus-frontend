@@ -22,7 +22,7 @@ async function fixture(t, overrides = {}, directory, leaseEpoch = 2) {
     write: async (lease, id, action, form) => { calls.push(['write', lease, id, action, form]); return { receipt: { operationId: id, taskId: lease.taskId, revision: 8 } }; },
     ...overrides,
   };
-  const adapter = await createNativeFormPlugin({ client, claim: { ...claim, leaseEpoch }, sessionId: 'session', directory });
+  const adapter = await createNativeFormPlugin({ client, claim: { ...claim, leaseEpoch }, sessionId: 'session', directory, preview:overrides.preview });
   adapter.plugin.apply({ effect: fn => cleanup.push(fn()), tools: { register: tool => registered.set(tool.name, tool) } });
   const execute = (name, args = {}, extra = {}) => registered.get(name).execute(args, { agent: { session: { id: 'session' } }, callId: 'call-1', signal: new AbortController().signal, ...extra });
   return { ...adapter, execute, calls, directory, dispose: () => cleanup.forEach(fn => fn()) };
@@ -43,6 +43,27 @@ test('model cannot override target, identity, lease or revision', async t => {
   }
   await assert.rejects(f.execute('read_current_form', {}, { agent: { session: { id: 'other' } } }), /scope/);
   assert.equal(f.calls.length, 0);
+});
+test('local patch requires current read and an unknown patch response blocks further writes',async t=>{
+  let writes=0;
+  const f=await fixture(t,{patch:async()=>{writes++;throw new Error('lost patch response');}});
+  const patch={expectedRevision:7,patches:{modelDesignJson:[{op:'replace',path:'/fields/0/name',value:'new'}]}};
+  await assert.rejects(f.execute('patch_form',patch),/Read current/);
+  await f.execute('read_current_form');
+  await assert.rejects(f.execute('patch_form',{...patch,expectedRevision:6}),/revision differs/);assert.equal(writes,0);
+  await assert.rejects(f.execute('patch_form',patch),/lost patch/);assert.equal(writes,1);
+  await assert.rejects(f.execute('read_current_form'),/unknown/);
+});
+test('preview uses host rendering and rejects model supplied feedback or stale server evidence',async t=>{
+  let renders=0,feedbacks=0;
+  const f=await fixture(t,{
+    inspect:async()=>({snapshot:{version:{revision:7}}}),
+    preview:async({snapshot})=>{assert.equal(snapshot.version.revision,7);renders++;return {artifactHash:'a'.repeat(64),pages:1,issues:[]};},
+    previewFeedback:async()=>{feedbacks++;throw new WorkerRejection(409);},
+  });
+  await f.execute('read_current_form');
+  await assert.rejects(f.execute('preview_form',{artifactHash:'forged'}),/Invalid/);assert.equal(renders,0);
+  await assert.rejects(f.execute('preview_form'),/409/);assert.equal(renders,1);assert.equal(feedbacks,1);
 });
 test('lost write response blocks further calls and restart until matching receipt', async t => {
   const id = operationId(claim.runId, 'call-1');
@@ -94,7 +115,7 @@ test('confirmed rejection allows correction, but identity conflict and malformed
     await assert.rejects(client.claim(), error => !(error instanceof WorkerRejection));
   }
 });
-test('real Cordis and DSH registry mount and unload only the three native tools', async t => {
+test('real Cordis and DSH registry mount and unload only the eight governed tools', async t => {
   const directory = await mkdtemp(join(tmpdir(), 'edhr-dsh-'));
   t.after(() => rm(directory, { recursive: true, force: true }));
   const ctx = new Context();
@@ -103,7 +124,7 @@ test('real Cordis and DSH registry mount and unload only the three native tools'
   await ctx.plugin(Tools);
   const adapter = await createNativeFormPlugin({ client: {}, claim, sessionId: 's', directory });
   const fork = await ctx.plugin(adapter.plugin);
-  assert.deepEqual(ctx.tools.definitions().map(t => t.name).sort(), ['create_form', 'read_current_form', 'save_form_design']);
+  assert.deepEqual(ctx.tools.definitions().map(t => t.name).sort(), ['check_form','create_form','get_applicable_knowledge','patch_form','preview_form','query_business_relations','read_current_form','save_form_design']);
   await fork.dispose();
   assert.equal(ctx.tools.definitions().length, 0);
 });

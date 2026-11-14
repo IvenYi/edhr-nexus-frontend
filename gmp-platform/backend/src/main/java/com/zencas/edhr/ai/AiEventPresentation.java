@@ -36,6 +36,11 @@ final class AiEventPresentation {
             case "read_current_form" -> "读取当前表单";
             case "create_form" -> "创建表单";
             case "save_form_design" -> "保存表单设计";
+            case "patch_form" -> "局部修改表单设计";
+            case "get_applicable_knowledge" -> "查询适用本体知识";
+            case "query_business_relations" -> "查询业务关系与配置目录";
+            case "check_form" -> "检查表单配置";
+            case "preview_form" -> "生成原生预览反馈";
             default -> "受控操作";
         };
     }

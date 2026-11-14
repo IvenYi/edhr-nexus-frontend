@@ -7,18 +7,26 @@ import { WorkerRejection } from './client.mjs';
 const design = { type: 'string', maxLength: 2_000_000 };
 const fields = { modelDesignJson: design, canvasDesignJson: design, workflowDesignJson: design };
 const schema = properties => ({ type: 'object', properties, additionalProperties: false });
+const edit = { ...schema({ op: { enum: ['add','replace','remove','test'] }, path: { type:'string',minLength:1,maxLength:500 }, value: {} }), required:['op','path'] };
+const patches = schema(Object.fromEntries(Object.keys(fields).map(key=>[key,{type:'array',minItems:1,maxItems:100,items:edit}])));
 const definitions = [
   { name: 'read_current_form', description: '读取本任务原生表单的当前内容与修订；保存前必须读取。', parameters: schema({}) },
   { name: 'create_form', description: '在指定分类下创建本任务唯一表单。返回保存回执，不代表任务完成。', parameters: { ...schema({ ...fields, categoryName: { type: 'string', minLength: 1, maxLength: 200 }, name: { type: 'string', maxLength: 200 }, version: { type: 'string', maxLength: 100 } }), required: ['categoryName'] } },
   { name: 'save_form_design', description: '保存本任务刚刚读回的表单设计；必须保留未修改的原生配置。', parameters: { ...schema(fields), required: Object.keys(fields) } },
+  { name: 'get_applicable_knowledge', description: '查询本任务授权的固定知识包，返回来源、成熟度、未决范围及续页。内部验证知识不授予业务执行权限。', parameters:{...schema({query:{type:'string',minLength:1,maxLength:500},offset:{type:'integer',minimum:0,maximum:10000}}),required:['query']} },
+  { name: 'query_business_relations', description: '按知识ID查概念关系及定义；省略ID返回当前查找统计配置目录。catalog.reference-dictionaries配合query查实际字典，catalog.material-types查物料类型。不是生产实例关系，不能据名称推断真实业务归属。', parameters:schema({id:{type:'string',maxLength:200},query:{type:'string',maxLength:500},offset:{type:'integer',minimum:0,maximum:10000}}) },
+  { name: 'patch_form', description: '在刚读回的修订上按JSON Pointer局部修改modelDesignJson/canvasDesignJson/workflowDesignJson，未触及配置原样保留。数组位置来自当前读取，建议先test字段ID；不支持移动、复制和根替换。', parameters:{...schema({expectedRevision:{type:'integer',minimum:0},patches}),required:['expectedRevision','patches']} },
+  { name: 'check_form', description: '检查本任务当前保存修订的原生配置及语义约束；不证明原表完整或客户正式来源职责。', parameters:schema({}) },
+  { name: 'preview_form', description: '用离线原生组件渲染当前修订，返回真实截图证据及裁切反馈；修改后重新预览，不等于配置完成。', parameters:schema({}) },
 ];
+export const formToolNames = definitions.map(tool=>tool.name).sort();
 
 // A stable operation identity survives lost responses and DSH call replay.
 export function operationId(runId, callId) {
   return createHash('sha256').update(JSON.stringify([runId, callId])).digest('hex');
 }
 
-export async function createNativeFormPlugin({ client, claim, sessionId, directory, signal: hostSignal }) {
+export async function createNativeFormPlugin({ client, claim, sessionId, directory, signal: hostSignal, preview }) {
   if (claim.state !== 'RUNNING' || !Number.isSafeInteger(claim.leaseEpoch) || claim.leaseEpoch < 1 ||
       !/^[\da-f-]{36}$/i.test(claim.taskId) || !/^[\da-f-]{36}$/i.test(claim.runId) || !sessionId) throw new Error('Claim required');
   const lease = Object.freeze({ taskId: claim.taskId, runId: claim.runId, leaseEpoch: claim.leaseEpoch });
@@ -79,12 +87,25 @@ export async function createNativeFormPlugin({ client, claim, sessionId, directo
             if ((await pendingWrites()).length) throw new Error('Write outcome unknown; host must reconcile receipt');
             await client.toolEvent(lease, id, tool.name, 'STARTED', signal);
             started = true;
+            if (['get_applicable_knowledge','query_business_relations'].includes(tool.name))
+              return await client.query(lease,id,tool.name,args,signal);
             if (tool.name === 'read_current_form') {
               const result = await client.read({ ...lease, callId: id }, signal);
               signal.throwIfAborted();
               revision = result.version.revision;
               return result;
             }
+            if (['check_form','preview_form','patch_form'].includes(tool.name) && !Number.isSafeInteger(revision)) throw new Error('Read current form before inspection or patch');
+            if (tool.name === 'check_form') return await client.inspect(lease,id,tool.name,revision,signal);
+            if (tool.name === 'preview_form') {
+              if (!preview) throw new Error('Native preview renderer unavailable');
+              const snapshot = await client.inspect(lease,id,tool.name,revision,signal);
+              const observed = await preview({ snapshot: snapshot.snapshot, signal, directory: join(home,'previews',id) });
+              signal.throwIfAborted();
+              const evidence = await client.previewFeedback(lease,id,{ revision,artifactHash:observed.artifactHash,pages:observed.pages,issueCount:observed.issues.length },signal);
+              return { ...observed, artifactId: id + '/preview.png', evidence };
+            }
+            if (tool.name === 'patch_form' && args.expectedRevision !== revision) throw new Error('Patch revision differs from current read');
             if (tool.name === 'save_form_design' && !Number.isSafeInteger(revision)) throw new Error('Read current form before saving');
             const form = tool.name === 'create_form' ? args : { ...args, expectedRevision: revision };
             // Only identity is journaled; no customer design, credential or model reasoning.
@@ -95,7 +116,8 @@ export async function createNativeFormPlugin({ client, claim, sessionId, directo
             signal.throwIfAborted();
             let result;
             try {
-              result = await client.write(lease, id, tool.name === 'create_form' ? 'create' : 'save-design', form, signal);
+              result = tool.name === 'patch_form' ? await client.patch(lease,id,form.expectedRevision,args.patches,signal)
+                : await client.write(lease, id, tool.name === 'create_form' ? 'create' : 'save-design', form, signal);
             } catch (error) {
               if (error instanceof WorkerRejection) {
                 await clearMarker(pendingFile);

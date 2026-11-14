@@ -238,7 +238,7 @@ public class AiTaskService {
     public void recordFormEvent(UUID task, UUID run, long actor, String action, Map<String, Object> detail) {
         var starts = toolEvents(run, detail.get("operationId").toString());
         rejectTerminatedTool(starts);
-        String tool = "FORM_CREATED".equals(action) ? "create_form" : "save_form_design";
+        String tool = "FORM_CREATED".equals(action) ? "create_form" : "patch-design".equals(detail.get("action")) ? "patch_form" : "save_form_design";
         if (!starts.isEmpty() && !starts.getFirst().path("tool").asText().equals(tool)) throw new AiException(409, "TOOL_ID_CONFLICT");
         event(task, run, Long.toString(actor), action, detail);
         toolOutcome(task, run, detail.get("operationId").toString(), "COMMITTED");
@@ -246,7 +246,7 @@ public class AiTaskService {
 
     public Map<String, Object> toolEvent(UUID task, UUID run, long epoch, String callId, String tool, String phase) {
         execution(task, run, epoch);
-        if (!List.of("read_current_form", "create_form", "save_form_design").contains(tool)
+        if (!List.of("read_current_form", "create_form", "save_form_design", "patch_form", "get_applicable_knowledge", "query_business_relations", "check_form", "preview_form").contains(tool)
                 || !List.of("STARTED", "FAILED", "RESULT_UNKNOWN").contains(phase)) throw new AiException(400, "INVALID_TOOL_EVENT");
         var previous = toolEvents(run, callId);
         if (!previous.isEmpty()) {
@@ -269,6 +269,22 @@ public class AiTaskService {
         if (previous.isEmpty() || !previous.getFirst().path("tool").asText().equals("read_current_form"))
             throw new AiException(409, "TOOL_START_REQUIRED");
         if (previous.size() == 1) event(task, run, "worker", "TOOL_COMMITTED", Map.of("callId", callId, "tool", "read_current_form", "revision", revision, "phase", "COMMITTED"));
+    }
+
+    public void requireToolStart(UUID run,String callId,String tool) {
+        var previous=toolEvents(run,callId);
+        rejectTerminatedTool(previous);
+        if (previous.isEmpty() || !previous.getFirst().path("tool").asText().equals(tool)) throw new AiException(409,"TOOL_START_REQUIRED");
+    }
+
+    public void recordToolResult(UUID task,UUID run,String callId,String tool,Map<String,Object> evidence) {
+        requireToolStart(run,callId,tool);
+        var previous=toolEvents(run,callId);
+        if (previous.getLast().path("phase").asText().equals("COMMITTED")) {
+            if (!previous.getLast().path("evidence").equals(mapper.valueToTree(evidence))) throw new AiException(409,"TOOL_RESULT_CONFLICT");
+            return;
+        }
+        event(task,run,"worker","TOOL_COMMITTED",Map.of("callId",callId,"tool",tool,"phase","COMMITTED","evidence",evidence));
     }
 
     private void rejectTerminatedTool(List<JsonNode> events) {

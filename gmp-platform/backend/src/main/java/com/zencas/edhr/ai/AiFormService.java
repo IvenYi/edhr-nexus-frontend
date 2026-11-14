@@ -36,6 +36,7 @@ public class AiFormService {
     private final FormEditGuard guard;
     private final AuditEventRepository audits;
     private final SnowflakeIdGenerator ids;
+    private final AiProperties config;
 
     public Map<String, Object> read(UUID taskId, UUID runId, long epoch) {
         return read(taskId, runId, epoch, null);
@@ -69,10 +70,38 @@ public class AiFormService {
     }
 
     public Map<String, Object> write(UUID taskId, UUID runId, long epoch, String operationId, String action, TemplateModelingRequest request) {
+        return writeInternal(taskId, runId, epoch, operationId, action, request, digest(action, request));
+    }
+
+    public Map<String, Object> patch(UUID taskId, UUID runId, long epoch, String operationId, long expectedRevision, JsonNode patches) {
+        tasks.authorizeExecution(taskId, runId, epoch);
+        if (!config.isInternalValidation()) throw new AiException(403,"INTERNAL_VALIDATION_DISABLED");
+        if (!patches.isObject() || patches.isEmpty() || patches.size() > 3) throw new AiException(400, "INVALID_DESIGN_PATCH");
+        String hash = digest("patch-design", Map.of("expectedRevision", expectedRevision, "patches", patches));
+        var prior = jdbc.queryForList("SELECT request_hash,result_json::text FROM ai_form_receipt WHERE task_id=? AND operation_id=?", taskId, operationId);
+        if (!prior.isEmpty()) {
+            if (!hash.equals(prior.getFirst().get("request_hash"))) throw new AiException(409, "IDEMPOTENCY_CONFLICT");
+            return Map.of("receipt", parse(prior.getFirst().get("result_json").toString()), "replayed", true);
+        }
+        JsonNode saved = mapper.valueToTree(read(taskId, runId, epoch)).path("version");
+        if (saved.path("revision").asLong() != expectedRevision) throw new AiException(409, "STALE_FORM_REVISION");
+        TemplateModelingRequest request = new TemplateModelingRequest();
+        request.setExpectedRevision(expectedRevision);
+        Map<String, String> designs = new LinkedHashMap<>();
+        for (String key : java.util.List.of("modelDesignJson", "canvasDesignJson", "workflowDesignJson")) designs.put(key, saved.path(key).asText("{}"));
+        patches.fields().forEachRemaining(entry -> {
+            if (!designs.containsKey(entry.getKey())) throw new AiException(400, "INVALID_DESIGN_PATCH");
+            designs.put(entry.getKey(), AiDesignPatch.apply(parse(designs.get(entry.getKey())), entry.getValue()).toString());
+        });
+        request.setModelDesignJson(designs.get("modelDesignJson")); request.setCanvasDesignJson(designs.get("canvasDesignJson"));
+        request.setWorkflowDesignJson(designs.get("workflowDesignJson"));
+        return writeInternal(taskId, runId, epoch, operationId, "patch-design", request, hash);
+    }
+
+    private Map<String, Object> writeInternal(UUID taskId, UUID runId, long epoch, String operationId, String action, TemplateModelingRequest request, String digest) {
         var execution = tasks.authorizeExecution(taskId, runId, epoch);
         var task = execution.task();
         long actor = number(task, "owner_id");
-        String digest = digest(action, request);
         var prior = jdbc.queryForList("SELECT request_hash,result_json::text FROM ai_form_receipt WHERE task_id=? AND operation_id=?", taskId, operationId);
         if (!prior.isEmpty()) {
             if (!Objects.equals(digest, prior.getFirst().get("request_hash"))) throw new AiException(409, "IDEMPOTENCY_CONFLICT");
@@ -100,7 +129,7 @@ public class AiFormService {
                 initial.setExpectedRevision(revision);
                 templates.saveFormTemplateVersionDesign(template, version, initial, runId);
                 bindTarget(taskId, template, version);
-            } else if ("save-design".equals(action)) {
+            } else if ("save-design".equals(action) || "patch-design".equals(action)) {
                 requireTarget(task);
                 template = number(task, "form_template_id"); version = number(task, "form_version_id");
                 if (!Objects.equals(execution.run().get("form_read_epoch"), epoch)
@@ -143,7 +172,7 @@ public class AiFormService {
         if (node.isArray()) { var values = new java.util.ArrayList<>(); node.forEach(v -> values.add(canonical(v))); return values; }
         return node;
     }
-    private String digest(String action, TemplateModelingRequest request) {
+    private String digest(String action, Object request) {
         var payload = mapper.valueToTree(request);
         for (String key : java.util.List.of("modelDesignJson", "canvasDesignJson", "workflowDesignJson")) {
             if (payload.hasNonNull(key)) {

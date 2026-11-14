@@ -1,9 +1,9 @@
 import { createNativeFormPlugin } from './form-plugin.mjs';
 
-export const workerBaseline = Object.freeze({ pluginVersion: 'form-worker-2b', toolProtocol: 'ai-task-v2', knowledgePackage: 'unpublished', modelConfig: 'fixture-no-model' });
+export const workerBaseline = Object.freeze({ pluginVersion: 'form-worker-2c', toolProtocol: 'ai-task-v3', knowledgePackage: 'form-knowledge-2c-internal', modelConfig: 'fixture-no-model' });
 
 // A single claimed run. DSH owns the agent loop; Java owns execution eligibility.
-export async function runClaimedWorker({ ctx, client, directory, drive, signal, heartbeatMs = 5000 }) {
+export async function runClaimedWorker({ ctx, client, directory, drive, preview, signal, heartbeatMs = 5000 }) {
   const claim = await client.claim(signal);
   if (claim.idle) return claim;
   if (Object.entries(workerBaseline).some(([key, value]) => claim.config?.[key] !== value)) throw new Error('Worker configuration unavailable');
@@ -19,7 +19,7 @@ export async function runClaimedWorker({ ctx, client, directory, drive, signal, 
   try {
     await client.renew(lease, running);
     timer = setTimeout(renew, heartbeatMs);
-    const adapter = await createNativeFormPlugin({ client, claim, directory, sessionId: claim.runId, signal: running });
+    const adapter = await createNativeFormPlugin({ client, claim, directory, sessionId: claim.runId, signal: running, preview });
     // A pending write is never replayed before checking the persisted Java receipt.
     await adapter.reconcile(running);
     fork = await ctx.plugin(adapter.plugin);

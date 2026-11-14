@@ -1,0 +1,33 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { mkdtemp,readFile,rm } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import { buildPreview } from '../preview/build.mjs';
+import { createNativePreview } from '../src/preview.mjs';
+import { nativeFixture } from './native-fixture.mjs';
+
+test('native offline renderer produces real PNG evidence and rejects unbounded inputs',async t=>{
+  const directory=await mkdtemp(join(tmpdir(),'edhr-2c-preview-'));
+  t.after(()=>rm(directory,{recursive:true,force:true}));
+  await buildPreview(join(directory,'renderer.js'));
+  const preview=await createNativePreview(join(directory,'renderer.js'));
+  const snapshot={templateId:'1',version:{id:'2',revision:4,version:'V1',...nativeFixture()}};
+  const result=await preview({snapshot,signal:new AbortController().signal,directory});
+  assert.equal(result.pages,1);assert.match(result.artifactHash,/^[a-f0-9]{64}$/);
+  assert.equal(result.fieldControls,1);
+  const image=await readFile(join(directory,'preview.png'));assert.equal(image.subarray(1,4).toString(),'PNG');
+  const manifest=JSON.parse(await readFile(join(directory,'manifest.json'),'utf8'));assert.equal(manifest.revision,4);
+  const canvas=JSON.parse(snapshot.version.canvasDesignJson);
+  canvas.payload.pages[0].cells['1:1'].value='这是一段必须检测出裁切的原表说明'.repeat(100);
+  canvas.payload.pages[0].medias=[{id:'remote',src:'http://127.0.0.1:1/private'}];
+  canvas.payload.pages[0].images=[{id:'image',mediaId:'remote',layout:{top:120,left:0,width:100,height:100}}];
+  snapshot.version.canvasDesignJson=JSON.stringify(canvas);
+  const bad=await preview({snapshot,signal:new AbortController().signal,directory:join(directory,'bad')});
+  assert.ok(bad.issues.some(issue=>issue.code==='TEXT_CLIPPED'));
+  assert.ok(bad.issues.some(issue=>issue.code==='IMAGE_UNAVAILABLE'||issue.code==='EXTERNAL_RESOURCE_BLOCKED'));
+  snapshot.version.canvasDesignJson=JSON.stringify({pages:[]});
+  await assert.rejects(preview({snapshot,signal:new AbortController().signal,directory}),/saved pages/);
+  const controller=new AbortController();controller.abort();
+  await assert.rejects(preview({snapshot,signal:controller.signal,directory}),/abort/i);
+});

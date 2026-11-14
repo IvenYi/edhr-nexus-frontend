@@ -1,0 +1,73 @@
+decisionPackage:
+  id: DEC-PACKAGE-20261114-AI-2C
+  scope: 受控知识及关系查询、原生局部编辑、语义检查和预览反馈；不开发页面
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: 450379670504ca3f8bd1f65a275f48633dd50379
+    targetBranch: codex/ai-experiments
+    targetCommit: 450379670504ca3f8bd1f65a275f48633dd50379
+    contractReadCommit: 450379670504ca3f8bd1f65a275f48633dd50379
+    uncommittedContractPaths: []
+  summary: 用户明确授权2C；可按需用DeepSeek，当前先以确定性驱动验证真实工具及原生预览，不调用付费模型。
+  confirmed:
+    concepts: []
+    relationships: []
+    rules: []
+    executionContracts: []
+  inferred:
+    - id: inference.ai-2c-internal-package
+      statement: 固定源提交、白名单记录和字段生成只供内部隔离验证的知识包，保留internal和原成熟度；不授予客户或生产运行投影资格。
+      rationale: 现有知识含未发布规则，产品运行发布需逐项证据，实验授权不可自动提升成熟度。
+      relatedIds: [concept.ai-knowledge-package]
+    - id: inference.ai-2c-preview
+      statement: Worker离线浏览器复用原生预览组件，模型不能提供预览结果；Java核对当前修订后记录Worker观测，不将该证据单独当作任务成功。
+      rationale: 不增加用户页面，不使用管理员登录或任意网络和文件工具。
+      relatedIds: [concept.ai-execution-run]
+  unresolved: []
+  replacementScopes: []
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - area: ai-form-plugin
+        change: 增加受控查询、局部设计修改和检查预览证据
+        evidenceReferences: [gmp-platform/ai-worker/src/form-plugin.mjs, gmp-platform/backend/src/main/java/com/zencas/edhr/ai/AiFormService.java]
+    transitiveImpacts: [使用原生引用及投影校验，复用现有预览组件]
+    potentialImpacts: [浏览器渲染资源上限、知识包发布治理和真实模型行为仍须分别验证]
+    unaffectedAreas: [生产执行, 电子签名, 放行, 客户页面, 历史实例与冻结证据]
+    compatibilityAndMigration: [无数据库迁移，插件协议基线升级，旧任务不静默续跑]
+    snapshotImpacts: [查询标识来源包，检查和预览标识保存修订，后续修改不得沿用旧证据]
+    auditImpacts: [局部修改沿用原生事务回执，检查与预览为过程证据而非生产审计或模型推理]
+    permissionImpacts: [每次工具检查当前用户、能力、轮次及代际，不接受任意目标、SQL、路径或URL]
+    testImpacts:
+      - scope: ai-2c
+        scenarios: [未知知识拒绝, 关系查询边界, 未知原生配置保留, 局部修改重试幂等, 陈旧修订拒绝, 原生校验错误反馈, 离线预览与修订反馈, 权限撤销与禁用]
+        evidenceReferences: []
+    evidenceGaps: [三张表单自然语言质量与双模型比较属于2D, 商用发布知识及完整DSH分发仍未验收]
+  extensionStrategy:
+    selectedPaths: [project-plugin, standard-action, product-core]
+    rationale: 复用DSH循环及Java原生对象，薄适配新增受控工具，不重建表单设计器。
+    ownershipBoundaries:
+      - owner: ai-worker
+        responsibility: 工具协议、预览渲染和故障恢复
+      - owner: ai-java
+        responsibility: 当前资格、查询范围、原生校验、局部写入与修订证据
+  affectedFiles:
+    - path: gmp-platform/ai-worker
+      changeType: update
+      reason: 新增2C工具及离线预览
+    - path: gmp-platform/backend/src/main/java/com/zencas/edhr/ai
+      changeType: update
+      reason: 受控工作台服务与事务
+  acceptanceScenarios:
+    - id: scenario.ai-2c-revision-evidence
+      given: 合法任务已有本任务原生模板
+      when: 查询知识并局部编辑，再检查和预览，随后修改版本
+      then: 修改保留无关配置；旧修订预览反馈拒绝，工具不能借查询越权
+      evidenceRequirements: [隔离PG真实HTTP, Node工具测试, 原生组件实际浏览器渲染]
+  ontologyRoadmap:
+    currentStage: P0
+    targetOutcome: 能力范围内的来源查询与关系导航，保留未发布边界
+    entryCriteria: [DEC-0097]
+    exitCriteria: [受影响实现及运行证据同步]
+    explicitNonGoals: [全仓发布, 新图数据库, 通用规则执行, 全仓P1或P2升级]
+    nextStage: P1

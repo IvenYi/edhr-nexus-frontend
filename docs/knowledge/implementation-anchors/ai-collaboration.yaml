@@ -1,5 +1,50 @@
 knowledgeModelVersion: 0.3.25
 implementationAnchors:
+  - id: anchor.ai-form-native-preview
+    targetId: concept.ai-operation-event
+    targetType: concept
+    codeReferences: [gmp-platform/ai-worker/src/preview.mjs, gmp-platform/ai-worker/preview/entry.tsx, gmp-platform/ai-worker/preview/build.mjs, gmp-platform/ai-worker/src/form-plugin.mjs, gmp-platform/backend/src/main/java/com/zencas/edhr/ai/AiWorkbenchService.java]
+    apiReferences: ["POST /api/v1/ai/internal/workbench/inspect", "POST /api/v1/ai/internal/workbench/preview-feedback"]
+    databaseReferences: []
+    uiReferences: []
+    testReferences: [gmp-platform/ai-worker/test/preview.test.mjs, gmp-platform/backend/src/test/java/com/zencas/edhr/ai/AiFormPostgresTest.java]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.ai-form-workbench-scope, evidence.ai-form-native-preview-source, evidence.ai-form-workbench-service-source]
+    sourceRevision: working-tree
+    sourceLocator: createNativePreview复用原生FormDocumentPreview；模型不提供URL、路径或观测，离线截图manifest关联revision及rendererHash/imageHash，Java按当前资格修订接受Worker观测；没有任务成功或客户页面
+    capturedAt: '2026-11-14'
+    reviewStatus: reviewed
+  - id: anchor.ai-form-workbench
+    targetId: concept.ai-knowledge-package
+    targetType: concept
+    codeReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/ai/AiWorkbenchService.java, gmp-platform/backend/src/main/java/com/zencas/edhr/ai/AiWorkbenchController.java, gmp-platform/backend/src/main/java/com/zencas/edhr/ai/AiFormAnalysis.java, gmp-platform/backend/src/main/java/com/zencas/edhr/ai/AiKnowledgePackage.java, scripts/ai-form-agent/build-2c-knowledge.mjs]
+    apiReferences: ["POST /api/v1/ai/internal/workbench/query", "POST /api/v1/ai/internal/workbench/inspect", "POST /api/v1/ai/internal/workbench/preview-feedback"]
+    databaseReferences: []
+    uiReferences: []
+    testReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/ai/AiWorkbenchTest.java, gmp-platform/backend/src/test/java/com/zencas/edhr/ai/AiFormPostgresTest.java]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.ai-form-workbench-scope, evidence.ai-form-workbench-service-source, evidence.ai-form-analysis-source, evidence.ai-form-knowledge-package-source, evidence.ai-form-knowledge-build-source]
+    sourceRevision: working-tree
+    sourceLocator: authorize/query/inspect/checkReferences/previewFeedback；当前资格与内部验证门槛，查询固定包及字典/物料类型目录，复用共享引用查询与有效字典核对；当前修订检查及Worker观测不冒充Java视觉证明或任务成功；字典20条满页细化查询，源码和测试入口不代替运行证据
+    capturedAt: '2026-11-14'
+    reviewStatus: reviewed
+  - id: anchor.ai-form-local-edit
+    targetId: concept.ai-operation-receipt
+    targetType: concept
+    codeReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/ai/AiFormService.java, gmp-platform/backend/src/main/java/com/zencas/edhr/ai/AiDesignPatch.java, gmp-platform/backend/src/main/java/com/zencas/edhr/ai/AiFormController.java]
+    apiReferences: ["POST /api/v1/ai/internal/forms/patch"]
+    databaseReferences: []
+    uiReferences: []
+    testReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/ai/AiWorkbenchTest.java, gmp-platform/backend/src/test/java/com/zencas/edhr/ai/AiFormPostgresTest.java]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.ai-form-workbench-scope, evidence.ai-form-local-edit-source]
+    sourceRevision: working-tree
+    sourceLocator: AiFormService.patch与writeInternal、AiDesignPatch.apply；有界设计操作保留未触及配置，沿当前目标与修订、原生事务及操作摘要回执，不授予任意对象修改权
+    capturedAt: '2026-11-14'
+    reviewStatus: reviewed
   - id: anchor.ai-worker-runtime
     targetId: concept.ai-execution-run
     targetType: concept
@@ -10,10 +55,10 @@ implementationAnchors:
     testReferences: [gmp-platform/ai-worker/test/worker.test.mjs, gmp-platform/ai-worker/test/launch-profile.mjs, gmp-platform/ai-worker/test/profile-boot.mjs, gmp-platform/backend/src/test/java/com/zencas/edhr/ai/AiFormPostgresTest.java]
     status: implemented
     visibility: internal
-    evidenceIds: [evidence.ai-worker-runtime-scope, evidence.ai-worker-runtime-source]
+    evidenceIds: [evidence.ai-worker-runtime-scope, evidence.ai-worker-runtime-source, evidence.ai-form-workbench-scope]
     sourceRevision: working-tree
-    sourceLocator: runClaimedWorker及workerBaseline；领取续租、受控回执核对、DSH工具挂载及释放，固定四项配置基线，不兼容拒绝；STOPPED/WORKER_YIELDED为工程停止而非任务成功，测试入口不等于通过证据
-    capturedAt: '2026-11-13'
+    sourceLocator: runClaimedWorker及workerBaseline；领取续租、受控回执核对、DSH工具挂载及释放；2C固定form-worker-2c/ai-task-v3/form-knowledge-2c-internal/fixture-no-model，不兼容拒绝；STOPPED/WORKER_YIELDED为工程停止而非任务成功，测试入口不等于通过证据
+    capturedAt: '2026-11-14'
     reviewStatus: reviewed
   - id: anchor.ai-tool-process-events
     targetId: concept.ai-operation-event
@@ -118,8 +163,8 @@ implementationAnchors:
     visibility: internal
     evidenceIds: [evidence.ai-collaboration-task-source, evidence.ai-collaboration-migration-source, evidence.ai-collaboration-test-source]
     sourceRevision: working-tree
-    sourceLocator: reserve/settle及ai_model_reservation持久账本；baseline/compatible固定版本标识；默认unpublished/fixture-no-model仅工程占位，不表示知识发布或供应商调用；终态不接收settle，未知费用预留保持
-    capturedAt: '2026-11-12'
+    sourceLocator: reserve/settle及ai_model_reservation持久账本；baseline/compatible固定版本标识；2C默认form-knowledge-2c-internal/fixture-no-model仅供内部验证，不表示客户知识发布或供应商调用；终态不接收settle，未知费用预留保持
+    capturedAt: '2026-11-14'
     reviewStatus: reviewed
   - id: anchor.ai-form-native-operation
     targetId: concept.ai-operation-receipt

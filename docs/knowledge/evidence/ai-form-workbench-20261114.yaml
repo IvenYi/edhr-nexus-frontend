@@ -1,0 +1,37 @@
+knowledgeModelVersion: 0.3.25
+evidence:
+  - id: evidence.ai-form-workbench-scope
+    type: document
+    path: docs/knowledge/evidence/ai-form-workbench-20261114.md
+    description: user-confirmed-and-inference；2C受控本体及关系查询、局部编辑、语义检查与预览反馈授权；固定知识子集、隔离验证和修订证据为工程方案，不批准客户发布、生产执行或模型配置质量。
+    visibility: internal
+  - id: evidence.ai-form-workbench-service-source
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/ai/AiWorkbenchService.java
+    description: original-evidence；当前任务资格与内部验证开关、固定包及字典/物料类型目录查询、当前修订检查、共享引用实际查询和有效字典核对，以及Worker预览反馈关联；不代表客户知识发布或独立运行验收。
+    visibility: internal
+  - id: evidence.ai-form-local-edit-source
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/ai/AiDesignPatch.java
+    description: original-evidence；对设计JSON的有界局部操作，写入仍由AiFormService当前目标、修订、事务、幂等回执与原生领域校验负责。
+    visibility: internal
+  - id: evidence.ai-form-analysis-source
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/ai/AiFormAnalysis.java
+    description: original-evidence；字段身份和画布引用诊断、既有引用及投影校验、客户正式来源职责警告；只证明覆盖的配置约束，不推断客户政策或原件完整性。
+    visibility: internal
+  - id: evidence.ai-form-knowledge-package-source
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/ai/AiKnowledgePackage.java
+    description: original-evidence；只读取classpath固定实验包，核对payload摘要并提供有界检索、关系及术语导航；源提交、文件摘要、成熟度和internal标识保留，历史证据ID不自动开放原文读取。
+    visibility: internal
+  - id: evidence.ai-form-knowledge-build-source
+    type: code
+    path: scripts/ai-form-agent/build-2c-knowledge.mjs
+    description: original-evidence；构建期从固定Git提交提取18条显式允许的表单概念、术语、关系、规则及未决问题，生成内部实验包；不把构建脚本暴露为模型文件或Shell工具。
+    visibility: internal
+  - id: evidence.ai-form-native-preview-source
+    type: code
+    path: gmp-platform/ai-worker/src/preview.mjs
+    description: original-evidence；离线浏览器渲染固定部署bundle，禁用业务网络与下载，保存PNG和包含修订及renderer/image摘要的manifest；布局测量有界，不代表视觉完整或实际填报验证。
+    visibility: internal

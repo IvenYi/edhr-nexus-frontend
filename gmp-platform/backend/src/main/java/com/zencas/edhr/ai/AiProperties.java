@@ -12,6 +12,7 @@ import org.springframework.validation.annotation.Validated;
 @ConfigurationProperties(prefix = "edhr.ai")
 public class AiProperties {
     private boolean enabled = false;
+    private boolean internalValidation = false;
     @NotBlank private String installationId = "default";
     private String workerKey = "";
     @Min(1) private int leaseSeconds = 30;
@@ -20,8 +21,8 @@ public class AiProperties {
     @Min(1) private int maxOutputTokens = 4096;
     @Min(1) private long budgetMicros = 1_000_000;
     @Min(1) private long requestReserveMicros = 100_000;
-    @NotBlank private String pluginVersion = "form-worker-2b";
-    @NotBlank private String toolProtocol = "ai-task-v2";
-    @NotBlank private String knowledgePackage = "unpublished";
+    @NotBlank private String pluginVersion = "form-worker-2c";
+    @NotBlank private String toolProtocol = "ai-task-v3";
+    @NotBlank private String knowledgePackage = "form-knowledge-2c-internal";
     @NotBlank private String modelConfig = "fixture-no-model";
 }

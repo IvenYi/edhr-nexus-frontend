@@ -1,6 +1,9 @@
 import { createWorkerClient } from '../src/client.mjs';
 import { runClaimedWorker } from '../src/worker.mjs';
 import { driveFixture } from './drive-fixture.mjs';
+import { createNativePreview } from '../src/preview.mjs';
+import { buildPreview } from '../preview/build.mjs';
+import { join } from 'node:path';
 
 export const inject = ['llm', 'sessions', 'tools', 'agents', 'agentLoop'];
 export function apply(ctx) {
@@ -16,7 +19,11 @@ export function apply(ctx) {
   // The CLI profile owns startup; this finite test plugin has no model/network tools.
   setImmediate(async () => {
     try {
-      const result = await runClaimedWorker({ ctx, client: transport, directory: process.env.EDHR_AI_DIRECTORY, drive: driveFixture });
+      let preview;
+      if(process.env.EDHR_AI_WORKBENCH==='1') {
+        const bundle=join(process.env.EDHR_AI_DIRECTORY,'renderer.js');await buildPreview(bundle);preview=await createNativePreview(bundle);
+      }
+      const result = await runClaimedWorker({ ctx, client: transport, directory: process.env.EDHR_AI_DIRECTORY, drive: driveFixture, preview });
       process.stdout.write(JSON.stringify(result) + '\n');
       await ctx.root.fiber.dispose();
       process.exit(0);
