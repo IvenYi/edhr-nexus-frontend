@@ -155,15 +155,17 @@ implementationAnchors:
     codeReferences:
       - gmp-platform/backend/src/main/java/com/zencas/edhr/ai/AiTaskService.java
       - gmp-platform/backend/src/main/java/com/zencas/edhr/ai/AiProperties.java
+      - gmp-platform/ai-worker/src/client.mjs
+      - gmp-platform/ai-worker/src/deepseek.mjs
     apiReferences: [POST /api/v1/ai/internal/reserve, POST /api/v1/ai/internal/settle, POST /api/v1/ai/internal/renew]
     databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/0093-ai-task-foundation.sql]
     uiReferences: []
     testReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/ai/AiTaskPostgresTest.java]
     status: implemented
     visibility: internal
-    evidenceIds: [evidence.ai-collaboration-task-source, evidence.ai-collaboration-migration-source, evidence.ai-collaboration-test-source]
+    evidenceIds: [evidence.ai-collaboration-task-source, evidence.ai-collaboration-migration-source, evidence.ai-collaboration-test-source, evidence.ai-form-deepseek-evaluation-scope, evidence.ai-form-deepseek-adapter-source]
     sourceRevision: working-tree
-    sourceLocator: reserve/settle及ai_model_reservation持久账本；baseline/compatible固定版本标识；2C默认form-knowledge-2c-internal/fixture-no-model仅供内部验证，不表示客户知识发布或供应商调用；终态不接收settle，未知费用预留保持
+    sourceLocator: reserve/settle及ai_model_reservation持久账本；baseline/compatible固定版本标识；默认fixture-no-model，2D显式deepseek-flash-chat-2d。DeepSeekAdapter.stream在发请求前预留、拒绝重放已有预留并按用量估算结算；driveDeepSeek仅接受首次领取。终态不接收settle，未知费用预留保持；内部知识资格维持，运行结果另证
     capturedAt: '2026-11-14'
     reviewStatus: reviewed
   - id: anchor.ai-form-native-operation

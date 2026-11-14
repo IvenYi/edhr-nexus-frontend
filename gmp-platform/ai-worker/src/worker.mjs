@@ -3,10 +3,10 @@ import { createNativeFormPlugin } from './form-plugin.mjs';
 export const workerBaseline = Object.freeze({ pluginVersion: 'form-worker-2c', toolProtocol: 'ai-task-v3', knowledgePackage: 'form-knowledge-2c-internal', modelConfig: 'fixture-no-model' });
 
 // A single claimed run. DSH owns the agent loop; Java owns execution eligibility.
-export async function runClaimedWorker({ ctx, client, directory, drive, preview, signal, heartbeatMs = 5000 }) {
+export async function runClaimedWorker({ ctx, client, directory, drive, preview, authoring, modelConfig = workerBaseline.modelConfig, signal, heartbeatMs = 5000 }) {
   const claim = await client.claim(signal);
   if (claim.idle) return claim;
-  if (Object.entries(workerBaseline).some(([key, value]) => claim.config?.[key] !== value)) throw new Error('Worker configuration unavailable');
+  if (Object.entries({ ...workerBaseline, modelConfig }).some(([key, value]) => claim.config?.[key] !== value)) throw new Error('Worker configuration unavailable');
   const lease = { taskId: claim.taskId, runId: claim.runId, leaseEpoch: claim.leaseEpoch };
   const controller = new AbortController();
   const running = signal ? AbortSignal.any([signal, controller.signal]) : controller.signal;
@@ -19,7 +19,7 @@ export async function runClaimedWorker({ ctx, client, directory, drive, preview,
   try {
     await client.renew(lease, running);
     timer = setTimeout(renew, heartbeatMs);
-    const adapter = await createNativeFormPlugin({ client, claim, directory, sessionId: claim.runId, signal: running, preview });
+    const adapter = await createNativeFormPlugin({ client, claim, directory, sessionId: claim.runId, signal: running, preview, authoring });
     // A pending write is never replayed before checking the persisted Java receipt.
     await adapter.reconcile(running);
     fork = await ctx.plugin(adapter.plugin);
@@ -27,6 +27,11 @@ export async function runClaimedWorker({ ctx, client, directory, drive, preview,
     running.throwIfAborted();
     await client.yieldRun(lease, running);
     return { taskId: claim.taskId, runId: claim.runId, yielded: true };
+  } catch (error) {
+    if (modelConfig !== workerBaseline.modelConfig && !running.aborted) {
+      await client.fail(lease, running).catch(() => {});
+    }
+    throw error;
   } finally {
     controller.abort();
     clearTimeout(timer);

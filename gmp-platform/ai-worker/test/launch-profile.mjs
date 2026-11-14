@@ -14,7 +14,8 @@ const rows = services.map(id => ({ id, name: '@deepseek-ai/dsh-' + id }));
 rows.find(r => r.id === 'system-prompt').config = { includeHarnessIdentity: false, includeRuntimeContext: false };
 rows.find(r => r.id === 'agent-loop').config = { agents: [], maxParallelToolCalls: 1 };
 rows.find(r => r.id === 'session-persistence-jsonl').config = { root: join(home, 'sessions'), compression: 'none' };
-rows.push({ id: 'edhr-fixture', name: new URL('./profile-boot.mjs', import.meta.url).href });
+const entry = process.env.EDHR_AI_DEEPSEEK_SAMPLE ? '../../../scripts/ai-form-agent/2d/profile.mjs' : './profile-boot.mjs';
+rows.push({ id: 'edhr-fixture', name: new URL(entry, import.meta.url).href });
 await writeFile(join(profile, 'cordis.patch.yml'), JSON.stringify([{ insert: rows }]));
 const child = spawn(process.execPath, [process.env.EDHR_DSH_BIN, '--profile', 'edhr-fixture', ...(process.argv.includes('--dump') ? ['--dump-config'] : [])], {
   env: { ...process.env, DSH_HOME: home }, stdio: 'inherit',

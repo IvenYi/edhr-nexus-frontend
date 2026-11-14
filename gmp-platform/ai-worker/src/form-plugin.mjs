@@ -26,7 +26,7 @@ export function operationId(runId, callId) {
   return createHash('sha256').update(JSON.stringify([runId, callId])).digest('hex');
 }
 
-export async function createNativeFormPlugin({ client, claim, sessionId, directory, signal: hostSignal, preview }) {
+export async function createNativeFormPlugin({ client, claim, sessionId, directory, signal: hostSignal, preview, authoring }) {
   if (claim.state !== 'RUNNING' || !Number.isSafeInteger(claim.leaseEpoch) || claim.leaseEpoch < 1 ||
       !/^[\da-f-]{36}$/i.test(claim.taskId) || !/^[\da-f-]{36}$/i.test(claim.runId) || !sessionId) throw new Error('Claim required');
   const lease = Object.freeze({ taskId: claim.taskId, runId: claim.runId, leaseEpoch: claim.leaseEpoch });
@@ -69,7 +69,8 @@ export async function createNativeFormPlugin({ client, claim, sessionId, directo
     apply(ctx) {
       active = true;
       ctx.effect(() => () => { active = false; lifetime.abort(); });
-      for (const tool of definitions) ctx.tools.register({ ...tool,
+      const tools = authoring ? definitions.map(tool => tool.name === 'create_form' ? { ...tool, ...authoring.tool } : tool) : definitions;
+      for (const tool of tools) ctx.tools.register({ ...tool,
         output: { schema: {}, render: (_args, result) => [{ type: 'text', text: JSON.stringify(result) }] },
         async execute(args, exec) {
           if (!active || exec.agent?.session.id !== sessionId) throw new Error('Task scope denied');
@@ -107,7 +108,8 @@ export async function createNativeFormPlugin({ client, claim, sessionId, directo
             }
             if (tool.name === 'patch_form' && args.expectedRevision !== revision) throw new Error('Patch revision differs from current read');
             if (tool.name === 'save_form_design' && !Number.isSafeInteger(revision)) throw new Error('Read current form before saving');
-            const form = tool.name === 'create_form' ? args : { ...args, expectedRevision: revision };
+            const form = tool.name === 'create_form'
+              ? (authoring ? await authoring.compile(args) : args) : { ...args, expectedRevision: revision };
             // Only identity is journaled; no customer design, credential or model reasoning.
             const marker = { operationId: id, runId: lease.runId };
             await writeFile(pendingFile, JSON.stringify(marker), { flag: 'wx', mode: 0o600, flush: true });

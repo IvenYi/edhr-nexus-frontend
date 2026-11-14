@@ -1,0 +1,12 @@
+knowledgeModelVersion: 0.3.25
+evidence:
+  - id: evidence.ai-form-deepseek-evaluation-scope
+    type: document
+    path: docs/knowledge/evidence/ai-form-deepseek-evaluation-20261114.md
+    description: 用户确认替换打印标签并继续验证；记录清线样本结构、脱敏边界、供应商调用职责与既有正式统计规则的适用范围。
+    visibility: internal
+  - id: evidence.ai-form-deepseek-adapter-source
+    type: code
+    path: gmp-platform/ai-worker/src/deepseek.mjs
+    description: original-evidence；DSH 适配器在供应商调用前通过 Java 账本预留、按返回用量估算结算、拒绝直接复用已有预留；首次领取的内部验证调用源码，实际模型质量另取运行证据。
+    visibility: internal

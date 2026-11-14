@@ -35,6 +35,9 @@ export function createWorkerClient({ origin, key, fetchImpl = fetch }) {
   return Object.freeze({
     claim: signal => request('claim', {}, signal),
     renew: (lease, signal) => request('renew', lease, signal),
+    reserve: (lease, requestId, signal) => request('reserve', { ...lease, requestId }, signal),
+    settle: (lease, requestId, actualMicros, signal) => request('settle', { ...lease, requestId, actualMicros }, signal),
+    fail: (lease, signal) => request('fail', lease, signal),
     yieldRun: (lease, signal) => request('yield', lease, signal),
     reconcile: (lease, operationId, signal) => request('forms/reconcile', { ...lease, operationId }, signal),
     toolEvent: (lease, callId, tool, phase, signal) => request('tool-events', { ...lease, callId, tool, phase }, signal),

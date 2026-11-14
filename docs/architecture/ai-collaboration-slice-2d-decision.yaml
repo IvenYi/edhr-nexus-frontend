@@ -1,0 +1,44 @@
+decisionPackage:
+  id: DEC-PACKAGE-20261114-AI-2D
+  scope: DeepSeek经DSH和现有受控工具的隔离表单验证，清线记录替代打印标签，保留末道清洁与报废处理单
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: 4079a3dfa194112e19aa8daa728eefd02bc198af
+    targetBranch: codex/ai-experiments
+    targetCommit: 4079a3dfa194112e19aa8daa728eefd02bc198af
+    contractReadCommit: 4079a3dfa194112e19aa8daa728eefd02bc198af
+    uncommittedContractPaths: []
+  summary: 只使用三张空白脱敏输入，验证自主知识查询、布局和字段配置、局部修正、读回、预览及提问。用户指定用有具体业务的表单替换打印标签；选择清线记录为实施判断。
+  confirmed: {concepts: [], relationships: [], rules: [], executionContracts: []}
+  inferred:
+    - id: inference.ai-2d-provider-boundary
+      statement: Node Worker负责DeepSeek适配及原件版式编译，DSH执行循环；Java现有接口在调用前预留、收到用量后结算，并保持原生写入与审计所有权。
+      rationale: 复用已验证的权限、预算和事务，实验不增加生产写入权限。
+      relatedIds: [concept.ai-execution-run]
+  unresolved: []
+  replacementScopes: []
+  impactAnalysis:
+    level: L2
+    directImpacts: [隔离Worker增加真实服务商适配及原件布局编译]
+    transitiveImpacts: [复用Java预留结算、原生保存、修订检查和离线预览]
+    potentialImpacts: [模型行为不确定，未知服务商请求需保留已占预算]
+    unaffectedAreas: [页面, 生产记录和签名, 权威知识规则, 历史验证样本]
+    compatibilityAndMigration: [隔离模型配置与fixture配置匹配核验，无数据库迁移]
+    snapshotImpacts: [记录固定源文件摘要、当前保存修订和预览摘要]
+    auditImpacts: [预算与实际工具事件复用Java日志，模型推理不进入操作日志]
+    permissionImpacts: [隔离JUnit真实身份与Worker凭据，模型仅见脱敏输入及既有受控工具结果]
+    testImpacts: [模型请求预算与中断行为, 三份真实原生保存及当前修订证据, 独立配置和问题评价]
+    evidenceGaps: [无正式客户统计来源职责依据, 模型跨供应商与多样性评估另记]
+  extensionStrategy:
+    selectedPaths: [project-plugin, standard-action]
+    rationale: 增加Worker适配，复用原生业务边界及固定服务商合同。
+    ownershipBoundaries:
+      - {owner: ai-worker, responsibility: 'DSH适配、原表编译、模型和预览反馈'}
+      - {owner: ai-java, responsibility: '当前授权、预算账本、原生动作、审计和回执'}
+  affectedFiles: []
+  acceptanceScenarios:
+    - id: scenario.ai-2d-budgeted-native-form
+      given: 隔离账号任务和经脱敏的空白表单
+      when: 模型经DSH查询、配置、读回、检查和预览
+      then: 每次模型请求有原生预算记录，每次原生保存可核对回执，评估按当前修订和独立依据报告
+      evidenceRequirements: [隔离PostgreSQL, DeepSeek真实返回, 原生保存读回, 预览, 各表独立评价]

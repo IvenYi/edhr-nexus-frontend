@@ -239,6 +239,12 @@ class AiFormPostgresTest {
         request.put("operationId","stale");worker("POST","/forms/patch",request,409);
         request.put("expectedRevision",current.path("revision").asLong());request.put("patches",Map.of("ownerId",List.of(Map.of("op","add","path","/x","value",1))));
         worker("POST","/forms/patch",request,400);assertThat(count("ai_form_receipt")).isEqualTo(2);
+        request.put("operationId","malformed-projection");
+        request.put("patches",Map.of("modelDesignJson",List.of(Map.of("op","add","path","/projection","value",
+                Map.of("version","form-projection-v1","bindings",List.of("not-a-binding"))))));
+        worker("POST","/forms/patch",request,400);
+        assertThat(worker("POST","/forms/read",lease(run),200).path("version")).isEqualTo(current);
+        assertThat(count("ai_form_receipt")).isEqualTo(2);
     }
     @Test void checksReportDefectsAndPreviewEvidenceRejectsOldRevision() throws Exception {
         var run=run();var saved=create(run);long revision=saved.path("revision").asLong();
@@ -308,6 +314,52 @@ class AiFormPostgresTest {
         tasks.action(OWNER,id(run,"taskId"),"stop-log",id(run,"runId"),"stop");
         assertThat(tasks.events(OWNER,id(run,"taskId"),0).toString()).contains("TOOL_INTERRUPTED");
         request.put("phase","FAILED");worker("POST","/tool-events",request,409);
+    }
+    @Test @EnabledIfEnvironmentVariable(named="EDHR_AI_2D_BATCH",matches=".+")
+    void deepSeekBusinessFormsThroughGovernedWorker() throws Exception {
+        var batch=java.nio.file.Path.of(System.getenv("EDHR_AI_2D_BATCH")).toAbsolutePath();
+        assertThat(System.getenv("EDHR_DSH_BIN")).isNotBlank();
+        config.setModelConfig("deepseek-flash-chat-2d");
+        config.setMaxRequests(15);
+        config.setMaxOutputTokens(6144);
+        config.setRunSeconds(480);
+        try {
+            for (var sample : List.of("clean", "scrap", "line-clearance")) {
+                var input=batch.resolve(sample+".json");
+                assertThat(input).isRegularFile();
+                var directory=java.nio.file.Files.createDirectory(batch.resolve(sample));
+                var task=tasks.create(OWNER,UUID.randomUUID().toString(),"根据这张空白原表在隔离验证分类创建可用表单草稿，配置原表字段与有依据的追溯。");
+                var taskId=id(task,"taskId");
+                var builder=new ProcessBuilder("node","../ai-worker/test/launch-profile.mjs").redirectErrorStream(true)
+                        .redirectOutput(directory.resolve("worker.log").toFile());
+                builder.environment().putAll(Map.of("EDHR_AI_FIXTURE","isolated-java-test","EDHR_AI_ORIGIN","http://127.0.0.1:"+port,
+                        "EDHR_AI_WORKER_KEY",KEY,"EDHR_AI_DIRECTORY",directory.toString(),"EDHR_AI_DEEPSEEK_SAMPLE",input.toString()));
+                var process=builder.start();
+                boolean exited=process.waitFor(510,TimeUnit.SECONDS);
+                if(!exited){process.descendants().forEach(ProcessHandle::destroyForcibly);process.destroyForcibly();}
+                var current=tasks.get(OWNER,taskId);
+                if ("RUNNING".equals(current.get("state")) || "QUEUED".equals(current.get("state"))) {
+                    tasks.action(OWNER,taskId,"end-isolated-run",id(task,"runId"),"stop");
+                    current=tasks.get(OWNER,taskId);
+                }
+                var evidence=new LinkedHashMap<String,Object>();
+                evidence.put("exit",exited?process.exitValue():-1);
+                evidence.put("task",current);
+                evidence.put("events",tasks.events(OWNER,taskId,0));
+                if(current.get("versionId")!=null) {
+                    evidence.put("nativeReadback",user("GET","/api/v1/master-data/template-modeling/form-templates/"+
+                            current.get("templateId")+"/versions/"+current.get("versionId"),null,OWNER,200));
+                    evidence.put("receipts",jdbc.queryForList("SELECT result_json::text FROM ai_form_receipt WHERE task_id=? ORDER BY created_at",String.class,taskId));
+                }
+                mapper.writerWithDefaultPrettyPrinter().writeValue(directory.resolve("native-evidence.json").toFile(),evidence);
+            }
+        } finally {
+            var defaults=new AiProperties();
+            config.setModelConfig(defaults.getModelConfig());
+            config.setMaxRequests(defaults.getMaxRequests());
+            config.setMaxOutputTokens(defaults.getMaxOutputTokens());
+            config.setRunSeconds(defaults.getRunSeconds());
+        }
     }
     @Test @EnabledIfEnvironmentVariable(named="EDHR_DSH_BIN",matches=".+")
     void killedProfileReconcilesCommittedWriteWithoutCreatingTwice() throws Exception {

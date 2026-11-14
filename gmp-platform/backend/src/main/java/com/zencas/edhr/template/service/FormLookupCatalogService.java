@@ -262,6 +262,13 @@ public class FormLookupCatalogService {
         try {
             JsonNode root = mapper.readTree(json);
             JsonNode model = root.has("payload") ? root.path("payload") : root;
+            if (!model.isObject()) throw invalid("字段模型格式不正确");
+            JsonNode projection = model.get("projection");
+            if (projection != null && !projection.isNull() && (!projection.isObject() || !projection.path("bindings").isArray()))
+                throw invalid("追溯用途列表格式不正确");
+            if (projection != null) for (JsonNode binding : projection.path("bindings")) {
+                if (!binding.isObject()) throw invalid("追溯用途格式不正确");
+            }
             JsonNode prepared = withLookupSnapshot(model, true);
             ObjectNode configured = prepared.deepCopy();
             for (JsonNode binding : configured.path("projection").path("bindings")) {

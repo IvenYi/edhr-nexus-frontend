@@ -35,7 +35,7 @@ export function compileLayout(draft, sample, designer, lookupItems) {
       catch (e) { errors.push(e.message); }
     }
   }
-  const allowed = ['text', 'number', 'datetime', 'reference', 'signature', 'attachment', 'image'];
+  const allowed = ['text', 'number', 'datetime', 'reference', 'signature', 'attachment', 'image', 'singleSelect'];
   for (const [i, a] of texts.entries()) for (const b of texts.slice(i + 1)) if (intersects(a.rect, b.rect)) errors.push('原文位置重叠：' + a.source + '/' + b.source);
   for (const [index, f] of (draft.fields ?? []).entries()) {
     if (!/^[A-Za-z][A-Za-z0-9_]{0,63}$/.test(f.key) || keys.has(f.key)) { errors.push('字段key无效或重复：' + f.key); continue; }
